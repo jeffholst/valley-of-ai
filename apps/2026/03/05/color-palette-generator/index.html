@@ -726,15 +726,54 @@
 
     function loadFromURL() {
       const params = new URLSearchParams(window.location.search);
-      
-      if (params.has('base')) {
-        document.getElementById('baseColor').value = '#' + params.get('base');
+
+      const baseInput = document.getElementById('baseColor');
+      const harmonySelect = document.getElementById('harmonyType');
+      const countInput = document.getElementById('colorCount');
+
+      // Validate and apply base color (expects a 6-digit hex without '#')
+      if (params.has('base') && baseInput) {
+        const rawBase = params.get('base') || '';
+        // Keep only hex chars and limit to 6 characters
+        const sanitized = rawBase.replace(/[^0-9a-fA-F]/g, '').slice(0, 6);
+        const candidate = '#' + sanitized;
+        if (/^#[0-9a-fA-F]{6}$/.test(candidate)) {
+          baseInput.value = candidate;
+        }
       }
-      if (params.has('harmony')) {
-        document.getElementById('harmonyType').value = params.get('harmony');
+
+      // Validate and apply harmony type (must match one of the select options)
+      if (params.has('harmony') && harmonySelect) {
+        const harmonyParam = params.get('harmony');
+        if (typeof harmonyParam === 'string' && harmonyParam.length > 0) {
+          const allowedValues = Array.from(harmonySelect.options).map(function (opt) {
+            return opt.value;
+          });
+          if (allowedValues.indexOf(harmonyParam) !== -1) {
+            harmonySelect.value = harmonyParam;
+          }
+        }
       }
-      if (params.has('count')) {
-        document.getElementById('colorCount').value = params.get('count');
+
+      // Validate and apply color count (must be a number, clamped to min/max)
+      if (params.has('count') && countInput) {
+        var parsed = parseInt(params.get('count'), 10);
+        if (!Number.isNaN(parsed)) {
+          var min = parseInt(countInput.min, 10);
+          var max = parseInt(countInput.max, 10);
+          if (Number.isNaN(min)) {
+            min = 1;
+          }
+          if (Number.isNaN(max)) {
+            max = 20;
+          }
+          if (parsed < min) {
+            parsed = min;
+          } else if (parsed > max) {
+            parsed = max;
+          }
+          countInput.value = String(parsed);
+        }
       }
     }
 
