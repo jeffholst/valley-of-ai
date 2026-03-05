@@ -2,7 +2,7 @@
   "id": "example-app",
   "name": "Example App",
   "shortDescription": "A demonstration app showcasing the Valley of AI gallery system. This example features a simple interactive interface.",
-  "thumbnail": "thumbnail.png",
+  "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-05T02:30:00Z",
   "category": "Productivity",
   "votes": 42,
