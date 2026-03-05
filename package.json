@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "npm run generate:apps && vite build",
     "preview": "vite preview",
-    "generate:apps": "node scripts/generate-apps.js"
+    "generate:apps": "node scripts/generate-apps.js",
+    "predeploy": "npm run build && cp -r apps dist/",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -19,6 +21,7 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.19",
+    "gh-pages": "^6.1.1",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
     "vite": "^5.2.10"
