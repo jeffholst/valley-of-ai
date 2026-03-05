@@ -1,0 +1,37 @@
+[
+  {
+    "id": "2026-03-05-001",
+    "title": "Weather Dashboard",
+    "description": "Create a beautiful weather dashboard that shows current weather conditions and forecasts with animated weather icons.",
+    "category": "Utilities",
+    "submittedAt": "2026-03-05T08:00:00Z",
+    "status": "implemented",
+    "implementedAppId": "weather-dashboard"
+  },
+  {
+    "id": "2026-03-05-002",
+    "title": "Markdown Editor",
+    "description": "Build a live Markdown editor with syntax highlighting and real-time preview panel.",
+    "category": "Productivity",
+    "submittedAt": "2026-03-05T09:30:00Z",
+    "status": "implemented",
+    "implementedAppId": "markdown-editor"
+  },
+  {
+    "id": "2026-03-05-003",
+    "title": "Pomodoro Timer",
+    "description": "A simple but elegant Pomodoro technique timer with customizable work/break intervals and notification sounds.",
+    "category": "Productivity",
+    "submittedAt": "2026-03-05T11:15:00Z",
+    "status": "implemented",
+    "implementedAppId": "pomodoro-timer"
+  },
+  {
+    "id": "2026-03-05-004",
+    "title": "Color Palette Generator",
+    "description": "Generate harmonious color palettes for design projects. Include export to CSS, Tailwind, and other formats.",
+    "category": "Design",
+    "submittedAt": "2026-03-05T14:00:00Z",
+    "status": "pending"
+  }
+]

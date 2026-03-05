@@ -1,0 +1,22 @@
+{
+  "id": "example-app",
+  "name": "Example App",
+  "shortDescription": "A demonstration app showcasing the Valley of AI gallery system. This example features a simple interactive interface.",
+  "thumbnail": "thumbnail.png",
+  "createdAt": "2026-03-05T02:30:00Z",
+  "category": "Productivity",
+  "votes": 42,
+  "status": "active",
+  "tags": ["demo", "example"],
+  "homepagePath": "index.html",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "gpt-5.1",
+    "startTime": "2026-03-05T03:21:45Z",
+    "endTime": "2026-03-05T03:22:10Z",
+    "totalTokensIn": 4200,
+    "totalTokensOut": 3100,
+    "runId": "run-2026-03-05-0001",
+    "notes": "Generated from suggestion 2026-03-05-001."
+  }
+}
