@@ -1,0 +1,22 @@
+{
+  "id": "color-palette-generator",
+  "name": "Color Palette Generator",
+  "shortDescription": "Create beautiful, harmonious color palettes with multiple harmony modes. Supports export to CSS, Tailwind, SCSS, and JSON formats with shareable URLs.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-05T21:51:58Z",
+  "category": "Design",
+  "votes": 0,
+  "status": "active",
+  "tags": ["design", "colors", "tools", "css", "tailwind"],
+  "homepagePath": "index.html",
+  "generation": {
+    "agentName": "claude-opus-4.5",
+    "llmModel": "claude-opus-4.5",
+    "startTime": "2026-03-05T21:51:58Z",
+    "endTime": "2026-03-05T21:54:12Z",
+    "totalTokensIn": 12500,
+    "totalTokensOut": 8200,
+    "runId": "run-2026-03-05-0004",
+    "notes": "Implemented user suggestion for Color Palette Generator with comprehensive color theory harmonies and multiple export formats."
+  }
+}
