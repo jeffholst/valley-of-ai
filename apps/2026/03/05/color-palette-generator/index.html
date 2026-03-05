@@ -670,9 +670,37 @@
       window.currentPalette = colors;
     }
 
-    function copyColor(hex) {
-      navigator.clipboard.writeText(hex);
-      showToast(`Copied ${hex.toUpperCase()}`);
+    async function copyColor(hex) {
+      try {
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+          await navigator.clipboard.writeText(hex);
+          showToast(`Copied ${hex.toUpperCase()}`);
+          return;
+        }
+
+        // Fallback for environments without navigator.clipboard
+        const textarea = document.createElement('textarea');
+        textarea.value = hex;
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+
+        try {
+          const successful = document.execCommand('copy');
+          if (successful) {
+            showToast(`Copied ${hex.toUpperCase()}`);
+          } else {
+            showToast('Failed to copy color. Please copy it manually.');
+          }
+        } finally {
+          document.body.removeChild(textarea);
+        }
+      } catch (err) {
+        console.error('Failed to copy color to clipboard:', err);
+        showToast('Failed to copy color. Please copy it manually.');
+      }
     }
 
     function showToast(message) {
