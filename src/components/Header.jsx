@@ -26,12 +26,14 @@ export default function Header() {
             >
               Suggest
             </Link>
-            <Link
-              to="/logs"
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors duration-200"
-            >
-              Logs
-            </Link>
+            {import.meta.env.DEV && (
+              <Link
+                to="/logs"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors duration-200"
+              >
+                Logs
+              </Link>
+            )}
             <ThemeToggle />
           </nav>
         </div>
