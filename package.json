@@ -8,7 +8,8 @@
     "build": "npm run generate:apps && vite build",
     "preview": "vite preview",
     "generate:apps": "node scripts/generate-apps.js",
-    "predeploy": "npm run build && cp -r apps dist/",
+    "version:bump": "npm version patch --no-git-tag-version",
+    "predeploy": "npm run version:bump && npm run build && cp -r apps dist/ && cp -r logs dist/",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {

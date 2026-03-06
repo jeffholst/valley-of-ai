@@ -11,6 +11,7 @@ export default function Layout() {
       <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-6 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-500 dark:text-gray-400">
           <p>© 2026 Valley of AI. Showcasing AI-generated applications.</p>
+          <p className="text-xs mt-1">v{__APP_VERSION__}</p>
         </div>
       </footer>
     </div>
