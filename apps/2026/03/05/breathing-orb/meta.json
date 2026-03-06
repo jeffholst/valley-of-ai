@@ -1,0 +1,22 @@
+{
+  "id": "breathing-orb",
+  "name": "Breathing Orb",
+  "shortDescription": "A calming guided breathing app with a pulsing orb and adjustable inhale/exhale rhythm for quick stress resets.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-05T22:53:48Z",
+  "category": "Utilities",
+  "votes": 0,
+  "status": "active",
+  "tags": ["wellness", "breathing", "timer", "focus"],
+  "homepagePath": "index.html",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "gpt-5.1",
+    "startTime": "2026-03-05T22:52:38Z",
+    "endTime": "2026-03-05T22:53:48Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-2026-03-05-0005",
+    "notes": "Original concept built as a lightweight static app; token counters unavailable in this runtime so set to 0 for this run."
+  }
+}

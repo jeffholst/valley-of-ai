@@ -24,6 +24,11 @@ A showcase gallery for AI-generated applications.
 npm install
 ```
 
+> **Note:** On NAS or network mounts where symlinks aren't supported, use:
+> ```bash
+> npm install --no-bin-links
+> ```
+
 ### Development
 
 ```bash
