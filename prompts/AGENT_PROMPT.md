@@ -398,7 +398,7 @@ const runId = logger.startTransaction('my-app', 'suggestion-001')
 | `PR_REVIEW` | 10 | Self-review PR |
 | `MERGE_PR` | 11 | Merge to main |
 | `UPDATE_REGISTRY` | 12 | Regenerate apps.json |
-| `DEPLOY` | 13 | Trigger/verify deployment |
+| `DEPLOY` | 13 | Run `npm run deploy` and verify on live site |
 
 ### Status Values
 
@@ -455,7 +455,8 @@ When retrying:
 {"timestamp":"2026-03-06T03:00:25Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"PR_REVIEW","seq":10,"status":"completed","durationMs":2000}
 {"timestamp":"2026-03-06T03:00:28Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"MERGE_PR","seq":11,"status":"completed","durationMs":2000,"details":{"mergeCommit":"def456"}}
 {"timestamp":"2026-03-06T03:00:31Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"UPDATE_REGISTRY","seq":12,"status":"completed","durationMs":1500,"details":{"appCount":15}}
-{"timestamp":"2026-03-06T03:00:33Z","runId":"run-20260306T030000Z-a7f3b2","type":"TRANSACTION_END","appId":"word-scramble","status":"success","totalDurationMs":33000,"totalTokensIn":4000,"totalTokensOut":4000,"filesCreated":["index.html","meta.json","thumbnail.svg"]}
+{"timestamp":"2026-03-06T03:00:45Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"DEPLOY","seq":13,"status":"completed","durationMs":12000,"details":{"command":"npm run deploy","version":"0.1.5","url":"https://www.valleyofai.com"}}
+{"timestamp":"2026-03-06T03:00:48Z","runId":"run-20260306T030000Z-a7f3b2","type":"TRANSACTION_END","appId":"word-scramble","status":"success","totalDurationMs":48000,"totalTokensIn":4000,"totalTokensOut":4000,"filesCreated":["index.html","meta.json","thumbnail.svg"]}
 ```
 
 ### Logging Best Practices
@@ -604,12 +605,15 @@ Brief description of the new app or change.
 
 ### Deployment
 
-After merging to `main`:
-1. GitHub Actions workflow triggers automatically
-2. Verify build succeeds in Actions tab
-3. Confirm deployment to GitHub Pages
-4. Verify app appears in live gallery
-5. Log deployment action to daily log
+After merging to `main`, you must manually deploy:
+
+1. **Run deployment command** – `npm run deploy`
+   - This builds the project and pushes to the `gh-pages` branch
+   - It also auto-increments the version number
+2. **Verify build succeeds** – Watch for any build errors in terminal
+3. **Confirm deployment** – Visit https://www.valleyofai.com to verify
+4. **Verify app appears** – Ensure the new app shows in the live gallery
+5. **Log deployment action** – Append DEPLOY step to the daily log
 
 ## Nightly Workflow
 
@@ -630,7 +634,8 @@ Each night, execute this workflow:
 13. **Create PR** – Open pull request against `main`
 14. **Review & approve** – Self-review, then approve
 15. **Merge PR** – Squash and merge to `main`
-16. **Verify deployment** – Confirm app is live on GitHub Pages
+16. **Deploy** – Run `npm run deploy` to publish to GitHub Pages
+17. **Verify deployment** – Confirm app is live at https://www.valleyofai.com
 
 ## Suggestion File Format
 
