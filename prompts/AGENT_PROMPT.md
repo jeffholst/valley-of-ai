@@ -462,7 +462,11 @@ When retrying:
 ### Logging Best Practices
 
 1. **Always use `runId`** – This is the correlation key for filtering all logs related to one app generation
-2. IMPORTANT: **Log immediately** – Write each step immediately, not at the end
+2. **⚠️ CRITICAL: Log IMMEDIATELY after each step** – Write each log entry to the file RIGHT AFTER the step completes, NOT batched at the end. This is essential for:
+   - Real-time debugging and monitoring
+   - Seeing which step the agent is currently on
+   - Recovering from crashes or interruptions
+   - Never batch logs – append to the `.jsonl` file after EVERY step
 3. **Include duration** – `durationMs` helps identify bottlenecks
 4. **Track tokens** – Record `tokensIn` and `tokensOut` for LLM calls for cost tracking
 5. **Structured errors** – Always use the `error` object format with `code`, `message`, and `retryable`
@@ -623,26 +627,27 @@ After merging to `main`, you must manually deploy:
 
 ## Nightly Workflow
 
-Each night, execute this workflow:
+Each night, execute this workflow. **Log each step IMMEDIATELY to the daily log file as you complete it** – do not batch logs at the end.
 
 1. **Pull latest `main`** – Ensure you have the latest code
-2. **Create feature branch** – `git checkout -b feat/<app-id>`
+2. **Create feature branch** – `git checkout -b feat/<app-id>` → Log `TRANSACTION_START` + `GIT_BRANCH`
 3. **Check suggestions** – Review `suggestions/YYYY/MM/*.json` for user ideas
-4. **Select or generate concept** – Pick a suggestion or create something original
-5. **Research the idea** – Search the web for inspiration, similar implementations, and best practices (see "Researching App Ideas" section)
-6. **Build the app** – Create all required files
+4. **Select or generate concept** – Pick a suggestion or create something original → Log `SELECT_SUGGESTION`
+5. **Research the idea** – Search the web for inspiration, similar implementations, and best practices → Log `RESEARCH_IDEAS`
+6. **Build the app** – Create all required files → Log `GENERATE_HTML`
 7. **Test thoroughly** – Verify functionality across scenarios
-8. **Generate thumbnail** – Create an appealing preview image
-9. **Log the action** – Append to the daily log file
-10. **Update registry** – Run `npm run generate:apps` to update the gallery
-11. **Commit changes** – Stage and commit with conventional message
+8. **Generate thumbnail** – Create an appealing preview image → Log `GENERATE_THUMBNAIL`
+9. **Create meta.json** – Write app metadata → Log `CREATE_META_JSON`
+10. **Update registry** – Run `npm run generate:apps` to update the gallery → Log `UPDATE_REGISTRY`
+11. **Commit changes** – Stage and commit with conventional message → Log `GIT_COMMIT`
 12. **Push branch** – `git push -u origin feat/<app-id>`
-13. **Create PR** – Open pull request against `main`
-14. **Review & approve** – Self-review, then approve
-15. **Merge PR** – Squash and merge to `main`
-16. **Deploy** – Run `npm run deploy` to publish to GitHub Pages
+13. **Create PR** – Open pull request against `main` → Log `CREATE_PR`
+14. **Review & approve** – Self-review, then approve → Log `PR_REVIEW`
+15. **Merge PR** – Squash and merge to `main` → Log `MERGE_PR`
+16. **Deploy** – Run `npm run deploy` to publish to GitHub Pages → Log `DEPLOY`
 17. **Verify deployment** – Confirm app is live at https://www.valleyofai.com
-18. **Commit version bump** – Commit `package.json` and logs, then push to `main`
+18. **Close transaction** – Log `TRANSACTION_END`
+19. **Commit version bump** – Commit `package.json` and logs, then push to `main`
 
 ## Suggestion File Format
 
