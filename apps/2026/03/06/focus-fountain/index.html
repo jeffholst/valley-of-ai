@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Focus Fountain - Valley of AI</title>
+  <meta name="description" content="A playful focus timer where steady work grows a glowing fountain." />
+  <style>
+    :root {
+      --bg: #0a1325;
+      --bg2: #18294a;
+      --surface: #101c34;
+      --text: #e8f0ff;
+      --muted: #9eb2da;
+      --primary: #6ea8ff;
+      --accent: #22d3ee;
+      --ok: #6ee7b7;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f2f7ff;
+        --bg2: #dbeafe;
+        --surface: #ffffff;
+        --text: #1f2d4e;
+        --muted: #5e6f95;
+        --primary: #2563eb;
+        --accent: #0891b2;
+        --ok: #047857;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(1100px 650px at 20% 20%, var(--bg2), var(--bg));
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+    }
+    .card {
+      width: min(620px, 100%);
+      background: color-mix(in srgb, var(--surface) 88%, transparent);
+      border: 1px solid color-mix(in srgb, var(--muted) 28%, transparent);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 14px 35px #0004;
+    }
+    h1 { margin: 0 0 .35rem; font-size: 1.6rem; }
+    .sub { margin: 0 0 1rem; color: var(--muted); }
+    .stage {
+      height: 230px;
+      background: linear-gradient(180deg, #fff0, color-mix(in srgb, var(--primary) 12%, transparent));
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--muted) 22%, transparent);
+    }
+    .pool {
+      position: absolute;
+      bottom: 14px;
+      width: 78%;
+      height: 28px;
+      background: color-mix(in srgb, var(--accent) 46%, transparent);
+      border-radius: 999px;
+      filter: blur(.3px);
+    }
+    .stream {
+      position: absolute;
+      bottom: 35px;
+      width: 28px;
+      height: 0;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #b2f1ff, var(--accent));
+      box-shadow: 0 0 20px color-mix(in srgb, var(--accent) 55%, transparent);
+      transition: height .4s ease;
+    }
+    .drop {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #c7f6ff;
+      opacity: .85;
+      transform: translateY(0);
+      animation: float 2.5s ease-in-out infinite;
+    }
+    .drop:nth-child(1){ left: 42%; top: 35%; animation-delay: 0s; }
+    .drop:nth-child(2){ left: 50%; top: 28%; animation-delay: .6s; }
+    .drop:nth-child(3){ left: 58%; top: 34%; animation-delay: 1.1s; }
+    @keyframes float {
+      0%,100% { transform: translateY(0); opacity: .25; }
+      50% { transform: translateY(-18px); opacity: .9; }
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: .7rem;
+      margin-top: 1rem;
+    }
+    .stat { background: color-mix(in srgb, var(--surface) 90%, transparent); border: 1px solid color-mix(in srgb, var(--muted) 23%, transparent); border-radius: 12px; padding: .65rem .75rem; }
+    .k { color: var(--muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .07em; }
+    .v { font-size: 1.15rem; font-weight: 700; margin-top: .12rem; }
+    .controls { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: .6rem; }
+    button, input {
+      font: inherit;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--muted) 30%, transparent);
+      padding: .6rem .9rem;
+      background: color-mix(in srgb, var(--surface) 88%, transparent);
+      color: var(--text);
+    }
+    button { cursor: pointer; font-weight: 600; }
+    .primary { background: var(--primary); color: white; border-color: transparent; }
+    .msg { min-height: 1.2rem; margin-top: .65rem; color: var(--ok); }
+    @media (max-width: 560px){ .stats{grid-template-columns:1fr;} }
+    @media (prefers-reduced-motion: reduce){ *{animation:none!important; transition:none!important;} }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>⛲ Focus Fountain</h1>
+    <p class="sub">Stay focused and watch your fountain rise with each productive minute.</p>
+
+    <section class="stage" aria-label="fountain visualization">
+      <div class="stream" id="stream"></div>
+      <div class="drop"></div><div class="drop"></div><div class="drop"></div>
+      <div class="pool"></div>
+    </section>
+
+    <section class="stats">
+      <article class="stat"><div class="k">Session</div><div class="v" id="timer">25:00</div></article>
+      <article class="stat"><div class="k">Focus score</div><div class="v" id="score">0</div></article>
+      <article class="stat"><div class="k">Streak mins</div><div class="v" id="streak">0</div></article>
+    </section>
+
+    <section class="controls">
+      <input id="minutes" type="number" min="5" max="60" value="25" aria-label="minutes" />
+      <button class="primary" id="start">Start</button>
+      <button id="pause">Pause</button>
+      <button id="reset">Reset</button>
+    </section>
+    <p class="msg" id="msg"></p>
+  </main>
+
+  <script>
+    const timerEl = document.getElementById('timer');
+    const scoreEl = document.getElementById('score');
+    const streakEl = document.getElementById('streak');
+    const streamEl = document.getElementById('stream');
+    const msgEl = document.getElementById('msg');
+    const minsInput = document.getElementById('minutes');
+
+    let total = 25*60, left = total, running = false, score = 0, streak = 0, t = null;
+    const fmt = s => `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+
+    function render(){
+      timerEl.textContent = fmt(left);
+      scoreEl.textContent = score;
+      streakEl.textContent = streak;
+      const progress = 1 - (left / total || 1);
+      streamEl.style.height = `${16 + progress * 150}px`;
+    }
+
+    function tick(){
+      if(!running) return;
+      left = Math.max(0, left-1);
+      score += 2;
+      if(left % 60 === 0) streak += 1;
+      render();
+      if(left === 0){ running = false; clearInterval(t); msgEl.textContent='Session complete 🌿'; return; }
+    }
+
+    document.getElementById('start').onclick = () => {
+      if(!running){
+        if(left === total){
+          const m = Math.min(60, Math.max(5, Number(minsInput.value||25)));
+          total = left = m*60;
+          score = 0; streak = 0;
+        }
+        running = true; msgEl.textContent='Flow state engaged ✨';
+        clearInterval(t); t = setInterval(tick, 1000);
+      }
+    };
+    document.getElementById('pause').onclick = () => { running = false; msgEl.textContent='Paused'; };
+    document.getElementById('reset').onclick = () => {
+      running = false; clearInterval(t);
+      const m = Math.min(60, Math.max(5, Number(minsInput.value||25)));
+      total = left = m*60; score = 0; streak = 0; msgEl.textContent='Reset'; render();
+    };
+
+    render();
+  </script>
+</body>
+</html>
