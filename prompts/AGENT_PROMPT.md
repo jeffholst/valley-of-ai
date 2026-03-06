@@ -387,17 +387,18 @@ const runId = logger.startTransaction('my-app', 'suggestion-001')
 | Step | Seq | Description |
 |------|-----|-------------|
 | `SELECT_SUGGESTION` | 1 | Pick suggestion from queue or generate concept |
-| `GENERATE_HTML` | 2 | Create index.html with LLM |
-| `GENERATE_THUMBNAIL` | 3 | Create thumbnail.svg |
-| `CREATE_META_JSON` | 4 | Write meta.json |
-| `VALIDATE_APP` | 5 | Run quality checks (optional) |
-| `GIT_BRANCH` | 6 | Create feature branch |
-| `GIT_COMMIT` | 7 | Commit files |
-| `CREATE_PR` | 8 | Open pull request |
-| `PR_REVIEW` | 9 | Self-review PR |
-| `MERGE_PR` | 10 | Merge to main |
-| `UPDATE_REGISTRY` | 11 | Regenerate apps.json |
-| `DEPLOY` | 12 | Trigger/verify deployment |
+| `RESEARCH_IDEAS` | 2 | Research app ideas, mechanics, and best practices on the web |
+| `GENERATE_HTML` | 3 | Create index.html with LLM |
+| `GENERATE_THUMBNAIL` | 4 | Create thumbnail.svg |
+| `CREATE_META_JSON` | 5 | Write meta.json |
+| `VALIDATE_APP` | 6 | Run quality checks (optional) |
+| `GIT_BRANCH` | 7 | Create feature branch |
+| `GIT_COMMIT` | 8 | Commit files |
+| `CREATE_PR` | 9 | Open pull request |
+| `PR_REVIEW` | 10 | Self-review PR |
+| `MERGE_PR` | 11 | Merge to main |
+| `UPDATE_REGISTRY` | 12 | Regenerate apps.json |
+| `DEPLOY` | 13 | Trigger/verify deployment |
 
 ### Status Values
 
@@ -444,16 +445,17 @@ When retrying:
 ```jsonl
 {"timestamp":"2026-03-06T03:00:00Z","runId":"run-20260306T030000Z-a7f3b2","type":"TRANSACTION_START","appId":"word-scramble","status":"started","agent":"openclaw-dev-agent","llmModel":"gpt-5.1"}
 {"timestamp":"2026-03-06T03:00:01Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"SELECT_SUGGESTION","seq":1,"status":"completed","durationMs":1200,"details":{"suggestionId":"2026-03-06-001","title":"Word Scramble Game"}}
-{"timestamp":"2026-03-06T03:00:05Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"GENERATE_HTML","seq":2,"status":"completed","durationMs":4500,"tokensIn":3200,"tokensOut":2800}
-{"timestamp":"2026-03-06T03:00:08Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"GENERATE_THUMBNAIL","seq":3,"status":"completed","durationMs":2100,"tokensIn":800,"tokensOut":1200}
-{"timestamp":"2026-03-06T03:00:09Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"CREATE_META_JSON","seq":4,"status":"completed","durationMs":500}
-{"timestamp":"2026-03-06T03:00:12Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"GIT_BRANCH","seq":5,"status":"completed","durationMs":800,"details":{"branch":"feat/word-scramble"}}
-{"timestamp":"2026-03-06T03:00:15Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"GIT_COMMIT","seq":6,"status":"completed","durationMs":1200,"details":{"sha":"abc123"}}
-{"timestamp":"2026-03-06T03:00:20Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"CREATE_PR","seq":7,"status":"completed","durationMs":3500,"details":{"prNumber":42,"prUrl":"https://github.com/jeffholst/valley-of-ai/pull/42"}}
-{"timestamp":"2026-03-06T03:00:22Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"PR_REVIEW","seq":8,"status":"completed","durationMs":2000}
-{"timestamp":"2026-03-06T03:00:25Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"MERGE_PR","seq":9,"status":"completed","durationMs":2000,"details":{"mergeCommit":"def456"}}
-{"timestamp":"2026-03-06T03:00:28Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"UPDATE_REGISTRY","seq":10,"status":"completed","durationMs":1500,"details":{"appCount":15}}
-{"timestamp":"2026-03-06T03:00:30Z","runId":"run-20260306T030000Z-a7f3b2","type":"TRANSACTION_END","appId":"word-scramble","status":"success","totalDurationMs":30000,"totalTokensIn":4000,"totalTokensOut":4000,"filesCreated":["index.html","meta.json","thumbnail.svg"]}
+{"timestamp":"2026-03-06T03:00:03Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"RESEARCH_IDEAS","seq":2,"status":"completed","durationMs":15000,"details":{"sourcesChecked":["codepen","github"],"inspirations":["anagram solvers","word puzzles with hints"],"uniqueAngle":"timed rounds with difficulty levels"}}
+{"timestamp":"2026-03-06T03:00:08Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"GENERATE_HTML","seq":3,"status":"completed","durationMs":4500,"tokensIn":3200,"tokensOut":2800}
+{"timestamp":"2026-03-06T03:00:11Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"GENERATE_THUMBNAIL","seq":4,"status":"completed","durationMs":2100,"tokensIn":800,"tokensOut":1200}
+{"timestamp":"2026-03-06T03:00:12Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"CREATE_META_JSON","seq":5,"status":"completed","durationMs":500}
+{"timestamp":"2026-03-06T03:00:15Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"GIT_BRANCH","seq":7,"status":"completed","durationMs":800,"details":{"branch":"feat/word-scramble"}}
+{"timestamp":"2026-03-06T03:00:18Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"GIT_COMMIT","seq":8,"status":"completed","durationMs":1200,"details":{"sha":"abc123"}}
+{"timestamp":"2026-03-06T03:00:23Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"CREATE_PR","seq":9,"status":"completed","durationMs":3500,"details":{"prNumber":42,"prUrl":"https://github.com/jeffholst/valley-of-ai/pull/42"}}
+{"timestamp":"2026-03-06T03:00:25Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"PR_REVIEW","seq":10,"status":"completed","durationMs":2000}
+{"timestamp":"2026-03-06T03:00:28Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"MERGE_PR","seq":11,"status":"completed","durationMs":2000,"details":{"mergeCommit":"def456"}}
+{"timestamp":"2026-03-06T03:00:31Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"UPDATE_REGISTRY","seq":12,"status":"completed","durationMs":1500,"details":{"appCount":15}}
+{"timestamp":"2026-03-06T03:00:33Z","runId":"run-20260306T030000Z-a7f3b2","type":"TRANSACTION_END","appId":"word-scramble","status":"success","totalDurationMs":33000,"totalTokensIn":4000,"totalTokensOut":4000,"filesCreated":["index.html","meta.json","thumbnail.svg"]}
 ```
 
 ### Logging Best Practices
@@ -473,6 +475,78 @@ When retrying:
 4. **Easter eggs welcome** – Small surprises delight users
 5. **Accessibility** – Consider keyboard navigation and screen readers
 6. **Performance** – Keep it fast; avoid heavy computations on main thread
+
+## Researching App Ideas
+
+Before building an app, spend time researching to gather inspiration and best practices. This research step improves app quality and helps discover unique angles.
+
+### Research Strategies
+
+#### 1. Explore Trend Sources
+Search for current trends and popular concepts:
+- **Product Hunt** – Browse recent launches for trending app ideas
+- **Hacker News** – Check "Show HN" posts for developer projects
+- **Reddit** – Explore r/webdev, r/javascript, r/gamedev for inspiration
+- **Indie Hackers** – Discover micro-SaaS and tool ideas
+- **CodePen** – Browse trending pens for creative techniques
+
+#### 2. Search for Similar Implementations
+Research existing apps to understand common patterns:
+- Search: `"<concept> javascript game"` or `"<concept> web app tutorial"`
+- Search: `"best <category> apps 2026"` for category overviews
+- Search: `site:codepen.io <concept>` for live examples
+- Search: `site:github.com <concept> html css js` for open source implementations
+
+#### 3. Study Game Mechanics & UX Patterns
+For games and interactive apps:
+- Research classic game rules and scoring systems
+- Look for modern twists on traditional mechanics
+- Study difficulty curves and progression systems
+- Find accessibility patterns for game controls
+
+#### 4. Gather Visual Inspiration
+Before designing the UI:
+- Search: `"<concept> ui design"` on Dribbble or Behance
+- Look for color palette inspiration on Coolors or Adobe Color
+- Study animation patterns on motion design sites
+- Note dark/light mode implementations
+
+#### 5. Technical Research
+Validate implementation approaches:
+- Search: `"how to implement <feature> javascript"`
+- Look for Canvas vs DOM tradeoffs for visual apps
+- Research touch/keyboard accessibility patterns
+- Check browser compatibility for APIs you plan to use
+
+### Research Log Details
+
+When logging the `RESEARCH_IDEAS` step, include useful details:
+
+```json
+{
+  "type": "STEP",
+  "step": "RESEARCH_IDEAS",
+  "seq": 2,
+  "status": "completed",
+  "durationMs": 15000,
+  "details": {
+    "sourcesChecked": ["codepen", "github", "dribbble"],
+    "inspirations": ["classic snake with power-ups", "neon retro aesthetic"],
+    "mechanicsResearched": ["grid movement", "collision detection", "score multipliers"],
+    "uniqueAngle": "Add time-limited power-ups and combo scoring"
+  }
+}
+```
+
+### Research Questions Checklist
+
+Before moving to implementation, answer:
+- [ ] What makes this app interesting or unique?
+- [ ] What are the core mechanics/features?
+- [ ] What visual style fits the concept?
+- [ ] Are there accessibility considerations?
+- [ ] What edge cases should be handled?
+- [ ] What would make a user want to share this?
 
 ## Git & GitHub Workflow
 
@@ -545,17 +619,18 @@ Each night, execute this workflow:
 2. **Create feature branch** – `git checkout -b feat/<app-id>`
 3. **Check suggestions** – Review `suggestions/YYYY/MM/*.json` for user ideas
 4. **Select or generate concept** – Pick a suggestion or create something original
-5. **Build the app** – Create all required files
-6. **Test thoroughly** – Verify functionality across scenarios
-7. **Generate thumbnail** – Create an appealing preview image
-8. **Log the action** – Append to the daily log file
-9. **Update registry** – Run `npm run generate:apps` to update the gallery
-10. **Commit changes** – Stage and commit with conventional message
-11. **Push branch** – `git push -u origin feat/<app-id>`
-12. **Create PR** – Open pull request against `main`
-13. **Review & approve** – Self-review, then approve
-14. **Merge PR** – Squash and merge to `main`
-15. **Verify deployment** – Confirm app is live on GitHub Pages
+5. **Research the idea** – Search the web for inspiration, similar implementations, and best practices (see "Researching App Ideas" section)
+6. **Build the app** – Create all required files
+7. **Test thoroughly** – Verify functionality across scenarios
+8. **Generate thumbnail** – Create an appealing preview image
+9. **Log the action** – Append to the daily log file
+10. **Update registry** – Run `npm run generate:apps` to update the gallery
+11. **Commit changes** – Stage and commit with conventional message
+12. **Push branch** – `git push -u origin feat/<app-id>`
+13. **Create PR** – Open pull request against `main`
+14. **Review & approve** – Self-review, then approve
+15. **Merge PR** – Squash and merge to `main`
+16. **Verify deployment** – Confirm app is live on GitHub Pages
 
 ## Suggestion File Format
 

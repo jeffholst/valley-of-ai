@@ -35,6 +35,7 @@ const rootDir = path.resolve(__dirname, '..')
  */
 export const StepType = {
   SELECT_SUGGESTION: 'SELECT_SUGGESTION',
+  RESEARCH_IDEAS: 'RESEARCH_IDEAS',
   GENERATE_HTML: 'GENERATE_HTML',
   GENERATE_THUMBNAIL: 'GENERATE_THUMBNAIL',
   CREATE_META_JSON: 'CREATE_META_JSON',
@@ -53,17 +54,18 @@ export const StepType = {
  */
 export const StepSequence = {
   [StepType.SELECT_SUGGESTION]: 1,
-  [StepType.GENERATE_HTML]: 2,
-  [StepType.GENERATE_THUMBNAIL]: 3,
-  [StepType.CREATE_META_JSON]: 4,
-  [StepType.VALIDATE_APP]: 5,
-  [StepType.GIT_BRANCH]: 6,
-  [StepType.GIT_COMMIT]: 7,
-  [StepType.CREATE_PR]: 8,
-  [StepType.PR_REVIEW]: 9,
-  [StepType.MERGE_PR]: 10,
-  [StepType.UPDATE_REGISTRY]: 11,
-  [StepType.DEPLOY]: 12,
+  [StepType.RESEARCH_IDEAS]: 2,
+  [StepType.GENERATE_HTML]: 3,
+  [StepType.GENERATE_THUMBNAIL]: 4,
+  [StepType.CREATE_META_JSON]: 5,
+  [StepType.VALIDATE_APP]: 6,
+  [StepType.GIT_BRANCH]: 7,
+  [StepType.GIT_COMMIT]: 8,
+  [StepType.CREATE_PR]: 9,
+  [StepType.PR_REVIEW]: 10,
+  [StepType.MERGE_PR]: 11,
+  [StepType.UPDATE_REGISTRY]: 12,
+  [StepType.DEPLOY]: 13,
 }
 
 /**
