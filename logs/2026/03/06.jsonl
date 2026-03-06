@@ -5,3 +5,4 @@
 {"timestamp":"2026-03-06T14:29:30Z","runId":"run-2026-03-06-0001","type":"STEP","step":"CREATE_META_JSON","seq":4,"status":"completed","durationMs":30000,"tokensIn":500,"tokensOut":600}
 {"timestamp":"2026-03-06T14:29:45Z","runId":"run-2026-03-06-0001","type":"STEP","step":"GIT_BRANCH","seq":5,"status":"completed","durationMs":800,"details":{"branch":"feat/word-scramble"}}
 {"timestamp":"2026-03-06T14:30:00Z","runId":"run-2026-03-06-0001","type":"STEP","step":"UPDATE_REGISTRY","seq":10,"status":"completed","durationMs":1500,"details":{"appCount":6}}
+{"timestamp":"2026-03-06T14:30:30Z","runId":"run-2026-03-06-0001","type":"TRANSACTION_END","appId":"word-scramble","status":"success","totalDurationMs":330000,"totalTokensIn":6800,"totalTokensOut":11500,"filesCreated":["index.html","meta.json","thumbnail.svg"]}

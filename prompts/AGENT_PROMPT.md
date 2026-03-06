@@ -268,7 +268,7 @@ Every app must include a valid `meta.json`:
 **Every app must:**
 1. Work immediately without instructions (intuitive UX)
 2. Be fully responsive (mobile-friendly)
-3. Support both light and dark system preferences
+3. Support both light and dark system preferences with icon to switch back and forth 
 4. Have smooth animations and transitions
 5. Handle edge cases gracefully
 6. Be visually polished with good typography and spacing
@@ -347,21 +347,39 @@ Each app generation is a **transaction** identified by a unique `runId`. A trans
 2. Multiple `STEP` entries (one per pipeline stage)
 3. A `TRANSACTION_END` entry
 
+### Run ID Format
+
+The `runId` uses the format `run-YYYYMMDDTHHMMSSZ-xxxxxx` where:
+- `YYYYMMDDTHHMMSSZ` is a compact ISO timestamp
+- `xxxxxx` is a 6-character random hex suffix for uniqueness
+
+**Example:** `run-20260306T142530Z-a7f3b2`
+
+**To generate a runId**, use the `AgentLogger.startTransaction()` method which automatically creates and returns the runId:
+
+```javascript
+import { AgentLogger } from './scripts/logger.js'
+
+const logger = new AgentLogger('openclaw-dev-agent', 'gpt-5.1')
+const runId = logger.startTransaction('my-app', 'suggestion-001')
+// Returns: run-20260306T142530Z-a7f3b2
+```
+
 ### Log Entry Types
 
 #### TRANSACTION_START
 ```json
-{"timestamp":"2026-03-06T03:00:00Z","runId":"run-2026-03-06-0001","type":"TRANSACTION_START","appId":"word-scramble","status":"started","agent":"openclaw-dev-agent","llmModel":"gpt-5.1","suggestionId":"2026-03-06-001"}
+{"timestamp":"2026-03-06T03:00:00Z","runId":"run-20260306T030000Z-a7f3b2","type":"TRANSACTION_START","appId":"word-scramble","status":"started","agent":"openclaw-dev-agent","llmModel":"gpt-5.1","suggestionId":"2026-03-06-001"}
 ```
 
 #### STEP
 ```json
-{"timestamp":"2026-03-06T03:00:05Z","runId":"run-2026-03-06-0001","type":"STEP","step":"GENERATE_HTML","seq":2,"status":"completed","durationMs":4500,"tokensIn":3200,"tokensOut":2800}
+{"timestamp":"2026-03-06T03:00:05Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"GENERATE_HTML","seq":2,"status":"completed","durationMs":4500,"tokensIn":3200,"tokensOut":2800}
 ```
 
 #### TRANSACTION_END
 ```json
-{"timestamp":"2026-03-06T03:00:30Z","runId":"run-2026-03-06-0001","type":"TRANSACTION_END","appId":"word-scramble","status":"success","totalDurationMs":30000,"totalTokensIn":3200,"totalTokensOut":2800,"filesCreated":["index.html","meta.json","thumbnail.svg"]}
+{"timestamp":"2026-03-06T03:00:30Z","runId":"run-20260306T030000Z-a7f3b2","type":"TRANSACTION_END","appId":"word-scramble","status":"success","totalDurationMs":30000,"totalTokensIn":3200,"totalTokensOut":2800,"filesCreated":["index.html","meta.json","thumbnail.svg"]}
 ```
 
 ### Step Types
@@ -398,13 +416,13 @@ Each app generation is a **transaction** identified by a unique `runId`. A trans
 When a step fails, log it with an `error` object:
 
 ```json
-{"timestamp":"2026-03-06T04:00:05Z","runId":"run-2026-03-06-0002","type":"STEP","step":"GENERATE_HTML","seq":2,"status":"failed","durationMs":8500,"error":{"code":"LLM_TIMEOUT","message":"Request timed out after 8000ms","retryable":true}}
+{"timestamp":"2026-03-06T04:00:05Z","runId":"run-20260306T040000Z-c3d1e5","type":"STEP","step":"GENERATE_HTML","seq":2,"status":"failed","durationMs":8500,"error":{"code":"LLM_TIMEOUT","message":"Request timed out after 8000ms","retryable":true}}
 ```
 
 When retrying:
 ```json
-{"timestamp":"2026-03-06T04:00:06Z","runId":"run-2026-03-06-0002","type":"STEP","step":"GENERATE_HTML","seq":2,"status":"retrying","attempt":2}
-{"timestamp":"2026-03-06T04:00:12Z","runId":"run-2026-03-06-0002","type":"STEP","step":"GENERATE_HTML","seq":2,"status":"completed","durationMs":5200,"attempt":2}
+{"timestamp":"2026-03-06T04:00:06Z","runId":"run-20260306T040000Z-c3d1e5","type":"STEP","step":"GENERATE_HTML","seq":2,"status":"retrying","attempt":2}
+{"timestamp":"2026-03-06T04:00:12Z","runId":"run-20260306T040000Z-c3d1e5","type":"STEP","step":"GENERATE_HTML","seq":2,"status":"completed","durationMs":5200,"attempt":2}
 ```
 
 ### Error Codes
@@ -424,24 +442,24 @@ When retrying:
 ### Complete Transaction Example
 
 ```jsonl
-{"timestamp":"2026-03-06T03:00:00Z","runId":"run-2026-03-06-0001","type":"TRANSACTION_START","appId":"word-scramble","status":"started","agent":"openclaw-dev-agent","llmModel":"gpt-5.1"}
-{"timestamp":"2026-03-06T03:00:01Z","runId":"run-2026-03-06-0001","type":"STEP","step":"SELECT_SUGGESTION","seq":1,"status":"completed","durationMs":1200,"details":{"suggestionId":"2026-03-06-001","title":"Word Scramble Game"}}
-{"timestamp":"2026-03-06T03:00:05Z","runId":"run-2026-03-06-0001","type":"STEP","step":"GENERATE_HTML","seq":2,"status":"completed","durationMs":4500,"tokensIn":3200,"tokensOut":2800}
-{"timestamp":"2026-03-06T03:00:08Z","runId":"run-2026-03-06-0001","type":"STEP","step":"GENERATE_THUMBNAIL","seq":3,"status":"completed","durationMs":2100,"tokensIn":800,"tokensOut":1200}
-{"timestamp":"2026-03-06T03:00:09Z","runId":"run-2026-03-06-0001","type":"STEP","step":"CREATE_META_JSON","seq":4,"status":"completed","durationMs":500}
-{"timestamp":"2026-03-06T03:00:12Z","runId":"run-2026-03-06-0001","type":"STEP","step":"GIT_BRANCH","seq":5,"status":"completed","durationMs":800,"details":{"branch":"feat/word-scramble"}}
-{"timestamp":"2026-03-06T03:00:15Z","runId":"run-2026-03-06-0001","type":"STEP","step":"GIT_COMMIT","seq":6,"status":"completed","durationMs":1200,"details":{"sha":"abc123"}}
-{"timestamp":"2026-03-06T03:00:20Z","runId":"run-2026-03-06-0001","type":"STEP","step":"CREATE_PR","seq":7,"status":"completed","durationMs":3500,"details":{"prNumber":42,"prUrl":"https://github.com/jeffholst/valley-of-ai/pull/42"}}
-{"timestamp":"2026-03-06T03:00:22Z","runId":"run-2026-03-06-0001","type":"STEP","step":"PR_REVIEW","seq":8,"status":"completed","durationMs":2000}
-{"timestamp":"2026-03-06T03:00:25Z","runId":"run-2026-03-06-0001","type":"STEP","step":"MERGE_PR","seq":9,"status":"completed","durationMs":2000,"details":{"mergeCommit":"def456"}}
-{"timestamp":"2026-03-06T03:00:28Z","runId":"run-2026-03-06-0001","type":"STEP","step":"UPDATE_REGISTRY","seq":10,"status":"completed","durationMs":1500,"details":{"appCount":15}}
-{"timestamp":"2026-03-06T03:00:30Z","runId":"run-2026-03-06-0001","type":"TRANSACTION_END","appId":"word-scramble","status":"success","totalDurationMs":30000,"totalTokensIn":4000,"totalTokensOut":4000,"filesCreated":["index.html","meta.json","thumbnail.svg"]}
+{"timestamp":"2026-03-06T03:00:00Z","runId":"run-20260306T030000Z-a7f3b2","type":"TRANSACTION_START","appId":"word-scramble","status":"started","agent":"openclaw-dev-agent","llmModel":"gpt-5.1"}
+{"timestamp":"2026-03-06T03:00:01Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"SELECT_SUGGESTION","seq":1,"status":"completed","durationMs":1200,"details":{"suggestionId":"2026-03-06-001","title":"Word Scramble Game"}}
+{"timestamp":"2026-03-06T03:00:05Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"GENERATE_HTML","seq":2,"status":"completed","durationMs":4500,"tokensIn":3200,"tokensOut":2800}
+{"timestamp":"2026-03-06T03:00:08Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"GENERATE_THUMBNAIL","seq":3,"status":"completed","durationMs":2100,"tokensIn":800,"tokensOut":1200}
+{"timestamp":"2026-03-06T03:00:09Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"CREATE_META_JSON","seq":4,"status":"completed","durationMs":500}
+{"timestamp":"2026-03-06T03:00:12Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"GIT_BRANCH","seq":5,"status":"completed","durationMs":800,"details":{"branch":"feat/word-scramble"}}
+{"timestamp":"2026-03-06T03:00:15Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"GIT_COMMIT","seq":6,"status":"completed","durationMs":1200,"details":{"sha":"abc123"}}
+{"timestamp":"2026-03-06T03:00:20Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"CREATE_PR","seq":7,"status":"completed","durationMs":3500,"details":{"prNumber":42,"prUrl":"https://github.com/jeffholst/valley-of-ai/pull/42"}}
+{"timestamp":"2026-03-06T03:00:22Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"PR_REVIEW","seq":8,"status":"completed","durationMs":2000}
+{"timestamp":"2026-03-06T03:00:25Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"MERGE_PR","seq":9,"status":"completed","durationMs":2000,"details":{"mergeCommit":"def456"}}
+{"timestamp":"2026-03-06T03:00:28Z","runId":"run-20260306T030000Z-a7f3b2","type":"STEP","step":"UPDATE_REGISTRY","seq":10,"status":"completed","durationMs":1500,"details":{"appCount":15}}
+{"timestamp":"2026-03-06T03:00:30Z","runId":"run-20260306T030000Z-a7f3b2","type":"TRANSACTION_END","appId":"word-scramble","status":"success","totalDurationMs":30000,"totalTokensIn":4000,"totalTokensOut":4000,"filesCreated":["index.html","meta.json","thumbnail.svg"]}
 ```
 
 ### Logging Best Practices
 
 1. **Always use `runId`** – This is the correlation key for filtering all logs related to one app generation
-2. **Log immediately** – Write each step as it completes, not at the end
+2. IMPORTANT: **Log immediately** – Write each step immediately, not at the end
 3. **Include duration** – `durationMs` helps identify bottlenecks
 4. **Track tokens** – Record `tokensIn` and `tokensOut` for LLM calls for cost tracking
 5. **Structured errors** – Always use the `error` object format with `code`, `message`, and `retryable`

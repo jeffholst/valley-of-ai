@@ -23,6 +23,7 @@
 
 import fs from 'fs'
 import path from 'path'
+import crypto from 'crypto'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -127,7 +128,6 @@ export class AgentLogger {
     this.llmModel = llmModel
     this.logsDir = logsDir || path.join(rootDir, 'logs')
     this.transactions = new Map()
-    this.runCounter = 0
   }
 
   /**
@@ -173,12 +173,13 @@ export class AgentLogger {
 
   /**
    * Generate a unique run ID
+   * Format: run-YYYYMMDDTHHMMSSZ-xxxxxx (ISO timestamp + 6-char hex suffix)
+   * Example: run-20260306T142530Z-a7f3b2
    */
   _generateRunId() {
-    const { year, month, day } = this._getDateParts()
-    this.runCounter++
-    const counter = this.runCounter.toString().padStart(4, '0')
-    return `run-${year}-${month}-${day}-${counter}`
+    const ts = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z'
+    const suffix = crypto.randomBytes(3).toString('hex')
+    return `run-${ts}-${suffix}`
   }
 
   /**
