@@ -1,0 +1,9 @@
+{
+  "id": "memory-match",
+  "title": "Memory Match",
+  "description": "Classic card matching memory game with 3D flip animations, multiple difficulty levels, move counter, timer, and celebration effects. Train your memory!",
+  "tags": ["game", "memory", "cards", "animation", "css3d"],
+  "createdAt": "2026-03-06",
+  "model": "claude-sonnet-4-20250514",
+  "thumbnail": "thumbnail.svg"
+}
