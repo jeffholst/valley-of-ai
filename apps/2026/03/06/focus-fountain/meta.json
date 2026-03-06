@@ -1,0 +1,22 @@
+{
+  "id": "focus-fountain",
+  "name": "Focus Fountain",
+  "shortDescription": "A playful focus timer where each productive minute grows a glowing fountain and tracks your streak.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-06T21:24:53Z",
+  "category": "Productivity",
+  "votes": 0,
+  "status": "active",
+  "tags": ["focus", "timer", "productivity", "visualizer"],
+  "homepagePath": "index.html",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "gpt-5.1",
+    "startTime": "2026-03-06T21:23:35Z",
+    "endTime": "2026-03-06T21:24:53Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-2026-03-06-0001",
+    "notes": "Token accounting is not exposed in this runtime; set to 0 for this run."
+  }
+}
