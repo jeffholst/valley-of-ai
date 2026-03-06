@@ -19,7 +19,7 @@ const rootDir = path.resolve(__dirname, '..')
 
 const APPS_DIR = path.join(rootDir, 'apps')
 const OUTPUT_FILE = path.join(rootDir, 'src', 'data', 'apps.json')
-const BASE_PATH = '/valley-of-ai'
+const BASE_PATH = ''
 
 /**
  * Recursively find all meta.json files in the apps directory
