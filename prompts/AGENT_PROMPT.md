@@ -609,11 +609,17 @@ After merging to `main`, you must manually deploy:
 
 1. **Run deployment command** – `npm run deploy`
    - This builds the project and pushes to the `gh-pages` branch
-   - It also auto-increments the version number
+   - It also auto-increments the version number in `package.json`
 2. **Verify build succeeds** – Watch for any build errors in terminal
 3. **Confirm deployment** – Visit https://www.valleyofai.com to verify
 4. **Verify app appears** – Ensure the new app shows in the live gallery
 5. **Log deployment action** – Append DEPLOY step to the daily log
+6. **Commit version bump** – Commit the updated `package.json` and logs:
+   ```bash
+   git add package.json logs/
+   git commit -m "chore: version bump and logs for <app-id> deploy"
+   git push
+   ```
 
 ## Nightly Workflow
 
@@ -636,6 +642,7 @@ Each night, execute this workflow:
 15. **Merge PR** – Squash and merge to `main`
 16. **Deploy** – Run `npm run deploy` to publish to GitHub Pages
 17. **Verify deployment** – Confirm app is live at https://www.valleyofai.com
+18. **Commit version bump** – Commit `package.json` and logs, then push to `main`
 
 ## Suggestion File Format
 
