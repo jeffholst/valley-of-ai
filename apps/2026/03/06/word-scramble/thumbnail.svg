@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fafaf9"/>
+      <stop offset="100%" style="stop-color:#e7e5e4"/>
+    </linearGradient>
+    <linearGradient id="tile-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.15"/>
+    </filter>
+    <filter id="tile-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="450" fill="url(#bg-grad)"/>
+  
+  <!-- Title -->
+  <text x="400" y="45" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="32" font-weight="700" fill="#1c1917">🔤 Word Scramble</text>
+  <text x="400" y="75" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="14" fill="#78716c">Unscramble the letters to reveal the word!</text>
+  
+  <!-- Stats bar -->
+  <g transform="translate(200, 95)">
+    <text x="0" y="30" text-anchor="middle" font-family="system-ui, sans-serif" 
+          font-size="28" font-weight="700" fill="#8b5cf6">85</text>
+    <text x="0" y="48" text-anchor="middle" font-family="system-ui, sans-serif" 
+          font-size="10" fill="#78716c" letter-spacing="0.05em">SCORE</text>
+    
+    <text x="200" y="30" text-anchor="middle" font-family="system-ui, sans-serif" 
+          font-size="28" font-weight="700" fill="#8b5cf6">4</text>
+    <text x="200" y="48" text-anchor="middle" font-family="system-ui, sans-serif" 
+          font-size="10" fill="#78716c" letter-spacing="0.05em">STREAK</text>
+    
+    <text x="400" y="30" text-anchor="middle" font-family="system-ui, sans-serif" 
+          font-size="28" font-weight="700" fill="#f59e0b">18</text>
+    <text x="400" y="48" text-anchor="middle" font-family="system-ui, sans-serif" 
+          font-size="10" fill="#78716c" letter-spacing="0.05em">SECONDS</text>
+  </g>
+  
+  <!-- Game card -->
+  <rect x="150" y="150" width="500" height="250" rx="16" fill="#ffffff" filter="url(#shadow)"/>
+  
+  <!-- Level badge -->
+  <rect x="350" y="165" width="100" height="24" rx="12" fill="#8b5cf6"/>
+  <text x="400" y="182" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="11" font-weight="600" fill="white" letter-spacing="0.05em">LEVEL 2</text>
+  
+  <!-- Hint -->
+  <text x="400" y="215" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="13" fill="#78716c">Hint: <tspan fill="#1c1917" font-weight="500">A mix of red and blue</tspan></text>
+  
+  <!-- Scrambled letters: P R L P U E (purple scrambled) -->
+  <g filter="url(#tile-shadow)">
+    <rect x="195" y="235" width="48" height="56" rx="8" fill="url(#tile-grad)"/>
+    <text x="219" y="272" text-anchor="middle" font-family="system-ui, sans-serif" 
+          font-size="24" font-weight="700" fill="white">P</text>
+    
+    <rect x="253" y="235" width="48" height="56" rx="8" fill="url(#tile-grad)"/>
+    <text x="277" y="272" text-anchor="middle" font-family="system-ui, sans-serif" 
+          font-size="24" font-weight="700" fill="white">R</text>
+    
+    <rect x="311" y="235" width="48" height="56" rx="8" fill="url(#tile-grad)"/>
+    <text x="335" y="272" text-anchor="middle" font-family="system-ui, sans-serif" 
+          font-size="24" font-weight="700" fill="white">L</text>
+    
+    <rect x="369" y="235" width="48" height="56" rx="8" fill="url(#tile-grad)" opacity="0.3"/>
+    <text x="393" y="272" text-anchor="middle" font-family="system-ui, sans-serif" 
+          font-size="24" font-weight="700" fill="white" opacity="0.3">P</text>
+    
+    <rect x="427" y="235" width="48" height="56" rx="8" fill="url(#tile-grad)" opacity="0.3"/>
+    <text x="451" y="272" text-anchor="middle" font-family="system-ui, sans-serif" 
+          font-size="24" font-weight="700" fill="white" opacity="0.3">U</text>
+    
+    <rect x="485" y="235" width="48" height="56" rx="8" fill="url(#tile-grad)" opacity="0.3"/>
+    <text x="509" y="272" text-anchor="middle" font-family="system-ui, sans-serif" 
+          font-size="24" font-weight="700" fill="white" opacity="0.3">E</text>
+  </g>
+  
+  <!-- Answer slots showing: P U R _ _ _ -->
+  <g>
+    <rect x="195" y="305" width="48" height="56" rx="8" fill="#fafaf9" stroke="#8b5cf6" stroke-width="2"/>
+    <text x="219" y="342" text-anchor="middle" font-family="system-ui, sans-serif" 
+          font-size="24" font-weight="700" fill="#1c1917">P</text>
+    
+    <rect x="253" y="305" width="48" height="56" rx="8" fill="#fafaf9" stroke="#8b5cf6" stroke-width="2"/>
+    <text x="277" y="342" text-anchor="middle" font-family="system-ui, sans-serif" 
+          font-size="24" font-weight="700" fill="#1c1917">U</text>
+    
+    <rect x="311" y="305" width="48" height="56" rx="8" fill="#fafaf9" stroke="#8b5cf6" stroke-width="2"/>
+    <text x="335" y="342" text-anchor="middle" font-family="system-ui, sans-serif" 
+          font-size="24" font-weight="700" fill="#1c1917">E</text>
+    
+    <rect x="369" y="305" width="48" height="56" rx="8" fill="#fafaf9" stroke="#e7e5e4" stroke-width="2" stroke-dasharray="4 2"/>
+    
+    <rect x="427" y="305" width="48" height="56" rx="8" fill="#fafaf9" stroke="#e7e5e4" stroke-width="2" stroke-dasharray="4 2"/>
+    
+    <rect x="485" y="305" width="48" height="56" rx="8" fill="#fafaf9" stroke="#e7e5e4" stroke-width="2" stroke-dasharray="4 2"/>
+  </g>
+  
+  <!-- Buttons -->
+  <rect x="220" y="375" width="80" height="36" rx="8" fill="#fafaf9" stroke="#e7e5e4" stroke-width="2"/>
+  <text x="260" y="398" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="13" font-weight="600" fill="#1c1917">↩️ Clear</text>
+  
+  <rect x="310" y="375" width="90" height="36" rx="8" fill="url(#tile-grad)"/>
+  <text x="355" y="398" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="13" font-weight="600" fill="white">✓ Submit</text>
+  
+  <rect x="410" y="375" width="80" height="36" rx="8" fill="#fafaf9" stroke="#e7e5e4" stroke-width="2"/>
+  <text x="450" y="398" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="13" font-weight="600" fill="#1c1917">⏭️ Skip</text>
+  
+  <!-- Footer badge -->
+  <rect x="325" y="420" width="150" height="24" rx="12" fill="#e7e5e4"/>
+  <text x="400" y="436" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="11" font-weight="500" fill="#78716c">Generated by AI</text>
+</svg>
