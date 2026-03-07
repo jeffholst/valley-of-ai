@@ -1,10 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="auto">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Focus Fountain - Valley of AI</title>
   <meta name="description" content="A playful focus timer where steady work grows a glowing fountain." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E⛲%3C/text%3E%3C/svg%3E">
   <style>
     :root {
       --bg: #0a1325;
@@ -16,8 +17,18 @@
       --accent: #22d3ee;
       --ok: #6ee7b7;
     }
+    [data-theme="light"] {
+      --bg: #f2f7ff;
+      --bg2: #dbeafe;
+      --surface: #ffffff;
+      --text: #1f2d4e;
+      --muted: #5e6f95;
+      --primary: #2563eb;
+      --accent: #0891b2;
+      --ok: #047857;
+    }
     @media (prefers-color-scheme: light) {
-      :root {
+      :root:not([data-theme="dark"]) {
         --bg: #f2f7ff;
         --bg2: #dbeafe;
         --surface: #ffffff;
@@ -27,6 +38,19 @@
         --accent: #0891b2;
         --ok: #047857;
       }
+    }
+    .theme-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: var(--surface, #fff);
+      border: 1px solid var(--muted, #ccc);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      font-size: 1.3rem;
+      cursor: pointer;
+      z-index: 100;
     }
     * { box-sizing: border-box; }
     body {
@@ -121,6 +145,7 @@
   </style>
 </head>
 <body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
   <main class="card">
     <h1>⛲ Focus Fountain</h1>
     <p class="sub">Stay focused and watch your fountain rise with each productive minute.</p>
@@ -193,6 +218,26 @@
     };
 
     render();
+
+    function getPreferredTheme() {
+      const stored = localStorage.getItem('theme');
+      if (stored) return stored;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+    }
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      applyTheme(next);
+    }
+    applyTheme(getPreferredTheme());
   </script>
+  <footer style="text-align: center; padding: 20px; margin-top: 20px; opacity: 0.7;">
+    <a href="https://www.valleyofai.com" target="_blank" rel="noopener" style="color: var(--primary, #3b82f6); text-decoration: none;">← Back to Valley of AI</a>
+  </footer>
 </body>
 </html>

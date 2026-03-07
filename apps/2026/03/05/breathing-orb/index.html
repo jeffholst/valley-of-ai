@@ -1,9 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="auto">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Breathing Orb - Valley of AI</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🫧%3C/text%3E%3C/svg%3E">
   <meta name="description" content="A calming guided breathing app with animated orb and configurable inhale/exhale rhythm." />
   <style>
     :root {
@@ -17,19 +18,67 @@
       --good: #7ef0b0;
       --shadow: rgba(0, 0, 0, 0.35);
     }
-    @media (prefers-color-scheme: light) {
-      :root {
-        --bg: #f1f4ff;
-        --bg2: #dde6ff;
-        --surface: #ffffff;
-        --text: #192445;
-        --muted: #50608f;
-        --primary: #3657d6;
-        --accent: #0ea5e9;
-        --good: #0f766e;
-        --shadow: rgba(32, 53, 112, 0.18);
+    [data-theme="light"], :root:not([data-theme="dark"]) {
+      --bg: #f1f4ff;
+      --bg2: #dde6ff;
+      --surface: #ffffff;
+      --text: #192445;
+      --muted: #50608f;
+      --primary: #3657d6;
+      --accent: #0ea5e9;
+      --good: #0f766e;
+      --shadow: rgba(32, 53, 112, 0.18);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0b1020;
+        --bg2: #1a2340;
+        --surface: #121a31;
+        --text: #e7ecff;
+        --muted: #9fb0de;
+        --primary: #7c9cff;
+        --accent: #67e8f9;
+        --good: #7ef0b0;
+        --shadow: rgba(0, 0, 0, 0.35);
       }
     }
+    [data-theme="dark"] {
+      --bg: #0b1020;
+      --bg2: #1a2340;
+      --surface: #121a31;
+      --text: #e7ecff;
+      --muted: #9fb0de;
+      --primary: #7c9cff;
+      --accent: #67e8f9;
+      --good: #7ef0b0;
+      --shadow: rgba(0, 0, 0, 0.35);
+    }
+    .theme-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: var(--surface);
+      border: 1px solid var(--muted);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      font-size: 1.3rem;
+      cursor: pointer;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+    }
+    .valley-link {
+      text-align: center;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .valley-link a {
+      color: var(--primary);
+      text-decoration: none;
+      opacity: 0.7;
+    }
+    .valley-link a:hover { opacity: 1; }
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -116,6 +165,7 @@
   </style>
 </head>
 <body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
   <main class="app" aria-live="polite">
     <h1>🫧 Breathing Orb</h1>
     <p class="sub">A tiny calm-space for your nervous system.</p>
@@ -223,6 +273,27 @@
     });
 
     timer.textContent = '02:00';
+
+    // Theme toggle
+    function getPreferredTheme() {
+      const stored = localStorage.getItem('theme');
+      if (stored) return stored;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+    }
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      applyTheme(next);
+    }
+    applyTheme(getPreferredTheme());
   </script>
+  <footer class="valley-link">
+    <a href="https://www.valleyofai.com" target="_blank" rel="noopener">← Back to Valley of AI</a>
+  </footer>
 </body>
 </html>
