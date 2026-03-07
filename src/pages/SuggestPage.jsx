@@ -1,4 +1,10 @@
 import { useState } from 'react'
+import emailjs from '@emailjs/browser'
+
+// EmailJS Configuration
+const EMAILJS_SERVICE_ID = '***REMOVED***'
+const EMAILJS_TEMPLATE_ID = '***REMOVED***'
+const EMAILJS_PUBLIC_KEY = '***REMOVED***'
 
 const CATEGORIES = [
   'Productivity',
@@ -15,9 +21,12 @@ export default function SuggestPage() {
     title: '',
     description: '',
     category: '',
+    email: '',
   })
   const [errors, setErrors] = useState({})
   const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState(null)
 
   const validate = () => {
     const newErrors = {}
@@ -34,7 +43,7 @@ export default function SuggestPage() {
     return newErrors
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const newErrors = validate()
     
@@ -43,18 +52,31 @@ export default function SuggestPage() {
       return
     }
 
-    // For now, just log the submission
-    const payload = {
-      id: `${new Date().toISOString().split('T')[0]}-${Date.now()}`,
+    setIsSubmitting(true)
+    setSubmitError(null)
+
+    const templateParams = {
       title: form.title.trim(),
       description: form.description.trim(),
       category: form.category || 'Other',
-      submittedAt: new Date().toISOString(),
-      status: 'pending',
+      email: form.email.trim() || 'Not provided',
+      submitted_at: new Date().toLocaleString(),
     }
-    
-    console.log('Suggestion submitted:', payload)
-    setSubmitted(true)
+
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      )
+      setSubmitted(true)
+    } catch (error) {
+      console.error('EmailJS error:', error)
+      setSubmitError('Failed to send suggestion. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleChange = (e) => {
@@ -83,7 +105,7 @@ export default function SuggestPage() {
           <button
             onClick={() => {
               setSubmitted(false)
-              setForm({ title: '', description: '', category: '' })
+              setForm({ title: '', description: '', category: '', email: '' })
             }}
             className="btn-secondary"
           >
@@ -163,8 +185,36 @@ export default function SuggestPage() {
             </select>
           </div>
 
-          <button type="submit" className="btn-primary w-full">
-            Submit Suggestion
+          <div>
+            <label htmlFor="email" className="label">
+              Email <span className="text-gray-400">(optional)</span>
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder="your@email.com"
+              className="input"
+            />
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Only if you'd like to be notified when your suggestion is implemented
+            </p>
+          </div>
+
+          {submitError && (
+            <div className="p-3 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-lg">
+              <p className="text-sm text-red-600 dark:text-red-400">{submitError}</p>
+            </div>
+          )}
+
+          <button 
+            type="submit" 
+            className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Sending...' : 'Submit Suggestion'}
           </button>
         </form>
       </div>
