@@ -1,111 +1,373 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300">
   <defs>
+    <!-- Sky gradient with deeper cosmic colors -->
     <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#1e1b4b"/>
-      <stop offset="50%" style="stop-color:#312e81"/>
-      <stop offset="100%" style="stop-color:#4c1d95"/>
+      <stop offset="0%" style="stop-color:#0a0a1a"/>
+      <stop offset="30%" style="stop-color:#1a1a3e"/>
+      <stop offset="60%" style="stop-color:#2d1b4e"/>
+      <stop offset="100%" style="stop-color:#4a1e6b"/>
     </linearGradient>
+    
+    <!-- Aurora gradients -->
+    <linearGradient id="aurora1" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00ff88;stop-opacity:0"/>
+      <stop offset="50%" style="stop-color:#00ff88;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#00ff88;stop-opacity:0"/>
+    </linearGradient>
+    <linearGradient id="aurora2" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00ccff;stop-opacity:0"/>
+      <stop offset="50%" style="stop-color:#00ccff;stop-opacity:0.25"/>
+      <stop offset="100%" style="stop-color:#00ccff;stop-opacity:0"/>
+    </linearGradient>
+    <linearGradient id="aurora3" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff00ff;stop-opacity:0"/>
+      <stop offset="50%" style="stop-color:#ff00ff;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#ff00ff;stop-opacity:0"/>
+    </linearGradient>
+    
+    <!-- Mountain gradients -->
     <linearGradient id="mountainGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366f1"/>
-      <stop offset="100%" style="stop-color:#4338ca"/>
+      <stop offset="0%" style="stop-color:#4338ca"/>
+      <stop offset="100%" style="stop-color:#1e1b4b"/>
     </linearGradient>
     <linearGradient id="mountainGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#8b5cf6"/>
-      <stop offset="100%" style="stop-color:#7c3aed"/>
+      <stop offset="0%" style="stop-color:#6366f1"/>
+      <stop offset="100%" style="stop-color:#3730a3"/>
     </linearGradient>
     <linearGradient id="mountainGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#a78bfa"/>
-      <stop offset="100%" style="stop-color:#8b5cf6"/>
+      <stop offset="0%" style="stop-color:#818cf8"/>
+      <stop offset="100%" style="stop-color:#4f46e5"/>
     </linearGradient>
-    <linearGradient id="glowGrad" x1="0%" y1="100%" x2="0%" y2="0%">
-      <stop offset="0%" style="stop-color:#ec4899;stop-opacity:0.8"/>
-      <stop offset="100%" style="stop-color:#f472b6;stop-opacity:0"/>
+    
+    <!-- Snow cap gradient -->
+    <linearGradient id="snowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff"/>
+      <stop offset="100%" style="stop-color:#c7d2fe;stop-opacity:0"/>
     </linearGradient>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+    
+    <!-- Portal/energy source gradient -->
+    <radialGradient id="portalGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ffffff"/>
+      <stop offset="20%" style="stop-color:#a855f7"/>
+      <stop offset="50%" style="stop-color:#7c3aed"/>
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:0"/>
+    </radialGradient>
+    <radialGradient id="portalGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#c084fc;stop-opacity:0.8"/>
+      <stop offset="50%" style="stop-color:#a855f7;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:0"/>
+    </radialGradient>
+    
+    <!-- Mist gradient -->
+    <linearGradient id="mistGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#c4b5fd;stop-opacity:0"/>
+      <stop offset="100%" style="stop-color:#c4b5fd;stop-opacity:0.4"/>
+    </linearGradient>
+    
+    <!-- Moon gradient -->
+    <radialGradient id="moonGrad" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#fef3c7"/>
+      <stop offset="100%" style="stop-color:#fcd34d"/>
+    </radialGradient>
+    
+    <!-- Animated text gradient -->
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f472b6">
+        <animate attributeName="stop-color" values="#f472b6;#a78bfa;#60a5fa;#34d399;#fbbf24;#f472b6" dur="6s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="25%" style="stop-color:#a78bfa">
+        <animate attributeName="stop-color" values="#a78bfa;#60a5fa;#34d399;#fbbf24;#f472b6;#a78bfa" dur="6s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="50%" style="stop-color:#60a5fa">
+        <animate attributeName="stop-color" values="#60a5fa;#34d399;#fbbf24;#f472b6;#a78bfa;#60a5fa" dur="6s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="75%" style="stop-color:#34d399">
+        <animate attributeName="stop-color" values="#34d399;#fbbf24;#f472b6;#a78bfa;#60a5fa;#34d399" dur="6s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" style="stop-color:#fbbf24">
+        <animate attributeName="stop-color" values="#fbbf24;#f472b6;#a78bfa;#60a5fa;#34d399;#fbbf24" dur="6s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+    
+    <!-- Filters -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
       <feMerge>
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-    <filter id="starGlow">
-      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
+    </filter>
+    <filter id="starGlow">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="auroraBlur">
+      <feGaussianBlur stdDeviation="12"/>
     </filter>
   </defs>
   
   <!-- Sky background -->
   <rect width="800" height="300" fill="url(#skyGrad)"/>
   
-  <!-- Stars -->
-  <g fill="white" filter="url(#starGlow)">
-    <circle cx="50" cy="30" r="1.5" opacity="0.9"/>
-    <circle cx="120" cy="50" r="1" opacity="0.7"/>
-    <circle cx="200" cy="25" r="1.2" opacity="0.8"/>
-    <circle cx="280" cy="60" r="0.8" opacity="0.6"/>
-    <circle cx="350" cy="35" r="1.5" opacity="0.9"/>
-    <circle cx="420" cy="55" r="1" opacity="0.7"/>
-    <circle cx="500" cy="20" r="1.3" opacity="0.85"/>
-    <circle cx="580" cy="45" r="0.9" opacity="0.65"/>
-    <circle cx="650" cy="30" r="1.4" opacity="0.88"/>
-    <circle cx="720" cy="55" r="1.1" opacity="0.75"/>
-    <circle cx="770" cy="25" r="1" opacity="0.7"/>
-    <circle cx="90" cy="80" r="0.8" opacity="0.5"/>
-    <circle cx="450" cy="75" r="0.7" opacity="0.55"/>
-    <circle cx="600" cy="70" r="0.9" opacity="0.6"/>
+  <!-- Nebula clouds -->
+  <ellipse cx="200" cy="100" rx="150" ry="80" fill="#4c1d95" opacity="0.2" filter="url(#auroraBlur)"/>
+  <ellipse cx="600" cy="80" rx="180" ry="70" fill="#7c3aed" opacity="0.15" filter="url(#auroraBlur)"/>
+  
+  <!-- Aurora Borealis -->
+  <g filter="url(#auroraBlur)">
+    <path d="M0 120 Q200 60 400 100 T800 80 L800 180 Q600 140 400 160 T0 140 Z" fill="url(#aurora1)" opacity="0.6">
+      <animate attributeName="d" values="M0 120 Q200 60 400 100 T800 80 L800 180 Q600 140 400 160 T0 140 Z;M0 110 Q200 80 400 90 T800 100 L800 170 Q600 150 400 150 T0 130 Z;M0 120 Q200 60 400 100 T800 80 L800 180 Q600 140 400 160 T0 140 Z" dur="8s" repeatCount="indefinite"/>
+    </path>
+    <path d="M0 100 Q250 40 500 80 T800 60 L800 150 Q550 120 300 140 T0 120 Z" fill="url(#aurora2)" opacity="0.5">
+      <animate attributeName="d" values="M0 100 Q250 40 500 80 T800 60 L800 150 Q550 120 300 140 T0 120 Z;M0 90 Q250 60 500 70 T800 80 L800 140 Q550 130 300 130 T0 110 Z;M0 100 Q250 40 500 80 T800 60 L800 150 Q550 120 300 140 T0 120 Z" dur="10s" repeatCount="indefinite"/>
+    </path>
+    <path d="M100 130 Q300 70 500 110 T750 90 L750 170 Q500 150 300 160 T100 150 Z" fill="url(#aurora3)" opacity="0.4">
+      <animate attributeName="d" values="M100 130 Q300 70 500 110 T750 90 L750 170 Q500 150 300 160 T100 150 Z;M100 120 Q300 90 500 100 T750 110 L750 160 Q500 160 300 150 T100 140 Z;M100 130 Q300 70 500 110 T750 90 L750 170 Q500 150 300 160 T100 150 Z" dur="12s" repeatCount="indefinite"/>
+    </path>
   </g>
   
-  <!-- Distant mountains -->
-  <path d="M0 200 L100 140 L200 180 L300 120 L400 160 L500 100 L600 150 L700 110 L800 170 L800 300 L0 300 Z" fill="url(#mountainGrad1)" opacity="0.6"/>
+  <!-- Moon -->
+  <g transform="translate(680, 50)">
+    <circle r="25" fill="url(#moonGrad)" filter="url(#softGlow)"/>
+    <circle r="28" fill="none" stroke="#fef3c7" stroke-width="1" opacity="0.3"/>
+    <!-- Moon craters -->
+    <circle cx="-8" cy="-5" r="4" fill="#f59e0b" opacity="0.2"/>
+    <circle cx="5" cy="8" r="3" fill="#f59e0b" opacity="0.15"/>
+    <circle cx="-3" cy="10" r="2" fill="#f59e0b" opacity="0.2"/>
+  </g>
   
-  <!-- Middle mountains -->
-  <path d="M0 220 L80 170 L160 200 L240 150 L320 190 L400 130 L480 180 L560 140 L640 175 L720 135 L800 190 L800 300 L0 300 Z" fill="url(#mountainGrad2)" opacity="0.8"/>
+  <!-- Flying Pterodactyl -->
+  <g opacity="0.85">
+    <animateTransform attributeName="transform" type="translate" values="-80,70; 880,50" dur="20s" repeatCount="indefinite"/>
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-5; 0,0" dur="1.5s" repeatCount="indefinite"/>
+      <!-- Body -->
+      <ellipse cx="0" cy="0" rx="12" ry="5" fill="#1e1b4b"/>
+      <!-- Head -->
+      <ellipse cx="14" cy="-2" rx="6" ry="4" fill="#1e1b4b"/>
+      <!-- Beak/crest -->
+      <path d="M18 -3 L28 -4 L20 -2 Z" fill="#312e81"/>
+      <path d="M14 -6 L10 -14 L16 -5 Z" fill="#1e1b4b"/>
+      <!-- Tail -->
+      <path d="M-12 0 L-22 2 L-12 1 Z" fill="#312e81"/>
+      <!-- Left wing (animated) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; -25 -3 0; 0 -3 0" dur="0.4s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 -20 -35 -15 Q-20 -5 -3 -2 Z" fill="#312e81"/>
+        <path d="M-3 -1 Q-12 -15 -28 -12 Q-15 -4 -3 -2 Z" fill="#4338ca" opacity="0.6"/>
+      </g>
+      <!-- Right wing (animated) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; 25 -3 0; 0 -3 0" dur="0.4s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 20 -35 15 Q-20 5 -3 2 Z" fill="#312e81"/>
+        <path d="M-3 1 Q-12 15 -28 12 Q-15 4 -3 2 Z" fill="#4338ca" opacity="0.6"/>
+      </g>
+      <!-- Eye -->
+      <circle cx="17" cy="-3" r="1.5" fill="#fbbf24"/>
+    </g>
+  </g>
+  
+  <!-- Stars with twinkle animation -->
+  <g fill="white" filter="url(#starGlow)">
+    <circle cx="50" cy="30" r="1.5" opacity="0.9">
+      <animate attributeName="opacity" values="0.9;0.4;0.9" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="120" cy="50" r="1" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.3;0.7" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="200" cy="25" r="1.2" opacity="0.8">
+      <animate attributeName="opacity" values="0.8;0.4;0.8" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="280" cy="60" r="0.8" opacity="0.6"/>
+    <circle cx="350" cy="35" r="1.5" opacity="0.9">
+      <animate attributeName="opacity" values="0.9;0.5;0.9" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="420" cy="45" r="1" opacity="0.7"/>
+    <circle cx="500" cy="20" r="1.3" opacity="0.85">
+      <animate attributeName="opacity" values="0.85;0.3;0.85" dur="3.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="550" cy="65" r="0.9" opacity="0.65"/>
+    <circle cx="600" cy="30" r="1.4" opacity="0.88"/>
+    <circle cx="90" cy="75" r="0.8" opacity="0.5"/>
+    <circle cx="380" cy="70" r="0.7" opacity="0.55"/>
+    <circle cx="480" cy="55" r="0.9" opacity="0.6"/>
+    <circle cx="750" cy="40" r="1.1" opacity="0.75">
+      <animate attributeName="opacity" values="0.75;0.3;0.75" dur="2.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="30" cy="60" r="0.7" opacity="0.5"/>
+    <circle cx="180" cy="70" r="0.6" opacity="0.45"/>
+  </g>
+  
+  <!-- Shooting star -->
+  <g>
+    <line x1="100" y1="40" x2="140" y2="60" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0">
+      <animate attributeName="opacity" values="0;0;1;0" dur="6s" repeatCount="indefinite" begin="2s"/>
+    </line>
+    <line x1="100" y1="40" x2="130" y2="55" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0">
+      <animate attributeName="opacity" values="0;0;0.5;0" dur="6s" repeatCount="indefinite" begin="2s"/>
+    </line>
+  </g>
+  <g>
+    <line x1="550" y1="30" x2="600" y2="55" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0">
+      <animate attributeName="opacity" values="0;0;1;0" dur="8s" repeatCount="indefinite" begin="5s"/>
+    </line>
+  </g>
+  
+  <!-- Distant mountains (back layer) -->
+  <path d="M0 220 L60 160 L100 180 L150 140 L220 170 L280 130 L350 155 L420 115 L500 145 L580 100 L660 140 L730 110 L800 150 L800 300 L0 300 Z" fill="url(#mountainGrad1)" opacity="0.5"/>
+  
+  <!-- Middle mountains with more dramatic peaks -->
+  <path d="M0 240 L50 190 L90 210 L140 165 L200 195 L260 155 L330 180 L400 140 L470 170 L540 130 L610 160 L680 125 L750 155 L800 135 L800 300 L0 300 Z" fill="url(#mountainGrad2)" opacity="0.75"/>
+  
+  <!-- Snow caps on middle mountains -->
+  <path d="M140 165 L155 175 L125 175 Z" fill="url(#snowGrad)" opacity="0.6"/>
+  <path d="M260 155 L275 168 L245 168 Z" fill="url(#snowGrad)" opacity="0.5"/>
+  <path d="M400 140 L418 155 L382 155 Z" fill="url(#snowGrad)" opacity="0.7"/>
+  <path d="M540 130 L558 148 L522 148 Z" fill="url(#snowGrad)" opacity="0.6"/>
+  <path d="M680 125 L698 142 L662 142 Z" fill="url(#snowGrad)" opacity="0.5"/>
   
   <!-- Foreground mountains -->
-  <path d="M0 250 L100 200 L180 230 L280 180 L380 220 L450 170 L520 210 L620 165 L700 200 L800 180 L800 300 L0 300 Z" fill="url(#mountainGrad3)"/>
+  <path d="M0 260 L70 210 L120 235 L180 190 L250 220 L320 180 L400 205 L480 165 L560 195 L640 160 L720 190 L800 170 L800 300 L0 300 Z" fill="url(#mountainGrad3)"/>
   
-  <!-- Valley glow -->
-  <ellipse cx="400" cy="300" rx="300" ry="80" fill="url(#glowGrad)" opacity="0.5"/>
+  <!-- Snow caps on foreground -->
+  <path d="M180 190 L198 205 L162 205 Z" fill="url(#snowGrad)" opacity="0.8"/>
+  <path d="M320 180 L340 198 L300 198 Z" fill="url(#snowGrad)" opacity="0.7"/>
+  <path d="M480 165 L502 185 L458 185 Z" fill="url(#snowGrad)" opacity="0.85"/>
+  <path d="M640 160 L662 180 L618 180 Z" fill="url(#snowGrad)" opacity="0.75"/>
   
-  <!-- AI particles/orbs -->
+  <!-- Valley mist -->
+  <ellipse cx="400" cy="290" rx="400" ry="50" fill="url(#mistGrad)"/>
+  <ellipse cx="200" cy="285" rx="150" ry="30" fill="#a5b4fc" opacity="0.15" filter="url(#auroraBlur)"/>
+  <ellipse cx="600" cy="280" rx="180" ry="35" fill="#c4b5fd" opacity="0.12" filter="url(#auroraBlur)"/>
+  
+  <!-- Central portal/energy source -->
+  <g transform="translate(400, 250)" filter="url(#softGlow)">
+    <ellipse rx="80" ry="25" fill="url(#portalGlow)" opacity="0.9">
+      <animate attributeName="rx" values="80;90;80" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.9;0.6;0.9" dur="4s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse rx="50" ry="15" fill="url(#portalGrad)" opacity="0.8">
+      <animate attributeName="rx" values="50;60;50" dur="4s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse rx="20" ry="6" fill="white" opacity="0.9">
+      <animate attributeName="opacity" values="0.9;0.5;0.9" dur="2s" repeatCount="indefinite"/>
+    </ellipse>
+  </g>
+  
+  <!-- Energy beams from portal -->
+  <g opacity="0.3">
+    <line x1="400" y1="250" x2="320" y2="180" stroke="#c084fc" stroke-width="2">
+      <animate attributeName="opacity" values="0.3;0.6;0.3" dur="3s" repeatCount="indefinite"/>
+    </line>
+    <line x1="400" y1="250" x2="480" y2="165" stroke="#a855f7" stroke-width="2">
+      <animate attributeName="opacity" values="0.3;0.5;0.3" dur="3.5s" repeatCount="indefinite"/>
+    </line>
+    <line x1="400" y1="250" x2="250" y2="220" stroke="#8b5cf6" stroke-width="1.5">
+      <animate attributeName="opacity" values="0.2;0.4;0.2" dur="4s" repeatCount="indefinite"/>
+    </line>
+    <line x1="400" y1="250" x2="560" y2="195" stroke="#7c3aed" stroke-width="1.5">
+      <animate attributeName="opacity" values="0.2;0.5;0.2" dur="2.8s" repeatCount="indefinite"/>
+    </line>
+  </g>
+  
+  <!-- AI particles/orbs floating -->
   <g filter="url(#glow)">
-    <circle cx="200" cy="160" r="4" fill="#f472b6" opacity="0.8">
-      <animate attributeName="cy" values="160;155;160" dur="3s" repeatCount="indefinite"/>
+    <circle cx="150" cy="200" r="4" fill="#f472b6" opacity="0.9">
+      <animate attributeName="cy" values="200;190;200" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="cx" values="150;155;150" dur="4s" repeatCount="indefinite"/>
     </circle>
-    <circle cx="350" cy="130" r="3" fill="#a78bfa" opacity="0.7">
-      <animate attributeName="cy" values="130;125;130" dur="2.5s" repeatCount="indefinite"/>
+    <circle cx="280" cy="175" r="5" fill="#a78bfa" opacity="0.85">
+      <animate attributeName="cy" values="175;165;175" dur="3.5s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="5;6;5" dur="2s" repeatCount="indefinite"/>
     </circle>
-    <circle cx="500" cy="145" r="5" fill="#60a5fa" opacity="0.9">
-      <animate attributeName="cy" values="145;138;145" dur="4s" repeatCount="indefinite"/>
+    <circle cx="520" cy="170" r="6" fill="#60a5fa" opacity="0.9">
+      <animate attributeName="cy" values="170;158;170" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="6;7;6" dur="3s" repeatCount="indefinite"/>
     </circle>
-    <circle cx="600" cy="170" r="3.5" fill="#34d399" opacity="0.75">
-      <animate attributeName="cy" values="170;164;170" dur="3.5s" repeatCount="indefinite"/>
+    <circle cx="650" cy="185" r="4" fill="#34d399" opacity="0.8">
+      <animate attributeName="cy" values="185;175;185" dur="3.2s" repeatCount="indefinite"/>
     </circle>
-    <circle cx="150" cy="190" r="2.5" fill="#fbbf24" opacity="0.7">
-      <animate attributeName="cy" values="190;185;190" dur="2.8s" repeatCount="indefinite"/>
+    <circle cx="100" cy="220" r="3" fill="#fbbf24" opacity="0.75">
+      <animate attributeName="cy" values="220;212;220" dur="2.5s" repeatCount="indefinite"/>
     </circle>
-    <circle cx="650" cy="150" r="3" fill="#f87171" opacity="0.75">
-      <animate attributeName="cy" values="150;145;150" dur="3.2s" repeatCount="indefinite"/>
+    <circle cx="700" cy="200" r="3.5" fill="#f87171" opacity="0.8">
+      <animate attributeName="cy" values="200;192;200" dur="3.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="350" cy="160" r="4.5" fill="#2dd4bf" opacity="0.85">
+      <animate attributeName="cy" values="160;150;160" dur="4.2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="450" cy="150" r="3" fill="#fb923c" opacity="0.75">
+      <animate attributeName="cy" values="150;142;150" dur="2.8s" repeatCount="indefinite"/>
     </circle>
   </g>
   
-  <!-- Connection lines between orbs -->
-  <g stroke="white" stroke-width="0.5" opacity="0.15">
-    <line x1="200" y1="160" x2="350" y2="130"/>
-    <line x1="350" y1="130" x2="500" y2="145"/>
-    <line x1="500" y1="145" x2="600" y2="170"/>
-    <line x1="150" y1="190" x2="200" y2="160"/>
-    <line x1="600" y1="170" x2="650" y2="150"/>
+  <!-- Glowing connection lines between orbs -->
+  <g stroke-linecap="round">
+    <line x1="150" y1="200" x2="280" y2="175" stroke="url(#aurora2)" stroke-width="1" opacity="0.4">
+      <animate attributeName="opacity" values="0.4;0.7;0.4" dur="3s" repeatCount="indefinite"/>
+    </line>
+    <line x1="280" y1="175" x2="350" y2="160" stroke="url(#aurora1)" stroke-width="1" opacity="0.35">
+      <animate attributeName="opacity" values="0.35;0.6;0.35" dur="3.5s" repeatCount="indefinite"/>
+    </line>
+    <line x1="350" y1="160" x2="450" y2="150" stroke="url(#aurora3)" stroke-width="1" opacity="0.3">
+      <animate attributeName="opacity" values="0.3;0.55;0.3" dur="4s" repeatCount="indefinite"/>
+    </line>
+    <line x1="450" y1="150" x2="520" y2="170" stroke="url(#aurora2)" stroke-width="1" opacity="0.35">
+      <animate attributeName="opacity" values="0.35;0.65;0.35" dur="2.8s" repeatCount="indefinite"/>
+    </line>
+    <line x1="520" y1="170" x2="650" y2="185" stroke="url(#aurora1)" stroke-width="1" opacity="0.4">
+      <animate attributeName="opacity" values="0.4;0.7;0.4" dur="3.2s" repeatCount="indefinite"/>
+    </line>
+    <line x1="650" y1="185" x2="700" y2="200" stroke="url(#aurora3)" stroke-width="1" opacity="0.3">
+      <animate attributeName="opacity" values="0.3;0.5;0.3" dur="3.8s" repeatCount="indefinite"/>
+    </line>
+    <line x1="100" y1="220" x2="150" y2="200" stroke="url(#aurora2)" stroke-width="1" opacity="0.35">
+      <animate attributeName="opacity" values="0.35;0.6;0.35" dur="2.5s" repeatCount="indefinite"/>
+    </line>
   </g>
   
-  <!-- Central bright star -->
-  <g transform="translate(400, 80)" filter="url(#starGlow)">
-    <circle r="3" fill="white"/>
-    <circle r="8" fill="white" opacity="0.3"/>
-    <line x1="-15" y1="0" x2="15" y2="0" stroke="white" stroke-width="1" opacity="0.5"/>
-    <line x1="0" y1="-15" x2="0" y2="15" stroke="white" stroke-width="1" opacity="0.5"/>
+  <!-- Floating particles -->
+  <g fill="white" opacity="0.6">
+    <circle cx="180" cy="230" r="1">
+      <animate attributeName="cy" values="230;210;230" dur="5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0.2;0.6" dur="5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="380" cy="220" r="0.8">
+      <animate attributeName="cy" values="220;195;220" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.5;0.1;0.5" dur="6s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="550" cy="225" r="1.2">
+      <animate attributeName="cy" values="225;200;225" dur="5.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0.15;0.6" dur="5.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="620" cy="235" r="0.7">
+      <animate attributeName="cy" values="235;215;235" dur="4.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.5;0.2;0.5" dur="4.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="250" cy="240" r="0.9">
+      <animate attributeName="cy" values="240;220;240" dur="5.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.55;0.15;0.55" dur="5.2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Valley of AI Title -->
+  <g transform="translate(400, 135)">
+    <!-- Welcome to the - subtitle above -->
+    <text x="0" y="-50" text-anchor="middle" font-family="Roboto, sans-serif" font-size="20" font-weight="500" fill="#c084fc" filter="url(#glow)">Welcome to the</text>
+    <!-- Text glow/shadow layers -->
+    <text x="0" y="0" text-anchor="middle" font-family="Roboto, sans-serif" font-size="42" font-weight="bold" fill="#a855f7" opacity="0.5" filter="url(#softGlow)">Valley of AI</text>
+    <text x="0" y="0" text-anchor="middle" font-family="Roboto, sans-serif" font-size="42" font-weight="bold" fill="#c084fc" opacity="0.4" filter="url(#glow)">Valley of AI</text>
+    <!-- Main text with animated gradient -->
+    <text x="0" y="0" text-anchor="middle" font-family="Roboto, sans-serif" font-size="42" font-weight="bold" fill="url(#textGradient)" filter="url(#starGlow)">Valley of AI</text>
   </g>
 </svg>

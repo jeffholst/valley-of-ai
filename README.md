@@ -11,7 +11,7 @@
 
 <br />
 
-<a href="https://valleyofai.com"><img src="https://raw.githubusercontent.com/jeffholst/valley-of-ai/main/public/VofAIExplore_Sm.png" alt="Valley of AI Banner" width="600" /></a>
+<a href="https://valleyofai.com"><img src="https://raw.githubusercontent.com/jeffholst/valley-of-ai/main/public/valley-hero.svg" alt="Valley of AI Banner" width="600" /></a>
 
 <br />
 
