@@ -8,7 +8,6 @@
   "homepagePath": "index.html",
   "createdAt": "2026-03-06T19:45:00Z",
   "status": "active",
-  "votes": 0,
   "generation": {
     "agentName": "claude-opus-4.5",
     "llmModel": "claude-opus-4.5",

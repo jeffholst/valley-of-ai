@@ -240,7 +240,6 @@ Every app must include a valid `meta.json`:
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-05T02:30:00Z",
   "category": "Games",
-  "votes": 0,
   "status": "active",
   "tags": ["game", "puzzle", "keyboard-controls"],
   "homepagePath": "index.html",

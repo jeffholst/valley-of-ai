@@ -5,7 +5,6 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-05T02:30:00Z",
   "category": "Productivity",
-  "votes": 42,
   "status": "active",
   "tags": ["demo", "example"],
   "homepagePath": "index.html",
