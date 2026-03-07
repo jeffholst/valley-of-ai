@@ -139,24 +139,26 @@ const dotsEl = document.getElementById('dots');
 const stateEl = document.getElementById('state');
 
 const DIRS = { ArrowUp:[0,-1], ArrowDown:[0,1], ArrowLeft:[-1,0], ArrowRight:[1,0], w:[0,-1], s:[0,1], a:[-1,0], d:[1,0] };
-let grid, pac, ghosts, score, lives, dotsLeft, running, mouth, tick;
+let grid, pac, ghosts, score, lives, dotsLeft, running, mouth, tick, frightenedTimer, ghostsEaten;
+
+const FRIGHTENED_DURATION = 50; // Game ticks ghosts stay frightened
 
 function resetGame() {
   grid = mapRows.map(r => r.split(''));
-  score = 0; lives = 3; running = false; mouth = 0; tick = 0;
+  score = 0; lives = 3; running = false; mouth = 0; tick = 0; frightenedTimer = 0; ghostsEaten = 0;
   let pacStart = {x: 10, y: 11};
   ghosts = [];
   dotsLeft = 0;
   for (let y=0; y<ROWS; y++) {
     for (let x=0; x<COLS; x++) {
       if (grid[y][x] === 'P') { pacStart = {x,y}; grid[y][x]='.'; }
-      if (grid[y][x] === 'G') { ghosts.push({x,y,dx:1,dy:0,color:'#ef4444'}); grid[y][x]=' '; }
+      if (grid[y][x] === 'G') { ghosts.push({x,y,dx:1,dy:0,color:'#ef4444',startX:x,startY:y}); grid[y][x]=' '; }
       if (grid[y][x] === '.') dotsLeft++;
       if (grid[y][x] === 'o') dotsLeft++;
     }
   }
-  ghosts.push({x:9,y:15,dx:0,dy:-1,color:'#22d3ee'});
-  ghosts.push({x:11,y:15,dx:0,dy:1,color:'#f472b6'});
+  ghosts.push({x:9,y:15,dx:0,dy:-1,color:'#22d3ee',startX:9,startY:15});
+  ghosts.push({x:11,y:15,dx:0,dy:1,color:'#f472b6',startX:11,startY:15});
   pac = { x: pacStart.x, y: pacStart.y, dx: 0, dy: 0, nextDx: 0, nextDy: 0, dir: 'right' };
   updateUI('Ready');
 }
@@ -177,32 +179,61 @@ function movePac() {
 
   const cell = grid[pac.y][pac.x];
   if (cell === '.') { grid[pac.y][pac.x] = ' '; score += 10; dotsLeft--; }
-  if (cell === 'o') { grid[pac.y][pac.x] = ' '; score += 50; dotsLeft--; }
+  if (cell === 'o') { 
+    grid[pac.y][pac.x] = ' '; 
+    score += 50; 
+    dotsLeft--; 
+    // Activate power-up: frighten all ghosts
+    frightenedTimer = FRIGHTENED_DURATION;
+    ghostsEaten = 0;
+  }
 
   if (dotsLeft <= 0) { running = false; updateUI('You win!'); }
 }
 
 function moveGhost(g) {
-  if (!running) return;
+  if (!running || g.eaten) return;
   const options = [[1,0],[-1,0],[0,1],[0,-1]].filter(([dx,dy]) => !wall(g.x+dx, g.y+dy));
-  const towardPac = options.sort((a,b)=>{
+  
+  // When frightened, ghosts move randomly away from Pacman
+  const isFrightened = frightenedTimer > 0;
+  const sortedOptions = options.sort((a,b)=>{
     const da = Math.abs((g.x+a[0]) - pac.x) + Math.abs((g.y+a[1]) - pac.y);
     const db = Math.abs((g.x+b[0]) - pac.x) + Math.abs((g.y+b[1]) - pac.y);
+    if (isFrightened) {
+      // Run away from Pacman (prefer farther distance) with more randomness
+      return Math.random() < 0.5 ? db - da : da - db;
+    }
     return (Math.random()<0.25? db-da : da-db);
-  })[0];
-  const [dx,dy] = towardPac || [0,0];
+  });
+  const [dx,dy] = sortedOptions[0] || [0,0];
   g.dx = dx; g.dy = dy;
   g.x += dx; g.y += dy;
 }
 
 function collide() {
   for (const g of ghosts) {
+    if (g.eaten) continue;
     if (g.x === pac.x && g.y === pac.y) {
-      lives -= 1;
-      if (lives <= 0) { running = false; updateUI('Game over'); }
-      else {
-        pac.x = 10; pac.y = 11; pac.dx = 0; pac.dy = 0; pac.nextDx = 0; pac.nextDy = 0;
-        updateUI('Ouch! Continue');
+      if (frightenedTimer > 0) {
+        // Eat the ghost!
+        ghostsEaten++;
+        score += 200 * ghostsEaten; // 200, 400, 600, 800 points
+        g.eaten = true;
+        // Respawn ghost after a delay
+        setTimeout(() => {
+          g.x = g.startX;
+          g.y = g.startY;
+          g.eaten = false;
+        }, 3000);
+      } else {
+        // Ghost catches Pacman
+        lives -= 1;
+        if (lives <= 0) { running = false; updateUI('Game over'); }
+        else {
+          pac.x = 10; pac.y = 11; pac.dx = 0; pac.dy = 0; pac.nextDx = 0; pac.nextDy = 0;
+          updateUI('Ouch! Continue');
+        }
       }
       return;
     }
@@ -228,12 +259,20 @@ function draw() {
   }
 
   for (const g of ghosts) {
+    if (g.eaten) continue; // Don't draw eaten ghosts
     const cx = g.x*TILE + TILE/2, cy = g.y*TILE + TILE/2;
-    ctx.fillStyle = g.color;
+    
+    // Frightened ghosts are blue, flashing white when about to end
+    let ghostColor = g.color;
+    if (frightenedTimer > 0) {
+      ghostColor = frightenedTimer < 15 && Math.floor(frightenedTimer / 3) % 2 === 0 ? '#ffffff' : '#3b82f6';
+    }
+    
+    ctx.fillStyle = ghostColor;
     ctx.beginPath(); ctx.arc(cx, cy, TILE*0.38, Math.PI, 0); ctx.lineTo(cx+TILE*0.38, cy+TILE*0.35); ctx.lineTo(cx-TILE*0.38, cy+TILE*0.35); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = frightenedTimer > 0 ? '#fff' : '#fff';
     ctx.beginPath(); ctx.arc(cx-6, cy-4, 4, 0, Math.PI*2); ctx.arc(cx+6, cy-4, 4, 0, Math.PI*2); ctx.fill();
-    ctx.fillStyle = '#111';
+    ctx.fillStyle = frightenedTimer > 0 ? '#3b82f6' : '#111';
     ctx.beginPath(); ctx.arc(cx-6, cy-3, 2, 0, Math.PI*2); ctx.arc(cx+6, cy-3, 2, 0, Math.PI*2); ctx.fill();
   }
 
@@ -260,14 +299,27 @@ function updateUI(state) {
   stateEl.textContent = `State: ${state}`;
 }
 
-function loop() {
-  tick++;
-  if (running) {
-    movePac();
-    if (tick % 2 === 0) ghosts.forEach(moveGhost);
-    collide();
-    mouth += 0.35;
-    updateUI('Running');
+// Game speed control - lower = faster (milliseconds per game tick)
+const GAME_SPEED = 120;
+let lastUpdate = 0;
+
+function loop(timestamp) {
+  // Smooth mouth animation based on real time
+  mouth = timestamp * 0.01;
+  
+  // Only update game logic at fixed intervals
+  if (timestamp - lastUpdate >= GAME_SPEED) {
+    tick++;
+    if (running) {
+      // Decrease frightened timer
+      if (frightenedTimer > 0) frightenedTimer--;
+      
+      movePac();
+      if (tick % 2 === 0) ghosts.forEach(moveGhost);
+      collide();
+      updateUI(frightenedTimer > 0 ? 'Power Up!' : 'Running');
+    }
+    lastUpdate = timestamp;
   }
   draw();
   requestAnimationFrame(loop);
@@ -286,7 +338,7 @@ document.getElementById('start').onclick = () => {
 document.getElementById('restart').onclick = () => resetGame();
 
 resetGame();
-loop();
+requestAnimationFrame(loop);
 </script>
 </body>
 </html>
