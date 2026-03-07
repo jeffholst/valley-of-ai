@@ -665,6 +665,119 @@ When implementing a user suggestion, update its status:
 }
 ```
 
+## Final Polish Checklist
+
+Before moving to final review, ensure these polish items are complete:
+
+### 1. Light/Dark Mode Implementation
+
+Every app MUST support both light and dark mode with a visible toggle:
+
+```javascript
+// Add at the top of your script
+const theme = localStorage.getItem('theme') || 
+  (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+document.documentElement.setAttribute('data-theme', theme);
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+}
+```
+
+```css
+/* CSS variables for theming */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f3f4f6;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --accent: #3b82f6;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #1f2937;
+  --bg-secondary: #374151;
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+  --accent: #60a5fa;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+```
+
+**Toggle button** – Include a visible sun/moon toggle in the header:
+```html
+<button onclick="toggleTheme()" aria-label="Toggle theme" class="theme-toggle">
+  🌙
+</button>
+```
+
+### 2. Favicon Generation
+
+Every app MUST have a custom favicon that represents the app:
+
+```html
+<!-- Add to <head> section -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+```
+
+**Guidelines:**
+- Use an emoji or simple SVG that represents the app's concept
+- Games: 🎮 🎯 🐍 🎲 ♟️ 🎪
+- Productivity: ⏱️ 📝 ✅ 📊 🗓️
+- Creative: 🎨 🎵 ✨ 🌈 🖼️
+- Tools: 🔧 🧮 🔍 💡 ⚙️
+- Make sure the favicon is visible against both light and dark browser themes
+
+### 3. Link Back to Valley of AI
+
+Every app MUST include a link back to the main site in the footer:
+
+```html
+<!-- Add at the bottom of your app -->
+<footer style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid var(--text-secondary); opacity: 0.7;">
+  <a href="https://www.valleyofai.com" target="_blank" rel="noopener" 
+     style="color: var(--accent); text-decoration: none;">
+    ← Back to Valley of AI
+  </a>
+</footer>
+```
+
+**Styling requirements:**
+- Should be subtle but visible
+- Use theme-aware colors
+- Include `target="_blank"` and `rel="noopener"`
+- Position at the very bottom of the app
+
+### 4. Additional Polish Items
+
+- [ ] **Responsive Design** – Test at 320px, 768px, and 1024px widths
+- [ ] **Touch Support** – Mobile games need touch events, not just click/keyboard
+- [ ] **Loading States** – Show feedback during async operations
+- [ ] **Error Handling** – Gracefully handle edge cases (empty inputs, invalid data)
+- [ ] **Keyboard Accessibility** – Interactive elements should be keyboard-navigable
+- [ ] **Focus States** – Visible focus indicators for keyboard users
+- [ ] **Animations** – Respect `prefers-reduced-motion` media query
+- [ ] **Performance** – No janky animations, no layout thrashing
+- [ ] **Console Clean** – Zero errors or warnings in browser console
+
+### Pre-Code Polish Summary
+
+| Item | Required | Notes |
+|------|----------|-------|
+| Dark/Light Mode | ✅ Yes | Toggle + localStorage persistence |
+| Favicon | ✅ Yes | Emoji or SVG, app-specific |
+| Back to Valley Link | ✅ Yes | Footer link with `target="_blank"` |
+| Responsive Design | ✅ Yes | Works on mobile |
+| Touch Support | For games | Touch events for interactive apps |
+| Keyboard Nav | ✅ Yes | Tab-navigable UI |
+
 ## Quality Checklist
 
 Before finalizing any app, verify:
