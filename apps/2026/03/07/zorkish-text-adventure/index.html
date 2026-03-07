@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lantern of Hollowmere - Valley of AI</title>
+  <style>
+    :root{--bg:#0b0f1a;--bg2:#161d2f;--surface:#121827;--text:#e8eefc;--muted:#97a6ca;--accent:#7c3aed;--accent2:#22d3ee;--ok:#34d399}
+    @media (prefers-color-scheme: light){:root{--bg:#eef3ff;--bg2:#dbe7ff;--surface:#fff;--text:#1d2945;--muted:#5f6f92;--accent:#6d28d9;--accent2:#0891b2;--ok:#047857}}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px;font-family:ui-sans-serif,system-ui;background:radial-gradient(1000px 650px at 20% 20%,var(--bg2),var(--bg));color:var(--text)}
+    .app{width:min(860px,100%);background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid color-mix(in srgb,var(--muted) 25%,transparent);border-radius:18px;padding:14px;box-shadow:0 18px 45px #0004}
+    h1{margin:0 0 4px;font-size:1.4rem}.sub{margin:0 0 10px;color:var(--muted)}
+    .term{background:#070b15;border-radius:12px;border:1px solid color-mix(in srgb,var(--muted) 25%,transparent);padding:12px;height:360px;overflow:auto;font-family:ui-monospace,Consolas,monospace;line-height:1.45;white-space:pre-wrap}
+    .row{display:flex;gap:8px;margin-top:10px}
+    input{flex:1;border:1px solid color-mix(in srgb,var(--muted) 28%,transparent);border-radius:999px;padding:10px 14px;background:color-mix(in srgb,var(--surface) 92%,transparent);color:var(--text);font:inherit}
+    button{border:none;border-radius:999px;padding:10px 14px;font:inherit;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+    .help{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.chip{font-size:.78rem;color:var(--muted);border:1px solid color-mix(in srgb,var(--muted) 22%,transparent);padding:4px 8px;border-radius:999px}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <h1>🕯️ Lantern of Hollowmere</h1>
+    <p class="sub">A parser-style text adventure inspired by classic terminal fiction.</p>
+    <div id="out" class="term" aria-live="polite"></div>
+    <div class="row">
+      <input id="cmd" placeholder="Type a command (look, go north, take key, use key gate...)" autofocus />
+      <button id="send">Enter</button>
+    </div>
+    <div class="help">
+      <span class="chip">look</span><span class="chip">go north/east/south/west</span><span class="chip">take [item]</span><span class="chip">use [item] [target]</span><span class="chip">inventory</span><span class="chip">help</span>
+    </div>
+  </main>
+<script>
+const out = document.getElementById('out'), cmd = document.getElementById('cmd');
+const rooms = {
+  wharf:{name:'Mist Wharf',desc:'Fog curls over black water. A path leads east toward old stones.',exits:{east:'arch'},items:['hook']},
+  arch:{name:'Moon Arch',desc:'A cracked stone arch frames two routes: west to the wharf, north to a locked gate, east to a sunken garden.',exits:{west:'wharf',east:'garden',north:'gate'},items:[]},
+  garden:{name:'Sunken Garden',desc:'Bioluminescent moss glows around a dry fountain. Something glints in the basin.',exits:{west:'arch'},items:['key']},
+  gate:{name:'Iron Gate',desc:'A rusted gate blocks the way north into the bell tower yard.',exits:{south:'arch'},items:[],locked:true},
+  yard:{name:'Bell Tower Yard',desc:'Wind moves dead vines. A brass bell hangs above a trapdoor.',exits:{south:'gate',down:'vault'},items:['bell-clapper']},
+  vault:{name:'Under-Vault',desc:'Dust and old ledgers. On a stone pedestal rests the Lantern of Hollowmere.',exits:{up:'yard'},items:['lantern']}
+};
+let state = {room:'wharf',inv:[],won:false};
+
+function println(t=''){ out.textContent += t + '\n'; out.scrollTop = out.scrollHeight; }
+function roomView(){
+  const r = rooms[state.room];
+  println(`\n== ${r.name} ==`); println(r.desc);
+  const items = r.items.length?`You see: ${r.items.join(', ')}.`:'Nothing useful lies in plain sight.';
+  println(items);
+  const exits = Object.keys(r.exits).join(', ');
+  println(`Exits: ${exits}`);
+}
+function inv(){ println(state.inv.length?`Inventory: ${state.inv.join(', ')}`:'Inventory: empty'); }
+
+function move(dir){
+  const r=rooms[state.room];
+  if(!(dir in r.exits)){ println("You can't go that way."); return; }
+  if(state.room==='arch' && dir==='north' && rooms.gate.locked){ println('The gate is locked.'); return; }
+  if(state.room==='yard' && dir==='down' && !state.inv.includes('bell-clapper')){ println('The trapdoor ring is too deep. Maybe a hook could help.'); return; }
+  if(state.room==='yard' && dir==='down' && !state.inv.includes('hook')){ println('You need leverage to pull open the trapdoor.'); return; }
+  state.room = r.exits[dir]==='gate' && !rooms.gate.locked ? 'yard' : r.exits[dir];
+  roomView();
+}
+
+function take(item){
+  const r=rooms[state.room], i=r.items.indexOf(item);
+  if(i<0){ println("You don't see that here."); return; }
+  r.items.splice(i,1); state.inv.push(item); println(`Taken: ${item}`);
+}
+
+function use(item,target){
+  if(!state.inv.includes(item)){ println("You're not carrying that."); return; }
+  if(item==='key' && (target==='gate' || (state.room==='arch' && !target))){
+    if(rooms.gate.locked){ rooms.gate.locked=false; rooms.gate.exits.north='yard'; println('You unlock the iron gate.'); }
+    else println('The gate is already unlocked.');
+    return;
+  }
+  if(item==='bell-clapper' && target==='bell' && state.room==='yard'){
+    println('You strike the bell. A hidden panel slides open in the yard wall, revealing old carvings.');
+    return;
+  }
+  if(item==='lantern'){
+    println('The lantern hums with pale light. Mist pulls back. You have found Hollowmere\'s heart.');
+    state.won=true; println('*** You win. ***'); return;
+  }
+  println('Nothing happens.');
+}
+
+function parse(line){
+  const t=line.trim().toLowerCase(); if(!t) return;
+  println(`> ${line}`);
+  const [verb,a,b] = t.split(/\s+/);
+  if(['help','?'].includes(verb)){ println('Commands: look, go <dir>, take <item>, use <item> [target], inventory, help'); return; }
+  if(['look','l'].includes(verb)){ roomView(); return; }
+  if(['inventory','inv','i'].includes(verb)){ inv(); return; }
+  if(['go','walk','move'].includes(verb)){ if(!a){println('Go where?');return;} move(a); return; }
+  if(['north','south','east','west','up','down','n','s','e','w','u','d'].includes(verb)){
+    const map={n:'north',s:'south',e:'east',w:'west',u:'up',d:'down'}; move(map[verb]||verb); return;
+  }
+  if(['take','get','grab'].includes(verb)){ if(!a){println('Take what?');return;} take(a); return; }
+  if(['use'].includes(verb)){ if(!a){println('Use what?');return;} use(a,b); return; }
+  println("I don't understand that command. Type 'help'.");
+}
+
+document.getElementById('send').onclick=()=>{parse(cmd.value);cmd.value='';cmd.focus();};
+cmd.addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('send').click(); });
+println('Welcome, wanderer. Rumor says the Lantern of Hollowmere can calm any storm.');
+println("Type 'help' for commands.");
+roomView();
+</script>
+</body>
+</html>
