@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pacman Classic - Valley of AI</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --bg2: #17233f;
+      --surface: #101933;
+      --text: #eef3ff;
+      --muted: #9eb0d9;
+      --wall: #3b82f6;
+      --dot: #fde68a;
+      --pac: #facc15;
+      --ghost-red: #ef4444;
+      --ghost-cyan: #22d3ee;
+      --ghost-pink: #f472b6;
+      --btn: #7c3aed;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #edf4ff;
+        --bg2: #d8e7ff;
+        --surface: #ffffff;
+        --text: #1e2b4a;
+        --muted: #607197;
+        --wall: #2563eb;
+        --dot: #ca8a04;
+        --pac: #eab308;
+        --ghost-red: #dc2626;
+        --ghost-cyan: #0891b2;
+        --ghost-pink: #db2777;
+        --btn: #6d28d9;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(1100px 700px at 20% 20%, var(--bg2), var(--bg));
+      color: var(--text);
+    }
+    .card {
+      width: min(760px, 100%);
+      background: color-mix(in srgb, var(--surface) 90%, transparent);
+      border: 1px solid color-mix(in srgb, var(--muted) 24%, transparent);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 18px 50px #0004;
+    }
+    h1 { margin: 0 0 6px; font-size: 1.6rem; }
+    .sub { margin: 0 0 12px; color: var(--muted); }
+    .topbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .pill { border: 1px solid color-mix(in srgb, var(--muted) 26%, transparent); padding: 6px 10px; border-radius: 999px; color: var(--muted); font-size: .88rem; }
+    canvas {
+      width: 100%;
+      max-width: 640px;
+      aspect-ratio: 1 / 1;
+      display: block;
+      margin: 0 auto;
+      border-radius: 14px;
+      border: 1px solid color-mix(in srgb, var(--muted) 26%, transparent);
+      background: #070b16;
+      image-rendering: pixelated;
+    }
+    .controls { display: flex; gap: 8px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      color: #fff;
+      background: var(--btn);
+    }
+    .kbd { color: var(--muted); text-align: center; margin-top: 10px; font-size: .9rem; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>🟡 Pacman Classic</h1>
+    <p class="sub">Eat all dots, dodge ghosts, and survive with 3 lives. Arrow keys or WASD.</p>
+    <section class="topbar">
+      <span class="pill" id="score">Score: 0</span>
+      <span class="pill" id="lives">Lives: 3</span>
+      <span class="pill" id="dots">Dots: 0</span>
+      <span class="pill" id="state">State: Ready</span>
+    </section>
+    <canvas id="game" width="560" height="560" aria-label="Pacman game board"></canvas>
+    <section class="controls">
+      <button id="start">Start</button>
+      <button id="restart">Restart</button>
+    </section>
+    <p class="kbd">Controls: ↑ ↓ ← → or W A S D</p>
+  </main>
+
+<script>
+const mapRows = [
+"####################",
+"#........##........#",
+"#.####.#.##.#.####.#",
+"#o#  #.#.##.#.#  #o#",
+"#.####.#.##.#.####.#",
+"#..................#",
+"#.####.######.####.#",
+"#......#....#......#",
+"######.#.##.#.######",
+"     #.#....#.#     ",
+"######.#.##.#.######",
+"#........P.........#",
+"#.####.######.####.#",
+"#o...#....##....#o.#",
+"###.#.###.##.###.#.#",
+"#.....#...G....#...#",
+"#.##########.#######",
+"#..................#",
+"####################"
+];
+
+const TILE = 28;
+const ROWS = mapRows.length;
+const COLS = mapRows[0].length;
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+canvas.width = COLS * TILE;
+canvas.height = ROWS * TILE;
+
+const scoreEl = document.getElementById('score');
+const livesEl = document.getElementById('lives');
+const dotsEl = document.getElementById('dots');
+const stateEl = document.getElementById('state');
+
+const DIRS = { ArrowUp:[0,-1], ArrowDown:[0,1], ArrowLeft:[-1,0], ArrowRight:[1,0], w:[0,-1], s:[0,1], a:[-1,0], d:[1,0] };
+let grid, pac, ghosts, score, lives, dotsLeft, running, mouth, tick;
+
+function resetGame() {
+  grid = mapRows.map(r => r.split(''));
+  score = 0; lives = 3; running = false; mouth = 0; tick = 0;
+  let pacStart = {x: 10, y: 11};
+  ghosts = [];
+  dotsLeft = 0;
+  for (let y=0; y<ROWS; y++) {
+    for (let x=0; x<COLS; x++) {
+      if (grid[y][x] === 'P') { pacStart = {x,y}; grid[y][x]='.'; }
+      if (grid[y][x] === 'G') { ghosts.push({x,y,dx:1,dy:0,color:'#ef4444'}); grid[y][x]=' '; }
+      if (grid[y][x] === '.') dotsLeft++;
+      if (grid[y][x] === 'o') dotsLeft++;
+    }
+  }
+  ghosts.push({x:9,y:15,dx:0,dy:-1,color:'#22d3ee'});
+  ghosts.push({x:11,y:15,dx:0,dy:1,color:'#f472b6'});
+  pac = { x: pacStart.x, y: pacStart.y, dx: 0, dy: 0, nextDx: 0, nextDy: 0, dir: 'right' };
+  updateUI('Ready');
+}
+
+function wall(x,y){ if (x<0||y<0||x>=COLS||y>=ROWS) return true; return grid[y][x] === '#'; }
+
+function movePac() {
+  if (!running) return;
+  if (!wall(pac.x + pac.nextDx, pac.y + pac.nextDy)) {
+    pac.dx = pac.nextDx; pac.dy = pac.nextDy;
+  }
+  const nx = pac.x + pac.dx, ny = pac.y + pac.dy;
+  if (!wall(nx, ny)) {
+    pac.x = nx; pac.y = ny;
+    if (pac.dx === 1) pac.dir='right'; if (pac.dx === -1) pac.dir='left';
+    if (pac.dy === 1) pac.dir='down'; if (pac.dy === -1) pac.dir='up';
+  }
+
+  const cell = grid[pac.y][pac.x];
+  if (cell === '.') { grid[pac.y][pac.x] = ' '; score += 10; dotsLeft--; }
+  if (cell === 'o') { grid[pac.y][pac.x] = ' '; score += 50; dotsLeft--; }
+
+  if (dotsLeft <= 0) { running = false; updateUI('You win!'); }
+}
+
+function moveGhost(g) {
+  if (!running) return;
+  const options = [[1,0],[-1,0],[0,1],[0,-1]].filter(([dx,dy]) => !wall(g.x+dx, g.y+dy));
+  const towardPac = options.sort((a,b)=>{
+    const da = Math.abs((g.x+a[0]) - pac.x) + Math.abs((g.y+a[1]) - pac.y);
+    const db = Math.abs((g.x+b[0]) - pac.x) + Math.abs((g.y+b[1]) - pac.y);
+    return (Math.random()<0.25? db-da : da-db);
+  })[0];
+  const [dx,dy] = towardPac || [0,0];
+  g.dx = dx; g.dy = dy;
+  g.x += dx; g.y += dy;
+}
+
+function collide() {
+  for (const g of ghosts) {
+    if (g.x === pac.x && g.y === pac.y) {
+      lives -= 1;
+      if (lives <= 0) { running = false; updateUI('Game over'); }
+      else {
+        pac.x = 10; pac.y = 11; pac.dx = 0; pac.dy = 0; pac.nextDx = 0; pac.nextDy = 0;
+        updateUI('Ouch! Continue');
+      }
+      return;
+    }
+  }
+}
+
+function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for (let y=0; y<ROWS; y++) {
+    for (let x=0; x<COLS; x++) {
+      const c = grid[y][x];
+      const px = x*TILE, py = y*TILE;
+      if (c === '#') {
+        ctx.fillStyle = '#3b82f6';
+        ctx.fillRect(px+2,py+2,TILE-4,TILE-4);
+      }
+      if (c === '.' || c === 'o') {
+        ctx.fillStyle = '#fde68a';
+        const r = c === '.' ? 3 : 6;
+        ctx.beginPath(); ctx.arc(px+TILE/2, py+TILE/2, r, 0, Math.PI*2); ctx.fill();
+      }
+    }
+  }
+
+  for (const g of ghosts) {
+    const cx = g.x*TILE + TILE/2, cy = g.y*TILE + TILE/2;
+    ctx.fillStyle = g.color;
+    ctx.beginPath(); ctx.arc(cx, cy, TILE*0.38, Math.PI, 0); ctx.lineTo(cx+TILE*0.38, cy+TILE*0.35); ctx.lineTo(cx-TILE*0.38, cy+TILE*0.35); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(cx-6, cy-4, 4, 0, Math.PI*2); ctx.arc(cx+6, cy-4, 4, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#111';
+    ctx.beginPath(); ctx.arc(cx-6, cy-3, 2, 0, Math.PI*2); ctx.arc(cx+6, cy-3, 2, 0, Math.PI*2); ctx.fill();
+  }
+
+  const cx = pac.x*TILE + TILE/2, cy = pac.y*TILE + TILE/2;
+  const angle = (Math.sin(mouth)*0.28 + 0.28);
+  let rot = 0;
+  if (pac.dir === 'left') rot = Math.PI;
+  if (pac.dir === 'up') rot = -Math.PI/2;
+  if (pac.dir === 'down') rot = Math.PI/2;
+  ctx.save();
+  ctx.translate(cx, cy); ctx.rotate(rot);
+  ctx.fillStyle = '#facc15';
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.arc(0,0,TILE*0.4, angle, Math.PI*2-angle);
+  ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+
+function updateUI(state) {
+  scoreEl.textContent = `Score: ${score}`;
+  livesEl.textContent = `Lives: ${lives}`;
+  dotsEl.textContent = `Dots: ${dotsLeft}`;
+  stateEl.textContent = `State: ${state}`;
+}
+
+function loop() {
+  tick++;
+  if (running) {
+    movePac();
+    if (tick % 2 === 0) ghosts.forEach(moveGhost);
+    collide();
+    mouth += 0.35;
+    updateUI('Running');
+  }
+  draw();
+  requestAnimationFrame(loop);
+}
+
+document.addEventListener('keydown', (e) => {
+  const d = DIRS[e.key];
+  if (!d) return;
+  e.preventDefault();
+  [pac.nextDx, pac.nextDy] = d;
+});
+
+document.getElementById('start').onclick = () => {
+  if (!running && lives > 0 && dotsLeft > 0) { running = true; updateUI('Running'); }
+};
+document.getElementById('restart').onclick = () => resetGame();
+
+resetGame();
+loop();
+</script>
+</body>
+</html>

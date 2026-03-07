@@ -1,0 +1,22 @@
+{
+  "id": "pacman-classic",
+  "name": "Pacman Classic",
+  "shortDescription": "A polished browser Pacman clone: collect dots, avoid ghosts, and clear the maze to win.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-07T20:01:04Z",
+  "category": "Games",
+  "votes": 0,
+  "status": "active",
+  "tags": ["game", "arcade", "pacman", "keyboard-controls"],
+  "homepagePath": "index.html",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "gpt-5.1",
+    "startTime": "2026-03-07T20:00:47Z",
+    "endTime": "2026-03-07T20:01:04Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-2026-03-07-0001",
+    "notes": "Token counters are not exposed by this runtime; set to 0."
+  }
+}
