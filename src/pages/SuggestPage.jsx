@@ -3,12 +3,12 @@ import emailjs from '@emailjs/browser'
 import { Turnstile } from 'react-turnstile'
 
 // EmailJS Configuration
-const EMAILJS_SERVICE_ID = '***REMOVED***'
-const EMAILJS_TEMPLATE_ID = '***REMOVED***'
-const EMAILJS_PUBLIC_KEY = '***REMOVED***'
+const EMAILJS_SERVICE_ID = 'service_d8txwpg'
+const EMAILJS_TEMPLATE_ID = 'template_pygh9hg'
+const EMAILJS_PUBLIC_KEY = '6Pwy20o6JUG4XyfEu'
 
 // Cloudflare Turnstile Configuration
-const TURNSTILE_SITE_KEY = '***REMOVED***'
+const TURNSTILE_SITE_KEY = '0x4AAAAAACnxHyRby_dzOU_o'
 
 const CATEGORIES = [
   'Productivity',

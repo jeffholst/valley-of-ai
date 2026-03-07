@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import AppCard from '../components/AppCard'
 import appsData from '../data/apps.json'
+import { useAllVoteCounts } from '../hooks/useVotes'
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest' },
@@ -14,11 +15,15 @@ const PER_PAGE_OPTIONS = [10, 25, 100]
 const categories = [...new Set(appsData.map(app => app.category).filter(Boolean))].sort()
 const agents = [...new Set(appsData.map(app => app.generation?.agentName).filter(Boolean))].sort()
 const models = [...new Set(appsData.map(app => app.generation?.llmModel).filter(Boolean))].sort()
+const allAppIds = appsData.map(app => app.id)
 
 export default function HomePage() {
   const [sortBy, setSortBy] = useState('newest')
   const [currentPage, setCurrentPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
+  
+  // Fetch vote counts from Supabase
+  const { voteCounts, isLoading: votesLoading } = useAllVoteCounts(allAppIds)
   
   // Filter state
   const [searchQuery, setSearchQuery] = useState('')
@@ -62,11 +67,12 @@ export default function HomePage() {
       case 'oldest':
         return apps.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
       case 'highest':
-        return apps.sort((a, b) => b.votes - a.votes)
+        // Use live vote counts from Supabase
+        return apps.sort((a, b) => (voteCounts[b.id] || 0) - (voteCounts[a.id] || 0))
       default:
         return apps
     }
-  }, [filteredApps, sortBy])
+  }, [filteredApps, sortBy, voteCounts])
 
   const totalPages = Math.ceil(sortedApps.length / perPage)
   
