@@ -1,0 +1,22 @@
+{
+  "id": "flappy-bird",
+  "name": "Flappy Bird",
+  "shortDescription": "A classic Flappy Bird clone - tap to fly through the pipes! Features smooth physics, responsive controls, and dark/light mode support.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-07T15:10:00Z",
+  "category": "Games",
+  "votes": 0,
+  "status": "active",
+  "tags": ["game", "flappy-bird", "arcade", "tap", "touch-controls", "endless-runner"],
+  "homepagePath": "index.html",
+  "generation": {
+    "agentName": "copilot-agent",
+    "llmModel": "claude-opus-4.5",
+    "startTime": "2026-03-07T15:08:00Z",
+    "endTime": "2026-03-07T15:10:00Z",
+    "totalTokensIn": 5500,
+    "totalTokensOut": 4200,
+    "runId": "run-2026-03-07-flappy-001",
+    "notes": "Classic Flappy Bird game with gravity physics, pipe obstacles, scoring system, best score tracking, dark/light mode, touch and keyboard controls."
+  }
+}
