@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Contrast Lab helps you tune foreground/background colors to meet WCAG accessibility targets." />
+  <title>Contrast Lab • Valley of AI</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f172a'/%3E%3Ccircle cx='24' cy='32' r='12' fill='%23f8fafc'/%3E%3Ccircle cx='40' cy='32' r='12' fill='%230ea5e9'/%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --bg: #f3f6fb;
+      --bg-grad-a: #f7fafc;
+      --bg-grad-b: #e8eef7;
+      --surface: #ffffff;
+      --surface-2: #f8fbff;
+      --text: #0f172a;
+      --muted: #475569;
+      --line: #d7deea;
+      --primary: #2563eb;
+      --primary-soft: #dbeafe;
+      --good: #16a34a;
+      --warn: #d97706;
+      --bad: #dc2626;
+      --shadow: 0 20px 40px rgba(15, 23, 42, 0.1);
+    }
+
+    :root[data-theme='dark'] {
+      --bg: #060d18;
+      --bg-grad-a: #0a1324;
+      --bg-grad-b: #09101d;
+      --surface: #0f172a;
+      --surface-2: #111c33;
+      --text: #e2e8f0;
+      --muted: #9fb0c7;
+      --line: #27364f;
+      --primary: #38bdf8;
+      --primary-soft: #10314a;
+      --good: #22c55e;
+      --warn: #f59e0b;
+      --bad: #ef4444;
+      --shadow: 0 24px 46px rgba(0, 0, 0, 0.5);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(1200px 800px at 20% 0%, var(--bg-grad-a) 0%, var(--bg-grad-b) 52%, var(--bg) 100%);
+      padding: 1.25rem;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .topbar {
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+      font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+      font-weight: 760;
+      letter-spacing: .2px;
+    }
+
+    .subtitle { color: var(--muted); font-size: .94rem; margin-top: .2rem; }
+
+    .icon-btn {
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      color: var(--text);
+      border-radius: 12px;
+      width: 42px;
+      height: 42px;
+      display: inline-grid;
+      place-items: center;
+      cursor: pointer;
+      transition: transform .2s ease, background-color .2s ease;
+    }
+    .icon-btn:hover { transform: translateY(-1px); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .controls {
+      display: grid;
+      gap: .75rem;
+    }
+
+    .row {
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: .75rem;
+      display: grid;
+      gap: .5rem;
+    }
+
+    .row-head { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+
+    .color-inputs { display: flex; align-items: center; gap: .55rem; }
+
+    input[type='color'] {
+      width: 44px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    input[type='text'], select {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--text);
+      border-radius: 10px;
+      padding: .55rem .65rem;
+      font-size: .95rem;
+    }
+
+    .actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+    button {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 10px;
+      padding: .55rem .8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .15s ease, background-color .2s ease;
+    }
+    button:hover { transform: translateY(-1px); }
+
+    .primary {
+      background: var(--primary);
+      color: white;
+      border-color: transparent;
+    }
+
+    .preview {
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      padding: 1rem;
+      display: grid;
+      gap: .8rem;
+    }
+
+    .preview-card {
+      border-radius: 12px;
+      border: 1px solid color-mix(in oklab, var(--preview-bg) 70%, #000 10%);
+      padding: 1rem;
+      background: var(--preview-bg);
+      color: var(--preview-fg);
+      transition: all .25s ease;
+    }
+
+    .ratio {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .55rem;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      border-radius: 12px;
+      padding: .65rem;
+      text-align: center;
+    }
+
+    .stat strong { font-size: 1.1rem; display: block; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      border-radius: 999px;
+      padding: .3rem .6rem;
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+
+    .good { background: color-mix(in oklab, var(--good) 20%, transparent); color: var(--good); }
+    .warn { background: color-mix(in oklab, var(--warn) 20%, transparent); color: var(--warn); }
+    .bad { background: color-mix(in oklab, var(--bad) 20%, transparent); color: var(--bad); }
+
+    @media (min-width: 860px) {
+      .grid { grid-template-columns: 360px 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="panel topbar">
+      <div>
+        <div class="title">🎨 Contrast Lab</div>
+        <div class="subtitle">Tune two colors until your typography passes WCAG AA/AAA.</div>
+      </div>
+      <button class="icon-btn" id="themeBtn" title="Toggle light/dark mode" aria-label="Toggle theme">🌙</button>
+    </section>
+
+    <section class="panel grid">
+      <div class="controls">
+        <div class="row">
+          <div class="row-head"><strong>Foreground</strong><span id="fgLabel">#0F172A</span></div>
+          <div class="color-inputs">
+            <input type="color" id="fgColor" value="#0f172a" />
+            <input type="text" id="fgHex" value="#0f172a" maxlength="7" aria-label="Foreground hex" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="row-head"><strong>Background</strong><span id="bgLabel">#F8FAFC</span></div>
+          <div class="color-inputs">
+            <input type="color" id="bgColor" value="#f8fafc" />
+            <input type="text" id="bgHex" value="#f8fafc" maxlength="7" aria-label="Background hex" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="row-head"><strong>Text settings</strong></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">
+            <select id="sizePreset" aria-label="Text size preset">
+              <option value="normal">Normal text</option>
+              <option value="large">Large text</option>
+            </select>
+            <select id="weightPreset" aria-label="Font weight preset">
+              <option value="regular">Regular</option>
+              <option value="bold">Bold</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="fixBtn">Fix to AA</button>
+          <button id="aaaBtn">Fix to AAA</button>
+          <button id="swapBtn">Swap colors</button>
+          <button id="randomBtn">Random pair</button>
+        </div>
+      </div>
+
+      <div class="preview" id="previewArea" style="--preview-bg:#f8fafc;--preview-fg:#0f172a;">
+        <div class="ratio">
+          <div class="stat"><small>Contrast</small><strong id="ratio">0.00</strong></div>
+          <div class="stat"><small>WCAG AA</small><div id="aa" class="chip bad">Fail</div></div>
+          <div class="stat"><small>WCAG AAA</small><div id="aaa" class="chip bad">Fail</div></div>
+        </div>
+
+        <article class="preview-card" id="previewCard">
+          <h2 style="margin:0 0 .35rem 0;font-size:1.3rem;">Accessible headline</h2>
+          <p style="margin:0;color:color-mix(in oklab,var(--preview-fg) 82%, var(--preview-bg) 18%);line-height:1.6;">
+            The quick brown fox jumps over the lazy dog. 1234567890.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const els = {
+      fgColor: document.getElementById('fgColor'),
+      bgColor: document.getElementById('bgColor'),
+      fgHex: document.getElementById('fgHex'),
+      bgHex: document.getElementById('bgHex'),
+      fgLabel: document.getElementById('fgLabel'),
+      bgLabel: document.getElementById('bgLabel'),
+      ratio: document.getElementById('ratio'),
+      aa: document.getElementById('aa'),
+      aaa: document.getElementById('aaa'),
+      previewArea: document.getElementById('previewArea'),
+      previewCard: document.getElementById('previewCard'),
+      sizePreset: document.getElementById('sizePreset'),
+      weightPreset: document.getElementById('weightPreset'),
+      fixBtn: document.getElementById('fixBtn'),
+      aaaBtn: document.getElementById('aaaBtn'),
+      swapBtn: document.getElementById('swapBtn'),
+      randomBtn: document.getElementById('randomBtn'),
+      themeBtn: document.getElementById('themeBtn')
+    };
+
+    const norm = hex => /^#[0-9a-f]{6}$/i.test(hex) ? hex.toLowerCase() : null;
+    const h2r = h => [1,3,5].map(i => parseInt(h.slice(i, i+2),16));
+    const r2h = (r,g,b) => '#' + [r,g,b].map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2,'0')).join('');
+    const relLum = ([r,g,b]) => {
+      const f = v => (v/=255) <= 0.03928 ? v/12.92 : ((v+0.055)/1.055) ** 2.4;
+      const [R,G,B] = [f(r), f(g), f(b)];
+      return 0.2126*R + 0.7152*G + 0.0722*B;
+    };
+    const contrast = (a,b) => {
+      const [L1, L2] = [relLum(h2r(a)), relLum(h2r(b))].sort((x,y)=>y-x);
+      return (L1 + 0.05) / (L2 + 0.05);
+    };
+
+    function update() {
+      const fg = norm(els.fgHex.value) || els.fgColor.value;
+      const bg = norm(els.bgHex.value) || els.bgColor.value;
+
+      els.fgHex.value = fg;
+      els.bgHex.value = bg;
+      els.fgColor.value = fg;
+      els.bgColor.value = bg;
+      els.fgLabel.textContent = fg.toUpperCase();
+      els.bgLabel.textContent = bg.toUpperCase();
+
+      const ratio = contrast(fg, bg);
+      els.ratio.textContent = ratio.toFixed(2) + ':1';
+
+      const large = els.sizePreset.value === 'large';
+      const bold = els.weightPreset.value === 'bold';
+      const aaMin = large ? (bold ? 3 : 3) : (bold ? 4.5 : 4.5);
+      const aaaMin = large ? (bold ? 4.5 : 4.5) : 7;
+
+      setBadge(els.aa, ratio >= aaMin, 'AA Pass', 'Fail');
+      setBadge(els.aaa, ratio >= aaaMin, 'AAA Pass', 'Fail');
+
+      els.previewArea.style.setProperty('--preview-fg', fg);
+      els.previewArea.style.setProperty('--preview-bg', bg);
+      els.previewCard.style.fontSize = large ? '1.15rem' : '1rem';
+      els.previewCard.style.fontWeight = bold ? '700' : '400';
+    }
+
+    function setBadge(el, pass, passText, failText) {
+      el.className = 'chip ' + (pass ? 'good' : 'bad');
+      el.textContent = pass ? passText : failText;
+    }
+
+    function nudgeToTarget(target) {
+      let fg = h2r(els.fgColor.value);
+      let bg = h2r(els.bgColor.value);
+      let c = contrast(r2h(...fg), r2h(...bg));
+      let tries = 0;
+      while (c < target && tries < 280) {
+        const lumFg = relLum(fg);
+        const lumBg = relLum(bg);
+        const moveFgDarker = lumFg >= lumBg;
+
+        fg = fg.map(v => moveFgDarker ? v - 3 : v + 3);
+        bg = bg.map(v => moveFgDarker ? v + 2 : v - 2);
+        c = contrast(r2h(...fg), r2h(...bg));
+        tries++;
+      }
+      els.fgHex.value = r2h(...fg);
+      els.bgHex.value = r2h(...bg);
+      update();
+    }
+
+    function randomColor() {
+      return r2h(Math.random()*255, Math.random()*255, Math.random()*255);
+    }
+
+    [els.fgColor, els.bgColor].forEach(input => input.addEventListener('input', e => {
+      (e.target === els.fgColor ? els.fgHex : els.bgHex).value = e.target.value;
+      update();
+    }));
+    [els.fgHex, els.bgHex].forEach(input => input.addEventListener('change', update));
+    [els.sizePreset, els.weightPreset].forEach(el => el.addEventListener('change', update));
+
+    els.fixBtn.addEventListener('click', () => nudgeToTarget(4.5));
+    els.aaaBtn.addEventListener('click', () => nudgeToTarget(7));
+    els.swapBtn.addEventListener('click', () => {
+      [els.fgHex.value, els.bgHex.value] = [els.bgHex.value, els.fgHex.value];
+      update();
+    });
+    els.randomBtn.addEventListener('click', () => {
+      els.fgHex.value = randomColor();
+      els.bgHex.value = randomColor();
+      update();
+    });
+
+    const themePref = localStorage.getItem('contrast-lab-theme') || 'auto';
+    function applyTheme(mode) {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const resolved = mode === 'auto' ? (prefersDark ? 'dark' : 'light') : mode;
+      document.documentElement.dataset.theme = resolved;
+      els.themeBtn.textContent = resolved === 'dark' ? '☀️' : '🌙';
+      localStorage.setItem('contrast-lab-theme', mode);
+    }
+    els.themeBtn.addEventListener('click', () => {
+      const current = localStorage.getItem('contrast-lab-theme') || 'auto';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+
+    applyTheme(themePref);
+    update();
+  </script>
+</body>
+</html>

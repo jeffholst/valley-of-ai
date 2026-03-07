@@ -1,0 +1,22 @@
+{
+  "id": "contrast-lab",
+  "name": "Contrast Lab",
+  "shortDescription": "An interactive WCAG contrast playground that lets you test, swap, randomize, and auto-correct text/background color pairs for AA and AAA accessibility compliance.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-07T08:02:24Z",
+  "category": "Design",
+  "votes": 0,
+  "status": "active",
+  "tags": ["accessibility", "color", "wcag", "design-tool"],
+  "homepagePath": "index.html",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "gpt-5.3-codex",
+    "startTime": "2026-03-07T08:00:41Z",
+    "endTime": "2026-03-07T08:02:24Z",
+    "totalTokensIn": 7300,
+    "totalTokensOut": 5000,
+    "runId": "run-20260307T080041Z-a1b2c3",
+    "notes": "Built a responsive no-dependency accessibility tool with live contrast metrics, dark/light theme toggle, and one-click AA/AAA correction nudges."
+  }
+}
