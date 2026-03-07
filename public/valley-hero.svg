@@ -146,7 +146,7 @@
     <circle cx="-3" cy="10" r="2" fill="#f59e0b" opacity="0.2"/>
   </g>
   
-  <!-- Flying Pterodactyl -->
+  <!-- Flying Pterodactyl 1 - Large, left to right, mid-height -->
   <g opacity="0.85">
     <animateTransform attributeName="transform" type="translate" values="-80,70; 880,50" dur="20s" repeatCount="indefinite"/>
     <g>
@@ -173,6 +173,163 @@
         <path d="M-3 1 Q-12 15 -28 12 Q-15 4 -3 2 Z" fill="#4338ca" opacity="0.6"/>
       </g>
       <!-- Eye -->
+      <circle cx="17" cy="-3" r="1.5" fill="#fbbf24"/>
+    </g>
+  </g>
+  
+  <!-- Flying Pterodactyl 2 - Small, left to right, high -->
+  <g opacity="0.5">
+    <animateTransform attributeName="transform" type="translate" values="-60,25; 860,35" dur="28s" repeatCount="indefinite"/>
+    <g transform="scale(0.4)">
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-4; 0,0" dur="1s" repeatCount="indefinite"/>
+      <ellipse cx="0" cy="0" rx="12" ry="5" fill="#1e1b4b"/>
+      <ellipse cx="14" cy="-2" rx="6" ry="4" fill="#1e1b4b"/>
+      <path d="M18 -3 L28 -4 L20 -2 Z" fill="#312e81"/>
+      <path d="M14 -6 L10 -14 L16 -5 Z" fill="#1e1b4b"/>
+      <path d="M-12 0 L-22 2 L-12 1 Z" fill="#312e81"/>
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; -25 -3 0; 0 -3 0" dur="0.28s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 -20 -35 -15 Q-20 -5 -3 -2 Z" fill="#312e81"/>
+      </g>
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; 25 -3 0; 0 -3 0" dur="0.28s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 20 -35 15 Q-20 5 -3 2 Z" fill="#312e81"/>
+      </g>
+    </g>
+  </g>
+  
+  <!-- Flying Pterodactyl 3 - Medium, left to right, very high, fast -->
+  <g opacity="0.65">
+    <animateTransform attributeName="transform" type="translate" values="-50,18; 850,12" dur="12s" repeatCount="indefinite"/>
+    <g transform="scale(0.6)">
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-6; 0,0" dur="1.3s" repeatCount="indefinite"/>
+      <ellipse cx="0" cy="0" rx="12" ry="5" fill="#1e1b4b"/>
+      <ellipse cx="14" cy="-2" rx="6" ry="4" fill="#1e1b4b"/>
+      <path d="M18 -3 L28 -4 L20 -2 Z" fill="#312e81"/>
+      <path d="M14 -6 L10 -14 L16 -5 Z" fill="#1e1b4b"/>
+      <path d="M-12 0 L-22 2 L-12 1 Z" fill="#312e81"/>
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; -25 -3 0; 0 -3 0" dur="0.35s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 -20 -35 -15 Q-20 -5 -3 -2 Z" fill="#312e81"/>
+        <path d="M-3 -1 Q-12 -15 -28 -12 Q-15 -4 -3 -2 Z" fill="#4338ca" opacity="0.6"/>
+      </g>
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; 25 -3 0; 0 -3 0" dur="0.35s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 20 -35 15 Q-20 5 -3 2 Z" fill="#312e81"/>
+        <path d="M-3 1 Q-12 15 -28 12 Q-15 4 -3 2 Z" fill="#4338ca" opacity="0.6"/>
+      </g>
+      <circle cx="17" cy="-3" r="1.5" fill="#fbbf24"/>
+    </g>
+  </g>
+  
+  <!-- Flying Pterodactyl 4 - Tiny, left to right, mid-low, slow -->
+  <g opacity="0.4">
+    <animateTransform attributeName="transform" type="translate" values="-80,95; 900,105" dur="35s" repeatCount="indefinite"/>
+    <g transform="scale(0.3)">
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-3; 0,0" dur="0.9s" repeatCount="indefinite"/>
+      <ellipse cx="0" cy="0" rx="12" ry="5" fill="#1e1b4b"/>
+      <ellipse cx="14" cy="-2" rx="6" ry="4" fill="#1e1b4b"/>
+      <path d="M18 -3 L28 -4 L20 -2 Z" fill="#312e81"/>
+      <path d="M-12 0 L-22 2 L-12 1 Z" fill="#312e81"/>
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; -25 -3 0; 0 -3 0" dur="0.22s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 -20 -35 -15 Q-20 -5 -3 -2 Z" fill="#312e81"/>
+      </g>
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; 25 -3 0; 0 -3 0" dur="0.22s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 20 -35 15 Q-20 5 -3 2 Z" fill="#312e81"/>
+      </g>
+    </g>
+  </g>
+  
+  <!-- Flying Pterodactyl 5 - Medium-large, left to right, low -->
+  <g opacity="0.75">
+    <animateTransform attributeName="transform" type="translate" values="-100,110; 900,90" dur="22s" repeatCount="indefinite"/>
+    <g transform="scale(0.8)">
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-5; 0,0" dur="1.6s" repeatCount="indefinite"/>
+      <ellipse cx="0" cy="0" rx="12" ry="5" fill="#1e1b4b"/>
+      <ellipse cx="14" cy="-2" rx="6" ry="4" fill="#1e1b4b"/>
+      <path d="M18 -3 L28 -4 L20 -2 Z" fill="#312e81"/>
+      <path d="M14 -6 L10 -14 L16 -5 Z" fill="#1e1b4b"/>
+      <path d="M-12 0 L-22 2 L-12 1 Z" fill="#312e81"/>
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; -25 -3 0; 0 -3 0" dur="0.45s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 -20 -35 -15 Q-20 -5 -3 -2 Z" fill="#312e81"/>
+        <path d="M-3 -1 Q-12 -15 -28 -12 Q-15 -4 -3 -2 Z" fill="#4338ca" opacity="0.6"/>
+      </g>
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; 25 -3 0; 0 -3 0" dur="0.45s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 20 -35 15 Q-20 5 -3 2 Z" fill="#312e81"/>
+        <path d="M-3 1 Q-12 15 -28 12 Q-15 4 -3 2 Z" fill="#4338ca" opacity="0.6"/>
+      </g>
+      <circle cx="17" cy="-3" r="1.5" fill="#fbbf24"/>
+    </g>
+  </g>
+  
+  <!-- Flying Pterodactyl 6 - Very small, left to right, very high, very fast -->
+  <g opacity="0.45">
+    <animateTransform attributeName="transform" type="translate" values="-40,8; 820,15" dur="10s" repeatCount="indefinite"/>
+    <g transform="scale(0.25)">
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-4; 0,0" dur="0.8s" repeatCount="indefinite"/>
+      <ellipse cx="0" cy="0" rx="12" ry="5" fill="#1e1b4b"/>
+      <ellipse cx="14" cy="-2" rx="6" ry="4" fill="#1e1b4b"/>
+      <path d="M18 -3 L28 -4 L20 -2 Z" fill="#312e81"/>
+      <path d="M-12 0 L-22 2 L-12 1 Z" fill="#312e81"/>
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; -25 -3 0; 0 -3 0" dur="0.18s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 -20 -35 -15 Q-20 -5 -3 -2 Z" fill="#312e81"/>
+      </g>
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; 25 -3 0; 0 -3 0" dur="0.18s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 20 -35 15 Q-20 5 -3 2 Z" fill="#312e81"/>
+      </g>
+    </g>
+  </g>
+  
+  <!-- Flying Pterodactyl 7 - Small-medium, left to right, mid-high -->
+  <g opacity="0.55">
+    <animateTransform attributeName="transform" type="translate" values="-70,45; 870,38" dur="18s" repeatCount="indefinite"/>
+    <g transform="scale(0.5)">
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-5; 0,0" dur="1.2s" repeatCount="indefinite"/>
+      <ellipse cx="0" cy="0" rx="12" ry="5" fill="#1e1b4b"/>
+      <ellipse cx="14" cy="-2" rx="6" ry="4" fill="#1e1b4b"/>
+      <path d="M18 -3 L28 -4 L20 -2 Z" fill="#312e81"/>
+      <path d="M14 -6 L10 -14 L16 -5 Z" fill="#1e1b4b"/>
+      <path d="M-12 0 L-22 2 L-12 1 Z" fill="#312e81"/>
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; -25 -3 0; 0 -3 0" dur="0.32s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 -20 -35 -15 Q-20 -5 -3 -2 Z" fill="#312e81"/>
+        <path d="M-3 -1 Q-12 -15 -28 -12 Q-15 -4 -3 -2 Z" fill="#4338ca" opacity="0.6"/>
+      </g>
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; 25 -3 0; 0 -3 0" dur="0.32s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 20 -35 15 Q-20 5 -3 2 Z" fill="#312e81"/>
+        <path d="M-3 1 Q-12 15 -28 12 Q-15 4 -3 2 Z" fill="#4338ca" opacity="0.6"/>
+      </g>
+      <circle cx="17" cy="-3" r="1.5" fill="#fbbf24"/>
+    </g>
+  </g>
+  
+  <!-- Flying Pterodactyl 8 - Extra large, left to right, mid-height, slow -->
+  <g opacity="0.8">
+    <animateTransform attributeName="transform" type="translate" values="-120,60; 920,55" dur="32s" repeatCount="indefinite"/>
+    <g transform="scale(1.2)">
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-4; 0,0" dur="2s" repeatCount="indefinite"/>
+      <ellipse cx="0" cy="0" rx="12" ry="5" fill="#1e1b4b"/>
+      <ellipse cx="14" cy="-2" rx="6" ry="4" fill="#1e1b4b"/>
+      <path d="M18 -3 L28 -4 L20 -2 Z" fill="#312e81"/>
+      <path d="M14 -6 L10 -14 L16 -5 Z" fill="#1e1b4b"/>
+      <path d="M-12 0 L-22 2 L-12 1 Z" fill="#312e81"/>
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; -25 -3 0; 0 -3 0" dur="0.55s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 -20 -35 -15 Q-20 -5 -3 -2 Z" fill="#312e81"/>
+        <path d="M-3 -1 Q-12 -15 -28 -12 Q-15 -4 -3 -2 Z" fill="#4338ca" opacity="0.6"/>
+      </g>
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; 25 -3 0; 0 -3 0" dur="0.55s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 20 -35 15 Q-20 5 -3 2 Z" fill="#312e81"/>
+        <path d="M-3 1 Q-12 15 -28 12 Q-15 4 -3 2 Z" fill="#4338ca" opacity="0.6"/>
+      </g>
       <circle cx="17" cy="-3" r="1.5" fill="#fbbf24"/>
     </g>
   </g>
