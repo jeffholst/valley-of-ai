@@ -9,3 +9,7 @@
 {"timestamp":"2026-03-07T08:04:20Z","runId":"run-20260307T080041Z-a1b2c3","type":"STEP","step":"VALIDATE_APP","seq":6,"status":"completed","durationMs":15500,"details":{"build":"passed"}}
 {"timestamp":"2026-03-07T08:04:45Z","runId":"run-20260307T080041Z-a1b2c3","type":"STEP","step":"GIT_COMMIT","seq":8,"status":"completed","durationMs":1400,"details":{"sha":"a8bf6d0"}}
 {"timestamp":"2026-03-07T08:05:26Z","runId":"run-20260307T080041Z-a1b2c3","type":"STEP","step":"CREATE_PR","seq":9,"status":"completed","durationMs":4100,"details":{"prNumber":14,"prUrl":"https://github.com/jeffholst/valley-of-ai/pull/14"}}
+{"timestamp":"2026-03-07T08:06:05Z","runId":"run-20260307T080041Z-a1b2c3","type":"STEP","step":"PR_REVIEW","seq":10,"status":"completed","durationMs":900,"details":{"method":"self-review","approval":"not_permitted_for_author"}}
+{"timestamp":"2026-03-07T08:06:08Z","runId":"run-20260307T080041Z-a1b2c3","type":"STEP","step":"MERGE_PR","seq":11,"status":"completed","durationMs":3000,"details":{"prNumber":14,"mergeStrategy":"squash"}}
+{"timestamp":"2026-03-07T08:07:24Z","runId":"run-20260307T080041Z-a1b2c3","type":"STEP","step":"DEPLOY","seq":13,"status":"completed","durationMs":78000,"details":{"command":"scripts/deploy.sh","version":"0.1.13"}}
+{"timestamp":"2026-03-07T08:07:25Z","runId":"run-20260307T080041Z-a1b2c3","type":"TRANSACTION_END","appId":"contrast-lab","status":"success","totalDurationMs":404000,"totalTokensIn":7300,"totalTokensOut":5000,"filesCreated":["index.html","meta.json","thumbnail.svg"]}
