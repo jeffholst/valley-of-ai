@@ -11,7 +11,7 @@
 
 <br />
 
-<img src="https://raw.githubusercontent.com/jeffholst/valley-of-ai/main/public/valley-hero.svg" alt="Valley of AI Banner" width="600" />
+<a href="https://valleyofai.com"><img src="https://raw.githubusercontent.com/jeffholst/valley-of-ai/main/public/VofAIExplore_Sm.png" alt="Valley of AI Banner" width="600" /></a>
 
 <br />
 
@@ -36,7 +36,7 @@ Responsive, modern UI showcasing AI-generated apps with thumbnails, descriptions
 ### 🌓 Dark/Light Mode
 Seamlessly switch themes with persisted preferences for comfortable viewing.
 
-### 🔍 Smart Filtering
+## 🔍 Smart Filtering
 Filter by category, sort by date or popularity, and search through the collection.
 
 </td>
