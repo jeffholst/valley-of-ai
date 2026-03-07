@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1e293b"/><stop offset="1" stop-color="#0f172a"/></linearGradient></defs>
+<rect width="800" height="450" fill="url(#bg)"/>
+<rect x="70" y="30" width="660" height="390" rx="20" fill="#111827" stroke="#94a3b8" stroke-opacity=".25"/>
+<text x="100" y="70" font-family="system-ui,sans-serif" font-size="30" font-weight="700" fill="#f1f5f9">🧵 Word Weaver</text>
+<text x="100" y="95" font-family="system-ui,sans-serif" font-size="14" fill="#94a3b8">Transform text instantly with case conversion and cleanup tools.</text>
+<rect x="100" y="115" width="132" height="30" rx="15" fill="#8b5cf6"/><text x="166" y="135" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="white">Sentence case</text>
+<rect x="250" y="115" width="92" height="30" rx="15" fill="#1f2937" stroke="#94a3b8" stroke-opacity=".3"/><text x="296" y="135" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#f1f5f9">Title Case</text>
+<rect x="100" y="160" width="290" height="200" rx="14" fill="#0b1222" stroke="#94a3b8" stroke-opacity=".25"/>
+<rect x="410" y="160" width="290" height="200" rx="14" fill="#0b1222" stroke="#94a3b8" stroke-opacity=".25"/>
+<text x="114" y="183" font-family="ui-monospace,monospace" font-size="13" fill="#f1f5f9">when BUILDING tools, keep UX simple.</text>
+<text x="114" y="204" font-family="ui-monospace,monospace" font-size="13" fill="#f1f5f9">clean spacing   and clear language.</text>
+<text x="424" y="183" font-family="ui-monospace,monospace" font-size="13" fill="#f1f5f9">When building tools, keep ux simple.</text>
+<text x="424" y="204" font-family="ui-monospace,monospace" font-size="13" fill="#f1f5f9">Clean spacing and clear language.</text>
+<rect x="100" y="377" width="95" height="28" rx="14" fill="#1f2937" stroke="#94a3b8" stroke-opacity=".28"/><text x="148" y="395" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#94a3b8">Words: 14</text>
+<rect x="206" y="377" width="92" height="28" rx="14" fill="#1f2937" stroke="#94a3b8" stroke-opacity=".28"/><text x="252" y="395" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#94a3b8">Chars: 88</text>
+</svg>
