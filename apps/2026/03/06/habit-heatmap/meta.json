@@ -1,0 +1,27 @@
+{
+  "id": "habit-heatmap",
+  "name": "Habit Heatmap",
+  "shortDescription": "A tactile weekly habit board where each day cell cycles from 0\u20134 intensity, turning consistency into an easy visual streak game.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-07T02:10:48Z",
+  "category": "Productivity",
+  "votes": 0,
+  "status": "active",
+  "tags": [
+    "habits",
+    "tracker",
+    "heatmap",
+    "streaks"
+  ],
+  "homepagePath": "index.html",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "gpt-5.3-codex",
+    "startTime": "2026-03-07T02:08:15Z",
+    "endTime": "2026-03-07T02:10:48Z",
+    "totalTokensIn": 3300,
+    "totalTokensOut": 4600,
+    "runId": "run-20260307T020815Z-e7b609",
+    "notes": "Created a responsive weekly habit heatmap with keyboard support, local persistence, and light/dark/auto theme toggle."
+  }
+}
