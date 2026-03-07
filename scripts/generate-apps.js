@@ -71,8 +71,11 @@ function transformMeta(meta, filePath, dateInfo) {
   const appDir = path.dirname(filePath)
   const relativeAppDir = path.relative(APPS_DIR, appDir)
   
+  // Use the full path as the unique id (e.g., "2026/03/07/contrast-lab")
+  const uniqueId = relativeAppDir.split(path.sep).join('/')
+  
   return {
-    id: meta.id,
+    id: uniqueId,
     name: meta.name,
     shortDescription: meta.shortDescription,
     thumbnailUrl: meta.thumbnail 
@@ -86,7 +89,7 @@ function transformMeta(meta, filePath, dateInfo) {
     votes: meta.votes || 0,
     status: meta.status || 'active',
     tags: meta.tags || [],
-    route: `/apps/${meta.id}`,
+    route: `/apps/${uniqueId}`,
     appPath: `${BASE_PATH}/apps/${relativeAppDir}/${meta.homepagePath || 'index.html'}`,
     generation: meta.generation || null,
   }
