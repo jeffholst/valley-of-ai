@@ -42,3 +42,5 @@
 {"timestamp": "2026-03-07T02:10:39Z", "runId": "run-20260307T020815Z-e7b609", "type": "STEP", "step": "GENERATE_THUMBNAIL", "seq": 4, "status": "completed", "durationMs": 6400, "tokensIn": 900, "tokensOut": 1400}
 {"timestamp": "2026-03-07T02:10:52Z", "runId": "run-20260307T020815Z-e7b609", "type": "STEP", "step": "CREATE_META_JSON", "seq": 5, "status": "completed", "durationMs": 700}
 {"timestamp": "2026-03-07T02:10:59Z", "runId": "run-20260307T020815Z-e7b609", "type": "STEP", "step": "UPDATE_REGISTRY", "seq": 12, "status": "completed", "durationMs": 980, "details": {"appCount": 12}}
+{"timestamp": "2026-03-07T02:12:10Z", "runId": "run-20260307T020815Z-e7b609", "type": "STEP", "step": "VALIDATE_APP", "seq": 6, "status": "completed", "durationMs": 11000, "details": {"checks": ["generate:apps ok", "vite build ok via node_modules/vite/bin/vite.js"]}}
+{"timestamp": "2026-03-07T02:12:10Z", "runId": "run-20260307T020815Z-e7b609", "type": "STEP", "step": "GIT_COMMIT", "seq": 8, "status": "completed", "durationMs": 1400, "details": {"sha": "1c86bda"}}
