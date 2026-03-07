@@ -1,0 +1,22 @@
+{
+  "id": "reaction-ripple",
+  "name": "Reaction Ripple",
+  "shortDescription": "A reflex challenge where you tap a moving glowing orb over 10 rounds and track your reaction-time average.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-07T01:47:28Z",
+  "category": "Games",
+  "votes": 0,
+  "status": "active",
+  "tags": ["game", "reaction-time", "reflex", "arcade"],
+  "homepagePath": "index.html",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "gpt-5.1",
+    "startTime": "2026-03-07T01:46:15Z",
+    "endTime": "2026-03-07T01:47:28Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-2026-03-06-0002",
+    "notes": "Token counters are not available from this runtime, so fields are set to 0."
+  }
+}
