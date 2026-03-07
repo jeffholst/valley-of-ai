@@ -1,10 +1,14 @@
 import { useState } from 'react'
 import emailjs from '@emailjs/browser'
+import { Turnstile } from 'react-turnstile'
 
 // EmailJS Configuration
 const EMAILJS_SERVICE_ID = '***REMOVED***'
 const EMAILJS_TEMPLATE_ID = '***REMOVED***'
 const EMAILJS_PUBLIC_KEY = '***REMOVED***'
+
+// Cloudflare Turnstile Configuration
+const TURNSTILE_SITE_KEY = '***REMOVED***'
 
 const CATEGORIES = [
   'Productivity',
@@ -21,12 +25,14 @@ export default function SuggestPage() {
     title: '',
     description: '',
     category: '',
+    name: '',
     email: '',
   })
   const [errors, setErrors] = useState({})
   const [submitted, setSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState(null)
+  const [turnstileToken, setTurnstileToken] = useState(null)
 
   const validate = () => {
     const newErrors = {}
@@ -55,12 +61,20 @@ export default function SuggestPage() {
     setIsSubmitting(true)
     setSubmitError(null)
 
+    if (!turnstileToken) {
+      setSubmitError('Please complete the security verification.')
+      setIsSubmitting(false)
+      return
+    }
+
     const templateParams = {
       title: form.title.trim(),
       description: form.description.trim(),
       category: form.category || 'Other',
+      name: form.name.trim() || 'Not provided',
       email: form.email.trim() || 'Not provided',
       submitted_at: new Date().toLocaleString(),
+      'cf-turnstile-response': turnstileToken,
     }
 
     try {
@@ -105,7 +119,8 @@ export default function SuggestPage() {
           <button
             onClick={() => {
               setSubmitted(false)
-              setForm({ title: '', description: '', category: '', email: '' })
+              setForm({ title: '', description: '', category: '', name: '', email: '' })
+              setTurnstileToken(null)
             }}
             className="btn-secondary"
           >
@@ -185,22 +200,53 @@ export default function SuggestPage() {
             </select>
           </div>
 
-          <div>
-            <label htmlFor="email" className="label">
-              Email <span className="text-gray-400">(optional)</span>
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder="your@email.com"
-              className="input"
-            />
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Only if you'd like to be notified when your suggestion is implemented
+          {/* Optional Contact Section */}
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              The following fields are optional. Only fill them out if you'd like to be contacted when your suggestion is implemented.
             </p>
+            
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="name" className="label">
+                  Name <span className="text-gray-400">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  placeholder="Your name"
+                  className="input"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="email" className="label">
+                  Email <span className="text-gray-400">(optional)</span>
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="your@email.com"
+                  className="input"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Cloudflare Turnstile */}
+          <div className="flex justify-center">
+            <Turnstile
+              sitekey={TURNSTILE_SITE_KEY}
+              onVerify={(token) => setTurnstileToken(token)}
+              onExpire={() => setTurnstileToken(null)}
+              onError={() => setTurnstileToken(null)}
+            />
           </div>
 
           {submitError && (
@@ -212,7 +258,7 @@ export default function SuggestPage() {
           <button 
             type="submit" 
             className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !turnstileToken}
           >
             {isSubmitting ? 'Sending...' : 'Submit Suggestion'}
           </button>
