@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Habit Heatmap - Valley of AI</title>
+  <meta name="description" content="Track your weekly habits with a tactile heatmap board and streak stats." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='8' y='8' width='48' height='48' rx='10' fill='%2322c55e'/%3E%3Cpath d='M20 38h24M20 30h24M20 22h24' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f4f8f6;
+      --surface: #ffffff;
+      --text: #0f2b21;
+      --muted: #4f7468;
+      --border: #d5e5df;
+      --accent: #16a34a;
+      --level-0: #ecf7ef;
+      --level-1: #c9ebd1;
+      --level-2: #8fdaa5;
+      --level-3: #4fc67a;
+      --level-4: #15803d;
+      --shadow: 0 20px 40px rgba(16, 58, 44, 0.12);
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #0b1713;
+      --surface: #10221c;
+      --text: #e5fff2;
+      --muted: #93cdb2;
+      --border: #214136;
+      --accent: #4ade80;
+      --level-0: #11291f;
+      --level-1: #1f4a36;
+      --level-2: #2e7a4f;
+      --level-3: #3db866;
+      --level-4: #65f191;
+      --shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0b1713;
+        --surface: #10221c;
+        --text: #e5fff2;
+        --muted: #93cdb2;
+        --border: #214136;
+        --accent: #4ade80;
+        --level-0: #11291f;
+        --level-1: #1f4a36;
+        --level-2: #2e7a4f;
+        --level-3: #3db866;
+        --level-4: #65f191;
+        --shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(circle at top, color-mix(in oklab, var(--accent) 8%, var(--bg)), var(--bg) 62%);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+    }
+
+    .app {
+      width: min(980px, 100%);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 1.25rem;
+      box-shadow: var(--shadow);
+      padding: clamp(1rem, 2.5vw, 1.75rem);
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .title { margin: 0; font-size: clamp(1.2rem, 2.2vw, 1.9rem); }
+    .subtitle { margin: .2rem 0 0; color: var(--muted); font-size: .95rem; }
+
+    .icon-btn {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      border-radius: .8rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: transform .18s ease, background-color .2s ease;
+    }
+    .icon-btn:hover { transform: translateY(-1px); background: color-mix(in oklab, var(--accent) 10%, transparent); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(120px, 1fr));
+      gap: .75rem;
+      margin: .8rem 0 1.2rem;
+    }
+    .stat {
+      border: 1px solid var(--border);
+      border-radius: .9rem;
+      padding: .75rem;
+      background: color-mix(in oklab, var(--surface) 88%, var(--accent));
+    }
+    .stat small { color: var(--muted); display: block; }
+    .stat strong { font-size: 1.25rem; }
+
+    .grid-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: .4rem;
+      min-width: 680px;
+    }
+    th {
+      font-size: .78rem;
+      color: var(--muted);
+      font-weight: 600;
+      text-align: left;
+      padding-bottom: .3rem;
+    }
+    td:first-child {
+      font-weight: 600;
+      white-space: nowrap;
+      padding-right: .4rem;
+    }
+
+    .cell {
+      width: 2.1rem;
+      height: 2.1rem;
+      border-radius: .5rem;
+      border: 1px solid var(--border);
+      background: var(--level-0);
+      cursor: pointer;
+      transition: transform .16s ease, filter .2s ease;
+    }
+    .cell:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    .cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .level-0 { background: var(--level-0); }
+    .level-1 { background: var(--level-1); }
+    .level-2 { background: var(--level-2); }
+    .level-3 { background: var(--level-3); }
+    .level-4 { background: var(--level-4); }
+
+    .footer {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: .8rem;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: color-mix(in oklab, var(--accent) 12%, transparent);
+      color: var(--text);
+      border-radius: .7rem;
+      padding: .45rem .75rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 640px) {
+      .stats { grid-template-columns: 1fr; }
+      .cell { width: 1.9rem; height: 1.9rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app" aria-label="Habit heatmap tracker">
+    <header class="top">
+      <div>
+        <h1 class="title">🟩 Habit Heatmap</h1>
+        <p class="subtitle">Click a square to cycle intensity from 0 to 4 and build your momentum.</p>
+      </div>
+      <button id="themeBtn" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">🌙</button>
+    </header>
+
+    <section class="stats" aria-live="polite">
+      <article class="stat"><small>Total Check-ins</small><strong id="totalChecks">0</strong></article>
+      <article class="stat"><small>Strongest Habit</small><strong id="topHabit">—</strong></article>
+      <article class="stat"><small>Current Streak</small><strong id="streak">0 days</strong></article>
+    </section>
+
+    <div class="grid-wrap">
+      <table>
+        <thead>
+          <tr><th>Habit</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th></tr>
+        </thead>
+        <tbody id="body"></tbody>
+      </table>
+    </div>
+
+    <footer class="footer">
+      <span>Tip: keyboard users can tab to a cell and press Enter/Space to update it.</span>
+      <button id="resetBtn" class="btn" type="button">Reset Week</button>
+    </footer>
+  </main>
+
+  <script>
+    const habits = ["Exercise", "Read", "Deep Work", "Hydrate", "Sleep 8h"];
+    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    const key = "voa-habit-heatmap-v1";
+    const themeKey = "voa-habit-heatmap-theme";
+
+    const fallback = habits.map(() => days.map(() => 0));
+    let board = JSON.parse(localStorage.getItem(key) || "null") || fallback;
+
+    const tbody = document.getElementById("body");
+    const totalChecks = document.getElementById("totalChecks");
+    const topHabit = document.getElementById("topHabit");
+    const streak = document.getElementById("streak");
+
+    function save() { localStorage.setItem(key, JSON.stringify(board)); }
+
+    function cycle(r, c) {
+      board[r][c] = (board[r][c] + 1) % 5;
+      save();
+      render();
+    }
+
+    function render() {
+      tbody.innerHTML = "";
+      habits.forEach((habit, r) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${habit}</td>`;
+        days.forEach((day, c) => {
+          const td = document.createElement("td");
+          const b = document.createElement("button");
+          b.className = `cell level-${board[r][c]}`;
+          b.setAttribute("aria-label", `${habit} ${day} intensity ${board[r][c]}`);
+          b.addEventListener("click", () => cycle(r, c));
+          b.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); cycle(r, c); }
+          });
+          td.appendChild(b);
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+
+      const totals = board.map(row => row.reduce((a, b) => a + b, 0));
+      const all = totals.reduce((a, b) => a + b, 0);
+      totalChecks.textContent = all;
+      const max = Math.max(...totals);
+      topHabit.textContent = max === 0 ? "—" : habits[totals.indexOf(max)];
+
+      const today = (new Date().getDay() + 6) % 7; // monday index
+      let s = 0;
+      for (let d = today; d >= 0; d--) {
+        const hasAny = board.some(row => row[d] > 0);
+        if (!hasAny) break;
+        s++;
+      }
+      streak.textContent = `${s} day${s === 1 ? "" : "s"}`;
+    }
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      if (!confirm("Clear this week's heatmap?")) return;
+      board = habits.map(() => days.map(() => 0));
+      save();
+      render();
+    });
+
+    const root = document.documentElement;
+    const themeBtn = document.getElementById("themeBtn");
+    const applyTheme = (mode) => {
+      if (mode === "auto") root.removeAttribute("data-theme");
+      else root.setAttribute("data-theme", mode);
+      themeBtn.textContent = mode === "dark" ? "☀️" : mode === "light" ? "🌙" : "🌓";
+      themeBtn.title = `Theme: ${mode} (click to change)`;
+    };
+
+    let mode = localStorage.getItem(themeKey) || "auto";
+    applyTheme(mode);
+    themeBtn.addEventListener("click", () => {
+      mode = mode === "auto" ? "light" : mode === "light" ? "dark" : "auto";
+      localStorage.setItem(themeKey, mode);
+      applyTheme(mode);
+    });
+
+    render();
+  </script>
+</body>
+</html>
