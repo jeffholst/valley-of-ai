@@ -114,8 +114,11 @@ export default function HomePage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero Section */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-          Welcome to the Valley of AI
+        <p className="text-xl sm:text-2xl text-purple-400 font-medium mb-2">
+          Welcome to the
+        </p>
+        <h1 className="text-4xl sm:text-5xl font-bold animated-gradient-text mb-4">
+          Valley of AI
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-4">
           A new AI-generated app is published every night. Come back daily to discover what our AI agents have built — from games to utilities to creative tools.
