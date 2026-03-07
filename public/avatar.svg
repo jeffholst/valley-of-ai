@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <!-- Background gradient -->
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" style="stop-color:#4c1d95"/>
+      <stop offset="50%" style="stop-color:#2d1b4e"/>
+      <stop offset="100%" style="stop-color:#0a0a1a"/>
+    </radialGradient>
+    
+    <!-- Face glow gradient -->
+    <radialGradient id="faceGlow" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" style="stop-color:#c084fc;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:0"/>
+    </radialGradient>
+    
+    <!-- Eye glow -->
+    <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ffffff"/>
+      <stop offset="30%" style="stop-color:#60a5fa"/>
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0"/>
+    </radialGradient>
+    
+    <!-- Circuit line gradient -->
+    <linearGradient id="circuitGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:0"/>
+      <stop offset="50%" style="stop-color:#c084fc"/>
+      <stop offset="100%" style="stop-color:#a78bfa;stop-opacity:0"/>
+    </linearGradient>
+    
+    <!-- Mountain gradient -->
+    <linearGradient id="mountainGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#818cf8"/>
+      <stop offset="100%" style="stop-color:#4f46e5"/>
+    </linearGradient>
+    
+    <!-- Animated pulse gradient -->
+    <radialGradient id="pulseGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#f472b6"/>
+      <stop offset="50%" style="stop-color:#a855f7"/>
+      <stop offset="100%" style="stop-color:#6366f1"/>
+    </radialGradient>
+    
+    <!-- Filters -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="starGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Circular background -->
+  <circle cx="200" cy="200" r="200" fill="url(#bgGrad)"/>
+  
+  <!-- Stars in background -->
+  <g fill="white" filter="url(#starGlow)">
+    <circle cx="60" cy="80" r="2" opacity="0.8">
+      <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="340" cy="100" r="1.5" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.2;0.7" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="100" cy="50" r="1" opacity="0.6"/>
+    <circle cx="300" cy="60" r="1.5" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.4;0.7" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="50" cy="150" r="1" opacity="0.5"/>
+    <circle cx="350" cy="170" r="1.2" opacity="0.6"/>
+    <circle cx="80" cy="300" r="1.5" opacity="0.7"/>
+    <circle cx="320" cy="320" r="1" opacity="0.5"/>
+  </g>
+  
+  <!-- Valley mountains at bottom -->
+  <path d="M0 350 L50 300 L100 330 L150 280 L200 320 L250 270 L300 310 L350 290 L400 340 L400 400 L0 400 Z" fill="url(#mountainGrad)" opacity="0.8"/>
+  
+  <!-- AI Face outline - geometric/digital style -->
+  <g filter="url(#glow)">
+    <!-- Face circle/head -->
+    <circle cx="200" cy="180" r="100" fill="none" stroke="#a78bfa" stroke-width="3" opacity="0.6"/>
+    <circle cx="200" cy="180" r="90" fill="url(#faceGlow)"/>
+    
+    <!-- Digital face features -->
+    <!-- Left eye -->
+    <g transform="translate(155, 160)">
+      <ellipse rx="20" ry="12" fill="url(#eyeGlow)" filter="url(#softGlow)">
+        <animate attributeName="ry" values="12;2;12" dur="4s" repeatCount="indefinite"/>
+      </ellipse>
+      <circle r="6" fill="white" opacity="0.9"/>
+    </g>
+    
+    <!-- Right eye -->
+    <g transform="translate(245, 160)">
+      <ellipse rx="20" ry="12" fill="url(#eyeGlow)" filter="url(#softGlow)">
+        <animate attributeName="ry" values="12;2;12" dur="4s" repeatCount="indefinite"/>
+      </ellipse>
+      <circle r="6" fill="white" opacity="0.9"/>
+    </g>
+    
+    <!-- Neural network lines on face -->
+    <g stroke="#c084fc" stroke-width="1.5" fill="none" opacity="0.5">
+      <path d="M155 160 Q200 140 245 160">
+        <animate attributeName="opacity" values="0.5;0.8;0.5" dur="3s" repeatCount="indefinite"/>
+      </path>
+      <path d="M155 160 L130 130 M130 130 L110 145 M130 130 L115 110"/>
+      <path d="M245 160 L270 130 M270 130 L290 145 M270 130 L285 110"/>
+      <path d="M200 200 L200 230"/>
+      <path d="M180 220 Q200 240 220 220"/>
+    </g>
+    
+    <!-- Circuit nodes -->
+    <g fill="#c084fc" filter="url(#softGlow)">
+      <circle cx="130" cy="130" r="4">
+        <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="110" cy="145" r="3"/>
+      <circle cx="115" cy="110" r="3"/>
+      <circle cx="270" cy="130" r="4">
+        <animate attributeName="opacity" values="1;0.4;1" dur="2.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="290" cy="145" r="3"/>
+      <circle cx="285" cy="110" r="3"/>
+      <circle cx="200" cy="230" r="4"/>
+    </g>
+  </g>
+  
+  <!-- Floating AI orbs -->
+  <g filter="url(#glow)">
+    <circle cx="80" cy="220" r="8" fill="#f472b6" opacity="0.9">
+      <animate attributeName="cy" values="220;210;220" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="320" cy="200" r="6" fill="#34d399" opacity="0.85">
+      <animate attributeName="cy" values="200;190;200" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="60" cy="280" r="5" fill="#60a5fa" opacity="0.8">
+      <animate attributeName="cy" values="280;272;280" dur="3.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="340" cy="260" r="7" fill="#fbbf24" opacity="0.85">
+      <animate attributeName="cy" values="260;250;260" dur="2.8s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Connection lines between orbs -->
+  <g stroke="url(#circuitGrad)" stroke-width="1" fill="none" opacity="0.4">
+    <line x1="80" y1="220" x2="155" y2="160">
+      <animate attributeName="opacity" values="0.4;0.7;0.4" dur="3s" repeatCount="indefinite"/>
+    </line>
+    <line x1="320" y1="200" x2="245" y2="160">
+      <animate attributeName="opacity" values="0.4;0.6;0.4" dur="2.5s" repeatCount="indefinite"/>
+    </line>
+    <line x1="60" y1="280" x2="80" y2="220"/>
+    <line x1="340" y1="260" x2="320" y2="200"/>
+  </g>
+  
+  <!-- Outer ring pulses -->
+  <circle cx="200" cy="200" r="190" fill="none" stroke="#a855f7" stroke-width="2" opacity="0.3">
+    <animate attributeName="r" values="185;195;185" dur="4s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.3;0.1;0.3" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="200" cy="200" r="195" fill="none" stroke="#c084fc" stroke-width="1" opacity="0.2">
+    <animate attributeName="r" values="192;198;192" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.2;0.05;0.2" dur="3s" repeatCount="indefinite"/>
+  </circle>
+</svg>
