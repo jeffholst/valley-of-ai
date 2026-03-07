@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Word Weaver - Valley of AI</title>
+  <style>
+    :root{--bg:#0f172a;--bg2:#1e293b;--surface:#111827;--text:#f1f5f9;--muted:#94a3b8;--primary:#8b5cf6;--accent:#22d3ee}
+    @media (prefers-color-scheme: light){:root{--bg:#eef2ff;--bg2:#dbeafe;--surface:#fff;--text:#1e293b;--muted:#64748b;--primary:#6d28d9;--accent:#0891b2}}
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px;font-family:Inter,system-ui;background:radial-gradient(1000px 700px at 20% 20%,var(--bg2),var(--bg));color:var(--text)}
+    .card{width:min(760px,100%);background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid color-mix(in srgb,var(--muted) 25%,transparent);border-radius:20px;padding:18px;box-shadow:0 14px 38px #0004}
+    h1{margin:0 0 6px}.sub{margin:0 0 14px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.box{border:1px solid color-mix(in srgb,var(--muted) 25%,transparent);border-radius:14px;padding:10px;background:color-mix(in srgb,var(--surface) 94%,transparent)}
+    textarea{width:100%;min-height:170px;border:none;outline:none;background:transparent;color:var(--text);font:500 14px/1.5 ui-monospace,Consolas,monospace;resize:vertical}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+    button,select{border:1px solid color-mix(in srgb,var(--muted) 30%,transparent);border-radius:999px;padding:8px 12px;background:color-mix(in srgb,var(--surface) 92%,transparent);color:var(--text);font:inherit}
+    button{cursor:pointer;font-weight:600}.primary{background:var(--primary);border-color:transparent;color:#fff}
+    .stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}.pill{font-size:.85rem;color:var(--muted);padding:6px 10px;border:1px solid color-mix(in srgb,var(--muted) 25%,transparent);border-radius:999px}
+    @media (max-width:760px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>🧵 Word Weaver</h1>
+    <p class="sub">Transform text instantly: case conversion, spacing cleanup, and readability helpers.</p>
+    <div class="controls">
+      <button class="primary" data-op="sentence">Sentence case</button>
+      <button data-op="title">Title Case</button>
+      <button data-op="upper">UPPERCASE</button>
+      <button data-op="lower">lowercase</button>
+      <button data-op="slug">slug-case</button>
+      <button data-op="trim">Trim spaces</button>
+      <button id="copy">Copy output</button>
+      <button id="clear">Clear</button>
+    </div>
+    <section class="grid">
+      <article class="box"><strong>Input</strong><textarea id="in" placeholder="Paste or type text here..."></textarea></article>
+      <article class="box"><strong>Output</strong><textarea id="out" readonly placeholder="Transformed text appears here..."></textarea></article>
+    </section>
+    <div class="stats"><span class="pill" id="words">Words: 0</span><span class="pill" id="chars">Chars: 0</span><span class="pill" id="reading">Reading: 0s</span></div>
+  </main>
+<script>
+const input=document.getElementById('in'), out=document.getElementById('out');
+const words=document.getElementById('words'), chars=document.getElementById('chars'), reading=document.getElementById('reading');
+const tc=s=>s.toLowerCase().replace(/\b\w/g,m=>m.toUpperCase());
+const sc=s=>{s=s.trim().toLowerCase();return s? s[0].toUpperCase()+s.slice(1).replace(/([.!?]\s+\w)/g,m=>m.toUpperCase()):s};
+const slug=s=>s.toLowerCase().trim().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-');
+const trim=s=>s.split('\n').map(l=>l.trim().replace(/\s+/g,' ')).join('\n').trim();
+function stats(t){const w=t.trim()?t.trim().split(/\s+/).length:0;words.textContent=`Words: ${w}`;chars.textContent=`Chars: ${t.length}`;reading.textContent=`Reading: ${Math.ceil(w/200*60)||0}s`;}
+function apply(op){const t=input.value;let r=t; if(op==='title')r=tc(t); if(op==='sentence')r=sc(t); if(op==='upper')r=t.toUpperCase(); if(op==='lower')r=t.toLowerCase(); if(op==='slug')r=slug(t); if(op==='trim')r=trim(t); out.value=r; stats(r);}
+input.addEventListener('input',()=>{out.value=input.value;stats(out.value)});
+document.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>apply(b.dataset.op));
+document.getElementById('copy').onclick=async()=>{try{await navigator.clipboard.writeText(out.value)}catch{}};
+document.getElementById('clear').onclick=()=>{input.value='';out.value='';stats('')};
+</script>
+</body></html>
