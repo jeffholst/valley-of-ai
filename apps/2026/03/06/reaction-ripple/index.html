@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Reaction Ripple — Valley of AI</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --bg2:#1b2a4a;
+      --surface:#121b33;
+      --text:#eef4ff;
+      --muted:#9db0d8;
+      --primary:#7c9cff;
+      --accent:#22d3ee;
+      --good:#34d399;
+      --bad:#fb7185;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg:#edf4ff;
+        --bg2:#d6e5ff;
+        --surface:#ffffff;
+        --text:#1d2d4d;
+        --muted:#5f7096;
+        --primary:#3159e3;
+        --accent:#0891b2;
+        --good:#0f766e;
+        --bad:#be123c;
+      }
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh; display:grid; place-items:center; padding:16px;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      color:var(--text); background:radial-gradient(1000px 650px at 20% 20%,var(--bg2),var(--bg));
+    }
+    .card{width:min(680px,100%);background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid color-mix(in srgb,var(--muted) 26%,transparent);border-radius:22px;padding:20px;box-shadow:0 14px 45px #0004}
+    h1{margin:0 0 6px;font-size:1.65rem}
+    .sub{margin:0 0 14px;color:var(--muted)}
+    .arena{position:relative;height:280px;border-radius:18px;border:1px solid color-mix(in srgb,var(--muted) 28%,transparent);background:linear-gradient(180deg,#fff0,color-mix(in srgb,var(--primary) 12%,transparent));overflow:hidden;display:grid;place-items:center}
+    .target{position:absolute;width:72px;height:72px;border-radius:999px;background:radial-gradient(circle at 35% 35%,#fff8,var(--accent));cursor:pointer;box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 45%,transparent),0 10px 24px #0004;transition:transform .12s ease}
+    .target:active{transform:scale(.95)}
+    .target::after{content:"";position:absolute;inset:-18px;border:3px solid color-mix(in srgb,var(--accent) 60%,transparent);border-radius:999px;opacity:.5;animation:ripple 1.2s ease-out infinite}
+    @keyframes ripple{from{transform:scale(.6);opacity:.8}to{transform:scale(1.2);opacity:0}}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    button,select{font:inherit;padding:10px 14px;border-radius:999px;border:1px solid color-mix(in srgb,var(--muted) 28%,transparent);background:color-mix(in srgb,var(--surface) 92%,transparent);color:var(--text)}
+    button{cursor:pointer;font-weight:600}
+    .primary{background:var(--primary);border-color:transparent;color:#fff}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+    .stat{border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);background:color-mix(in srgb,var(--surface) 92%,transparent);padding:10px 12px;border-radius:12px}
+    .k{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .v{font-size:1.25rem;font-weight:700}
+    .msg{min-height:1.2rem;margin-top:10px;color:var(--good)}
+    .msg.fail{color:var(--bad)}
+    @media (max-width:600px){.stats{grid-template-columns:1fr}}
+    @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>⚡ Reaction Ripple</h1>
+    <p class="sub">Tap the glowing orb as fast as possible. 10 rounds. Beat your average.</p>
+    <section class="arena" id="arena" aria-label="reaction play area">
+      <button id="target" class="target" hidden aria-label="Tap target"></button>
+    </section>
+    <section class="controls">
+      <select id="difficulty" aria-label="Difficulty">
+        <option value="easy">Easy</option>
+        <option value="normal" selected>Normal</option>
+        <option value="hard">Hard</option>
+      </select>
+      <button id="start" class="primary">Start Challenge</button>
+      <button id="reset">Reset</button>
+    </section>
+    <section class="stats">
+      <article class="stat"><div class="k">Round</div><div class="v" id="round">0 / 10</div></article>
+      <article class="stat"><div class="k">Last reaction</div><div class="v" id="last">—</div></article>
+      <article class="stat"><div class="k">Average</div><div class="v" id="avg">—</div></article>
+    </section>
+    <p class="msg" id="msg"></p>
+  </main>
+
+  <script>
+    const arena = document.getElementById('arena');
+    const target = document.getElementById('target');
+    const roundEl = document.getElementById('round');
+    const lastEl = document.getElementById('last');
+    const avgEl = document.getElementById('avg');
+    const msgEl = document.getElementById('msg');
+    const difficultyEl = document.getElementById('difficulty');
+
+    let running = false, round = 0, reactions = [], showAt = 0, timeout;
+    const totalRounds = 10;
+    const delays = { easy:[900,1800], normal:[650,1400], hard:[450,950] };
+
+    const rand = (a,b)=> Math.random()*(b-a)+a;
+    const randomPos = () => {
+      const pad = 12, s = 72;
+      const w = arena.clientWidth - s - pad*2;
+      const h = arena.clientHeight - s - pad*2;
+      return { left: Math.max(0, rand(0,w))+pad, top: Math.max(0, rand(0,h))+pad };
+    };
+
+    function setMsg(text,fail=false){ msgEl.textContent=text; msgEl.classList.toggle('fail',fail); }
+    function updateStats(){
+      roundEl.textContent = `${round} / ${totalRounds}`;
+      if(reactions.length){
+        const last = reactions[reactions.length-1];
+        const avg = Math.round(reactions.reduce((a,b)=>a+b,0)/reactions.length);
+        lastEl.textContent = `${last} ms`;
+        avgEl.textContent = `${avg} ms`;
+      }
+    }
+
+    function nextRound(){
+      if(!running) return;
+      if(round >= totalRounds){
+        running = false;
+        target.hidden = true;
+        const avg = Math.round(reactions.reduce((a,b)=>a+b,0)/reactions.length);
+        const rank = avg < 280 ? 'Lightning hands 🏆' : avg < 380 ? 'Great reflexes ⚡' : 'Solid focus 🌿';
+        setMsg(`Done! Average ${avg} ms — ${rank}`);
+        return;
+      }
+      round += 1; updateStats();
+      setMsg('Wait for the orb...');
+      target.hidden = true;
+      const [min,max] = delays[difficultyEl.value];
+      timeout = setTimeout(()=>{
+        const p = randomPos();
+        target.style.left = `${p.left}px`;
+        target.style.top = `${p.top}px`;
+        target.hidden = false;
+        showAt = performance.now();
+        setMsg('Tap now!');
+      }, rand(min,max));
+    }
+
+    target.addEventListener('click', ()=>{
+      if(!running || target.hidden) return;
+      const ms = Math.round(performance.now() - showAt);
+      reactions.push(ms);
+      updateStats();
+      nextRound();
+    });
+
+    document.getElementById('start').addEventListener('click', ()=>{
+      if(running) return;
+      running = true; round = 0; reactions = []; updateStats();
+      lastEl.textContent = '—'; avgEl.textContent = '—';
+      setMsg('Challenge started');
+      nextRound();
+    });
+
+    document.getElementById('reset').addEventListener('click', ()=>{
+      running = false; clearTimeout(timeout); target.hidden = true; round = 0; reactions = [];
+      roundEl.textContent = '0 / 10'; lastEl.textContent = '—'; avgEl.textContent = '—'; setMsg('Reset complete');
+    });
+
+    arena.addEventListener('click', (e)=>{
+      if(running && !target.hidden && e.target !== target){
+        setMsg('Missed! Tap the orb itself.', true);
+      }
+    });
+  </script>
+</body>
+</html>
