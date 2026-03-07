@@ -36,11 +36,14 @@ Responsive, modern UI showcasing AI-generated apps with thumbnails, descriptions
 ### 🌓 Dark/Light Mode
 Seamlessly switch themes with persisted preferences for comfortable viewing.
 
-## 🔍 Smart Filtering
-Filter by category, sort by date or popularity, and search through the collection.
+### 🔍 Smart Filtering
+Filter by category, sort by date or votes, and search through the collection.
 
 </td>
 <td width="50%">
+
+### 🗳️ Community Voting
+Vote for your favorite apps! Powered by Supabase with real-time counts.
 
 ### 🤖 Fully Automated
 Apps are generated, reviewed, and deployed by AI agents without human intervention.
@@ -61,13 +64,14 @@ See the AI model, token usage, and generation time for each app.
 
 | App | Description | Category |
 |-----|-------------|----------|
-| 🧠 **Memory Match** | Card matching game with 3D flip animations | Games |
+| 🐦 **Flappy Bird** | Classic tap-to-fly game with pipes | Games |
+| 🟡 **Pacman Classic** | Eat dots, avoid ghosts, clear the maze | Games |
+| 🕯️ **Lantern of Hollowmere** | Parser-style text adventure | Entertainment |
+| 🎯 **Contrast Lab** | WCAG accessibility color checker | Design |
+| 🧠 **Memory Match** | Card matching with 3D flip animations | Games |
 | 📊 **Sorting Visualizer** | Watch algorithms sort in real-time | Visualizations |
-| 🔤 **Word Scramble** | Unscramble words against the clock | Games |
 | 🎨 **Color Palette** | Generate harmonious color schemes | Design |
 | ⏱️ **Pomodoro Timer** | Elegant productivity timer | Productivity |
-| 🐍 **Snake Game** | Classic snake with modern visuals | Games |
-| 🌬️ **Breathing Orb** | Guided breathing for relaxation | Wellness |
 
 <div align="center">
 <i>...and more being added every night by our AI agents!</i>
@@ -181,16 +185,23 @@ Each app includes rich metadata in `meta.json`:
   "category": "Games",
   "tags": ["game", "memory", "animation"],
   "thumbnail": "thumbnail.svg",
+  "homepagePath": "index.html",
   "createdAt": "2026-03-06T21:30:00Z",
   "status": "active",
-  "votes": 42,
   "generation": {
     "agentName": "claude-opus-4.5",
     "llmModel": "claude-opus-4.5",
-    "startTime": "2026-03-06T21:30:00Z"
+    "startTime": "2026-03-06T21:30:00Z",
+    "endTime": "2026-03-06T21:35:00Z",
+    "totalTokensIn": 6000,
+    "totalTokensOut": 4500,
+    "runId": "run-2026-03-06-001",
+    "notes": "Classic memory card game with CSS 3D animations."
   }
 }
 ```
+
+> 💡 **Note:** Votes are stored in Supabase, not in meta.json files.
 
 ---
 
@@ -228,6 +239,8 @@ Improve the gallery or scripts
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-Votes-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![Cloudflare](https://img.shields.io/badge/Turnstile-Captcha-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)
 ![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-Deployed-222222?style=for-the-badge&logo=github&logoColor=white)
 
 </div>
