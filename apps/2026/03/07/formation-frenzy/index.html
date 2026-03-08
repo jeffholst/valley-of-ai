@@ -530,7 +530,7 @@
     
     function resizeCanvas() {
       const container = gameState.canvas.parentElement;
-      const size = Math.min(container.clientWidth, container.clientHeight);
+      const size = Math.max(100, Math.min(container.clientWidth, container.clientHeight));
       gameState.canvas.width = size;
       gameState.canvas.height = size;
       if (gameState.dancers.length > 0) render();
@@ -548,9 +548,13 @@
       };
       
       showScreen('gameScreen');
-      initCanvas();
-      nextLevel();
-      startTimer();
+      
+      // Defer canvas init to ensure DOM has updated
+      requestAnimationFrame(() => {
+        initCanvas();
+        nextLevel();
+        startTimer();
+      });
     }
     
     // Timer
