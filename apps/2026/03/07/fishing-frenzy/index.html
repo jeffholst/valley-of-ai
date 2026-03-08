@@ -162,6 +162,64 @@
       text-shadow: 1px 1px 2px black;
     }
 
+    /* Depth Controls */
+    .depth-controls {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 50;
+    }
+
+    .depth-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: none;
+      background: var(--surface);
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      backdrop-filter: blur(5px);
+      transition: all 0.2s;
+    }
+
+    .depth-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+
+    .depth-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Bite Indicator */
+    .bite-indicator {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4rem;
+      font-weight: 900;
+      color: #ef4444;
+      text-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 100;
+      animation: none;
+    }
+
+    .bite-indicator.active {
+      animation: biteFlash 0.3s ease-in-out infinite;
+    }
+
+    @keyframes biteFlash {
+      0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.1); }
+    }
+
     /* Instructions */
     .instructions {
       position: fixed;
@@ -176,6 +234,7 @@
       z-index: 50;
       text-align: center;
       backdrop-filter: blur(5px);
+      max-width: 90vw;
     }
 
     /* Start Screen */
@@ -323,9 +382,18 @@
     <div class="power-fill" id="power-fill"></div>
   </div>
 
+  <!-- Depth Controls (mobile) -->
+  <div class="depth-controls" id="depth-controls" style="display: none;">
+    <button class="depth-btn" onclick="adjustDepth(-20)">▲</button>
+    <button class="depth-btn" onclick="adjustDepth(20)">▼</button>
+  </div>
+
+  <!-- Bite Indicator -->
+  <div class="bite-indicator" id="bite-indicator">🐟 BITE!</div>
+
   <!-- Instructions -->
   <div class="instructions" id="instructions">
-    Click/tap and hold to charge cast, release to throw your line!
+    Hold to charge cast, then use ↑↓ keys or scroll to adjust hook depth!
   </div>
 
   <!-- Game Canvas -->
@@ -399,17 +467,29 @@
     window.addEventListener('resize', resize);
 
     // Game Constants
-    const GAME_DURATION = 60;
-    const WATER_LEVEL = 0.55; // Water starts at 55% of screen height
+    const GAME_DURATION = 90;
+    const WATER_LEVEL = 0.45; // Water starts at 45% of screen height
     const DOCK_WIDTH = 120;
+    const MAX_DEPTH = 200; // Maximum hook depth below surface
+    const HOOK_SINK_SPEED = 1.5;
+    const BITE_DURATION = 2000; // ms to click when fish bites
+    const BITE_RADIUS = 35; // How close fish needs to be to hook
 
-    // Fish Types
+    // Depth zones for different fish
+    const DEPTH_ZONES = {
+      SHALLOW: { min: 20, max: 60, label: 'Shallow' },
+      MID: { min: 60, max: 120, label: 'Mid-water' },
+      DEEP: { min: 120, max: 200, label: 'Deep' }
+    };
+
+    // Fish Types with preferred depths
     const FISH_TYPES = [
-      { name: 'Minnow', emoji: '🐟', points: 10, size: 20, speed: 2.5, rarity: 0.4 },
-      { name: 'Trout', emoji: '🐠', points: 25, size: 28, speed: 2, rarity: 0.3 },
-      { name: 'Bass', emoji: '🐡', points: 50, size: 35, speed: 1.5, rarity: 0.15 },
-      { name: 'Goldfish', emoji: '🐟', points: 75, size: 25, speed: 3, rarity: 0.1, color: '#ffd700' },
-      { name: 'Shark', emoji: '🦈', points: 150, size: 50, speed: 1, rarity: 0.05 },
+      { name: 'Minnow', emoji: '🐟', points: 10, size: 18, speed: 3, rarity: 0.35, depthZone: 'SHALLOW', color: '#60a5fa' },
+      { name: 'Perch', emoji: '🐠', points: 25, size: 24, speed: 2.5, rarity: 0.25, depthZone: 'SHALLOW', color: '#f59e0b' },
+      { name: 'Trout', emoji: '🐟', points: 40, size: 30, speed: 2, rarity: 0.18, depthZone: 'MID', color: '#a78bfa' },
+      { name: 'Bass', emoji: '🐡', points: 60, size: 35, speed: 1.8, rarity: 0.12, depthZone: 'MID', color: '#22c55e' },
+      { name: 'Catfish', emoji: '🐟', points: 80, size: 40, speed: 1.2, rarity: 0.06, depthZone: 'DEEP', color: '#6b7280' },
+      { name: 'Shark', emoji: '🦈', points: 150, size: 55, speed: 1, rarity: 0.04, depthZone: 'DEEP', color: '#3b82f6' },
     ];
 
     // Game State
@@ -419,6 +499,7 @@
     let biggestCatch = 0;
     let timeLeft = GAME_DURATION;
     let timerId = null;
+    let missedBites = 0;
 
     // Entities
     let fishes = [];
@@ -433,30 +514,40 @@
       rodLength: 80,
       casting: false,
       reeling: false,
-      lineX: 0,
-      lineY: 0,
       bobberX: 0,
       bobberY: 0,
       bobberVX: 0,
       bobberVY: 0,
       lineInWater: false,
+      hookDepth: 0,        // Current depth of hook below bobber
+      targetHookDepth: 50, // Target depth (player controlled)
+      hookX: 0,            // Hook position
+      hookY: 0,
       catchingFish: null,
-      swingAngle: 0
+      swingAngle: 0,
+      bitingFish: null,    // Fish currently biting
+      biteTimer: 0,        // Time left to catch biting fish
+      bobberDip: 0         // Animation for bobber dipping
     };
 
     // Casting
     let castPower = 0;
     let isCharging = false;
-    let castAngle = -0.8;
+    let castAngle = -0.6;
 
     // Animation timing
     let lastTime = 0;
     let waveOffset = 0;
 
+    // Depth adjustment function (for buttons)
+    function adjustDepth(delta) {
+      if (!fisherman.lineInWater || fisherman.reeling) return;
+      fisherman.targetHookDepth = Math.max(10, Math.min(MAX_DEPTH, fisherman.targetHookDepth + delta));
+    }
+
     // Initialize fish pool
     function spawnFish() {
-      const waterTop = height * WATER_LEVEL + 30;
-      const waterBottom = height - 50;
+      const waterTop = height * WATER_LEVEL;
       
       // Random fish type based on rarity
       const roll = Math.random();
@@ -470,18 +561,25 @@
         }
       }
 
+      // Get depth range for this fish type
+      const zone = DEPTH_ZONES[type.depthZone];
+      const depth = zone.min + Math.random() * (zone.max - zone.min);
+      const y = waterTop + depth;
+
       const direction = Math.random() > 0.5 ? 1 : -1;
       const x = direction > 0 ? -type.size : width + type.size;
-      const y = waterTop + Math.random() * (waterBottom - waterTop - type.size);
 
       fishes.push({
         ...type,
         x,
         y,
+        depth,
         direction,
         baseY: y,
         phase: Math.random() * Math.PI * 2,
-        tailPhase: Math.random() * Math.PI * 2
+        tailPhase: Math.random() * Math.PI * 2,
+        interested: false, // Fish showing interest in bait
+        fleeing: false     // Fish scared away
       });
     }
 
@@ -509,7 +607,20 @@
     // Input handling
     function handlePointerDown(e) {
       if (gameState !== 'playing') return;
-      if (fisherman.casting || fisherman.reeling || fisherman.lineInWater) return;
+      
+      // If there's a biting fish, try to catch it!
+      if (fisherman.bitingFish && fisherman.lineInWater) {
+        catchBitingFish();
+        return;
+      }
+      
+      if (fisherman.casting || fisherman.reeling) return;
+      
+      // If line is in water, clicking reels in
+      if (fisherman.lineInWater) {
+        startReeling();
+        return;
+      }
       
       isCharging = true;
       castPower = 0;
@@ -529,7 +640,6 @@
     function handlePointerMove(e) {
       if (gameState !== 'playing') return;
       
-      // Update cast angle based on mouse position
       const rect = canvas.getBoundingClientRect();
       const mx = e.clientX || (e.touches && e.touches[0].clientX);
       const my = e.clientY || (e.touches && e.touches[0].clientY);
@@ -538,9 +648,33 @@
         const rodTipX = fisherman.x + 40;
         const rodTipY = fisherman.y - 20;
         castAngle = Math.atan2(my - rodTipY, mx - rodTipX);
-        castAngle = Math.max(-1.2, Math.min(-0.1, castAngle));
+        castAngle = Math.max(-1.0, Math.min(0.2, castAngle));
       }
     }
+
+    // Keyboard controls for depth
+    document.addEventListener('keydown', (e) => {
+      if (gameState !== 'playing' || !fisherman.lineInWater || fisherman.reeling) return;
+      
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+        fisherman.targetHookDepth = Math.max(10, fisherman.targetHookDepth - 15);
+        e.preventDefault();
+      } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+        fisherman.targetHookDepth = Math.min(MAX_DEPTH, fisherman.targetHookDepth + 15);
+        e.preventDefault();
+      } else if (e.key === ' ' && fisherman.bitingFish) {
+        catchBitingFish();
+        e.preventDefault();
+      }
+    });
+
+    // Mouse wheel for depth control
+    canvas.addEventListener('wheel', (e) => {
+      if (gameState !== 'playing' || !fisherman.lineInWater || fisherman.reeling) return;
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? 20 : -20;
+      fisherman.targetHookDepth = Math.max(10, Math.min(MAX_DEPTH, fisherman.targetHookDepth + delta));
+    }, { passive: false });
 
     canvas.addEventListener('mousedown', handlePointerDown);
     canvas.addEventListener('mouseup', handlePointerUp);
@@ -549,48 +683,53 @@
     canvas.addEventListener('touchend', e => { e.preventDefault(); handlePointerUp(e); });
     canvas.addEventListener('touchmove', e => { e.preventDefault(); handlePointerMove(e.touches[0]); });
 
-    // Reel back with click when line is in water
-    canvas.addEventListener('click', () => {
-      if (gameState !== 'playing') return;
-      if (fisherman.lineInWater && !fisherman.reeling) {
-        startReeling();
-      }
-    });
-
     function castLine() {
       fisherman.casting = true;
       fisherman.swingAngle = 0;
+      fisherman.hookDepth = 0;
+      fisherman.targetHookDepth = 50;
+      fisherman.bitingFish = null;
+      fisherman.biteTimer = 0;
       
       const power = castPower / 100;
       const angle = castAngle;
       
-      // Calculate where bobber will land
       const rodTipX = fisherman.x + 40 + Math.cos(angle) * fisherman.rodLength;
       const rodTipY = fisherman.y - 20 + Math.sin(angle) * fisherman.rodLength;
       
       fisherman.bobberX = rodTipX;
       fisherman.bobberY = rodTipY;
-      fisherman.bobberVX = Math.cos(angle) * power * 15;
-      fisherman.bobberVY = Math.sin(angle) * power * 12 - 5;
+      fisherman.bobberVX = Math.cos(angle) * power * 18;
+      fisherman.bobberVY = Math.sin(angle) * power * 14 - 6;
+    }
+
+    function catchBitingFish() {
+      if (!fisherman.bitingFish) return;
+      
+      const fish = fisherman.bitingFish;
+      fisherman.catchingFish = fish;
+      fisherman.bitingFish = null;
+      fisherman.biteTimer = 0;
+      
+      // Remove from fish array
+      const idx = fishes.indexOf(fish);
+      if (idx > -1) fishes.splice(idx, 1);
+      
+      // Start reeling with the fish
+      startReeling();
+      
+      // Hide bite indicator
+      document.getElementById('bite-indicator').classList.remove('active');
+      document.getElementById('bite-indicator').style.opacity = '0';
     }
 
     function startReeling() {
       fisherman.reeling = true;
-      
-      // Check if any fish is near the bobber
-      const catchRadius = 40;
-      for (let i = fishes.length - 1; i >= 0; i--) {
-        const f = fishes[i];
-        const dx = f.x - fisherman.bobberX;
-        const dy = f.y - fisherman.bobberY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        
-        if (dist < catchRadius + f.size / 2) {
-          fisherman.catchingFish = f;
-          fishes.splice(i, 1);
-          break;
-        }
-      }
+      fisherman.bitingFish = null;
+      fisherman.biteTimer = 0;
+      document.getElementById('bite-indicator').classList.remove('active');
+      document.getElementById('bite-indicator').style.opacity = '0';
+      document.getElementById('depth-controls').style.display = 'none';
     }
 
     function catchFish(fish) {
@@ -600,7 +739,7 @@
       
       // Show popup
       const popup = document.getElementById('catch-popup');
-      popup.textContent = `${fish.emoji} +${fish.points}`;
+      popup.textContent = `${fish.emoji} ${fish.name}! +${fish.points}`;
       popup.classList.remove('show');
       void popup.offsetWidth;
       popup.classList.add('show');
@@ -614,15 +753,54 @@
       document.getElementById('timer').textContent = timeLeft;
     }
 
+    // Check if any fish wants to bite
+    function checkForBites() {
+      if (!fisherman.lineInWater || fisherman.reeling || fisherman.bitingFish) return;
+      
+      const hookX = fisherman.hookX;
+      const hookY = fisherman.hookY;
+      
+      for (const fish of fishes) {
+        if (fish.fleeing) continue;
+        
+        const dx = fish.x - hookX;
+        const dy = fish.y - hookY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        
+        // Fish shows interest when nearby
+        if (dist < BITE_RADIUS * 2) {
+          fish.interested = true;
+          
+          // Fish bites when very close!
+          if (dist < BITE_RADIUS && Math.random() < 0.02) {
+            fisherman.bitingFish = fish;
+            fisherman.biteTimer = BITE_DURATION;
+            fisherman.bobberDip = 1;
+            
+            // Show bite indicator
+            document.getElementById('bite-indicator').classList.add('active');
+            document.getElementById('bite-indicator').style.opacity = '1';
+            document.getElementById('instructions').textContent = '🐟 CLICK NOW to catch the fish!';
+            
+            addRipple(fisherman.bobberX, fisherman.bobberY);
+            break;
+          }
+        } else {
+          fish.interested = false;
+        }
+      }
+    }
+
     // Game loop
     function update(dt) {
       if (gameState !== 'playing') return;
+      if (!dt || dt > 100) dt = 16; // Cap delta time
       
       waveOffset += dt * 0.001;
       
       // Charge power
       if (isCharging) {
-        castPower = Math.min(100, castPower + dt * 0.15);
+        castPower = Math.min(100, castPower + dt * 0.12);
         document.getElementById('power-fill').style.width = castPower + '%';
       }
       
@@ -634,13 +812,13 @@
         fisherman.swingAngle += dt * 0.015;
         
         // Bobber physics
-        fisherman.bobberVY += dt * 0.03; // gravity
+        fisherman.bobberVY += dt * 0.025; // gravity
         fisherman.bobberX += fisherman.bobberVX;
         fisherman.bobberY += fisherman.bobberVY;
         fisherman.bobberVX *= 0.99;
         
         // Check if bobber hits water
-        const waterY = height * WATER_LEVEL + 20;
+        const waterY = height * WATER_LEVEL + 10;
         if (fisherman.bobberY > waterY) {
           fisherman.bobberY = waterY;
           fisherman.bobberVY = 0;
@@ -648,13 +826,52 @@
           fisherman.casting = false;
           fisherman.lineInWater = true;
           addRipple(fisherman.bobberX, fisherman.bobberY);
-          document.getElementById('instructions').textContent = 'Click to reel in! Cast near fish to catch them!';
+          document.getElementById('depth-controls').style.display = 'flex';
+          document.getElementById('instructions').textContent = '↑↓ or scroll to adjust depth. Click when a fish bites!';
         }
       }
       
       // Bobber bobbing in water
       if (fisherman.lineInWater && !fisherman.reeling) {
-        fisherman.bobberY = height * WATER_LEVEL + 20 + Math.sin(Date.now() * 0.005) * 3;
+        const waterY = height * WATER_LEVEL + 10;
+        const bobAmount = Math.sin(Date.now() * 0.004) * 3;
+        const dipAmount = fisherman.bobberDip * 8;
+        fisherman.bobberY = waterY + bobAmount + dipAmount;
+        
+        // Decay bobber dip
+        if (fisherman.bobberDip > 0) {
+          fisherman.bobberDip = Math.max(0, fisherman.bobberDip - dt * 0.003);
+        }
+        
+        // Hook sinks/rises to target depth
+        const depthDiff = fisherman.targetHookDepth - fisherman.hookDepth;
+        if (Math.abs(depthDiff) > 1) {
+          fisherman.hookDepth += Math.sign(depthDiff) * HOOK_SINK_SPEED * (dt / 16);
+        }
+        
+        // Update hook position
+        fisherman.hookX = fisherman.bobberX;
+        fisherman.hookY = fisherman.bobberY + fisherman.hookDepth;
+        
+        // Check for fish bites
+        checkForBites();
+        
+        // Handle bite timer
+        if (fisherman.bitingFish) {
+          fisherman.biteTimer -= dt;
+          fisherman.bobberDip = 0.5 + Math.sin(Date.now() * 0.02) * 0.3;
+          
+          if (fisherman.biteTimer <= 0) {
+            // Fish got away!
+            missedBites++;
+            fisherman.bitingFish.fleeing = true; // Fish swims away fast
+            fisherman.bitingFish = null;
+            fisherman.bobberDip = 0;
+            document.getElementById('bite-indicator').classList.remove('active');
+            document.getElementById('bite-indicator').style.opacity = '0';
+            document.getElementById('instructions').textContent = '🐟 It got away! Adjust depth and try again!';
+          }
+        }
       }
       
       // Reeling animation
@@ -662,53 +879,75 @@
         const rodTipX = fisherman.x + 60;
         const rodTipY = fisherman.y - 30;
         
-        const dx = rodTipX - fisherman.bobberX;
-        const dy = rodTipY - fisherman.bobberY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        
-        if (dist < 20) {
-          // Done reeling
-          fisherman.reeling = false;
-          fisherman.lineInWater = false;
+        // First reel up the hook, then the bobber
+        if (fisherman.hookDepth > 5) {
+          fisherman.hookDepth -= 4;
+          fisherman.hookY = fisherman.bobberY + fisherman.hookDepth;
           
           if (fisherman.catchingFish) {
-            catchFish(fisherman.catchingFish);
-            fisherman.catchingFish = null;
+            fisherman.catchingFish.x = fisherman.hookX;
+            fisherman.catchingFish.y = fisherman.hookY;
           }
-          
-          document.getElementById('instructions').textContent = 'Click/tap and hold to charge cast, release to throw!';
         } else {
-          const speed = 8;
-          fisherman.bobberX += (dx / dist) * speed;
-          fisherman.bobberY += (dy / dist) * speed;
+          const dx = rodTipX - fisherman.bobberX;
+          const dy = rodTipY - fisherman.bobberY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
           
-          if (fisherman.catchingFish) {
-            fisherman.catchingFish.x = fisherman.bobberX;
-            fisherman.catchingFish.y = fisherman.bobberY;
+          if (dist < 20) {
+            // Done reeling
+            fisherman.reeling = false;
+            fisherman.lineInWater = false;
+            fisherman.hookDepth = 0;
+            
+            if (fisherman.catchingFish) {
+              catchFish(fisherman.catchingFish);
+              fisherman.catchingFish = null;
+            }
+            
+            document.getElementById('instructions').textContent = 'Hold to charge cast. Good luck!';
+          } else {
+            const speed = 10;
+            fisherman.bobberX += (dx / dist) * speed;
+            fisherman.bobberY += (dy / dist) * speed;
+            
+            fisherman.hookX = fisherman.bobberX;
+            fisherman.hookY = fisherman.bobberY + fisherman.hookDepth;
+            
+            if (fisherman.catchingFish) {
+              fisherman.catchingFish.x = fisherman.hookX;
+              fisherman.catchingFish.y = fisherman.hookY;
+            }
           }
         }
       }
       
       // Update fish
-      fishes.forEach((f, i) => {
-        f.x += f.speed * f.direction;
-        f.y = f.baseY + Math.sin(Date.now() * 0.003 + f.phase) * 8;
-        f.tailPhase += dt * 0.02;
+      for (let i = fishes.length - 1; i >= 0; i--) {
+        const f = fishes[i];
         
-        // Remove off-screen fish
+        // Fleeing fish swim away fast
+        const speed = f.fleeing ? f.speed * 3 : (f.interested ? f.speed * 0.3 : f.speed);
+        f.x += speed * f.direction;
+        
+        // Vertical swimming motion
+        f.y = f.baseY + Math.sin(Date.now() * 0.003 + f.phase) * 6;
+        f.tailPhase += dt * 0.02 * (f.interested ? 1.5 : 1);
+        
+        // Clear fleeing status after going offscreen
         if ((f.direction > 0 && f.x > width + f.size) ||
             (f.direction < 0 && f.x < -f.size)) {
           fishes.splice(i, 1);
         }
-      });
+      }
       
-      // Spawn fish
-      if (Math.random() < 0.02 && fishes.length < 12) {
+      // Spawn fish more frequently
+      if (Math.random() < 0.025 && fishes.length < 15) {
         spawnFish();
       }
       
       // Update bubbles
-      bubbles.forEach((b, i) => {
+      for (let i = bubbles.length - 1; i >= 0; i--) {
+        const b = bubbles[i];
         b.y -= b.speed;
         b.wobble += dt * 0.01;
         b.x += Math.sin(b.wobble) * 0.3;
@@ -716,7 +955,7 @@
         if (b.y < height * WATER_LEVEL) {
           bubbles.splice(i, 1);
         }
-      });
+      }
       
       // Spawn bubbles
       if (Math.random() < 0.03) {
@@ -724,21 +963,23 @@
       }
       
       // Update ripples
-      ripples.forEach((r, i) => {
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const r = ripples[i];
         r.radius += dt * 0.05;
         r.alpha -= dt * 0.002;
         
         if (r.alpha <= 0 || r.radius > r.maxRadius) {
           ripples.splice(i, 1);
         }
-      });
+      }
     }
 
     function render() {
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const waterTop = height * WATER_LEVEL;
       
       // Sky gradient
-      const skyGrad = ctx.createLinearGradient(0, 0, 0, height * WATER_LEVEL);
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, waterTop);
       if (isDark) {
         skyGrad.addColorStop(0, '#0a0a1f');
         skyGrad.addColorStop(1, '#1a1a3e');
@@ -747,7 +988,7 @@
         skyGrad.addColorStop(1, '#b0e0e6');
       }
       ctx.fillStyle = skyGrad;
-      ctx.fillRect(0, 0, width, height * WATER_LEVEL);
+      ctx.fillRect(0, 0, width, waterTop);
       
       // Sun/Moon
       ctx.beginPath();
@@ -765,52 +1006,59 @@
         ctx.fillStyle = '#ffffff';
         for (let i = 0; i < 30; i++) {
           ctx.beginPath();
-          ctx.arc((i * 97 + 50) % width, (i * 43 + 20) % (height * WATER_LEVEL - 20), 1, 0, Math.PI * 2);
+          ctx.arc((i * 97 + 50) % width, (i * 43 + 20) % (waterTop - 20), 1, 0, Math.PI * 2);
           ctx.fill();
         }
       }
       
       // Grass/shore
       ctx.fillStyle = isDark ? '#0f4c0f' : '#228B22';
-      ctx.fillRect(0, height * WATER_LEVEL - 20, DOCK_WIDTH + 60, 40);
+      ctx.fillRect(0, waterTop - 20, DOCK_WIDTH + 60, 40);
       
-      // Water
-      const waterGrad = ctx.createLinearGradient(0, height * WATER_LEVEL, 0, height);
+      // Water with depth zones
+      const waterGrad = ctx.createLinearGradient(0, waterTop, 0, height);
       if (isDark) {
         waterGrad.addColorStop(0, '#0a2463');
-        waterGrad.addColorStop(1, '#051937');
+        waterGrad.addColorStop(0.3, '#072050');
+        waterGrad.addColorStop(0.6, '#051937');
+        waterGrad.addColorStop(1, '#030d20');
       } else {
         waterGrad.addColorStop(0, '#1e90ff');
-        waterGrad.addColorStop(1, '#0066cc');
+        waterGrad.addColorStop(0.3, '#1a7fd1');
+        waterGrad.addColorStop(0.6, '#0066cc');
+        waterGrad.addColorStop(1, '#004499');
       }
       ctx.fillStyle = waterGrad;
-      ctx.fillRect(0, height * WATER_LEVEL, width, height);
+      ctx.fillRect(0, waterTop, width, height);
+      
+      // Depth zone indicators on right side
+      if (fisherman.lineInWater && !fisherman.reeling) {
+        drawDepthIndicator(isDark);
+      }
       
       // Animated waves
       ctx.fillStyle = isDark ? 'rgba(100, 150, 255, 0.3)' : 'rgba(255, 255, 255, 0.3)';
       ctx.beginPath();
-      ctx.moveTo(0, height * WATER_LEVEL);
+      ctx.moveTo(0, waterTop);
       for (let x = 0; x <= width; x += 20) {
-        const y = height * WATER_LEVEL + Math.sin(x * 0.02 + waveOffset * 2) * 5;
+        const y = waterTop + Math.sin(x * 0.02 + waveOffset * 2) * 5;
         ctx.lineTo(x, y);
       }
-      ctx.lineTo(width, height * WATER_LEVEL + 15);
-      ctx.lineTo(0, height * WATER_LEVEL + 15);
+      ctx.lineTo(width, waterTop + 15);
+      ctx.lineTo(0, waterTop + 15);
       ctx.fill();
       
       // Dock
       ctx.fillStyle = isDark ? '#5a3510' : '#8B4513';
-      ctx.fillRect(0, height * WATER_LEVEL - 15, DOCK_WIDTH, 20);
-      // Dock posts
-      ctx.fillRect(20, height * WATER_LEVEL, 10, 50);
-      ctx.fillRect(DOCK_WIDTH - 30, height * WATER_LEVEL, 10, 50);
-      // Dock planks
+      ctx.fillRect(0, waterTop - 15, DOCK_WIDTH, 20);
+      ctx.fillRect(20, waterTop, 10, 50);
+      ctx.fillRect(DOCK_WIDTH - 30, waterTop, 10, 50);
       ctx.strokeStyle = isDark ? '#3d2409' : '#654321';
       ctx.lineWidth = 2;
       for (let x = 10; x < DOCK_WIDTH; x += 20) {
         ctx.beginPath();
-        ctx.moveTo(x, height * WATER_LEVEL - 15);
-        ctx.lineTo(x, height * WATER_LEVEL + 5);
+        ctx.moveTo(x, waterTop - 15);
+        ctx.lineTo(x, waterTop + 5);
         ctx.stroke();
       }
       
@@ -837,13 +1085,20 @@
         ctx.translate(f.x, f.y);
         ctx.scale(f.direction, 1);
         
+        // Glow effect for interested fish
+        if (f.interested && !f.fleeing) {
+          ctx.shadowColor = f.color;
+          ctx.shadowBlur = 15;
+        }
+        
         // Fish body
-        ctx.fillStyle = f.color || (isDark ? '#4ade80' : '#22c55e');
+        ctx.fillStyle = f.color || '#22c55e';
+        ctx.globalAlpha = f.fleeing ? 0.5 : 1;
         ctx.beginPath();
         ctx.ellipse(0, 0, f.size / 2, f.size / 3, 0, 0, Math.PI * 2);
         ctx.fill();
         
-        // Tail (animated)
+        // Tail
         const tailWag = Math.sin(f.tailPhase) * 0.3;
         ctx.beginPath();
         ctx.moveTo(-f.size / 2, 0);
@@ -853,6 +1108,8 @@
         ctx.fill();
         
         // Eye
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1;
         ctx.fillStyle = '#fff';
         ctx.beginPath();
         ctx.arc(f.size / 4, -f.size / 8, f.size / 8, 0, Math.PI * 2);
@@ -868,12 +1125,13 @@
       // Draw fisherman
       drawFisherman();
       
-      // Draw fishing line
+      // Draw fishing line and hook
       if (fisherman.casting || fisherman.lineInWater || fisherman.reeling) {
         const rodTipX = fisherman.x + 40 + Math.cos(fisherman.rodAngle) * fisherman.rodLength;
         const rodTipY = fisherman.y - 20 + Math.sin(fisherman.rodAngle) * fisherman.rodLength;
         
-        ctx.strokeStyle = '#999';
+        // Line to bobber
+        ctx.strokeStyle = '#888';
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(rodTipX, rodTipY);
@@ -881,20 +1139,35 @@
         ctx.stroke();
         
         // Bobber
+        const bobberDipOffset = fisherman.bobberDip * 5;
         ctx.fillStyle = '#ef4444';
         ctx.beginPath();
-        ctx.arc(fisherman.bobberX, fisherman.bobberY, 8, 0, Math.PI * 2);
+        ctx.arc(fisherman.bobberX, fisherman.bobberY + bobberDipOffset, 8, 0, Math.PI * 2);
         ctx.fill();
         ctx.fillStyle = '#fff';
         ctx.beginPath();
-        ctx.arc(fisherman.bobberX, fisherman.bobberY - 3, 8, Math.PI, 0);
+        ctx.arc(fisherman.bobberX, fisherman.bobberY + bobberDipOffset - 3, 8, Math.PI, 0);
         ctx.fill();
         
-        // Draw caught fish on line
+        // Line from bobber to hook (underwater)
+        if (fisherman.lineInWater || fisherman.hookDepth > 5) {
+          ctx.strokeStyle = 'rgba(150, 150, 150, 0.6)';
+          ctx.setLineDash([4, 4]);
+          ctx.beginPath();
+          ctx.moveTo(fisherman.bobberX, fisherman.bobberY + bobberDipOffset);
+          ctx.lineTo(fisherman.hookX, fisherman.hookY);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          
+          // Hook with bait
+          drawHook(fisherman.hookX, fisherman.hookY, fisherman.bitingFish !== null);
+        }
+        
+        // Draw caught fish on hook
         if (fisherman.catchingFish && fisherman.reeling) {
           const f = fisherman.catchingFish;
           ctx.save();
-          ctx.translate(f.x, f.y + 15);
+          ctx.translate(f.x, f.y);
           ctx.fillStyle = f.color || '#22c55e';
           ctx.beginPath();
           ctx.ellipse(0, 0, f.size / 2, f.size / 3, 0, 0, Math.PI * 2);
@@ -902,6 +1175,80 @@
           ctx.restore();
         }
       }
+    }
+
+    function drawDepthIndicator(isDark) {
+      const indicatorX = width - 60;
+      const indicatorTop = height * WATER_LEVEL + 30;
+      const indicatorHeight = MAX_DEPTH;
+      
+      // Background bar
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+      ctx.fillRect(indicatorX - 15, indicatorTop, 30, indicatorHeight);
+      
+      // Depth zone colors
+      const zones = [
+        { zone: DEPTH_ZONES.SHALLOW, color: isDark ? '#60a5fa55' : '#60a5fa77' },
+        { zone: DEPTH_ZONES.MID, color: isDark ? '#a78bfa55' : '#a78bfa77' },
+        { zone: DEPTH_ZONES.DEEP, color: isDark ? '#3b82f655' : '#3b82f677' }
+      ];
+      
+      zones.forEach(({ zone, color }) => {
+        ctx.fillStyle = color;
+        ctx.fillRect(indicatorX - 15, indicatorTop + zone.min, 30, zone.max - zone.min);
+      });
+      
+      // Hook position marker
+      const hookY = indicatorTop + fisherman.hookDepth;
+      ctx.fillStyle = fisherman.bitingFish ? '#ef4444' : '#22c55e';
+      ctx.beginPath();
+      ctx.moveTo(indicatorX - 20, hookY);
+      ctx.lineTo(indicatorX - 30, hookY - 8);
+      ctx.lineTo(indicatorX - 30, hookY + 8);
+      ctx.closePath();
+      ctx.fill();
+      
+      // Depth label
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(Math.round(fisherman.hookDepth) + 'm', indicatorX - 35, hookY + 4);
+      
+      // Zone labels
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Shallow', indicatorX, indicatorTop + 40);
+      ctx.fillText('Mid', indicatorX, indicatorTop + 90);
+      ctx.fillText('Deep', indicatorX, indicatorTop + 160);
+    }
+
+    function drawHook(x, y, hasBite) {
+      ctx.save();
+      ctx.translate(x, y);
+      
+      // Glow when fish is biting
+      if (hasBite) {
+        ctx.shadowColor = '#22c55e';
+        ctx.shadowBlur = 20;
+      }
+      
+      // Hook
+      ctx.strokeStyle = '#888';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, -8);
+      ctx.lineTo(0, 5);
+      ctx.arc(5, 5, 5, Math.PI, 0, true);
+      ctx.lineTo(10, 0);
+      ctx.stroke();
+      
+      // Bait (worm)
+      ctx.fillStyle = hasBite ? '#22c55e' : '#f97316';
+      ctx.beginPath();
+      ctx.ellipse(3, 8, 6, 3, 0.3, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.restore();
     }
 
     function drawCloud(x, y, scale) {
@@ -935,7 +1282,7 @@
       ctx.fillRect(x + 10, y - 72, 30, 8);
       ctx.fillRect(x + 15, y - 82, 20, 12);
       
-      // Arm holding rod
+      // Arm
       ctx.strokeStyle = '#fcd5b4';
       ctx.lineWidth = 8;
       ctx.lineCap = 'round';
@@ -944,7 +1291,7 @@
       ctx.lineTo(x + 50, y - 25);
       ctx.stroke();
       
-      // Fishing rod
+      // Rod
       const rodAngle = fisherman.casting ? castAngle - Math.sin(fisherman.swingAngle) * 0.5 : castAngle;
       fisherman.rodAngle = rodAngle;
       
@@ -984,6 +1331,7 @@
       score = 0;
       fishCaught = 0;
       biggestCatch = 0;
+      missedBites = 0;
       timeLeft = GAME_DURATION;
       
       fishes = [];
@@ -994,11 +1342,15 @@
       fisherman.reeling = false;
       fisherman.lineInWater = false;
       fisherman.catchingFish = null;
+      fisherman.bitingFish = null;
+      fisherman.biteTimer = 0;
+      fisherman.hookDepth = 0;
+      fisherman.targetHookDepth = 50;
       castPower = 0;
       isCharging = false;
       
-      // Spawn initial fish
-      for (let i = 0; i < 6; i++) {
+      // Spawn initial fish across all depths
+      for (let i = 0; i < 8; i++) {
         spawnFish();
         fishes[fishes.length - 1].x = DOCK_WIDTH + 100 + Math.random() * (width - DOCK_WIDTH - 200);
       }
@@ -1007,10 +1359,10 @@
       document.getElementById('game-over-screen').classList.add('hidden');
       document.getElementById('hud').style.display = 'flex';
       document.getElementById('instructions').style.display = 'block';
+      document.getElementById('depth-controls').style.display = 'none';
       
       updateHUD();
       
-      // Start timer
       if (timerId) clearInterval(timerId);
       timerId = setInterval(() => {
         timeLeft--;
@@ -1029,13 +1381,16 @@
       document.getElementById('hud').style.display = 'none';
       document.getElementById('instructions').style.display = 'none';
       document.getElementById('power-meter').style.display = 'none';
+      document.getElementById('depth-controls').style.display = 'none';
+      document.getElementById('bite-indicator').classList.remove('active');
+      document.getElementById('bite-indicator').style.opacity = '0';
       
       // Calculate rank
       let rank;
-      if (score >= 500) rank = '🏆 Master Angler';
-      else if (score >= 300) rank = '⭐ Expert Fisher';
-      else if (score >= 150) rank = '🎣 Skilled Caster';
-      else if (score >= 75) rank = '🐟 Pond Regular';
+      if (score >= 600) rank = '🏆 Master Angler';
+      else if (score >= 400) rank = '⭐ Expert Fisher';
+      else if (score >= 200) rank = '🎣 Skilled Caster';
+      else if (score >= 100) rank = '🐟 Pond Regular';
       else rank = '🪱 Bait Collector';
       
       document.getElementById('final-score').textContent = score;
