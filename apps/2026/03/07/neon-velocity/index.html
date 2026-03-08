@@ -553,11 +553,13 @@
 
     // Game Constants
     const LANE_COUNT = 3;
-    const GRAVITY = 0.8;
-    const JUMP_FORCE = -15;
-    const BASE_SPEED = 8;
-    const MAX_SPEED = 20;
-    const SPEED_INCREMENT = 0.001;
+    const GRAVITY = 0.6;
+    const JUMP_FORCE = -14;
+    const BASE_SPEED = 5;
+    const MAX_SPEED = 18;
+    const SPEED_INCREMENT = 0.0008;
+    const GRACE_PERIOD = 2000; // 2 seconds before obstacles spawn
+    const MIN_OBSTACLE_SPACING = 300; // minimum pixels between obstacles
     
     // Canvas Setup
     const canvas = document.getElementById('game');
@@ -610,6 +612,8 @@
     let highScore = parseInt(localStorage.getItem('neon-velocity-high') || '0');
     let lastTime = 0;
     let deltaTime = 0;
+    let gameStartTime = 0;
+    let lastObstacleX = 0;
 
     // Player
     const player = {
@@ -677,9 +681,9 @@
 
     // Obstacle Types
     const OBSTACLE_TYPES = [
-      { type: 'barrier', width: 0.8, height: 0.6, color: COLORS.red },
-      { type: 'spike', width: 0.4, height: 0.8, color: COLORS.orange },
-      { type: 'wall', width: 0.9, height: 1.2, color: COLORS.red },
+      { type: 'barrier', width: 0.7, height: 0.5, color: COLORS.red },
+      { type: 'spike', width: 0.35, height: 0.6, color: COLORS.orange },
+      { type: 'wall', width: 0.8, height: 0.75, color: COLORS.red },
     ];
 
     // Power-up Types
@@ -691,9 +695,13 @@
     ];
 
     function spawnObstacle() {
+      // Check minimum spacing from last obstacle
+      if (lastObstacleX > width - MIN_OBSTACLE_SPACING) return;
+      
       const obstType = OBSTACLE_TYPES[Math.floor(Math.random() * OBSTACLE_TYPES.length)];
       const lane = Math.floor(Math.random() * LANE_COUNT);
       
+      lastObstacleX = width + 100;
       obstacles.push({
         ...obstType,
         lane,
@@ -801,6 +809,8 @@
       maxCombo = 1;
       orbsCollected = 0;
       speed = BASE_SPEED;
+      gameStartTime = Date.now();
+      lastObstacleX = 0;
       
       player.lane = 1;
       player.vy = 0;
@@ -934,10 +944,11 @@
       if (player.doublePoints && now > player.doublePointsTime) player.doublePoints = false;
       if (player.slowMotion && now > player.slowMotionTime) player.slowMotion = false;
       
-      // Spawn objects
-      if (Math.random() < 0.02 + speed * 0.001) spawnObstacle();
+      // Spawn objects (with grace period for obstacles)
+      const elapsed = Date.now() - gameStartTime;
+      if (elapsed > GRACE_PERIOD && Math.random() < 0.015 + speed * 0.0008) spawnObstacle();
       if (Math.random() < 0.04) spawnOrb();
-      if (Math.random() < 0.005) spawnPowerUp();
+      if (elapsed > GRACE_PERIOD * 0.5 && Math.random() < 0.004) spawnPowerUp();
       
       // Update grid lines
       gridLines.forEach(line => {
@@ -986,6 +997,9 @@
         
         if (obs.x < -100) obstacles.splice(i, 1);
       }
+      
+      // Track rightmost obstacle for minimum spacing
+      lastObstacleX = obstacles.reduce((max, obs) => Math.max(max, obs.x), 0);
       
       // Update orbs
       for (let i = orbs.length - 1; i >= 0; i--) {
