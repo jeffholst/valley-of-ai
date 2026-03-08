@@ -559,7 +559,7 @@
     const MAX_SPEED = 18;
     const SPEED_INCREMENT = 0.0008;
     const GRACE_PERIOD = 2000; // 2 seconds before obstacles spawn
-    const MIN_OBSTACLE_SPACING = 300; // minimum pixels between obstacles
+    const MIN_OBSTACLE_SPACING = 500; // minimum pixels between obstacles
     
     // Canvas Setup
     const canvas = document.getElementById('game');
@@ -946,7 +946,7 @@
       
       // Spawn objects (with grace period for obstacles)
       const elapsed = Date.now() - gameStartTime;
-      if (elapsed > GRACE_PERIOD && Math.random() < 0.015 + speed * 0.0008) spawnObstacle();
+      if (elapsed > GRACE_PERIOD && Math.random() < 0.008 + speed * 0.0004) spawnObstacle();
       if (Math.random() < 0.04) spawnOrb();
       if (elapsed > GRACE_PERIOD * 0.5 && Math.random() < 0.004) spawnPowerUp();
       
