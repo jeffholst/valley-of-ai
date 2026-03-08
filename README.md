@@ -111,10 +111,43 @@ npm run dev
 | Command | Description |
 |---------|-------------|
 | `npm run dev` | 🔥 Start development server with hot reload |
-| `npm run build` | 📦 Build for production |
+| `npm run build` | 📦 Build for production (runs `generate:apps` first) |
 | `npm run preview` | 👀 Preview production build locally |
 | `npm run generate:apps` | 🔄 Regenerate apps.json from meta files |
-| `npm run deploy` | 🚀 Deploy to GitHub Pages |
+| `npm run deploy` | 🚀 Deploy to GitHub Pages (auto-runs `predeploy` first) |
+
+### Deployment Lifecycle (`pre*` / `post*` scripts)
+
+npm has built-in lifecycle hooks:
+
+- Running `npm run <name>` will automatically run `pre<name>` first (if it exists).
+- After `<name>` finishes, npm will run `post<name>` (if it exists).
+
+For this repo:
+
+- `npm run deploy` automatically runs `predeploy`, then runs `deploy`.
+- `predeploy` sets `DEPLOY_VERSION`, runs `build`, and copies `apps/` and `logs/` into `dist/`.
+- `build` itself runs `generate:apps` first, then `vite build`.
+- There is currently no `postdeploy` script defined.
+
+Current deploy order is:
+
+```text
+npm run deploy
+  -> predeploy
+    -> build
+      -> generate:apps
+      -> vite build
+    -> cp -r apps dist/
+    -> cp -r logs dist/
+  -> deploy (gh-pages -d dist)
+```
+
+### Versioning Note
+
+- `deploy:version` generates a deploy label (`<package-version>+<utc timestamp>.<git sha>`) used at build time.
+- It does not bump `package.json`.
+- `package.json` version is currently bumped manually when needed.
 
 ---
 

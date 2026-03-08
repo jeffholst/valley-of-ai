@@ -652,18 +652,16 @@ Brief description of the new app or change.
 After merging to `main`, you must manually deploy:
 
 1. **Run deployment command** – `npm run deploy`
-   - This builds the project and pushes to the `gh-pages` branch
-   - It also auto-increments the version number in `package.json`
+  - npm automatically runs `predeploy` before `deploy`
+  - `predeploy` sets `DEPLOY_VERSION`, runs `build`, then copies `apps/` and `logs/` into `dist/`
+  - `build` runs `generate:apps` first, then `vite build`
+  - `deploy` pushes `dist/` to the `gh-pages` branch via `gh-pages -d dist`
 2. **Verify build succeeds** – Watch for any build errors in terminal
 3. **Confirm deployment** – Visit https://www.valleyofai.com to verify
 4. **Verify app appears** – Ensure the new app shows in the live gallery
 5. **Log deployment action** – Append DEPLOY step to the daily log
-6. **Commit version bump** – Commit the updated `package.json` and logs:
-   ```bash
-   git add package.json logs/
-   git commit -m "chore: version bump and logs for <app-id> deploy"
-   git push
-   ```
+6. **Versioning note** – `deploy:version` generates a deploy label (`<package-version>+<utc timestamp>.<git sha>`) but does **not** bump `package.json`
+7. **Commit deployment log updates** – If deployment logging changed tracked files, run `git add logs/ && git commit -m "chore(logs): record deploy for <app-id>" && git push`
 
 ## Workflow
 
@@ -687,7 +685,7 @@ Execute this workflow. **Log each step IMMEDIATELY to the daily log file as you 
 16. **Deploy** – Run `npm run deploy` to publish to GitHub Pages → Log `DEPLOY`
 17. **Verify deployment** – Confirm app is live at https://www.valleyofai.com
 18. **Close transaction** – Log `TRANSACTION_END`
-19. **Commit version bump** – Commit `package.json` and logs, then push to `main`
+19. **Commit deployment logs if needed** – If `logs/` changed during deploy logging, commit and push to `main`
 
 ## Suggestion File Format
 
