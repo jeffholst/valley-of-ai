@@ -267,7 +267,7 @@ Every app must include a valid `meta.json`:
 **Every app must:**
 1. Work immediately without instructions (intuitive UX)
 2. Be fully responsive (mobile-friendly)
-3. Support both light and dark system preferences with icon to switch back and forth 
+3. Support both light and dark mode using the **shared theme system** (see [Theme Requirements](#1-lightdark-mode-implementation) below)
 4. Have smooth animations and transitions
 5. Handle edge cases gracefully
 6. Be visually polished with good typography and spacing
@@ -299,16 +299,14 @@ Every app must include a valid `meta.json`:
   <style>
     :root {
       --primary: #6366f1;
+      --bg: #0f172a;
+      --text: #f9fafb;
+      --surface: #1e293b;
+    }
+    [data-theme="light"] {
       --bg: #ffffff;
       --text: #1f2937;
       --surface: #f3f4f6;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #111827;
-        --text: #f9fafb;
-        --surface: #1f2937;
-      }
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -321,12 +319,34 @@ Every app must include a valid `meta.json`:
       justify-content: center;
       padding: 1rem;
     }
+    .theme-toggle {
+      position: fixed; top: 1rem; right: 1rem;
+      background: var(--surface); border: none; border-radius: 50%;
+      width: 40px; height: 40px; cursor: pointer; font-size: 1.2rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .theme-toggle:hover { transform: scale(1.1); }
     /* App styles... */
   </style>
 </head>
 <body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
   <!-- App content -->
   <script>
+    // Theme init — MUST use shared key 'theme' in localStorage
+    const theme = localStorage.getItem('theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+    }
+
     // App logic
   </script>
 </body>
@@ -670,44 +690,62 @@ Before moving to final review, ensure these polish items are complete:
 
 ### 1. Light/Dark Mode Implementation
 
-Every app MUST support both light and dark mode with a visible toggle:
+Every app MUST support both light and dark mode using the **shared theme system**. This ensures a user who sets dark mode on the main site (or any app) sees that preference honored everywhere.
+
+#### Critical Rules
+
+1. **Use the shared localStorage key `'theme'`** — this is the SAME key the main Valley of AI site uses in `ThemeToggle.jsx`. Do NOT use app-specific keys like `'my-app-theme'`.
+2. **Set `data-theme` attribute on `document.documentElement`** (the `<html>` tag), NOT on `<body>`.
+3. **Values must be `'dark'` or `'light'`** — do not use `'auto'` or other values.
+4. **Fall back to system preference** via `window.matchMedia('(prefers-color-scheme: dark)')` when no stored preference exists.
+5. **Include a visible toggle button** (🌙/☀️) so users can switch themes.
+6. **Do NOT hardcode `data-theme` in the `<html>` tag** — let JS set it on load to avoid flash of wrong theme.
+7. **Do NOT use `@media (prefers-color-scheme)` as the primary mechanism** — use it only as the fallback when no `localStorage` value exists.
+
+#### Required Theme JavaScript (copy exactly)
 
 ```javascript
-// Add at the top of your script
-const theme = localStorage.getItem('theme') || 
+// Theme init — place at top of your <script> block
+const theme = localStorage.getItem('theme') ||
   (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 document.documentElement.setAttribute('data-theme', theme);
+document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
 
 function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme');
   const next = current === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
+  document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
 }
 ```
 
+#### Required CSS Pattern
+
+Define dark as default in `:root`, light as the override in `[data-theme="light"]` (or vice versa — just be consistent):
+
 ```css
-/* CSS variables for theming */
 :root {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f3f4f6;
-  --text-primary: #1f2937;
-  --text-secondary: #6b7280;
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --text: #f9fafb;
+  --text-dim: #94a3b8;
   --accent: #3b82f6;
 }
 
-[data-theme="dark"] {
-  --bg-primary: #1f2937;
-  --bg-secondary: #374151;
-  --text-primary: #f9fafb;
-  --text-secondary: #9ca3af;
-  --accent: #60a5fa;
+[data-theme="light"] {
+  --bg: #ffffff;
+  --surface: #f3f4f6;
+  --text: #1f2937;
+  --text-dim: #6b7280;
+  --accent: #2563eb;
 }
 
 body {
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  background: var(--bg);
+  color: var(--text);
 }
+```
 ```
 
 **Toggle button** – Include a visible sun/moon toggle in the header:
@@ -770,7 +808,7 @@ Every app MUST include a link back to the main site in the footer:
 
 | Item | Required | Notes |
 |------|----------|-------|
-| Dark/Light Mode | ✅ Yes | Toggle + localStorage persistence |
+| Dark/Light Mode | ✅ Yes | Shared `localStorage('theme')` key + toggle + `data-theme` on `<html>` |
 | Favicon | ✅ Yes | Emoji or SVG, app-specific |
 | Back to Valley Link | ✅ Yes | Footer link with `target="_blank"` |
 | Responsive Design | ✅ Yes | Works on mobile |
