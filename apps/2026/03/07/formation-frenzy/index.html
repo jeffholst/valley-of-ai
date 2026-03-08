@@ -137,7 +137,6 @@
       position: relative;
       width: 100%;
       max-width: 500px;
-      aspect-ratio: 1;
       background: var(--field);
       border-radius: 12px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.3);
@@ -145,11 +144,8 @@
     }
     
     .field-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
+      display: block;
       width: 100%;
-      height: 100%;
       touch-action: none;
     }
     
@@ -530,9 +526,12 @@
     
     function resizeCanvas() {
       const container = gameState.canvas.parentElement;
-      const size = Math.max(100, Math.min(container.clientWidth, container.clientHeight));
+      // Get container width and make canvas square
+      const size = container.clientWidth || 400;
       gameState.canvas.width = size;
       gameState.canvas.height = size;
+      // Also set CSS height to match width for square display
+      gameState.canvas.style.height = size + 'px';
       if (gameState.dancers.length > 0) render();
     }
     
@@ -550,11 +549,15 @@
       showScreen('gameScreen');
       
       // Defer canvas init to ensure DOM has updated
-      requestAnimationFrame(() => {
-        initCanvas();
-        nextLevel();
-        startTimer();
-      });
+      setTimeout(() => {
+        try {
+          initCanvas();
+          nextLevel();
+          startTimer();
+        } catch (e) {
+          console.error('Game init error:', e);
+        }
+      }, 100);
     }
     
     // Timer
