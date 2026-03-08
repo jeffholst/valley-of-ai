@@ -591,12 +591,12 @@
 
     // Enemy car spawning
     function spawnEnemyCar() {
-      if (lastCarY > -MIN_CAR_SPACING) return;
+      if (lastCarY < MIN_CAR_SPACING) return;
       
       const lane = Math.floor(Math.random() * LANE_COUNT);
       const carSpeed = speed * (0.3 + Math.random() * 0.5);
       
-      lastCarY = -100;
+      lastCarY = 0;
       enemyCars.push({
         lane,
         x: roadLeft + lane * laneWidth + laneWidth / 2,
@@ -611,13 +611,13 @@
 
     // Wet spot spawning
     function spawnWetSpot() {
-      if (lastWetY > -MIN_WET_SPACING) return;
+      if (lastWetY < MIN_WET_SPACING) return;
       
       const lane = Math.floor(Math.random() * LANE_COUNT);
       const spotWidth = laneWidth * (0.8 + Math.random() * 0.4);
       const spotHeight = 60 + Math.random() * 80;
       
-      lastWetY = -spotHeight;
+      lastWetY = 0;
       wetSpots.push({
         x: roadLeft + lane * laneWidth + laneWidth / 2,
         y: -spotHeight,
@@ -683,8 +683,8 @@
       enemyCars = [];
       wetSpots = [];
       particles = [];
-      lastCarY = -200;
-      lastWetY = -300;
+      lastCarY = MIN_CAR_SPACING;
+      lastWetY = MIN_WET_SPACING;
       
       document.getElementById('start-screen').classList.add('hidden');
       document.getElementById('game-over-screen').classList.add('hidden');
