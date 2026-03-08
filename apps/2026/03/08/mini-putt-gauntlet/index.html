@@ -314,6 +314,10 @@
         walls: [
           { x: 80, y: 80, w: 740, h: 360 }
         ],
+        staticObstacles: [
+          { x: 208, y: 338, w: 206, h: 18 },
+          { x: 602, y: 276, w: 146, h: 18 }
+        ],
         obstacle: 'windmill'
       },
       {
@@ -324,6 +328,12 @@
         walls: [
           { x: 80, y: 130, w: 740, h: 260 }
         ],
+        staticObstacles: [
+          { x: 238, y: 150, w: 16, h: 76 },
+          { x: 238, y: 292, w: 16, h: 76 },
+          { x: 642, y: 150, w: 16, h: 76 },
+          { x: 642, y: 292, w: 16, h: 76 }
+        ],
         obstacle: 'gate'
       },
       {
@@ -333,6 +343,12 @@
         cup: { x: 780, y: 390 },
         walls: [
           { x: 80, y: 80, w: 740, h: 360 }
+        ],
+        staticObstacles: [
+          { x: 210, y: 168, w: 18, h: 166 },
+          { x: 330, y: 80, w: 18, h: 146 },
+          { x: 530, y: 292, w: 18, h: 148 },
+          { x: 650, y: 162, w: 18, h: 140 }
         ],
         obstacle: 'trap'
       }
@@ -349,6 +365,8 @@
       lastTime: performance.now(),
       trapRecoverUntil: 0,
       trapFlashUntil: 0,
+      cupAssistUntil: 0,
+      cupAttemptCooldownUntil: 0,
       holeDone: false
     };
 
@@ -440,7 +458,7 @@
       const dist = Math.hypot(dx, dy);
       if (dist < 8) return;
 
-      const power = Math.min(23, dist * 0.16);
+      const power = Math.min(900, dist * 7.2);
       state.ball.vx = (dx / dist) * power;
       state.ball.vy = (dy / dist) * power;
       state.strokes[state.holeIndex] += 1;
@@ -513,6 +531,8 @@
     function updatePhysics(dt, now) {
       if (state.holeDone) return;
       const b = state.ball;
+      const prevX = b.x;
+      const prevY = b.y;
       if (state.trapRecoverUntil > now) {
         b.vx = 0;
         b.vy = 0;
@@ -522,12 +542,26 @@
       b.x += b.vx * dt;
       b.y += b.vy * dt;
 
-      b.vx *= Math.pow(0.988, dt * 60);
-      b.vy *= Math.pow(0.988, dt * 60);
-      if (Math.abs(b.vx) < 0.02) b.vx = 0;
-      if (Math.abs(b.vy) < 0.02) b.vy = 0;
+      // Keep fast launch feel, then apply realistic rolling slowdown.
+      const dragPerSecond = 0.52;
+      const rollingDecel = 280;
+      const dragFactor = Math.pow(dragPerSecond, dt);
+      b.vx *= dragFactor;
+      b.vy *= dragFactor;
 
-      const boundary = currentHole().walls[0];
+      const v = Math.hypot(b.vx, b.vy);
+      if (v > 0) {
+        const nextV = Math.max(0, v - rollingDecel * dt);
+        const s = nextV / v;
+        b.vx *= s;
+        b.vy *= s;
+      }
+
+      if (Math.abs(b.vx) < 0.12) b.vx = 0;
+      if (Math.abs(b.vy) < 0.12) b.vy = 0;
+
+      const hole = currentHole();
+      const boundary = hole.walls[0];
       if (b.x - BALL_R < boundary.x) {
         b.x = boundary.x + BALL_R;
         b.vx = Math.abs(b.vx) * 0.9;
@@ -545,18 +579,21 @@
         b.vy = -Math.abs(b.vy) * 0.9;
       }
 
-      const hole = currentHole();
+      for (const blocker of hole.staticObstacles || []) {
+        collideWithRect(blocker, 0.86);
+      }
+
       if (hole.obstacle === 'windmill') {
-        const cx = 450;
-        const cy = 260;
-        const arm = 110;
-        const angle = now * 0.0018;
-        for (let i = 0; i < 4; i += 1) {
-          const a = angle + i * (Math.PI / 2);
-          const x1 = cx - Math.cos(a) * arm;
-          const y1 = cy - Math.sin(a) * arm;
-          const x2 = cx + Math.cos(a) * arm;
-          const y2 = cy + Math.sin(a) * arm;
+        const windmills = [
+          { cx: 700, cy: 182, arm: 116, phase: 0 },
+          { cx: 540, cy: 284, arm: 96, phase: Math.PI / 3 }
+        ];
+        for (const wm of windmills) {
+          const angle = now * 0.0018 + wm.phase;
+          const x1 = wm.cx - Math.cos(angle) * wm.arm;
+          const y1 = wm.cy - Math.sin(angle) * wm.arm;
+          const x2 = wm.cx + Math.cos(angle) * wm.arm;
+          const y2 = wm.cy + Math.sin(angle) * wm.arm;
           collideSegment(x1, y1, x2, y2, 16);
         }
       }
@@ -566,9 +603,6 @@
         const gateHeight = 170;
         const y = 150 + t * 110;
         collideWithRect({ x: 435, y, w: 30, h: gateHeight });
-
-        collideWithRect({ x: 420, y: 130, w: 10, h: 260 }, 0.85);
-        collideWithRect({ x: 470, y: 130, w: 10, h: 260 }, 0.85);
       }
 
       if (hole.obstacle === 'trap') {
@@ -590,8 +624,73 @@
 
       const cup = hole.cup;
       const dc = Math.hypot(b.x - cup.x, b.y - cup.y);
-      if (dc < CUP_R && speed() < 1.25) {
-        completeHole();
+      const lipRadius = CUP_R + BALL_R * 1.55;
+
+      // Capture putts that pass over the hole between frames.
+      const segDx = b.x - prevX;
+      const segDy = b.y - prevY;
+      const segLen2 = segDx * segDx + segDy * segDy;
+      let pathClosest = dc;
+      if (segLen2 > 0) {
+        const tx = cup.x - prevX;
+        const ty = cup.y - prevY;
+        const t = Math.max(0, Math.min(1, (tx * segDx + ty * segDy) / segLen2));
+        const cx = prevX + segDx * t;
+        const cy = prevY + segDy * t;
+        pathClosest = Math.hypot(cup.x - cx, cup.y - cy);
+      }
+
+      const nearCup = dc < lipRadius || pathClosest < lipRadius;
+      const ballSpeed = speed();
+      const passOver = pathClosest < lipRadius;
+
+      // Immediate cup decision on pass-over: if speed is reasonable, grab now.
+      if (
+        passOver
+        && now >= state.cupAttemptCooldownUntil
+        && now >= state.cupAssistUntil
+      ) {
+        const sinkSpeedLimit = 78;
+        if (ballSpeed <= sinkSpeedLimit) {
+          state.cupAssistUntil = now + 320;
+        } else {
+          // Lip out when crossing too fast.
+          const nx = (b.x - cup.x) || 1;
+          const ny = (b.y - cup.y) || 0;
+          const nLen = Math.hypot(nx, ny) || 1;
+          const ux = nx / nLen;
+          const uy = ny / nLen;
+          b.x = cup.x + ux * (lipRadius + 2);
+          b.y = cup.y + uy * (lipRadius + 2);
+          b.vx = b.vx * 0.78 + ux * 45;
+          b.vy = b.vy * 0.78 + uy * 45;
+          state.cupAttemptCooldownUntil = now + 150;
+        }
+      }
+
+      // Near-cup fallback assist for very slow dribblers that don't cross center.
+      if (
+        nearCup
+        && !passOver
+        && ballSpeed < 18
+        && now >= state.cupAttemptCooldownUntil
+        && now >= state.cupAssistUntil
+      ) {
+        state.cupAssistUntil = now + 220;
+      }
+
+      if (nearCup && now < state.cupAssistUntil) {
+        const pull = Math.min(1, dt * 10);
+        b.x += (cup.x - b.x) * pull;
+        b.y += (cup.y - b.y) * pull;
+        b.vx = b.vx * 0.5 + (cup.x - b.x) * 0.12;
+        b.vy = b.vy * 0.5 + (cup.y - b.y) * 0.12;
+
+        if (Math.hypot(b.x - cup.x, b.y - cup.y) < 2.8 && speed() < 16) {
+          b.x = cup.x;
+          b.y = cup.y;
+          completeHole();
+        }
       }
     }
 
@@ -656,6 +755,15 @@
         ctx.fillRect(bounds.x + 8, stripeY, bounds.w - 16, 12);
       }
 
+      // Static course blockers used across each hole for additional strategy.
+      for (const blocker of hole.staticObstacles || []) {
+        ctx.fillStyle = dark ? '#334155' : '#7c8ba1';
+        ctx.fillRect(blocker.x, blocker.y, blocker.w, blocker.h);
+        ctx.strokeStyle = dark ? '#94a3b8' : '#334155';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(blocker.x + 1, blocker.y + 1, blocker.w - 2, blocker.h - 2);
+      }
+
       ctx.fillStyle = '#f5f7ff';
       ctx.beginPath();
       ctx.arc(hole.cup.x, hole.cup.y, CUP_R, 0, Math.PI * 2);
@@ -680,37 +788,35 @@
       ctx.fill();
 
       if (hole.obstacle === 'windmill') {
-        const cx = 450;
-        const cy = 260;
-        const angle = now * 0.0018;
+        const windmills = [
+          { cx: 700, cy: 182, arm: 110, mast: 94, phase: 0 },
+          { cx: 540, cy: 284, arm: 92, mast: 80, phase: Math.PI / 3 }
+        ];
 
-        ctx.fillStyle = '#e2e8f0';
-        ctx.fillRect(cx - 20, cy - 94, 40, 188);
+        for (const wm of windmills) {
+          const angle = now * 0.0018 + wm.phase;
 
-        for (let i = 0; i < 4; i += 1) {
-          const a = angle + i * (Math.PI / 2);
+          ctx.fillStyle = '#e2e8f0';
+          ctx.fillRect(wm.cx - 18, wm.cy - wm.mast, 36, wm.mast * 2);
+
           ctx.save();
-          ctx.translate(cx, cy);
-          ctx.rotate(a);
-          ctx.fillStyle = i % 2 === 0 ? '#f59e0b' : '#ef4444';
-          ctx.fillRect(-110, -8, 220, 16);
+          ctx.translate(wm.cx, wm.cy);
+          ctx.rotate(angle);
+          ctx.fillStyle = '#f59e0b';
+          ctx.fillRect(-wm.arm, -8, wm.arm * 2, 16);
           ctx.restore();
-        }
 
-        ctx.fillStyle = '#111827';
-        ctx.beginPath();
-        ctx.arc(cx, cy, 10, 0, Math.PI * 2);
-        ctx.fill();
+          ctx.fillStyle = '#111827';
+          ctx.beginPath();
+          ctx.arc(wm.cx, wm.cy, 10, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
 
       if (hole.obstacle === 'gate') {
         const t = (Math.sin(now * 0.004) + 1) * 0.5;
         const gateHeight = 170;
         const y = 150 + t * 110;
-
-        ctx.fillStyle = '#334155';
-        ctx.fillRect(420, 130, 10, 260);
-        ctx.fillRect(470, 130, 10, 260);
 
         ctx.fillStyle = '#f59e0b';
         ctx.fillRect(435, y, 30, gateHeight);
