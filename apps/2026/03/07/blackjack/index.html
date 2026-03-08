@@ -610,6 +610,52 @@
       }
     }
 
+    /* Light theme */
+    body.light-theme {
+      --felt-green: #1a8a4a;
+      --felt-dark: #0d6b35;
+    }
+
+    /* Nav controls */
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .home-link {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: color 0.2s;
+    }
+
+    .home-link:hover {
+      color: var(--gold);
+    }
+
+    .theme-toggle {
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.1);
+    }
+
     /* Responsive */
     @media (max-width: 600px) {
       .card {
@@ -617,6 +663,10 @@
         height: 84px;
         margin-left: -20px;
         padding: 4px;
+      }
+
+      .home-link span {
+        display: none;
       }
 
       .card-rank {
@@ -660,12 +710,21 @@
   <div id="game-container">
     <div class="game-content">
       <div class="header">
+        <a href="https://valleyofai.com" class="home-link">
+          <span>← Valley of AI</span>
+          <span class="home-icon">🏠</span>
+        </a>
         <div class="chip-count">
           <div class="chip-icon">$</div>
           <span id="chips">1000</span>
         </div>
-        <div class="bet-display">
-          Bet: <span class="bet-amount" id="current-bet">0</span>
+        <div class="nav-controls">
+          <div class="bet-display">
+            Bet: <span class="bet-amount" id="current-bet">0</span>
+          </div>
+          <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            🌙
+          </button>
         </div>
       </div>
 
@@ -1214,6 +1273,21 @@
       
       setTimeout(() => spark.remove(), 1500);
     }
+
+    // Theme toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('blackjack-theme');
+    
+    if (savedTheme === 'light') {
+      document.body.classList.add('light-theme');
+      themeToggle.textContent = '☀️';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const isLight = document.body.classList.toggle('light-theme');
+      themeToggle.textContent = isLight ? '☀️' : '🌙';
+      localStorage.setItem('blackjack-theme', isLight ? 'light' : 'dark');
+    });
 
     // Initialize
     updateUI();
