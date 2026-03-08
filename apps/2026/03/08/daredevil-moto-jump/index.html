@@ -64,6 +64,28 @@
     }
     .theme-toggle:hover { transform: scale(1.15); }
 
+    .home-link {
+      position: fixed; top: 0.75rem; left: 0.75rem;
+      z-index: 100;
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      background: color-mix(in srgb, var(--surface) 82%, transparent);
+      border: 1px solid var(--text-dim);
+      backdrop-filter: blur(6px);
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .home-link:hover {
+      transform: translateY(-1px);
+      border-color: var(--primary);
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
     #game-wrapper {
       position: relative;
       width: 100%;
@@ -164,6 +186,28 @@
       opacity: 1;
       animation: comboPopup 1.2s ease-out forwards;
     }
+
+    .debug-panel {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      z-index: 18;
+      min-width: 260px;
+      max-width: min(86vw, 420px);
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #00ff88aa;
+      background: rgba(0, 0, 0, 0.78);
+      color: #8bffcd;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.35;
+      white-space: pre-wrap;
+      pointer-events: none;
+      display: none;
+    }
+    .debug-panel.show { display: block; }
+
     @keyframes comboPopup {
       0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
       20% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
@@ -181,6 +225,7 @@
   </style>
 </head>
 <body>
+  <a class="home-link" href="https://valleyofai.com" aria-label="Back to Valley of AI">← Valley of AI</a>
   <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
 
   <div id="game-wrapper">
@@ -210,6 +255,7 @@
     </div>
 
     <div class="combo-text" id="combo-text"></div>
+    <div class="debug-panel" id="debug-panel"></div>
 
     <!-- Start Screen -->
     <div class="overlay" id="start-screen">
@@ -296,12 +342,27 @@
     let cameraX = 0;
     let rideoutGoalX = 0;
 
+    // Debug HUD
+    let debugEnabled = localStorage.getItem('daredevil-moto-debug') === '1';
+    let debugFrameCounter = 0;
+    const debugStats = {
+      angleDelta: 0,
+      spinTravel: 0,
+      travelBefore: 0,
+      travelAfter: 0,
+      completedFlips: 0,
+      bonusAwarded: 0,
+      lastEvent: 'init',
+    };
+
     // Physics constants
     const GRAVITY = 0.35;
     const MAX_POWER = 1.0;
     const FLIP_ACCEL = 0.06;       // How fast player can spin
     const FLIP_MAX_SPEED = 0.18;   // Max angular velocity
     const FLIP_DAMPING = 0.96;     // Damping when not pressing keys
+    const FLIP_EPSILON = 0.08;     // Small tolerance so near-complete full turns still count
+    const LANDING_FLIP_MIN_TRAVEL = 4.6; // Visual flip threshold for clean landing credit
     const MOTO_HITBOX = 22;        // Collision radius for the center of the bike
 
     // Motorcycle
@@ -312,7 +373,9 @@
       grounded: false,
       launched: false,
       flipCount: 0,
-      totalRotation: 0,
+      flipTravel: 0,
+      prevAngle: 0,
+      wasInvertedThisJump: false,
     };
 
     // Level data
@@ -326,6 +389,86 @@
 
     // Input
     const keysDown = new Set();
+
+    function formatNum(value, digits = 3) {
+      return Number.isFinite(value) ? value.toFixed(digits) : 'n/a';
+    }
+
+    function setDebugEvent(eventText) {
+      debugStats.lastEvent = eventText;
+      logDebug(eventText, true);
+    }
+
+    function logDebug(reason, force = false) {
+      if (!debugEnabled) return;
+      if (!force && (debugFrameCounter % 10 !== 0)) return;
+
+      const payload = {
+        reason,
+        state,
+        level,
+        launched: moto.launched,
+        grounded: moto.grounded,
+        up: keysDown.has('up'),
+        down: keysDown.has('down'),
+        angleRad: Number(moto.angle.toFixed(4)),
+        angleDeg: Number((moto.angle * 180 / Math.PI).toFixed(1)),
+        angleDeltaRad: Number(debugStats.angleDelta.toFixed(4)),
+        spinTravel: Number(debugStats.spinTravel.toFixed(4)),
+        flipTravelBefore: Number(debugStats.travelBefore.toFixed(4)),
+        flipTravelAfter: Number(debugStats.travelAfter.toFixed(4)),
+        completedThisFrame: debugStats.completedFlips,
+        motoFlipCount: moto.flipCount,
+        totalFlips,
+        bonusAwarded: debugStats.bonusAwarded,
+        event: debugStats.lastEvent,
+      };
+
+      console.log('[MOTO_DEBUG]', payload);
+    }
+
+    function updateDebugHUD() {
+      const panel = document.getElementById('debug-panel');
+      if (!debugEnabled) {
+        panel.classList.remove('show');
+        return;
+      }
+
+      panel.classList.add('show');
+      const angleDeg = moto.angle * 180 / Math.PI;
+      const deltaDeg = debugStats.angleDelta * 180 / Math.PI;
+      panel.textContent =
+        `[DEBUG DAREDEVIL]  (press D to toggle)\n` +
+        `state=${state} level=${level} launched=${moto.launched} grounded=${moto.grounded}\n` +
+        `keys up=${keysDown.has('up')} down=${keysDown.has('down')}\n` +
+        `angle(rad)=${formatNum(moto.angle)} angle(deg)=${formatNum(angleDeg, 1)}\n` +
+        `angleDelta(rad)=${formatNum(debugStats.angleDelta)} angleDelta(deg)=${formatNum(deltaDeg, 1)}\n` +
+        `travel+ = ${formatNum(debugStats.spinTravel)}\n` +
+        `flipTravel before=${formatNum(debugStats.travelBefore)} after=${formatNum(debugStats.travelAfter)}\n` +
+        `completedThisFrame=${debugStats.completedFlips} moto.flipCount=${moto.flipCount} totalFlips=${totalFlips}\n` +
+        `bonusAwarded=${debugStats.bonusAwarded} epsilon=${formatNum(FLIP_EPSILON, 2)}\n` +
+        `event=${debugStats.lastEvent}`;
+    }
+
+    function awardCompletedFlips(completedFlips, source) {
+      if (completedFlips <= 0) return;
+
+      const prevFlipCount = moto.flipCount;
+      moto.flipCount += completedFlips;
+      totalFlips += completedFlips;
+
+      let bonus = 0;
+      for (let n = prevFlipCount + 1; n <= moto.flipCount; n++) {
+        bonus += 100 * n;
+      }
+      score += bonus;
+
+      debugStats.bonusAwarded = bonus;
+      setDebugEvent(`${source} flip awarded x${completedFlips}`);
+
+      spawnParticles(moto.x, moto.y, 20, '#ff4400', 5);
+      showCombo(`🔥 ${moto.flipCount}x FLIP! +${bonus}`);
+    }
 
     /* ============================================================
        LEVEL GENERATION — computes launch velocity from geometry
@@ -410,7 +553,10 @@
       moto.grounded = true;
       moto.launched = false;
       moto.flipCount = 0;
-      moto.totalRotation = 0;
+      moto.flipTravel = 0;
+      moto.prevAngle = moto.angle;
+      moto.wasInvertedThisJump = false;
+      setDebugEvent(`level reset -> ${lvl}`);
 
       power = 0;
       powerDir = 1;
@@ -850,6 +996,8 @@
        GAME UPDATE
     ============================================================ */
     function update() {
+      debugFrameCounter++;
+
       // --- Charging state: oscillate power bar ---
       if (state === 'charging') {
         power += powerDir * 0.02;
@@ -885,9 +1033,12 @@
           moto.launched = true;
           moto.grounded = false;
           moto.flipCount = 0;
-          moto.totalRotation = 0;
+          moto.flipTravel = 0;
+          moto.prevAngle = moto.angle;
+          moto.wasInvertedThisJump = false;
           moto.angularVel = 0;
           state = 'airborne';
+          setDebugEvent('launch (crossed lip)');
 
           spawnParticles(moto.x, moto.y + MOTO_HITBOX, 30, '#ff6600', 6);
           updateCamera();
@@ -913,9 +1064,12 @@
             moto.launched = true;
             moto.grounded = false;
             moto.flipCount = 0;
-            moto.totalRotation = 0;
+            moto.flipTravel = 0;
+            moto.prevAngle = moto.angle;
+            moto.wasInvertedThisJump = false;
             moto.angularVel = 0;
             state = 'airborne';
+            setDebugEvent('launch (ramp top)');
 
             spawnParticles(moto.x, moto.y + MOTO_HITBOX, 30, '#ff6600', 6);
           }
@@ -936,9 +1090,12 @@
             moto.launched = true;
             moto.grounded = false;
             moto.flipCount = 0;
-            moto.totalRotation = 0;
+            moto.flipTravel = 0;
+            moto.prevAngle = moto.angle;
+            moto.wasInvertedThisJump = false;
             moto.angularVel = 0;
             state = 'airborne';
+            setDebugEvent('launch (safety net)');
 
             spawnParticles(moto.x, moto.y + MOTO_HITBOX, 30, '#ff6600', 6);
             updateCamera();
@@ -1009,17 +1166,36 @@
 
       moto.angle += moto.angularVel;
 
-      // Track completed flips
-      moto.totalRotation += moto.angularVel;
-      const newFlips = Math.floor(Math.abs(moto.totalRotation) / (Math.PI * 2));
-      if (newFlips > moto.flipCount) {
-        const diff = newFlips - moto.flipCount;
-        moto.flipCount = newFlips;
-        totalFlips += diff;
-        const bonus = 100 * moto.flipCount;
-        score += bonus;
-        spawnParticles(moto.x, moto.y, 20, '#ff4400', 5);
-        showCombo(`🔥 ${moto.flipCount}x FLIP! +${bonus}`);
+      // Track completed flips from cumulative angle travel.
+      // This ensures last-second correction with the opposite arrow doesn't
+      // erase flip credit already earned in the air.
+      const angleDelta = normalizeAngle(moto.angle - moto.prevAngle);
+      moto.prevAngle = moto.angle;
+      const spinTravel = Math.abs(angleDelta);
+      debugStats.angleDelta = angleDelta;
+      debugStats.spinTravel = spinTravel;
+      debugStats.travelBefore = moto.flipTravel;
+      moto.flipTravel += spinTravel;
+
+      if (Math.abs(normalizeAngle(moto.angle)) > 2.2) {
+        moto.wasInvertedThisJump = true;
+      }
+
+      let completedFlips = 0;
+      while (moto.flipTravel + FLIP_EPSILON >= Math.PI * 2) {
+        completedFlips++;
+        moto.flipTravel -= Math.PI * 2;
+      }
+      debugStats.completedFlips = completedFlips;
+      debugStats.travelAfter = moto.flipTravel;
+      debugStats.bonusAwarded = 0;
+
+      if (completedFlips > 0) {
+        awardCompletedFlips(completedFlips, 'airborne');
+      }
+
+      if (state === 'airborne' || state === 'rideout') {
+        logDebug('tick');
       }
 
       // Move (keep previous position to avoid tunneling through the landing ramp)
@@ -1072,6 +1248,16 @@
           const isClean = Math.abs(norm) < tolerance;
 
           if (isClean) {
+            // Visual-flip credit: if the rider went inverted and accumulated enough
+            // rotation travel, award one flip on a clean landing.
+            if (moto.wasInvertedThisJump && moto.flipTravel >= LANDING_FLIP_MIN_TRAVEL) {
+              debugStats.travelBefore = moto.flipTravel;
+              moto.flipTravel = 0;
+              debugStats.travelAfter = moto.flipTravel;
+              debugStats.completedFlips = 1;
+              awardCompletedFlips(1, 'landing visual grace');
+            }
+
             // Successful landing: transition into required rideout phase
             moto.x = landingX;
             moto.y = landingSurfY - MOTO_HITBOX;
@@ -1085,6 +1271,7 @@
 
             const landingBonus = 200 + level * 50;
             score += landingBonus;
+            setDebugEvent(`clean landing @${formatNum(landingX, 1)}`);
             spawnParticles(moto.x, moto.y + MOTO_HITBOX, 40, '#00ff88', 5);
             showCombo(`✅ LANDED! +${landingBonus}`);
 
@@ -1098,6 +1285,7 @@
             return;
           }
 
+          setDebugEvent(`landing fail angle=${formatNum(norm, 3)}`);
           crash();
           return;
         }
@@ -1131,6 +1319,7 @@
 
     function crash() {
       state = 'crashed';
+      setDebugEvent('crash');
       spawnParticles(moto.x, moto.y, 50, '#ff2200', 8);
       spawnParticles(moto.x, moto.y, 30, '#ffaa00', 6);
       bestScore = Math.max(bestScore, score);
@@ -1163,6 +1352,7 @@
     function gameLoop() {
       update();
       draw();
+      updateDebugHUD();
       requestAnimationFrame(gameLoop);
     }
 
@@ -1185,6 +1375,7 @@
       showScreen(null);
       document.getElementById('power-bar-container').classList.remove('hidden');
       updateHUD();
+      logDebug('start game', true);
     }
 
     function nextLevel() {
@@ -1194,6 +1385,7 @@
       showScreen(null);
       document.getElementById('power-bar-container').classList.remove('hidden');
       updateHUD();
+      logDebug('next level', true);
     }
 
     function showGameOver() {
@@ -1205,6 +1397,7 @@
       document.getElementById('power-bar-container').classList.add('hidden');
       showScreen('gameover-screen');
       state = 'start';
+      logDebug('game over', true);
     }
 
     function showLevelComplete() {
@@ -1215,6 +1408,7 @@
         `Score: <strong>${score}</strong>`;
       document.getElementById('power-bar-container').classList.add('hidden');
       showScreen('level-screen');
+      logDebug('level complete', true);
     }
 
     function launchFromCharge() {
@@ -1226,6 +1420,14 @@
 
     // --- Keyboard ---
     window.addEventListener('keydown', (e) => {
+      if (e.code === 'KeyD') {
+        debugEnabled = !debugEnabled;
+        localStorage.setItem('daredevil-moto-debug', debugEnabled ? '1' : '0');
+        setDebugEvent(debugEnabled ? 'debug enabled' : 'debug disabled');
+        if (debugEnabled) {
+          logDebug('debug toggled on', true);
+        }
+      }
       if (e.code === 'Space') {
         e.preventDefault();
         if (state === 'start') {
@@ -1233,6 +1435,9 @@
           if (!goScreen.classList.contains('hidden')) { startGame(); return; }
         }
         if (state === 'charging') launchFromCharge();
+      }
+      if (e.code === 'ArrowUp' || e.code === 'ArrowDown') {
+        e.preventDefault();
       }
       if (e.code === 'ArrowUp' || e.code === 'KeyW') keysDown.add('up');
       if (e.code === 'ArrowDown' || e.code === 'KeyS') keysDown.add('down');
