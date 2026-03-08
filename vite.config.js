@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { readFileSync } from 'fs'
 
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'))
+const deployVersion = process.env.DEPLOY_VERSION || `${pkg.version}+local`
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,5 +11,6 @@ export default defineConfig({
   base: '/',
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
+    __DEPLOY_VERSION__: JSON.stringify(deployVersion),
   },
 })

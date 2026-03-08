@@ -24,7 +24,9 @@ export default function Layout() {
               GitHub
             </a>
             <span className="text-gray-300 dark:text-gray-600">•</span>
-            <span className="text-xs">v{__APP_VERSION__}</span>
+            <span className="text-xs" title={`App ${__APP_VERSION__}`}>
+              v{__DEPLOY_VERSION__}
+            </span>
           </div>
         </div>
       </footer>
