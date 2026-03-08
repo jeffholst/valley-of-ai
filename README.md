@@ -104,7 +104,8 @@ npm install
 npm run dev
 ```
 
-> 💡 **NAS/Network Mount Users:** If symlinks aren't supported, use `npm install --no-bin-links`
+> 💡 **NAS/Network Mount Users:** If symlinks aren't supported, use `npm install --no-bin-links`.
+> The npm scripts in this repo call package CLIs directly (no `.bin` symlink dependency), so the normal commands still work: `npm run dev`, `npm run build`, `npm run deploy`.
 
 ### Commands
 
@@ -129,6 +130,7 @@ For this repo:
 - `predeploy` sets `DEPLOY_VERSION`, runs `build`, and copies `apps/` and `logs/` into `dist/`.
 - `build` itself runs `generate:apps` first, then `vite build`.
 - There is currently no `postdeploy` script defined.
+- For NAS/no-symlink environments, install with `npm install --no-bin-links` and use the same npm lifecycle commands.
 
 Current deploy order is:
 
@@ -140,7 +142,7 @@ npm run deploy
       -> vite build
     -> cp -r apps dist/
     -> cp -r logs dist/
-  -> deploy (gh-pages -d dist)
+  -> deploy (node ./node_modules/gh-pages/bin/gh-pages.js -d dist)
 ```
 
 ### Versioning Note
