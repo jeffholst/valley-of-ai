@@ -61,6 +61,27 @@ apps/YYYY/MM/DD/<app-id>/
 └── [other files]  # Additional assets as needed
 ```
 
+### Analytics Requirement (Mandatory)
+
+Every generated app `index.html` must include the same Google Analytics tag used by the main app.
+
+- Place the snippet inside `<head>` near the top (before app scripts).
+- Use this exact measurement ID: `G-WRFSFDYD80`.
+- Do not omit this for any app.
+
+Required snippet:
+
+```html
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WRFSFDYD80"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WRFSFDYD80');
+</script>
+```
+
 ### Thumbnail Generation
 
 Create thumbnails as **SVG files** that accurately recreate the app's UI. The thumbnail should look like a screenshot of the app in action.
