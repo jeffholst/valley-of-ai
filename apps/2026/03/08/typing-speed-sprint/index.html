@@ -1,0 +1,27 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Typing Speed Sprint</title><style>
+:root{--bg:#0c1220;--bg2:#1b2a4a;--surface:#111a31;--text:#ecf2ff;--muted:#9eb1da;--primary:#22d3ee;--good:#22c55e;--bad:#ef4444}
+@media(prefers-color-scheme:light){:root{--bg:#edf4ff;--bg2:#dbeafe;--surface:#fff;--text:#1f2f52;--muted:#60739a;--primary:#0891b2;--good:#15803d;--bad:#b91c1c}}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px;font-family:Inter,system-ui;background:radial-gradient(1000px 700px at 20% 20%,var(--bg2),var(--bg));color:var(--text)}
+.card{width:min(860px,100%);background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);border-radius:18px;padding:14px;box-shadow:0 18px 45px #0004}
+h1{margin:0 0 4px}.sub{margin:0 0 10px;color:var(--muted)}.stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.pill{font-size:.86rem;padding:6px 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);color:var(--muted)}
+.prompt{border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);border-radius:12px;padding:12px;line-height:1.65;background:#070c18;font-family:ui-monospace,monospace;min-height:120px}.ok{color:var(--good)}.bad{color:var(--bad)}
+textarea{width:100%;margin-top:10px;min-height:120px;border-radius:12px;border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);background:color-mix(in srgb,var(--surface) 92%,transparent);color:var(--text);padding:10px;font:inherit}
+.controls{display:flex;gap:8px;justify-content:center;margin-top:10px}button{border:none;border-radius:999px;padding:9px 13px;font:inherit;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(90deg,#7c3aed,var(--primary))}
+</style></head><body><main class="card"><h1>⌨️ Typing Speed Sprint</h1><p class="sub">60-second typing challenge with live WPM and accuracy.</p>
+<div class="stats"><span class="pill" id="time">Time: 60s</span><span class="pill" id="wpm">WPM: 0</span><span class="pill" id="acc">Accuracy: 100%</span><span class="pill" id="state">State: Ready</span></div>
+<div id="prompt" class="prompt"></div>
+<textarea id="input" placeholder="Start typing to begin..." aria-label="Typing input"></textarea>
+<div class="controls"><button id="restart">New Sprint</button></div></main>
+<script>
+const samples=["The comet market opens at midnight, where captains trade starlight for maps and stories.","Every quiet keyboard has a rhythm, and speed follows only when accuracy becomes effortless.","Small improvements done daily build momentum faster than dramatic changes done once.","In the valley workshop, ideas become games by turning constraints into playful mechanics."];
+const p=document.getElementById('prompt'),i=document.getElementById('input');
+const timeEl=document.getElementById('time'),wpmEl=document.getElementById('wpm'),accEl=document.getElementById('acc'),stateEl=document.getElementById('state');
+let target='',time=60,timer=null,started=false;
+function pick(){target=samples[Math.floor(Math.random()*samples.length)];renderPrompt('');}
+function renderPrompt(text){let html='';for(let idx=0;idx<target.length;idx++){const ch=target[idx],t=text[idx];if(t==null)html+=ch;else if(t===ch)html+=`<span class='ok'>${ch}</span>`;else html+=`<span class='bad'>${ch}</span>`;}p.innerHTML=html;}
+function metrics(text){let correct=0;for(let k=0;k<text.length;k++)if(text[k]===target[k])correct++;const total=Math.max(text.length,1);const acc=Math.round((correct/total)*100);const words=correct/5;const mins=(60-time)/60||1/60;const wpm=Math.max(0,Math.round(words/mins));wpmEl.textContent=`WPM: ${wpm}`;accEl.textContent=`Accuracy: ${acc}%`;}
+function tick(){time--;timeEl.textContent=`Time: ${time}s`;if(time<=0){clearInterval(timer);timer=null;i.disabled=true;stateEl.textContent='State: Finished';}}
+function reset(){clearInterval(timer);timer=null;time=60;started=false;i.disabled=false;i.value='';timeEl.textContent='Time: 60s';wpmEl.textContent='WPM: 0';accEl.textContent='Accuracy: 100%';stateEl.textContent='State: Ready';pick();i.focus();}
+i.addEventListener('input',()=>{if(!started){started=true;stateEl.textContent='State: Running';timer=setInterval(tick,1000);}renderPrompt(i.value);metrics(i.value);});
+document.getElementById('restart').onclick=reset;reset();
+</script></body></html>
