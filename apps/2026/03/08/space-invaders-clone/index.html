@@ -5,8 +5,14 @@
 <title>Space Invaders Clone - Valley of AI</title>
 <style>
 :root{--bg:#0a1020;--bg2:#162448;--surface:#0f1730;--text:#edf3ff;--muted:#9ab0e0;--primary:#22d3ee;--enemy:#f43f5e;--player:#4ade80;--bullet:#fef08a}
-@media(prefers-color-scheme:light){:root{--bg:#edf4ff;--bg2:#dbeafe;--surface:#fff;--text:#1f2f52;--muted:#60739a;--primary:#0891b2;--enemy:#be123c;--player:#15803d;--bullet:#b45309}}
+[data-theme="light"]{--bg:#edf4ff;--bg2:#dbeafe;--surface:#fff;--text:#1f2f52;--muted:#60739a;--primary:#0891b2;--enemy:#be123c;--player:#15803d;--bullet:#b45309}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px;font-family:Inter,system-ui;background:radial-gradient(1000px 700px at 20% 20%,var(--bg2),var(--bg));color:var(--text)}
+.top-bar{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;z-index:100;background:linear-gradient(to bottom,var(--bg2),transparent)}
+.home-link{display:flex;align-items:center;gap:8px;color:var(--muted);text-decoration:none;font-size:14px;transition:color .2s}
+.home-link:hover{color:var(--primary)}
+.home-link svg{width:20px;height:20px}
+.theme-toggle{background:var(--surface);border:1px solid var(--muted);color:var(--text);width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .3s}
+.theme-toggle:hover{border-color:var(--primary);box-shadow:0 0 15px var(--primary)}
 .card{width:min(860px,100%);background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);border-radius:18px;padding:14px;box-shadow:0 18px 45px #0004}
 h1{margin:0 0 4px}.sub{margin:0 0 10px;color:var(--muted)}
 .top{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.pill{font-size:.86rem;padding:6px 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);color:var(--muted)}
@@ -14,31 +20,56 @@ canvas{width:100%;max-width:760px;aspect-ratio:4/3;display:block;margin:auto;bac
 .controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}button{border:none;border-radius:999px;padding:9px 13px;font:inherit;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(90deg,#7c3aed,var(--primary))}
 .kbd{text-align:center;color:var(--muted);margin-top:8px;font-size:.9rem}
 </style></head>
-<body><main class="card"><h1>👾 Space Invaders Clone</h1><p class="sub">Defend Earth. Move, shoot, clear waves, survive enemy fire.</p>
+<body>
+<div class="top-bar">
+  <a href="https://www.valleyofai.com" class="home-link">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    Valley of AI
+  </a>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
+</div>
+<main class="card"><h1>👾 Space Invaders Clone</h1><p class="sub">Defend Earth. Move, shoot, clear waves, survive enemy fire.</p>
 <div class="top"><span class="pill" id="score">Score: 0</span><span class="pill" id="lives">Lives: 3</span><span class="pill" id="wave">Wave: 1</span><span class="pill" id="state">State: Ready</span></div>
 <canvas id="game" width="760" height="570" aria-label="Space Invaders game"></canvas>
 <div class="controls"><button id="start">Start</button><button id="restart">Restart</button></div>
 <p class="kbd">Controls: ← → (or A/D), Space shoot</p></main>
 <script>
+// Theme Management
+const storedTheme = localStorage.getItem('space-invaders-theme') || 
+  (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+document.documentElement.setAttribute('data-theme', storedTheme);
+updateThemeIcon();
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('space-invaders-theme', next);
+  updateThemeIcon();
+  updateColors();
+}
+
+function updateThemeIcon() {
+  const btn = document.querySelector('.theme-toggle');
+  if (btn) btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+}
+
 const c=document.getElementById('game'),x=c.getContext('2d');
-// Get computed CSS colors for canvas (canvas doesn't support CSS variables)
-const getColor = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+// Canvas colors (canvas doesn't support CSS variables)
 const colors = {
   enemy: '#f43f5e',
   player: '#4ade80', 
   bullet: '#fef08a',
   primary: '#22d3ee'
 };
-// Update colors based on theme
 function updateColors() {
-  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
   colors.enemy = isDark ? '#f43f5e' : '#be123c';
   colors.player = isDark ? '#4ade80' : '#15803d';
   colors.bullet = isDark ? '#fef08a' : '#b45309';
   colors.primary = isDark ? '#22d3ee' : '#0891b2';
 }
 updateColors();
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateColors);
 
 const S={run:false,score:0,lives:3,wave:1,keys:{},player:{x:380,y:530,w:44,h:18,cool:0},bullets:[],enemyBullets:[],enemies:[],dir:1,speed:0.55,drop:18,lastShot:0};
 const ui=id=>document.getElementById(id); function u(state=''){ui('score').textContent=`Score: ${S.score}`;ui('lives').textContent=`Lives: ${S.lives}`;ui('wave').textContent=`Wave: ${S.wave}`;if(state)ui('state').textContent=`State: ${state}`;}
