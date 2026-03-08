@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#1e293b"/>
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22d3ee"/>
+      <stop offset="100%" style="stop-color:#a78bfa"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="450" fill="url(#bg)"/>
+  
+  <!-- Title -->
+  <text x="400" y="40" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="28" font-weight="800" fill="url(#titleGrad)">🐛 Debug Rush</text>
+  
+  <!-- Stats Bar -->
+  <rect x="100" y="55" width="600" height="50" rx="10" fill="#1e293b"/>
+  
+  <!-- Time stat -->
+  <text x="185" y="77" text-anchor="middle" font-family="SF Mono, monospace" 
+        font-size="20" font-weight="700" fill="#f59e0b">12</text>
+  <text x="185" y="95" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="10" fill="#94a3b8" letter-spacing="1">TIME</text>
+  
+  <!-- Score stat -->
+  <text x="325" y="77" text-anchor="middle" font-family="SF Mono, monospace" 
+        font-size="20" font-weight="700" fill="#22c55e">850</text>
+  <text x="325" y="95" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="10" fill="#94a3b8" letter-spacing="1">SCORE</text>
+  
+  <!-- Streak stat -->
+  <text x="475" y="77" text-anchor="middle" font-family="SF Mono, monospace" 
+        font-size="20" font-weight="700" fill="#22d3ee">5</text>
+  <text x="475" y="95" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="10" fill="#94a3b8" letter-spacing="1">STREAK 🔥</text>
+  
+  <!-- Round stat -->
+  <text x="615" y="77" text-anchor="middle" font-family="SF Mono, monospace" 
+        font-size="20" font-weight="700" fill="#a78bfa">6/10</text>
+  <text x="615" y="95" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="10" fill="#94a3b8" letter-spacing="1">ROUND</text>
+  
+  <!-- Code Editor Card -->
+  <rect x="80" y="115" width="640" height="280" rx="12" fill="#1e293b"/>
+  
+  <!-- Editor Header -->
+  <rect x="80" y="115" width="640" height="32" rx="12" fill="rgba(0,0,0,0.3)"/>
+  <rect x="80" y="135" width="640" height="12" fill="rgba(0,0,0,0.3)"/>
+  <circle cx="100" cy="131" r="6" fill="#ff5f56"/>
+  <circle cx="120" cy="131" r="6" fill="#ffbd2e"/>
+  <circle cx="140" cy="131" r="6" fill="#27c93f"/>
+  <text x="170" y="135" font-family="system-ui, sans-serif" font-size="12" fill="#94a3b8">buggy.js</text>
+  
+  <!-- Code Content Background -->
+  <rect x="80" y="147" width="640" height="248" fill="#0d1117"/>
+  
+  <!-- Code Lines -->
+  <!-- Line 1 -->
+  <text x="100" y="172" font-family="SF Mono, monospace" font-size="12" fill="#94a3b8">1</text>
+  <text x="130" y="172" font-family="SF Mono, monospace" font-size="12">
+    <tspan fill="#ff7b72">function</tspan>
+    <tspan fill="#d2a8ff"> findMax</tspan>
+    <tspan fill="#f1f5f9">(arr) {</tspan>
+  </text>
+  
+  <!-- Line 2 -->
+  <text x="100" y="196" font-family="SF Mono, monospace" font-size="12" fill="#94a3b8">2</text>
+  <text x="130" y="196" font-family="SF Mono, monospace" font-size="12">
+    <tspan fill="#f1f5f9">  </tspan>
+    <tspan fill="#ff7b72">let</tspan>
+    <tspan fill="#f1f5f9"> max = </tspan>
+    <tspan fill="#79c0ff">0</tspan>
+    <tspan fill="#f1f5f9">;</tspan>
+  </text>
+  
+  <!-- Line 3 - BUG LINE (selected) -->
+  <rect x="80" y="204" width="640" height="24" fill="rgba(34,211,238,0.15)"/>
+  <rect x="80" y="204" width="3" height="24" fill="#22d3ee"/>
+  <text x="100" y="220" font-family="SF Mono, monospace" font-size="12" fill="#94a3b8">3</text>
+  <text x="130" y="220" font-family="SF Mono, monospace" font-size="12">
+    <tspan fill="#f1f5f9">  </tspan>
+    <tspan fill="#ff7b72">for</tspan>
+    <tspan fill="#f1f5f9"> (</tspan>
+    <tspan fill="#ff7b72">let</tspan>
+    <tspan fill="#f1f5f9"> i = </tspan>
+    <tspan fill="#79c0ff">0</tspan>
+    <tspan fill="#f1f5f9">; i </tspan>
+    <tspan fill="#ef4444">&lt;=</tspan>
+    <tspan fill="#f1f5f9"> arr.length; i++) {</tspan>
+  </text>
+  
+  <!-- Line 4 -->
+  <text x="100" y="244" font-family="SF Mono, monospace" font-size="12" fill="#94a3b8">4</text>
+  <text x="130" y="244" font-family="SF Mono, monospace" font-size="12">
+    <tspan fill="#f1f5f9">    </tspan>
+    <tspan fill="#ff7b72">if</tspan>
+    <tspan fill="#f1f5f9"> (arr[i] &gt; max) {</tspan>
+  </text>
+  
+  <!-- Line 5 -->
+  <text x="100" y="268" font-family="SF Mono, monospace" font-size="12" fill="#94a3b8">5</text>
+  <text x="130" y="268" font-family="SF Mono, monospace" font-size="12">
+    <tspan fill="#f1f5f9">      max = arr[i];</tspan>
+  </text>
+  
+  <!-- Line 6 -->
+  <text x="100" y="292" font-family="SF Mono, monospace" font-size="12" fill="#94a3b8">6</text>
+  <text x="130" y="292" font-family="SF Mono, monospace" font-size="12" fill="#f1f5f9">    }</text>
+  
+  <!-- Line 7 -->
+  <text x="100" y="316" font-family="SF Mono, monospace" font-size="12" fill="#94a3b8">7</text>
+  <text x="130" y="316" font-family="SF Mono, monospace" font-size="12" fill="#f1f5f9">  }</text>
+  
+  <!-- Line 8 -->
+  <text x="100" y="340" font-family="SF Mono, monospace" font-size="12" fill="#94a3b8">8</text>
+  <text x="130" y="340" font-family="SF Mono, monospace" font-size="12">
+    <tspan fill="#f1f5f9">  </tspan>
+    <tspan fill="#ff7b72">return</tspan>
+    <tspan fill="#f1f5f9"> max;</tspan>
+  </text>
+  
+  <!-- Line 9 -->
+  <text x="100" y="364" font-family="SF Mono, monospace" font-size="12" fill="#94a3b8">9</text>
+  <text x="130" y="364" font-family="SF Mono, monospace" font-size="12" fill="#f1f5f9">}</text>
+  
+  <!-- Hint Button -->
+  <rect x="280" y="405" width="110" height="36" rx="8" fill="#334155"/>
+  <text x="335" y="428" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="13" font-weight="500" fill="#f1f5f9">💡 Hint</text>
+  
+  <!-- Skip Button -->
+  <rect x="410" y="405" width="110" height="36" rx="8" fill="#334155"/>
+  <text x="465" y="428" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="13" font-weight="500" fill="#f1f5f9">⏭️ Skip</text>
+</svg>
