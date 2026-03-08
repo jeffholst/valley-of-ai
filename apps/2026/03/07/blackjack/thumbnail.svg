@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <defs>
+    <!-- Felt gradient -->
+    <radialGradient id="felt" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" style="stop-color:#0d5c2e"/>
+      <stop offset="100%" style="stop-color:#0a4a24"/>
+    </radialGradient>
+    
+    <!-- Gold gradient -->
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700"/>
+      <stop offset="100%" style="stop-color:#B8860B"/>
+    </linearGradient>
+    
+    <!-- Card shadow -->
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="3" dy="5" stdDeviation="4" flood-opacity="0.4"/>
+    </filter>
+    
+    <!-- Glow effect for blackjack -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Sparkle -->
+    <filter id="sparkle">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background - casino felt -->
+  <rect width="400" height="300" fill="url(#felt)"/>
+  
+  <!-- Felt texture pattern -->
+  <g opacity="0.1">
+    <circle cx="50" cy="50" r="2" fill="#000"/>
+    <circle cx="100" cy="80" r="2" fill="#000"/>
+    <circle cx="150" cy="40" r="2" fill="#000"/>
+    <circle cx="200" cy="90" r="2" fill="#000"/>
+    <circle cx="250" cy="60" r="2" fill="#000"/>
+    <circle cx="300" cy="100" r="2" fill="#000"/>
+    <circle cx="350" cy="70" r="2" fill="#000"/>
+    <circle cx="80" cy="150" r="2" fill="#000"/>
+    <circle cx="320" cy="180" r="2" fill="#000"/>
+  </g>
+  
+  <!-- Table edge arc -->
+  <ellipse cx="200" cy="320" rx="220" ry="60" fill="none" stroke="rgba(255,215,0,0.3)" stroke-width="4"/>
+  
+  <!-- Cards - Player's Blackjack hand -->
+  <!-- Ace of Spades -->
+  <g transform="translate(120, 120)" filter="url(#cardShadow)">
+    <rect width="70" height="100" rx="6" fill="white"/>
+    <text x="8" y="22" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#1a1a1a">A</text>
+    <text x="8" y="38" font-family="serif" font-size="14" fill="#1a1a1a">♠</text>
+    <text x="35" y="62" font-family="serif" font-size="32" fill="#1a1a1a" text-anchor="middle">♠</text>
+    <text x="62" y="95" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#1a1a1a" text-anchor="end" transform="rotate(180, 62, 88)">A</text>
+  </g>
+  
+  <!-- King of Hearts -->
+  <g transform="translate(170, 115) rotate(8)" filter="url(#cardShadow)">
+    <rect width="70" height="100" rx="6" fill="white"/>
+    <text x="8" y="22" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#DC3545">K</text>
+    <text x="8" y="38" font-family="serif" font-size="14" fill="#DC3545">♥</text>
+    <text x="35" y="62" font-family="serif" font-size="32" fill="#DC3545" text-anchor="middle">♥</text>
+    <text x="62" y="95" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#DC3545" text-anchor="end" transform="rotate(180, 62, 88)">K</text>
+  </g>
+  
+  <!-- BLACKJACK text with glow -->
+  <g filter="url(#glow)">
+    <text x="200" y="55" font-family="Georgia, serif" font-size="36" font-weight="bold" fill="url(#gold)" text-anchor="middle" letter-spacing="3">BLACKJACK!</text>
+  </g>
+  
+  <!-- Sparkles around text -->
+  <g filter="url(#sparkle)" fill="#FFD700">
+    <circle cx="80" cy="45" r="4">
+      <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="320" cy="50" r="3">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="1s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="65" cy="65" r="2">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="0.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="335" cy="35" r="2">
+      <animate attributeName="opacity" values="1;0.5;1" dur="0.7s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Casino chips -->
+  <g transform="translate(300, 180)">
+    <!-- Stack of chips -->
+    <ellipse cx="0" cy="0" rx="25" ry="8" fill="#1a1a1a"/>
+    <ellipse cx="0" cy="-5" rx="25" ry="8" fill="#333"/>
+    <ellipse cx="0" cy="-5" rx="22" ry="6" fill="none" stroke="#555" stroke-width="2" stroke-dasharray="8,4"/>
+    
+    <ellipse cx="0" cy="-10" rx="25" ry="8" fill="#9b59b6"/>
+    <ellipse cx="0" cy="-10" rx="22" ry="6" fill="none" stroke="#6c3483" stroke-width="2" stroke-dasharray="8,4"/>
+    
+    <ellipse cx="0" cy="-15" rx="25" ry="8" fill="#e74c3c"/>
+    <ellipse cx="0" cy="-15" rx="22" ry="6" fill="none" stroke="#a93226" stroke-width="2" stroke-dasharray="8,4"/>
+    
+    <ellipse cx="0" cy="-20" rx="25" ry="8" fill="url(#gold)"/>
+    <ellipse cx="0" cy="-20" rx="22" ry="6" fill="none" stroke="#B8860B" stroke-width="2" stroke-dasharray="8,4"/>
+    <text x="0" y="-16" font-family="sans-serif" font-size="10" fill="#B8860B" text-anchor="middle" font-weight="bold">$</text>
+  </g>
+  
+  <!-- Single chip -->
+  <g transform="translate(340, 200)">
+    <ellipse cx="0" cy="0" rx="18" ry="6" fill="#2ecc71"/>
+    <ellipse cx="0" cy="0" rx="15" ry="4" fill="none" stroke="#1e8449" stroke-width="2" stroke-dasharray="6,3"/>
+    <text x="0" y="3" font-family="sans-serif" font-size="8" fill="#1e8449" text-anchor="middle" font-weight="bold">25</text>
+  </g>
+  
+  <!-- Score display -->
+  <g transform="translate(30, 250)">
+    <rect width="60" height="35" rx="8" fill="rgba(0,0,0,0.5)"/>
+    <text x="30" y="18" font-family="sans-serif" font-size="10" fill="#aaa" text-anchor="middle">YOUR</text>
+    <text x="30" y="30" font-family="sans-serif" font-size="12" fill="#FFD700" text-anchor="middle" font-weight="bold">21</text>
+  </g>
+  
+  <!-- Dealer cards (top) -->
+  <g transform="translate(280, 70) rotate(-5)" filter="url(#cardShadow)">
+    <rect width="50" height="70" rx="4" fill="white"/>
+    <text x="6" y="16" font-family="Georgia, serif" font-size="14" font-weight="bold" fill="#1a1a1a">7</text>
+    <text x="6" y="28" font-family="serif" font-size="12" fill="#1a1a1a">♣</text>
+    <text x="25" y="45" font-family="serif" font-size="20" fill="#1a1a1a" text-anchor="middle">♣</text>
+  </g>
+  
+  <!-- Face down card -->
+  <g transform="translate(310, 65) rotate(5)" filter="url(#cardShadow)">
+    <rect width="50" height="70" rx="4" fill="#1e3a5f"/>
+    <rect x="6" y="6" width="38" height="58" rx="2" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+    <g fill="rgba(255,255,255,0.08)">
+      <line x1="10" y1="10" x2="40" y2="40" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <line x1="10" y1="20" x2="40" y2="50" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <line x1="10" y1="30" x2="40" y2="60" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <line x1="10" y1="40" x2="30" y2="60" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <line x1="20" y1="10" x2="40" y2="30" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <line x1="30" y1="10" x2="40" y2="20" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+    </g>
+  </g>
+  
+  <!-- Dealer label -->
+  <text x="305" y="55" font-family="sans-serif" font-size="10" fill="rgba(255,255,255,0.6)" text-anchor="middle">DEALER</text>
+  
+  <!-- Action buttons suggestion -->
+  <g transform="translate(100, 250)">
+    <rect x="0" y="0" width="50" height="25" rx="12" fill="#2ecc71"/>
+    <text x="25" y="17" font-family="sans-serif" font-size="10" fill="white" text-anchor="middle" font-weight="bold">HIT</text>
+  </g>
+  <g transform="translate(160, 250)">
+    <rect x="0" y="0" width="60" height="25" rx="12" fill="#e74c3c"/>
+    <text x="30" y="17" font-family="sans-serif" font-size="10" fill="white" text-anchor="middle" font-weight="bold">STAND</text>
+  </g>
+  
+  <!-- Decorative corner flourish -->
+  <g opacity="0.3" fill="none" stroke="url(#gold)" stroke-width="1">
+    <path d="M10 10 Q25 10 25 25"/>
+    <path d="M10 15 Q20 15 20 25"/>
+    <path d="M390 10 Q375 10 375 25"/>
+    <path d="M390 15 Q380 15 380 25"/>
+  </g>
+</svg>
