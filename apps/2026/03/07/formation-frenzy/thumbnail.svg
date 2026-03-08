@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f472b6"/>
+      <stop offset="100%" style="stop-color:#fbbf24"/>
+    </linearGradient>
+    <radialGradient id="dancerGrad" cx="30%" cy="30%">
+      <stop offset="0%" style="stop-color:#f9a8d4"/>
+      <stop offset="100%" style="stop-color:#f472b6"/>
+    </radialGradient>
+    <radialGradient id="dancerSnappedGrad" cx="30%" cy="30%">
+      <stop offset="0%" style="stop-color:#86efac"/>
+      <stop offset="100%" style="stop-color:#22c55e"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="450" fill="#064e3b"/>
+  
+  <!-- Stats Bar -->
+  <rect x="100" y="15" width="600" height="45" rx="10" fill="#065f46"/>
+  
+  <!-- Time stat -->
+  <text x="185" y="37" text-anchor="middle" font-family="SF Mono, monospace" 
+        font-size="18" font-weight="700" fill="#fbbf24">24</text>
+  <text x="185" y="52" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="9" fill="#a7f3d0" letter-spacing="1">TIME</text>
+  
+  <!-- Level stat -->
+  <text x="325" y="37" text-anchor="middle" font-family="SF Mono, monospace" 
+        font-size="18" font-weight="700" fill="#22d3ee">3</text>
+  <text x="325" y="52" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="9" fill="#a7f3d0" letter-spacing="1">LEVEL</text>
+  
+  <!-- Score stat -->
+  <text x="475" y="37" text-anchor="middle" font-family="SF Mono, monospace" 
+        font-size="18" font-weight="700" fill="#f472b6">420</text>
+  <text x="475" y="52" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="9" fill="#a7f3d0" letter-spacing="1">SCORE</text>
+  
+  <!-- Moves stat -->
+  <text x="615" y="37" text-anchor="middle" font-family="SF Mono, monospace" 
+        font-size="18" font-weight="700" fill="#22c55e">7</text>
+  <text x="615" y="52" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="9" fill="#a7f3d0" letter-spacing="1">MOVES</text>
+  
+  <!-- Football Field -->
+  <rect x="150" y="70" width="350" height="320" rx="8" fill="#15803d"/>
+  
+  <!-- Field lines -->
+  <rect x="165" y="85" width="320" height="290" rx="4" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  
+  <!-- Center line -->
+  <line x1="325" y1="85" x2="325" y2="375" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  
+  <!-- Center circle -->
+  <circle cx="325" cy="230" r="40" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  
+  <!-- Horizontal yard lines -->
+  <line x1="165" y1="157" x2="485" y2="157" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <line x1="165" y1="230" x2="485" y2="230" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <line x1="165" y1="303" x2="485" y2="303" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  
+  <!-- Target spots (V formation) - golden dashed circles -->
+  <circle cx="325" cy="130" r="22" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,4"/>
+  <circle cx="260" cy="190" r="22" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,4"/>
+  <circle cx="390" cy="190" r="22" fill="rgba(34,197,94,0.4)" stroke="#22c55e" stroke-width="2" stroke-dasharray="4,4"/>
+  <circle cx="200" cy="260" r="22" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,4"/>
+  <circle cx="450" cy="260" r="22" fill="rgba(34,197,94,0.4)" stroke="#22c55e" stroke-width="2" stroke-dasharray="4,4"/>
+  
+  <!-- Dancers - some snapped (green), some not (pink) -->
+  <!-- Dancer 1 - being dragged (with glow) -->
+  <circle cx="280" cy="320" r="25" fill="rgba(244,114,182,0.3)"/>
+  <circle cx="280" cy="320" r="18" fill="url(#dancerGrad)" stroke="#ec4899" stroke-width="2"/>
+  <circle cx="276" cy="317" r="2.5" fill="#1f2937"/>
+  <circle cx="284" cy="317" r="2.5" fill="#1f2937"/>
+  <path d="M 275 323 Q 280 328 285 323" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+  
+  <!-- Dancer 2 - not snapped -->
+  <circle cx="370" cy="340" r="18" fill="url(#dancerGrad)" stroke="#ec4899" stroke-width="2"/>
+  <circle cx="366" cy="337" r="2.5" fill="#1f2937"/>
+  <circle cx="374" cy="337" r="2.5" fill="#1f2937"/>
+  <path d="M 365 343 Q 370 348 375 343" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+  
+  <!-- Dancer 3 - snapped (green) -->
+  <circle cx="390" cy="190" r="18" fill="url(#dancerSnappedGrad)" stroke="#16a34a" stroke-width="2"/>
+  <circle cx="386" cy="187" r="2.5" fill="#1f2937"/>
+  <circle cx="394" cy="187" r="2.5" fill="#1f2937"/>
+  <path d="M 385 193 Q 390 198 395 193" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+  
+  <!-- Dancer 4 - snapped (green) -->
+  <circle cx="450" cy="260" r="18" fill="url(#dancerSnappedGrad)" stroke="#16a34a" stroke-width="2"/>
+  <circle cx="446" cy="257" r="2.5" fill="#1f2937"/>
+  <circle cx="454" cy="257" r="2.5" fill="#1f2937"/>
+  <path d="M 445 263 Q 450 268 455 263" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+  
+  <!-- Dancer 5 - not snapped -->
+  <circle cx="220" cy="150" r="18" fill="url(#dancerGrad)" stroke="#ec4899" stroke-width="2"/>
+  <circle cx="216" cy="147" r="2.5" fill="#1f2937"/>
+  <circle cx="224" cy="147" r="2.5" fill="#1f2937"/>
+  <path d="M 215 153 Q 220 158 225 153" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+  
+  <!-- Target Preview Panel -->
+  <rect x="530" y="70" width="220" height="320" rx="10" fill="#065f46"/>
+  
+  <!-- Target label -->
+  <text x="640" y="95" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="10" fill="#a7f3d0" letter-spacing="1">TARGET FORMATION</text>
+  <text x="640" y="118" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="18" font-weight="700" fill="#f1f5f9">V Shape</text>
+  
+  <!-- Mini preview field -->
+  <rect x="565" y="135" width="150" height="130" rx="6" fill="#15803d"/>
+  
+  <!-- Mini formation dots -->
+  <circle cx="640" cy="160" r="10" fill="#f472b6" stroke="#ec4899" stroke-width="2"/>
+  <circle cx="605" cy="190" r="10" fill="#f472b6" stroke="#ec4899" stroke-width="2"/>
+  <circle cx="675" cy="190" r="10" fill="#f472b6" stroke="#ec4899" stroke-width="2"/>
+  <circle cx="575" cy="230" r="10" fill="#f472b6" stroke="#ec4899" stroke-width="2"/>
+  <circle cx="705" cy="230" r="10" fill="#f472b6" stroke="#ec4899" stroke-width="2"/>
+  
+  <!-- Instructions -->
+  <text x="640" y="290" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="11" fill="#a7f3d0">Drag dancers to</text>
+  <text x="640" y="306" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="11" fill="#a7f3d0">golden target spots!</text>
+  
+  <!-- Buttons -->
+  <rect x="545" y="325" width="85" height="32" rx="6" fill="#047857"/>
+  <text x="587" y="346" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="12" font-weight="500" fill="#f1f5f9">🔄 Reset</text>
+  
+  <rect x="640" y="325" width="85" height="32" rx="6" fill="#047857"/>
+  <text x="682" y="346" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="12" font-weight="500" fill="#f1f5f9">⏭️ Skip</text>
+  
+  <!-- Title -->
+  <text x="400" y="428" text-anchor="middle" font-family="system-ui, sans-serif" 
+        font-size="26" font-weight="800" fill="url(#titleGrad)">💃 Formation Frenzy</text>
+</svg>

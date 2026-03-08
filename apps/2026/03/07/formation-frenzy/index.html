@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formation Frenzy - Valley of AI</title>
+  <style>
+    :root {
+      --bg: #064e3b;
+      --surface: #065f46;
+      --surface-hover: #047857;
+      --primary: #f472b6;
+      --secondary: #fbbf24;
+      --accent: #22d3ee;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --text: #f1f5f9;
+      --text-dim: #a7f3d0;
+      --field: #15803d;
+      --field-lines: rgba(255,255,255,0.6);
+      --dancer: #f472b6;
+      --dancer-glow: rgba(244,114,182,0.5);
+      --target: rgba(251,191,36,0.3);
+      --target-border: #fbbf24;
+    }
+    
+    [data-theme="light"] {
+      --bg: #ecfdf5;
+      --surface: #d1fae5;
+      --surface-hover: #a7f3d0;
+      --text: #064e3b;
+      --text-dim: #047857;
+      --field: #22c55e;
+      --field-lines: rgba(255,255,255,0.8);
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+      transition: background 0.3s, color 0.3s;
+      overflow-x: hidden;
+    }
+    
+    .theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: var(--surface);
+      border: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 100;
+      transition: transform 0.2s, background 0.3s;
+    }
+    
+    .theme-toggle:hover { transform: scale(1.1); }
+    
+    .container {
+      max-width: 700px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    header {
+      text-align: center;
+      padding: 0.5rem 0;
+    }
+    
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.25rem;
+    }
+    
+    .subtitle {
+      color: var(--text-dim);
+      font-size: 1rem;
+    }
+    
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      width: 100%;
+      background: var(--surface);
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    
+    .stat {
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-family: 'SF Mono', Monaco, monospace;
+    }
+    
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .stat-value.time { color: var(--secondary); }
+    .stat-value.level { color: var(--accent); }
+    .stat-value.score { color: var(--primary); }
+    .stat-value.moves { color: var(--success); }
+    
+    .game-container {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      aspect-ratio: 1;
+      background: var(--field);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    
+    .field-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+    }
+    
+    .target-display {
+      background: var(--surface);
+      padding: 1rem;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 500px;
+    }
+    
+    .target-label {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    
+    .target-preview {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .target-mini {
+      width: 100px;
+      height: 100px;
+      background: var(--field);
+      border-radius: 8px;
+      border: 2px solid var(--target-border);
+    }
+    
+    .instructions {
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      padding: 0.5rem;
+    }
+    
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      box-shadow: 0 4px 15px rgba(244,114,182,0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(244,114,182,0.4);
+    }
+    
+    .btn-secondary {
+      background: var(--surface-hover);
+      color: var(--text);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--surface);
+    }
+    
+    /* Screens */
+    .screen {
+      display: none;
+      width: 100%;
+    }
+    
+    .screen.active { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+    
+    .start-screen, .end-screen {
+      text-align: center;
+      padding: 2rem;
+      background: var(--surface);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      max-width: 500px;
+    }
+    
+    .start-screen h2, .end-screen h2 {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+    }
+    
+    .start-screen p, .end-screen p {
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+    }
+    
+    .how-to-play {
+      background: rgba(0,0,0,0.2);
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      text-align: left;
+    }
+    
+    .how-to-play h3 {
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+    
+    .how-to-play ul {
+      margin-left: 1.25rem;
+      color: var(--text-dim);
+    }
+    
+    .how-to-play li {
+      margin-bottom: 0.25rem;
+    }
+    
+    .final-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+      padding: 1rem;
+      background: rgba(0,0,0,0.2);
+      border-radius: 12px;
+    }
+    
+    .final-stat {
+      text-align: center;
+    }
+    
+    .final-stat-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      font-family: 'SF Mono', Monaco, monospace;
+    }
+    
+    .final-stat-label {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+    
+    .formation-complete {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 1.5rem 3rem;
+      border-radius: 16px;
+      font-size: 1.5rem;
+      font-weight: 800;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+      z-index: 200;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    
+    .formation-complete.show {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+    
+    @media (max-width: 600px) {
+      h1 { font-size: 1.5rem; }
+      .game-container { max-width: 100%; }
+      .stats-bar { gap: 1rem; padding: 0.5rem 1rem; }
+      .stat-value { font-size: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
+  
+  <div class="container">
+    <header>
+      <h1>💃 Formation Frenzy</h1>
+      <p class="subtitle">Drag dancers into position!</p>
+    </header>
+    
+    <!-- Start Screen -->
+    <div id="startScreen" class="screen active">
+      <div class="start-screen">
+        <h2>🏈 Ready to Choreograph?</h2>
+        <p>Drag the dancers into the target formation before time runs out!</p>
+        
+        <div class="how-to-play">
+          <h3>📋 How to Play</h3>
+          <ul>
+            <li>Drag dancers (pink circles) to match the target pattern</li>
+            <li>Golden spots show where dancers need to go</li>
+            <li>Complete formations quickly for bonus points</li>
+            <li>Each level gets faster and more complex</li>
+          </ul>
+        </div>
+        
+        <button class="btn btn-primary" onclick="startGame()">
+          <span>Start Dancing</span>
+          <span>🎵</span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Game Screen -->
+    <div id="gameScreen" class="screen">
+      <div class="stats-bar">
+        <div class="stat">
+          <div class="stat-value time" id="timer">30</div>
+          <div class="stat-label">Time</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value level" id="level">1</div>
+          <div class="stat-label">Level</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value score" id="score">0</div>
+          <div class="stat-label">Score</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value moves" id="moves">0</div>
+          <div class="stat-label">Moves</div>
+        </div>
+      </div>
+      
+      <div class="game-container">
+        <canvas class="field-canvas" id="fieldCanvas"></canvas>
+      </div>
+      
+      <div class="target-display">
+        <div class="target-label">Target Formation: <span id="formationName">Line</span></div>
+        <div class="target-preview">
+          <canvas class="target-mini" id="targetCanvas" width="100" height="100"></canvas>
+        </div>
+      </div>
+      
+      <p class="instructions">Drag dancers to golden target spots!</p>
+      
+      <div class="controls">
+        <button class="btn btn-secondary" onclick="resetLevel()">🔄 Reset</button>
+        <button class="btn btn-secondary" onclick="skipLevel()">⏭️ Skip</button>
+      </div>
+    </div>
+    
+    <!-- End Screen -->
+    <div id="endScreen" class="screen">
+      <div class="end-screen">
+        <h2 id="endTitle">🎉 Great Performance!</h2>
+        <p id="endMessage">You've completed the routine!</p>
+        
+        <div class="final-stats">
+          <div class="final-stat">
+            <div class="final-stat-value" id="finalScore" style="color: var(--primary);">0</div>
+            <div class="final-stat-label">Final Score</div>
+          </div>
+          <div class="final-stat">
+            <div class="final-stat-value" id="finalLevel" style="color: var(--accent);">0</div>
+            <div class="final-stat-label">Level Reached</div>
+          </div>
+          <div class="final-stat">
+            <div class="final-stat-value" id="finalMoves" style="color: var(--success);">0</div>
+            <div class="final-stat-label">Total Moves</div>
+          </div>
+          <div class="final-stat">
+            <div class="final-stat-value" id="finalFormations" style="color: var(--secondary);">0</div>
+            <div class="final-stat-label">Formations</div>
+          </div>
+        </div>
+        
+        <button class="btn btn-primary" onclick="restartGame()">
+          <span>Play Again</span>
+          <span>🔄</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="formation-complete" id="formationComplete">✨ Perfect! ✨</div>
+  
+  <script>
+    // Formations - each is an array of {x, y} positions (0-1 range)
+    const formations = [
+      { name: "Line", points: [{x:0.2,y:0.5},{x:0.35,y:0.5},{x:0.5,y:0.5},{x:0.65,y:0.5},{x:0.8,y:0.5}] },
+      { name: "V Shape", points: [{x:0.5,y:0.3},{x:0.35,y:0.45},{x:0.65,y:0.45},{x:0.2,y:0.6},{x:0.8,y:0.6}] },
+      { name: "Diamond", points: [{x:0.5,y:0.2},{x:0.3,y:0.5},{x:0.7,y:0.5},{x:0.5,y:0.8},{x:0.5,y:0.5}] },
+      { name: "Star", points: [{x:0.5,y:0.15},{x:0.2,y:0.4},{x:0.8,y:0.4},{x:0.3,y:0.75},{x:0.7,y:0.75}] },
+      { name: "Circle", points: [{x:0.5,y:0.25},{x:0.75,y:0.4},{x:0.7,y:0.7},{x:0.3,y:0.7},{x:0.25,y:0.4}] },
+      { name: "Arrow", points: [{x:0.5,y:0.2},{x:0.35,y:0.35},{x:0.65,y:0.35},{x:0.5,y:0.5},{x:0.5,y:0.75}] },
+      { name: "Cross", points: [{x:0.5,y:0.2},{x:0.5,y:0.4},{x:0.3,y:0.5},{x:0.7,y:0.5},{x:0.5,y:0.5},{x:0.5,y:0.8}] },
+      { name: "Triangle", points: [{x:0.5,y:0.2},{x:0.25,y:0.7},{x:0.75,y:0.7},{x:0.375,y:0.45},{x:0.625,y:0.45}] },
+      { name: "Wave", points: [{x:0.15,y:0.4},{x:0.3,y:0.6},{x:0.5,y:0.4},{x:0.7,y:0.6},{x:0.85,y:0.4}] },
+      { name: "Heart", points: [{x:0.35,y:0.35},{x:0.65,y:0.35},{x:0.5,y:0.75},{x:0.25,y:0.5},{x:0.75,y:0.5}] },
+      { name: "Zigzag", points: [{x:0.2,y:0.3},{x:0.4,y:0.5},{x:0.6,y:0.3},{x:0.8,y:0.5},{x:0.5,y:0.7}] },
+      { name: "Spiral", points: [{x:0.5,y:0.5},{x:0.65,y:0.5},{x:0.5,y:0.35},{x:0.35,y:0.5},{x:0.5,y:0.7}] }
+    ];
+    
+    // Game state
+    let gameState = {
+      level: 1,
+      score: 0,
+      moves: 0,
+      formationsCompleted: 0,
+      timeLeft: 30,
+      timerInterval: null,
+      dancers: [],
+      targets: [],
+      currentFormation: null,
+      draggingDancer: null,
+      dragOffset: { x: 0, y: 0 },
+      canvas: null,
+      ctx: null,
+      targetCanvas: null,
+      targetCtx: null
+    };
+    
+    const DANCER_RADIUS = 20;
+    const SNAP_DISTANCE = 30;
+    
+    // Theme handling
+    function initTheme() {
+      const saved = localStorage.getItem('formationFrenzyTheme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = saved || (prefersDark ? 'dark' : 'light');
+      setTheme(theme);
+    }
+    
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('formationFrenzyTheme', theme);
+      document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+    }
+    
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      setTheme(current === 'dark' ? 'light' : 'dark');
+      if (gameState.canvas) render();
+    }
+    
+    // Screen management
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+    }
+    
+    // Initialize canvas
+    function initCanvas() {
+      gameState.canvas = document.getElementById('fieldCanvas');
+      gameState.ctx = gameState.canvas.getContext('2d');
+      gameState.targetCanvas = document.getElementById('targetCanvas');
+      gameState.targetCtx = gameState.targetCanvas.getContext('2d');
+      
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+      
+      // Mouse events
+      gameState.canvas.addEventListener('mousedown', handleMouseDown);
+      gameState.canvas.addEventListener('mousemove', handleMouseMove);
+      gameState.canvas.addEventListener('mouseup', handleMouseUp);
+      gameState.canvas.addEventListener('mouseleave', handleMouseUp);
+      
+      // Touch events
+      gameState.canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+      gameState.canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+      gameState.canvas.addEventListener('touchend', handleTouchEnd);
+    }
+    
+    function resizeCanvas() {
+      const container = gameState.canvas.parentElement;
+      const size = Math.min(container.clientWidth, container.clientHeight);
+      gameState.canvas.width = size;
+      gameState.canvas.height = size;
+      if (gameState.dancers.length > 0) render();
+    }
+    
+    // Start game
+    function startGame() {
+      gameState = {
+        ...gameState,
+        level: 1,
+        score: 0,
+        moves: 0,
+        formationsCompleted: 0,
+        timeLeft: 30
+      };
+      
+      showScreen('gameScreen');
+      initCanvas();
+      nextLevel();
+      startTimer();
+    }
+    
+    // Timer
+    function startTimer() {
+      clearInterval(gameState.timerInterval);
+      gameState.timerInterval = setInterval(() => {
+        gameState.timeLeft--;
+        updateUI();
+        
+        if (gameState.timeLeft <= 0) {
+          endGame();
+        }
+      }, 1000);
+    }
+    
+    // Next level
+    function nextLevel() {
+      // Pick a formation based on level (harder ones later)
+      const maxIndex = Math.min(gameState.level + 2, formations.length);
+      const formationIndex = Math.floor(Math.random() * maxIndex);
+      gameState.currentFormation = formations[formationIndex];
+      
+      document.getElementById('formationName').textContent = gameState.currentFormation.name;
+      
+      // Set targets
+      const canvas = gameState.canvas;
+      const padding = 50;
+      
+      gameState.targets = gameState.currentFormation.points.map(p => ({
+        x: padding + p.x * (canvas.width - padding * 2),
+        y: padding + p.y * (canvas.height - padding * 2),
+        filled: false
+      }));
+      
+      // Place dancers randomly (but not overlapping)
+      gameState.dancers = [];
+      for (let i = 0; i < gameState.targets.length; i++) {
+        let placed = false;
+        let attempts = 0;
+        while (!placed && attempts < 100) {
+          const x = padding + Math.random() * (canvas.width - padding * 2);
+          const y = padding + Math.random() * (canvas.height - padding * 2);
+          
+          // Check not overlapping other dancers or targets
+          let valid = true;
+          for (const d of gameState.dancers) {
+            if (distance(x, y, d.x, d.y) < DANCER_RADIUS * 2.5) {
+              valid = false;
+              break;
+            }
+          }
+          
+          // Don't start on targets
+          for (const t of gameState.targets) {
+            if (distance(x, y, t.x, t.y) < SNAP_DISTANCE) {
+              valid = false;
+              break;
+            }
+          }
+          
+          if (valid) {
+            gameState.dancers.push({ x, y, snapped: false });
+            placed = true;
+          }
+          attempts++;
+        }
+        
+        // Fallback
+        if (!placed) {
+          gameState.dancers.push({
+            x: padding + (i / gameState.targets.length) * (canvas.width - padding * 2),
+            y: canvas.height - padding,
+            snapped: false
+          });
+        }
+      }
+      
+      // Add time bonus for new level
+      gameState.timeLeft = Math.min(gameState.timeLeft + 10, 60);
+      
+      updateUI();
+      render();
+      renderTargetPreview();
+    }
+    
+    // Distance helper
+    function distance(x1, y1, x2, y2) {
+      return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+    }
+    
+    // Mouse/touch handlers
+    function getCanvasCoords(e) {
+      const rect = gameState.canvas.getBoundingClientRect();
+      const scaleX = gameState.canvas.width / rect.width;
+      const scaleY = gameState.canvas.height / rect.height;
+      
+      if (e.touches) {
+        return {
+          x: (e.touches[0].clientX - rect.left) * scaleX,
+          y: (e.touches[0].clientY - rect.top) * scaleY
+        };
+      }
+      return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY
+      };
+    }
+    
+    function handleMouseDown(e) {
+      const coords = getCanvasCoords(e);
+      
+      // Find dancer under cursor
+      for (let i = gameState.dancers.length - 1; i >= 0; i--) {
+        const dancer = gameState.dancers[i];
+        if (distance(coords.x, coords.y, dancer.x, dancer.y) < DANCER_RADIUS) {
+          gameState.draggingDancer = i;
+          gameState.dragOffset = {
+            x: coords.x - dancer.x,
+            y: coords.y - dancer.y
+          };
+          
+          // If snapped, unsnap
+          if (dancer.snapped) {
+            dancer.snapped = false;
+            // Unmark target
+            for (const t of gameState.targets) {
+              if (distance(dancer.x, dancer.y, t.x, t.y) < SNAP_DISTANCE) {
+                t.filled = false;
+              }
+            }
+          }
+          
+          break;
+        }
+      }
+    }
+    
+    function handleMouseMove(e) {
+      if (gameState.draggingDancer === null) return;
+      
+      const coords = getCanvasCoords(e);
+      const dancer = gameState.dancers[gameState.draggingDancer];
+      
+      dancer.x = coords.x - gameState.dragOffset.x;
+      dancer.y = coords.y - gameState.dragOffset.y;
+      
+      // Clamp to canvas
+      dancer.x = Math.max(DANCER_RADIUS, Math.min(gameState.canvas.width - DANCER_RADIUS, dancer.x));
+      dancer.y = Math.max(DANCER_RADIUS, Math.min(gameState.canvas.height - DANCER_RADIUS, dancer.y));
+      
+      render();
+    }
+    
+    function handleMouseUp(e) {
+      if (gameState.draggingDancer === null) return;
+      
+      const dancer = gameState.dancers[gameState.draggingDancer];
+      gameState.moves++;
+      
+      // Check for snap to target
+      for (const target of gameState.targets) {
+        if (!target.filled && distance(dancer.x, dancer.y, target.x, target.y) < SNAP_DISTANCE) {
+          dancer.x = target.x;
+          dancer.y = target.y;
+          dancer.snapped = true;
+          target.filled = true;
+          break;
+        }
+      }
+      
+      gameState.draggingDancer = null;
+      updateUI();
+      render();
+      
+      // Check if formation complete
+      checkFormationComplete();
+    }
+    
+    function handleTouchStart(e) {
+      e.preventDefault();
+      handleMouseDown(e);
+    }
+    
+    function handleTouchMove(e) {
+      e.preventDefault();
+      handleMouseMove(e);
+    }
+    
+    function handleTouchEnd(e) {
+      handleMouseUp(e);
+    }
+    
+    // Check formation
+    function checkFormationComplete() {
+      const allFilled = gameState.targets.every(t => t.filled);
+      
+      if (allFilled) {
+        gameState.formationsCompleted++;
+        
+        // Score: base + time bonus + level bonus
+        const timeBonus = gameState.timeLeft * 10;
+        const levelBonus = gameState.level * 50;
+        const moveBonus = Math.max(0, (gameState.targets.length * 3 - gameState.moves) * 20);
+        const points = 100 + timeBonus + levelBonus + moveBonus;
+        gameState.score += points;
+        
+        // Show completion message
+        showFormationComplete();
+        
+        // Next level
+        gameState.level++;
+        gameState.moves = 0;
+        
+        setTimeout(() => {
+          nextLevel();
+        }, 1500);
+      }
+    }
+    
+    function showFormationComplete() {
+      const el = document.getElementById('formationComplete');
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 1200);
+    }
+    
+    // Reset level
+    function resetLevel() {
+      nextLevel();
+    }
+    
+    // Skip level
+    function skipLevel() {
+      gameState.timeLeft = Math.max(5, gameState.timeLeft - 10);
+      gameState.level++;
+      gameState.moves = 0;
+      nextLevel();
+    }
+    
+    // Update UI
+    function updateUI() {
+      document.getElementById('timer').textContent = gameState.timeLeft;
+      document.getElementById('level').textContent = gameState.level;
+      document.getElementById('score').textContent = gameState.score;
+      document.getElementById('moves').textContent = gameState.moves;
+      
+      const timerEl = document.getElementById('timer');
+      if (gameState.timeLeft <= 5) {
+        timerEl.style.color = 'var(--danger)';
+      } else {
+        timerEl.style.color = 'var(--secondary)';
+      }
+    }
+    
+    // Render
+    function render() {
+      const ctx = gameState.ctx;
+      const canvas = gameState.canvas;
+      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+      
+      // Clear
+      ctx.fillStyle = isDark ? '#15803d' : '#22c55e';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw field lines
+      ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.5)';
+      ctx.lineWidth = 2;
+      
+      // Border
+      ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+      
+      // Center line
+      ctx.beginPath();
+      ctx.moveTo(canvas.width / 2, 20);
+      ctx.lineTo(canvas.width / 2, canvas.height - 20);
+      ctx.stroke();
+      
+      // Center circle
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, canvas.height / 2, 60, 0, Math.PI * 2);
+      ctx.stroke();
+      
+      // Yard lines
+      for (let i = 1; i < 4; i++) {
+        const y = 20 + (i / 4) * (canvas.height - 40);
+        ctx.beginPath();
+        ctx.moveTo(20, y);
+        ctx.lineTo(canvas.width - 20, y);
+        ctx.stroke();
+      }
+      
+      // Draw targets
+      for (const target of gameState.targets) {
+        ctx.beginPath();
+        ctx.arc(target.x, target.y, DANCER_RADIUS + 5, 0, Math.PI * 2);
+        ctx.fillStyle = target.filled ? 'rgba(34, 197, 94, 0.4)' : 'rgba(251, 191, 36, 0.3)';
+        ctx.fill();
+        ctx.strokeStyle = target.filled ? '#22c55e' : '#fbbf24';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([5, 5]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      
+      // Draw dancers
+      for (let i = 0; i < gameState.dancers.length; i++) {
+        const dancer = gameState.dancers[i];
+        const isBeingDragged = i === gameState.draggingDancer;
+        
+        // Glow
+        if (isBeingDragged) {
+          ctx.beginPath();
+          ctx.arc(dancer.x, dancer.y, DANCER_RADIUS + 10, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(244, 114, 182, 0.3)';
+          ctx.fill();
+        }
+        
+        // Dancer body
+        ctx.beginPath();
+        ctx.arc(dancer.x, dancer.y, DANCER_RADIUS, 0, Math.PI * 2);
+        
+        const gradient = ctx.createRadialGradient(
+          dancer.x - 5, dancer.y - 5, 0,
+          dancer.x, dancer.y, DANCER_RADIUS
+        );
+        gradient.addColorStop(0, '#f9a8d4');
+        gradient.addColorStop(1, dancer.snapped ? '#22c55e' : '#f472b6');
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        
+        ctx.strokeStyle = dancer.snapped ? '#16a34a' : '#ec4899';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        
+        // Face
+        ctx.fillStyle = '#1f2937';
+        ctx.beginPath();
+        ctx.arc(dancer.x - 5, dancer.y - 3, 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(dancer.x + 5, dancer.y - 3, 3, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Smile
+        ctx.beginPath();
+        ctx.arc(dancer.x, dancer.y + 2, 6, 0.1 * Math.PI, 0.9 * Math.PI);
+        ctx.strokeStyle = '#1f2937';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    }
+    
+    // Render target preview
+    function renderTargetPreview() {
+      const ctx = gameState.targetCtx;
+      const canvas = gameState.targetCanvas;
+      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+      
+      ctx.fillStyle = isDark ? '#15803d' : '#22c55e';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw mini formation
+      const padding = 15;
+      for (const point of gameState.currentFormation.points) {
+        const x = padding + point.x * (canvas.width - padding * 2);
+        const y = padding + point.y * (canvas.height - padding * 2);
+        
+        ctx.beginPath();
+        ctx.arc(x, y, 8, 0, Math.PI * 2);
+        ctx.fillStyle = '#f472b6';
+        ctx.fill();
+        ctx.strokeStyle = '#ec4899';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    }
+    
+    // End game
+    function endGame() {
+      clearInterval(gameState.timerInterval);
+      
+      document.getElementById('finalScore').textContent = gameState.score;
+      document.getElementById('finalLevel').textContent = gameState.level;
+      document.getElementById('finalMoves').textContent = gameState.moves;
+      document.getElementById('finalFormations').textContent = gameState.formationsCompleted;
+      
+      const title = document.getElementById('endTitle');
+      const message = document.getElementById('endMessage');
+      
+      if (gameState.formationsCompleted >= 10) {
+        title.textContent = '🏆 Choreography Master!';
+        message.textContent = 'You're a true dance captain!';
+      } else if (gameState.formationsCompleted >= 5) {
+        title.textContent = '⭐ Great Performance!';
+        message.textContent = 'Your squad is looking sharp!';
+      } else if (gameState.formationsCompleted >= 2) {
+        title.textContent = '👍 Nice Moves!';
+        message.textContent = 'Keep practicing those formations!';
+      } else {
+        title.textContent = '💃 Keep Dancing!';
+        message.textContent = 'Every performance starts somewhere!';
+      }
+      
+      showScreen('endScreen');
+    }
+    
+    // Restart
+    function restartGame() {
+      showScreen('startScreen');
+    }
+    
+    // Initialize
+    initTheme();
+  </script>
+</body>
+</html>
