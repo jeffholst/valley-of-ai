@@ -1,0 +1,21 @@
+{
+  "id": "road-rage",
+  "name": "Road Rage",
+  "shortDescription": "High-speed vertical highway racer! Dodge traffic, avoid wet spots that send you spinning, and see how far you can go. Speed increases over time for maximum adrenaline.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-08T02:09:40Z",
+  "category": "Games",
+  "status": "active",
+  "tags": ["game", "racing", "arcade", "driving", "action", "endless"],
+  "homepagePath": "index.html",
+  "generation": {
+    "agentName": "github-copilot-agent",
+    "llmModel": "claude-opus-4-5",
+    "startTime": "2026-03-08T02:06:00Z",
+    "endTime": "2026-03-08T02:09:40Z",
+    "totalTokensIn": 15000,
+    "totalTokensOut": 12000,
+    "runId": "run-20260308T020600Z-rr92f7",
+    "notes": "Vertical scrolling racing game with 4-lane highway, enemy traffic, wet spots causing spin-outs, score/distance/speed tracking, and responsive touch controls."
+  }
+}
