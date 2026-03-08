@@ -1,0 +1,21 @@
+{
+  "id": "realtor-tycoon",
+  "name": "Realtor Tycoon",
+  "shortDescription": "Run your own real estate business! Buy listings, set prices, invest in marketing, and navigate market conditions to become the top realtor in town.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-07T21:57:00Z",
+  "category": "Games",
+  "status": "active",
+  "tags": ["game", "simulation", "business", "strategy", "real-estate"],
+  "homepagePath": "index.html",
+  "generation": {
+    "agentName": "github-copilot",
+    "llmModel": "claude-opus-4-20250514",
+    "startTime": "2026-03-07T21:56:00Z",
+    "endTime": "2026-03-07T21:58:00Z",
+    "totalTokensIn": 15000,
+    "totalTokensOut": 12000,
+    "runId": "run-20260307T215600Z-rt8b4a",
+    "notes": "Lemonade Stand-style business simulation game themed around real estate. Features market conditions, pricing strategies, marketing budgets, and reputation system."
+  }
+}
