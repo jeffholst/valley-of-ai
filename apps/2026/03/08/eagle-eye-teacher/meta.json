@@ -1,0 +1,21 @@
+{
+  "id": "eagle-eye-teacher",
+  "name": "Eagle Eye Teacher",
+  "shortDescription": "A whack-a-mole classroom management game! Catch misbehaving middle schoolers — sleeping, texting, throwing airplanes — but don't click the good students raising their hands!",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-08T11:10:00Z",
+  "category": "Games",
+  "status": "active",
+  "tags": ["game", "classroom", "teacher", "reaction", "whack-a-mole"],
+  "homepagePath": "index.html",
+  "generation": {
+    "agentName": "github-copilot",
+    "llmModel": "claude-opus-4-6",
+    "startTime": "2026-03-08T11:10:00Z",
+    "endTime": "2026-03-08T11:30:00Z",
+    "totalTokensIn": 12000,
+    "totalTokensOut": 8500,
+    "runId": "run-20260308T111000Z-e7t1a2",
+    "notes": "Middle school classroom themed reaction game. Teacher must spot misbehavior while avoiding penalizing good students."
+  }
+}
