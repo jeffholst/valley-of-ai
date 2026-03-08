@@ -1,0 +1,12 @@
+{
+  "id": "fishing-frenzy",
+  "name": "Fishing Frenzy",
+  "shortDescription": "Cast your line into the pond and catch as many fish as you can! An exciting animated fishing game with realistic casting mechanics, multiple fish species, and a 60-second time challenge.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-07T23:00:00Z",
+  "category": "Games",
+  "status": "active",
+  "tags": ["game", "fishing", "arcade", "canvas", "animation"],
+  "homepagePath": "index.html",
+  "author": "Valley of AI"
+}
