@@ -3,30 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formation Frenzy - Valley of AI</title>
+  <title>Halftime Hustle - Valley of AI</title>
   <style>
     :root {
-      --bg: #064e3b;
-      --surface: #065f46;
-      --surface-hover: #047857;
-      --primary: #f472b6;
-      --secondary: #fbbf24;
-      --accent: #22d3ee;
-      --success: #22c55e;
-      --danger: #ef4444;
-      --text: #f1f5f9;
-      --text-dim: #a7f3d0;
-      --field: #15803d;
-      --locked: #6b7280;
-    }
-    
-    [data-theme="light"] {
-      --bg: #ecfdf5;
-      --surface: #d1fae5;
-      --surface-hover: #a7f3d0;
-      --text: #064e3b;
-      --text-dim: #047857;
-      --field: #22c55e;
+      --bg: #1a1a2e;
+      --surface: #16213e;
+      --primary: #e94560;
+      --secondary: #0f3460;
+      --accent: #ffd700;
+      --success: #00d26a;
+      --danger: #ff6b6b;
+      --text: #eaeaea;
+      --text-dim: #888;
+      --field: #2d5a27;
     }
     
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,217 +29,125 @@
       flex-direction: column;
       align-items: center;
       padding: 1rem;
-      transition: background 0.3s, color 0.3s;
-      overflow-x: hidden;
+      overflow: hidden;
     }
-    
-    .theme-toggle {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      background: var(--surface);
-      border: none;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      z-index: 100;
-      transition: transform 0.2s, background 0.3s;
-    }
-    
-    .theme-toggle:hover { transform: scale(1.1); }
     
     .container {
-      max-width: 600px;
+      max-width: 800px;
       width: 100%;
       display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    header { text-align: center; }
+    
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .subtitle { color: var(--text-dim); font-size: 0.85rem; }
+    
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      background: var(--surface);
+      padding: 0.5rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    
+    .stat { text-align: center; }
+    .stat-value { font-size: 1.25rem; font-weight: 700; font-family: monospace; }
+    .stat-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; }
+    .stat-value.lives { color: var(--danger); }
+    .stat-value.score { color: var(--accent); }
+    .stat-value.marks { color: var(--success); }
+    
+    .lives-display { display: flex; gap: 4px; justify-content: center; }
+    .heart { font-size: 1.1rem; }
+    .heart.lost { opacity: 0.3; }
+    
+    .game-wrapper {
+      position: relative;
+      background: var(--field);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    
+    #gameCanvas {
+      display: block;
+      touch-action: none;
+    }
+    
+    .controls-hint {
+      color: var(--text-dim);
+      font-size: 0.75rem;
+      text-align: center;
+    }
+    
+    .screen {
+      display: none;
+      width: 100%;
       flex-direction: column;
       align-items: center;
       gap: 1rem;
     }
     
-    header { text-align: center; padding: 0.5rem 0; }
+    .screen.active { display: flex; }
     
-    h1 {
-      font-size: 1.75rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.25rem;
-    }
-    
-    .subtitle { color: var(--text-dim); font-size: 0.9rem; }
-    
-    .stats-bar {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-      width: 100%;
+    .modal {
       background: var(--surface);
-      padding: 0.75rem 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    }
-    
-    .stat { text-align: center; }
-    
-    .stat-value {
-      font-size: 1.25rem;
-      font-weight: 700;
-      font-family: 'SF Mono', Monaco, monospace;
-    }
-    
-    .stat-label {
-      font-size: 0.7rem;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    
-    .stat-value.level { color: var(--accent); }
-    .stat-value.swaps { color: var(--secondary); }
-    .stat-value.par { color: var(--primary); }
-    .stat-value.score { color: var(--success); }
-    
-    .game-board {
-      display: grid;
-      gap: 8px;
-      background: var(--field);
-      padding: 16px;
+      padding: 2rem;
       border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      text-align: center;
+      max-width: 400px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     }
     
-    .cell {
-      width: 60px;
-      height: 60px;
-      background: rgba(0,0,0,0.2);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      position: relative;
+    .modal h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .modal p { color: var(--text-dim); margin-bottom: 1rem; font-size: 0.9rem; }
+    
+    .how-to-play {
+      background: rgba(0,0,0,0.3);
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: left;
+      margin: 1rem 0;
     }
     
-    .cell:hover { transform: scale(1.05); }
-    
-    .cell.selected {
-      box-shadow: 0 0 0 4px var(--secondary), 0 0 20px var(--secondary);
-      transform: scale(1.1);
-      z-index: 10;
-    }
-    
-    .cell.hint { animation: hint-pulse 0.5s ease infinite; }
-    
-    @keyframes hint-pulse {
-      0%, 100% { box-shadow: 0 0 0 2px var(--accent); }
-      50% { box-shadow: 0 0 0 6px var(--accent), 0 0 15px var(--accent); }
-    }
-    
-    .dancer {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 1.25rem;
-      color: white;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-      transition: all 0.3s;
-      position: relative;
-    }
-    
-    .dancer.correct { box-shadow: 0 0 0 3px var(--success), 0 0 15px var(--success); }
-    .dancer.locked { opacity: 0.6; cursor: not-allowed; }
-    .dancer.locked::after {
-      content: '🔒';
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      font-size: 0.75rem;
-    }
-    
-    .target-number {
-      position: absolute;
-      bottom: 2px;
-      right: 4px;
-      font-size: 0.65rem;
-      color: rgba(255,255,255,0.6);
-      font-weight: 600;
-    }
-    
-    .stars { display: flex; gap: 4px; font-size: 1.5rem; }
-    .star { opacity: 0.3; }
-    .star.earned { opacity: 1; }
-    
-    .controls { display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
+    .how-to-play h3 { font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--accent); }
+    .how-to-play ul { margin-left: 1.25rem; font-size: 0.85rem; color: var(--text-dim); }
+    .how-to-play li { margin-bottom: 0.25rem; }
     
     .btn {
-      padding: 0.6rem 1.25rem;
-      font-size: 0.9rem;
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
       font-weight: 600;
       border: none;
       border-radius: 10px;
       cursor: pointer;
       transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
     }
     
     .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      background: linear-gradient(135deg, var(--primary), #c73659);
       color: white;
-      box-shadow: 0 4px 15px rgba(244,114,182,0.3);
+      box-shadow: 0 4px 15px rgba(233,69,96,0.4);
     }
     
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(244,114,182,0.4);
+      box-shadow: 0 6px 20px rgba(233,69,96,0.5);
     }
-    
-    .btn-secondary { background: var(--surface-hover); color: var(--text); }
-    .btn-secondary:hover { background: var(--surface); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
-    
-    .screen { display: none; width: 100%; }
-    .screen.active { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
-    
-    .start-screen, .end-screen, .level-complete {
-      text-align: center;
-      padding: 2rem;
-      background: var(--surface);
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      max-width: 450px;
-    }
-    
-    .start-screen h2, .end-screen h2, .level-complete h2 { font-size: 1.5rem; margin-bottom: 0.75rem; }
-    .start-screen p, .end-screen p, .level-complete p { color: var(--text-dim); margin-bottom: 1rem; font-size: 0.95rem; }
-    
-    .how-to-play {
-      background: rgba(0,0,0,0.2);
-      padding: 1rem;
-      border-radius: 8px;
-      margin: 1rem 0;
-      text-align: left;
-    }
-    
-    .how-to-play h3 { margin-bottom: 0.5rem; font-size: 0.95rem; }
-    .how-to-play ul { margin-left: 1.25rem; color: var(--text-dim); font-size: 0.9rem; }
-    .how-to-play li { margin-bottom: 0.25rem; }
     
     .final-stats {
       display: grid;
@@ -258,189 +155,149 @@
       gap: 1rem;
       margin: 1rem 0;
       padding: 1rem;
-      background: rgba(0,0,0,0.2);
+      background: rgba(0,0,0,0.3);
       border-radius: 12px;
     }
     
     .final-stat { text-align: center; }
-    .final-stat-value { font-size: 1.5rem; font-weight: 800; font-family: 'SF Mono', Monaco, monospace; }
-    .final-stat-label { font-size: 0.75rem; color: var(--text-dim); }
+    .final-stat-value { font-size: 1.5rem; font-weight: 800; font-family: monospace; }
+    .final-stat-label { font-size: 0.7rem; color: var(--text-dim); }
     
-    .level-stars { margin: 1rem 0; }
+    .instructor-warning {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(233,69,96,0.95);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.25rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      z-index: 100;
+    }
     
-    .message { padding: 0.75rem 1rem; border-radius: 8px; text-align: center; font-weight: 500; margin-bottom: 0.5rem; }
-    .message.info { background: rgba(34, 211, 238, 0.2); color: var(--accent); }
-    .message.success { background: rgba(34, 197, 94, 0.2); color: var(--success); }
-
-    @media (max-width: 500px) {
-      .cell { width: 50px; height: 50px; }
-      .dancer { width: 40px; height: 40px; font-size: 1rem; }
-      .game-board { padding: 12px; gap: 6px; }
+    .instructor-warning.show { opacity: 1; }
+    
+    @media (max-width: 600px) {
+      h1 { font-size: 1.5rem; }
+      .stats-bar { gap: 1rem; padding: 0.5rem 1rem; }
     }
   </style>
 </head>
 <body>
-  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
-  
   <div class="container">
     <header>
-      <h1>💃 Formation Frenzy</h1>
-      <p class="subtitle">Swap dancers into position!</p>
+      <h1>🏈 Halftime Hustle</h1>
+      <p class="subtitle">Dodge the Drill Sergeant!</p>
     </header>
     
+    <!-- Start Screen -->
     <div id="startScreen" class="screen active">
-      <div class="start-screen">
-        <h2>🏈 Ready to Choreograph?</h2>
-        <p>Swap dancers to get each numbered dancer to their matching spot!</p>
+      <div class="modal">
+        <h2>😈 Instructor Incoming!</h2>
+        <p>Hit your dance marks while avoiding the tyrannical instructor's spotlight!</p>
         
         <div class="how-to-play">
-          <h3>📋 How to Play</h3>
+          <h3>🎮 How to Play</h3>
           <ul>
-            <li>Click two dancers to <strong>swap</strong> their positions</li>
-            <li>Match each dancer number to the target number</li>
-            <li>Beat the par score to earn ⭐⭐⭐</li>
-            <li>🔒 Locked dancers can only move when unlocked!</li>
-            <li>Unlock by placing a correct dancer next to them</li>
+            <li>Use <strong>Arrow Keys</strong> or <strong>WASD</strong> to move</li>
+            <li>Collect ⭐ <strong>dance marks</strong> to score points</li>
+            <li>Avoid the instructor's 🔦 <strong>spotlight</strong></li>
+            <li>Get caught 3 times and you're <strong>benched!</strong></li>
+            <li>Clear all marks to advance to harder levels</li>
           </ul>
         </div>
         
-        <button class="btn btn-primary" onclick="startGame()">
-          <span>Start Puzzle</span>
-          <span>🧩</span>
-        </button>
+        <button class="btn btn-primary" onclick="startGame()">Start Dancing! 💃</button>
       </div>
     </div>
     
+    <!-- Game Screen -->
     <div id="gameScreen" class="screen">
       <div class="stats-bar">
         <div class="stat">
-          <div class="stat-value level" id="level">1</div>
-          <div class="stat-label">Level</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value swaps" id="swaps">0</div>
-          <div class="stat-label">Swaps</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value par" id="par">3</div>
-          <div class="stat-label">Par</div>
+          <div class="lives-display" id="livesDisplay">
+            <span class="heart">❤️</span>
+            <span class="heart">❤️</span>
+            <span class="heart">❤️</span>
+          </div>
+          <div class="stat-label">Lives</div>
         </div>
         <div class="stat">
           <div class="stat-value score" id="score">0</div>
           <div class="stat-label">Score</div>
         </div>
+        <div class="stat">
+          <div class="stat-value marks" id="marks">0/5</div>
+          <div class="stat-label">Marks</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="level" style="color: var(--primary);">1</div>
+          <div class="stat-label">Level</div>
+        </div>
       </div>
       
-      <div id="message" class="message info" style="display: none;"></div>
-      
-      <div class="game-board" id="gameBoard"></div>
-      
-      <div class="controls">
-        <button class="btn btn-secondary" onclick="useHint()" id="hintBtn">💡 Hint</button>
-        <button class="btn btn-secondary" onclick="undoMove()" id="undoBtn" disabled>↩️ Undo</button>
-        <button class="btn btn-secondary" onclick="resetLevel()">🔄 Reset</button>
+      <div class="game-wrapper">
+        <canvas id="gameCanvas" width="600" height="400"></canvas>
+        <div class="instructor-warning" id="warning">😡 CAUGHT! Get back in formation!</div>
       </div>
+      
+      <p class="controls-hint">Arrow Keys / WASD to move • Touch edges on mobile</p>
     </div>
     
-    <div id="levelCompleteScreen" class="screen">
-      <div class="level-complete">
-        <h2 id="levelCompleteTitle">✨ Level Complete!</h2>
-        <div class="level-stars">
-          <div class="stars" id="levelStars">
-            <span class="star">⭐</span>
-            <span class="star">⭐</span>
-            <span class="star">⭐</span>
-          </div>
-        </div>
-        <p id="levelCompleteMsg">Great job!</p>
-        <div class="final-stats">
-          <div class="final-stat">
-            <div class="final-stat-value" id="levelSwaps" style="color: var(--secondary);">0</div>
-            <div class="final-stat-label">Swaps Used</div>
-          </div>
-          <div class="final-stat">
-            <div class="final-stat-value" id="levelPar" style="color: var(--primary);">0</div>
-            <div class="final-stat-label">Par</div>
-          </div>
-        </div>
-        <div class="controls">
-          <button class="btn btn-primary" onclick="nextLevel()">
-            <span>Next Level</span>
-            <span>➡️</span>
-          </button>
-        </div>
-      </div>
-    </div>
-    
+    <!-- Game Over Screen -->
     <div id="endScreen" class="screen">
-      <div class="end-screen">
-        <h2 id="endTitle">🎉 Amazing!</h2>
-        <p id="endMessage">You completed all levels!</p>
+      <div class="modal">
+        <h2 id="endTitle">🪑 Benched!</h2>
+        <p id="endMessage">The instructor caught you too many times!</p>
+        
         <div class="final-stats">
           <div class="final-stat">
-            <div class="final-stat-value" id="finalScore" style="color: var(--success);">0</div>
-            <div class="final-stat-label">Total Score</div>
+            <div class="final-stat-value" id="finalScore" style="color: var(--accent);">0</div>
+            <div class="final-stat-label">Final Score</div>
           </div>
           <div class="final-stat">
-            <div class="final-stat-value" id="finalStars" style="color: var(--secondary);">0</div>
-            <div class="final-stat-label">Stars Earned</div>
+            <div class="final-stat-value" id="finalLevel" style="color: var(--primary);">1</div>
+            <div class="final-stat-label">Level Reached</div>
           </div>
           <div class="final-stat">
-            <div class="final-stat-value" id="finalLevels" style="color: var(--accent);">0</div>
-            <div class="final-stat-label">Levels Beaten</div>
+            <div class="final-stat-value" id="finalMarks" style="color: var(--success);">0</div>
+            <div class="final-stat-label">Marks Hit</div>
           </div>
           <div class="final-stat">
-            <div class="final-stat-value" id="finalSwaps" style="color: var(--primary);">0</div>
-            <div class="final-stat-label">Total Swaps</div>
+            <div class="final-stat-value" id="finalTime" style="color: var(--text);">0s</div>
+            <div class="final-stat-label">Time Survived</div>
           </div>
         </div>
-        <button class="btn btn-primary" onclick="restartGame()">
-          <span>Play Again</span>
-          <span>🔄</span>
-        </button>
+        
+        <button class="btn btn-primary" onclick="startGame()">Try Again! 🔄</button>
       </div>
     </div>
   </div>
   
   <script>
-    var COLORS = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899', '#14b8a6'];
-    
-    var LEVELS = [
-      { grid: 2, par: 2, locked: [] },
-      { grid: 2, par: 3, locked: [] },
-      { grid: 3, par: 4, locked: [] },
-      { grid: 3, par: 5, locked: [4] },
-      { grid: 3, par: 6, locked: [0, 8] },
-      { grid: 4, par: 8, locked: [] },
-      { grid: 4, par: 10, locked: [5, 10] },
-      { grid: 4, par: 12, locked: [0, 3, 12, 15] },
-      { grid: 5, par: 15, locked: [] },
-      { grid: 5, par: 18, locked: [6, 8, 16, 18] },
-      { grid: 5, par: 20, locked: [0, 4, 10, 14, 20, 24] },
-      { grid: 5, par: 22, locked: [2, 6, 8, 12, 16, 18, 22] }
-    ];
-    
+    var canvas, ctx;
     var gameState = {
-      level: 0, score: 0, totalSwaps: 0, totalStars: 0, swaps: 0,
-      selected: null, grid: [], targets: [], locked: new Set(), history: [], hintsUsed: 0
+      running: false,
+      level: 1,
+      score: 0,
+      lives: 3,
+      marksCollected: 0,
+      totalMarks: 0,
+      startTime: 0,
+      invincible: false
     };
     
-    function initTheme() {
-      var saved = localStorage.getItem('formationFrenzyTheme');
-      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(saved || (prefersDark ? 'dark' : 'light'));
-    }
-    
-    function setTheme(theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('formationFrenzyTheme', theme);
-      document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
-    }
-    
-    function toggleTheme() {
-      var current = document.documentElement.getAttribute('data-theme');
-      setTheme(current === 'dark' ? 'light' : 'dark');
-    }
+    var player = { x: 300, y: 350, radius: 15, speed: 4, color: '#f472b6' };
+    var instructor = { x: 100, y: 100, radius: 20, speed: 1.5, angle: 0, targetX: 0, targetY: 0 };
+    var spotlight = { angle: 0, spread: Math.PI / 3, length: 180 };
+    var marks = [];
+    var keys = { up: false, down: false, left: false, right: false };
+    var touchInput = { x: 0, y: 0, active: false };
     
     function showScreen(id) {
       var screens = document.querySelectorAll('.screen');
@@ -448,289 +305,450 @@
       document.getElementById(id).classList.add('active');
     }
     
-    function shuffle(arr) {
-      var a = arr.slice();
-      for (var i = a.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = a[i]; a[i] = a[j]; a[j] = temp;
-      }
-      return a;
-    }
-    
-    function isSolved(arr) {
-      for (var i = 0; i < arr.length; i++) { if (arr[i] !== i) return false; }
-      return true;
-    }
-    
     function startGame() {
+      canvas = document.getElementById('gameCanvas');
+      ctx = canvas.getContext('2d');
+      
       gameState = {
-        level: 0, score: 0, totalSwaps: 0, totalStars: 0, swaps: 0,
-        selected: null, grid: [], targets: [], locked: new Set(), history: [], hintsUsed: 0
+        running: true,
+        level: 1,
+        score: 0,
+        lives: 3,
+        marksCollected: 0,
+        totalMarks: 0,
+        startTime: Date.now(),
+        invincible: false
       };
+      
+      player.x = canvas.width / 2;
+      player.y = canvas.height - 50;
+      
+      setupLevel();
       showScreen('gameScreen');
-      loadLevel();
+      updateLivesDisplay();
+      requestAnimationFrame(gameLoop);
     }
     
-    function loadLevel() {
-      var levelData = LEVELS[gameState.level];
-      var size = levelData.grid;
-      var total = size * size;
+    function setupLevel() {
+      var numMarks = 4 + gameState.level;
+      marks = [];
       
-      gameState.targets = [];
-      for (var i = 0; i < total; i++) gameState.targets.push(i);
-      
-      var shuffled;
-      do { shuffled = shuffle(gameState.targets); } while (isSolved(shuffled));
-      
-      gameState.grid = shuffled;
-      gameState.locked = new Set(levelData.locked);
-      gameState.swaps = 0;
-      gameState.selected = null;
-      gameState.history = [];
-      gameState.hintsUsed = 0;
-      
-      updateUI();
-      renderBoard();
-      hideMessage();
-    }
-    
-    function renderBoard() {
-      var board = document.getElementById('gameBoard');
-      var levelData = LEVELS[gameState.level];
-      var size = levelData.grid;
-      
-      board.style.gridTemplateColumns = 'repeat(' + size + ', 1fr)';
-      board.innerHTML = '';
-      
-      for (var i = 0; i < gameState.grid.length; i++) {
-        (function(idx) {
-          var cell = document.createElement('div');
-          cell.className = 'cell';
-          
-          var dancerNum = gameState.grid[idx];
-          var targetNum = gameState.targets[idx];
-          var isCorrect = dancerNum === targetNum;
-          var isLocked = gameState.locked.has(idx);
-          var canMove = !isLocked || isAdjacentToCorrect(idx);
-          
-          var dancer = document.createElement('div');
-          dancer.className = 'dancer';
-          if (isCorrect) dancer.classList.add('correct');
-          if (isLocked && !canMove) dancer.classList.add('locked');
-          dancer.style.background = COLORS[dancerNum % COLORS.length];
-          dancer.textContent = dancerNum + 1;
-          
-          var target = document.createElement('span');
-          target.className = 'target-number';
-          target.textContent = targetNum + 1;
-          cell.appendChild(target);
-          cell.appendChild(dancer);
-          
-          if (gameState.selected === idx) cell.classList.add('selected');
-          
-          cell.addEventListener('click', function() { handleCellClick(idx); });
-          board.appendChild(cell);
-        })(i);
+      for (var i = 0; i < numMarks; i++) {
+        marks.push({
+          x: 50 + Math.random() * (canvas.width - 100),
+          y: 50 + Math.random() * (canvas.height - 150),
+          radius: 12,
+          collected: false,
+          pulse: Math.random() * Math.PI * 2
+        });
       }
       
-      checkWin();
+      instructor.x = canvas.width / 2;
+      instructor.y = 80;
+      instructor.speed = 1.2 + gameState.level * 0.3;
+      spotlight.length = 150 + gameState.level * 15;
+      spotlight.spread = Math.PI / 3 + gameState.level * 0.05;
+      
+      pickNewTarget();
+      gameState.marksCollected = 0;
+      updateUI();
     }
     
-    function isAdjacentToCorrect(index) {
-      var size = LEVELS[gameState.level].grid;
-      var col = index % size;
-      var neighbors = [index - size, index + size, col > 0 ? index - 1 : -1, col < size - 1 ? index + 1 : -1];
+    function pickNewTarget() {
+      instructor.targetX = 50 + Math.random() * (canvas.width - 100);
+      instructor.targetY = 50 + Math.random() * (canvas.height - 150);
+    }
+    
+    function gameLoop() {
+      if (!gameState.running) return;
       
-      for (var i = 0; i < neighbors.length; i++) {
-        var n = neighbors[i];
-        if (n >= 0 && n < gameState.grid.length) {
-          if (gameState.grid[n] === gameState.targets[n]) return true;
+      update();
+      render();
+      requestAnimationFrame(gameLoop);
+    }
+    
+    function update() {
+      // Player movement
+      var dx = 0, dy = 0;
+      if (keys.up) dy -= 1;
+      if (keys.down) dy += 1;
+      if (keys.left) dx -= 1;
+      if (keys.right) dx += 1;
+      
+      // Touch input
+      if (touchInput.active) {
+        var tdx = touchInput.x - player.x;
+        var tdy = touchInput.y - player.y;
+        var dist = Math.sqrt(tdx * tdx + tdy * tdy);
+        if (dist > 10) {
+          dx = tdx / dist;
+          dy = tdy / dist;
         }
       }
-      return false;
-    }
-    
-    function handleCellClick(index) {
-      var isLocked = gameState.locked.has(index);
-      var canMove = !isLocked || isAdjacentToCorrect(index);
       
-      if (!canMove) {
-        showMessage('🔒 Locked! Place a correct dancer nearby to unlock.', 'info');
-        return;
+      // Normalize diagonal movement
+      if (dx !== 0 && dy !== 0) {
+        dx *= 0.707;
+        dy *= 0.707;
       }
       
-      if (gameState.selected === null) {
-        gameState.selected = index;
-        renderBoard();
-      } else if (gameState.selected === index) {
-        gameState.selected = null;
-        renderBoard();
+      player.x += dx * player.speed;
+      player.y += dy * player.speed;
+      
+      // Bounds
+      player.x = Math.max(player.radius, Math.min(canvas.width - player.radius, player.x));
+      player.y = Math.max(player.radius, Math.min(canvas.height - player.radius, player.y));
+      
+      // Instructor AI - patrol and chase
+      var toTargetX = instructor.targetX - instructor.x;
+      var toTargetY = instructor.targetY - instructor.y;
+      var distToTarget = Math.sqrt(toTargetX * toTargetX + toTargetY * toTargetY);
+      
+      if (distToTarget < 30) {
+        pickNewTarget();
       } else {
-        var firstLocked = gameState.locked.has(gameState.selected);
-        var firstCanMove = !firstLocked || isAdjacentToCorrect(gameState.selected);
-        
-        if (!firstCanMove) {
-          showMessage('🔒 That dancer is locked!', 'info');
-          gameState.selected = index;
-          renderBoard();
-          return;
-        }
-        
-        swapDancers(gameState.selected, index);
+        instructor.x += (toTargetX / distToTarget) * instructor.speed;
+        instructor.y += (toTargetY / distToTarget) * instructor.speed;
       }
-    }
-    
-    function swapDancers(a, b) {
-      gameState.history.push({ grid: gameState.grid.slice(), swaps: gameState.swaps });
       
-      var temp = gameState.grid[a];
-      gameState.grid[a] = gameState.grid[b];
-      gameState.grid[b] = temp;
-      gameState.swaps++;
-      gameState.selected = null;
+      // Spotlight rotates to face movement direction or sweeps
+      var targetAngle = Math.atan2(toTargetY, toTargetX);
+      var angleDiff = targetAngle - spotlight.angle;
+      while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+      while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+      spotlight.angle += angleDiff * 0.05;
       
-      updateUI();
-      renderBoard();
-      document.getElementById('undoBtn').disabled = false;
-    }
-    
-    function undoMove() {
-      if (gameState.history.length === 0) return;
-      var prev = gameState.history.pop();
-      gameState.grid = prev.grid;
-      gameState.swaps = prev.swaps;
-      gameState.selected = null;
-      updateUI();
-      renderBoard();
-      document.getElementById('undoBtn').disabled = gameState.history.length === 0;
-    }
-    
-    function useHint() {
-      for (var i = 0; i < gameState.grid.length; i++) {
-        var dancerNum = gameState.grid[i];
-        if (dancerNum !== gameState.targets[i]) {
-          var correctPos = gameState.targets.indexOf(dancerNum);
-          var cells = document.querySelectorAll('.cell');
-          cells[i].classList.add('hint');
-          cells[correctPos].classList.add('hint');
-          
-          (function(ci, cp) {
-            setTimeout(function() {
-              cells[ci].classList.remove('hint');
-              cells[cp].classList.remove('hint');
-            }, 2000);
-          })(i, correctPos);
-          
-          gameState.hintsUsed++;
-          showMessage('💡 Swap dancer ' + (dancerNum + 1) + ' with position ' + (correctPos + 1), 'info');
-          return;
+      // Add some sweep
+      spotlight.angle += Math.sin(Date.now() / 500) * 0.02;
+      
+      // Check if player is in spotlight
+      if (!gameState.invincible) {
+        var playerAngle = Math.atan2(player.y - instructor.y, player.x - instructor.x);
+        var angleToPlayer = playerAngle - spotlight.angle;
+        while (angleToPlayer > Math.PI) angleToPlayer -= Math.PI * 2;
+        while (angleToPlayer < -Math.PI) angleToPlayer += Math.PI * 2;
+        
+        var distToPlayer = Math.sqrt(
+          Math.pow(player.x - instructor.x, 2) + 
+          Math.pow(player.y - instructor.y, 2)
+        );
+        
+        if (Math.abs(angleToPlayer) < spotlight.spread / 2 && distToPlayer < spotlight.length) {
+          playerCaught();
         }
       }
-    }
-    
-    function resetLevel() { loadLevel(); }
-    
-    function checkWin() {
-      for (var i = 0; i < gameState.grid.length; i++) {
-        if (gameState.grid[i] !== gameState.targets[i]) return;
+      
+      // Collect marks
+      for (var i = 0; i < marks.length; i++) {
+        var mark = marks[i];
+        if (!mark.collected) {
+          var dist = Math.sqrt(
+            Math.pow(player.x - mark.x, 2) + 
+            Math.pow(player.y - mark.y, 2)
+          );
+          if (dist < player.radius + mark.radius) {
+            mark.collected = true;
+            gameState.marksCollected++;
+            gameState.score += 100 + gameState.level * 25;
+            gameState.totalMarks++;
+            updateUI();
+            
+            // Check level complete
+            if (gameState.marksCollected >= marks.length) {
+              levelComplete();
+            }
+          }
+        }
+        mark.pulse += 0.1;
       }
-      
-      var levelData = LEVELS[gameState.level];
-      var par = levelData.par;
-      var swaps = gameState.swaps;
-      
-      var stars = 1;
-      if (swaps <= par) stars = 3;
-      else if (swaps <= par + 2) stars = 2;
-      
-      var baseScore = 100;
-      var parBonus = Math.max(0, (par - swaps) * 20);
-      var levelBonus = (gameState.level + 1) * 10;
-      var hintPenalty = gameState.hintsUsed * 10;
-      var levelScore = baseScore + parBonus + levelBonus - hintPenalty;
-      
-      gameState.score += levelScore;
-      gameState.totalSwaps += swaps;
-      gameState.totalStars += stars;
-      
-      setTimeout(function() { showLevelComplete(stars, swaps, par); }, 500);
     }
     
-    function showLevelComplete(stars, swaps, par) {
-      document.getElementById('levelSwaps').textContent = swaps;
-      document.getElementById('levelPar').textContent = par;
+    function playerCaught() {
+      gameState.lives--;
+      gameState.invincible = true;
+      updateLivesDisplay();
       
-      var starsEl = document.getElementById('levelStars');
-      var starSpans = starsEl.querySelectorAll('.star');
-      for (var i = 0; i < starSpans.length; i++) {
-        if (i < stars) starSpans[i].classList.add('earned');
-        else starSpans[i].classList.remove('earned');
+      // Show warning
+      var warning = document.getElementById('warning');
+      warning.classList.add('show');
+      setTimeout(function() { warning.classList.remove('show'); }, 1500);
+      
+      // Reset player position
+      player.x = canvas.width / 2;
+      player.y = canvas.height - 50;
+      
+      // Invincibility frames
+      setTimeout(function() { gameState.invincible = false; }, 2000);
+      
+      if (gameState.lives <= 0) {
+        gameOver();
       }
-      
-      var msg = '';
-      if (stars === 3) msg = 'Perfect! Under par!';
-      else if (stars === 2) msg = 'Great job! Close to par!';
-      else msg = 'Completed! Try for fewer swaps!';
-      
-      document.getElementById('levelCompleteMsg').textContent = msg;
-      document.getElementById('levelCompleteTitle').textContent = 
-        gameState.level >= LEVELS.length - 1 ? '🏆 All Levels Complete!' : '✨ Level Complete!';
-      
-      showScreen('levelCompleteScreen');
     }
     
-    function nextLevel() {
+    function levelComplete() {
       gameState.level++;
-      if (gameState.level >= LEVELS.length) { endGame(); return; }
-      showScreen('gameScreen');
-      loadLevel();
+      gameState.score += 500 * gameState.level;
+      
+      // Brief pause then next level
+      gameState.invincible = true;
+      setTimeout(function() {
+        setupLevel();
+        gameState.invincible = false;
+      }, 1000);
     }
     
-    function endGame() {
+    function gameOver() {
+      gameState.running = false;
+      
+      var elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+      
       document.getElementById('finalScore').textContent = gameState.score;
-      document.getElementById('finalStars').textContent = gameState.totalStars + '/' + (LEVELS.length * 3);
-      document.getElementById('finalLevels').textContent = gameState.level;
-      document.getElementById('finalSwaps').textContent = gameState.totalSwaps;
+      document.getElementById('finalLevel').textContent = gameState.level;
+      document.getElementById('finalMarks').textContent = gameState.totalMarks;
+      document.getElementById('finalTime').textContent = elapsed + 's';
       
-      var title = document.getElementById('endTitle');
-      var msg = document.getElementById('endMessage');
-      var starPercent = gameState.totalStars / (LEVELS.length * 3);
-      
-      if (starPercent >= 0.9) {
-        title.textContent = '🏆 Choreography Master!';
-        msg.textContent = 'You earned almost all the stars!';
-      } else if (starPercent >= 0.6) {
-        title.textContent = '⭐ Great Performance!';
-        msg.textContent = 'Your formations were on point!';
+      if (gameState.level >= 5) {
+        document.getElementById('endTitle').textContent = '🌟 Star Performer!';
+        document.getElementById('endMessage').textContent = 'You impressed even the drill sergeant!';
+      } else if (gameState.level >= 3) {
+        document.getElementById('endTitle').textContent = '💪 Good Effort!';
+        document.getElementById('endMessage').textContent = 'You showed some real moves out there!';
       } else {
-        title.textContent = '💃 Well Done!';
-        msg.textContent = 'Try again for more stars!';
+        document.getElementById('endTitle').textContent = '🪑 Benched!';
+        document.getElementById('endMessage').textContent = 'The instructor caught you too many times!';
       }
       
       showScreen('endScreen');
     }
     
-    function restartGame() { showScreen('startScreen'); }
+    function render() {
+      // Clear with field color
+      ctx.fillStyle = '#2d5a27';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw field lines
+      ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+      ctx.lineWidth = 2;
+      
+      // Yard lines
+      for (var i = 0; i <= 4; i++) {
+        var x = 50 + i * 125;
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      
+      // Center circle
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, canvas.height / 2, 60, 0, Math.PI * 2);
+      ctx.stroke();
+      
+      // Draw spotlight (cone of light)
+      var gradient = ctx.createRadialGradient(
+        instructor.x, instructor.y, 0,
+        instructor.x, instructor.y, spotlight.length
+      );
+      gradient.addColorStop(0, 'rgba(255, 255, 200, 0.1)');
+      gradient.addColorStop(0.5, 'rgba(255, 255, 150, 0.15)');
+      gradient.addColorStop(1, 'rgba(255, 255, 100, 0)');
+      
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.moveTo(instructor.x, instructor.y);
+      ctx.arc(
+        instructor.x, instructor.y, 
+        spotlight.length,
+        spotlight.angle - spotlight.spread / 2,
+        spotlight.angle + spotlight.spread / 2
+      );
+      ctx.closePath();
+      ctx.fill();
+      
+      // Spotlight edge glow
+      ctx.strokeStyle = 'rgba(255, 255, 150, 0.4)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(instructor.x, instructor.y);
+      ctx.lineTo(
+        instructor.x + Math.cos(spotlight.angle - spotlight.spread / 2) * spotlight.length,
+        instructor.y + Math.sin(spotlight.angle - spotlight.spread / 2) * spotlight.length
+      );
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(instructor.x, instructor.y);
+      ctx.lineTo(
+        instructor.x + Math.cos(spotlight.angle + spotlight.spread / 2) * spotlight.length,
+        instructor.y + Math.sin(spotlight.angle + spotlight.spread / 2) * spotlight.length
+      );
+      ctx.stroke();
+      
+      // Draw marks
+      for (var i = 0; i < marks.length; i++) {
+        var mark = marks[i];
+        if (!mark.collected) {
+          var pulse = 1 + Math.sin(mark.pulse) * 0.2;
+          
+          // Glow
+          ctx.fillStyle = 'rgba(255, 215, 0, 0.3)';
+          ctx.beginPath();
+          ctx.arc(mark.x, mark.y, mark.radius * pulse * 1.5, 0, Math.PI * 2);
+          ctx.fill();
+          
+          // Star
+          ctx.fillStyle = '#ffd700';
+          ctx.beginPath();
+          ctx.arc(mark.x, mark.y, mark.radius * pulse, 0, Math.PI * 2);
+          ctx.fill();
+          
+          // Inner
+          ctx.fillStyle = '#ffed4a';
+          ctx.beginPath();
+          ctx.arc(mark.x, mark.y, mark.radius * pulse * 0.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      
+      // Draw instructor (angry face)
+      ctx.fillStyle = '#1a1a2e';
+      ctx.beginPath();
+      ctx.arc(instructor.x, instructor.y, instructor.radius, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.fillStyle = '#e94560';
+      ctx.beginPath();
+      ctx.arc(instructor.x, instructor.y, instructor.radius - 3, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Angry eyes
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.arc(instructor.x - 6, instructor.y - 3, 5, 0, Math.PI * 2);
+      ctx.arc(instructor.x + 6, instructor.y - 3, 5, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.fillStyle = 'black';
+      ctx.beginPath();
+      ctx.arc(instructor.x - 6, instructor.y - 3, 2, 0, Math.PI * 2);
+      ctx.arc(instructor.x + 6, instructor.y - 3, 2, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Angry eyebrows
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(instructor.x - 10, instructor.y - 10);
+      ctx.lineTo(instructor.x - 3, instructor.y - 7);
+      ctx.moveTo(instructor.x + 10, instructor.y - 10);
+      ctx.lineTo(instructor.x + 3, instructor.y - 7);
+      ctx.stroke();
+      
+      // Frown
+      ctx.beginPath();
+      ctx.arc(instructor.x, instructor.y + 10, 6, Math.PI * 1.2, Math.PI * 1.8);
+      ctx.stroke();
+      
+      // Whistle
+      ctx.fillStyle = '#c0c0c0';
+      ctx.beginPath();
+      ctx.arc(instructor.x + 12, instructor.y + 5, 4, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Draw player (dancer)
+      var playerAlpha = gameState.invincible ? (Math.sin(Date.now() / 50) > 0 ? 1 : 0.3) : 1;
+      
+      ctx.globalAlpha = playerAlpha;
+      
+      // Player glow
+      ctx.fillStyle = 'rgba(244, 114, 182, 0.3)';
+      ctx.beginPath();
+      ctx.arc(player.x, player.y, player.radius * 1.5, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Player body
+      ctx.fillStyle = player.color;
+      ctx.beginPath();
+      ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Player face
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.arc(player.x - 4, player.y - 3, 3, 0, Math.PI * 2);
+      ctx.arc(player.x + 4, player.y - 3, 3, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.fillStyle = 'black';
+      ctx.beginPath();
+      ctx.arc(player.x - 4, player.y - 3, 1.5, 0, Math.PI * 2);
+      ctx.arc(player.x + 4, player.y - 3, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Smile
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(player.x, player.y + 2, 5, 0.1 * Math.PI, 0.9 * Math.PI);
+      ctx.stroke();
+      
+      ctx.globalAlpha = 1;
+    }
     
     function updateUI() {
-      var levelData = LEVELS[gameState.level];
-      document.getElementById('level').textContent = gameState.level + 1;
-      document.getElementById('swaps').textContent = gameState.swaps;
-      document.getElementById('par').textContent = levelData.par;
       document.getElementById('score').textContent = gameState.score;
+      document.getElementById('marks').textContent = gameState.marksCollected + '/' + marks.length;
+      document.getElementById('level').textContent = gameState.level;
     }
     
-    function showMessage(text, type) {
-      var el = document.getElementById('message');
-      el.textContent = text;
-      el.className = 'message ' + type;
-      el.style.display = 'block';
-      setTimeout(hideMessage, 3000);
+    function updateLivesDisplay() {
+      var container = document.getElementById('livesDisplay');
+      container.innerHTML = '';
+      for (var i = 0; i < 3; i++) {
+        var heart = document.createElement('span');
+        heart.className = 'heart' + (i >= gameState.lives ? ' lost' : '');
+        heart.textContent = '❤️';
+        container.appendChild(heart);
+      }
     }
     
-    function hideMessage() { document.getElementById('message').style.display = 'none'; }
+    // Keyboard controls
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') keys.up = true;
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') keys.down = true;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
+    });
     
-    initTheme();
+    document.addEventListener('keyup', function(e) {
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') keys.up = false;
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') keys.down = false;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
+    });
+    
+    // Touch controls
+    document.addEventListener('touchstart', function(e) {
+      if (!gameState.running) return;
+      var touch = e.touches[0];
+      var rect = canvas.getBoundingClientRect();
+      touchInput.x = (touch.clientX - rect.left) * (canvas.width / rect.width);
+      touchInput.y = (touch.clientY - rect.top) * (canvas.height / rect.height);
+      touchInput.active = true;
+      e.preventDefault();
+    }, { passive: false });
+    
+    document.addEventListener('touchmove', function(e) {
+      if (!gameState.running || !touchInput.active) return;
+      var touch = e.touches[0];
+      var rect = canvas.getBoundingClientRect();
+      touchInput.x = (touch.clientX - rect.left) * (canvas.width / rect.width);
+      touchInput.y = (touch.clientY - rect.top) * (canvas.height / rect.height);
+      e.preventDefault();
+    }, { passive: false });
+    
+    document.addEventListener('touchend', function(e) {
+      touchInput.active = false;
+    });
   </script>
 </body>
 </html>

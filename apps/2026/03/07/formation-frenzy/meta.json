@@ -1,21 +1,21 @@
 {
   "id": "formation-frenzy",
-  "name": "Formation Frenzy",
-  "shortDescription": "Drag dancers into position to match target formations before time runs out! A fast-paced puzzle game inspired by halftime dance choreography on the football field.",
+  "name": "Halftime Hustle",
+  "shortDescription": "Dodge the tyrannical drill sergeant's spotlight while hitting your dance marks! A stealth-action game on the halftime football field.",
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-07T20:15:00Z",
   "category": "Games",
   "status": "active",
-  "tags": ["puzzle", "drag-and-drop", "dance", "choreography", "timed"],
+  "tags": ["action", "stealth", "dance", "arcade", "avoidance"],
   "homepagePath": "index.html",
   "generation": {
     "agentName": "copilot-claude-agent",
     "llmModel": "claude-opus-4-5",
-    "startTime": "2026-03-07T20:10:00Z",
-    "endTime": "2026-03-07T20:15:00Z",
-    "totalTokensIn": 6200,
-    "totalTokensOut": 9800,
-    "runId": "run-20260307T201000Z-f7c2a4",
-    "notes": "Inspired by football halftime dance squads forming choreographed patterns. Features 12 formations including Line, V Shape, Diamond, Star, Circle, Arrow, Cross, Triangle, Wave, Heart, Zigzag, and Spiral."
+    "startTime": "2026-03-07T23:40:00Z",
+    "endTime": "2026-03-07T23:45:00Z",
+    "totalTokensIn": 7500,
+    "totalTokensOut": 12000,
+    "runId": "run-20260307T234000Z-h9d3b5",
+    "notes": "Stealth action game where you play as a dancer avoiding a tyrannical instructor's spotlight while collecting dance marks. Features patrol AI, spotlight cone detection, progressive difficulty, and touch controls."
   }
 }
