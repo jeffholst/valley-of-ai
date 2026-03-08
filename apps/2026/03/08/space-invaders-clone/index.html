@@ -21,6 +21,25 @@ canvas{width:100%;max-width:760px;aspect-ratio:4/3;display:block;margin:auto;bac
 <p class="kbd">Controls: ← → (or A/D), Space shoot</p></main>
 <script>
 const c=document.getElementById('game'),x=c.getContext('2d');
+// Get computed CSS colors for canvas (canvas doesn't support CSS variables)
+const getColor = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const colors = {
+  enemy: '#f43f5e',
+  player: '#4ade80', 
+  bullet: '#fef08a',
+  primary: '#22d3ee'
+};
+// Update colors based on theme
+function updateColors() {
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  colors.enemy = isDark ? '#f43f5e' : '#be123c';
+  colors.player = isDark ? '#4ade80' : '#15803d';
+  colors.bullet = isDark ? '#fef08a' : '#b45309';
+  colors.primary = isDark ? '#22d3ee' : '#0891b2';
+}
+updateColors();
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateColors);
+
 const S={run:false,score:0,lives:3,wave:1,keys:{},player:{x:380,y:530,w:44,h:18,cool:0},bullets:[],enemyBullets:[],enemies:[],dir:1,speed:0.55,drop:18,lastShot:0};
 const ui=id=>document.getElementById(id); function u(state=''){ui('score').textContent=`Score: ${S.score}`;ui('lives').textContent=`Lives: ${S.lives}`;ui('wave').textContent=`Wave: ${S.wave}`;if(state)ui('state').textContent=`State: ${state}`;}
 function mkWave(){S.enemies=[];const rows=5,cols=10,gx=58,gy=48,spx=58,spy=44;for(let r=0;r<rows;r++)for(let col=0;col<cols;col++)S.enemies.push({x:gx+col*spx,y:gy+r*spy,w:34,h:24,alive:true,row:r});S.dir=1;S.speed=0.5+(S.wave-1)*0.09;}
@@ -39,10 +58,10 @@ for(const b of S.enemyBullets){if(rectHit({x:b.x-2,y:b.y,w:4,h:10},{x:p.x-p.w/2,
 if(S.enemies.some(e=>e.alive && e.y+e.h>=p.y-18)){S.run=false;S.lives=0;u('Invaders Win');}
 if(S.enemies.every(e=>!e.alive)){S.wave++;mkWave();u('Next Wave');}
 }
-function drawEnemy(e){x.fillStyle='var(--enemy)';x.fillRect(e.x,e.y,e.w,e.h);x.clearRect(e.x+7,e.y+7,5,5);x.clearRect(e.x+22,e.y+7,5,5);x.fillRect(e.x+6,e.y+18,22,4);}
+function drawEnemy(e){x.fillStyle=colors.enemy;x.fillRect(e.x,e.y,e.w,e.h);x.clearRect(e.x+7,e.y+7,5,5);x.clearRect(e.x+22,e.y+7,5,5);x.fillRect(e.x+6,e.y+18,22,4);}
 function draw(){x.clearRect(0,0,c.width,c.height);x.fillStyle='#0a0f1f';for(let i=0;i<80;i++){x.fillRect((i*97)%c.width,(i*53)%c.height,1,1);} // stars
-x.fillStyle='var(--player)';x.fillRect(S.player.x-S.player.w/2,S.player.y-S.player.h/2,S.player.w,S.player.h);x.fillRect(S.player.x-10,S.player.y-18,20,8);
-x.fillStyle='var(--bullet)';S.bullets.forEach(b=>x.fillRect(b.x-2,b.y,4,10));x.fillStyle='var(--primary)';S.enemyBullets.forEach(b=>x.fillRect(b.x-2,b.y,4,10));S.enemies.forEach(e=>e.alive&&drawEnemy(e));
+x.fillStyle=colors.player;x.fillRect(S.player.x-S.player.w/2,S.player.y-S.player.h/2,S.player.w,S.player.h);x.fillRect(S.player.x-10,S.player.y-18,20,8);
+x.fillStyle=colors.bullet;S.bullets.forEach(b=>x.fillRect(b.x-2,b.y,4,10));x.fillStyle=colors.primary;S.enemyBullets.forEach(b=>x.fillRect(b.x-2,b.y,4,10));S.enemies.forEach(e=>e.alive&&drawEnemy(e));
 }
 function loop(){upd();draw();requestAnimationFrame(loop);} 
 document.addEventListener('keydown',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;S.keys[k]=true;if(k===' ')e.preventDefault();});
