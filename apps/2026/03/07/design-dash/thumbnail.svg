@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0a1f"/>
+      <stop offset="100%" style="stop-color:#1a1333"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8b5cf6"/>
+      <stop offset="100%" style="stop-color:#ec4899"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="450" fill="url(#bg)"/>
+  
+  <!-- Title -->
+  <text x="400" y="45" text-anchor="middle" font-family="system-ui, sans-serif" font-size="32" font-weight="700" fill="url(#accent)">🎨 Design Dash</text>
+  <text x="400" y="68" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#a5b4fc">Crank out designs at lightning speed!</text>
+  
+  <!-- Stats Bar -->
+  <rect x="50" y="85" width="120" height="50" rx="10" fill="#251d3a"/>
+  <text x="110" y="105" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#a5b4fc">SCORE</text>
+  <text x="110" y="127" text-anchor="middle" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#a78bfa">2,450</text>
+  
+  <rect x="185" y="85" width="100" height="50" rx="10" fill="#251d3a"/>
+  <text x="235" y="105" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#a5b4fc">COMBO</text>
+  <text x="235" y="127" text-anchor="middle" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#f59e0b">x5</text>
+  
+  <rect x="300" y="85" width="110" height="50" rx="10" fill="#251d3a"/>
+  <text x="355" y="105" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#a5b4fc">DESIGNS</text>
+  <text x="355" y="127" text-anchor="middle" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#f5f3ff">12</text>
+  
+  <rect x="425" y="85" width="120" height="50" rx="10" fill="#251d3a"/>
+  <text x="485" y="105" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#a5b4fc">LIVES</text>
+  <text x="485" y="127" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18">❤️❤️❤️</text>
+  
+  <!-- Client Brief Card -->
+  <rect x="50" y="150" width="500" height="150" rx="16" fill="#251d3a"/>
+  <!-- Top accent bar -->
+  <rect x="50" y="150" width="500" height="4" rx="2" fill="url(#accent)"/>
+  
+  <!-- Client avatar and info -->
+  <circle cx="90" cy="195" r="25" fill="#1a1333"/>
+  <text x="90" y="202" text-anchor="middle" font-family="system-ui, sans-serif" font-size="22">👩‍💼</text>
+  <text x="130" y="188" font-family="system-ui, sans-serif" font-size="13" font-weight="600" fill="#f5f3ff">Sarah Chen</text>
+  <text x="130" y="205" font-family="system-ui, sans-serif" font-size="11" fill="#a5b4fc">TechStart Inc.</text>
+  
+  <!-- Brief content -->
+  <rect x="70" y="220" width="460" height="50" rx="8" fill="#1a1333"/>
+  <text x="85" y="236" font-family="system-ui, sans-serif" font-size="9" fill="#a5b4fc">📝 DESIGN BRIEF</text>
+  <text x="85" y="257" font-family="system-ui, sans-serif" font-size="13" font-weight="600" fill="#f5f3ff">I need a bold color for our new product launch!</text>
+  
+  <!-- Timer bar -->
+  <rect x="70" y="280" width="460" height="8" rx="4" fill="#1a1333"/>
+  <rect x="70" y="280" width="320" height="8" rx="4" fill="url(#accent)"/>
+  
+  <!-- Design Options Grid -->
+  <rect x="570" y="150" width="180" height="150" rx="16" fill="#251d3a"/>
+  <text x="660" y="175" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#a5b4fc">OPTIONS</text>
+  
+  <!-- Color option buttons -->
+  <rect x="585" y="190" width="70" height="45" rx="8" fill="#1a1333" stroke="#dc2626" stroke-width="2"/>
+  <rect x="595" y="198" width="50" height="20" rx="4" fill="#dc2626"/>
+  <text x="620" y="228" text-anchor="middle" font-family="system-ui, sans-serif" font-size="8" fill="#f5f3ff">Crimson</text>
+  
+  <rect x="665" y="190" width="70" height="45" rx="8" fill="#1a1333" stroke="#251d3a" stroke-width="2"/>
+  <rect x="675" y="198" width="50" height="20" rx="4" fill="#2563eb"/>
+  <text x="700" y="228" text-anchor="middle" font-family="system-ui, sans-serif" font-size="8" fill="#f5f3ff">Ocean</text>
+  
+  <rect x="585" y="245" width="70" height="45" rx="8" fill="#1a1333" stroke="#251d3a" stroke-width="2"/>
+  <rect x="595" y="253" width="50" height="20" rx="4" fill="#16a34a"/>
+  <text x="620" y="283" text-anchor="middle" font-family="system-ui, sans-serif" font-size="8" fill="#f5f3ff">Forest</text>
+  
+  <rect x="665" y="245" width="70" height="45" rx="8" fill="#1a1333" stroke="#251d3a" stroke-width="2"/>
+  <rect x="675" y="253" width="50" height="20" rx="4" fill="#9333ea"/>
+  <text x="700" y="283" text-anchor="middle" font-family="system-ui, sans-serif" font-size="8" fill="#f5f3ff">Purple</text>
+  
+  <!-- Combo display -->
+  <rect x="600" y="85" width="150" height="40" rx="20" fill="#f59e0b"/>
+  <text x="675" y="112" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="white">🔥 5x COMBO!</text>
+  
+  <!-- Requirement tag -->
+  <rect x="70" y="315" width="160" height="28" rx="14" fill="#1a1333"/>
+  <text x="150" y="334" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#a5b4fc">🎯 Looking for: bold</text>
+  
+  <!-- Decorative elements -->
+  <text x="50" y="420" font-family="system-ui, sans-serif" font-size="20" opacity="0.3">🎨</text>
+  <text x="90" y="430" font-family="system-ui, sans-serif" font-size="16" opacity="0.2">✨</text>
+  <text x="720" y="420" font-family="system-ui, sans-serif" font-size="20" opacity="0.3">🖌️</text>
+  <text x="750" y="430" font-family="system-ui, sans-serif" font-size="16" opacity="0.2">💡</text>
+</svg>
