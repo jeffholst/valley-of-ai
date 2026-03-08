@@ -922,7 +922,7 @@
     
     // Theme handling
     function initTheme() {
-      const saved = localStorage.getItem('debugRushTheme');
+      const saved = localStorage.getItem('theme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const theme = saved || (prefersDark ? 'dark' : 'light');
       setTheme(theme);
@@ -930,7 +930,7 @@
     
     function setTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('debugRushTheme', theme);
+      localStorage.setItem('theme', theme);
       document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
     }
     

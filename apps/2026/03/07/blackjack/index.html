@@ -17,7 +17,7 @@
       --accent: #FF6B35;
     }
 
-    @media (prefers-color-scheme: dark) {
+    [data-theme="dark"] {
       :root {
         --felt-green: #0a4a24;
         --felt-dark: #073318;
@@ -673,7 +673,7 @@
     }
 
     /* Light theme */
-    body.light-theme {
+    [data-theme="light"] {
       --felt-green: #1a8a4a;
       --felt-dark: #0d6b35;
     }
@@ -1356,17 +1356,17 @@
 
     // Theme toggle
     const themeToggle = document.getElementById('theme-toggle');
-    const savedTheme = localStorage.getItem('blackjack-theme');
-    
-    if (savedTheme === 'light') {
-      document.body.classList.add('light-theme');
-      themeToggle.textContent = '☀️';
-    }
+    const savedTheme = localStorage.getItem('theme');
+    const initialTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', initialTheme);
+    themeToggle.textContent = initialTheme === 'dark' ? '☀️' : '🌙';
 
     themeToggle.addEventListener('click', () => {
-      const isLight = document.body.classList.toggle('light-theme');
-      themeToggle.textContent = isLight ? '☀️' : '🌙';
-      localStorage.setItem('blackjack-theme', isLight ? 'light' : 'dark');
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
     });
 
     // Initialize

@@ -19,7 +19,7 @@
       --border: #475569;
     }
 
-    .light-mode {
+    [data-theme="light"] {
       --bg-primary: #f1f5f9;
       --bg-secondary: #e2e8f0;
       --bg-card: #cbd5e1;
@@ -571,8 +571,11 @@
     }
 
     function toggleTheme() {
-      document.body.classList.toggle('light-mode');
-      themeToggle.textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
     }
 
     // Event Listeners
@@ -582,6 +585,14 @@
     difficultyBtns.forEach(btn => {
       btn.addEventListener('click', () => setDifficulty(btn.dataset.difficulty));
     });
+
+    // Theme init
+    (function initTheme() {
+      const stored = localStorage.getItem('theme');
+      const theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+    })();
 
     // Initialize
     createCards();

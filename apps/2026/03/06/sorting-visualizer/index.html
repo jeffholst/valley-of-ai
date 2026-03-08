@@ -492,29 +492,21 @@
       algorithmSelect.addEventListener('change', updateAlgorithmInfo);
 
       // Check for saved theme
-      const savedTheme = localStorage.getItem('sorting-viz-theme');
-      if (savedTheme === 'light') {
-        document.body.setAttribute('data-theme', 'light');
-        document.querySelector('.theme-toggle').textContent = '☀️';
-      }
+      const savedTheme = localStorage.getItem('theme');
+      const theme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
 
       generateArray();
       updateAlgorithmInfo();
     }
 
     function toggleTheme() {
-      const body = document.body;
-      const toggle = document.querySelector('.theme-toggle');
-      
-      if (body.getAttribute('data-theme') === 'light') {
-        body.removeAttribute('data-theme');
-        toggle.textContent = '🌙';
-        localStorage.setItem('sorting-viz-theme', 'dark');
-      } else {
-        body.setAttribute('data-theme', 'light');
-        toggle.textContent = '☀️';
-        localStorage.setItem('sorting-viz-theme', 'light');
-      }
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
     }
 
     function updateAlgorithmInfo() {

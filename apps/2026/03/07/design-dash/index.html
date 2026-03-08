@@ -624,7 +624,7 @@
 
   <script>
     // Theme Management
-    const storedTheme = localStorage.getItem('design-dash-theme') || 
+    const storedTheme = localStorage.getItem('theme') || 
       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     document.documentElement.setAttribute('data-theme', storedTheme);
     updateThemeIcon();
@@ -633,7 +633,7 @@
       const current = document.documentElement.getAttribute('data-theme');
       const next = current === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('design-dash-theme', next);
+      localStorage.setItem('theme', next);
       updateThemeIcon();
     }
 

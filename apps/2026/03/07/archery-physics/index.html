@@ -17,13 +17,30 @@
       --accent: #FF6B35;
     }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --sky-top: #1a1a2e;
-        --sky-bottom: #16213e;
-        --grass: #2d5a27;
-      }
+    [data-theme="dark"] {
+      --sky-top: #1a1a2e;
+      --sky-bottom: #16213e;
+      --grass: #2d5a27;
     }
+
+    .theme-toggle {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      z-index: 20;
+      background: rgba(0,0,0,0.5);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+    .theme-toggle:hover { transform: scale(1.1); }
 
     * {
       margin: 0;
@@ -304,6 +321,7 @@
   </style>
 </head>
 <body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
   <div id="game-container">
     <canvas id="game-canvas"></canvas>
     
@@ -616,7 +634,7 @@
       // Sky gradient
       const skyGradient = ctx.createLinearGradient(0, 0, 0, gameState.groundLevel);
       
-      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       if (isDark) {
         skyGradient.addColorStop(0, '#1a1a2e');
         skyGradient.addColorStop(1, '#16213e');
@@ -1110,6 +1128,22 @@
     
     window.addEventListener('resize', resizeCanvas);
     
+    // Theme handling
+    function initTheme() {
+      const stored = localStorage.getItem('theme');
+      const theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+    }
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+    }
+    initTheme();
+
     // Initialize game
     resizeCanvas();
     initRound();

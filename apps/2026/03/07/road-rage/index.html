@@ -455,7 +455,7 @@
 
   <script>
     // Theme Management
-    const theme = localStorage.getItem('road-rage-theme') || 
+    const theme = localStorage.getItem('theme') || 
       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     document.documentElement.setAttribute('data-theme', theme);
     updateThemeIcon();
@@ -464,7 +464,7 @@
       const current = document.documentElement.getAttribute('data-theme');
       const next = current === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('road-rage-theme', next);
+      localStorage.setItem('theme', next);
       updateThemeIcon();
     }
 

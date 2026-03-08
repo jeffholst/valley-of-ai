@@ -35,7 +35,7 @@ canvas{width:100%;max-width:760px;aspect-ratio:4/3;display:block;margin:auto;bac
 <p class="kbd">Controls: ← → (or A/D), Space shoot</p></main>
 <script>
 // Theme Management
-const storedTheme = localStorage.getItem('space-invaders-theme') || 
+const storedTheme = localStorage.getItem('theme') || 
   (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 document.documentElement.setAttribute('data-theme', storedTheme);
 updateThemeIcon();
@@ -44,7 +44,7 @@ function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme');
   const next = current === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('space-invaders-theme', next);
+  localStorage.setItem('theme', next);
   updateThemeIcon();
   updateColors();
 }

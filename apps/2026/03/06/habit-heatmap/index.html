@@ -221,7 +221,7 @@
     const habits = ["Exercise", "Read", "Deep Work", "Hydrate", "Sleep 8h"];
     const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
     const key = "voa-habit-heatmap-v1";
-    const themeKey = "voa-habit-heatmap-theme";
+    const themeKey = "theme";
 
     const fallback = habits.map(() => days.map(() => 0));
     let board = JSON.parse(localStorage.getItem(key) || "null") || fallback;
@@ -284,17 +284,16 @@
 
     const root = document.documentElement;
     const themeBtn = document.getElementById("themeBtn");
-    const applyTheme = (mode) => {
-      if (mode === "auto") root.removeAttribute("data-theme");
-      else root.setAttribute("data-theme", mode);
-      themeBtn.textContent = mode === "dark" ? "☀️" : mode === "light" ? "🌙" : "🌓";
-      themeBtn.title = `Theme: ${mode} (click to change)`;
+    const applyTheme = (theme) => {
+      root.setAttribute("data-theme", theme);
+      themeBtn.textContent = theme === "dark" ? "☀️" : "🌙";
+      themeBtn.title = `Theme: ${theme} (click to toggle)`;
     };
 
-    let mode = localStorage.getItem(themeKey) || "auto";
+    let mode = localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
     applyTheme(mode);
     themeBtn.addEventListener("click", () => {
-      mode = mode === "auto" ? "light" : mode === "light" ? "dark" : "auto";
+      mode = mode === "dark" ? "light" : "dark";
       localStorage.setItem(themeKey, mode);
       applyTheme(mode);
     });
