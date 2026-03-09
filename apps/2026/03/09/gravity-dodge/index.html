@@ -1,0 +1,41 @@
+<!doctype html><html lang='en'><head><meta charset='UTF-8'/><meta name='viewport' content='width=device-width,initial-scale=1'/><title>Gravity Dodge</title><style>
+:root{--bg:#0b1220;--bg2:#1b2a4a;--surface:#101a31;--text:#edf3ff;--muted:#9eb1da;--player:#22d3ee;--haz:#ef4444;--orb:#a78bfa}
+@media(prefers-color-scheme:light){:root{--bg:#eef4ff;--bg2:#dbeafe;--surface:#fff;--text:#1f2f52;--muted:#60739a;--player:#0891b2;--haz:#b91c1c;--orb:#7c3aed}}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px;font-family:Inter,system-ui;background:radial-gradient(1000px 700px at 20% 20%,var(--bg2),var(--bg));color:var(--text)}
+.card{width:min(860px,100%);background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);border-radius:18px;padding:14px;box-shadow:0 18px 45px #0004}
+h1{margin:0 0 4px}.sub{margin:0 0 10px;color:var(--muted)}.top{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.pill{font-size:.86rem;padding:6px 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);color:var(--muted)}
+canvas{width:100%;max-width:760px;aspect-ratio:4/3;display:block;margin:auto;background:#050a14;border-radius:12px;border:1px solid color-mix(in srgb,var(--muted) 26%,transparent)}
+.controls{text-align:center;margin-top:10px}button{border:none;border-radius:999px;padding:9px 13px;font:inherit;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(90deg,#7c3aed,#22d3ee)}
+.k{text-align:center;color:var(--muted);font-size:.9rem;margin-top:8px}
+</style></head><body><main class='card'><h1>🪐 Gravity Dodge</h1><p class='sub'>Pull toward the orb. Dodge red hazards. Survive as long as possible.</p>
+<div class='top'><span class='pill' id='score'>Score: 0</span><span class='pill' id='best'>Best: 0</span><span class='pill' id='state'>State: Ready</span></div>
+<canvas id='g' width='760' height='570'></canvas><div class='controls'><button id='start'>Start / Restart</button></div><p class='k'>Move: ← → ↑ ↓ or WASD</p></main>
+<script>
+const c=document.getElementById('g'),x=c.getContext('2d');let best=+localStorage.getItem('gravity-best')||0;
+const S={run:false,score:0,p:{x:120,y:285,vx:0,vy:0,r:11},orb:{x:380,y:285,r:28},haz:[],keys:{}};
+const ui=(id,v)=>document.getElementById(id).textContent=v; const rng=(a,b)=>Math.random()*(b-a)+a;
+function reset(){S.run=true;S.score=0;S.p={x:120,y:285,vx:0,vy:0,r:11};S.haz=[];for(let i=0;i<8;i++)spawn();ui('state','State: Running');}
+function spawn(){const edge=Math.floor(Math.random()*4);let x0,y0,vx,vy,s=rng(1.4,2.7),r=rng(8,14);if(edge===0){x0=0;y0=rng(0,c.height);vx=s;vy=rng(-1,1)}if(edge===1){x0=c.width;y0=rng(0,c.height);vx=-s;vy=rng(-1,1)}if(edge===2){x0=rng(0,c.width);y0=0;vx=rng(-1,1);vy=s}if(edge===3){x0=rng(0,c.width);y0=c.height;vx=rng(-1,1);vy=-s}S.haz.push({x:x0,y:y0,vx,vy,r});}
+function hit(a,b){const dx=a.x-b.x,dy=a.y-b.y;return Math.hypot(dx,dy)<a.r+b.r}
+function update(){if(!S.run)return;const p=S.p;o=S.orb;
+const ax=((S.keys.ArrowRight||S.keys.d)?0.5:0)-((S.keys.ArrowLeft||S.keys.a)?0.5:0);
+const ay=((S.keys.ArrowDown||S.keys.s)?0.5:0)-((S.keys.ArrowUp||S.keys.w)?0.5:0);
+const dx=o.x-p.x,dy=o.y-p.y,d=Math.max(40,Math.hypot(dx,dy));const g=1900/(d*d);
+p.vx=(p.vx+ax+dx/d*g)*0.992; p.vy=(p.vy+ay+dy/d*g)*0.992; p.x+=p.vx; p.y+=p.vy;
+if(p.x<0||p.x>c.width||p.y<0||p.y>c.height){S.run=false;ui('state','State: Lost in space');}
+for(const h of S.haz){h.x+=h.vx;h.y+=h.vy;if(h.x<-30||h.x>c.width+30||h.y<-30||h.y>c.height+30){Object.assign(h,{x:-99});spawn();}}
+S.haz=S.haz.filter(h=>h.x>-90); if(S.haz.length<10&&Math.random()<0.03)spawn();
+for(const h of S.haz){if(hit(p,h)){S.run=false;ui('state','State: Hit');}}
+if(hit(p,o)){S.run=false;ui('state','State: Crushed by gravity');}
+S.score++;if(S.score>best){best=S.score;localStorage.setItem('gravity-best',best)}
+ui('score',`Score: ${S.score}`);ui('best',`Best: ${best}`);
+}
+function draw(){x.clearRect(0,0,c.width,c.height);x.fillStyle='#0b1222';for(let i=0;i<120;i++)x.fillRect((i*61)%c.width,(i*37)%c.height,1,1);
+const o=S.orb;const grad=x.createRadialGradient(o.x,o.y,10,o.x,o.y,120);grad.addColorStop(0,'#a78bfa');grad.addColorStop(1,'transparent');x.fillStyle=grad;x.beginPath();x.arc(o.x,o.y,120,0,Math.PI*2);x.fill();x.fillStyle='var(--orb)';x.beginPath();x.arc(o.x,o.y,o.r,0,Math.PI*2);x.fill();
+x.fillStyle='var(--haz)';for(const h of S.haz){x.beginPath();x.arc(h.x,h.y,h.r,0,Math.PI*2);x.fill();}
+const p=S.p;x.fillStyle='var(--player)';x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fill();
+}
+function loop(){update();draw();requestAnimationFrame(loop)}
+document.addEventListener('keydown',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;S.keys[k]=true});document.addEventListener('keyup',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;S.keys[k]=false});
+document.getElementById('start').onclick=()=>reset();ui('best',`Best: ${best}`);loop();
+</script></body></html>
