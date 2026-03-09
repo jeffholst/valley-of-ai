@@ -90,6 +90,19 @@ See the AI model, token usage, and generation time for each app.
 </tr>
 </table>
 
+### Service Requirements
+
+In addition to Node/npm, this project expects external service configuration.
+
+| Service | What You Need | Purpose |
+|---------|----------------|---------|
+| Supabase | Project URL + anon key (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`) | Store and read app votes |
+| EmailJS | Service ID, template ID, public key (`VITE_EMAILJS_*`) | Send suggestion form submissions |
+| Cloudflare Turnstile | Site key (`VITE_TURNSTILE_SITE_KEY`) | Block bots/robots on forms |
+| Google Analytics | Measurement ID (`VITE_GA_MEASUREMENT_ID`) | Site analytics tracking |
+
+Set these in your local `.env` (copied from `.env.example`).
+
 ### Installation
 
 ```bash
