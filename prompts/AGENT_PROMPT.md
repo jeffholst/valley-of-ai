@@ -312,6 +312,32 @@ Every app must include a valid `meta.json`:
 - Include proper meta tags for viewport and charset
 - Add a favicon or inline SVG icon
 
+### Game Runtime Validation (Mandatory)
+
+Before finalizing any game app, run this checklist and fix failures:
+
+- Start the game and confirm player, hazards, and core gameplay objects are visible.
+- Confirm controls work immediately (keyboard/touch as applicable).
+- Confirm score/state changes during play.
+- Confirm lose/win conditions can be triggered and update UI correctly.
+- Confirm start/restart button resets state and works repeatedly.
+- Confirm no browser control conflicts (for example arrow keys should not scroll the page during gameplay).
+- Log that runtime checks passed.
+
+If any check fails, do not proceed to commit, PR, or deploy.
+
+### Canvas Rules (Mandatory for `<canvas>` Apps)
+
+- Do not use CSS variables directly in canvas draw calls (for example `ctx.fillStyle = 'var(--player)'` is invalid for canvas rendering).
+- Resolve CSS variable colors first via `getComputedStyle(document.documentElement).getPropertyValue('--token')` and use the resolved color string.
+- Verify all critical entities are visibly distinct in both dark and light themes.
+
+### JavaScript Safety Rules
+
+- Avoid implicit globals; every variable must be declared with `const` or `let`.
+- Use strict-safe coding patterns.
+- Include one manual input smoke test for control conflicts and focus behavior.
+
 **Visual Style:**
 - Use a cohesive color palette (consider HSL for harmony)
 - Make sure all text is visible in both dark and light mode
@@ -697,7 +723,7 @@ Execute this workflow. **Log each step IMMEDIATELY to the daily log file as you 
 4. **Select or generate concept** – Pick a suggestion or create something original → Log `SELECT_SUGGESTION`
 5. **Research the idea** – Search the web for inspiration, similar implementations, and best practices → Log `RESEARCH_IDEAS`
 6. **Build the app** – Create all required files → Log `GENERATE_HTML`
-7. **Test thoroughly** – Verify functionality across scenarios
+7. **Test thoroughly** – Verify functionality across scenarios, including runtime smoke checks for visibility, controls, score/state updates, and restart behavior
 8. **Generate thumbnail** – Create an appealing preview image → Log `GENERATE_THUMBNAIL`
 9. **Create meta.json** – Write app metadata → Log `CREATE_META_JSON`
 10. **Update registry** – Run `npm run generate:apps` to update the gallery → Log `UPDATE_REGISTRY`
@@ -865,6 +891,7 @@ Before finalizing any app, verify:
 - [ ] `meta.json` is valid JSON with all required fields
 - [ ] `index.html` loads without errors
 - [ ] App works on mobile (touch events if applicable)
+- [ ] Runtime smoke test passed (objects visible, controls responsive, score/state updates, win/loss, restart)
 - [ ] Dark mode looks good
 - [ ] No console errors or warnings
 - [ ] Thumbnail accurately represents the app
