@@ -116,6 +116,16 @@
       height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width .2s linear;
     }
     .event { margin-top: 8px; color: var(--good); min-height: 1.2em; }
+    .ability-row { display: flex; justify-content: center; margin-top: 6px; }
+    .ability {
+      border: none; border-radius: 999px; padding: 8px 12px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #fff; cursor: pointer; font-weight: 700;
+    }
+    .ability:disabled { opacity: .5; cursor: not-allowed; }
+    .meter-label { margin-top: 8px; font-size: .82rem; color: var(--text-dim); width: 100%; }
+    .progress.heat > div { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+    .progress.cooldown > div { background: linear-gradient(90deg, #60a5fa, #2563eb); }
     footer { text-align: center; padding-top: 16px; margin-top: 14px; border-top: 1px solid color-mix(in srgb, var(--text) 18%, transparent); opacity: .8; }
     footer a { color: var(--accent-2); text-decoration: none; }
     :focus-visible { outline: 3px solid var(--accent-2); outline-offset: 2px; }
@@ -134,13 +144,21 @@
         <button class="planet" id="planet" aria-label="Mine planet resources"></button>
         <div class="click-hint">Tap/click the planet to harvest Crystalium.</div>
         <div class="progress" aria-hidden="true"><div id="pulseBar"></div></div>
+        <div class="meter-label">Heat</div>
+        <div class="progress heat" aria-hidden="true"><div id="heatBar"></div></div>
+        <div class="meter-label">Overcharge Cooldown</div>
+        <div class="progress cooldown" aria-hidden="true"><div id="overchargeBar"></div></div>
+        <div class="ability-row">
+          <button id="overchargeBtn" class="ability" type="button">Activate Overcharge</button>
+        </div>
         <div class="event" id="eventText"></div>
       </section>
       <section class="card">
         <div class="stats">
           <div class="stat"><span>Crystalium</span><strong id="score">0</strong></div>
           <div class="stat"><span>Per Click</span><strong id="perClick">1</strong></div>
-          <div class="stat"><span>Per Second</span><strong id="perSecond">0</strong></div>
+          <div class="stat"><span>Combo</span><strong id="combo">x1.00</strong></div>
+          <div class="stat"><span>Heat</span><strong id="heatText">0%</strong></div>
           <div class="stat"><span>Drones</span><strong id="drones">0</strong></div>
         </div>
         <div class="upgrades" id="upgrades"></div>
@@ -165,68 +183,212 @@
       document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
     }
 
-    const state = { score: 0, perClick: 1, drones: 0, perSecond: 0, pulse: 0 };
+    const state = {
+      score: 0,
+      perClick: 1,
+      drones: 0,
+      pulse: 0,
+      combo: 0,
+      lastClickAt: 0,
+      heat: 0,
+      overheatedUntil: 0,
+      overchargeUntil: 0,
+      overchargeCdUntil: 0,
+      flashMessage: '',
+      flashUntil: 0
+    };
     const upgrades = [
-      { id: 'drone', name: '🛰️ Orbital Drone', base: 30, owned: 0, apply: s => { s.drones++; s.perSecond += 1; } },
+      { id: 'drone', name: '🛰️ Orbital Drone', base: 30, owned: 0, apply: s => { s.drones++; s.perClick += 1; } },
       { id: 'laser', name: '🔦 Core Laser', base: 60, owned: 0, apply: s => { s.perClick += 2; } },
-      { id: 'mine', name: '🏭 Nano Mine', base: 140, owned: 0, apply: s => { s.perSecond += 4; } }
+      { id: 'mine', name: '🏭 Nano Mine', base: 140, owned: 0, apply: s => { s.perClick += 5; } }
     ];
 
     const fmt = n => Math.floor(n).toLocaleString();
     const el = id => document.getElementById(id);
+    const upgradeNodes = new Map();
+    const COMBO_WINDOW_MS = 900;
+    const COMBO_CAP = 20;
+    const HEAT_PER_CLICK = 14;
+    const HEAT_COOL_PER_TICK = 0.45;
+    const OVERHEAT_MS = 2500;
+    const OVERCHARGE_MS = 8000;
+    const OVERCHARGE_COOLDOWN_MS = 24000;
 
     function cost(upg) { return Math.floor(upg.base * Math.pow(1.45, upg.owned)); }
 
-    function render() {
-      el('score').textContent = fmt(state.score);
-      el('perClick').textContent = state.perClick;
-      el('perSecond').textContent = state.perSecond;
-      el('drones').textContent = state.drones;
+    function comboMultiplier() {
+      if (state.combo <= 0) return 1;
+      return Math.min(2.5, 1 + (state.combo - 1) * 0.08);
+    }
+
+    function overchargeMultiplier(now) {
+      return now < state.overchargeUntil ? 2.5 : 1;
+    }
+
+    function heatYieldMultiplier() {
+      if (state.heat >= 85) return 1.6;
+      if (state.heat >= 65) return 1.3;
+      return 1;
+    }
+
+    function heatPenaltyMultiplier() {
+      if (state.heat >= 85) return 0.68;
+      if (state.heat >= 70) return 0.82;
+      if (state.heat >= 50) return 0.93;
+      return 1;
+    }
+
+    function isOverheated(now) {
+      return now < state.overheatedUntil;
+    }
+
+    function setFlash(message, duration = 1500) {
+      state.flashMessage = message;
+      state.flashUntil = Date.now() + duration;
+    }
+
+    function initUpgradeUI() {
       const wrap = el('upgrades');
       wrap.innerHTML = '';
-      upgrades.forEach(upg => {
-        const c = cost(upg);
+
+      upgrades.forEach((upg) => {
         const row = document.createElement('div');
         row.className = 'upgrade';
-        row.innerHTML = `<div><strong>${upg.name}</strong><div style="color:var(--text-dim);font-size:.85rem">Owned: ${upg.owned} · Cost: ${fmt(c)}</div></div>`;
+
+        const label = document.createElement('div');
+        const title = document.createElement('strong');
+        title.textContent = upg.name;
+        const detail = document.createElement('div');
+        detail.style.color = 'var(--text-dim)';
+        detail.style.fontSize = '.85rem';
+        label.appendChild(title);
+        label.appendChild(detail);
+
         const btn = document.createElement('button');
         btn.className = 'buy';
+        btn.type = 'button';
         btn.textContent = 'Buy';
-        btn.disabled = state.score < c;
-        btn.onclick = () => {
+        btn.addEventListener('click', () => {
+          const c = cost(upg);
           if (state.score < c) return;
           state.score -= c;
           upg.owned++;
           upg.apply(state);
           render();
-        };
+        });
+
+        row.appendChild(label);
         row.appendChild(btn);
         wrap.appendChild(row);
+
+        upgradeNodes.set(upg.id, { detail, btn });
+      });
+    }
+
+    function render() {
+      const now = Date.now();
+      el('score').textContent = fmt(state.score);
+      el('perClick').textContent = state.perClick;
+      el('combo').textContent = `x${comboMultiplier().toFixed(2)}`;
+      el('heatText').textContent = `${Math.round(state.heat)}%`;
+      el('drones').textContent = state.drones;
+      el('heatBar').style.width = `${Math.min(100, state.heat)}%`;
+
+      const ocRemaining = Math.max(0, state.overchargeCdUntil - now);
+      const ocPct = ocRemaining <= 0 ? 100 : ((OVERCHARGE_COOLDOWN_MS - ocRemaining) / OVERCHARGE_COOLDOWN_MS) * 100;
+      el('overchargeBar').style.width = `${Math.max(0, Math.min(100, ocPct))}%`;
+
+      const btn = el('overchargeBtn');
+      const activeLeft = Math.max(0, state.overchargeUntil - now);
+      if (activeLeft > 0) {
+        btn.textContent = `Overcharge Active (${Math.ceil(activeLeft / 1000)}s)`;
+        btn.disabled = true;
+      } else if (ocRemaining > 0) {
+        btn.textContent = `Overcharge Cooldown (${Math.ceil(ocRemaining / 1000)}s)`;
+        btn.disabled = true;
+      } else {
+        btn.textContent = 'Activate Overcharge';
+        btn.disabled = false;
+      }
+
+      if (isOverheated(now)) {
+        el('eventText').textContent = `Core overheated! Cooling down (${Math.ceil((state.overheatedUntil - now) / 1000)}s)`;
+      } else if (state.flashMessage && now < state.flashUntil) {
+        el('eventText').textContent = state.flashMessage;
+      } else if (state.heat >= 85) {
+        el('eventText').textContent = 'Critical heat: huge yield, severe output penalty.';
+      } else if (state.heat >= 65) {
+        el('eventText').textContent = 'Volatile core: yield bonus active.';
+      } else {
+        el('eventText').textContent = '';
+      }
+
+      upgrades.forEach(upg => {
+        const c = cost(upg);
+        const node = upgradeNodes.get(upg.id);
+        if (!node) return;
+        node.detail.textContent = `Owned: ${upg.owned} · Cost: ${fmt(c)}`;
+        node.btn.disabled = state.score < c;
       });
     }
 
     function mine(mult = 1) {
-      state.score += state.perClick * mult;
+      const now = Date.now();
+      if (isOverheated(now)) return;
+
+      if (now - state.lastClickAt <= COMBO_WINDOW_MS) {
+        state.combo = Math.min(COMBO_CAP, state.combo + 1);
+      } else {
+        state.combo = 1;
+      }
+      state.lastClickAt = now;
+
+      const gain = state.perClick * comboMultiplier() * overchargeMultiplier(now) * heatYieldMultiplier() * heatPenaltyMultiplier() * mult;
+      state.score += gain;
+
+      state.heat = Math.min(100, state.heat + HEAT_PER_CLICK);
+      if (state.heat >= 100) {
+        state.overheatedUntil = now + OVERHEAT_MS;
+        state.combo = 0;
+        setFlash('Core overload! Venting heat...', 1800);
+      }
+
       render();
     }
 
     el('planet').addEventListener('click', () => mine());
     el('planet').addEventListener('touchstart', (e) => { e.preventDefault(); mine(); }, { passive: false });
 
+    el('overchargeBtn').addEventListener('click', () => {
+      const now = Date.now();
+      if (isOverheated(now)) return;
+      if (now < state.overchargeCdUntil) return;
+
+      state.overchargeUntil = now + OVERCHARGE_MS;
+      state.overchargeCdUntil = now + OVERCHARGE_COOLDOWN_MS;
+      setFlash('Overcharge engaged! Massive click boost.', 1500);
+      render();
+    });
+
     setInterval(() => {
-      state.score += state.perSecond / 10;
+      const now = Date.now();
       state.pulse = (state.pulse + 2) % 100;
       el('pulseBar').style.width = `${state.pulse}%`;
-      if (Math.random() < 0.01) {
-        el('eventText').textContent = 'Solar pulse! 2x click power for 5s';
-        const prev = state.perClick;
-        state.perClick *= 2;
-        render();
-        setTimeout(() => { state.perClick = prev; el('eventText').textContent = ''; render(); }, 5000);
+
+      if (!isOverheated(now)) {
+        state.heat = Math.max(0, state.heat - HEAT_COOL_PER_TICK);
+      } else if (state.heat > 45) {
+        state.heat = Math.max(45, state.heat - 1.6);
+      }
+
+      const comboDecayWindow = state.heat >= 75 ? 520 : COMBO_WINDOW_MS;
+      if (now - state.lastClickAt > comboDecayWindow) {
+        state.combo = 0;
       }
       render();
     }, 100);
 
+    initUpgradeUI();
     render();
   </script>
 </body>
