@@ -77,19 +77,19 @@ apps/YYYY/MM/DD/<app-id>/
 Every generated app `index.html` must include the same Google Analytics tag used by the main app.
 
 - Place the snippet inside `<head>` near the top (before app scripts).
-- Use this exact measurement ID: `G-WRFSFDYD80`.
+- Use the GA placeholder `__GA_MEASUREMENT_ID__` in source; deployment injects the real ID from environment.
 - Do not omit this for any app.
 
 Required snippet:
 
 ```html
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WRFSFDYD80"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-WRFSFDYD80');
+  gtag('config', '__GA_MEASUREMENT_ID__');
 </script>
 ```
 
@@ -357,12 +357,12 @@ If any check fails, do not proceed to commit, PR, or deploy.
   <title>App Name - Valley of AI</title>
 
   <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WRFSFDYD80"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-WRFSFDYD80');
+    gtag('config', '__GA_MEASUREMENT_ID__');
   </script>
 
   <style>

@@ -9,7 +9,7 @@
     "preview": "node ./node_modules/vite/bin/vite.js preview",
     "generate:apps": "node scripts/generate-apps.js",
     "deploy:version": "node scripts/deploy-version.js",
-    "predeploy": "DEPLOY_VERSION=$(npm run -s deploy:version) npm run build && cp -r apps dist/ && cp -r logs dist/",
+    "predeploy": "DEPLOY_VERSION=$(npm run -s deploy:version) npm run build && cp -r apps dist/ && cp -r logs dist/ && node scripts/inject-ga-id.js",
     "deploy": "node ./node_modules/gh-pages/bin/gh-pages.js -d dist"
   },
   "dependencies": {
