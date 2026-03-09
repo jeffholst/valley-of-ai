@@ -104,6 +104,34 @@ npm install
 npm run dev
 ```
 
+### Environment Setup (`.env` and `.env.example`)
+
+This repo includes `.env.example` as a template of all expected environment variables.
+
+```bash
+# Create your local env file from the template
+cp .env.example .env
+```
+
+Then edit `.env` with your real values.
+
+- `.env.example`: Committed template with placeholder values.
+- `.env`: Your local runtime config (should contain real keys/IDs for local/dev/deploy use).
+
+Variables currently used:
+
+| Variable | Used For | Required |
+|----------|----------|----------|
+| `VITE_SUPABASE_URL` | Supabase project URL for voting data | Yes |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous key for client access | Yes |
+| `VITE_EMAILJS_SERVICE_ID` | EmailJS service for suggestion form delivery | Yes |
+| `VITE_EMAILJS_TEMPLATE_ID` | EmailJS template for suggestion email payload | Yes |
+| `VITE_EMAILJS_PUBLIC_KEY` | EmailJS browser public key | Yes |
+| `VITE_TURNSTILE_SITE_KEY` | Cloudflare Turnstile site key for spam protection | Yes |
+| `VITE_GA_MEASUREMENT_ID` | Google Analytics measurement ID (injected into HTML during dev/build/deploy) | Yes |
+
+If these values are missing, parts of the app may fail at runtime, and deploy/build analytics injection will not complete.
+
 > 💡 **NAS/Network Mount Users:** If symlinks aren't supported, use `npm install --no-bin-links`.
 > The npm scripts in this repo call package CLIs directly (no `.bin` symlink dependency), so the normal commands still work: `npm run dev`, `npm run build`, `npm run deploy`.
 
@@ -115,6 +143,7 @@ npm run dev
 | `npm run build` | 📦 Build for production (runs `generate:apps` first) |
 | `npm run preview` | 👀 Preview production build locally |
 | `npm run generate:apps` | 🔄 Regenerate apps.json from meta files |
+| `npm run predeploy` | 🧱 Prepare `dist/` for publish (set deploy version, build, copy assets/logs, inject GA ID) |
 | `npm run deploy` | 🚀 Deploy to GitHub Pages (auto-runs `predeploy` first) |
 
 ### Deployment Lifecycle (`pre*` / `post*` scripts)
@@ -127,10 +156,20 @@ npm has built-in lifecycle hooks:
 For this repo:
 
 - `npm run deploy` automatically runs `predeploy`, then runs `deploy`.
-- `predeploy` sets `DEPLOY_VERSION`, runs `build`, and copies `apps/` and `logs/` into `dist/`.
+- `predeploy` sets `DEPLOY_VERSION`, runs `build`, copies `apps/` and `logs/` into `dist/`, then injects `VITE_GA_MEASUREMENT_ID` into built HTML files.
 - `build` itself runs `generate:apps` first, then `vite build`.
 - There is currently no `postdeploy` script defined.
 - For NAS/no-symlink environments, install with `npm install --no-bin-links` and use the same npm lifecycle commands.
+
+Running `npm run predeploy` by itself performs:
+
+```text
+DEPLOY_VERSION=$(npm run -s deploy:version)
+npm run build
+cp -r apps dist/
+cp -r logs dist/
+node scripts/inject-ga-id.js
+```
 
 Current deploy order is:
 
@@ -142,6 +181,7 @@ npm run deploy
       -> vite build
     -> cp -r apps dist/
     -> cp -r logs dist/
+    -> node scripts/inject-ga-id.js
   -> deploy (node ./node_modules/gh-pages/bin/gh-pages.js -d dist)
 ```
 
@@ -279,6 +319,17 @@ Improve the gallery or scripts
 ![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-Deployed-222222?style=for-the-badge&logo=github&logoColor=white)
 
 </div>
+
+Core stack used in this project:
+
+- `React 18` + `react-router-dom`: Main SPA UI and routing.
+- `Vite 5`: Dev server, preview, and production builds.
+- `Tailwind CSS` + `PostCSS` + `Autoprefixer`: Styling pipeline.
+- `Supabase`: App voting data storage and retrieval.
+- `EmailJS`: Suggestion form submission from the browser.
+- `Cloudflare Turnstile`: Bot protection on suggestion flow.
+- `GitHub Pages` + `gh-pages`: Static hosting and deployment.
+- Plain `HTML/CSS/JS` in `apps/YYYY/MM/DD/*`: Self-contained generated mini apps.
 
 ---
 
