@@ -11,31 +11,172 @@ canvas{width:100%;max-width:760px;aspect-ratio:4/3;display:block;margin:auto;bac
 <div class='top'><span class='pill' id='score'>Score: 0</span><span class='pill' id='best'>Best: 0</span><span class='pill' id='state'>State: Ready</span></div>
 <canvas id='g' width='760' height='570'></canvas><div class='controls'><button id='start'>Start / Restart</button></div><p class='k'>Move: ← → ↑ ↓ or WASD</p></main>
 <script>
-const c=document.getElementById('g'),x=c.getContext('2d');let best=+localStorage.getItem('gravity-best')||0;
-const S={run:false,score:0,p:{x:120,y:285,vx:0,vy:0,r:11},orb:{x:380,y:285,r:28},haz:[],keys:{}};
-const ui=(id,v)=>document.getElementById(id).textContent=v; const rng=(a,b)=>Math.random()*(b-a)+a;
-function reset(){S.run=true;S.score=0;S.p={x:120,y:285,vx:0,vy:0,r:11};S.haz=[];for(let i=0;i<8;i++)spawn();ui('state','State: Running');}
-function spawn(){const edge=Math.floor(Math.random()*4);let x0,y0,vx,vy,s=rng(1.4,2.7),r=rng(8,14);if(edge===0){x0=0;y0=rng(0,c.height);vx=s;vy=rng(-1,1)}if(edge===1){x0=c.width;y0=rng(0,c.height);vx=-s;vy=rng(-1,1)}if(edge===2){x0=rng(0,c.width);y0=0;vx=rng(-1,1);vy=s}if(edge===3){x0=rng(0,c.width);y0=c.height;vx=rng(-1,1);vy=-s}S.haz.push({x:x0,y:y0,vx,vy,r});}
-function hit(a,b){const dx=a.x-b.x,dy=a.y-b.y;return Math.hypot(dx,dy)<a.r+b.r}
-function update(){if(!S.run)return;const p=S.p;o=S.orb;
-const ax=((S.keys.ArrowRight||S.keys.d)?0.5:0)-((S.keys.ArrowLeft||S.keys.a)?0.5:0);
-const ay=((S.keys.ArrowDown||S.keys.s)?0.5:0)-((S.keys.ArrowUp||S.keys.w)?0.5:0);
-const dx=o.x-p.x,dy=o.y-p.y,d=Math.max(40,Math.hypot(dx,dy));const g=1900/(d*d);
-p.vx=(p.vx+ax+dx/d*g)*0.992; p.vy=(p.vy+ay+dy/d*g)*0.992; p.x+=p.vx; p.y+=p.vy;
-if(p.x<0||p.x>c.width||p.y<0||p.y>c.height){S.run=false;ui('state','State: Lost in space');}
-for(const h of S.haz){h.x+=h.vx;h.y+=h.vy;if(h.x<-30||h.x>c.width+30||h.y<-30||h.y>c.height+30){Object.assign(h,{x:-99});spawn();}}
-S.haz=S.haz.filter(h=>h.x>-90); if(S.haz.length<10&&Math.random()<0.03)spawn();
-for(const h of S.haz){if(hit(p,h)){S.run=false;ui('state','State: Hit');}}
-if(hit(p,o)){S.run=false;ui('state','State: Crushed by gravity');}
-S.score++;if(S.score>best){best=S.score;localStorage.setItem('gravity-best',best)}
-ui('score',`Score: ${S.score}`);ui('best',`Best: ${best}`);
+const c = document.getElementById('g');
+const x = c.getContext('2d');
+let best = +localStorage.getItem('gravity-best') || 0;
+
+const S = {
+	run: false,
+	score: 0,
+	p: { x: 120, y: 285, vx: 0, vy: 0, r: 11 },
+	orb: { x: 380, y: 285, r: 28 },
+	haz: [],
+	keys: {},
+};
+
+const ui = (id, v) => { document.getElementById(id).textContent = v; };
+const rng = (a, b) => Math.random() * (b - a) + a;
+
+function cssVar(name, fallback) {
+	const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+	return value || fallback;
 }
-function draw(){x.clearRect(0,0,c.width,c.height);x.fillStyle='#0b1222';for(let i=0;i<120;i++)x.fillRect((i*61)%c.width,(i*37)%c.height,1,1);
-const o=S.orb;const grad=x.createRadialGradient(o.x,o.y,10,o.x,o.y,120);grad.addColorStop(0,'#a78bfa');grad.addColorStop(1,'transparent');x.fillStyle=grad;x.beginPath();x.arc(o.x,o.y,120,0,Math.PI*2);x.fill();x.fillStyle='var(--orb)';x.beginPath();x.arc(o.x,o.y,o.r,0,Math.PI*2);x.fill();
-x.fillStyle='var(--haz)';for(const h of S.haz){x.beginPath();x.arc(h.x,h.y,h.r,0,Math.PI*2);x.fill();}
-const p=S.p;x.fillStyle='var(--player)';x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fill();
+
+function reset() {
+	S.run = true;
+	S.score = 0;
+	S.p = { x: 120, y: 285, vx: 0, vy: 0, r: 11 };
+	S.haz = [];
+	for (let i = 0; i < 8; i++) spawn();
+	ui('state', 'State: Running');
 }
-function loop(){update();draw();requestAnimationFrame(loop)}
-document.addEventListener('keydown',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;S.keys[k]=true});document.addEventListener('keyup',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;S.keys[k]=false});
-document.getElementById('start').onclick=()=>reset();ui('best',`Best: ${best}`);loop();
+
+function spawn() {
+	const edge = Math.floor(Math.random() * 4);
+	let x0, y0, vx, vy;
+	const s = rng(1.4, 2.7);
+	const r = rng(8, 14);
+
+	if (edge === 0) { x0 = 0; y0 = rng(0, c.height); vx = s; vy = rng(-1, 1); }
+	if (edge === 1) { x0 = c.width; y0 = rng(0, c.height); vx = -s; vy = rng(-1, 1); }
+	if (edge === 2) { x0 = rng(0, c.width); y0 = 0; vx = rng(-1, 1); vy = s; }
+	if (edge === 3) { x0 = rng(0, c.width); y0 = c.height; vx = rng(-1, 1); vy = -s; }
+
+	S.haz.push({ x: x0, y: y0, vx, vy, r });
+}
+
+function hit(a, b) {
+	const dx = a.x - b.x;
+	const dy = a.y - b.y;
+	return Math.hypot(dx, dy) < a.r + b.r;
+}
+
+function update() {
+	if (!S.run) return;
+
+	const p = S.p;
+	const o = S.orb;
+
+	const ax = ((S.keys.ArrowRight || S.keys.d) ? 0.5 : 0) - ((S.keys.ArrowLeft || S.keys.a) ? 0.5 : 0);
+	const ay = ((S.keys.ArrowDown || S.keys.s) ? 0.5 : 0) - ((S.keys.ArrowUp || S.keys.w) ? 0.5 : 0);
+	const dx = o.x - p.x;
+	const dy = o.y - p.y;
+	const d = Math.max(40, Math.hypot(dx, dy));
+	const g = 1900 / (d * d);
+
+	p.vx = (p.vx + ax + (dx / d) * g) * 0.992;
+	p.vy = (p.vy + ay + (dy / d) * g) * 0.992;
+	p.x += p.vx;
+	p.y += p.vy;
+
+	if (p.x < 0 || p.x > c.width || p.y < 0 || p.y > c.height) {
+		S.run = false;
+		ui('state', 'State: Lost in space');
+	}
+
+	for (const h of S.haz) {
+		h.x += h.vx;
+		h.y += h.vy;
+		if (h.x < -30 || h.x > c.width + 30 || h.y < -30 || h.y > c.height + 30) {
+			Object.assign(h, { x: -99 });
+			spawn();
+		}
+	}
+
+	S.haz = S.haz.filter((h) => h.x > -90);
+	if (S.haz.length < 10 && Math.random() < 0.03) spawn();
+
+	for (const h of S.haz) {
+		if (hit(p, h)) {
+			S.run = false;
+			ui('state', 'State: Hit');
+		}
+	}
+
+	if (hit(p, o)) {
+		S.run = false;
+		ui('state', 'State: Crushed by gravity');
+	}
+
+	S.score++;
+	if (S.score > best) {
+		best = S.score;
+		localStorage.setItem('gravity-best', best);
+	}
+
+	ui('score', `Score: ${S.score}`);
+	ui('best', `Best: ${best}`);
+}
+
+function draw() {
+	x.clearRect(0, 0, c.width, c.height);
+	x.fillStyle = '#0b1222';
+	for (let i = 0; i < 120; i++) {
+		x.fillRect((i * 61) % c.width, (i * 37) % c.height, 1, 1);
+	}
+
+	const orbColor = cssVar('--orb', '#a78bfa');
+	const hazColor = cssVar('--haz', '#ef4444');
+	const playerColor = cssVar('--player', '#22d3ee');
+
+	const o = S.orb;
+	const grad = x.createRadialGradient(o.x, o.y, 10, o.x, o.y, 120);
+	grad.addColorStop(0, orbColor);
+	grad.addColorStop(1, 'transparent');
+	x.fillStyle = grad;
+	x.beginPath();
+	x.arc(o.x, o.y, 120, 0, Math.PI * 2);
+	x.fill();
+
+	x.fillStyle = orbColor;
+	x.beginPath();
+	x.arc(o.x, o.y, o.r, 0, Math.PI * 2);
+	x.fill();
+
+	x.fillStyle = hazColor;
+	for (const h of S.haz) {
+		x.beginPath();
+		x.arc(h.x, h.y, h.r, 0, Math.PI * 2);
+		x.fill();
+	}
+
+	const p = S.p;
+	x.fillStyle = playerColor;
+	x.beginPath();
+	x.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+	x.fill();
+}
+
+function loop() {
+	update();
+	draw();
+	requestAnimationFrame(loop);
+}
+
+document.addEventListener('keydown', (e) => {
+	const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+	S.keys[k] = true;
+	if (k === 'ArrowUp' || k === 'ArrowDown' || k === 'ArrowLeft' || k === 'ArrowRight') {
+		e.preventDefault();
+	}
+});
+
+document.addEventListener('keyup', (e) => {
+	const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+	S.keys[k] = false;
+});
+
+document.getElementById('start').onclick = () => reset();
+ui('best', `Best: ${best}`);
+loop();
 </script></body></html>
