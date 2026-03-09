@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import ThemeToggle from './ThemeToggle'
+import { siteName } from '../lib/siteConfig'
 
 export default function Header() {
   return (
@@ -9,7 +10,7 @@ export default function Header() {
           <Link to="/" className="flex items-center gap-2">
             <span className="text-2xl">🏔️</span>
             <span className="text-xl font-bold text-gray-900 dark:text-white">
-              Valley of AI
+              {siteName}
             </span>
           </Link>
           

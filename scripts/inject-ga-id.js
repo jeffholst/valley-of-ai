@@ -7,6 +7,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const root = path.resolve(__dirname, '..');
+const DEFAULT_MAIN_SITE_URL = 'https://www.valleyofai.com';
+const DEFAULT_MAIN_SITE_NAME = 'Valley of AI';
 
 function loadEnvLikeFile(filePath) {
   const values = {};
@@ -43,10 +45,44 @@ function resolveGaMeasurementId() {
   return '';
 }
 
-function replaceInFile(filePath, gaId) {
+function resolveMainSiteUrl() {
+  if (process.env.VITE_MAIN_SITE_URL) return process.env.VITE_MAIN_SITE_URL;
+
+  const envPaths = [
+    path.join(root, '.env.local'),
+    path.join(root, '.env'),
+  ];
+
+  for (const p of envPaths) {
+    const vals = loadEnvLikeFile(p);
+    if (vals.VITE_MAIN_SITE_URL) return vals.VITE_MAIN_SITE_URL;
+  }
+
+  return DEFAULT_MAIN_SITE_URL;
+}
+
+function resolveMainSiteName() {
+  if (process.env.VITE_MAIN_SITE_NAME) return process.env.VITE_MAIN_SITE_NAME;
+
+  const envPaths = [
+    path.join(root, '.env.local'),
+    path.join(root, '.env'),
+  ];
+
+  for (const p of envPaths) {
+    const vals = loadEnvLikeFile(p);
+    if (vals.VITE_MAIN_SITE_NAME) return vals.VITE_MAIN_SITE_NAME;
+  }
+
+  return DEFAULT_MAIN_SITE_NAME;
+}
+
+function replaceInFile(filePath, gaId, mainSiteUrl, mainSiteName) {
   let content = fs.readFileSync(filePath, 'utf8');
   const next = content
     .replaceAll('__GA_MEASUREMENT_ID__', gaId)
+    .replaceAll('__MAIN_SITE_URL__', mainSiteUrl)
+    .replaceAll('__MAIN_SITE_NAME__', mainSiteName)
     .replace(/googletagmanager\.com\/gtag\/js\?id=G-[A-Z0-9]+/g, `googletagmanager.com/gtag/js?id=${gaId}`)
     .replace(/gtag\('config', 'G-[A-Z0-9]+'\)/g, `gtag('config', '${gaId}')`);
 
@@ -73,6 +109,8 @@ function walk(dirPath, files = []) {
 
 function main() {
   const gaId = resolveGaMeasurementId();
+  const mainSiteUrl = resolveMainSiteUrl();
+  const mainSiteName = resolveMainSiteName();
   if (!gaId) {
     console.error('ERROR: Missing VITE_GA_MEASUREMENT_ID (.env/.env.local or environment variable).');
     process.exit(1);
@@ -86,10 +124,10 @@ function main() {
 
   let changed = 0;
   for (const filePath of targetFiles) {
-    changed += replaceInFile(filePath, gaId);
+    changed += replaceInFile(filePath, gaId, mainSiteUrl, mainSiteName);
   }
 
-  console.log(`Injected GA ID into ${changed} file(s).`);
+  console.log(`Injected GA ID, main site URL, and main site name into ${changed} file(s).`);
 }
 
 main();

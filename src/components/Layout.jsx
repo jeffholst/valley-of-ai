@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import Header from './Header'
+import { siteName } from '../lib/siteConfig'
 
 export default function Layout() {
   return (
@@ -12,7 +13,7 @@ export default function Layout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
           <span>✨ An experiment in AI, powered by curiosity and <span className="heart-pulse">❤️</span> from <span className="sparkle-text">Jeff Holst</span></span>
           <div className="flex items-center gap-4">
-            <span>🏔️ Valley of AI © 2026</span>
+            <span>🏔️ {siteName} © 2026</span>
             <span className="text-gray-300 dark:text-gray-600">•</span>
             <a 
               href="https://github.com/jeffholst/valley-of-ai" 

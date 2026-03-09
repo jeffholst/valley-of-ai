@@ -61,7 +61,7 @@ Rotate through these categories to maintain variety:
 
 ### File Structure
 
-Each app must be placed in: `apps/YYYY/MM/DD/<app-id>/`
+Each app MUST be placed in: `apps/YYYY/MM/DD/<app-id>/`
 
 Required files:
 ```
@@ -74,11 +74,12 @@ apps/YYYY/MM/DD/<app-id>/
 
 ### Analytics Requirement (Mandatory)
 
-Every generated app `index.html` must include the same Google Analytics tag used by the main app.
+Every generated app `index.html` MUST include the same Google Analytics tag used by the main app.
 
 - Place the snippet inside `<head>` near the top (before app scripts).
 - Use the GA placeholder `__GA_MEASUREMENT_ID__` in source; deployment injects the real ID from environment.
-- Do not omit this for any app.
+- Never hardcode a real `G-...` value in source.
+- MUST NOT omit this for any app.
 
 Required snippet:
 
@@ -92,6 +93,60 @@ Required snippet:
   gtag('config', '__GA_MEASUREMENT_ID__');
 </script>
 ```
+
+### Shared App Shell Requirement (Mandatory)
+
+All standalone apps MUST use the shared app shell so header/footer/theme behavior stays consistent across the gallery.
+
+- Include both of these tags in `<head>`:
+
+```html
+<meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+<meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+<script src="/apps/shared/app-shell.js" defer></script>
+```
+
+- `__MAIN_SITE_URL__` is injected from environment (`VITE_MAIN_SITE_URL`) during dev/preview/deploy.
+- `__MAIN_SITE_NAME__` is injected from environment (`VITE_MAIN_SITE_NAME`) during dev/preview/deploy.
+- MUST NOT hardcode `https://www.valleyofai.com` in app markup for footer/back links.
+- MUST NOT add per-app custom top bars for app title/theme toggle unless the app explicitly requires additional controls.
+- MUST NOT add manual "Back to Valley of AI" footer markup; shared shell provides the standard footer link.
+- MUST NOT implement a separate app-local theme toggle system when using the shared shell.
+
+This protocol guarantees:
+- Header top-left app name (derived from app title/heading)
+- Header top-right light/dark toggle
+- Footer centered link back to main site
+
+#### Shared Shell Exception Protocol (Rare)
+
+Deviating from the shared shell is allowed only when the shell would materially break core UX/gameplay.
+
+Allowed examples:
+- Fullscreen/canvas apps where fixed shell chrome blocks critical HUD, controls, or play area.
+- Apps with immersive or kiosk-style presentation where persistent header/footer would conflict with core interaction.
+
+If an exception is used, the agent MUST:
+1. Explain the reason in PR notes and generation notes.
+2. Keep GA snippet + `__GA_MEASUREMENT_ID__` placeholder unchanged.
+3. Still include a visible path back to the main site using `__MAIN_SITE_URL__` (do not hardcode URL).
+4. Preserve the shared theme protocol (`theme` key + `data-theme` compatibility).
+5. Verify controls/content are not hidden by custom chrome on mobile and desktop.
+
+If none of the above exception conditions apply, shared shell usage is mandatory.
+
+### Environment Variables (Mandatory)
+
+When building/testing/deploying apps, assume these env vars are required and sourced from `.env` (template: `.env.example`):
+
+- `VITE_GA_MEASUREMENT_ID`: injected into `__GA_MEASUREMENT_ID__` placeholders.
+- `VITE_MAIN_SITE_URL`: injected into `__MAIN_SITE_URL__` placeholders for shared footer links.
+- `VITE_MAIN_SITE_NAME`: injected into `__MAIN_SITE_NAME__` placeholders for shared footer link text.
+
+Rules:
+- MUST keep placeholders in source files (`__GA_MEASUREMENT_ID__`, `__MAIN_SITE_URL__`, `__MAIN_SITE_NAME__`).
+- MUST NOT replace placeholders with hardcoded production values in committed app HTML.
+- If placeholders appear at runtime during local dev, verify `.env` values and restart Vite.
 
 ### Thumbnail Generation
 
@@ -262,7 +317,7 @@ The app has: grid board, snake body segments, food dot, score/level display.
 
 ### meta.json Schema
 
-Every app must include a valid `meta.json`:
+Every app MUST include a valid `meta.json`:
 
 ```json
 {
@@ -292,14 +347,14 @@ Every app must include a valid `meta.json`:
 - `id`: lowercase, hyphenated, unique (e.g., `snake-game`, `pomodoro-timer`)
 - `category`: One of `Games`, `Productivity`, `Utilities`, `Design`, `Education`, `Entertainment`, `Visualization`
 - `tags`: 2-5 relevant tags for discoverability
-- `generation`: Must accurately reflect your actual token usage and timing
+- `generation`: MUST accurately reflect your actual token usage and timing
 
 ### App Quality Standards
 
-**Every app must:**
+**Every app MUST:**
 1. Work immediately without instructions (intuitive UX)
 2. Be fully responsive (mobile-friendly)
-3. Support both light and dark mode using the **shared theme system** (see [Theme Requirements](#1-lightdark-mode-implementation) below)
+3. Support both light and dark mode via the shared app shell + shared `theme` key protocol
 4. Have smooth animations and transitions
 5. Handle edge cases gracefully
 6. Be visually polished with good typography and spacing
@@ -324,7 +379,7 @@ Before finalizing any game app, run this checklist and fix failures:
 - Confirm no browser control conflicts (for example arrow keys should not scroll the page during gameplay).
 - Log that runtime checks passed.
 
-If any check fails, do not proceed to commit, PR, or deploy.
+If any check fails, MUST NOT proceed to commit, PR, or deploy.
 
 ### Canvas Rules (Mandatory for `<canvas>` Apps)
 
@@ -365,6 +420,10 @@ If any check fails, do not proceed to commit, PR, or deploy.
     gtag('config', '__GA_MEASUREMENT_ID__');
   </script>
 
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+  <script src="/apps/shared/app-shell.js" defer></script>
+
   <style>
     :root {
       --primary: #6366f1;
@@ -388,34 +447,12 @@ If any check fails, do not proceed to commit, PR, or deploy.
       justify-content: center;
       padding: 1rem;
     }
-    .theme-toggle {
-      position: fixed; top: 1rem; right: 1rem;
-      background: var(--surface); border: none; border-radius: 50%;
-      width: 40px; height: 40px; cursor: pointer; font-size: 1.2rem;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .theme-toggle:hover { transform: scale(1.1); }
     /* App styles... */
   </style>
 </head>
 <body>
-  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
   <!-- App content -->
   <script>
-    // Theme init — MUST use shared key 'theme' in localStorage
-    const theme = localStorage.getItem('theme') ||
-      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', theme);
-    document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
-
-    function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-      document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
-    }
-
     // App logic
   </script>
 </body>
@@ -759,35 +796,20 @@ Before moving to final review, ensure these polish items are complete:
 
 ### 1. Light/Dark Mode Implementation
 
-Every app MUST support both light and dark mode using the **shared theme system**. This ensures a user who sets dark mode on the main site (or any app) sees that preference honored everywhere.
+Every app MUST support both light and dark mode using the **shared app shell**. This ensures a user who sets dark mode on the main site (or any app) sees that preference honored everywhere.
 
 #### Critical Rules
 
-1. **Use the shared localStorage key `'theme'`** — this is the SAME key the main Valley of AI site uses in `ThemeToggle.jsx`. Do NOT use app-specific keys like `'my-app-theme'`.
-2. **Set `data-theme` attribute on `document.documentElement`** (the `<html>` tag), NOT on `<body>`.
-3. **Values must be `'dark'` or `'light'`** — do not use `'auto'` or other values.
-4. **Fall back to system preference** via `window.matchMedia('(prefers-color-scheme: dark)')` when no stored preference exists.
-5. **Include a visible toggle button** (🌙/☀️) so users can switch themes.
-6. **Do NOT hardcode `data-theme` in the `<html>` tag** — let JS set it on load to avoid flash of wrong theme.
-7. **Do NOT use `@media (prefers-color-scheme)` as the primary mechanism** — use it only as the fallback when no `localStorage` value exists.
-
-#### Required Theme JavaScript (copy exactly)
-
-```javascript
-// Theme init — place at top of your <script> block
-const theme = localStorage.getItem('theme') ||
-  (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-document.documentElement.setAttribute('data-theme', theme);
-document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
-
-function toggleTheme() {
-  const current = document.documentElement.getAttribute('data-theme');
-  const next = current === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('theme', next);
-  document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
-}
-```
+1. **Include shared app shell tags in `<head>`**:
+   - `<meta name="voa-main-site-url" content="__MAIN_SITE_URL__">`
+  - `<meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">`
+   - `<script src="/apps/shared/app-shell.js" defer></script>`
+2. **Keep using CSS variables for app colors** and provide both light/dark values via `[data-theme="light"]` or `[data-theme="dark"]`.
+3. **Do not create app-local theme keys** — shared shell uses the global `'theme'` key.
+4. **Do not add a second theme toggle button** — shell injects the standard header toggle.
+5. **Do not hardcode `data-theme` in `<html>`**.
+6. **Test both light and dark modes** after integrating shell.
+7. **Only bypass shared shell with explicit exception justification** (see Shared Shell Exception Protocol above).
 
 #### Required CSS Pattern
 
@@ -815,14 +837,6 @@ body {
   color: var(--text);
 }
 ```
-```
-
-**Toggle button** – Include a visible sun/moon toggle in the header:
-```html
-<button onclick="toggleTheme()" aria-label="Toggle theme" class="theme-toggle">
-  🌙
-</button>
-```
 
 ### 2. Favicon Generation
 
@@ -843,23 +857,17 @@ Every app MUST have a custom favicon that represents the app:
 
 ### 3. Link Back to Valley of AI
 
-Every app MUST include a link back to the main site in the footer:
+Every app MUST provide a link back to the main site via the shared shell footer (do not hand-code this):
 
 ```html
-<!-- Add at the bottom of your app -->
-<footer style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid var(--text-secondary); opacity: 0.7;">
-  <a href="https://www.valleyofai.com" target="_blank" rel="noopener" 
-     style="color: var(--accent); text-decoration: none;">
-    ← Back to Valley of AI
-  </a>
-</footer>
+<meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+<meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+<script src="/apps/shared/app-shell.js" defer></script>
 ```
 
 **Styling requirements:**
-- Should be subtle but visible
-- Use theme-aware colors
-- Include `target="_blank"` and `rel="noopener"`
-- Position at the very bottom of the app
+- Footer link is centered and themed by shared shell.
+- Do not add duplicate manual back links.
 
 ### 4. Additional Polish Items
 
@@ -872,14 +880,15 @@ Every app MUST include a link back to the main site in the footer:
 - [ ] **Animations** – Respect `prefers-reduced-motion` media query
 - [ ] **Performance** – No janky animations, no layout thrashing
 - [ ] **Console Clean** – Zero errors or warnings in browser console
+- [ ] **Shell Compliance** – Use shared shell, or document and validate exception requirements
 
 ### Pre-Code Polish Summary
 
 | Item | Required | Notes |
 |------|----------|-------|
-| Dark/Light Mode | ✅ Yes | Shared `localStorage('theme')` key + toggle + `data-theme` on `<html>` |
+| Dark/Light Mode | ✅ Yes | Shared app shell (`/apps/shared/app-shell.js`) + CSS theme variables |
 | Favicon | ✅ Yes | Emoji or SVG, app-specific |
-| Back to Valley Link | ✅ Yes | Footer link with `target="_blank"` |
+| Back to Valley Link | ✅ Yes | Shared shell footer using `__MAIN_SITE_URL__` + `__MAIN_SITE_NAME__` |
 | Responsive Design | ✅ Yes | Works on mobile |
 | Touch Support | For games | Touch events for interactive apps |
 | Keyboard Nav | ✅ Yes | Tab-navigable UI |
