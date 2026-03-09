@@ -100,6 +100,8 @@ In addition to Node/npm, this project expects external service configuration.
 | EmailJS | Service ID, template ID, public key (`VITE_EMAILJS_*`) | Send suggestion form submissions |
 | Cloudflare Turnstile | Site key (`VITE_TURNSTILE_SITE_KEY`) | Block bots/robots on forms |
 | Google Analytics | Measurement ID (`VITE_GA_MEASUREMENT_ID`) | Site analytics tracking |
+| Main Site URL | URL value (`VITE_MAIN_SITE_URL`) | Footer link destination for standalone app pages |
+| Main Site Name | Display name (`VITE_MAIN_SITE_NAME`) | Footer link label for standalone app pages |
 
 Set these in your local `.env` (copied from `.env.example`).
 
@@ -142,6 +144,8 @@ Variables currently used:
 | `VITE_EMAILJS_PUBLIC_KEY` | EmailJS browser public key | Yes |
 | `VITE_TURNSTILE_SITE_KEY` | Cloudflare Turnstile site key for spam protection | Yes |
 | `VITE_GA_MEASUREMENT_ID` | Google Analytics measurement ID (injected into HTML during dev/build/deploy) | Yes |
+| `VITE_MAIN_SITE_URL` | Main site URL used by standalone app footer links | Yes |
+| `VITE_MAIN_SITE_NAME` | Main site name used by standalone app footer link text | Yes |
 
 If these values are missing, parts of the app may fail at runtime, and deploy/build analytics injection will not complete.
 
