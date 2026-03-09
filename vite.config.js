@@ -1,16 +1,52 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
-import { readFileSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
+import path from 'path'
 
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'))
 const deployVersion = process.env.DEPLOY_VERSION || `${pkg.version}+local`
 
+function gaPlaceholderRewritePlugin(gaId) {
+  const rewriteRequest = (req, res, next) => {
+    const url = (req.url || '').split('?')[0]
+    if (!gaId || gaId === '__GA_MEASUREMENT_ID__') return next()
+
+    // Rewrite standalone app HTML files served directly from /apps in local dev/preview.
+    if (!url.startsWith('/apps/') || !url.endsWith('/index.html')) return next()
+
+    const filePath = path.join(process.cwd(), url.slice(1))
+    if (!existsSync(filePath)) return next()
+
+    const html = readFileSync(filePath, 'utf-8').replaceAll('__GA_MEASUREMENT_ID__', gaId)
+    res.setHeader('Content-Type', 'text/html; charset=utf-8')
+    res.end(html)
+  }
+
+  return {
+    name: 'ga-placeholder-rewrite',
+    transformIndexHtml(html) {
+      return html.replaceAll('__GA_MEASUREMENT_ID__', gaId || '__GA_MEASUREMENT_ID__')
+    },
+    configureServer(server) {
+      server.middlewares.use(rewriteRequest)
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(rewriteRequest)
+    },
+  }
+}
+
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  base: '/',
-  define: {
-    __APP_VERSION__: JSON.stringify(pkg.version),
-    __DEPLOY_VERSION__: JSON.stringify(deployVersion),
-  },
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  const gaMeasurementId = env.VITE_GA_MEASUREMENT_ID || process.env.VITE_GA_MEASUREMENT_ID || '__GA_MEASUREMENT_ID__'
+
+  return {
+    plugins: [react(), gaPlaceholderRewritePlugin(gaMeasurementId)],
+    base: '/',
+    define: {
+      __APP_VERSION__: JSON.stringify(pkg.version),
+      __DEPLOY_VERSION__: JSON.stringify(deployVersion),
+    },
+  }
 })
