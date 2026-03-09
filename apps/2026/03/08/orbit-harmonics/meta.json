@@ -4,7 +4,7 @@
   "shortDescription": "An interactive harmonic orbit visualizer that layers spinning arms into blooming curves. Tune ratios, phase, and trail length to generate mesmerizing motion studies and export still frames.",
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-08T14:42:15Z",
-  "category": "Visualization",
+  "category": "Visualizations",
   "status": "active",
   "tags": ["visualization", "generative-art", "motion", "canvas"],
   "homepagePath": "index.html",

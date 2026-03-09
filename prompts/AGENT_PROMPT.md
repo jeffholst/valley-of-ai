@@ -345,7 +345,7 @@ Every app MUST include a valid `meta.json`:
 
 **Field requirements:**
 - `id`: lowercase, hyphenated, unique (e.g., `snake-game`, `pomodoro-timer`)
-- `category`: One of `Games`, `Productivity`, `Utilities`, `Design`, `Education`, `Entertainment`, `Visualization`
+- `category`: One of `Games`, `Productivity`, `Utilities`, `Design`, `Education`, `Entertainment`, `Visualizations`
 - `tags`: 2-5 relevant tags for discoverability
 - `generation`: MUST accurately reflect your actual token usage and timing
 
