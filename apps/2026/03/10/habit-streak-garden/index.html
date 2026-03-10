@@ -114,19 +114,26 @@
       padding: 0.6rem 0.75rem;
     }
     .toggle {
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
       border-radius: 8px;
-      border: 2px solid var(--ring-bg);
-      background: transparent;
+      border: 2px solid color-mix(in srgb, var(--text), transparent 60%);
+      background: color-mix(in srgb, var(--bg), #fff 8%);
       cursor: pointer;
       display: inline-grid;
       place-items: center;
       color: var(--accent);
+      font-size: 1rem;
       font-weight: 900;
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--bg), #fff 20%);
       padding: 0;
     }
-    .toggle.done { border-color: var(--accent); background: color-mix(in srgb, var(--accent), transparent 75%); }
+    .toggle.done {
+      border-color: color-mix(in srgb, var(--accent), #fff 20%);
+      background: color-mix(in srgb, var(--accent), var(--surface-soft) 52%);
+      color: #052012;
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent), transparent 70%);
+    }
     .habit small { color: var(--text-dim); display: block; }
 
     .garden {
