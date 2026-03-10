@@ -135,6 +135,31 @@
       gap: 8px;
       margin-top: 0.8rem;
     }
+
+    .weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 0.8rem;
+    }
+
+    .weekday-btn {
+      background: var(--surface-soft);
+      color: var(--text-dim);
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 0.45rem 0.2rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .weekday-btn.active {
+      color: var(--text);
+      border-color: color-mix(in srgb, var(--accent), transparent 35%);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent), transparent 55%);
+      background: color-mix(in srgb, var(--accent), var(--surface-soft) 78%);
+    }
     .plot {
       aspect-ratio: 1;
       border-radius: 10px;
@@ -192,20 +217,44 @@
     <section class="panel">
       <h2>Weekly Garden</h2>
       <p class="subtitle">Each bloom means all habits were done that day.</p>
+      <div class="weekdays" id="weekdayPicker" role="group" aria-label="Choose day of week"></div>
       <div class="garden" id="garden" aria-label="Weekly habit garden"></div>
     </section>
   </main>
 
   <script>
     const KEY = 'voa-habit-streak-garden-v1';
-    const DAY_KEY = new Date().toISOString().slice(0, 10);
+    const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     const defaultState = {
       habits: [],
       daily: {},
       bestStreak: 0,
-      lastOpenedDay: DAY_KEY
+      lastOpenedDay: '',
+      selectedWeekday: new Date().getDay()
     };
+
+    function toDayKey(date) {
+      return date.toISOString().slice(0, 10);
+    }
+
+    function weekStart(date = new Date()) {
+      const start = new Date(date);
+      start.setHours(12, 0, 0, 0);
+      start.setDate(start.getDate() - start.getDay());
+      return start;
+    }
+
+    function selectedDate() {
+      const start = weekStart(new Date());
+      const date = new Date(start);
+      date.setDate(start.getDate() + state.selectedWeekday);
+      return date;
+    }
+
+    function selectedDayKey() {
+      return toDayKey(selectedDate());
+    }
 
     function loadState() {
       try {
@@ -216,7 +265,8 @@
           ...structuredClone(defaultState),
           ...parsed,
           habits: Array.isArray(parsed.habits) ? parsed.habits : [],
-          daily: parsed.daily && typeof parsed.daily === 'object' ? parsed.daily : {}
+          daily: parsed.daily && typeof parsed.daily === 'object' ? parsed.daily : {},
+          selectedWeekday: Number.isInteger(parsed.selectedWeekday) ? Math.max(0, Math.min(6, parsed.selectedWeekday)) : new Date().getDay()
         };
       } catch {
         return structuredClone(defaultState);
@@ -228,8 +278,28 @@
     }
 
     function ensureDay() {
-      if (!state.daily[DAY_KEY]) state.daily[DAY_KEY] = {};
-      if (state.lastOpenedDay !== DAY_KEY) state.lastOpenedDay = DAY_KEY;
+      const dayKey = selectedDayKey();
+      if (!state.daily[dayKey]) state.daily[dayKey] = {};
+      if (state.lastOpenedDay !== dayKey) state.lastOpenedDay = dayKey;
+    }
+
+    function renderWeekdayPicker() {
+      weekdayPicker.innerHTML = '';
+      WEEKDAY_LABELS.forEach((label, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `weekday-btn ${idx === state.selectedWeekday ? 'active' : ''}`;
+        btn.textContent = label;
+        btn.setAttribute('aria-pressed', String(idx === state.selectedWeekday));
+        btn.setAttribute('aria-label', `Set active day to ${label}`);
+        btn.addEventListener('click', () => {
+          state.selectedWeekday = idx;
+          ensureDay();
+          saveState();
+          render();
+        });
+        weekdayPicker.appendChild(btn);
+      });
     }
 
     function streakForHabit(id) {
@@ -248,7 +318,8 @@
       let completed = 0;
 
       state.habits.forEach((habit) => {
-        const isDone = Boolean(state.daily[DAY_KEY][habit.id]);
+        const dayKey = selectedDayKey();
+        const isDone = Boolean(state.daily[dayKey][habit.id]);
         if (isDone) completed += 1;
 
         const row = document.createElement('article');
@@ -260,7 +331,8 @@
         toggle.setAttribute('aria-label', `${isDone ? 'Mark incomplete' : 'Mark complete'} ${habit.name}`);
         toggle.textContent = isDone ? '✓' : '';
         toggle.addEventListener('click', () => {
-          state.daily[DAY_KEY][habit.id] = !isDone;
+          const dayKey = selectedDayKey();
+          state.daily[dayKey][habit.id] = !isDone;
           state.bestStreak = Math.max(state.bestStreak, streakForHabit(habit.id));
           saveState();
           render();
@@ -287,18 +359,22 @@
       todayDone.textContent = completed;
       habitCount.textContent = state.habits.length;
 
+      renderWeekdayPicker();
       renderGarden();
     }
 
     function renderGarden() {
       garden.innerHTML = '';
-      for (let i = 6; i >= 0; i -= 1) {
-        const day = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10);
+      const start = weekStart(new Date());
+      for (let i = 0; i < 7; i += 1) {
+        const dayDate = new Date(start);
+        dayDate.setDate(start.getDate() + i);
+        const day = toDayKey(dayDate);
         const doneMap = state.daily[day] || {};
         const allDone = state.habits.length > 0 && state.habits.every((h) => doneMap[h.id]);
         const plot = document.createElement('div');
         plot.className = `plot ${allDone ? 'bloom' : ''}`;
-        plot.title = `${day}: ${allDone ? 'Bloomed' : 'Growing'}`;
+        plot.title = `${WEEKDAY_LABELS[i]} (${day}): ${allDone ? 'Bloomed' : 'Growing'}`;
         garden.appendChild(plot);
       }
     }
@@ -311,7 +387,7 @@
       if (!name) return;
       const id = crypto.randomUUID();
       state.habits.push({ id, name });
-      state.daily[DAY_KEY][id] = false;
+      state.daily[selectedDayKey()][id] = false;
       habitInput.value = '';
       saveState();
       render();
@@ -326,8 +402,9 @@
     });
 
     resetBtn.addEventListener('click', () => {
-      if (!confirm('Reset completion status for today?')) return;
-      state.daily[DAY_KEY] = {};
+      const label = WEEKDAY_LABELS[state.selectedWeekday];
+      if (!confirm(`Reset completion status for ${label}?`)) return;
+      state.daily[selectedDayKey()] = {};
       saveState();
       render();
     });
