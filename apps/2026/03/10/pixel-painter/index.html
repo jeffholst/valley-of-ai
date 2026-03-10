@@ -1,0 +1,26 @@
+<!doctype html><html lang='en'><head><meta charset='UTF-8'/><meta name='viewport' content='width=device-width,initial-scale=1'/><title>Pixel Painter</title><style>
+:root{--bg:#0c1220;--bg2:#1b2a4a;--surface:#111a31;--text:#ecf2ff;--muted:#9eb1da;--primary:#22d3ee}
+@media(prefers-color-scheme:light){:root{--bg:#edf4ff;--bg2:#dbeafe;--surface:#fff;--text:#1f2f52;--muted:#60739a;--primary:#0891b2}}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px;font-family:Inter,system-ui;background:radial-gradient(1000px 700px at 20% 20%,var(--bg2),var(--bg));color:var(--text)}
+.card{width:min(900px,100%);background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);border-radius:18px;padding:14px;box-shadow:0 18px 45px #0004}
+h1{margin:0 0 4px}.sub{margin:0 0 10px;color:var(--muted)}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}button,input{font:inherit}
+button{border:none;border-radius:999px;padding:8px 12px;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(90deg,#7c3aed,var(--primary))}
+canvas{width:min(640px,100%);aspect-ratio:1/1;display:block;background:#fff;border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);image-rendering:pixelated;border-radius:12px}
+</style></head><body><main class='card'><h1>🎨 Pixel Painter</h1><p class='sub'>Draw pixel art with color picker, erase, fill, and PNG export.</p>
+<div class='row'><label>Color <input id='color' type='color' value='#22d3ee'></label><label>Grid <input id='size' type='number' min='8' max='64' value='24'></label><button id='resize'>Resize</button><button id='erase'>Eraser</button><button id='fill'>Fill</button><button id='clear'>Clear</button><button id='save'>Save PNG</button></div>
+<canvas id='cv' width='480' height='480'></canvas></main>
+<script>
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');let N=24,cell=cv.width/N,color='#22d3ee',erasing=false;
+let grid=[...Array(N)].map(()=>Array(N).fill('#ffffff'));
+function draw(){ctx.clearRect(0,0,cv.width,cv.height);for(let y=0;y<N;y++)for(let x=0;x<N;x++){ctx.fillStyle=grid[y][x];ctx.fillRect(x*cell,y*cell,cell,cell);ctx.strokeStyle='#e5e7eb';ctx.strokeRect(x*cell,y*cell,cell,cell);}}
+function pos(e){const r=cv.getBoundingClientRect();const x=Math.floor((e.clientX-r.left)/(r.width/N));const y=Math.floor((e.clientY-r.top)/(r.height/N));return{x:Math.max(0,Math.min(N-1,x)),y:Math.max(0,Math.min(N-1,y))}}
+let down=false;cv.addEventListener('pointerdown',e=>{down=true;paint(e)});cv.addEventListener('pointermove',e=>down&&paint(e));window.addEventListener('pointerup',()=>down=false);
+function paint(e){const {x,y}=pos(e);grid[y][x]=erasing?'#ffffff':color;draw();}
+document.getElementById('color').oninput=e=>{color=e.target.value;erasing=false};
+document.getElementById('erase').onclick=()=>erasing=!erasing;
+document.getElementById('fill').onclick=()=>{for(let y=0;y<N;y++)for(let x=0;x<N;x++)grid[y][x]=color;draw();};
+document.getElementById('clear').onclick=()=>{for(let y=0;y<N;y++)for(let x=0;x<N;x++)grid[y][x]='#ffffff';draw();};
+document.getElementById('resize').onclick=()=>{N=Math.max(8,Math.min(64,+document.getElementById('size').value||24));cell=cv.width/N;grid=[...Array(N)].map(()=>Array(N).fill('#ffffff'));draw();};
+document.getElementById('save').onclick=()=>{const a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download='pixel-painter.png';a.click();};
+draw();
+</script></body></html>
