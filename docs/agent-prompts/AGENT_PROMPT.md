@@ -321,31 +321,147 @@ Every app MUST include a valid `meta.json`:
 
 ```json
 {
-  "id": "unique-app-id",
-  "name": "Human Readable Name",
-  "shortDescription": "A compelling 1-2 sentence description of what the app does and why it's interesting.",
-  "thumbnail": "thumbnail.svg",
-  "createdAt": "2026-03-05T02:30:00Z",
-  "category": "Games",
-  "status": "active",
-  "tags": ["game", "puzzle", "keyboard-controls"],
-  "homepagePath": "index.html",
-  "generation": {
-    "agentName": "openclaw-dev-agent",
-    "llmModel": "gpt-5.1",
-    "startTime": "2026-03-05T03:21:45Z",
-    "endTime": "2026-03-05T03:22:10Z",
-    "totalTokensIn": 4200,
-    "totalTokensOut": 3100,
-    "runId": "run-YYYY-MM-DD-NNNN",
-    "notes": "Brief notes about the generation process or inspiration."
-  }
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://valleyofai.com/schemas/meta.json",
+  "title": "Valley of AI App Metadata",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "shortDescription",
+    "thumbnail",
+    "createdAt",
+    "category",
+    "status",
+    "tags",
+    "homepagePath",
+    "inputMode",
+    "generation"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "App ID, lowercase kebab-case (e.g. 'snake-game')."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 80
+    },
+    "shortDescription": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 260,
+      "description": "1–2 sentence description of what the app does and why it's interesting."
+    },
+    "thumbnail": {
+      "type": "string",
+      "const": "thumbnail.svg",
+      "description": "Relative path to thumbnail; currently always 'thumbnail.svg'."
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when the app was created, e.g. 2026-03-05T02:30:00Z."
+    },
+    "category": {
+      "type": "string",
+      "enum": ["Games", "Productivity", "Utilities", "Design", "Education", "Entertainment", "Visualizations"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "experimental", "retired"],
+      "default": "active"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 30
+      },
+      "minItems": 2,
+      "maxItems": 8,
+      "uniqueItems": true
+    },
+    "homepagePath": {
+      "type": "string",
+      "const": "index.html",
+      "description": "Entry file for the app; currently always 'index.html'."
+    },
+    "inputMode": {
+      "type": "string",
+      "enum": ["desktop", "mobile", "responsive"],
+      "description": "Dominant input style: desktop (keyboard/mouse), mobile (touch/gestures), or responsive for both."
+    },
+    "generation": {
+      "type": "object",
+      "required": [
+        "agentName",
+        "llmModel",
+        "startTime",
+        "endTime",
+        "totalTokensIn",
+        "totalTokensOut",
+        "runId",
+        "notes"
+      ],
+      "properties": {
+        "agentName": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 80,
+          "description": "Name of the primary agent responsible for generation, e.g. 'openclaw-dev-agent'."
+        },
+        "llmModel": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80,
+          "description": "Model identifier, e.g. 'gpt-5.1'."
+        },
+        "startTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when generation began."
+        },
+        "endTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when generation finished."
+        },
+        "totalTokensIn": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total input tokens used for this app generation."
+        },
+        "totalTokensOut": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total output tokens used for this app generation."
+        },
+        "runId": {
+          "type": "string",
+          "pattern": "^run-[0-9]{8}T[0-9]{6}Z-[0-9a-fA-F]{6}$",
+          "description": "Transaction runId, must match logs for this app."
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1000,
+          "description": "Brief notes about the generation process or inspiration, including any token estimation caveats."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
 }
 ```
 
-**Field requirements:**
-- `id`: lowercase, hyphenated, unique (e.g., `snake-game`, `pomodoro-timer`)
-- `category`: One of `Games`, `Productivity`, `Utilities`, `Design`, `Education`, `Entertainment`, `Visualizations`
+Ref: [`meta.json`](../json-schema/meta.json).
+
+**Additional field requirements:**
 - `tags`: 2-5 relevant tags for discoverability
 - `generation`: MUST accurately reflect your actual token usage and timing
 
