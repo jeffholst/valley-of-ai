@@ -164,7 +164,8 @@ If these values are missing, parts of the app may fail at runtime, and deploy/bu
 | Command | Description |
 |---------|-------------|
 | `npm run dev` | 🔥 Start development server with hot reload |
-| `npm run build` | 📦 Build for production (runs `generate:apps` first) |
+| `npm run validate:apps` | ✅ Validate standalone app HTML contract (GA + shared shell + placeholder checks) |
+| `npm run build` | 📦 Build for production (runs `validate:apps` and `generate:apps` first) |
 | `npm run preview` | 👀 Preview production build locally |
 | `npm run generate:apps` | 🔄 Regenerate apps.json from meta files |
 | `npm run predeploy` | 🧱 Prepare `dist/` for publish (set deploy version, build, copy assets/logs, inject GA ID) |
