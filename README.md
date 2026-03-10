@@ -64,14 +64,17 @@ See the AI model, token usage, and generation time for each app.
 
 | App | Description | Category |
 |-----|-------------|----------|
-| 🐦 **Flappy Bird** | Classic tap-to-fly game with pipes | Games |
-| 🟡 **Pacman Classic** | Eat dots, avoid ghosts, clear the maze | Games |
-| 🕯️ **Lantern of Hollowmere** | Parser-style text adventure | Entertainment |
-| 🎯 **Contrast Lab** | WCAG accessibility color checker | Design |
-| 🧠 **Memory Match** | Card matching with 3D flip animations | Games |
-| 📊 **Sorting Visualizer** | Watch algorithms sort in real-time | Visualizations |
-| 🎨 **Color Palette** | Generate harmonious color schemes | Design |
-| ⏱️ **Pomodoro Timer** | Elegant productivity timer | Productivity |
+| 🃏 **[Blackjack](https://www.valleyofai.com/apps/2026/03/07/blackjack/index.html)** | Classic blackjack with betting and dealer logic | Games |
+| 🎨 **[Contrast Lab](https://www.valleyofai.com/apps/2026/03/07/contrast-lab/index.html)** | WCAG contrast checker for accessible color pairs | Design |
+| 🎣 **[Fishing Frenzy](https://www.valleyofai.com/apps/2026/03/07/fishing-frenzy/index.html)** | Arcade-style fishing with timing and depth control | Games |
+| 🐦 **[Flappy Bird](https://www.valleyofai.com/apps/2026/03/07/flappy-bird/index.html)** | Classic tap-to-fly game with pipes | Games |
+| 🕯️ **[Lantern of Hollowmere](https://www.valleyofai.com/apps/2026/03/07/zorkish-text-adventure/index.html)** | Parser-style text adventure in a haunted village | Entertainment |
+| 🧠 **[Memory Match](https://www.valleyofai.com/apps/2026/03/06/memory-match/index.html)** | Card matching game with animated flips | Games |
+| 🌌 **[Orbit Harmonics](https://www.valleyofai.com/apps/2026/03/08/orbit-harmonics/index.html)** | Interactive harmonic orbit visualizer with tunable curves | Visualizations |
+| ⏱️ **[Pomodoro Timer](https://www.valleyofai.com/apps/2026/03/05/pomodoro-timer/index.html)** | Elegant focus timer for productivity sessions | Productivity |
+| 🏎️ **[Road Rage](https://www.valleyofai.com/apps/2026/03/07/road-rage/index.html)** | Fast-paced lane-switching driving challenge | Games |
+| 🐍 **[Snake Game](https://www.valleyofai.com/apps/2026/03/05/snake-game/index.html)** | Grow your snake while avoiding collisions | Games |
+| 🔤 **[Word Weaver](https://www.valleyofai.com/apps/2026/03/06/word-weaver/index.html)** | Word transformation puzzle utility with hint support | Utilities |
 
 <div align="center">
 <i>...and more being added every night by our AI agents!</i>
@@ -90,19 +93,6 @@ See the AI model, token usage, and generation time for each app.
 </tr>
 </table>
 
-### Service Requirements
-
-In addition to Node/npm, this project expects external service configuration.
-
-| Service | What You Need | Purpose |
-|---------|----------------|---------|
-| Supabase | Project URL + anon key (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`) | Store and read app votes |
-| EmailJS | Service ID, template ID, public key (`VITE_EMAILJS_*`) | Send suggestion form submissions |
-| Cloudflare Turnstile | Site key (`VITE_TURNSTILE_SITE_KEY`) | Block bots/robots on forms |
-| Google Analytics | Measurement ID (`VITE_GA_MEASUREMENT_ID`) | Site analytics tracking |
-| Main Site URL | URL value (`VITE_MAIN_SITE_URL`) | Footer link destination for standalone app pages |
-| Main Site Name | Display name (`VITE_MAIN_SITE_NAME`) | Footer link label for standalone app pages |
-
 Set these in your local `.env` (copied from `.env.example`).
 
 ### Installation
@@ -118,6 +108,17 @@ npm install
 # Start development server
 npm run dev
 ```
+
+> 💡 **NAS/Network Mount Users:** If symlinks aren't supported, use `npm install --no-bin-links`.
+> The npm scripts in this repo call package CLIs directly (no `.bin` symlink dependency), so the normal commands still work: `npm run dev`, `npm run build`, `npm run deploy`.
+
+### 3rd Party Service Requirements
+
+| Service | Purpose |
+|---------|---------|
+| [Supabase](https://supabase.com) | Storing and retrieving app votes |
+| [EmailJS](https://www.emailjs.com) | Emailing suggestions |
+| [Google Analytics](https://analytics.google.com) | Analytic tracking |
 
 ### Environment Setup (`.env` and `.env.example`)
 
@@ -135,22 +136,20 @@ Then edit `.env` with your real values.
 
 Variables currently used:
 
-| Variable | Used For | Required |
-|----------|----------|----------|
-| `VITE_SUPABASE_URL` | Supabase project URL for voting data | Yes |
-| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous key for client access | Yes |
-| `VITE_EMAILJS_SERVICE_ID` | EmailJS service for suggestion form delivery | Yes |
-| `VITE_EMAILJS_TEMPLATE_ID` | EmailJS template for suggestion email payload | Yes |
-| `VITE_EMAILJS_PUBLIC_KEY` | EmailJS browser public key | Yes |
-| `VITE_TURNSTILE_SITE_KEY` | Cloudflare Turnstile site key for spam protection | Yes |
-| `VITE_GA_MEASUREMENT_ID` | Google Analytics measurement ID (injected into HTML during dev/build/deploy) | Yes |
-| `VITE_MAIN_SITE_URL` | Main site URL used by standalone app footer links | Yes |
-| `VITE_MAIN_SITE_NAME` | Main site name used by standalone app footer link text | Yes |
+| Variable | Used For |
+|----------|----------|
+| `VITE_SUPABASE_URL` | Supabase project URL for voting data |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous key for client access |
+| `VITE_EMAILJS_SERVICE_ID` | EmailJS service for suggestion form delivery |
+| `VITE_EMAILJS_TEMPLATE_ID` | EmailJS template for suggestion email payload |
+| `VITE_EMAILJS_PUBLIC_KEY` | EmailJS browser public key |
+| `VITE_TURNSTILE_SITE_KEY` | Cloudflare Turnstile site key for spam protection |
+| `VITE_GA_MEASUREMENT_ID` | Google Analytics measurement ID (injected into HTML during dev/build/deploy) |
+| `VITE_MAIN_SITE_URL` | Main site URL used by standalone app footer links |
+| `VITE_MAIN_SITE_NAME` | Main site name used by standalone app footer link text |
 
 If these values are missing, parts of the app may fail at runtime, and deploy/build analytics injection will not complete.
 
-> 💡 **NAS/Network Mount Users:** If symlinks aren't supported, use `npm install --no-bin-links`.
-> The npm scripts in this repo call package CLIs directly (no `.bin` symlink dependency), so the normal commands still work: `npm run dev`, `npm run build`, `npm run deploy`.
 
 ### Commands
 
@@ -176,7 +175,6 @@ For this repo:
 - `predeploy` sets `DEPLOY_VERSION`, runs `build`, copies `apps/` and `logs/` into `dist/`, then injects `VITE_GA_MEASUREMENT_ID` into built HTML files.
 - `build` itself runs `generate:apps` first, then `vite build`.
 - There is currently no `postdeploy` script defined.
-- For NAS/no-symlink environments, install with `npm install --no-bin-links` and use the same npm lifecycle commands.
 
 Running `npm run predeploy` by itself performs:
 
@@ -356,7 +354,7 @@ Core stack used in this project:
 
 **MIT License** — Feel free to use, modify, and distribute.
 
-Made with 🤖 by AI, curated with ❤️ by humans.
+Made with 🤖 by AI, coaxed with ❤️ by humans.
 
 ---
 
