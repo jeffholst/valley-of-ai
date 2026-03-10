@@ -1,11 +1,18 @@
 import { useParams, Link } from 'react-router-dom'
 import appsData from '../data/apps.json'
 import { useVotes } from '../hooks/useVotes'
+import { useEffect } from 'react'
 
 export default function AppDetailPage() {
   const params = useParams()
   // Wildcard routes use '*' to capture the remaining path
   const id = params['*']
+
+  // Scroll to top when navigating to a new app detail page
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [id])
+  
   const app = appsData.find((a) => a.id === id)
   const { voteCount, hasVoted, isLoading, isVoting, vote } = useVotes(id)
 
