@@ -103,7 +103,7 @@ export default function AppDetailPage() {
           <a
             href={app.appPath}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener"
             className="btn-primary"
           >
             Open App
