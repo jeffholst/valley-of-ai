@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Habit Streak Garden - __MAIN_SITE_NAME__</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B1%3C/text%3E%3C/svg%3E">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '__GA_MEASUREMENT_ID__');
+  </script>
+
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+  <script src="/apps/shared/app-shell.js" defer></script>
+
+  <style>
+    :root {
+      --bg: #0b1324;
+      --surface: #17233b;
+      --surface-soft: #203251;
+      --text: #e6f4ea;
+      --text-dim: #97b3a1;
+      --accent: #4ade80;
+      --accent-2: #22c55e;
+      --danger: #fb7185;
+      --ring-bg: #2a3b5f;
+      --shadow: rgba(0, 0, 0, 0.35);
+    }
+
+    [data-theme="light"] {
+      --bg: #f3faf6;
+      --surface: #ffffff;
+      --surface-soft: #ecf8ef;
+      --text: #133022;
+      --text-dim: #567162;
+      --accent: #16a34a;
+      --accent-2: #15803d;
+      --danger: #e11d48;
+      --ring-bg: #cde8d5;
+      --shadow: rgba(22, 58, 37, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(circle at 20% 0%, #1c2b47 0%, var(--bg) 45%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .app {
+      width: min(960px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .panel {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 1rem;
+      box-shadow: 0 12px 30px var(--shadow);
+    }
+
+    h1 { margin: 0 0 0.4rem; font-size: clamp(1.5rem, 3vw, 2.2rem); }
+    .subtitle { margin: 0; color: var(--text-dim); }
+
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
+    .stat { background: var(--surface-soft); border-radius: 14px; padding: 0.75rem; text-align: center; }
+    .stat span { display: block; color: var(--text-dim); font-size: 0.78rem; }
+    .stat strong { font-size: 1.35rem; }
+
+    .habit-row { display: grid; grid-template-columns: 1fr auto auto; gap: 0.6rem; align-items: center; margin-top: 0.8rem; }
+    input, button {
+      border: none;
+      border-radius: 12px;
+      padding: 0.72rem 0.9rem;
+      font: inherit;
+    }
+    input { background: var(--surface-soft); color: var(--text); }
+    button {
+      background: var(--accent);
+      color: #08230f;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .15s ease, filter .15s ease;
+    }
+    button:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    button:focus-visible, input:focus-visible, .toggle:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent), #fff 30%);
+      outline-offset: 2px;
+    }
+    .danger { background: var(--danger); color: #fff; }
+
+    .habit-list { display: grid; gap: 0.6rem; margin-top: 0.9rem; }
+    .habit {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 0.75rem;
+      align-items: center;
+      background: var(--surface-soft);
+      border-radius: 14px;
+      padding: 0.6rem 0.75rem;
+    }
+    .toggle {
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      border: 2px solid var(--ring-bg);
+      background: transparent;
+      cursor: pointer;
+      display: inline-grid;
+      place-items: center;
+      color: var(--accent);
+      font-weight: 900;
+      padding: 0;
+    }
+    .toggle.done { border-color: var(--accent); background: color-mix(in srgb, var(--accent), transparent 75%); }
+    .habit small { color: var(--text-dim); display: block; }
+
+    .garden {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(32px, 1fr));
+      gap: 8px;
+      margin-top: 0.8rem;
+    }
+    .plot {
+      aspect-ratio: 1;
+      border-radius: 10px;
+      background: var(--ring-bg);
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s ease;
+    }
+    .plot.bloom { background: color-mix(in srgb, var(--accent), var(--ring-bg) 50%); transform: translateY(-2px); }
+    .plot::before {
+      content: "🌱";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      opacity: .42;
+    }
+    .plot.bloom::before { content: "🌸"; opacity: 1; }
+
+    @media (max-width: 700px) {
+      .stats { grid-template-columns: 1fr; }
+      .habit-row { grid-template-columns: 1fr; }
+      .habit { grid-template-columns: auto 1fr; }
+      .habit .danger { grid-column: span 2; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="panel">
+      <h1>🌱 Habit Streak Garden</h1>
+      <p class="subtitle">Complete habits daily to make your weekly garden bloom.</p>
+      <div class="stats" aria-live="polite">
+        <div class="stat"><span>Longest Streak</span><strong id="bestStreak">0</strong></div>
+        <div class="stat"><span>Today Completed</span><strong id="todayDone">0</strong></div>
+        <div class="stat"><span>Total Habits</span><strong id="habitCount">0</strong></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Add Habit</h2>
+      <div class="habit-row">
+        <input id="habitInput" type="text" maxlength="40" placeholder="e.g. 20-min walk" aria-label="Habit name">
+        <button id="addHabitBtn">Plant Habit</button>
+        <button id="resetBtn" class="danger">Reset Day</button>
+      </div>
+      <div id="habitList" class="habit-list" role="list"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Weekly Garden</h2>
+      <p class="subtitle">Each bloom means all habits were done that day.</p>
+      <div class="garden" id="garden" aria-label="Weekly habit garden"></div>
+    </section>
+  </main>
+
+  <script>
+    const KEY = 'voa-habit-streak-garden-v1';
+    const DAY_KEY = new Date().toISOString().slice(0, 10);
+
+    const defaultState = {
+      habits: [],
+      daily: {},
+      bestStreak: 0,
+      lastOpenedDay: DAY_KEY
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(KEY);
+        if (!raw) return structuredClone(defaultState);
+        const parsed = JSON.parse(raw);
+        return {
+          ...structuredClone(defaultState),
+          ...parsed,
+          habits: Array.isArray(parsed.habits) ? parsed.habits : [],
+          daily: parsed.daily && typeof parsed.daily === 'object' ? parsed.daily : {}
+        };
+      } catch {
+        return structuredClone(defaultState);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(KEY, JSON.stringify(state));
+    }
+
+    function ensureDay() {
+      if (!state.daily[DAY_KEY]) state.daily[DAY_KEY] = {};
+      if (state.lastOpenedDay !== DAY_KEY) state.lastOpenedDay = DAY_KEY;
+    }
+
+    function streakForHabit(id) {
+      let streak = 0;
+      for (let i = 0; i < 365; i += 1) {
+        const day = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10);
+        if (state.daily[day]?.[id]) streak += 1;
+        else break;
+      }
+      return streak;
+    }
+
+    function render() {
+      ensureDay();
+      habitList.innerHTML = '';
+      let completed = 0;
+
+      state.habits.forEach((habit) => {
+        const isDone = Boolean(state.daily[DAY_KEY][habit.id]);
+        if (isDone) completed += 1;
+
+        const row = document.createElement('article');
+        row.className = 'habit';
+        row.setAttribute('role', 'listitem');
+
+        const toggle = document.createElement('button');
+        toggle.className = `toggle ${isDone ? 'done' : ''}`;
+        toggle.setAttribute('aria-label', `${isDone ? 'Mark incomplete' : 'Mark complete'} ${habit.name}`);
+        toggle.textContent = isDone ? '✓' : '';
+        toggle.addEventListener('click', () => {
+          state.daily[DAY_KEY][habit.id] = !isDone;
+          state.bestStreak = Math.max(state.bestStreak, streakForHabit(habit.id));
+          saveState();
+          render();
+        });
+
+        const label = document.createElement('div');
+        label.innerHTML = `<strong>${habit.name}</strong><small>${streakForHabit(habit.id)} day streak</small>`;
+
+        const del = document.createElement('button');
+        del.className = 'danger';
+        del.textContent = 'Remove';
+        del.addEventListener('click', () => {
+          state.habits = state.habits.filter((h) => h.id !== habit.id);
+          Object.keys(state.daily).forEach((d) => delete state.daily[d][habit.id]);
+          saveState();
+          render();
+        });
+
+        row.append(toggle, label, del);
+        habitList.appendChild(row);
+      });
+
+      bestStreak.textContent = state.bestStreak;
+      todayDone.textContent = completed;
+      habitCount.textContent = state.habits.length;
+
+      renderGarden();
+    }
+
+    function renderGarden() {
+      garden.innerHTML = '';
+      for (let i = 6; i >= 0; i -= 1) {
+        const day = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10);
+        const doneMap = state.daily[day] || {};
+        const allDone = state.habits.length > 0 && state.habits.every((h) => doneMap[h.id]);
+        const plot = document.createElement('div');
+        plot.className = `plot ${allDone ? 'bloom' : ''}`;
+        plot.title = `${day}: ${allDone ? 'Bloomed' : 'Growing'}`;
+        garden.appendChild(plot);
+      }
+    }
+
+    const state = loadState();
+    ensureDay();
+
+    addHabitBtn.addEventListener('click', () => {
+      const name = habitInput.value.trim();
+      if (!name) return;
+      const id = crypto.randomUUID();
+      state.habits.push({ id, name });
+      state.daily[DAY_KEY][id] = false;
+      habitInput.value = '';
+      saveState();
+      render();
+      habitInput.focus();
+    });
+
+    habitInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        addHabitBtn.click();
+      }
+    });
+
+    resetBtn.addEventListener('click', () => {
+      if (!confirm('Reset completion status for today?')) return;
+      state.daily[DAY_KEY] = {};
+      saveState();
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
