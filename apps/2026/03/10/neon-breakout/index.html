@@ -1,0 +1,34 @@
+<!doctype html><html lang='en'><head><meta charset='UTF-8'/><meta name='viewport' content='width=device-width,initial-scale=1'/><title>Neon Breakout</title><style>
+:root{--bg:#0b1220;--bg2:#1a2a4a;--surface:#101932;--text:#edf3ff;--muted:#9eb1da;--paddle:#22d3ee;--ball:#fef08a;--brick:#a78bfa}
+@media(prefers-color-scheme:light){:root{--bg:#eef4ff;--bg2:#dbeafe;--surface:#fff;--text:#1f2f52;--muted:#60739a;--paddle:#0891b2;--ball:#b45309;--brick:#7c3aed}}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px;font-family:Inter,system-ui;background:radial-gradient(1000px 700px at 20% 20%,var(--bg2),var(--bg));color:var(--text)}
+.card{width:min(860px,100%);background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);border-radius:18px;padding:14px;box-shadow:0 18px 45px #0004}
+h1{margin:0 0 4px}.sub{margin:0 0 10px;color:var(--muted)}.top{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.pill{font-size:.86rem;padding:6px 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);color:var(--muted)}
+canvas{width:100%;max-width:760px;aspect-ratio:4/3;display:block;margin:auto;background:#050a14;border-radius:12px;border:1px solid color-mix(in srgb,var(--muted) 26%,transparent)}
+.controls{text-align:center;margin-top:10px}button{border:none;border-radius:999px;padding:9px 13px;font:inherit;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(90deg,#7c3aed,#22d3ee)}
+.k{text-align:center;color:var(--muted);font-size:.9rem;margin-top:8px}
+</style></head><body><main class='card'><h1>🧱 Neon Breakout</h1><p class='sub'>Break all bricks, keep the ball alive, chase high score.</p>
+<div class='top'><span class='pill' id='score'>Score: 0</span><span class='pill' id='lives'>Lives: 3</span><span class='pill' id='state'>State: Ready</span></div>
+<canvas id='g' width='760' height='570'></canvas><div class='controls'><button id='start'>Start / Restart</button></div><p class='k'>Controls: ← → or A/D</p></main>
+<script>
+const c=document.getElementById('g'),x=c.getContext('2d');
+const S={run:false,score:0,lives:3,p:{x:380,y:540,w:110,h:14,s:8},b:{x:380,y:510,r:8,vx:3.4,vy:-3.8},br:[],keys:{}};
+const ui=(id,v)=>document.getElementById(id).textContent=v;function status(s){ui('state',`State: ${s}`)}
+function mk(){S.br=[];const rows=6,cols=10,w=64,h=22,pad=10,ox=22,oy=60;for(let r=0;r<rows;r++)for(let col=0;col<cols;col++)S.br.push({x:ox+col*(w+pad),y:oy+r*(h+pad),w,h,on:true,row:r});}
+function reset(){S.score=0;S.lives=3;S.p.x=380;S.b={x:380,y:510,r:8,vx:3.4,vy:-3.8};mk();ui('score','Score: 0');ui('lives','Lives: 3');status('Ready');draw();}
+function launch(){if(!S.run){S.run=true;status('Running');}}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function upd(){if(!S.run)return; if(S.keys.ArrowLeft||S.keys.a)S.p.x-=S.p.s; if(S.keys.ArrowRight||S.keys.d)S.p.x+=S.p.s; S.p.x=clamp(S.p.x,S.p.w/2,c.width-S.p.w/2);
+const b=S.b;b.x+=b.vx;b.y+=b.vy; if(b.x-b.r<0||b.x+b.r>c.width)b.vx*=-1; if(b.y-b.r<0)b.vy*=-1;
+const p=S.p; if(b.y+b.r>=p.y-p.h/2&&b.y+b.r<=p.y+p.h/2&&b.x>=p.x-p.w/2&&b.x<=p.x+p.w/2&&b.vy>0){const off=(b.x-p.x)/(p.w/2);b.vx=off*5.2;b.vy=-Math.abs(b.vy);} 
+for(const br of S.br){if(!br.on)continue;if(b.x+b.r>br.x&&b.x-b.r<br.x+br.w&&b.y+b.r>br.y&&b.y-b.r<br.y+br.h){br.on=false;S.score+=10+(5-br.row);ui('score',`Score: ${S.score}`);b.vy*=-1;break;}}
+if(S.br.every(z=>!z.on)){S.run=false;status('You Win!');}
+if(b.y-b.r>c.height){S.lives--;ui('lives',`Lives: ${S.lives}`);if(S.lives<=0){S.run=false;status('Game Over');}else{S.b={x:S.p.x,y:510,r:8,vx:3.2*(Math.random()<.5?-1:1),vy:-3.8};status('Press Start');S.run=false;}}
+}
+function draw(){x.clearRect(0,0,c.width,c.height);x.fillStyle='#0a0f1f';for(let i=0;i<120;i++)x.fillRect((i*61)%c.width,(i*37)%c.height,1,1);
+for(const br of S.br){if(!br.on)continue;x.fillStyle=`hsl(${260+br.row*18} 85% 65%)`;x.fillRect(br.x,br.y,br.w,br.h);} 
+const p=S.p;x.fillStyle='var(--paddle)';x.fillRect(p.x-p.w/2,p.y-p.h/2,p.w,p.h); const b=S.b;x.fillStyle='var(--ball)';x.beginPath();x.arc(b.x,b.y,b.r,0,Math.PI*2);x.fill();}
+function loop(){upd();draw();requestAnimationFrame(loop)}
+document.addEventListener('keydown',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;S.keys[k]=true});document.addEventListener('keyup',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;S.keys[k]=false});
+document.getElementById('start').onclick=()=>{if(!S.run && (S.lives<=0 || S.br.every(z=>!z.on)))reset();launch();};reset();loop();
+</script></body></html>
