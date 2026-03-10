@@ -77,12 +77,63 @@ function resolveMainSiteName() {
   return DEFAULT_MAIN_SITE_NAME;
 }
 
-function replaceInFile(filePath, gaId, mainSiteUrl, mainSiteName) {
+function resolveSocialXUrl() {
+  if (process.env.VITE_SOCIAL_X_URL) return process.env.VITE_SOCIAL_X_URL;
+
+  const envPaths = [
+    path.join(root, '.env.local'),
+    path.join(root, '.env'),
+  ];
+
+  for (const p of envPaths) {
+    const vals = loadEnvLikeFile(p);
+    if (vals.VITE_SOCIAL_X_URL) return vals.VITE_SOCIAL_X_URL;
+  }
+
+  return '';
+}
+
+function resolveSocialFacebookUrl() {
+  if (process.env.VITE_SOCIAL_FACEBOOK_URL) return process.env.VITE_SOCIAL_FACEBOOK_URL;
+
+  const envPaths = [
+    path.join(root, '.env.local'),
+    path.join(root, '.env'),
+  ];
+
+  for (const p of envPaths) {
+    const vals = loadEnvLikeFile(p);
+    if (vals.VITE_SOCIAL_FACEBOOK_URL) return vals.VITE_SOCIAL_FACEBOOK_URL;
+  }
+
+  return '';
+}
+
+function resolveSocialInstagramUrl() {
+  if (process.env.VITE_SOCIAL_INSTAGRAM_URL) return process.env.VITE_SOCIAL_INSTAGRAM_URL;
+
+  const envPaths = [
+    path.join(root, '.env.local'),
+    path.join(root, '.env'),
+  ];
+
+  for (const p of envPaths) {
+    const vals = loadEnvLikeFile(p);
+    if (vals.VITE_SOCIAL_INSTAGRAM_URL) return vals.VITE_SOCIAL_INSTAGRAM_URL;
+  }
+
+  return '';
+}
+
+function replaceInFile(filePath, gaId, mainSiteUrl, mainSiteName, socialXUrl, socialFacebookUrl, socialInstagramUrl) {
   let content = fs.readFileSync(filePath, 'utf8');
   const next = content
     .replaceAll('__GA_MEASUREMENT_ID__', gaId)
     .replaceAll('__MAIN_SITE_URL__', mainSiteUrl)
     .replaceAll('__MAIN_SITE_NAME__', mainSiteName)
+    .replaceAll('__SOCIAL_X_URL__', socialXUrl)
+    .replaceAll('__SOCIAL_FACEBOOK_URL__', socialFacebookUrl)
+    .replaceAll('__SOCIAL_INSTAGRAM_URL__', socialInstagramUrl)
     .replace(/googletagmanager\.com\/gtag\/js\?id=G-[A-Z0-9]+/g, `googletagmanager.com/gtag/js?id=${gaId}`)
     .replace(/gtag\('config', 'G-[A-Z0-9]+'\)/g, `gtag('config', '${gaId}')`);
 
@@ -111,6 +162,9 @@ function main() {
   const gaId = resolveGaMeasurementId();
   const mainSiteUrl = resolveMainSiteUrl();
   const mainSiteName = resolveMainSiteName();
+  const socialXUrl = resolveSocialXUrl();
+  const socialFacebookUrl = resolveSocialFacebookUrl();
+  const socialInstagramUrl = resolveSocialInstagramUrl();
   if (!gaId) {
     console.error('ERROR: Missing VITE_GA_MEASUREMENT_ID (.env/.env.local or environment variable).');
     process.exit(1);
@@ -119,15 +173,16 @@ function main() {
   const distDir = path.join(root, 'dist');
   const targetFiles = [
     path.join(distDir, 'index.html'),
+    path.join(distDir, 'apps/shared/shell-config.json'),
     ...walk(path.join(distDir, 'apps')).filter((p) => p.endsWith('index.html')),
   ].filter((p) => fs.existsSync(p));
 
   let changed = 0;
   for (const filePath of targetFiles) {
-    changed += replaceInFile(filePath, gaId, mainSiteUrl, mainSiteName);
+    changed += replaceInFile(filePath, gaId, mainSiteUrl, mainSiteName, socialXUrl, socialFacebookUrl, socialInstagramUrl);
   }
 
-  console.log(`Injected GA ID, main site URL, and main site name into ${changed} file(s).`);
+  console.log(`Injected GA ID, main site URL/name, and social URLs into ${changed} file(s).`);
 }
 
 main();

@@ -147,6 +147,14 @@ Variables currently used:
 | `VITE_GA_MEASUREMENT_ID` | Google Analytics measurement ID (injected into HTML during dev/build/deploy) |
 | `VITE_MAIN_SITE_URL` | Main site URL used by standalone app footer links |
 | `VITE_MAIN_SITE_NAME` | Main site name used by standalone app footer link text |
+| `VITE_SOCIAL_X_URL` | X profile URL used in main/footer social links |
+| `VITE_SOCIAL_FACEBOOK_URL` | Facebook profile/page URL used in main/footer social links |
+| `VITE_SOCIAL_INSTAGRAM_URL` | Instagram profile URL used in main/footer social links |
+
+Standalone app shell note:
+
+- Shared app header/footer settings are centralized in `apps/shared/shell-config.json`.
+- This file is env-injected in dev/deploy, so most shell/footer updates do not require touching every app HTML file.
 
 If these values are missing, parts of the app may fail at runtime, and deploy/build analytics injection will not complete.
 
@@ -172,7 +180,7 @@ npm has built-in lifecycle hooks:
 For this repo:
 
 - `npm run deploy` automatically runs `predeploy`, then runs `deploy`.
-- `predeploy` sets `DEPLOY_VERSION`, runs `build`, copies `apps/` and `logs/` into `dist/`, then injects `VITE_GA_MEASUREMENT_ID` into built HTML files.
+- `predeploy` sets `DEPLOY_VERSION`, runs `build`, copies `apps/` and `logs/` into `dist/`, then injects analytics/branding/social env placeholders into built HTML files and shared shell config.
 - `build` itself runs `generate:apps` first, then `vite build`.
 - There is currently no `postdeploy` script defined.
 
