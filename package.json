@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "node ./node_modules/vite/bin/vite.js",
-    "build": "npm run generate:apps && node ./node_modules/vite/bin/vite.js build",
+    "validate:apps": "node scripts/validate-apps.js",
+    "build": "npm run validate:apps && npm run generate:apps && node ./node_modules/vite/bin/vite.js build",
     "preview": "node ./node_modules/vite/bin/vite.js preview",
     "generate:apps": "node scripts/generate-apps.js",
     "deploy:version": "node scripts/deploy-version.js",
