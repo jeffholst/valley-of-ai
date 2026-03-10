@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://valleyofai.com/schemas/marketing.json",
+  "title": "Marketing Assets",
+  "type": "object",
+  "required": ["runId", "appId", "url", "posts"],
+  "properties": {
+    "runId": {
+      "type": "string",
+      "pattern": "^run-[0-9TzZ:-]+-[0-9a-fA-F]{6}$"
+    },
+    "appId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "utmTemplate": {
+      "type": "string",
+      "description": "Optional URL with UTM placeholders, e.g. ?utm_source={source}&utm_medium=social&utm_campaign=voa_app_launch"
+    },
+    "posts": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "x": { "type": "string" },
+        "linkedin": { "type": "string" },
+        "mastodon": { "type": "string" },
+        "bluesky": { "type": "string" },
+        "other": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "hashtags": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^#[A-Za-z0-9_]+$" },
+      "maxItems": 10,
+      "uniqueItems": true
+    },
+    "postingPlan": {
+      "type": "array",
+      "description": "Optional list of suggested posts over time.",
+      "items": {
+        "type": "object",
+        "required": ["channel", "timing", "purpose"],
+        "properties": {
+          "channel": {
+            "type": "string",
+            "enum": ["x", "linkedin", "mastodon", "bluesky", "other"]
+          },
+          "timing": {
+            "type": "string",
+            "description": "Human-readable timing like 'launch day', '+3 days', etc."
+          },
+          "purpose": { "type": "string" },
+          "postRef": {
+            "type": "string",
+            "description": "Optional pointer to a key in `posts`."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

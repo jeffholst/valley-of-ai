@@ -358,6 +358,7 @@ Every app MUST include a valid `meta.json`:
 4. Have smooth animations and transitions
 5. Handle edge cases gracefully
 6. Be visually polished with good typography and spacing
+7. Set the HTML `<title>` tag to the app name
 
 **HTML/CSS/JS Guidelines:**
 - Use modern CSS (Grid, Flexbox, custom properties)
@@ -365,6 +366,7 @@ Every app MUST include a valid `meta.json`:
 - Keep code clean and well-commented
 - Use semantic HTML elements
 - Include proper meta tags for viewport and charset
+- Ensure `<title>` is the app name (for example `<title>Snake Game</title>`)
 - Add a favicon or inline SVG icon
 
 ### Game Runtime Validation (Mandatory)
@@ -409,7 +411,7 @@ If any check fails, MUST NOT proceed to commit, PR, or deploy.
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>App Name - Valley of AI</title>
+  <title>App Name</title>
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
