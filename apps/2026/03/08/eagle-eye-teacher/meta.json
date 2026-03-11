@@ -14,7 +14,7 @@
     "whack-a-mole"
   ],
   "homepagePath": "index.html",
-  "inputMode": "desktop",
+  "inputMode": "responsive",
   "generation": {
     "agentName": "github-copilot",
     "llmModel": "claude-opus-4-6",
