@@ -73,4 +73,71 @@
   .label {
     @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1;
   }
+
+  @keyframes pterodactyl-fly-right {
+    0% { transform: translate3d(-18vw, 0, 0); }
+    40% { transform: translate3d(40vw, -10px, 0); }
+    100% { transform: translate3d(120vw, 0, 0); }
+  }
+
+  @keyframes pterodactyl-fly-left {
+    0% { transform: translate3d(120vw, 0, 0); }
+    40% { transform: translate3d(45vw, -10px, 0); }
+    100% { transform: translate3d(-22vw, 0, 0); }
+  }
+
+  @keyframes pterodactyl-kill {
+    0% { opacity: 1; transform: scale(1) rotate(0deg); }
+    35% { opacity: 1; transform: scale(1.2) rotate(18deg); }
+    100% { opacity: 0; transform: scale(0.08) rotate(250deg); }
+  }
+
+  .pterodactyl-sky {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 30;
+  }
+
+  .pterodactyl-flyer {
+    position: absolute;
+    top: var(--ptero-top);
+    left: 0;
+    width: var(--ptero-size);
+    pointer-events: auto;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-drag: none;
+    will-change: transform, opacity;
+    animation-duration: var(--ptero-speed);
+    animation-timing-function: linear;
+    animation-delay: var(--ptero-delay);
+    animation-iteration-count: infinite;
+  }
+
+  .pterodactyl-right {
+    animation-name: pterodactyl-fly-right;
+  }
+
+  .pterodactyl-left {
+    animation-name: pterodactyl-fly-left;
+  }
+
+  .pterodactyl-flyer.is-dead {
+    animation-play-state: paused;
+    pointer-events: none;
+  }
+
+  .pterodactyl-sprite {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    transform-origin: center;
+  }
+
+  .pterodactyl-sprite.is-dead {
+    animation: pterodactyl-kill 0.65s ease-out forwards;
+  }
 }

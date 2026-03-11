@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import AppCard from '../components/AppCard'
 import appsData from '../data/apps.json'
@@ -12,6 +12,34 @@ const SORT_OPTIONS = [
 
 const PER_PAGE_OPTIONS = [10, 25, 100]
 
+const PTERODACTYL_CONFIG = {
+  total: 12,
+  minSizePx: 56,
+  maxSizePx: 120,
+  minSpeedSeconds: 14,
+  maxSpeedSeconds: 34,
+  killAnimationMs: 650,
+}
+
+const randomInRange = (min, max) => Math.random() * (max - min) + min
+
+const createPterodactyl = (id) => {
+  const fliesLeft = Math.random() < 0.5
+
+  return {
+    id,
+    direction: fliesLeft ? 'left' : 'right',
+    topVh: randomInRange(8, 78),
+    sizePx: randomInRange(PTERODACTYL_CONFIG.minSizePx, PTERODACTYL_CONFIG.maxSizePx),
+    speedSeconds: randomInRange(PTERODACTYL_CONFIG.minSpeedSeconds, PTERODACTYL_CONFIG.maxSpeedSeconds),
+    delaySeconds: randomInRange(-45, 0),
+    dead: false,
+  }
+}
+
+const createInitialPterodactyls = () =>
+  Array.from({ length: PTERODACTYL_CONFIG.total }, (_, index) => createPterodactyl(`ptero-${index + 1}`))
+
 // Extract unique filter options from data
 const categories = [...new Set(appsData.map(app => app.category).filter(Boolean))].sort()
 const agents = [...new Set(appsData.map(app => app.generation?.agentName).filter(Boolean))].sort()
@@ -23,6 +51,8 @@ export default function HomePage() {
   const [sortBy, setSortBy] = useState('newest')
   const [currentPage, setCurrentPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
+  const [pterodactyls, setPterodactyls] = useState(() => createInitialPterodactyls())
+  const respawnTimersRef = useRef(new Map())
   
   // Fetch vote counts from Supabase
   const { voteCounts, isLoading: votesLoading } = useAllVoteCounts(allAppIds)
@@ -111,13 +141,75 @@ export default function HomePage() {
     setCurrentPage(1)
   }
 
+  const handleKillPterodactyl = (pterodactylId) => {
+    setPterodactyls(prev => {
+      let shouldScheduleRespawn = false
+
+      const next = prev.map(pterodactyl => {
+        if (pterodactyl.id !== pterodactylId || pterodactyl.dead) return pterodactyl
+        shouldScheduleRespawn = true
+        return { ...pterodactyl, dead: true }
+      })
+
+      if (shouldScheduleRespawn && !respawnTimersRef.current.has(pterodactylId)) {
+        const timerId = window.setTimeout(() => {
+          respawnTimersRef.current.delete(pterodactylId)
+          setPterodactyls(current =>
+            current.map(pterodactyl =>
+              pterodactyl.id === pterodactylId ? createPterodactyl(pterodactylId) : pterodactyl,
+            ),
+          )
+        }, PTERODACTYL_CONFIG.killAnimationMs)
+
+        respawnTimersRef.current.set(pterodactylId, timerId)
+      }
+
+      return next
+    })
+  }
+
+  useEffect(() => {
+    return () => {
+      respawnTimersRef.current.forEach(timerId => window.clearTimeout(timerId))
+      respawnTimersRef.current.clear()
+    }
+  }, [])
+
   const goToPage = (page) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)))
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <>
+      <div className="pterodactyl-sky" aria-hidden="true">
+        {pterodactyls.map(pterodactyl => {
+          const sprite = pterodactyl.direction === 'left' ? '/pterodactyl-left.svg' : '/pterodactyl-right.svg'
+
+          return (
+            <div
+              key={pterodactyl.id}
+              onPointerDown={() => handleKillPterodactyl(pterodactyl.id)}
+              className={`pterodactyl-flyer pterodactyl-${pterodactyl.direction}${pterodactyl.dead ? ' is-dead' : ''}`}
+              style={{
+                '--ptero-top': `${pterodactyl.topVh}vh`,
+                '--ptero-size': `${pterodactyl.sizePx}px`,
+                '--ptero-speed': `${pterodactyl.speedSeconds}s`,
+                '--ptero-delay': `${pterodactyl.delaySeconds}s`,
+              }}
+            >
+              <img
+                src={sprite}
+                alt=""
+                draggable={false}
+                className={`pterodactyl-sprite${pterodactyl.dead ? ' is-dead' : ''}`}
+              />
+            </div>
+          )
+        })}
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero Section */}
       <div className="text-center mb-12">
         <p className="text-xl sm:text-2xl text-purple-400 font-medium mb-2">
@@ -387,6 +479,7 @@ export default function HomePage() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   )
 }
