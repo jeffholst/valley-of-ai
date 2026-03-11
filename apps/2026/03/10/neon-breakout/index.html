@@ -14,7 +14,7 @@
 	<meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
 	<script src="/apps/shared/app-shell.js" defer></script><style>
 :root{--bg:#0b1220;--bg2:#1a2a4a;--surface:#101932;--text:#edf3ff;--muted:#9eb1da;--paddle:#22d3ee;--ball:#fef08a;--brick:#a78bfa}
-@media(prefers-color-scheme:light){:root{--bg:#eef4ff;--bg2:#dbeafe;--surface:#fff;--text:#1f2f52;--muted:#60739a;--paddle:#0891b2;--ball:#b45309;--brick:#7c3aed}}
+[data-theme='light']{--bg:#eef4ff;--bg2:#dbeafe;--surface:#fff;--text:#1f2f52;--muted:#60739a;--paddle:#0891b2;--ball:#b45309;--brick:#7c3aed}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px;font-family:Inter,system-ui;background:radial-gradient(1000px 700px at 20% 20%,var(--bg2),var(--bg));color:var(--text)}
 .card{width:min(860px,100%);background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);border-radius:18px;padding:14px;box-shadow:0 18px 45px #0004}
 h1{margin:0 0 4px}.sub{margin:0 0 10px;color:var(--muted)}.top{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.pill{font-size:.86rem;padding:6px 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);color:var(--muted)}
@@ -35,6 +35,7 @@ const SPECIAL_LABEL={speedUp:'⚡',speedNormal:'🎯',multiball:'🟡',paddleSma
 const S={run:false,score:0,lives:3,p:{x:380,y:540,w:BASE_PADDLE_W,h:14,s:8},balls:[],br:[],keys:{}};
 
 const ui=(id,v)=>document.getElementById(id).textContent=v;
+const cssVar=(name,fallback='')=>getComputedStyle(document.documentElement).getPropertyValue(name).trim()||fallback;
 function status(s){ui('state',`State: ${s}`)}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
 function randDir(){return Math.random()<0.5?-1:1}
@@ -201,10 +202,10 @@ function draw(){
 	}
 
 	const p=S.p;
-	x.fillStyle='var(--paddle)';
+	x.fillStyle=cssVar('--paddle','#22d3ee');
 	x.fillRect(p.x-p.w/2,p.y-p.h/2,p.w,p.h);
 
-	x.fillStyle='var(--ball)';
+	x.fillStyle=cssVar('--ball','#fef08a');
 	for(const b of S.balls){
 		x.beginPath();
 		x.arc(b.x,b.y,b.r,0,Math.PI*2);
