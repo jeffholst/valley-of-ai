@@ -20,6 +20,39 @@
 h1{margin:0 0 4px}.sub{margin:0 0 10px;color:var(--muted)}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}button,input{font:inherit}
 button{border:none;border-radius:999px;padding:8px 12px;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(90deg,#7c3aed,var(--primary))}
 canvas{width:min(640px,100%);aspect-ratio:1/1;display:block;background:#fff;border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);image-rendering:pixelated;border-radius:12px}
+
+
+    /* Responsive/touch accessibility pass */
+    @media (max-width: 1024px) {
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot,
+      input[type="button"],
+      input[type="submit"] {
+        min-height: 44px;
+      }
+
+      .theme-toggle {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        touch-action: manipulation;
+        pointer-events: auto;
+        z-index: 999;
+      }
+
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot {
+        touch-action: manipulation;
+      }
+    }
+
 </style></head><body><main class='card'><h1>🎨 Pixel Painter</h1><p class='sub'>Draw pixel art with color picker, erase, fill, and PNG export.</p>
 <div class='row'><label>Color <input id='color' type='color' value='#22d3ee'></label><label>Grid <input id='size' type='number' min='8' max='64' value='24'></label><button id='resize'>Resize</button><button id='erase'>Eraser</button><button id='fill'>Fill</button><button id='clear'>Clear</button><button id='save'>Save PNG</button></div>
 <canvas id='cv' width='480' height='480'></canvas></main>
