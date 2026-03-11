@@ -18,14 +18,15 @@
 *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px;font-family:Inter,system-ui;background:radial-gradient(1000px 700px at 20% 20%,var(--bg2),var(--bg));color:var(--text)}
 .card{width:min(860px,100%);background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);border-radius:18px;padding:14px;box-shadow:0 18px 45px #0004}
 h1{margin:0 0 4px}.sub{margin:0 0 10px;color:var(--muted)}.top{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.pill{font-size:.86rem;padding:6px 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);color:var(--muted)}
-canvas{width:100%;max-width:760px;aspect-ratio:4/3;display:block;margin:auto;background:#050a14;border-radius:12px;border:1px solid color-mix(in srgb,var(--muted) 26%,transparent)}
+canvas{width:100%;max-width:760px;aspect-ratio:4/3;display:block;margin:auto;background:#050a14;border-radius:12px;border:1px solid color-mix(in srgb,var(--muted) 26%,transparent);touch-action:none}
 .controls{text-align:center;margin-top:10px}button{border:none;border-radius:999px;padding:9px 13px;font:inherit;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(90deg,#7c3aed,#22d3ee)}
 .k{text-align:center;color:var(--muted);font-size:.9rem;margin-top:8px}
 .legend{margin-top:10px;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,var(--surface) 84%,transparent);border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);font-size:.83rem;color:var(--muted)}
 .legend strong{color:var(--text);font-size:.82rem;display:block;margin-bottom:4px}
+@media(max-width:640px){body{padding:10px}.card{padding:10px;border-radius:14px}.top{gap:6px}.pill{font-size:.8rem;padding:5px 8px}h1{font-size:1.2rem}.sub{font-size:.92rem}.k{font-size:.82rem}}
 </style></head><body><main class='card'><h1>🧱 Neon Breakout</h1><p class='sub'>Break all bricks, keep the ball alive, chase high score.</p>
 <div class='top'><span class='pill' id='score'>Score: 0</span><span class='pill' id='lives'>Lives: 3</span><span class='pill' id='state'>State: Ready</span></div>
-<canvas id='g' width='760' height='570'></canvas><div class='controls'><button id='start'>Start / Restart</button></div><p class='k'>Controls: ← → or A/D</p><div class='legend'><strong>Powerup Key</strong>⚡ speed x2 • 🎯 speed normal • 🟡 multiball • 🤏 smaller paddle • 📏 normal paddle</div></main>
+<canvas id='g' width='760' height='570'></canvas><div class='controls'><button id='start'>Start / Restart</button></div><p class='k'>Controls: ← → or A/D • Mouse move • Touch drag/swipe</p><div class='legend'><strong>Powerup Key</strong>⚡ speed x2 • 🎯 speed normal • 🟡 multiball • 🤏 smaller paddle • 📏 normal paddle</div></main>
 <script>
 const c=document.getElementById('g'),x=c.getContext('2d');
 const BASE_PADDLE_W=110,SMALL_PADDLE_W=72,BASE_SPEED=5.1;
@@ -171,6 +172,13 @@ function upd(){
 	}
 }
 
+
+function setPaddleFromClientX(clientX){
+	const rect=c.getBoundingClientRect();
+	const xPos=((clientX-rect.left)/rect.width)*c.width;
+	S.p.x=clamp(xPos,S.p.w/2,c.width-S.p.w/2);
+}
+let touchDragging=false;
 function draw(){
 	x.clearRect(0,0,c.width,c.height);
 	x.fillStyle='#0a0f1f';
@@ -207,6 +215,12 @@ function draw(){
 function loop(){upd();draw();requestAnimationFrame(loop)}
 document.addEventListener('keydown',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;S.keys[k]=true});
 document.addEventListener('keyup',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;S.keys[k]=false});
+
+c.addEventListener('mousemove',e=>{if(e.pointerType==='touch')return;setPaddleFromClientX(e.clientX);});
+c.addEventListener('pointerdown',e=>{if(e.pointerType==='touch'){touchDragging=true;setPaddleFromClientX(e.clientX);if(!S.run)launch();e.preventDefault();}});
+c.addEventListener('pointermove',e=>{if(e.pointerType==='touch'&&touchDragging){setPaddleFromClientX(e.clientX);e.preventDefault();}});
+c.addEventListener('pointerup',e=>{if(e.pointerType==='touch')touchDragging=false;});
+c.addEventListener('pointercancel',e=>{if(e.pointerType==='touch')touchDragging=false;});
 document.getElementById('start').onclick=()=>{if(!S.run && (S.lives<=0 || S.br.every(z=>!z.on)))reset();launch();};
 reset();loop();
 </script></body></html>
