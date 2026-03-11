@@ -14,7 +14,7 @@
     "keyboard-controls"
   ],
   "homepagePath": "index.html",
-  "inputMode": "desktop",
+  "inputMode": "responsive",
   "generation": {
     "agentName": "openclaw-dev-agent",
     "llmModel": "gpt-5.1",
