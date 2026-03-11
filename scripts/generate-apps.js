@@ -86,6 +86,7 @@ function transformMeta(meta, filePath, dateInfo) {
     month: dateInfo.month,
     day: dateInfo.day,
     category: meta.category,
+    inputMode: meta.inputMode || null,
     status: meta.status || 'active',
     tags: meta.tags || [],
     route: `/apps/${uniqueId}`,
