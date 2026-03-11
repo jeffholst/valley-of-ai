@@ -16,6 +16,7 @@ const PER_PAGE_OPTIONS = [10, 25, 100]
 const categories = [...new Set(appsData.map(app => app.category).filter(Boolean))].sort()
 const agents = [...new Set(appsData.map(app => app.generation?.agentName).filter(Boolean))].sort()
 const models = [...new Set(appsData.map(app => app.generation?.llmModel).filter(Boolean))].sort()
+const inputModes = [...new Set(appsData.map(app => app.inputMode).filter(Boolean))].sort()
 const allAppIds = appsData.map(app => app.id)
 
 export default function HomePage() {
@@ -31,9 +32,10 @@ export default function HomePage() {
   const [categoryFilter, setCategoryFilter] = useState('')
   const [agentFilter, setAgentFilter] = useState('')
   const [modelFilter, setModelFilter] = useState('')
+  const [inputModeFilter, setInputModeFilter] = useState('')
   const [showFilters, setShowFilters] = useState(false)
 
-  const activeFilterCount = [categoryFilter, agentFilter, modelFilter, searchQuery].filter(Boolean).length
+  const activeFilterCount = [categoryFilter, agentFilter, modelFilter, inputModeFilter, searchQuery].filter(Boolean).length
 
   const filteredApps = useMemo(() => {
     return appsData.filter(app => {
@@ -55,10 +57,13 @@ export default function HomePage() {
       
       // Model filter
       if (modelFilter && app.generation?.llmModel !== modelFilter) return false
+
+      // Input mode filter
+      if (inputModeFilter && app.inputMode !== inputModeFilter) return false
       
       return true
     })
-  }, [searchQuery, categoryFilter, agentFilter, modelFilter])
+  }, [searchQuery, categoryFilter, agentFilter, modelFilter, inputModeFilter])
 
   const sortedApps = useMemo(() => {
     const apps = [...filteredApps]
@@ -87,6 +92,7 @@ export default function HomePage() {
     setCategoryFilter('')
     setAgentFilter('')
     setModelFilter('')
+    setInputModeFilter('')
     setCurrentPage(1)
   }
 
@@ -172,7 +178,7 @@ export default function HomePage() {
         {/* Filter Panel */}
         {showFilters && (
           <div className="card p-4 mb-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
               <div>
                 <label htmlFor="categoryFilter" className="label">Category</label>
                 <select
@@ -214,6 +220,21 @@ export default function HomePage() {
                   <option value="">All Models</option>
                   {models.map(model => (
                     <option key={model} value={model}>{model}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="inputModeFilter" className="label">Input Mode</label>
+                <select
+                  id="inputModeFilter"
+                  value={inputModeFilter}
+                  onChange={handleFilterChange(setInputModeFilter)}
+                  className="input"
+                >
+                  <option value="">All Input Modes</option>
+                  {inputModes.map(mode => (
+                    <option key={mode} value={mode}>{mode}</option>
                   ))}
                 </select>
               </div>
