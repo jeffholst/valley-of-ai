@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg)"/>
+  <rect x="40" y="30" width="490" height="390" rx="18" fill="#1e293b" stroke="#334155"/>
+  <polygon points="285,62 299,90 271,90" fill="#f87171"/>
+  <circle cx="285" cy="228" r="154" fill="none" stroke="#27364b" stroke-width="11"/>
+  <circle cx="285" cy="228" r="146" fill="none" stroke="#22d3ee" stroke-width="38" stroke-dasharray="114 804" transform="rotate(-90 285 228)"/>
+  <circle cx="285" cy="228" r="146" fill="none" stroke="#a78bfa" stroke-width="38" stroke-dasharray="114 804" stroke-dashoffset="-114" transform="rotate(-90 285 228)"/>
+  <circle cx="285" cy="228" r="146" fill="none" stroke="#34d399" stroke-width="38" stroke-dasharray="114 804" stroke-dashoffset="-228" transform="rotate(-90 285 228)"/>
+  <circle cx="285" cy="228" r="146" fill="none" stroke="#f59e0b" stroke-width="38" stroke-dasharray="114 804" stroke-dashoffset="-342" transform="rotate(-90 285 228)"/>
+  <circle cx="285" cy="228" r="48" fill="#1e293b" stroke="#27364b" stroke-width="6"/>
+  <text x="285" y="234" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#94a3b8">LUCKY</text>
+
+  <rect x="560" y="30" width="200" height="390" rx="18" fill="#1e293b" stroke="#334155"/>
+  <text x="580" y="68" font-family="system-ui, sans-serif" font-size="28" font-weight="700" fill="#e2e8f0">🎯 Wheel</text>
+  <text x="580" y="98" font-family="system-ui, sans-serif" font-size="14" fill="#94a3b8">Winner: Pizza</text>
+  <rect x="578" y="120" width="164" height="36" rx="10" fill="#27364b"/>
+  <text x="660" y="144" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" fill="#e2e8f0">Spin the wheel</text>
+  <rect x="578" y="170" width="164" height="104" rx="10" fill="#27364b"/>
+  <text x="590" y="196" font-family="system-ui, sans-serif" font-size="14" fill="#e2e8f0">Pizza | 3</text>
+  <text x="590" y="218" font-family="system-ui, sans-serif" font-size="14" fill="#e2e8f0">Tacos | 2</text>
+  <text x="590" y="240" font-family="system-ui, sans-serif" font-size="14" fill="#e2e8f0">Sushi | 1</text>
+  <text x="590" y="262" font-family="system-ui, sans-serif" font-size="14" fill="#e2e8f0">Burgers | 2</text>
+  <rect x="578" y="292" width="78" height="58" rx="10" fill="#27364b"/>
+  <rect x="664" y="292" width="78" height="58" rx="10" fill="#27364b"/>
+  <text x="617" y="316" text-anchor="middle" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#e2e8f0">18</text>
+  <text x="617" y="336" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#94a3b8">Spins</text>
+  <text x="703" y="316" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#e2e8f0">Pizza</text>
+  <text x="703" y="336" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#94a3b8">Top winner</text>
+</svg>
