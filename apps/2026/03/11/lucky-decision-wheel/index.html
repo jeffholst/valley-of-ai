@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lucky Decision Wheel - __MAIN_SITE_NAME__</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%AF%3C/text%3E%3C/svg%3E">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '__GA_MEASUREMENT_ID__');
+  </script>
+
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+  <script src="/apps/shared/app-shell.js" defer></script>
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-alt: #27364b;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #22d3ee;
+      --accent-2: #a78bfa;
+      --good: #34d399;
+      --danger: #f87171;
+      --ring: rgba(34, 211, 238, 0.35);
+    }
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-alt: #e2e8f0;
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #0284c7;
+      --accent-2: #7c3aed;
+      --good: #059669;
+      --danger: #dc2626;
+      --ring: rgba(2, 132, 199, 0.25);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif;
+      background: radial-gradient(circle at top, color-mix(in srgb, var(--accent) 14%, transparent), transparent 46%), var(--bg);
+      color: var(--text);
+    }
+    .app {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 1rem;
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid color-mix(in srgb, var(--muted) 30%, transparent);
+      border-radius: 16px;
+      padding: 1rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+    }
+    .wheel-wrap {
+      display: grid;
+      place-items: center;
+      gap: .75rem;
+    }
+    .pointer {
+      width: 0; height: 0;
+      border-left: 14px solid transparent;
+      border-right: 14px solid transparent;
+      border-top: 26px solid var(--danger);
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,.4));
+      margin-bottom: -8px;
+      z-index: 2;
+    }
+    .wheel {
+      width: min(72vw, 420px);
+      aspect-ratio: 1/1;
+      border-radius: 50%;
+      border: 10px solid var(--surface-alt);
+      box-shadow: 0 0 0 8px var(--ring), inset 0 8px 18px rgba(0,0,0,.25);
+      transition: transform 4.2s cubic-bezier(.16,.84,.21,1);
+      position: relative;
+      overflow: hidden;
+    }
+    .hub {
+      position: absolute;
+      inset: 50% auto auto 50%;
+      transform: translate(-50%, -50%);
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 5px solid var(--surface-alt);
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+    .actions { display: flex; gap: .6rem; flex-wrap: wrap; }
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: .72rem 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+    }
+    button.secondary { background: var(--surface-alt); color: var(--text); }
+    button:focus-visible, textarea:focus-visible, input:focus-visible {
+      outline: 3px solid var(--ring); outline-offset: 2px;
+    }
+    textarea, input {
+      width: 100%;
+      background: var(--surface-alt);
+      color: var(--text);
+      border: 1px solid color-mix(in srgb, var(--muted) 35%, transparent);
+      border-radius: 12px;
+      padding: .7rem;
+      font: inherit;
+    }
+    .result { font-size: 1.2rem; font-weight: 700; min-height: 1.6em; }
+    .muted { color: var(--muted); font-size: .9rem; }
+    .stats { display: grid; grid-template-columns: repeat(2,1fr); gap: .6rem; margin-top: .75rem; }
+    .pill { background: var(--surface-alt); border-radius: 12px; padding: .6rem .75rem; }
+    #confetti { height: 8px; border-radius: 999px; background: transparent; }
+    .sparkle { animation: pop .8s ease; background: linear-gradient(90deg, #f59e0b, #10b981, #3b82f6, #ec4899); }
+    @keyframes pop { 0%{transform:scaleX(.1);opacity:.2} 60%{transform:scaleX(1);opacity:1} 100%{opacity:.1} }
+    @media (max-width: 860px){ .app { grid-template-columns: 1fr; } }
+    @media (prefers-reduced-motion: reduce){ .wheel{transition:none} .sparkle{animation:none} }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="card wheel-wrap" aria-label="decision wheel panel">
+      <div class="pointer" aria-hidden="true"></div>
+      <div class="wheel" id="wheel" role="img" aria-label="Decision wheel">
+        <div class="hub">lucky</div>
+      </div>
+      <div class="actions">
+        <button id="spinBtn">Spin the wheel</button>
+        <button id="shuffleBtn" class="secondary">Shuffle choices</button>
+      </div>
+      <div class="result" id="result">Add options and spin.</div>
+      <div id="confetti" aria-hidden="true"></div>
+    </section>
+
+    <section class="card">
+      <h1 style="margin-top:0">🎯 Lucky Decision Wheel</h1>
+      <p class="muted">One choice per line. Optional weight after a pipe: <code>Pizza | 3</code> increases odds.</p>
+      <label for="options" class="muted">Choices</label>
+      <textarea id="options" rows="10">Pizza | 3
+Tacos | 2
+Sushi | 1
+Burgers | 2
+Salad | 1</textarea>
+      <div style="margin-top:.7rem" class="actions">
+        <button id="applyBtn" class="secondary">Apply choices</button>
+        <button id="clearBtn" class="secondary">Clear winner history</button>
+      </div>
+      <div class="stats">
+        <div class="pill"><strong id="spinCount">0</strong><br><span class="muted">Spins</span></div>
+        <div class="pill"><strong id="topHit">—</strong><br><span class="muted">Top winner</span></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const wheel = document.getElementById('wheel');
+      const resultEl = document.getElementById('result');
+      const confetti = document.getElementById('confetti');
+      const optionsEl = document.getElementById('options');
+      const spinBtn = document.getElementById('spinBtn');
+      const shuffleBtn = document.getElementById('shuffleBtn');
+      const applyBtn = document.getElementById('applyBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const spinCountEl = document.getElementById('spinCount');
+      const topHitEl = document.getElementById('topHit');
+
+      let state = { entries: [], rotation: 0, spinning: false, spins: 0, winners: new Map() };
+
+      const palette = ['#22d3ee','#a78bfa','#f472b6','#34d399','#f59e0b','#60a5fa','#fb7185','#4ade80'];
+
+      function parseEntries() {
+        const lines = optionsEl.value.split('\n').map(v => v.trim()).filter(Boolean);
+        const parsed = lines.map((line) => {
+          const [labelRaw, weightRaw] = line.split('|').map(s => s.trim());
+          const label = labelRaw?.slice(0, 28) || '';
+          const weight = Math.max(1, Math.min(20, Number.parseInt(weightRaw || '1', 10) || 1));
+          return { label, weight };
+        }).filter(item => item.label.length > 0);
+        state.entries = parsed.length ? parsed : [{ label: 'Try again', weight: 1 }];
+      }
+
+      function buildGradient() {
+        const total = state.entries.length;
+        const seg = 360 / total;
+        const stops = state.entries.map((_, i) => {
+          const c = palette[i % palette.length];
+          const start = (i * seg).toFixed(2);
+          const end = ((i + 1) * seg).toFixed(2);
+          return `${c} ${start}deg ${end}deg`;
+        }).join(', ');
+        wheel.style.background = `conic-gradient(${stops})`;
+      }
+
+      function weightedIndex() {
+        const pool = [];
+        state.entries.forEach((entry, index) => {
+          for (let i = 0; i < entry.weight; i += 1) pool.push(index);
+        });
+        return pool[Math.floor(Math.random() * pool.length)];
+      }
+
+      function setTopHit() {
+        let top = '—';
+        let score = -1;
+        state.winners.forEach((count, key) => {
+          if (count > score) { score = count; top = `${key} (${count})`; }
+        });
+        topHitEl.textContent = top;
+      }
+
+      function celebrate() {
+        confetti.classList.remove('sparkle');
+        void confetti.offsetWidth;
+        confetti.classList.add('sparkle');
+      }
+
+      function spin() {
+        if (state.spinning || state.entries.length < 2) return;
+        state.spinning = true;
+        const index = weightedIndex();
+        const seg = 360 / state.entries.length;
+        const targetAngle = (index * seg) + seg / 2;
+        const fullTurns = 6 + Math.floor(Math.random() * 3);
+        const final = (360 - targetAngle) + (fullTurns * 360);
+        state.rotation += final;
+        wheel.style.transform = `rotate(${state.rotation}deg)`;
+        spinBtn.disabled = true;
+
+        window.setTimeout(() => {
+          const winner = state.entries[index].label;
+          resultEl.textContent = `Winner: ${winner}`;
+          state.spins += 1;
+          spinCountEl.textContent = String(state.spins);
+          state.winners.set(winner, (state.winners.get(winner) || 0) + 1);
+          setTopHit();
+          celebrate();
+          state.spinning = false;
+          spinBtn.disabled = false;
+        }, 4200);
+      }
+
+      applyBtn.addEventListener('click', () => {
+        parseEntries();
+        buildGradient();
+        resultEl.textContent = `Loaded ${state.entries.length} choices.`;
+      });
+
+      shuffleBtn.addEventListener('click', () => {
+        const shuffled = [...state.entries].sort(() => Math.random() - 0.5);
+        state.entries = shuffled;
+        buildGradient();
+        resultEl.textContent = 'Choices shuffled.';
+      });
+
+      clearBtn.addEventListener('click', () => {
+        state.winners.clear();
+        state.spins = 0;
+        spinCountEl.textContent = '0';
+        setTopHit();
+        resultEl.textContent = 'Winner history cleared.';
+      });
+
+      spinBtn.addEventListener('click', spin);
+      document.addEventListener('keydown', (event) => {
+        if (event.code === 'Space' && !state.spinning) {
+          event.preventDefault();
+          spin();
+        }
+      });
+
+      parseEntries();
+      buildGradient();
+      resultEl.textContent = 'Press Space or click Spin to decide.';
+    })();
+  </script>
+</body>
+</html>
