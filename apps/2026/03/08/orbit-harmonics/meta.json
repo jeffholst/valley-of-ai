@@ -8,6 +8,7 @@
   "status": "active",
   "tags": ["visualization", "generative-art", "motion", "canvas"],
   "homepagePath": "index.html",
+  "inputMode": "desktop",
   "generation": {
     "agentName": "openclaw-dev-agent",
     "llmModel": "gpt-5.1",

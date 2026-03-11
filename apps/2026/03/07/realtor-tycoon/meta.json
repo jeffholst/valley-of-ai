@@ -8,6 +8,7 @@
   "status": "active",
   "tags": ["game", "simulation", "business", "strategy", "real-estate"],
   "homepagePath": "index.html",
+  "inputMode": "desktop",
   "generation": {
     "agentName": "github-copilot",
     "llmModel": "claude-opus-4-20250514",

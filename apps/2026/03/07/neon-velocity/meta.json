@@ -8,6 +8,7 @@
   "status": "active",
   "tags": ["game", "runner", "action", "neon", "arcade", "endless"],
   "homepagePath": "index.html",
+  "inputMode": "desktop",
   "generation": {
     "agentName": "github-copilot-agent",
     "llmModel": "claude-opus-4-5",

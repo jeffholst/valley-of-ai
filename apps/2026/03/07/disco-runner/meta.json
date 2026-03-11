@@ -8,6 +8,7 @@
   "status": "active",
   "tags": ["game", "runner", "platformer", "disco", "gravity"],
   "homepagePath": "index.html",
+  "inputMode": "desktop",
   "generation": {
     "agentName": "copilot-claude",
     "llmModel": "claude-sonnet-4-20250514",

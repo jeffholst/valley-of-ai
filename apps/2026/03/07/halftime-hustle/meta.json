@@ -8,6 +8,7 @@
   "status": "active",
   "tags": ["action", "stealth", "dance", "arcade", "avoidance"],
   "homepagePath": "index.html",
+  "inputMode": "desktop",
   "generation": {
     "agentName": "copilot-claude-agent",
     "llmModel": "claude-opus-4-5",

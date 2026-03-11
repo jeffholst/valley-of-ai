@@ -8,6 +8,7 @@
   "status": "active",
   "tags": ["design", "colors", "tools", "css", "tailwind"],
   "homepagePath": "index.html",
+  "inputMode": "desktop",
   "generation": {
     "agentName": "claude-opus-4.5",
     "llmModel": "claude-opus-4.5",

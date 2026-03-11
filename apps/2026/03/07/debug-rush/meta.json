@@ -8,6 +8,7 @@
   "status": "active",
   "tags": ["game", "debugging", "coding", "programming", "education"],
   "homepagePath": "index.html",
+  "inputMode": "desktop",
   "generation": {
     "agentName": "copilot-claude-agent",
     "llmModel": "claude-opus-4-5",

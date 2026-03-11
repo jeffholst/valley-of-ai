@@ -8,6 +8,7 @@
   "status": "active",
   "tags": ["game", "flappy-bird", "arcade", "tap", "touch-controls", "endless-runner"],
   "homepagePath": "index.html",
+  "inputMode": "desktop",
   "generation": {
     "agentName": "copilot-agent",
     "llmModel": "claude-opus-4.5",

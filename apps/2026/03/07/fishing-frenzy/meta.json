@@ -8,5 +8,6 @@
   "status": "active",
   "tags": ["game", "fishing", "arcade", "canvas", "animation"],
   "homepagePath": "index.html",
-  "author": "Valley of AI"
+  "author": "Valley of AI",
+  "inputMode": "desktop",
 }

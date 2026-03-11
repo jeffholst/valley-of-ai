@@ -9,6 +9,7 @@
   "status": "active",
   "tags": ["pixel-art", "drawing", "design", "creative-tool"],
   "homepagePath": "index.html",
+  "inputMode": "desktop",
   "generation": {
     "agentName": "openclaw-dev-agent",
     "llmModel": "gpt-5.1",
