@@ -16,7 +16,7 @@ const PER_PAGE_OPTIONS = [10, 25, 100]
 const categories = [...new Set(appsData.map(app => app.category).filter(Boolean))].sort()
 const agents = [...new Set(appsData.map(app => app.generation?.agentName).filter(Boolean))].sort()
 const models = [...new Set(appsData.map(app => app.generation?.llmModel).filter(Boolean))].sort()
-const inputModes = [...new Set(appsData.map(app => app.inputMode).filter(Boolean))].sort()
+const INPUT_MODE_OPTIONS = ['Desktop', 'Mobile', 'Responsive']
 const allAppIds = appsData.map(app => app.id)
 
 export default function HomePage() {
@@ -59,7 +59,7 @@ export default function HomePage() {
       if (modelFilter && app.generation?.llmModel !== modelFilter) return false
 
       // Input mode filter
-      if (inputModeFilter && app.inputMode !== inputModeFilter) return false
+      if (inputModeFilter && (app.inputMode || '').toLowerCase() !== inputModeFilter.toLowerCase()) return false
       
       return true
     })
@@ -233,7 +233,7 @@ export default function HomePage() {
                   className="input"
                 >
                   <option value="">All Input Modes</option>
-                  {inputModes.map(mode => (
+                  {INPUT_MODE_OPTIONS.map(mode => (
                     <option key={mode} value={mode}>{mode}</option>
                   ))}
                 </select>
