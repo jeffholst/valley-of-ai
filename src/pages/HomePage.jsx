@@ -222,7 +222,7 @@ export default function HomePage() {
               onPointerDown={() => handleKillPterodactyl(pterodactyl.id)}
               className={`pterodactyl-flyer ${pterodactyl.direction === 'left' ? 'pterodactyl-left' : 'pterodactyl-right'}${pterodactyl.dead ? ' is-dead' : ''}`}
               style={{
-                '--ptero-top': `${pterodactyl.topVh}vh`,
+                '--ptero-top': `${pterodactyl.topVh}svh`,
                 '--ptero-size': `${pterodactyl.sizePx}px`,
                 '--ptero-speed': `${pterodactyl.speedSeconds}s`,
                 '--ptero-delay': `${pterodactyl.delaySeconds}s`,

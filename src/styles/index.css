@@ -94,7 +94,10 @@
 
   .pterodactyl-sky {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100svh;
     overflow: hidden;
     pointer-events: none;
     z-index: 30;
