@@ -176,6 +176,7 @@
       cursor: pointer;
       transition: transform 0.15s, box-shadow 0.15s;
       user-select: none;
+      touch-action: manipulation;
     }
 
     .letter-tile:hover {
@@ -228,6 +229,10 @@
       background: var(--border);
     }
 
+    .answer-slot.filled {
+      touch-action: manipulation;
+    }
+
     .answer-slot.correct {
       border-color: var(--success);
       background: rgba(16, 185, 129, 0.1);
@@ -252,6 +257,7 @@
     }
 
     button {
+      min-height: 44px;
       padding: 0.75rem 1.5rem;
       border: none;
       border-radius: 8px;
@@ -345,6 +351,64 @@
       font-weight: 500;
     }
 
+
+    @media (max-width: 640px) {
+      body {
+        justify-content: flex-start;
+        padding: 0.75rem;
+      }
+
+      .container {
+        max-width: 100%;
+      }
+
+      header {
+        margin-bottom: 1rem;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .stats {
+        gap: 0.75rem;
+        justify-content: space-between;
+      }
+
+      .stat {
+        flex: 1;
+        min-width: 72px;
+      }
+
+      .stat-value {
+        font-size: 1.35rem;
+      }
+
+      .game-card {
+        padding: 1rem;
+      }
+
+      .letter-tile,
+      .answer-slot {
+        width: 42px;
+        height: 50px;
+        font-size: 1.3rem;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .actions button {
+        width: 100%;
+      }
+
+      .theme-toggle {
+        top: 10px;
+        right: 10px;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -365,7 +429,7 @@
   <div class="container">
     <header>
       <h1>🔤 Word Scramble</h1>
-      <p class="subtitle">Unscramble the letters to reveal the word!</p>
+      <p class="subtitle">Unscramble the letters to reveal the word! Tap letters on mobile.</p>
     </header>
 
     <div class="stats">
