@@ -18,6 +18,8 @@ const PTERODACTYL_CONFIG = {
   maxSizePx: 120,
   minSpeedSeconds: 14,
   maxSpeedSeconds: 34,
+  minTopVh: -2,
+  maxTopVh: 92,
   killAnimationMs: 650,
 }
 
@@ -29,7 +31,7 @@ const createPterodactyl = (id) => {
   return {
     id,
     direction: fliesLeft ? 'left' : 'right',
-    topVh: randomInRange(8, 78),
+    topVh: randomInRange(PTERODACTYL_CONFIG.minTopVh, PTERODACTYL_CONFIG.maxTopVh),
     sizePx: randomInRange(PTERODACTYL_CONFIG.minSizePx, PTERODACTYL_CONFIG.maxSizePx),
     speedSeconds: randomInRange(PTERODACTYL_CONFIG.minSpeedSeconds, PTERODACTYL_CONFIG.maxSpeedSeconds),
     delaySeconds: randomInRange(-45, 0),
@@ -39,6 +41,15 @@ const createPterodactyl = (id) => {
 
 const createInitialPterodactyls = () =>
   Array.from({ length: PTERODACTYL_CONFIG.total }, (_, index) => createPterodactyl(`ptero-${index + 1}`))
+
+const isLikelyMobileDevice = () => {
+  if (typeof window === 'undefined') return false
+
+  const hasTouchInput = window.matchMedia('(hover: none) and (pointer: coarse)').matches
+  const smallViewport = window.matchMedia('(max-width: 768px)').matches
+
+  return hasTouchInput || smallViewport
+}
 
 // Extract unique filter options from data
 const categories = [...new Set(appsData.map(app => app.category).filter(Boolean))].sort()
@@ -51,6 +62,7 @@ export default function HomePage() {
   const [sortBy, setSortBy] = useState('newest')
   const [currentPage, setCurrentPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
+  const [animationsEnabled, setAnimationsEnabled] = useState(() => !isLikelyMobileDevice())
   const [pterodactyls, setPterodactyls] = useState(() => createInitialPterodactyls())
   const respawnTimersRef = useRef(new Map())
   
@@ -182,6 +194,7 @@ export default function HomePage() {
 
   return (
     <>
+      {animationsEnabled && (
       <div className="pterodactyl-sky" aria-hidden="true">
         {pterodactyls.map(pterodactyl => {
           const sprite = pterodactyl.direction === 'left' ? '/pterodactyl-left.svg' : '/pterodactyl-right.svg'
@@ -208,6 +221,7 @@ export default function HomePage() {
           )
         })}
       </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero Section */}
@@ -228,6 +242,16 @@ export default function HomePage() {
           </Link>{' '}
           and our AI might bring it to life.
         </p>
+        <div className="mt-6">
+          <button
+            type="button"
+            onClick={() => setAnimationsEnabled(enabled => !enabled)}
+            className="btn-secondary"
+            aria-pressed={animationsEnabled}
+          >
+            {animationsEnabled ? 'Turn off pterodactyl animations' : 'Turn on pterodactyl animations'}
+          </button>
+        </div>
       </div>
 
       {/* Search and Filters */}
