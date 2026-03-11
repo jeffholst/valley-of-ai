@@ -26,7 +26,7 @@
       --warning: #f59e0b;
       --danger: #ef4444;
       --shadow: rgba(139, 92, 246, 0.15);
-    }
+    ;--bg:#0b1220;--text:#edf3ff;}
 
     [data-theme="dark"] {
       --bg-primary: #0f0a1f;
@@ -515,7 +515,9 @@
       .stat-value { font-size: 1.2rem; }
       .options-grid { grid-template-columns: repeat(2, 1fr); }
     }
-  </style>
+  [data-theme='light']{--bg:#eef4ff;--surface:#ffffff;--text:#1f2f52;--accent:#0891b2;--shadow:rgba(31, 47, 82, 0.12);}
+.theme-sentinel{background:var(--bg);color:var(--text);}
+</style>
   <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
   <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
     <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">

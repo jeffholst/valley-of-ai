@@ -30,7 +30,7 @@
       --warn: #d97706;
       --bad: #dc2626;
       --shadow: 0 20px 40px rgba(15, 23, 42, 0.1);
-    }
+    ;--accent:#22d3ee;}
 
     :root[data-theme='dark'] {
       --bg: #060d18;
@@ -224,7 +224,8 @@
     @media (prefers-reduced-motion: reduce) {
       * { transition: none !important; }
     }
-  </style>
+  [data-theme='light']{--bg:#eef4ff;--surface:#ffffff;--text:#1f2f52;--accent:#0891b2;--shadow:rgba(31, 47, 82, 0.12);}
+</style>
   <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
   <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
     <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
