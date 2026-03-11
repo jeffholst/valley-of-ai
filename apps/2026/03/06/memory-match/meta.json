@@ -3,7 +3,13 @@
   "name": "Memory Match",
   "shortDescription": "Classic card matching memory game with 3D flip animations, multiple difficulty levels, move counter, timer, and celebration effects. Train your memory!",
   "category": "Games",
-  "tags": ["game", "memory", "cards", "animation", "css3d"],
+  "tags": [
+    "game",
+    "memory",
+    "cards",
+    "animation",
+    "css3d"
+  ],
   "thumbnail": "thumbnail.svg",
   "homepagePath": "index.html",
   "createdAt": "2026-03-06T21:30:00Z",
@@ -16,7 +22,7 @@
     "endTime": "2026-03-06T21:35:00Z",
     "totalTokensIn": 6000,
     "totalTokensOut": 4500,
-    "runId": "run-2026-03-06-memory-001",
+    "runId": "run-20260306T213500Z-4484c3",
     "notes": "Classic memory card matching game with CSS 3D flip animations and multiple difficulty levels."
   }
 }

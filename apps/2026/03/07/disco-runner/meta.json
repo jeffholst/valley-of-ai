@@ -6,7 +6,13 @@
   "createdAt": "2026-03-07T18:10:00Z",
   "category": "Games",
   "status": "active",
-  "tags": ["game", "runner", "platformer", "disco", "gravity"],
+  "tags": [
+    "game",
+    "runner",
+    "platformer",
+    "disco",
+    "gravity"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -16,7 +22,7 @@
     "endTime": "2026-03-07T18:15:00Z",
     "totalTokensIn": 15000,
     "totalTokensOut": 12000,
-    "runId": "run-20260307T180800Z-d1sc0r",
+    "runId": "run-20260307T181500Z-a6229f",
     "notes": "Side-scrolling runner with a funky twist: collecting disco balls flips gravity. Features neon colors, disco dancer character with afro, and pulsing background effects."
   }
 }

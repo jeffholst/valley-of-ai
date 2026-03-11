@@ -6,7 +6,12 @@
   "createdAt": "2026-03-07T02:02:16Z",
   "category": "Utilities",
   "status": "active",
-  "tags": ["text-tool", "productivity", "formatting", "utility"],
+  "tags": [
+    "text-tool",
+    "productivity",
+    "formatting",
+    "utility"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -16,7 +21,7 @@
     "endTime": "2026-03-07T02:02:16Z",
     "totalTokensIn": 0,
     "totalTokensOut": 0,
-    "runId": "run-2026-03-06-0003",
+    "runId": "run-20260307T020216Z-324c8d",
     "notes": "Token counters unavailable in runtime; set to 0."
   }
 }

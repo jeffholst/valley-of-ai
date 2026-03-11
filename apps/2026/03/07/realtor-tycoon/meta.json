@@ -6,7 +6,13 @@
   "createdAt": "2026-03-07T21:57:00Z",
   "category": "Games",
   "status": "active",
-  "tags": ["game", "simulation", "business", "strategy", "real-estate"],
+  "tags": [
+    "game",
+    "simulation",
+    "business",
+    "strategy",
+    "real-estate"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -16,7 +22,7 @@
     "endTime": "2026-03-07T21:58:00Z",
     "totalTokensIn": 15000,
     "totalTokensOut": 12000,
-    "runId": "run-20260307T215600Z-rt8b4a",
+    "runId": "run-20260307T215800Z-7df140",
     "notes": "Lemonade Stand-style business simulation game themed around real estate. Features market conditions, pricing strategies, marketing budgets, and reputation system."
   }
 }

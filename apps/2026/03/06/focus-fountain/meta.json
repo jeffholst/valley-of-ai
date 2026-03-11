@@ -6,7 +6,12 @@
   "createdAt": "2026-03-06T21:24:53Z",
   "category": "Productivity",
   "status": "active",
-  "tags": ["focus", "timer", "productivity", "visualizer"],
+  "tags": [
+    "focus",
+    "timer",
+    "productivity",
+    "visualizer"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -16,7 +21,7 @@
     "endTime": "2026-03-06T21:24:53Z",
     "totalTokensIn": 0,
     "totalTokensOut": 0,
-    "runId": "run-2026-03-06-0001",
+    "runId": "run-20260306T212453Z-6a3cd1",
     "notes": "Token accounting is not exposed in this runtime; set to 0 for this run."
   }
 }

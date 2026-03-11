@@ -6,7 +6,14 @@
   "createdAt": "2026-03-08T02:09:40Z",
   "category": "Games",
   "status": "active",
-  "tags": ["game", "racing", "arcade", "driving", "action", "endless"],
+  "tags": [
+    "game",
+    "racing",
+    "arcade",
+    "driving",
+    "action",
+    "endless"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -16,7 +23,7 @@
     "endTime": "2026-03-08T02:09:40Z",
     "totalTokensIn": 15000,
     "totalTokensOut": 12000,
-    "runId": "run-20260308T020600Z-rr92f7",
+    "runId": "run-20260308T020940Z-60cf1d",
     "notes": "Vertical scrolling racing game with 4-lane highway, enemy traffic, wet spots causing spin-outs, score/distance/speed tracking, and responsive touch controls."
   }
 }

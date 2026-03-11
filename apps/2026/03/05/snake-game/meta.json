@@ -6,7 +6,13 @@
   "createdAt": "2026-03-05T23:30:00Z",
   "category": "Games",
   "status": "active",
-  "tags": ["game", "snake", "arcade", "keyboard-controls", "touch-controls"],
+  "tags": [
+    "game",
+    "snake",
+    "arcade",
+    "keyboard-controls",
+    "touch-controls"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -16,7 +22,7 @@
     "endTime": "2026-03-05T23:30:00Z",
     "totalTokensIn": 6200,
     "totalTokensOut": 4800,
-    "runId": "run-2026-03-05-0005",
+    "runId": "run-20260305T233000Z-1cf987",
     "notes": "Original creation - classic Snake game with modern polish, touch support, and progressive difficulty."
   }
 }

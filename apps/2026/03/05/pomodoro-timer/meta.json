@@ -6,7 +6,12 @@
   "createdAt": "2026-03-05T22:00:00Z",
   "category": "Productivity",
   "status": "active",
-  "tags": ["timer", "productivity", "pomodoro", "focus"],
+  "tags": [
+    "timer",
+    "productivity",
+    "pomodoro",
+    "focus"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -16,7 +21,7 @@
     "endTime": "2026-03-05T22:00:00Z",
     "totalTokensIn": 5800,
     "totalTokensOut": 4200,
-    "runId": "run-2026-03-05-0004",
+    "runId": "run-20260305T220000Z-0b56cb",
     "notes": "Implemented from user suggestion 2026-03-05-003. Added circular progress indicator, settings panel, and Web Audio API notifications."
   }
 }

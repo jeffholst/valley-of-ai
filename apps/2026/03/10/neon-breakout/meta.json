@@ -7,7 +7,12 @@
   "category": "Games",
   "votes": 0,
   "status": "active",
-  "tags": ["arcade", "breakout", "ball", "keyboard-controls"],
+  "tags": [
+    "arcade",
+    "breakout",
+    "ball",
+    "keyboard-controls"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -17,7 +22,7 @@
     "endTime": "2026-03-10T05:01:33Z",
     "totalTokensIn": 0,
     "totalTokensOut": 0,
-    "runId": "run-2026-03-10-0002",
+    "runId": "run-20260310T050133Z-fda811",
     "notes": "Nightly app run. Token counters unavailable in runtime."
   }
 }

@@ -6,7 +6,10 @@
   "createdAt": "2026-03-05T02:30:00Z",
   "category": "Productivity",
   "status": "active",
-  "tags": ["demo", "example"],
+  "tags": [
+    "demo",
+    "example"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -16,7 +19,7 @@
     "endTime": "2026-03-05T03:22:10Z",
     "totalTokensIn": 4200,
     "totalTokensOut": 3100,
-    "runId": "run-2026-03-05-0001",
+    "runId": "run-20260305T032210Z-22674c",
     "notes": "Generated from suggestion 2026-03-05-001."
   }
 }

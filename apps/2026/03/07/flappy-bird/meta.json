@@ -6,7 +6,14 @@
   "createdAt": "2026-03-07T15:10:00Z",
   "category": "Games",
   "status": "active",
-  "tags": ["game", "flappy-bird", "arcade", "tap", "touch-controls", "endless-runner"],
+  "tags": [
+    "game",
+    "flappy-bird",
+    "arcade",
+    "tap",
+    "touch-controls",
+    "endless-runner"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -16,7 +23,7 @@
     "endTime": "2026-03-07T15:10:00Z",
     "totalTokensIn": 5500,
     "totalTokensOut": 4200,
-    "runId": "run-2026-03-07-flappy-001",
+    "runId": "run-20260307T151000Z-0fa3be",
     "notes": "Classic Flappy Bird game with gravity physics, pipe obstacles, scoring system, best score tracking, dark/light mode, touch and keyboard controls."
   }
 }

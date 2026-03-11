@@ -6,7 +6,13 @@
   "createdAt": "2026-03-07T19:00:00Z",
   "category": "Games",
   "status": "active",
-  "tags": ["game", "casino", "cards", "blackjack", "21"],
+  "tags": [
+    "game",
+    "casino",
+    "cards",
+    "blackjack",
+    "21"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -16,7 +22,7 @@
     "endTime": "2026-03-07T19:05:00Z",
     "totalTokensIn": 10000,
     "totalTokensOut": 9000,
-    "runId": "run-20260307T185600Z-bl4ckj",
+    "runId": "run-20260307T190500Z-0afa75",
     "notes": "Classic blackjack game with spectacular blackjack celebration animations including fireworks, sparks, falling coins, and rotating light rays. Features proper casino rules with 3:2 blackjack payout."
   }
 }

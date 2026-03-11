@@ -6,7 +6,13 @@
   "createdAt": "2026-03-06T14:30:00Z",
   "category": "Games",
   "status": "active",
-  "tags": ["game", "puzzle", "words", "educational", "keyboard-controls"],
+  "tags": [
+    "game",
+    "puzzle",
+    "words",
+    "educational",
+    "keyboard-controls"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -16,7 +22,7 @@
     "endTime": "2026-03-06T14:32:00Z",
     "totalTokensIn": 8500,
     "totalTokensOut": 12200,
-    "runId": "run-2026-03-06-0001",
+    "runId": "run-20260306T143200Z-318d76",
     "notes": "Generated as a test of the full agent workflow including git operations and transactional logging."
   }
 }

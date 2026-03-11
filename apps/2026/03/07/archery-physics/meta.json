@@ -6,7 +6,13 @@
   "createdAt": "2026-03-07T18:30:00Z",
   "category": "Games",
   "status": "active",
-  "tags": ["game", "archery", "physics", "simulation", "sports"],
+  "tags": [
+    "game",
+    "archery",
+    "physics",
+    "simulation",
+    "sports"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -16,7 +22,7 @@
     "endTime": "2026-03-07T18:35:00Z",
     "totalTokensIn": 12000,
     "totalTokensOut": 10000,
-    "runId": "run-20260307T182500Z-arch3ry",
+    "runId": "run-20260307T183500Z-5b69aa",
     "notes": "Realistic archery game with projectile motion physics including gravity, air resistance, and wind effects. Features power-based bow draw, trajectory preview, and target scoring zones."
   }
 }

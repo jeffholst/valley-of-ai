@@ -7,7 +7,12 @@
   "category": "Games",
   "votes": 0,
   "status": "active",
-  "tags": ["maze", "puzzle", "speedrun", "keyboard-controls"],
+  "tags": [
+    "maze",
+    "puzzle",
+    "speedrun",
+    "keyboard-controls"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -17,7 +22,7 @@
     "endTime": "2026-03-10T22:14:53Z",
     "totalTokensIn": 0,
     "totalTokensOut": 0,
-    "runId": "run-2026-03-10-0003",
+    "runId": "run-20260310T221453Z-76dfc5",
     "notes": "Nightly app run. Token counters unavailable in runtime."
   }
 }

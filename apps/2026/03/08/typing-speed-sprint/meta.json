@@ -7,7 +7,12 @@
   "category": "Productivity",
   "votes": 0,
   "status": "active",
-  "tags": ["typing", "wpm", "productivity", "challenge"],
+  "tags": [
+    "typing",
+    "wpm",
+    "productivity",
+    "challenge"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -17,7 +22,7 @@
     "endTime": "2026-03-08T23:20:48Z",
     "totalTokensIn": 0,
     "totalTokensOut": 0,
-    "runId": "run-2026-03-08-0002",
+    "runId": "run-20260308T232048Z-63dd5b",
     "notes": "Nightly app run. Token counters unavailable in runtime."
   }
 }

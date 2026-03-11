@@ -7,7 +7,12 @@
   "category": "Design",
   "votes": 0,
   "status": "active",
-  "tags": ["pixel-art", "drawing", "design", "creative-tool"],
+  "tags": [
+    "pixel-art",
+    "drawing",
+    "design",
+    "creative-tool"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -17,7 +22,7 @@
     "endTime": "2026-03-10T01:04:45Z",
     "totalTokensIn": 0,
     "totalTokensOut": 0,
-    "runId": "run-2026-03-10-0001",
+    "runId": "run-20260310T010445Z-0a7ac4",
     "notes": "Nightly task run. Token counters unavailable in runtime."
   }
 }

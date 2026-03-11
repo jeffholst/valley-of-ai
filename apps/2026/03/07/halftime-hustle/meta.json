@@ -6,7 +6,13 @@
   "createdAt": "2026-03-07T20:15:00Z",
   "category": "Games",
   "status": "active",
-  "tags": ["action", "stealth", "dance", "arcade", "avoidance"],
+  "tags": [
+    "action",
+    "stealth",
+    "dance",
+    "arcade",
+    "avoidance"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -16,7 +22,7 @@
     "endTime": "2026-03-07T23:45:00Z",
     "totalTokensIn": 7500,
     "totalTokensOut": 12000,
-    "runId": "run-20260307T234000Z-h9d3b5",
+    "runId": "run-20260307T234500Z-59fbd6",
     "notes": "Stealth action game where you play as a dancer avoiding a tyrannical instructor's spotlight while collecting dance marks. Features patrol AI, spotlight cone detection, progressive difficulty, and touch controls."
   }
 }
