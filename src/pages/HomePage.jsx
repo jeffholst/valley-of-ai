@@ -18,8 +18,10 @@ const PTERODACTYL_CONFIG = {
   total_mobile: 5,
   minSizePx: 56,
   maxSizePx: 120,
-  minSpeedSeconds: 14,
-  maxSpeedSeconds: 34,
+  minSpeedSeconds_desktop: 14,
+  maxSpeedSeconds_desktop: 34,
+  minSpeedSeconds_mobile: 8,
+  maxSpeedSeconds_mobile: 18,
   minTopVh: -2,
   maxTopVh: 92,
   killAnimationMs: 650,
@@ -27,15 +29,17 @@ const PTERODACTYL_CONFIG = {
 
 const randomInRange = (min, max) => Math.random() * (max - min) + min
 
-const createPterodactyl = (id) => {
+const createPterodactyl = (id, isMobile = false) => {
   const fliesLeft = Math.random() < 0.5
+  const minSpeed = isMobile ? PTERODACTYL_CONFIG.minSpeedSeconds_mobile : PTERODACTYL_CONFIG.minSpeedSeconds_desktop
+  const maxSpeed = isMobile ? PTERODACTYL_CONFIG.maxSpeedSeconds_mobile : PTERODACTYL_CONFIG.maxSpeedSeconds_desktop
 
   return {
     id,
     direction: fliesLeft ? 'left' : 'right',
     topVh: randomInRange(PTERODACTYL_CONFIG.minTopVh, PTERODACTYL_CONFIG.maxTopVh),
     sizePx: randomInRange(PTERODACTYL_CONFIG.minSizePx, PTERODACTYL_CONFIG.maxSizePx),
-    speedSeconds: randomInRange(PTERODACTYL_CONFIG.minSpeedSeconds, PTERODACTYL_CONFIG.maxSpeedSeconds),
+    speedSeconds: randomInRange(minSpeed, maxSpeed),
     delaySeconds: randomInRange(-45, 0),
     dead: false,
   }
@@ -43,7 +47,7 @@ const createPterodactyl = (id) => {
 
 const createInitialPterodactyls = (isMobile) => {
   const count = isMobile ? PTERODACTYL_CONFIG.total_mobile : PTERODACTYL_CONFIG.total_desktop
-  return Array.from({ length: count }, (_, index) => createPterodactyl(`ptero-${index + 1}`))
+  return Array.from({ length: count }, (_, index) => createPterodactyl(`ptero-${index + 1}`, isMobile))
 }
 
 const isLikelyMobileDevice = () => {
@@ -177,7 +181,7 @@ export default function HomePage() {
           respawnTimersRef.current.delete(pterodactylId)
           setPterodactyls(current =>
             current.map(pterodactyl =>
-              pterodactyl.id === pterodactylId ? createPterodactyl(pterodactylId) : pterodactyl,
+              pterodactyl.id === pterodactylId ? createPterodactyl(pterodactylId, isMobile) : pterodactyl,
             ),
           )
         }, PTERODACTYL_CONFIG.killAnimationMs)
