@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -25 68 50">
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <g>
+    <!-- Body -->
+    <ellipse cx="-12" cy="0" rx="12" ry="5" fill="#1e1b4b"/>
+    
+    <!-- Head -->
+    <ellipse cx="-26" cy="-2" rx="6" ry="4" fill="#1e1b4b"/>
+    
+    <!-- Beak (leftmost x = -40, left justified) -->
+    <path d="M-30 -3 L-40 -4 L-32 -2 Z" fill="#312e81"/>
+    
+    <!-- Head crest -->
+    <path d="M-26 -6 L-22 -14 L-28 -5 Z" fill="#1e1b4b"/>
+    
+    <!-- Tail -->
+    <path d="M0 0 L10 2 L0 1 Z" fill="#312e81"/>
+    
+    <!-- Left wing -->
+    <g>
+      <path d="M-9 0 Q3 -20 23 -15 Q8 -5 -9 -2 Z" fill="#312e81"/>
+      <path d="M-9 -1 Q0 -15 16 -12 Q3 -4 -9 -2 Z" fill="#4338ca" opacity="0.6"/>
+    </g>
+    
+    <!-- Right wing -->
+    <g>
+      <path d="M-9 0 Q3 20 23 15 Q8 5 -9 2 Z" fill="#312e81"/>
+      <path d="M-9 1 Q0 15 16 12 Q3 4 -9 2 Z" fill="#4338ca" opacity="0.6"/>
+    </g>
+    
+    <!-- Eye -->
+    <circle cx="-29" cy="-3" r="1.5" fill="#fbbf24" filter="url(#glow)"/>
+  </g>
+</svg>
