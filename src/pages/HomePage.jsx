@@ -11,9 +11,11 @@ const SORT_OPTIONS = [
 ]
 
 const PER_PAGE_OPTIONS = [10, 25, 100]
+const PTERODACTYL_PREF_KEY = 'pterodactyl-animations-enabled-v2'
 
 const PTERODACTYL_CONFIG = {
-  total: 12,
+  total_desktop: 12,
+  total_mobile: 5,
   minSizePx: 56,
   maxSizePx: 120,
   minSpeedSeconds: 14,
@@ -39,8 +41,10 @@ const createPterodactyl = (id) => {
   }
 }
 
-const createInitialPterodactyls = () =>
-  Array.from({ length: PTERODACTYL_CONFIG.total }, (_, index) => createPterodactyl(`ptero-${index + 1}`))
+const createInitialPterodactyls = (isMobile) => {
+  const count = isMobile ? PTERODACTYL_CONFIG.total_mobile : PTERODACTYL_CONFIG.total_desktop
+  return Array.from({ length: count }, (_, index) => createPterodactyl(`ptero-${index + 1}`))
+}
 
 const isLikelyMobileDevice = () => {
   if (typeof window === 'undefined') return false
@@ -62,8 +66,13 @@ export default function HomePage() {
   const [sortBy, setSortBy] = useState('newest')
   const [currentPage, setCurrentPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
-  const [animationsEnabled, setAnimationsEnabled] = useState(() => !isLikelyMobileDevice())
-  const [pterodactyls, setPterodactyls] = useState(() => createInitialPterodactyls())
+  const isMobile = isLikelyMobileDevice()
+  const [animationsEnabled, setAnimationsEnabled] = useState(() => {
+    const saved = localStorage.getItem(PTERODACTYL_PREF_KEY)
+    if (saved !== null) return saved === 'true'
+    return !isMobile
+  })
+  const [pterodactyls, setPterodactyls] = useState(() => createInitialPterodactyls(isMobile))
   const respawnTimersRef = useRef(new Map())
   
   // Fetch vote counts from Supabase
@@ -187,6 +196,10 @@ export default function HomePage() {
     }
   }, [])
 
+  useEffect(() => {
+    localStorage.setItem(PTERODACTYL_PREF_KEY, String(animationsEnabled))
+  }, [animationsEnabled])
+
   const goToPage = (page) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)))
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -197,13 +210,13 @@ export default function HomePage() {
       {animationsEnabled && (
       <div className="pterodactyl-sky" aria-hidden="true">
         {pterodactyls.map(pterodactyl => {
-          const sprite = pterodactyl.direction === 'left' ? '/pterodactyl-left.svg' : '/pterodactyl-right.svg'
+          const sprite = pterodactyl.direction === 'left' ? '/pterodactyl-left-flapping.svg' : '/pterodactyl-right-flapping.svg'
 
           return (
             <div
               key={pterodactyl.id}
               onPointerDown={() => handleKillPterodactyl(pterodactyl.id)}
-              className={`pterodactyl-flyer pterodactyl-${pterodactyl.direction}${pterodactyl.dead ? ' is-dead' : ''}`}
+              className={`pterodactyl-flyer ${pterodactyl.direction === 'left' ? 'pterodactyl-left' : 'pterodactyl-right'}${pterodactyl.dead ? ' is-dead' : ''}`}
               style={{
                 '--ptero-top': `${pterodactyl.topVh}vh`,
                 '--ptero-size': `${pterodactyl.sizePx}px`,
@@ -249,7 +262,15 @@ export default function HomePage() {
             className="btn-secondary"
             aria-pressed={animationsEnabled}
           >
-            {animationsEnabled ? 'Turn off pterodactyl animations' : 'Turn on pterodactyl animations'}
+            {animationsEnabled ? 'Turn off' : 'Turn on'}
+            <img
+              src={animationsEnabled ? "/pterodactyl-right-static.svg" : "/pterodactyl-right-flapping.svg"}
+              alt="pterodactyl" 
+              width="50" 
+              height="50"
+              className="relative"
+              style={{ left: '5px', top: '2px', filter: 'drop-shadow(0 0 1px rgba(255,255,255,0.3)) brightness(1.1)' }}
+            />
           </button>
         </div>
       </div>
