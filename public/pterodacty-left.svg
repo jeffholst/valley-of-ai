@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -25 100 50">
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- NEW: flip everything horizontally around center x = 10 -->
+  <g transform="translate(20,0) scale(-1,1)">
+    <g>
+      <!-- Bobbing animation -->
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-3; 0,0" dur="1.5s" repeatCount="indefinite"/>
+      
+      <!-- Body -->
+      <ellipse cx="0" cy="0" rx="12" ry="5" fill="#1e1b4b"/>
+      
+      <!-- Head -->
+      <ellipse cx="14" cy="-2" rx="6" ry="4" fill="#1e1b4b"/>
+      
+      <!-- Beak -->
+      <path d="M18 -3 L28 -4 L20 -2 Z" fill="#312e81"/>
+      
+      <!-- Head crest -->
+      <path d="M14 -6 L10 -14 L16 -5 Z" fill="#1e1b4b"/>
+      
+      <!-- Tail -->
+      <path d="M-12 0 L-22 2 L-12 1 Z" fill="#312e81"/>
+      
+      <!-- Left wing (animated) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; -25 -3 0; 0 -3 0" dur="0.4s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 -20 -35 -15 Q-20 -5 -3 -2 Z" fill="#312e81"/>
+        <path d="M-3 -1 Q-12 -15 -28 -12 Q-15 -4 -3 -2 Z" fill="#4338ca" opacity="0.6"/>
+      </g>
+      
+      <!-- Right wing (animated) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="0 -3 0; 25 -3 0; 0 -3 0" dur="0.4s" repeatCount="indefinite"/>
+        <path d="M-3 0 Q-15 20 -35 15 Q-20 5 -3 2 Z" fill="#312e81"/>
+        <path d="M-3 1 Q-12 15 -28 12 Q-15 4 -3 2 Z" fill="#4338ca" opacity="0.6"/>
+      </g>
+      
+      <!-- Eye -->
+      <circle cx="17" cy="-3" r="1.5" fill="#fbbf24" filter="url(#glow)"/>
+    </g>
+  </g>
+</svg>
