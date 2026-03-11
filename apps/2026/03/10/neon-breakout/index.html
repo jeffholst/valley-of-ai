@@ -24,6 +24,39 @@ canvas{width:100%;max-width:760px;aspect-ratio:4/3;display:block;margin:auto;bac
 .legend{margin-top:10px;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,var(--surface) 84%,transparent);border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);font-size:.83rem;color:var(--muted)}
 .legend strong{color:var(--text);font-size:.82rem;display:block;margin-bottom:4px}
 @media(max-width:640px){body{padding:10px}.card{padding:10px;border-radius:14px}.top{gap:6px}.pill{font-size:.8rem;padding:5px 8px}h1{font-size:1.2rem}.sub{font-size:.92rem}.k{font-size:.82rem}}
+
+
+    /* Responsive/touch accessibility pass */
+    @media (max-width: 1024px) {
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot,
+      input[type="button"],
+      input[type="submit"] {
+        min-height: 44px;
+      }
+
+      .theme-toggle {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        touch-action: manipulation;
+        pointer-events: auto;
+        z-index: 999;
+      }
+
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot {
+        touch-action: manipulation;
+      }
+    }
+
 </style></head><body><main class='card'><h1>🧱 Neon Breakout</h1><p class='sub'>Break all bricks, keep the ball alive, chase high score.</p>
 <div class='top'><span class='pill' id='score'>Score: 0</span><span class='pill' id='lives'>Lives: 3</span><span class='pill' id='state'>State: Ready</span></div>
 <canvas id='g' width='760' height='570'></canvas><div class='controls'><button id='start'>Start / Restart</button></div><p class='k'>Controls: ← → or A/D • Mouse move • Touch drag/swipe</p><div class='legend'><strong>Powerup Key</strong>⚡ speed x2 • 🎯 speed normal • 🟡 multiball • 🤏 smaller paddle • 📏 normal paddle</div></main>

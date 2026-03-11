@@ -21,6 +21,39 @@
 canvas{width:100%;max-width:640px;aspect-ratio:1/1;display:block;margin:auto;background:var(--bg);border-radius:12px;border:1px solid color-mix(in srgb,var(--muted) 26%,transparent)}
 .controls{text-align:center;margin-top:10px}button{border:none;border-radius:999px;padding:9px 13px;font:inherit;font-weight:700;cursor:pointer;color:var(--text);background:linear-gradient(90deg,var(--accent),var(--accent-2))}
 .k{text-align:center;color:var(--muted);font-size:.9rem;margin-top:8px}
+
+
+    /* Responsive/touch accessibility pass */
+    @media (max-width: 1024px) {
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot,
+      input[type="button"],
+      input[type="submit"] {
+        min-height: 44px;
+      }
+
+      .theme-toggle {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        touch-action: manipulation;
+        pointer-events: auto;
+        z-index: 999;
+      }
+
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot {
+        touch-action: manipulation;
+      }
+    }
+
 </style></head><body><main class='card'><h1>🧭 Maze Runner</h1><p class='sub'>Reach the green exit in the shortest time.</p>
 <div class='top'><span class='pill' id='time'>Time: 0.0s</span><span class='pill' id='best'>Best: —</span><span class='pill' id='state'>State: Ready</span></div>
 <canvas id='g' width='600' height='600'></canvas><div class='controls'><button id='restart'>New Maze</button></div><p class='k'>Controls: ← → ↑ ↓ or WASD</p></main>
