@@ -63,7 +63,7 @@
   }
   
   .card {
-    @apply bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200;
+    @apply bg-white/70 dark:bg-gray-800/70 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 backdrop-blur-sm border border-white/40 dark:border-white/10;
   }
   
   .input {
