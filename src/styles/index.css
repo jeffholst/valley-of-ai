@@ -103,11 +103,94 @@
     z-index: 30;
   }
 
+  @keyframes valley-star-shimmer {
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 0.95; }
+  }
+
+  @keyframes valley-moon-glow {
+    0%, 100% { filter: drop-shadow(0 0 18px rgba(255, 242, 189, 0.35)); }
+    50% { filter: drop-shadow(0 0 32px rgba(255, 242, 189, 0.62)); }
+  }
+
+  .valley-cinematic-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    isolation: isolate;
+    background:
+      radial-gradient(1200px 680px at 50% 120%, rgba(160, 55, 255, 0.42) 0%, rgba(75, 20, 125, 0.14) 50%, rgba(6, 7, 20, 0) 74%),
+      linear-gradient(180deg, #040513 0%, #0b1230 45%, #140a2f 68%, #1b0938 100%);
+    overflow: hidden;
+  }
+
+  .valley-cinematic-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 56%, transparent 74%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 56%, transparent 74%);
+    background:
+      radial-gradient(circle at 78% 18%, rgba(255, 246, 209, 0.92) 0 46px, rgba(248, 215, 132, 0.32) 47px 82px, rgba(255, 229, 149, 0) 83px),
+      radial-gradient(circle at 12% 15%, rgba(255, 255, 255, 0.98) 0 1.2px, transparent 1.3px),
+      radial-gradient(circle at 18% 27%, rgba(255, 255, 255, 0.9) 0 1.1px, transparent 1.2px),
+      radial-gradient(circle at 24% 8%, rgba(209, 228, 255, 0.95) 0 1.4px, transparent 1.5px),
+      radial-gradient(circle at 32% 20%, rgba(236, 243, 255, 0.88) 0 0.95px, transparent 1.05px),
+      radial-gradient(circle at 40% 11%, rgba(255, 255, 255, 0.9) 0 1.2px, transparent 1.3px),
+      radial-gradient(circle at 48% 24%, rgba(236, 243, 255, 0.95) 0 1.3px, transparent 1.4px),
+      radial-gradient(circle at 54% 7%, rgba(255, 255, 255, 0.88) 0 1.1px, transparent 1.2px),
+      radial-gradient(circle at 61% 30%, rgba(218, 232, 255, 0.95) 0 1.2px, transparent 1.3px),
+      radial-gradient(circle at 69% 13%, rgba(255, 255, 255, 0.88) 0 1.4px, transparent 1.5px),
+      radial-gradient(circle at 85% 32%, rgba(232, 241, 255, 0.95) 0 1.1px, transparent 1.2px),
+      radial-gradient(circle at 92% 10%, rgba(255, 255, 255, 0.9) 0 1.2px, transparent 1.3px),
+      radial-gradient(900px 420px at 50% -12%, rgba(100, 124, 218, 0.36), rgba(22, 28, 58, 0));
+    animation: valley-star-shimmer 8.2s ease-in-out infinite;
+  }
+
+  .valley-cinematic-bg::after {
+    content: '';
+    position: absolute;
+    left: -6%;
+    right: -6%;
+    bottom: -4%;
+    height: 70%;
+    z-index: 2;
+    background:
+      radial-gradient(56% 44% at 50% 100%, rgba(208, 98, 255, 0.5) 0%, rgba(149, 58, 221, 0.24) 40%, rgba(35, 12, 56, 0) 78%),
+      linear-gradient(180deg, #5d2f93 0%, #3a1b66 52%, #1b0b34 100%);
+    clip-path: polygon(
+      0% 100%,
+      0% 74%,
+      7% 61%,
+      13% 75%,
+      21% 52%,
+      28% 72%,
+      36% 34%,
+      43% 68%,
+      50% 45%,
+      57% 70%,
+      65% 31%,
+      72% 66%,
+      79% 43%,
+      86% 72%,
+      93% 56%,
+      100% 75%,
+      100% 100%
+    );
+  }
+
+  .valley-cinematic-bg::before {
+    animation: valley-star-shimmer 8.2s ease-in-out infinite, valley-moon-glow 9.5s ease-in-out infinite;
+  }
+
   .pterodactyl-flyer {
     position: absolute;
     top: var(--ptero-top);
     left: 0;
     width: var(--ptero-size);
+    cursor: crosshair;
     pointer-events: auto;
     touch-action: manipulation;
     user-select: none;
@@ -137,6 +220,7 @@
     width: 100%;
     max-width: none;
     height: auto;
+    cursor: crosshair;
     transform-origin: center;
   }
 

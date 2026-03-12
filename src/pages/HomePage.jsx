@@ -211,6 +211,8 @@ export default function HomePage() {
 
   return (
     <>
+      <div className="valley-cinematic-bg" aria-hidden="true" />
+
       {animationsEnabled && (
       <div className="pterodactyl-sky" aria-hidden="true">
         {pterodactyls.map(pterodactyl => {
@@ -240,7 +242,7 @@ export default function HomePage() {
       </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero Section */}
       <div className="text-center mb-12">
         <p className="text-xl sm:text-2xl text-purple-400 font-medium mb-2">

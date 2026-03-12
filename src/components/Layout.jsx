@@ -42,7 +42,7 @@ export default function Layout() {
       <main className="flex-1">
         <Outlet />
       </main>
-      <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-4 transition-colors duration-200">
+      <footer className="relative z-20 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-4 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
           <span>✨ An experiment in AI, powered by curiosity and <span className="heart-pulse">❤️</span> from <span className="sparkle-text">Jeff Holst</span></span>
           <div className="flex items-center gap-4">
