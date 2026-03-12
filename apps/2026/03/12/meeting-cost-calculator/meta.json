@@ -1,0 +1,28 @@
+{
+  "id": "meeting-cost-calculator",
+  "name": "Meeting Cost Calculator",
+  "shortDescription": "Estimate and track real-time meeting cost with attendee rates, timer, and overrun visibility.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-12T23:49:48Z",
+  "category": "Productivity",
+  "status": "active",
+  "tags": [
+    "meeting",
+    "calculator",
+    "productivity",
+    "finance",
+    "timer"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "gpt-5.3-codex",
+    "startTime": "2026-03-12T23:49:58Z",
+    "endTime": "2026-03-12T23:52:08Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-20260312T234958Z-7f3934",
+    "notes": "Built a mobile-first meeting burn-rate tool with attendee management, timer controls, planned-vs-live cost, and keyboard shortcuts."
+  }
+}
