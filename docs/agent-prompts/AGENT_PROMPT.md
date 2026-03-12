@@ -99,6 +99,16 @@ Required snippet:
 
 All standalone apps MUST use the shared app shell so header/footer/theme behavior stays consistent across the gallery.
 
+This is not optional styling guidance. It is a repository-level convention enforced by shared runtime code and validation scripts.
+
+Repository enforcement already in place:
+- `/apps/shared/app-shell.js` injects the standard fixed header and footer into every compliant app.
+- The shell derives the header title from `meta[name="application-name"]`, the first `<h1>`, `.title`, or `[data-app-title]`.
+- The shell injects the standard theme toggle in the header and the standard `Back to __MAIN_SITE_NAME__` footer link.
+- The shell hides duplicate legacy Valley links and app-local theme toggles, so custom replacements are not allowed.
+- `/scripts/validate-apps.js` fails validation if the required shared-shell meta tags or `/apps/shared/app-shell.js` script are missing.
+- `npm run validate:apps` is therefore a mandatory compliance gate, not a suggestion.
+
 - Include all of these tags in `<head>`:
 
 ```html
@@ -115,11 +125,22 @@ All standalone apps MUST use the shared app shell so header/footer/theme behavio
 - MUST NOT add per-app custom top bars for app title/theme toggle unless the app explicitly requires additional controls.
 - MUST NOT add manual "Back to Valley of AI" footer markup; shared shell provides the standard footer link.
 - MUST NOT implement a separate app-local theme toggle system when using the shared shell.
+- MUST NOT hide, replace, offset off-screen, or visually suppress the shared shell header/footer.
+- MUST NOT create a second persistent header, footer, or global theme toggle that duplicates shell behavior.
+- MUST ensure the page title source exists so the shell can extract the app name correctly.
 
 This protocol guarantees:
 - Header top-left app name (derived from app title/heading)
 - Header top-right light/dark toggle
 - Footer centered link back to main site
+
+Mandatory implementation checklist for every generated app:
+1. Add all required shared-shell meta tags and the `/apps/shared/app-shell.js` script in `<head>`.
+2. Include a clear primary app title (`<h1>` preferred) so the shell header shows the correct app name.
+3. Use theme-aware CSS variables so shell theme switching works without per-app toggle code.
+4. Do not hand-code the common header or footer.
+5. Run `npm run validate:apps` and treat any missing shell requirement as a blocking failure.
+6. Manually verify in browser that the injected header and footer appear correctly on both mobile and desktop.
 
 #### Shared Shell Exception Protocol (Rare)
 
@@ -551,6 +572,8 @@ If any check fails, MUST NOT proceed to commit, PR, or deploy.
   <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
   <script src="/apps/shared/app-shell.js" defer></script>
 
+  <!-- Do not hand-code the common header/footer. The shared shell injects them. -->
+
   <style>
     :root {
       --primary: #6366f1;
@@ -569,16 +592,33 @@ If any check fails, MUST NOT proceed to commit, PR, or deploy.
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       padding: 1rem;
     }
+
+    main {
+      width: min(960px, 100%);
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+      font-size: clamp(2rem, 4vw, 3rem);
+    }
+
     /* App styles... */
   </style>
 </head>
 <body>
-  <!-- App content -->
+  <!-- Shared shell injects the standard header and footer automatically. -->
+  <!-- Do not add another global header, footer, or theme toggle here. -->
+
+  <main>
+    <!-- The shared shell uses this title for the header app name. -->
+    <h1>App Name</h1>
+
+    <!-- App content -->
+  </main>
+
   <script>
     // App logic
   </script>
@@ -999,6 +1039,7 @@ Every app MUST provide a link back to the main site via the shared shell footer 
 **Styling requirements:**
 - Footer link is centered and themed by shared shell.
 - Do not add duplicate manual back links.
+- If the shared shell footer is missing in the browser, treat that as a release blocker and fix shell compliance before submitting.
 
 ### 4. Additional Polish Items
 
@@ -1011,7 +1052,8 @@ Every app MUST provide a link back to the main site via the shared shell footer 
 - [ ] **Animations** – Respect `prefers-reduced-motion` media query
 - [ ] **Performance** – No janky animations, no layout thrashing
 - [ ] **Console Clean** – Zero errors or warnings in browser console
-- [ ] **Shell Compliance** – Use shared shell, or document and validate exception requirements
+- [ ] **Shell Compliance** – Use shared shell, confirm header/footer render in browser, and document/validate any exception requirements
+- [ ] **Validation Gate Passed** – `npm run validate:apps` passes with shared shell tags present
 
 ### Pre-Code Polish Summary
 
@@ -1033,6 +1075,9 @@ Before finalizing any app, verify:
 - [ ] App works on mobile (touch events if applicable)
 - [ ] Runtime smoke test passed (objects visible, controls responsive, score/state updates, win/loss, restart)
 - [ ] Dark mode looks good
+- [ ] Shared shell header is visible and shows the correct app name
+- [ ] Shared shell footer is visible and links back to the main site
+- [ ] `npm run validate:apps` passes without shell/analytics contract failures
 - [ ] No console errors or warnings
 - [ ] Thumbnail accurately represents the app
 - [ ] Log entry appended correctly
