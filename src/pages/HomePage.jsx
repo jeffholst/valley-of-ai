@@ -214,6 +214,7 @@ export default function HomePage() {
       <div className="valley-cinematic-bg" aria-hidden="true">
         <div className="valley-shooting-stars" />
       </div>
+      <div className="valley-light-veil" aria-hidden="true" />
 
       {animationsEnabled && (
       <div className="pterodactyl-sky" aria-hidden="true">

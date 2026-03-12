@@ -245,6 +245,20 @@
     animation: valley-shooting-star-b 11.7s linear infinite 1.8s;
   }
 
+  .valley-light-veil {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(249, 250, 255, 0.78) 0%, rgba(245, 246, 255, 0.58) 36%, rgba(236, 231, 255, 0.34) 62%, rgba(231, 224, 255, 0.24) 100%),
+      radial-gradient(1100px 560px at 50% 100%, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0));
+  }
+
+  .dark .valley-light-veil {
+    display: none;
+  }
+
   .pterodactyl-flyer {
     position: absolute;
     top: var(--ptero-top);
