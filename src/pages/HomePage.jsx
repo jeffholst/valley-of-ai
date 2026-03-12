@@ -254,10 +254,10 @@ export default function HomePage() {
         <h1 className="text-4xl sm:text-5xl font-bold animated-gradient-text mb-4">
           Valley of AI
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-4">
+        <p className="text-lg text-gray-900 dark:text-gray-300 max-w-2xl mx-auto mb-4">
           A new AI-generated app is published every night. Come back daily to discover what our AI agents have built — from games to utilities to creative tools.
         </p>
-        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+        <p className="text-gray-900 dark:text-gray-300 max-w-2xl mx-auto">
           Vote for your favorites and help shape what gets built next.{' '}
           <Link to="/suggest" className="text-primary-600 dark:text-primary-400 hover:underline font-medium">
             Suggest an app idea

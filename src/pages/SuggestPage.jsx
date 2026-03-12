@@ -148,7 +148,7 @@ export default function SuggestPage() {
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
           Suggest an App
         </h1>
-        <p className="text-gray-600 dark:text-gray-300">
+        <p className="text-gray-900 dark:text-gray-300">
           Have an idea for an AI-generated app? Share it with us and our agents might build it!
         </p>
       </div>
