@@ -101,8 +101,14 @@ export default function SuggestPage() {
 
   if (submitted) {
     return (
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-        <div className="card p-8">
+      <>
+        <div className="valley-cinematic-bg" aria-hidden="true">
+          <div className="valley-shooting-stars" />
+        </div>
+        <div className="valley-light-veil" aria-hidden="true" />
+
+        <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+          <div className="card p-8">
           <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -125,17 +131,24 @@ export default function SuggestPage() {
             Submit Another
           </button>
         </div>
-      </div>
+        </div>
+      </>
     )
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <>
+      <div className="valley-cinematic-bg" aria-hidden="true">
+        <div className="valley-shooting-stars" />
+      </div>
+      <div className="valley-light-veil" aria-hidden="true" />
+
+      <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
           Suggest an App
         </h1>
-        <p className="text-gray-600 dark:text-gray-300">
+        <p className="text-gray-900 dark:text-gray-300">
           Have an idea for an AI-generated app? Share it with us and our agents might build it!
         </p>
       </div>
@@ -262,6 +275,7 @@ export default function SuggestPage() {
           </button>
         </form>
       </div>
-    </div>
+      </div>
+    </>
   )
 }

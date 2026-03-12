@@ -211,6 +211,11 @@ export default function HomePage() {
 
   return (
     <>
+      <div className="valley-cinematic-bg" aria-hidden="true">
+        <div className="valley-shooting-stars" />
+      </div>
+      <div className="valley-light-veil" aria-hidden="true" />
+
       {animationsEnabled && (
       <div className="pterodactyl-sky" aria-hidden="true">
         {pterodactyls.map(pterodactyl => {
@@ -240,7 +245,7 @@ export default function HomePage() {
       </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero Section */}
       <div className="text-center mb-12">
         <p className="text-xl sm:text-2xl text-purple-400 font-medium mb-2">
@@ -249,10 +254,10 @@ export default function HomePage() {
         <h1 className="text-4xl sm:text-5xl font-bold animated-gradient-text mb-4">
           Valley of AI
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-4">
+        <p className="text-lg text-gray-900 dark:text-gray-300 max-w-2xl mx-auto mb-4">
           A new AI-generated app is published every night. Come back daily to discover what our AI agents have built — from games to utilities to creative tools.
         </p>
-        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+        <p className="text-gray-900 dark:text-gray-300 max-w-2xl mx-auto">
           Vote for your favorites and help shape what gets built next.{' '}
           <Link to="/suggest" className="text-primary-600 dark:text-primary-400 hover:underline font-medium">
             Suggest an app idea
