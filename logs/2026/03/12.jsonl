@@ -33,3 +33,4 @@
 {"timestamp":"2026-03-12T23:40:09Z","runId":"run-20260312T233733Z-5e2c9a","type":"STEP","step":"VALIDATE_APP","seq":6,"status":"completed","durationMs":2100,"details":{"command":"npm run validate:apps","appCount":44}}
 {"timestamp":"2026-03-12T23:40:32Z","runId":"run-20260312T233733Z-5e2c9a","type":"STEP","step":"GIT_BRANCH","seq":7,"status":"completed","durationMs":900,"details":{"branch":"feat/timezone-overlap-finder"}}
 {"timestamp":"2026-03-12T23:41:22Z","runId":"run-20260312T233733Z-5e2c9a","type":"STEP","step":"UPDATE_REGISTRY","seq":12,"status":"completed","durationMs":1800,"details":{"command":"npm run generate:apps","appCount":44}}
+{"timestamp":"2026-03-12T23:42:18Z","runId":"run-20260312T233733Z-5e2c9a","type":"STEP","step":"GIT_COMMIT","seq":8,"status":"completed","durationMs":1700,"details":{"sha":"6efe766","branch":"feat/timezone-overlap-finder"}}
