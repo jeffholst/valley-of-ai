@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Timezone Overlap Finder thumbnail">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#08111f"/>
+      <stop offset="100%" stop-color="#101d31"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#152740"/>
+      <stop offset="100%" stop-color="#1a3252"/>
+    </linearGradient>
+    <linearGradient id="overlap" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#36d399"/>
+      <stop offset="100%" stop-color="#90f8d2"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#bg)"/>
+  <circle cx="130" cy="60" r="120" fill="#4cc9f0" opacity="0.12"/>
+  <circle cx="700" cy="360" r="150" fill="#90f8d2" opacity="0.10"/>
+
+  <text x="38" y="56" font-size="30" font-weight="700" fill="#edf4ff" font-family="Avenir Next, Segoe UI, sans-serif">🌍 Timezone Overlap Finder</text>
+  <text x="38" y="82" font-size="14" fill="#9eb4d1" font-family="Avenir Next, Segoe UI, sans-serif">Find team meeting windows across cities and working-hour ranges</text>
+
+  <rect x="32" y="102" width="736" height="92" rx="16" fill="url(#panel)" stroke="#2c4364"/>
+
+  <rect x="48" y="118" width="220" height="60" rx="12" fill="#132237" stroke="#2c4364"/>
+  <text x="60" y="138" font-size="11" fill="#9eb4d1" font-family="Avenir Next, Segoe UI, sans-serif">PERSON A · TIMEZONE</text>
+  <text x="60" y="160" font-size="20" fill="#edf4ff" font-family="Avenir Next, Segoe UI, sans-serif">Los Angeles (PT)</text>
+
+  <rect x="290" y="118" width="220" height="60" rx="12" fill="#132237" stroke="#2c4364"/>
+  <text x="302" y="138" font-size="11" fill="#9eb4d1" font-family="Avenir Next, Segoe UI, sans-serif">PERSON B · TIMEZONE</text>
+  <text x="302" y="160" font-size="20" fill="#edf4ff" font-family="Avenir Next, Segoe UI, sans-serif">London (GMT/BST)</text>
+
+  <rect x="532" y="118" width="220" height="60" rx="12" fill="#132237" stroke="#2c4364"/>
+  <text x="544" y="138" font-size="11" fill="#9eb4d1" font-family="Avenir Next, Segoe UI, sans-serif">PERSON C · TIMEZONE</text>
+  <text x="544" y="160" font-size="20" fill="#edf4ff" font-family="Avenir Next, Segoe UI, sans-serif">Tokyo (JST)</text>
+
+  <rect x="32" y="212" width="736" height="206" rx="16" fill="url(#panel)" stroke="#2c4364"/>
+
+  <text x="50" y="238" font-size="12" fill="#9eb4d1" font-family="Avenir Next, Segoe UI, sans-serif">UTC timeline</text>
+  <g font-size="10" fill="#9eb4d1" font-family="Avenir Next, Segoe UI, sans-serif">
+    <text x="130" y="238">00</text><text x="155" y="238">01</text><text x="180" y="238">02</text><text x="205" y="238">03</text>
+    <text x="230" y="238">04</text><text x="255" y="238">05</text><text x="280" y="238">06</text><text x="305" y="238">07</text>
+    <text x="330" y="238">08</text><text x="355" y="238">09</text><text x="380" y="238">10</text><text x="405" y="238">11</text>
+    <text x="430" y="238">12</text><text x="455" y="238">13</text><text x="480" y="238">14</text><text x="505" y="238">15</text>
+    <text x="530" y="238">16</text><text x="555" y="238">17</text><text x="580" y="238">18</text><text x="605" y="238">19</text>
+    <text x="630" y="238">20</text><text x="655" y="238">21</text><text x="680" y="238">22</text><text x="705" y="238">23</text>
+  </g>
+
+  <g font-family="Avenir Next, Segoe UI, sans-serif" font-size="12" fill="#9eb4d1">
+    <text x="48" y="270">Person A</text>
+    <text x="48" y="302">Person B</text>
+    <text x="48" y="334">Person C</text>
+    <text x="48" y="366">Team overlap</text>
+  </g>
+
+  <g>
+    <rect x="120" y="254" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+    <rect x="143" y="254" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+    <rect x="166" y="254" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+    <rect x="189" y="254" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+    <rect x="212" y="254" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+    <rect x="235" y="254" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="258" y="254" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="281" y="254" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="304" y="254" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="327" y="254" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="350" y="254" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="373" y="254" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+    <rect x="396" y="254" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+    <rect x="419" y="254" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+  </g>
+
+  <g>
+    <rect x="120" y="286" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+    <rect x="143" y="286" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+    <rect x="166" y="286" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="189" y="286" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="212" y="286" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="235" y="286" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="258" y="286" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="281" y="286" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="304" y="286" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="327" y="286" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="350" y="286" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+    <rect x="373" y="286" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+  </g>
+
+  <g>
+    <rect x="120" y="318" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+    <rect x="143" y="318" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+    <rect x="166" y="318" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+    <rect x="189" y="318" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+    <rect x="212" y="318" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+    <rect x="235" y="318" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="258" y="318" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="281" y="318" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="304" y="318" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="327" y="318" width="22" height="18" rx="4" fill="#4cc9f0" opacity="0.6" stroke="#4cc9f0"/>
+    <rect x="350" y="318" width="22" height="18" rx="4" fill="#1a3252" stroke="#2c4364"/>
+  </g>
+
+  <g>
+    <rect x="120" y="350" width="22" height="18" rx="4" fill="#2e1a24" stroke="#8b3046"/>
+    <rect x="143" y="350" width="22" height="18" rx="4" fill="#2e1a24" stroke="#8b3046"/>
+    <rect x="166" y="350" width="22" height="18" rx="4" fill="#2e1a24" stroke="#8b3046"/>
+    <rect x="189" y="350" width="22" height="18" rx="4" fill="#2e1a24" stroke="#8b3046"/>
+    <rect x="212" y="350" width="22" height="18" rx="4" fill="#2e1a24" stroke="#8b3046"/>
+    <rect x="235" y="350" width="22" height="18" rx="4" fill="url(#overlap)" stroke="#36d399"/>
+    <rect x="258" y="350" width="22" height="18" rx="4" fill="url(#overlap)" stroke="#36d399"/>
+    <rect x="281" y="350" width="22" height="18" rx="4" fill="url(#overlap)" stroke="#36d399"/>
+    <rect x="304" y="350" width="22" height="18" rx="4" fill="url(#overlap)" stroke="#36d399"/>
+    <rect x="327" y="350" width="22" height="18" rx="4" fill="url(#overlap)" stroke="#36d399"/>
+    <rect x="350" y="350" width="22" height="18" rx="4" fill="#2e1a24" stroke="#8b3046"/>
+  </g>
+
+  <rect x="558" y="344" width="194" height="28" rx="14" fill="#132237" stroke="#2c4364"/>
+  <text x="572" y="363" font-size="13" fill="#90f8d2" font-family="Avenir Next, Segoe UI, sans-serif">Best overlap: 05:00-10:00 UTC</text>
+</svg>
