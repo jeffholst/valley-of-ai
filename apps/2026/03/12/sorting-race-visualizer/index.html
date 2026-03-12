@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sorting Race Visualizer - __MAIN_SITE_NAME__</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📊%3C/text%3E%3C/svg%3E">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);} 
+    gtag('js', new Date());
+    gtag('config', '__GA_MEASUREMENT_ID__');
+  </script>
+
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+  <script src="/apps/shared/app-shell.js" defer></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-soft: #27354a;
+      --text: #f8fafc;
+      --text-dim: #a8b3c6;
+      --accent: #22d3ee;
+      --accent-2: #8b5cf6;
+      --good: #22c55e;
+      --warn: #f59e0b;
+      --border: #344158;
+      --shadow: 0 14px 30px rgba(2, 8, 23, 0.35);
+    }
+
+    [data-theme="light"] {
+      --bg: #f3f7ff;
+      --surface: #ffffff;
+      --surface-soft: #ecf1fb;
+      --text: #172033;
+      --text-dim: #5d6b84;
+      --accent: #0284c7;
+      --accent-2: #7c3aed;
+      --good: #15803d;
+      --warn: #b45309;
+      --border: #d4deee;
+      --shadow: 0 12px 24px rgba(15, 23, 42, 0.1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(circle at 10% 10%, color-mix(in hsl, var(--accent), var(--bg) 84%), var(--bg));
+      color: var(--text);
+      min-height: 100vh;
+      padding: 88px 1rem 80px;
+    }
+
+    main {
+      max-width: 1040px;
+      margin: 0 auto;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .card {
+      background: linear-gradient(145deg, var(--surface), color-mix(in hsl, var(--surface), var(--surface-soft) 40%));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .header {
+      padding: 1.1rem 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.2rem, 2.3vw, 1.8rem);
+      letter-spacing: 0.01em;
+    }
+
+    .sub {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 0.7rem;
+      padding: 0 1.2rem 1.1rem;
+    }
+
+    .control {
+      display: grid;
+      gap: 0.35rem;
+      color: var(--text-dim);
+      font-size: 0.82rem;
+    }
+
+    select, input[type="range"], button {
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text);
+      padding: 0.56rem 0.7rem;
+      font: inherit;
+    }
+
+    button { cursor: pointer; font-weight: 600; }
+    button:hover { filter: brightness(1.08); }
+    button:focus-visible, select:focus-visible, input:focus-visible {
+      outline: 2px solid color-mix(in hsl, var(--accent), white 20%);
+      outline-offset: 2px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 0.55rem;
+      align-items: flex-end;
+    }
+
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: white; border: 0; }
+
+    .lanes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      padding: 1.1rem;
+    }
+
+    .lane {
+      padding: 0.8rem;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: color-mix(in hsl, var(--surface), var(--surface-soft) 20%);
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .lane-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+    }
+
+    .stats {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+
+    .chip {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.2rem 0.52rem;
+      background: var(--surface-soft);
+    }
+
+    .track {
+      height: 220px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, color-mix(in hsl, var(--surface-soft), transparent 40%), transparent);
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      padding: 0.6rem;
+      overflow: hidden;
+    }
+
+    .bar {
+      flex: 1 1 0;
+      min-width: 6px;
+      border-radius: 5px 5px 0 0;
+      transition: height 130ms ease;
+      background: linear-gradient(180deg, color-mix(in hsl, var(--accent), white 20%), var(--accent));
+    }
+
+    .bar.active { background: linear-gradient(180deg, #f43f5e, #e11d48); }
+    .bar.sorted { background: linear-gradient(180deg, #34d399, #22c55e); }
+
+    .winner {
+      padding: 0.95rem 1.2rem;
+      margin: 0 1.1rem 1.2rem;
+      border-radius: 12px;
+      border: 1px solid color-mix(in hsl, var(--good), var(--border) 70%);
+      color: color-mix(in hsl, var(--good), var(--text) 30%);
+      background: color-mix(in hsl, var(--good), transparent 88%);
+      font-weight: 700;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+    }
+
+    @media (max-width: 860px) {
+      .controls { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+      .lanes { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 520px) {
+      body { padding-top: 80px; }
+      .controls { grid-template-columns: 1fr; }
+      .btn-row { display: grid; grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="card">
+      <div class="header">
+        <div>
+          <h1>⚡ Sorting Race Visualizer</h1>
+          <div class="sub">Watch two algorithms race on the same data. Fast intuition for speed vs swaps.</div>
+        </div>
+      </div>
+      <div class="controls">
+        <label class="control">Algorithm A
+          <select id="algoA">
+            <option value="bubble">Bubble Sort</option>
+            <option value="insertion">Insertion Sort</option>
+            <option value="selection">Selection Sort</option>
+          </select>
+        </label>
+
+        <label class="control">Algorithm B
+          <select id="algoB">
+            <option value="insertion">Insertion Sort</option>
+            <option value="bubble">Bubble Sort</option>
+            <option value="selection">Selection Sort</option>
+          </select>
+        </label>
+
+        <label class="control">Array Size <span id="sizeLabel">28</span>
+          <input id="size" type="range" min="12" max="48" step="2" value="28">
+        </label>
+
+        <label class="control">Speed <span id="speedLabel">Normal</span>
+          <input id="speed" type="range" min="1" max="3" step="1" value="2">
+        </label>
+
+        <div class="btn-row">
+          <button id="shuffleBtn" type="button">Shuffle</button>
+          <button id="runBtn" class="btn-primary" type="button">Start Race</button>
+        </div>
+      </div>
+
+      <div class="lanes">
+        <article class="lane">
+          <div class="lane-head">
+            <strong id="titleA">Bubble Sort</strong>
+            <div class="stats">
+              <span class="chip" id="compA">Comparisons: 0</span>
+              <span class="chip" id="swapA">Swaps: 0</span>
+            </div>
+          </div>
+          <div class="track" id="trackA" aria-label="Algorithm A bars"></div>
+        </article>
+
+        <article class="lane">
+          <div class="lane-head">
+            <strong id="titleB">Insertion Sort</strong>
+            <div class="stats">
+              <span class="chip" id="compB">Comparisons: 0</span>
+              <span class="chip" id="swapB">Swaps: 0</span>
+            </div>
+          </div>
+          <div class="track" id="trackB" aria-label="Algorithm B bars"></div>
+        </article>
+      </div>
+
+      <div class="winner" id="winner">Pick your algorithms and press Start Race.</div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const speedMap = { 1: 180, 2: 90, 3: 35 };
+      const speedName = { 1: 'Slow', 2: 'Normal', 3: 'Turbo' };
+      const names = { bubble: 'Bubble Sort', insertion: 'Insertion Sort', selection: 'Selection Sort' };
+
+      const els = {
+        algoA: document.getElementById('algoA'),
+        algoB: document.getElementById('algoB'),
+        size: document.getElementById('size'),
+        speed: document.getElementById('speed'),
+        sizeLabel: document.getElementById('sizeLabel'),
+        speedLabel: document.getElementById('speedLabel'),
+        runBtn: document.getElementById('runBtn'),
+        shuffleBtn: document.getElementById('shuffleBtn'),
+        trackA: document.getElementById('trackA'),
+        trackB: document.getElementById('trackB'),
+        compA: document.getElementById('compA'),
+        compB: document.getElementById('compB'),
+        swapA: document.getElementById('swapA'),
+        swapB: document.getElementById('swapB'),
+        titleA: document.getElementById('titleA'),
+        titleB: document.getElementById('titleB'),
+        winner: document.getElementById('winner')
+      };
+
+      let base = [];
+      let raceOn = false;
+
+      const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+      const randomArray = (size) => Array.from({ length: size }, () => Math.floor(Math.random() * 95) + 5);
+
+      function render(track, arr, active = [], sortedFrom = null) {
+        track.textContent = '';
+        const frag = document.createDocumentFragment();
+        arr.forEach((value, idx) => {
+          const bar = document.createElement('div');
+          bar.className = 'bar';
+          if (active.includes(idx)) bar.classList.add('active');
+          if (sortedFrom !== null && idx >= sortedFrom) bar.classList.add('sorted');
+          bar.style.height = `${value}%`;
+          frag.appendChild(bar);
+        });
+        track.appendChild(frag);
+      }
+
+      function updateStats(prefix, stats) {
+        els[`comp${prefix}`].textContent = `Comparisons: ${stats.comparisons}`;
+        els[`swap${prefix}`].textContent = `Swaps: ${stats.swaps}`;
+      }
+
+      async function bubble(arr, prefix) {
+        const wait = speedMap[els.speed.value];
+        const stats = { comparisons: 0, swaps: 0, doneAt: 0 };
+        const a = [...arr];
+        const n = a.length;
+
+        for (let i = 0; i < n - 1; i++) {
+          for (let j = 0; j < n - i - 1; j++) {
+            if (!raceOn) return null;
+            stats.comparisons++;
+            if (a[j] > a[j + 1]) {
+              [a[j], a[j + 1]] = [a[j + 1], a[j]];
+              stats.swaps++;
+            }
+            render(els[`track${prefix}`], a, [j, j + 1], n - i);
+            updateStats(prefix, stats);
+            await sleep(wait);
+          }
+        }
+        stats.doneAt = performance.now();
+        render(els[`track${prefix}`], a, [], 0);
+        return stats;
+      }
+
+      async function insertion(arr, prefix) {
+        const wait = speedMap[els.speed.value];
+        const stats = { comparisons: 0, swaps: 0, doneAt: 0 };
+        const a = [...arr];
+
+        for (let i = 1; i < a.length; i++) {
+          let key = a[i];
+          let j = i - 1;
+          while (j >= 0) {
+            if (!raceOn) return null;
+            stats.comparisons++;
+            if (a[j] > key) {
+              a[j + 1] = a[j];
+              stats.swaps++;
+              j--;
+            } else {
+              break;
+            }
+            render(els[`track${prefix}`], a, [j + 1, j + 2], i);
+            updateStats(prefix, stats);
+            await sleep(wait);
+          }
+          a[j + 1] = key;
+          render(els[`track${prefix}`], a, [j + 1], i);
+          await sleep(wait);
+        }
+
+        stats.doneAt = performance.now();
+        render(els[`track${prefix}`], a, [], 0);
+        return stats;
+      }
+
+      async function selection(arr, prefix) {
+        const wait = speedMap[els.speed.value];
+        const stats = { comparisons: 0, swaps: 0, doneAt: 0 };
+        const a = [...arr];
+
+        for (let i = 0; i < a.length - 1; i++) {
+          let min = i;
+          for (let j = i + 1; j < a.length; j++) {
+            if (!raceOn) return null;
+            stats.comparisons++;
+            if (a[j] < a[min]) min = j;
+            render(els[`track${prefix}`], a, [min, j], i);
+            updateStats(prefix, stats);
+            await sleep(wait);
+          }
+          if (min !== i) {
+            [a[i], a[min]] = [a[min], a[i]];
+            stats.swaps++;
+          }
+        }
+
+        stats.doneAt = performance.now();
+        render(els[`track${prefix}`], a, [], 0);
+        return stats;
+      }
+
+      function setupData() {
+        base = randomArray(Number(els.size.value));
+        render(els.trackA, base);
+        render(els.trackB, base);
+        updateStats('A', { comparisons: 0, swaps: 0 });
+        updateStats('B', { comparisons: 0, swaps: 0 });
+        els.titleA.textContent = names[els.algoA.value];
+        els.titleB.textContent = names[els.algoB.value];
+        els.winner.textContent = 'Fresh dataset generated. Press Start Race.';
+      }
+
+      async function runRace() {
+        if (raceOn) {
+          raceOn = false;
+          els.runBtn.textContent = 'Start Race';
+          els.winner.textContent = 'Race stopped. Shuffle or start again.';
+          return;
+        }
+
+        raceOn = true;
+        els.runBtn.textContent = 'Stop';
+        els.winner.textContent = 'Racing...';
+
+        const algos = { bubble, insertion, selection };
+        const startAt = performance.now();
+
+        const [a, b] = await Promise.all([
+          algos[els.algoA.value](base, 'A'),
+          algos[els.algoB.value](base, 'B')
+        ]);
+
+        if (!a || !b) return;
+
+        raceOn = false;
+        els.runBtn.textContent = 'Start Race';
+
+        const aMs = Math.max(0, Math.round(a.doneAt - startAt));
+        const bMs = Math.max(0, Math.round(b.doneAt - startAt));
+
+        if (aMs === bMs) {
+          els.winner.textContent = `Tie! Both finished at ${aMs}ms. ${names[els.algoA.value]} swaps: ${a.swaps}, ${names[els.algoB.value]} swaps: ${b.swaps}.`;
+        } else if (aMs < bMs) {
+          els.winner.textContent = `🏆 ${names[els.algoA.value]} wins (${aMs}ms vs ${bMs}ms)!`;
+        } else {
+          els.winner.textContent = `🏆 ${names[els.algoB.value]} wins (${bMs}ms vs ${aMs}ms)!`;
+        }
+      }
+
+      els.size.addEventListener('input', () => {
+        els.sizeLabel.textContent = els.size.value;
+        if (!raceOn) setupData();
+      });
+
+      els.speed.addEventListener('input', () => {
+        els.speedLabel.textContent = speedName[els.speed.value];
+      });
+
+      els.algoA.addEventListener('change', () => { els.titleA.textContent = names[els.algoA.value]; });
+      els.algoB.addEventListener('change', () => { els.titleB.textContent = names[els.algoB.value]; });
+      els.shuffleBtn.addEventListener('click', setupData);
+      els.runBtn.addEventListener('click', runRace);
+
+      els.speedLabel.textContent = speedName[els.speed.value];
+      setupData();
+    })();
+  </script>
+</body>
+</html>
