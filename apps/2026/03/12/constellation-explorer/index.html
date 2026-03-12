@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Constellation Explorer - __MAIN_SITE_NAME__</title>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '__GA_MEASUREMENT_ID__');
+  </script>
+
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+  <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
+  <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">
+  <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
+  <script src="/apps/shared/app-shell.js" defer></script>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>">
+
+  <!-- Do not hand-code the common header/footer. The shared shell injects them. -->
+
+  <style>
+    :root {
+      --bg: #030508;
+      --surface: rgba(10, 15, 32, 0.88);
+      --surface-border: rgba(100, 140, 255, 0.22);
+      --text: #e8eeff;
+      --text-dim: #7888b8;
+      --accent: #7090ff;
+    }
+
+    [data-theme="light"] {
+      --bg: #020410;
+      --surface: rgba(5, 10, 30, 0.94);
+      --surface-border: rgba(120, 160, 255, 0.35);
+      --text: #eef0ff;
+      --text-dim: #8898cc;
+      --accent: #90aeff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      overflow: hidden;
+      height: 100svh;
+      width: 100vw;
+    }
+
+    #sky-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Controls — top right */
+    #controls {
+      position: fixed;
+      top: 64px;
+      right: 14px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ctrl-btn {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      color: var(--text-dim);
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .ctrl-btn:hover { color: var(--text); border-color: rgba(100,150,255,0.5); }
+    .ctrl-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(70,100,200,0.2); }
+
+    /* Constellation picker — bottom strip */
+    #picker {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      padding: 10px 14px 14px;
+      background: linear-gradient(0deg, rgba(3,5,16,0.97) 65%, transparent);
+    }
+
+    #picker-label {
+      font-size: 10px;
+      letter-spacing: 1.8px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+
+    #picker-list {
+      display: flex;
+      gap: 7px;
+      list-style: none;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+    #picker-list::-webkit-scrollbar { display: none; }
+
+    .picker-item {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      color: var(--text-dim);
+      padding: 6px 13px;
+      border-radius: 16px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+      backdrop-filter: blur(8px);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .picker-item:hover { color: var(--text); border-color: rgba(100,150,255,0.4); }
+    .picker-item.selected {
+      background: rgba(70,100,200,0.38);
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    /* Info panel — slides in from left */
+    #info-panel {
+      position: fixed;
+      top: 64px;
+      left: 14px;
+      width: min(330px, calc(100vw - 28px));
+      z-index: 20;
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 16px;
+      padding: 20px 18px 18px;
+      backdrop-filter: blur(18px);
+      transform: translateX(calc(-100% - 30px));
+      transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+      max-height: calc(100svh - 180px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(100,120,200,0.3) transparent;
+    }
+    #info-panel.open { transform: translateX(0); }
+
+    #info-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(100,120,200,0.15);
+      border: 1px solid var(--surface-border);
+      color: var(--text-dim);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    #info-close:hover { color: var(--text); background: rgba(100,120,200,0.35); }
+
+    #info-emoji { font-size: 30px; display: block; margin-bottom: 6px; }
+    #info-name { font-size: 21px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    #info-subtitle { font-size: 13px; color: var(--text-dim); margin-bottom: 10px; }
+
+    #info-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .info-badge {
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    #info-story { font-size: 13px; line-height: 1.72; color: #9aaac8; }
+
+    #info-stars { margin-top: 14px; }
+    #info-stars h3 {
+      font-size: 10px;
+      letter-spacing: 1.4px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .star-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .star-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .star-name { font-size: 12px; color: var(--text); flex: 1; }
+    .star-mag { font-size: 11px; color: var(--text-dim); font-family: monospace; }
+
+    /* Interaction hint */
+    #hint {
+      position: fixed;
+      bottom: 88px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(8,12,28,0.85);
+      border: 1px solid var(--surface-border);
+      color: var(--text-dim);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      backdrop-filter: blur(10px);
+      pointer-events: none;
+      white-space: nowrap;
+      transition: opacity 0.6s;
+      z-index: 10;
+    }
+    #hint.hidden { opacity: 0; }
+
+    /* Desktop: pick list on the right side */
+    @media (min-width: 768px) {
+      #picker {
+        top: 64px;
+        bottom: auto;
+        left: auto;
+        right: 64px;
+        width: auto;
+        background: none;
+        padding: 0;
+      }
+      #picker-list { flex-direction: column; align-items: flex-end; }
+      #hint { bottom: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="sky-canvas" aria-label="Interactive star map"></canvas>
+
+  <!-- The shared shell injects the standard header and footer automatically. -->
+  <h1 style="position:absolute;left:-9999px;pointer-events:none" aria-hidden="true">Constellation Explorer</h1>
+
+  <!-- Controls -->
+  <div id="controls" role="group" aria-label="View controls">
+    <button class="ctrl-btn active" id="toggle-lines" aria-pressed="true">Show Lines</button>
+    <button class="ctrl-btn active" id="toggle-labels" aria-pressed="true">Show Labels</button>
+  </div>
+
+  <!-- Constellation picker -->
+  <nav id="picker" aria-label="Constellation list">
+    <p id="picker-label">Constellations</p>
+    <ul id="picker-list" role="list"></ul>
+  </nav>
+
+  <!-- Info panel -->
+  <aside id="info-panel" aria-label="Constellation details" aria-live="polite">
+    <button id="info-close" aria-label="Close details">×</button>
+    <span id="info-emoji" aria-hidden="true">⭐</span>
+    <h2 id="info-name"></h2>
+    <p id="info-subtitle"></p>
+    <div id="info-badges" role="list" aria-label="Attributes"></div>
+    <p id="info-story"></p>
+    <section id="info-stars">
+      <h3>Brightest Stars</h3>
+      <div id="info-star-list"></div>
+    </section>
+  </aside>
+
+  <!-- Hint -->
+  <div id="hint" role="status" aria-live="polite">✨ Tap any constellation star to explore</div>
+
+  <script>
+  (() => {
+    'use strict';
+
+    // ─── Constellation Data ────────────────────────────────────────────────
+    const CONSTELLATIONS = [
+      {
+        id: 'orion',
+        name: 'Orion',
+        subtitle: 'The Hunter',
+        emoji: '🏹',
+        season: 'Winter',
+        seasonColor: '#60a5fa',
+        story: 'In Greek mythology, Orion was a giant huntsman placed among the stars by Zeus after his death. His distinctive belt — three equally-spaced stars — has guided sailors and travelers for thousands of years. The reddish Betelgeuse on his shoulder is a red supergiant nearing the end of its life; brilliant blue-white Rigel marks his foot. Orion\'s belt points southeast to Sirius, the brightest star in the sky.',
+        stars: [
+          { name: 'Betelgeuse', nx: 0.28, ny: 0.44, mag: 0.42, color: '#ff8855' },
+          { name: 'Bellatrix',  nx: 0.35, ny: 0.42, mag: 1.64, color: '#c8dcff' },
+          { name: 'Meissa',     nx: 0.32, ny: 0.36, mag: 3.30, color: '#c0d4ff' },
+          { name: 'Mintaka',    nx: 0.27, ny: 0.52, mag: 2.20, color: '#c0d8ff' },
+          { name: 'Alnilam',    nx: 0.31, ny: 0.53, mag: 1.70, color: '#c8e0ff' },
+          { name: 'Alnitak',    nx: 0.35, ny: 0.54, mag: 2.00, color: '#c0d8ff' },
+          { name: 'Saiph',      nx: 0.28, ny: 0.64, mag: 2.10, color: '#c0d4ff' },
+          { name: 'Rigel',      nx: 0.37, ny: 0.63, mag: 0.12, color: '#aac8ff' },
+        ],
+        lines: [[2,0],[2,1],[0,3],[3,4],[4,5],[1,5],[0,6],[5,7],[6,7]]
+      },
+      {
+        id: 'ursa-major',
+        name: 'Ursa Major',
+        subtitle: 'The Great Bear',
+        emoji: '🐻',
+        season: 'Spring',
+        seasonColor: '#4ade80',
+        story: 'The seven stars of the Big Dipper form the tail and hindquarters of the Great Bear. In Greek myth, Zeus transformed the nymph Callisto into a bear, then placed her in the sky. The bowl\'s "pointer" stars Dubhe and Merak aim directly at Polaris, the North Star — a trick navigators have used for millennia. The handle\'s middle star Mizar has a faint companion Alcor, a traditional test of eyesight.',
+        stars: [
+          { name: 'Alkaid',    nx: 0.12, ny: 0.09, mag: 1.86, color: '#c0d4ff' },
+          { name: 'Mizar',     nx: 0.16, ny: 0.12, mag: 2.27, color: '#c8dcff' },
+          { name: 'Alioth',    nx: 0.20, ny: 0.14, mag: 1.77, color: '#d0e0ff' },
+          { name: 'Megrez',    nx: 0.23, ny: 0.15, mag: 3.31, color: '#d8e8ff' },
+          { name: 'Phecda',    nx: 0.25, ny: 0.21, mag: 2.44, color: '#d0e0ff' },
+          { name: 'Merak',     nx: 0.21, ny: 0.22, mag: 2.37, color: '#d0e8ff' },
+          { name: 'Dubhe',     nx: 0.19, ny: 0.17, mag: 1.79, color: '#ffd090' },
+        ],
+        lines: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,3]]
+      },
+      {
+        id: 'ursa-minor',
+        name: 'Ursa Minor',
+        subtitle: 'The Little Bear',
+        emoji: '🌟',
+        season: 'Year-round',
+        seasonColor: '#a78bfa',
+        story: 'Ursa Minor holds Polaris — the North Star — almost precisely above Earth\'s north pole. While every other star wheels through the sky over the course of a night, Polaris stays fixed, making it the ultimate navigation anchor. In Greek myth, Arcas (son of Callisto) was placed here to join his mother. Due to precession, Polaris won\'t always be our north star — in 26,000 years the cycle repeats.',
+        stars: [
+          { name: 'Polaris', nx: 0.50, ny: 0.06, mag: 1.97, color: '#ffffc8' },
+          { name: 'Kochab',  nx: 0.44, ny: 0.15, mag: 2.08, color: '#ffc870' },
+          { name: 'Pherkad', nx: 0.47, ny: 0.17, mag: 3.05, color: '#d0e4ff' },
+          { name: 'Yildun',  nx: 0.50, ny: 0.19, mag: 4.36, color: '#d0e0ff' },
+          { name: 'ε UMi',   nx: 0.53, ny: 0.17, mag: 4.22, color: '#d0e0ff' },
+          { name: 'ζ UMi',   nx: 0.53, ny: 0.13, mag: 4.28, color: '#d0e0ff' },
+          { name: 'η UMi',   nx: 0.52, ny: 0.10, mag: 4.95, color: '#d0e0ff' },
+        ],
+        lines: [[0,6],[6,5],[5,4],[4,3],[3,2],[2,1]]
+      },
+      {
+        id: 'cassiopeia',
+        name: 'Cassiopeia',
+        subtitle: 'The Queen',
+        emoji: '👑',
+        season: 'Year-round',
+        seasonColor: '#fb923c',
+        story: 'Cassiopeia\'s distinctive W (or M) shape is one of the most recognizable patterns in the northern sky. She is circumpolar north of about 20°N — never setting below the horizon. In Greek myth, she was the vain queen of Aethiopia who boasted her beauty exceeded that of the sea-nymphs (Nereids), angering Poseidon. Her bright stars Schedar (orange) and Caph offer seasonal contrast against the blue-white members.',
+        stars: [
+          { name: 'Segin',     nx: 0.60, ny: 0.13, mag: 3.38, color: '#c8dcff' },
+          { name: 'Ruchbah',   nx: 0.63, ny: 0.09, mag: 2.68, color: '#d0e0ff' },
+          { name: 'Gamma Cas', nx: 0.67, ny: 0.12, mag: 2.47, color: '#c0d4ff' },
+          { name: 'Schedar',   nx: 0.71, ny: 0.09, mag: 2.24, color: '#ffd080' },
+          { name: 'Caph',      nx: 0.75, ny: 0.12, mag: 2.27, color: '#d8e8ff' },
+        ],
+        lines: [[0,1],[1,2],[2,3],[3,4]]
+      },
+      {
+        id: 'leo',
+        name: 'Leo',
+        subtitle: 'The Lion',
+        emoji: '🦁',
+        season: 'Spring',
+        seasonColor: '#4ade80',
+        story: 'Leo is one of the few constellations that genuinely resembles its namesake — a crouching lion facing right. Regulus ("little king"), at the base of the lion\'s mane sickle, is roughly 79 light-years away and spins so rapidly it is noticeably oblate. Denebola marks the tail. In Greek myth, this was the Nemean Lion slain by Heracles as his first labor, immortalized in the sky by Zeus.',
+        stars: [
+          { name: 'Regulus',  nx: 0.74, ny: 0.44, mag: 1.40, color: '#c8d8ff' },
+          { name: 'Algieba',  nx: 0.72, ny: 0.37, mag: 2.08, color: '#ffd080' },
+          { name: 'Adhafera', nx: 0.70, ny: 0.32, mag: 3.44, color: '#d0e0ff' },
+          { name: 'Rasalas',  nx: 0.67, ny: 0.33, mag: 3.88, color: '#ffd090' },
+          { name: 'Al Jabha', nx: 0.65, ny: 0.39, mag: 2.97, color: '#ffd090' },
+          { name: 'Denebola', nx: 0.84, ny: 0.38, mag: 2.14, color: '#c0d4ff' },
+          { name: 'Zosma',    nx: 0.80, ny: 0.35, mag: 2.56, color: '#d0e0ff' },
+          { name: 'Chertan',  nx: 0.78, ny: 0.41, mag: 3.33, color: '#d0e0ff' },
+        ],
+        lines: [[0,1],[1,2],[2,3],[3,4],[4,1],[0,7],[7,6],[6,5]]
+      },
+      {
+        id: 'scorpius',
+        name: 'Scorpius',
+        subtitle: 'The Scorpion',
+        emoji: '🦂',
+        season: 'Summer',
+        seasonColor: '#f87171',
+        story: 'Scorpius is one of the zodiac\'s most dramatic constellations — rich in bright stars and swept by the Milky Way. Its heart, Antares ("rival to Ares/Mars"), is a bloated red supergiant 700 times the Sun\'s diameter. In Greek myth, Scorpius was sent to kill Orion — they were placed on opposite sides of the sky and never appear together. The sweeping tail ends at stinger stars Shaula and Lesath.',
+        stars: [
+          { name: 'Antares',  nx: 0.74, ny: 0.62, mag: 1.06, color: '#ff5533' },
+          { name: 'σ Sco',    nx: 0.71, ny: 0.57, mag: 2.89, color: '#d0e0ff' },
+          { name: 'τ Sco',    nx: 0.70, ny: 0.54, mag: 2.82, color: '#d0e0ff' },
+          { name: 'Dschubba', nx: 0.68, ny: 0.52, mag: 2.29, color: '#c0d4ff' },
+          { name: 'Acrab',    nx: 0.66, ny: 0.51, mag: 2.62, color: '#c8dcff' },
+          { name: 'ε Sco',    nx: 0.76, ny: 0.66, mag: 2.29, color: '#ffc070' },
+          { name: 'ζ Sco',    nx: 0.76, ny: 0.72, mag: 3.59, color: '#d0e0ff' },
+          { name: 'η Sco',    nx: 0.74, ny: 0.76, mag: 3.33, color: '#d0e0ff' },
+          { name: 'θ Sco',    nx: 0.71, ny: 0.78, mag: 1.87, color: '#ffe090' },
+          { name: 'Shaula',   nx: 0.65, ny: 0.84, mag: 1.63, color: '#d4e8ff' },
+          { name: 'Lesath',   nx: 0.63, ny: 0.83, mag: 2.69, color: '#d0e0ff' },
+        ],
+        lines: [[4,3],[3,2],[2,1],[1,0],[0,5],[5,6],[6,7],[7,8],[8,9],[9,10]]
+      },
+      {
+        id: 'cygnus',
+        name: 'Cygnus',
+        subtitle: 'The Swan',
+        emoji: '🦢',
+        season: 'Summer',
+        seasonColor: '#f87171',
+        story: 'Cygnus soars along the Milky Way, its stars forming the famous Northern Cross. Deneb at the tail is among the most intrinsically luminous stars known — a supergiant shining 200,000 times brighter than the Sun from 2,600 light-years away. With Vega (Lyra) and Altair (Aquila), Deneb forms the Summer Triangle. The beak star Albireo is a showpiece double — gold paired with sapphire blue.',
+        stars: [
+          { name: 'Deneb',   nx: 0.82, ny: 0.19, mag: 1.25, color: '#e8f0ff' },
+          { name: 'Sadr',    nx: 0.79, ny: 0.27, mag: 2.23, color: '#e0e8ff' },
+          { name: 'Albireo', nx: 0.76, ny: 0.38, mag: 3.05, color: '#ffd080' },
+          { name: 'δ Cyg',   nx: 0.75, ny: 0.22, mag: 2.87, color: '#c8dcff' },
+          { name: 'ε Cyg',   nx: 0.83, ny: 0.29, mag: 2.48, color: '#ffd080' },
+        ],
+        lines: [[0,1],[1,2],[1,3],[1,4]]
+      },
+      {
+        id: 'canis-major',
+        name: 'Canis Major',
+        subtitle: 'The Great Dog',
+        emoji: '🐕',
+        season: 'Winter',
+        seasonColor: '#60a5fa',
+        story: 'Canis Major is home to Sirius — the "Dog Star" and the brightest star in the entire night sky at magnitude −1.46. Sirius is a close neighbor at just 8.6 light-years. Ancient Egyptians charted its heliacal rising (reappearance before dawn) as a herald of the annual Nile flood, marking the new year. To find Sirius, follow Orion\'s belt southeast for about 20 degrees — you can\'t miss it.',
+        stars: [
+          { name: 'Sirius',  nx: 0.31, ny: 0.73, mag: -1.46, color: '#eaf4ff' },
+          { name: 'Mirzam',  nx: 0.27, ny: 0.70, mag:  1.98, color: '#c8d8ff' },
+          { name: 'Wezen',   nx: 0.33, ny: 0.80, mag:  1.84, color: '#ffe0a0' },
+          { name: 'Adhara',  nx: 0.29, ny: 0.85, mag:  1.50, color: '#c0d4ff' },
+          { name: 'Aludra',  nx: 0.36, ny: 0.84, mag:  2.45, color: '#c8dcff' },
+          { name: 'Furud',   nx: 0.27, ny: 0.80, mag:  3.02, color: '#d0e0ff' },
+        ],
+        lines: [[0,1],[0,2],[2,3],[2,4],[3,5],[1,5]]
+      },
+      {
+        id: 'gemini',
+        name: 'Gemini',
+        subtitle: 'The Twins',
+        emoji: '♊',
+        season: 'Winter',
+        seasonColor: '#60a5fa',
+        story: 'Gemini\'s twin stars Castor and Pollux crown two parallel columns of stars. In Greek myth they were divine brothers — Castor mortal, Pollux immortal (son of Zeus). When Castor died, Pollux shared his immortality, and Zeus placed them together in the sky. Pollux is actually the brighter twin; at 34 light-years it is one of our closer bright stars. The annual Geminid meteor shower radiates from near Castor each December.',
+        stars: [
+          { name: 'Castor',  nx: 0.46, ny: 0.28, mag: 1.58, color: '#d8e8ff' },
+          { name: 'Pollux',  nx: 0.49, ny: 0.30, mag: 1.14, color: '#ffd080' },
+          { name: 'Alhena',  nx: 0.49, ny: 0.43, mag: 1.93, color: '#d0e0ff' },
+          { name: 'Wasat',   nx: 0.47, ny: 0.38, mag: 3.53, color: '#d0e0ff' },
+          { name: 'Mebsuda', nx: 0.43, ny: 0.36, mag: 2.98, color: '#ffd090' },
+          { name: 'Tejat',   nx: 0.41, ny: 0.44, mag: 3.15, color: '#c0d4ff' },
+          { name: 'Propus',  nx: 0.40, ny: 0.43, mag: 3.79, color: '#d0e0ff' },
+        ],
+        lines: [[0,4],[4,6],[6,5],[1,3],[3,2],[0,1],[4,3]]
+      },
+      {
+        id: 'lyra',
+        name: 'Lyra',
+        subtitle: 'The Lyre',
+        emoji: '🎵',
+        season: 'Summer',
+        seasonColor: '#f87171',
+        story: 'Despite its small size, Lyra contains Vega — one of the most important stars in the sky. The fifth-brightest star overall, Vega served as the prototype "white" star in the magnitude scale. In Greek myth, this is the lyre of Orpheus, whose music was so beautiful it charmed wild beasts and even the gods of the underworld. Due to Earth\'s axial precession, Vega will become our North Star in about 13,700 years.',
+        stars: [
+          { name: 'Vega',    nx: 0.89, ny: 0.26, mag: 0.03, color: '#d8ecff' },
+          { name: 'Sheliak', nx: 0.87, ny: 0.32, mag: 3.52, color: '#d0e0ff' },
+          { name: 'Sulafat', nx: 0.90, ny: 0.33, mag: 3.24, color: '#ffd080' },
+          { name: 'δ Lyr',   nx: 0.88, ny: 0.29, mag: 4.20, color: '#d0e0ff' },
+          { name: 'ζ Lyr',   nx: 0.92, ny: 0.27, mag: 4.36, color: '#c8d8ff' },
+        ],
+        lines: [[0,1],[0,2],[1,2],[0,3],[0,4],[3,1],[4,2]]
+      },
+    ];
+
+    // ─── State ─────────────────────────────────────────────────────────────
+    let selected = null;
+    let showLines = true;
+    let showLabels = true;
+    let frame = 0;
+    let hinted = false;
+    let bgStars = [];
+    let shootingStar = null;
+    let nextShootFrame = 300 + Math.floor(Math.random() * 300);
+
+    // ─── Canvas ────────────────────────────────────────────────────────────
+    const canvas = document.getElementById('sky-canvas');
+    const ctx = canvas.getContext('2d');
+    let W = 0, H = 0, DPR = 1;
+
+    function resize() {
+      DPR = window.devicePixelRatio || 1;
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width  = Math.round(W * DPR);
+      canvas.height = Math.round(H * DPR);
+      canvas.style.width  = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      generateBgStars();
+    }
+
+    function generateBgStars() {
+      bgStars = Array.from({ length: 450 }, () => ({
+        x:    Math.random(),
+        y:    Math.random(),
+        r:    Math.random() * 1.3 + 0.3,
+        base: Math.random() * 0.5 + 0.25,
+        ph:   Math.random() * Math.PI * 2,
+        sp:   Math.random() * 0.018 + 0.004,
+        warm: Math.random() < 0.08,
+      }));
+    }
+
+    // ─── Draw helpers ──────────────────────────────────────────────────────
+    function drawBackground() {
+      const g = ctx.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0.00, '#020408');
+      g.addColorStop(0.45, '#04061a');
+      g.addColorStop(0.80, '#080620');
+      g.addColorStop(1.00, '#10081a');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+
+      // Milky Way subtle glow
+      const mw = ctx.createRadialGradient(W*0.58, H*0.35, 0, W*0.58, H*0.4, W*0.5);
+      mw.addColorStop(0, 'rgba(55,75,130,0.07)');
+      mw.addColorStop(1, 'rgba(55,75,130,0)');
+      ctx.fillStyle = mw;
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    function drawBgStars() {
+      bgStars.forEach(s => {
+        const op = s.base + Math.sin(frame * s.sp + s.ph) * 0.18;
+        ctx.globalAlpha = Math.max(0.05, Math.min(1, op));
+        ctx.fillStyle = s.warm ? '#ffe8c0' : '#ffffff';
+        ctx.beginPath();
+        ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+    }
+
+    function starR(mag) {
+      return Math.max(2, Math.min(8, 4.2 - mag * 0.55));
+    }
+
+    function hexToRgb(hex) {
+      const h = hex.replace('#', '');
+      return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+    }
+
+    function drawConstellations() {
+      CONSTELLATIONS.forEach(c => {
+        const isSel   = selected && selected.id === c.id;
+        const isDimmed = selected && !isSel;
+
+        // Lines
+        if (showLines) {
+          c.lines.forEach(([a, b]) => {
+            const s1 = c.stars[a], s2 = c.stars[b];
+            ctx.beginPath();
+            ctx.moveTo(s1.nx * W, s1.ny * H);
+            ctx.lineTo(s2.nx * W, s2.ny * H);
+            if (isSel) {
+              ctx.strokeStyle = 'rgba(160,205,255,0.85)';
+              ctx.lineWidth = 1.6;
+            } else if (isDimmed) {
+              ctx.strokeStyle = 'rgba(70,100,170,0.14)';
+              ctx.lineWidth = 0.7;
+            } else {
+              ctx.strokeStyle = 'rgba(100,145,225,0.36)';
+              ctx.lineWidth = 1.0;
+            }
+            ctx.stroke();
+          });
+        }
+
+        // Stars
+        c.stars.forEach(s => {
+          const px = s.nx * W;
+          const py = s.ny * H;
+          const r  = starR(s.mag);
+          const op = isDimmed ? 0.28 : 1.0;
+          const [ri, gi, bi] = hexToRgb(s.color);
+
+          if (isSel) {
+            const glow = ctx.createRadialGradient(px, py, 0, px, py, r * 4);
+            glow.addColorStop(0, `rgba(${ri},${gi},${bi},0.55)`);
+            glow.addColorStop(1, `rgba(${ri},${gi},${bi},0)`);
+            ctx.beginPath();
+            ctx.arc(px, py, r * 4, 0, Math.PI * 2);
+            ctx.fillStyle = glow;
+            ctx.fill();
+          }
+
+          ctx.beginPath();
+          ctx.arc(px, py, r, 0, Math.PI * 2);
+          ctx.globalAlpha = op;
+          ctx.fillStyle = s.color;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        });
+
+        // Labels
+        if (showLabels && !isDimmed) {
+          const cx = c.stars.reduce((t, s) => t + s.nx, 0) / c.stars.length;
+          const cy = c.stars.reduce((t, s) => t + s.ny, 0) / c.stars.length;
+          ctx.textAlign = 'center';
+          if (isSel) {
+            ctx.font = 'bold 13px system-ui,sans-serif';
+            ctx.fillStyle = 'rgba(200,220,255,0.95)';
+          } else {
+            ctx.font = '11px system-ui,sans-serif';
+            ctx.fillStyle = 'rgba(130,160,220,0.60)';
+          }
+          ctx.fillText(c.name, cx * W, cy * H - 18);
+        }
+      });
+    }
+
+    function drawShootingStar() {
+      if (!shootingStar) return;
+      const { x, y, dx, dy, tail } = shootingStar;
+      const tx = x - dx * tail;
+      const ty = y - dy * tail;
+      const g = ctx.createLinearGradient(tx, ty, x, y);
+      g.addColorStop(0, 'rgba(180,210,255,0)');
+      g.addColorStop(0.6, 'rgba(200,220,255,0.35)');
+      g.addColorStop(1, 'rgba(255,255,255,0.9)');
+      ctx.beginPath();
+      ctx.moveTo(tx, ty);
+      ctx.lineTo(x, y);
+      ctx.strokeStyle = g;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    function updateShootingStar() {
+      if (shootingStar) {
+        shootingStar.x += shootingStar.dx * 9;
+        shootingStar.y += shootingStar.dy * 9;
+        shootingStar.life--;
+        if (shootingStar.life <= 0) shootingStar = null;
+      } else {
+        nextShootFrame--;
+        if (nextShootFrame <= 0) {
+          nextShootFrame = 250 + Math.floor(Math.random() * 350);
+          const ang = (Math.random() * 35 + 18) * Math.PI / 180;
+          shootingStar = {
+            x: Math.random() * W * 0.55,
+            y: Math.random() * H * 0.30,
+            dx: Math.cos(ang),
+            dy: Math.sin(ang),
+            tail: 90,
+            life: 55,
+          };
+        }
+      }
+    }
+
+    // ─── Render loop ───────────────────────────────────────────────────────
+    function render() {
+      frame++;
+      ctx.clearRect(0, 0, W, H);
+      drawBackground();
+      drawBgStars();
+      drawConstellations();
+      updateShootingStar();
+      drawShootingStar();
+      requestAnimationFrame(render);
+    }
+
+    // ─── Hit detection ─────────────────────────────────────────────────────
+    function hitTest(cx, cy) {
+      const nx = cx / W;
+      const ny = cy / H;
+      let best = null, bestDist = Infinity;
+      CONSTELLATIONS.forEach(c => {
+        c.stars.forEach(s => {
+          const d = Math.hypot(s.nx - nx, s.ny - ny);
+          if (d < bestDist) { bestDist = d; best = c; }
+        });
+      });
+      return bestDist < 0.055 ? best : null;
+    }
+
+    // ─── Select ────────────────────────────────────────────────────────────
+    function selectConstellation(c) {
+      selected = c;
+      document.querySelectorAll('.picker-item').forEach(el => {
+        el.classList.toggle('selected', el.dataset.id === (c ? c.id : ''));
+      });
+
+      const panel = document.getElementById('info-panel');
+      if (!c) { panel.classList.remove('open'); return; }
+
+      document.getElementById('info-emoji').textContent    = c.emoji;
+      document.getElementById('info-name').textContent     = c.name;
+      document.getElementById('info-subtitle').textContent = c.subtitle;
+      document.getElementById('info-story').textContent    = c.story;
+
+      document.getElementById('info-badges').innerHTML = `
+        <span class="info-badge" style="background:${c.seasonColor}18;color:${c.seasonColor};border:1px solid ${c.seasonColor}40">
+          ${c.season}
+        </span>
+        <span class="info-badge" style="background:rgba(90,110,190,0.18);color:#90a8e8;border:1px solid rgba(90,110,190,0.3)">
+          ${c.stars.length} stars
+        </span>
+      `;
+
+      document.getElementById('info-star-list').innerHTML = c.stars
+        .slice().sort((a, b) => a.mag - b.mag).slice(0, 5)
+        .map(s => `
+          <div class="star-row">
+            <span class="star-dot" style="background:${s.color};box-shadow:0 0 5px ${s.color}99"></span>
+            <span class="star-name">${s.name}</span>
+            <span class="star-mag">mag ${s.mag >= 0 ? '+' : ''}${s.mag.toFixed(1)}</span>
+          </div>
+        `).join('');
+
+      panel.classList.add('open');
+
+      if (!hinted) {
+        hinted = true;
+        document.getElementById('hint').classList.add('hidden');
+      }
+    }
+
+    // ─── Events ────────────────────────────────────────────────────────────
+    canvas.addEventListener('click', e => {
+      selectConstellation(hitTest(e.clientX, e.clientY));
+    });
+
+    canvas.addEventListener('touchend', e => {
+      e.preventDefault();
+      const t = e.changedTouches[0];
+      selectConstellation(hitTest(t.clientX, t.clientY));
+    }, { passive: false });
+
+    canvas.addEventListener('mousemove', e => {
+      canvas.style.cursor = hitTest(e.clientX, e.clientY) ? 'pointer' : 'crosshair';
+    });
+
+    document.getElementById('info-close').addEventListener('click', () => selectConstellation(null));
+
+    document.getElementById('toggle-lines').addEventListener('click', function() {
+      showLines = !showLines;
+      this.textContent = showLines ? 'Hide Lines' : 'Show Lines';
+      this.classList.toggle('active', showLines);
+      this.setAttribute('aria-pressed', showLines);
+    });
+
+    document.getElementById('toggle-labels').addEventListener('click', function() {
+      showLabels = !showLabels;
+      this.textContent = showLabels ? 'Hide Labels' : 'Show Labels';
+      this.classList.toggle('active', showLabels);
+      this.setAttribute('aria-pressed', showLabels);
+    });
+
+    window.addEventListener('resize', resize);
+
+    // ─── Build picker ──────────────────────────────────────────────────────
+    const list = document.getElementById('picker-list');
+    CONSTELLATIONS.forEach(c => {
+      const li = document.createElement('li');
+      li.className = 'picker-item';
+      li.dataset.id = c.id;
+      li.textContent = `${c.emoji} ${c.name}`;
+      li.setAttribute('role', 'button');
+      li.setAttribute('tabindex', '0');
+      li.addEventListener('click', () => selectConstellation(selected?.id === c.id ? null : c));
+      li.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); li.click(); }
+      });
+      list.appendChild(li);
+    });
+
+    // Hide hint after 6 s
+    setTimeout(() => document.getElementById('hint').classList.add('hidden'), 6000);
+
+    // ─── Init ──────────────────────────────────────────────────────────────
+    resize();
+    render();
+  })();
+  </script>
+</body>
+</html>
