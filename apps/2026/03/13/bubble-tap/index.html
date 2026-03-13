@@ -97,6 +97,7 @@
     .score-item {
       text-align: center;
       flex: 1;
+      min-width: 80px;
     }
 
     .score-label {
@@ -544,7 +545,7 @@
 
       function updateUI() {
         document.getElementById('scoreValue').textContent = gameState.score;
-        document.getElementById('timerValue').textContent = Math.max(0, gameState.timeLeft);
+        document.getElementById('timerValue').textContent = Math.max(0, Math.floor(gameState.timeLeft));
         document.getElementById('comboValue').textContent = gameState.combo;
         document.getElementById('bubblesPopped').textContent = gameState.successfulClicks;
         document.getElementById('bestScore').textContent = gameState.bestScore;
@@ -719,6 +720,13 @@
           setupDifficulty(btn.dataset.difficulty);
         });
       });
+
+      // Set Medium difficulty as default
+      const normalBtn = document.querySelector('[data-difficulty="normal"]');
+      if (normalBtn) {
+        normalBtn.classList.add('active');
+        setupDifficulty('normal');
+      }
 
       startBtn.addEventListener('click', () => {
         gameStartTime = performance.now();
