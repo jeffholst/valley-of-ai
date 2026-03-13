@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0e27;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#141934;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glowGradient" cx="50%" cy="30%">
+      <stop offset="0%" style="stop-color:#4cc9f0;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#4cc9f0;stop-opacity:0" />
+    </radialGradient>
+    <filter id="bubbleGlow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="450" fill="url(#bgGradient)"/>
+  <rect width="800" height="450" fill="url(#glowGradient)"/>
+
+  <!-- Title -->
+  <text x="400" y="35" font-size="32" font-weight="700" text-anchor="middle" fill="#4cc9f0" font-family="system-ui, sans-serif">
+    🫧 Bubble Tap
+  </text>
+  <text x="400" y="65" font-size="14" text-anchor="middle" fill="#a0aec0" font-family="system-ui, sans-serif" opacity="0.8">
+    Tap fast, pop bubbles, chase the high score
+  </text>
+
+  <!-- Score Display Header -->
+  <rect x="60" y="85" width="680" height="55" rx="8" fill="#1a1f3a" stroke="#4cc9f0" stroke-width="1" opacity="0.5"/>
+  
+  <text x="150" y="105" font-size="11" fill="#a0aec0" font-family="system-ui, sans-serif" font-weight="600" text-transform="uppercase">Score</text>
+  <text x="150" y="125" font-size="24" fill="#4cc9f0" font-family="system-ui, sans-serif" font-weight="700">450</text>
+
+  <text x="350" y="105" font-size="11" fill="#a0aec0" font-family="system-ui, sans-serif" font-weight="600" text-transform="uppercase">Time</text>
+  <text x="350" y="125" font-size="24" fill="#4cc9f0" font-family="system-ui, sans-serif" font-weight="700">12s</text>
+
+  <text x="550" y="105" font-size="11" fill="#a0aec0" font-family="system-ui, sans-serif" font-weight="600" text-transform="uppercase">Combo</text>
+  <text x="550" y="125" font-size="24" fill="#4cc9f0" font-family="system-ui, sans-serif" font-weight="700">7x</text>
+
+  <!-- Game Canvas -->
+  <rect x="100" y="160" width="600" height="200" rx="12" fill="#14193a" stroke="#4cc9f0" stroke-width="2" opacity="0.4"/>
+
+  <!-- Bubbles in canvas -->
+  <!-- Bubble 1 (top-left) -->
+  <circle cx="180" cy="200" r="25" fill="none" stroke="#4cc9f0" stroke-width="2.5" opacity="0.8" filter="url(#bubbleGlow)"/>
+  <circle cx="180" cy="200" r="22" fill="#4cc9f0" opacity="0.15"/>
+
+  <!-- Bubble 2 (top-right) -->
+  <circle cx="550" cy="185" r="28" fill="none" stroke="#4cc9f0" stroke-width="2.5" opacity="0.7"/>
+  <circle cx="550" cy="185" r="25" fill="#4cc9f0" opacity="0.12"/>
+
+  <!-- Bubble 3 (middle) -->
+  <circle cx="400" cy="240" r="30" fill="none" stroke="#4cc9f0" stroke-width="2.5" opacity="0.85" filter="url(#bubbleGlow)"/>
+  <circle cx="400" cy="240" r="27" fill="#4cc9f0" opacity="0.18"/>
+
+  <!-- Bubble 4 (bottom-left) -->
+  <circle cx="260" cy="310" r="22" fill="none" stroke="#4cc9f0" stroke-width="2" opacity="0.6"/>
+  <circle cx="260" cy="310" r="19" fill="#4cc9f0" opacity="0.1"/>
+
+  <!-- Bubble 5 (bottom-right, popped effect) -->
+  <circle cx="620" cy="305" r="24" fill="none" stroke="#90ee90" stroke-width="2" opacity="0.5"/>
+  <circle cx="620" cy="305" r="21" fill="#90ee90" opacity="0.08"/>
+
+  <!-- Particle effects around popped bubble -->
+  <circle cx="635" cy="290" r="4" fill="#90ee90" opacity="0.6"/>
+  <circle cx="645" cy="300" r="3" fill="#90ee90" opacity="0.4"/>
+  <circle cx="640" cy="315" r="3.5" fill="#90ee90" opacity="0.5"/>
+  <circle cx="625" cy="325" r="3" fill="#90ee90" opacity="0.4"/>
+  <circle cx="615" cy="320" r="2.5" fill="#90ee90" opacity="0.3"/>
+
+  <!-- Difficulty selector area -->
+  <rect x="60" y="375" width="680" height="50" rx="8" fill="#1a1f3a" stroke="#4cc9f0" stroke-width="1" opacity="0.5"/>
+  
+  <text x="75" y="395" font-size="11" fill="#a0aec0" font-family="system-ui, sans-serif" font-weight="600">Difficulty:</text>
+  
+  <!-- Easy button -->
+  <rect x="150" y="380" width="70" height="30" rx="4" fill="rgba(76, 201, 240, 0.1)" stroke="#4cc9f0" stroke-width="1"/>
+  <text x="185" y="402" font-size="12" text-anchor="middle" fill="#f0f4ff" font-family="system-ui, sans-serif" font-weight="600">Easy</text>
+
+  <!-- Normal button (active) -->
+  <rect x="240" y="380" width="70" height="30" rx="4" fill="#4cc9f0" stroke="#4cc9f0" stroke-width="1"/>
+  <text x="275" y="402" font-size="12" text-anchor="middle" fill="#0a0e27" font-family="system-ui, sans-serif" font-weight="600">Normal</text>
+
+  <!-- Hard button -->
+  <rect x="330" y="380" width="70" height="30" rx="4" fill="rgba(76, 201, 240, 0.1)" stroke="#4cc9f0" stroke-width="1"/>
+  <text x="365" y="402" font-size="12" text-anchor="middle" fill="#f0f4ff" font-family="system-ui, sans-serif" font-weight="600">Hard</text>
+
+  <!-- Start Game button -->
+  <rect x="540" y="380" width="140" height="35" rx="6" fill="#4cc9f0"/>
+  <text x="610" y="407" font-size="13" text-anchor="middle" fill="#0a0e27" font-family="system-ui, sans-serif" font-weight="700">Start Game</text>
+
+  <!-- Decorative elements -->
+  <circle cx="100" cy="50" r="2" fill="#4cc9f0" opacity="0.3"/>
+  <circle cx="750" cy="80" r="1.5" fill="#4cc9f0" opacity="0.2"/>
+  <circle cx="120" cy="420" r="1" fill="#4cc9f0" opacity="0.15"/>
+  <circle cx="700" cy="400" r="2" fill="#4cc9f0" opacity="0.25"/>
+</svg>
