@@ -145,6 +145,68 @@
     overflow: hidden;
   }
 
+  .valley-mountain-row-back {
+    position: absolute;
+    left: -8%;
+    right: -8%;
+    bottom: -9%;
+    height: 88%;
+    z-index: 1;
+    background:
+      radial-gradient(62% 48% at 50% 100%, rgba(83, 62, 128, 0.28) 0%, rgba(44, 31, 78, 0.22) 45%, rgba(20, 14, 38, 0) 80%),
+      linear-gradient(180deg, #403061 0%, #2b1f47 54%, #1a122f 100%);
+    clip-path: polygon(
+      0% 100%,
+      0% 54%,
+      6% 30%,
+      12% 48%,
+      18% 24%,
+      25% 45%,
+      33% 16%,
+      40% 43%,
+      48% 22%,
+      56% 44%,
+      64% 14%,
+      72% 41%,
+      80% 19%,
+      88% 47%,
+      94% 33%,
+      100% 52%,
+      100% 100%
+    );
+  }
+
+  .valley-mountain-row-mid {
+    position: absolute;
+    left: -7%;
+    right: -7%;
+    bottom: -7%;
+    height: 79%;
+    z-index: 2;
+    transform: translateX(2.8%);
+    background:
+      radial-gradient(58% 46% at 50% 100%, rgba(170, 118, 225, 0.33) 0%, rgba(104, 64, 157, 0.22) 44%, rgba(38, 18, 63, 0) 78%),
+      linear-gradient(180deg, #664194 0%, #482d6f 53%, #2a1843 100%);
+    clip-path: polygon(
+      0% 100%,
+      0% 64%,
+      8% 43%,
+      15% 61%,
+      23% 36%,
+      31% 59%,
+      39% 25%,
+      47% 56%,
+      55% 34%,
+      63% 57%,
+      71% 23%,
+      79% 54%,
+      87% 32%,
+      94% 58%,
+      100% 45%,
+      100% 100%
+    );
+  }
+
   .valley-cinematic-bg::before {
     content: '';
     position: absolute;
@@ -188,10 +250,10 @@
     right: -6%;
     bottom: -4%;
     height: 70%;
-    z-index: 2;
+    z-index: 3;
     background:
-      radial-gradient(56% 44% at 50% 100%, rgba(208, 98, 255, 0.5) 0%, rgba(149, 58, 221, 0.24) 40%, rgba(35, 12, 56, 0) 78%),
-      linear-gradient(180deg, #5d2f93 0%, #3a1b66 52%, #1b0b34 100%);
+      radial-gradient(56% 44% at 50% 100%, rgba(224, 170, 255, 0.54) 0%, rgba(177, 109, 238, 0.27) 40%, rgba(62, 31, 98, 0) 78%),
+      linear-gradient(180deg, #9360c5 0%, #6f45a5 52%, #4b2b78 100%);
     clip-path: polygon(
       0% 100%,
       0% 74%,
@@ -220,7 +282,7 @@
   .valley-shooting-stars {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 4;
     pointer-events: none;
     -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 92%);
     mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 92%);

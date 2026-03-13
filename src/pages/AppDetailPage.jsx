@@ -20,6 +20,8 @@ export default function AppDetailPage() {
     return (
       <>
         <div className="valley-cinematic-bg" aria-hidden="true">
+          <div className="valley-mountain-row-back" />
+          <div className="valley-mountain-row-mid" />
           <div className="valley-shooting-stars" />
         </div>
         <div className="valley-light-veil" aria-hidden="true" />
@@ -54,6 +56,8 @@ export default function AppDetailPage() {
   return (
     <>
       <div className="valley-cinematic-bg" aria-hidden="true">
+        <div className="valley-mountain-row-back" />
+        <div className="valley-mountain-row-mid" />
         <div className="valley-shooting-stars" />
       </div>
       <div className="valley-light-veil" aria-hidden="true" />
