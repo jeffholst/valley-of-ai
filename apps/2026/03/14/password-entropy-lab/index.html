@@ -99,19 +99,139 @@
       background: color-mix(in srgb, var(--surface) 80%, transparent);
       border-radius: 12px; padding: .75rem;
       border: 1px solid color-mix(in srgb, var(--muted) 18%, transparent);
+      min-width: 0; overflow: hidden;
     }
     .stat small { color: var(--muted); display:block; }
-    .stat strong { font-size: 1.15rem; }
+    .stat strong { font-size: 1.15rem; display: block; overflow-wrap: anywhere; word-break: break-word; }
     .checks { list-style: none; margin: 0; padding: 0; display:grid; gap:.45rem; }
     .checks li { font-size: .95rem; }
     .ok { color: var(--good); }
     .no { color: var(--bad); }
+    /* Info button */
+    .info-btn {
+      all: unset; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: color-mix(in srgb, var(--accent) 22%, transparent);
+      color: var(--accent); font-size: .7rem; font-weight: 700; line-height: 1;
+      border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+      transition: background .15s;
+      flex-shrink: 0;
+    }
+    .info-btn:hover, .info-btn:focus-visible {
+      background: color-mix(in srgb, var(--accent) 40%, transparent);
+    }
+    .stat small { display: flex; align-items: center; gap: .3rem; }
+    .input-row label { display: flex; align-items: center; gap: .35rem; }
+
+    /* Modal overlay */
+    .info-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; align-items: flex-end; justify-content: center;
+      background: rgba(0,0,0,.45);
+      opacity: 0; visibility: hidden;
+      transition: opacity .2s ease, visibility .2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .info-overlay.open { opacity: 1; visibility: visible; }
+
+    /* Slide-up panel */
+    .info-panel {
+      width: 100%; max-width: 480px;
+      max-height: 70vh; overflow-y: auto;
+      background: var(--surface); color: var(--text);
+      border-radius: 20px 20px 0 0;
+      border: 1px solid color-mix(in srgb, var(--muted) 25%, transparent);
+      border-bottom: none;
+      box-shadow: 0 -8px 50px rgba(0,0,0,.35);
+      padding: 0 1.25rem 1.5rem;
+      transform: translateY(100%);
+      transition: transform .28s cubic-bezier(.22,1,.36,1);
+    }
+    .info-overlay.open .info-panel { transform: translateY(0); }
+
+    /* Drag handle */
+    .info-handle {
+      display: flex; justify-content: center; padding: .65rem 0 .3rem;
+      cursor: grab; position: sticky; top: 0; background: var(--surface); z-index: 1;
+    }
+    .info-handle::before {
+      content: ''; width: 36px; height: 4px; border-radius: 99px;
+      background: color-mix(in srgb, var(--muted) 50%, transparent);
+    }
+
+    /* Close button */
+    .info-close {
+      all: unset; cursor: pointer; position: absolute; top: .65rem; right: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: color-mix(in srgb, var(--muted) 18%, transparent);
+      color: var(--muted); font-size: 1.1rem; font-weight: 700;
+      transition: background .15s, color .15s;
+    }
+    .info-close:hover, .info-close:focus-visible {
+      background: color-mix(in srgb, var(--bad) 20%, transparent); color: var(--bad);
+    }
+
+    .info-panel h4 { margin: .4rem 0 .5rem; font-size: 1.05rem; color: var(--accent); padding-right: 2rem; }
+    .info-panel p { margin: 0 0 .5rem; color: var(--muted); font-size: .88rem; line-height: 1.55; }
+    .info-panel .example {
+      margin: .5rem 0; padding: .5rem .7rem; border-radius: 8px;
+      background: color-mix(in srgb, var(--bg) 60%, transparent);
+      font-family: monospace; font-size: .82rem; color: var(--text);
+    }
+
+    /* On wider screens, center as a card instead of bottom sheet */
+    @media (min-width: 600px) {
+      .info-overlay { align-items: center; }
+      .info-panel {
+        border-radius: 16px; border-bottom: 1px solid color-mix(in srgb, var(--muted) 25%, transparent);
+        max-height: 60vh;
+        transform: translateY(30px); opacity: 0;
+        transition: transform .25s cubic-bezier(.22,1,.36,1), opacity .25s ease;
+      }
+      .info-overlay.open .info-panel { transform: translateY(0); opacity: 1; }
+      .info-handle { display: none; }
+    }
+
+    /* Generator options */
+    .gen-options {
+      display: flex; flex-wrap: wrap; gap: .4rem .8rem;
+      padding: .55rem .7rem; border-radius: 10px;
+      background: color-mix(in srgb, var(--surface) 70%, transparent);
+      border: 1px solid color-mix(in srgb, var(--muted) 15%, transparent);
+    }
+    .gen-options label {
+      display: inline-flex; align-items: center; gap: .35rem;
+      font-size: .85rem; font-weight: 500; cursor: pointer;
+      user-select: none; white-space: nowrap;
+    }
+    .gen-options input[type="checkbox"] {
+      width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer;
+      border-radius: 4px; margin: 0;
+    }
+    .gen-options .len-group {
+      display: inline-flex; align-items: center; gap: .3rem;
+    }
+    .gen-options .len-group input[type="number"] {
+      width: 56px; padding: .3rem .4rem; font-size: .85rem;
+      border-radius: 8px; text-align: center;
+    }
+
     @media (min-width: 760px) {
       .grid.two { grid-template-columns: 1.25fr .9fr; align-items: start; }
     }
   </style>
 </head>
 <body>
+  <!-- Info modal (single reusable panel) -->
+  <div class="info-overlay" id="infoOverlay" aria-hidden="true">
+    <div class="info-panel" role="dialog" aria-labelledby="infoPanelTitle">
+      <div class="info-handle"></div>
+      <button class="info-close" id="infoClose" aria-label="Close" type="button">✕</button>
+      <div id="infoPanelBody"></div>
+    </div>
+  </div>
+
   <main>
     <section class="card stack" aria-label="Password Entropy Lab">
       <header>
@@ -122,32 +242,61 @@
       <div class="grid two">
         <div class="stack">
           <div class="input-row">
-            <label for="pwd">Password</label>
+            <label for="pwd">Password
+              <button class="info-btn" type="button" data-info="pwd" aria-label="What is this?">?</button>
+            </label>
             <input id="pwd" type="password" autocomplete="off" placeholder="Type or generate a password" aria-describedby="strengthLabel">
           </div>
           <div class="controls">
             <button id="toggleView" class="secondary" type="button" aria-pressed="false">Show</button>
-            <button id="gen" type="button">Generate strong password</button>
+            <button id="gen" type="button">Generate</button>
             <button id="clear" class="secondary" type="button">Clear</button>
           </div>
 
+          <div class="gen-options" aria-label="Generator options">
+            <label><input type="checkbox" id="optLower" checked> a–z</label>
+            <label><input type="checkbox" id="optUpper" checked> A–Z</label>
+            <label><input type="checkbox" id="optNumbers" checked> 0–9</label>
+            <label><input type="checkbox" id="optSymbols" checked> !@#$</label>
+            <span class="len-group">
+              <label for="optLen" style="font-weight:600">Length</label>
+              <input type="number" id="optLen" min="4" max="128" value="16">
+            </span>
+          </div>
+
           <div class="input-row">
-            <label for="rate">Attacker guesses per second</label>
+            <label for="rate">Attacker guesses per second
+              <button class="info-btn" type="button" data-info="rate" aria-label="What is this?">?</button>
+            </label>
             <input id="rate" type="number" min="1" step="1" value="1000000000">
           </div>
 
           <div class="input-row" id="strengthLabel">
-            <label>Strength meter</label>
+            <label>Strength meter
+              <button class="info-btn" type="button" data-info="meter" aria-label="What is this?">?</button>
+            </label>
             <div class="meter" aria-hidden="true"><div id="meter" class="meter-fill"></div></div>
           </div>
         </div>
 
         <aside class="stack" aria-label="Password analysis">
           <div class="grid stats">
-            <div class="stat"><small>Score</small><strong id="score">0 / 100</strong></div>
-            <div class="stat"><small>Entropy</small><strong id="entropy">0 bits</strong></div>
-            <div class="stat"><small>Combinations</small><strong id="space">0</strong></div>
-            <div class="stat"><small>Crack time</small><strong id="crack">Instant</strong></div>
+            <div class="stat">
+              <small>Score <button class="info-btn" type="button" data-info="score" aria-label="What is score?">?</button></small>
+              <strong id="score">0 / 100</strong>
+            </div>
+            <div class="stat">
+              <small>Entropy <button class="info-btn" type="button" data-info="entropy" aria-label="What is entropy?">?</button></small>
+              <strong id="entropy">0 bits</strong>
+            </div>
+            <div class="stat">
+              <small>Combinations <button class="info-btn" type="button" data-info="combos" aria-label="What are combinations?">?</button></small>
+              <strong id="space">0</strong>
+            </div>
+            <div class="stat">
+              <small>Crack time <button class="info-btn" type="button" data-info="crack" aria-label="What is crack time?">?</button></small>
+              <strong id="crack">Instant</strong>
+            </div>
           </div>
           <ul class="checks" id="checks"></ul>
         </aside>
@@ -196,15 +345,32 @@
       return `${n.toFixed(n >= 100 ? 0 : n >= 10 ? 1 : 2)}${units[idx]}`;
     }
 
+    function formatCompact(n) {
+      if (n < 1e6) return n.toLocaleString();
+      const tiers = [
+        [1e33, 'decillion'], [1e30, 'nonillion'], [1e27, 'octillion'],
+        [1e24, 'septillion'], [1e21, 'sextillion'], [1e18, 'quintillion'],
+        [1e15, 'quadrillion'], [1e12, 'trillion'], [1e9, 'billion'], [1e6, 'million']
+      ];
+      for (const [threshold, name] of tiers) {
+        if (n >= threshold) {
+          const v = n / threshold;
+          return `${v < 10 ? v.toFixed(1) : Math.round(v).toLocaleString()} ${name}`;
+        }
+      }
+      return n.toLocaleString();
+    }
+
     function formatDuration(seconds) {
       if (!isFinite(seconds) || seconds <= 1) return 'Instant';
+      if (seconds > 1e33 * 31557600) return 'Forever';
       const units = [
         ['year', 31557600], ['month', 2629800], ['day', 86400], ['hour', 3600], ['minute', 60], ['second', 1]
       ];
       for (const [label, s] of units) {
         if (seconds >= s) {
           const v = Math.floor(seconds / s);
-          return `${v.toLocaleString()} ${label}${v === 1 ? '' : 's'}`;
+          return `${formatCompact(v)} ${label}${v === 1 ? '' : 's'}`;
         }
       }
       return 'Instant';
@@ -243,12 +409,40 @@
     }
 
     function genPassword() {
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%^&*()-_=+[]{};:,.?';
-      let out = '';
-      const length = 16;
-      for (let i = 0; i < length; i++) {
-        out += chars[Math.floor(Math.random() * chars.length)];
-      }
+      const useLower   = document.getElementById('optLower').checked;
+      const useUpper   = document.getElementById('optUpper').checked;
+      const useNumbers = document.getElementById('optNumbers').checked;
+      const useSymbols = document.getElementById('optSymbols').checked;
+      const length     = Math.max(4, Math.min(128, Number(document.getElementById('optLen').value) || 16));
+
+      let pool = '';
+      if (useLower)   pool += 'abcdefghijkmnopqrstuvwxyz';
+      if (useUpper)   pool += 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+      if (useNumbers) pool += '23456789';
+      if (useSymbols) pool += '!@#$%^&*()-_=+[]{};:,.?';
+
+      if (!pool) { pool = 'abcdefghijkmnopqrstuvwxyz'; }
+
+      // Build password, then guarantee at least one char from each selected set
+      const arr = new Uint32Array(length);
+      crypto.getRandomValues(arr);
+      let out = Array.from(arr, v => pool[v % pool.length]).join('');
+
+      // Ensure representation from each selected charset
+      const required = [];
+      if (useLower)   required.push('abcdefghijkmnopqrstuvwxyz');
+      if (useUpper)   required.push('ABCDEFGHJKLMNPQRSTUVWXYZ');
+      if (useNumbers) required.push('23456789');
+      if (useSymbols) required.push('!@#$%^&*()-_=+[]{};:,.?');
+      const rnd = new Uint32Array(required.length);
+      crypto.getRandomValues(rnd);
+      required.forEach((charset, i) => {
+        const pos = rnd[i] % length;
+        const cArr = new Uint32Array(1);
+        crypto.getRandomValues(cArr);
+        out = out.substring(0, pos) + charset[cArr[0] % charset.length] + out.substring(pos + 1);
+      });
+
       els.pwd.value = out;
       analyze();
     }
@@ -265,6 +459,64 @@
     });
 
     analyze();
+
+    // ── Info panel (fly-in modal) ─────────────────────────────────
+    const infoContent = {
+      pwd: {
+        title: 'Password Input',
+        body: '<p>Type any password to instantly see how strong it is. <strong>Nothing is sent to a server</strong> — all analysis happens right here in your browser.</p><p>Try different lengths and character types to see how the metrics change.</p>'
+      },
+      rate: {
+        title: 'Attack Rate (guesses/sec)',
+        body: '<p>This controls how fast we assume an attacker can try passwords. The default of 1 billion per second models a powerful GPU rig.</p><p>Increase it to simulate a distributed cluster; decrease it for a weaker attacker.</p><div class="example">1B/s = high-end GPU&emsp;|&emsp;10B/s = distributed cluster<br>1M/s = online throttled attack</div>'
+      },
+      meter: {
+        title: 'Strength Meter',
+        body: '<p>A visual summary combining entropy, length, and character diversity into a <strong>0–100 score</strong>.</p><p><span style="color:var(--bad)">\u25CF Weak</span> &lt; 35 &emsp; <span style="color:var(--warn)">\u25CF Fair</span> 35–64 &emsp; <span style="color:var(--accent)">\u25CF Strong</span> 65–84 &emsp; <span style="color:var(--good)">\u25CF Excellent</span> 85+</p>'
+      },
+      score: {
+        title: 'Score (0–100)',
+        body: '<p>An overall rating combining entropy bits, character variety, and length. Passing more rule checks and using longer passwords with mixed character types raises the score.</p>'
+      },
+      entropy: {
+        title: 'Entropy (bits)',
+        body: '<p><strong>Entropy</strong> measures the unpredictability of your password. It answers: “How many yes/no questions would an attacker need to guess it?”</p><div class="example">E = L × log₂(C)</div><p><strong>L</strong> = password length, <strong>C</strong> = size of the character set used (e.g. 26 for lowercase-only, 95 for all printable ASCII).</p><p>Each additional bit <em>doubles</em> the number of possible passwords. Think of it like a combination lock — more bits = exponentially more combinations to try.</p><p><strong>Targets:</strong> 40 bits is the minimum for casual use. <strong>60+ bits</strong> is solid. <strong>80+ bits</strong> is excellent and will resist even well-funded attackers for decades.</p>'
+      },
+      combos: {
+        title: 'Keyspace (Combinations)',
+        body: '<p>The total number of possible passwords given your character set and length. Calculated as 2<sup>entropy</sup>.</p><p>A larger keyspace means an attacker must search through vastly more possibilities to find your password.</p><div class="example"><strong>Abbreviations used:</strong><br>K = thousand · M = million · B = billion<br>T = trillion · Qa = quadrillion · Qi = quintillion<br>Sx = sextillion · Sp = septillion · Oc = octillion · No = nonillion</div>'
+      },
+      crack: {
+        title: 'Estimated Crack Time',
+        body: '<p>How long a brute-force attack would take at your configured guess rate, assuming the attacker tries every possible combination.</p><p>This is a <em>worst-case average</em> (keyspace ÷ guesses per second). Real attacks may use dictionaries or pattern lists, which can be faster — so treat this as an upper bound.</p><div class="example"><strong>Scale used:</strong><br>million (10⁶) · billion (10⁹) · trillion (10¹²)<br>quadrillion (10¹⁵) · quintillion (10¹⁸) · sextillion (10²¹)<br>septillion (10²⁴) · octillion (10²⁷) · nonillion (10³⁰) · decillion (10³³)<br>Beyond decillion → "Forever"</div>'
+      }
+    };
+
+    const overlay = document.getElementById('infoOverlay');
+    const panelBody = document.getElementById('infoPanelBody');
+    const closeBtn = document.getElementById('infoClose');
+
+    function openInfo(key) {
+      const data = infoContent[key];
+      if (!data) return;
+      panelBody.innerHTML = `<h4 id="infoPanelTitle">${data.title}</h4>${data.body}`;
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+      closeBtn.focus();
+    }
+
+    function closeInfo() {
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden', 'true');
+    }
+
+    document.querySelectorAll('.info-btn[data-info]').forEach(btn => {
+      btn.addEventListener('click', e => { e.stopPropagation(); openInfo(btn.dataset.info); });
+    });
+
+    closeBtn.addEventListener('click', closeInfo);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeInfo(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeInfo(); });
   </script>
 </body>
 </html>
