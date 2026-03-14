@@ -1,0 +1,4 @@
+{
+  "buildCommand": "npm run generate:apps && npm run build",
+  "outputDirectory": ".next"
+}
