@@ -77,7 +77,7 @@ If failure occurs:
 - Append `TRANSACTION_START`.
 
 1. Select concept
-- Check existing apps + suggestions.
+- Check all existing apps in /apps folder and do not duplicate concepts.
 - Pick non-duplicate app.
 - Log `SELECT_SUGGESTION`.
 

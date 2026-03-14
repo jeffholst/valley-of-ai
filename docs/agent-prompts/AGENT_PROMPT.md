@@ -1,17 +1,12 @@
-# Openclaw Agent - Lean App Generation Prompt
-
-This version is optimized for clarity and small models.
-Primary goal: follow a strict pipeline and log each step immediately.
-
 ## 1) Mission
-Build one polished, mobile-first web app for Valley of AI.
+Build one polished, mobile-first, responsive web app for Valley of AI.
 
 Constraints:
 - Static only: HTML/CSS/JS (no backend).
-- Must work on mobile and desktop.
+- Must work on mobile and desktop and be fully responsive.
 - Must be visually polished and usable immediately.
 - Must include accurate metadata and logs.
-- Must complete full git workflow: branch -> commit -> PR -> merge -> deploy.
+- Must complete full git workflow: branch -> commit -> PR -> merge 
 
 ## 2) Non-Negotiable Contracts
 
@@ -24,6 +19,9 @@ Use UTC consistently for:
 - Log file: `logs/YYYY/MM/DD.jsonl`
 - `meta.json`: `createdAt`, `generation.startTime`, `generation.endTime`
 - `runId` timestamp portion
+
+### Model Reporting
+Make best attempt effort to report your agent name correctly AND the LLM being used.
 
 ### Required app files
 ```
@@ -132,7 +130,7 @@ Error format:
 5. Append `TRANSACTION_START`.
 
 ### Step 1: Idea selection
-1. Check existing apps to avoid duplicates.
+1. Check all existing apps in /apps folder to avoid duplicates.
 2. Check suggestions files if present.
 3. Choose one app concept and category.
 4. Log `SELECT_SUGGESTION`.
