@@ -53,7 +53,8 @@ apps/YYYY/MM/DD/<app-id>/
 ```
 
 Rules:
-- Keep placeholders exactly as shown (do not hardcode real values).
+- Keep placeholders **exactly as shown** (do not hardcode real values).
+- `sync-public-content.mjs` automatically replaces placeholders during build from `.env`.
 - Do not hand-code global header/footer or app-local theme toggle.
 - Shared shell must control header/footer/theme behavior.
 
@@ -189,10 +190,11 @@ When passed, log `VALIDATE_APP`.
 1. Run `npm run generate:apps`.
 2. Log `UPDATE_REGISTRY`.
 3. Merge PR to `main` (automatic GitHub Actions will trigger build).
-4. Verify Vercel deployment completes (auto-builds from pushed `main` branch).
-5. Log `DEPLOY` once the live site confirms new app is visible.
+4. Vercel auto-deploys: webhook triggers → loads env vars → runs build pipeline (`generate-apps` → `sync-public-content.mjs` replaces placeholders → `next build`) → deploys to edge network with zero-downtime updates.
+5. Rollback automatic if build/deployment fails.
+6. Log `DEPLOY` once the live site confirms new app is visible (~2–3 minutes from push).
 
-> **Note:** Deployment is automatic via Vercel when code is pushed to `main`. No manual `npm run deploy` step needed.
+> **Note:** Deployment is fully automatic via Vercel when code is pushed to `main`. No manual steps needed. Environment variable placeholders (`__GA_MEASUREMENT_ID__`, `__MAIN_SITE_URL__`, `__SOCIAL_*_URL__`) are replaced during the `sync-public-content.mjs` phase from `.env.production` secrets.
 
 ### Step 10: Close transaction
 1. Append `TRANSACTION_END`.
@@ -202,6 +204,8 @@ When passed, log `VALIDATE_APP`.
    - `git push`
 
 ## 5) Quality Gates (Must Pass)
+
+### Functional Testing
 Before commit/PR/deploy, confirm:
 - App runs without errors.
 - Shared shell header/footer visible.
@@ -209,15 +213,52 @@ Before commit/PR/deploy, confirm:
 - Mobile + desktop layout works.
 - Interactive controls work (touch + keyboard where applicable).
 - If game: gameplay objects visible, score/state updates, win/loss/restart all work.
-- `npm run validate:apps` passes.
 - Thumbnail matches app UI.
 
-## 6) Compact Checklist
-- [ ] UTC time fetched from OS
-- [ ] Transaction started with `runId`
-- [ ] Each pipeline step logged immediately
-- [ ] Required files created
-- [ ] Required placeholders and shell tags present
+### Validation & Standards
+- `npm run validate:apps` passes (registry structure validation).
+- `npm run generate:apps` completes without errors.
+
+### Main Codebase Changes (if modifying src/)
+- `npm run lint` passes (0 errors, 0 warnings).
+- `npm run format` applied (Prettier 100-char, single quotes, 2-space indentation).
+- `npm test` passes (all test suites passing).
+- `npm run build` completes successfully.
+
+See [STYLE_GUIDE.md](../STYLE_GUIDE.md) for code conventions and [TESTING.md](../TESTING.md) for test requirements.
+
+## 6) Compact Checklist (Quick Reference)
+
+**Setup & Logging**:
+- [ ] UTC time fetched from OS; transaction started with `runId`
+- [ ] RESEARCH_IDEAS logged with mechanics, UX insights, 2-3 inspirations
+- [ ] GENERATE_HTML logged after index.html creation
+- [ ] GENERATE_THUMBNAIL logged after thumbnail.svg creation
+
+**File Requirements**:
+- [ ] index.html created with shared shell + analytics tags + placeholders (not hardcoded)
+- [ ] meta.json created with all required fields (id, name, tags, generation metadata)
+- [ ] thumbnail.svg created (800x450 viewBox) matching app UI/colors/state
+- [ ] favicon present in app directory
+
+**Functionality & UI**:
+- [ ] App runs without errors on localhost
+- [ ] Shared shell header/footer visible; theme toggle functional
+- [ ] Mobile + desktop layouts both working
+- [ ] Interactive controls work (touch + keyboard)
+- [ ] Game apps: objects visible, score updates, win/loss/restart work
+
+**Code Quality** (if modifying src/):
+- [ ] `npm run lint` passes (0 errors/warnings)
+- [ ] `npm run format` applied
+- [ ] `npm test` passes (all suites)
+- [ ] `npm run build` succeeds
+
+**Validation & Deploy**:
+- [ ] `npm run validate:apps` passes
+- [ ] PR created with description + testing steps
+- [ ] Merged to `main`; Vercel deployment completes (~2–3 min)
+- [ ] DEPLOY logged once live site confirms
 - [ ] Validation passed
 - [ ] Branch/commit/PR/review/merge completed
 - [ ] Deploy completed and verified
