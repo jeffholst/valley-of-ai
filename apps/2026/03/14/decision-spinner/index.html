@@ -186,6 +186,23 @@
         transition: transform 3.2s cubic-bezier(0.22, 1, 0.12, 1);
       }
 
+      .slice-tooltip {
+        position: absolute;
+        left: 50%;
+        bottom: -8px;
+        transform: translate(-50%, 100%);
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: color-mix(in oklab, var(--bg) 70%, var(--surface));
+        border: 1px solid color-mix(in oklab, var(--muted) 35%, transparent);
+        color: var(--text);
+        font-size: 0.88rem;
+        line-height: 1.2;
+        white-space: nowrap;
+        pointer-events: none;
+        box-shadow: 0 10px 24px -18px var(--shadow);
+      }
+
       .winner {
         margin-top: 14px;
         text-align: center;
@@ -239,6 +256,7 @@ Water | 2</textarea>
         <article class="card spin-wrap">
           <div class="pointer" aria-hidden="true"></div>
           <div class="wheel" id="wheel" role="img" aria-label="Decision wheel"></div>
+          <div class="slice-tooltip" id="sliceTooltip" hidden></div>
           <p class="winner" id="winnerText">Winner: <strong>Not spun yet</strong></p>
         </article>
       </section>
@@ -252,10 +270,12 @@ Water | 2</textarea>
       const spinBtn = document.getElementById('spinBtn');
       const shuffleBtn = document.getElementById('shuffleBtn');
       const resetBtn = document.getElementById('resetBtn');
+      const sliceTooltip = document.getElementById('sliceTooltip');
 
       let rotation = 0;
       const winnerHistory = [];
       const winCounts = new Map();
+      let currentSlices = [];
 
       function parseChoices() {
         return optionsEl.value
@@ -274,20 +294,83 @@ Water | 2</textarea>
       function renderWheel(choices) {
         if (!choices.length) {
           wheel.style.background = 'conic-gradient(#64748b 0 100%)';
+          wheel.removeAttribute('title');
+          currentSlices = [];
           return;
         }
 
         const totalWeight = choices.reduce((sum, c) => sum + c.weight, 0);
         let running = 0;
         const palette = ['#06b6d4', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6', '#f97316', '#22c55e'];
+        currentSlices = [];
         const slices = choices.map((choice, i) => {
           const from = (running / totalWeight) * 360;
           running += choice.weight;
           const to = (running / totalWeight) * 360;
+          currentSlices.push({ from, to, name: choice.name });
           return `${palette[i % palette.length]} ${from}deg ${to}deg`;
         });
 
         wheel.style.background = `conic-gradient(${slices.join(',')})`;
+        wheel.title = choices.length === 1 ? choices[0].name : 'Hover slices to preview options';
+      }
+
+      function getCurrentWheelRotation() {
+        const transform = getComputedStyle(wheel).transform;
+        if (!transform || transform === 'none') {
+          return 0;
+        }
+
+        const matrixMatch = transform.match(/^matrix\(([^)]+)\)$/);
+        if (!matrixMatch) {
+          return rotation % 360;
+        }
+
+        const parts = matrixMatch[1].split(',').map((value) => Number(value.trim()));
+        const [a, b] = parts;
+        const angle = Math.atan2(b, a) * (180 / Math.PI);
+        return (angle + 360) % 360;
+      }
+
+      function findSliceAtClientPoint(clientX, clientY) {
+        if (!currentSlices.length) {
+          return null;
+        }
+
+        const rect = wheel.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const dx = clientX - centerX;
+        const dy = clientY - centerY;
+        const radius = rect.width / 2;
+
+        if (Math.hypot(dx, dy) > radius) {
+          return null;
+        }
+
+        const screenAngle = (Math.atan2(dy, dx) * 180) / Math.PI;
+        const normalizedScreenAngle = (screenAngle + 450) % 360;
+        const wheelRotation = getCurrentWheelRotation();
+        const unrotatedAngle = (normalizedScreenAngle - wheelRotation + 360) % 360;
+
+        return currentSlices.find((slice) => unrotatedAngle >= slice.from && unrotatedAngle < slice.to) || null;
+      }
+
+      function hideSliceTooltip() {
+        sliceTooltip.hidden = true;
+        wheel.removeAttribute('data-hover-choice');
+      }
+
+      function handleWheelHover(event) {
+        const slice = findSliceAtClientPoint(event.clientX, event.clientY);
+        if (!slice) {
+          hideSliceTooltip();
+          return;
+        }
+
+        sliceTooltip.textContent = slice.name;
+        sliceTooltip.hidden = false;
+        wheel.dataset.hoverChoice = slice.name;
       }
 
       function pickWinner(choices) {
@@ -352,6 +435,18 @@ Water | 2</textarea>
       shuffleBtn.addEventListener('click', shuffleOptions);
       resetBtn.addEventListener('click', resetHistory);
       optionsEl.addEventListener('input', () => renderWheel(parseChoices()));
+      wheel.addEventListener('mousemove', handleWheelHover);
+      wheel.addEventListener('mouseleave', hideSliceTooltip);
+      wheel.addEventListener('touchstart', (event) => {
+        if (!event.touches.length) return;
+        handleWheelHover(event.touches[0]);
+      });
+      wheel.addEventListener('touchmove', (event) => {
+        if (!event.touches.length) return;
+        handleWheelHover(event.touches[0]);
+      });
+      wheel.addEventListener('touchend', hideSliceTooltip);
+      wheel.addEventListener('touchcancel', hideSliceTooltip);
 
       document.addEventListener('keydown', (event) => {
         if (event.code === 'Space' && document.activeElement !== optionsEl) {
