@@ -19,3 +19,4 @@
 {"timestamp":"2026-03-14T21:53:28Z","runId":"run-20260314T215059Z-ccf7ac","type":"STEP","step":"VALIDATE_APP","seq":6,"status":"completed","durationMs":1600}
 {"timestamp":"2026-03-14T21:53:57Z","runId":"run-20260314T215059Z-ccf7ac","type":"STEP","step":"GIT_BRANCH","seq":7,"status":"completed","durationMs":350,"notes":"Created branch feat/decision-spinner"}
 {"timestamp":"2026-03-14T21:53:57Z","runId":"run-20260314T215059Z-ccf7ac","type":"STEP","step":"GIT_COMMIT","seq":8,"status":"completed","durationMs":900,"notes":"Committed app + logs","commit":"6cb4402"}
+{"timestamp":"2026-03-14T21:54:13Z","runId":"run-20260314T215059Z-ccf7ac","type":"STEP","step":"CREATE_PR","seq":9,"status":"completed","durationMs":3200,"notes":"Created PR","prUrl":"https://github.com/jeffholst/valley-of-ai/pull/91"}
