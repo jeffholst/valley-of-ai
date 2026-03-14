@@ -5,7 +5,7 @@ Goal: generate one Valley of AI app with strict step-by-step execution and immed
 ## Hard Rules
 - Build static app only (HTML/CSS/JS), mobile + desktop.
 - Use UTC OS time: `date -u +"%Y-%m-%dT%H:%M:%SZ"`.
-- Keep placeholders unchanged: `__GA_MEASUREMENT_ID__`, `__MAIN_SITE_URL__`, `__MAIN_SITE_NAME__`, `__SOCIAL_X_URL__`, `__SOCIAL_FACEBOOK_URL__`, `__SOCIAL_INSTAGRAM_URL__`.
+- Keep placeholders unchanged: `__GA_MEASUREMENT_ID__`, `__MAIN_SITE_URL__`, `__MAIN_SITE_NAME__`, `__SOCIAL_X_URL__`, `__SOCIAL_FACEBOOK_URL__`, `__SOCIAL_INSTAGRAM_URL__`. (Auto-replaced by `sync-public-content.mjs` during build).
 - Use shared shell. Do not custom global header/footer/theme toggle.
 - Log each step immediately after completion (never batch logs).
 - Do not continue past validation failure.
@@ -118,7 +118,9 @@ If failure occurs:
 
 9. Registry + deploy
 - Run `npm run generate:apps`; log `UPDATE_REGISTRY`.
-- Merge PR to `main` (auto-triggers Vercel build).
+- Merge PR to `main` (auto-triggers Vercel webhook).
+- Vercel pipeline: loads env → `sync-public-content.mjs` (replace placeholders) → `next build` → deploy to edge.
+- Zero-downtime deploy + auto-rollback on fail. Live in ~2–3 min.
 - Verify live site confirms new app visible; log `DEPLOY`.
 
 10. Close
@@ -132,6 +134,7 @@ If failure occurs:
 - Game runtime checks pass (visibility, controls, score/state, win/loss, restart).
 - `npm run validate:apps` passes.
 - Thumbnail matches app.
+- If modifying src/ (codebase components): `npm run lint` + `npm run format` + `npm test` + `npm run build` all pass.
 - All steps logged in sequence with same `runId`.
 
 Agent: openclaw-dev-agent | Model: gpt-5.1 | Priority: reliable pipeline + immediate logging
