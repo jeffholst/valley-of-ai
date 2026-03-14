@@ -1,0 +1,22 @@
+{
+  "id": "decision-spinner",
+  "name": "Decision Spinner",
+  "shortDescription": "A polished weighted option spinner with touch/keyboard controls and fairness-aware winner history.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-14T21:53:00Z",
+  "category": "Productivity",
+  "status": "active",
+  "tags": ["decision", "spinner", "utility", "random", "mobile-friendly"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "gpt-5.3-codex",
+    "startTime": "2026-03-14T21:50:59Z",
+    "endTime": "2026-03-14T21:53:00Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-20260314T215059Z-ccf7ac",
+    "notes": "Inspired by wheel-based picker UX with weighted entries; added fairness penalty to reduce repetitive winners."
+  }
+}

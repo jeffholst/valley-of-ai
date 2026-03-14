@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Decision Spinner - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%F0%9F%8E%AF%3C/text%3E%3C/svg%3E"
+    />
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --muted: #94a3b8;
+        --accent: #22d3ee;
+        --accent-2: #f59e0b;
+        --ring: rgba(34, 211, 238, 0.35);
+        --shadow: rgba(2, 6, 23, 0.45);
+      }
+
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+        --muted: #64748b;
+        --accent: #0ea5e9;
+        --accent-2: #d97706;
+        --ring: rgba(14, 165, 233, 0.3);
+        --shadow: rgba(15, 23, 42, 0.15);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: 'Trebuchet MS', 'Avenir Next', sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 20% 15%, rgba(34, 211, 238, 0.2), transparent 40%),
+          radial-gradient(circle at 85% 85%, rgba(245, 158, 11, 0.16), transparent 45%),
+          var(--bg);
+        min-height: 100vh;
+      }
+
+      .app {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        margin-bottom: 18px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.5rem, 2.3vw, 2.1rem);
+      }
+
+      .sub {
+        color: var(--muted);
+        margin-top: 6px;
+      }
+
+      .grid {
+        display: grid;
+        gap: 16px;
+      }
+
+      @media (min-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .card {
+        background: color-mix(in oklab, var(--surface) 88%, transparent);
+        border: 1px solid color-mix(in oklab, var(--muted) 28%, transparent);
+        border-radius: 18px;
+        padding: 16px;
+        box-shadow: 0 16px 36px -20px var(--shadow);
+      }
+
+      textarea,
+      input,
+      button {
+        font: inherit;
+      }
+
+      textarea,
+      input[type='number'] {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid color-mix(in oklab, var(--muted) 35%, transparent);
+        background: color-mix(in oklab, var(--bg) 60%, var(--surface));
+        color: var(--text);
+        padding: 10px 12px;
+      }
+
+      textarea:focus,
+      input:focus,
+      button:focus-visible {
+        outline: 3px solid var(--ring);
+        outline-offset: 1px;
+      }
+
+      textarea {
+        min-height: 150px;
+        resize: vertical;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 16px;
+        cursor: pointer;
+      }
+
+      .primary {
+        background: linear-gradient(120deg, var(--accent), var(--accent-2));
+        color: #061018;
+        font-weight: 700;
+      }
+
+      .ghost {
+        background: color-mix(in oklab, var(--surface) 90%, transparent);
+        color: var(--text);
+        border: 1px solid color-mix(in oklab, var(--muted) 35%, transparent);
+      }
+
+      .spin-wrap {
+        display: grid;
+        place-items: center;
+        position: relative;
+        padding-top: 8px;
+      }
+
+      .pointer {
+        position: absolute;
+        top: -2px;
+        width: 0;
+        height: 0;
+        border-left: 12px solid transparent;
+        border-right: 12px solid transparent;
+        border-top: 20px solid var(--accent-2);
+        z-index: 2;
+      }
+
+      .wheel {
+        width: min(84vw, 360px);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        border: 5px solid color-mix(in oklab, var(--muted) 45%, transparent);
+        box-shadow: 0 22px 42px -24px var(--shadow);
+        transition: transform 3.2s cubic-bezier(0.22, 1, 0.12, 1);
+      }
+
+      .winner {
+        margin-top: 14px;
+        text-align: center;
+        font-size: 1.05rem;
+      }
+
+      .winner strong {
+        color: var(--accent);
+      }
+
+      .hint,
+      .history {
+        color: var(--muted);
+        font-size: 0.93rem;
+      }
+
+      .history ul {
+        margin: 8px 0 0;
+        padding-left: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <section class="header">
+        <h1>Decision Spinner</h1>
+        <p class="sub">Paste options as lines. Add optional weights with <code>Option | 3</code>.</p>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <label for="options">Choices (one per line)</label>
+          <textarea id="options" aria-label="Choices">Coffee
+Tea
+Matcha
+Water | 2</textarea>
+
+          <div class="controls">
+            <button id="spinBtn" class="primary" type="button">Spin (Space)</button>
+            <button id="shuffleBtn" class="ghost" type="button">Shuffle</button>
+            <button id="resetBtn" class="ghost" type="button">Reset History</button>
+          </div>
+
+          <p class="hint">Keyboard: press <kbd>Space</kbd> to spin. Touch and click supported.</p>
+          <div class="history">
+            Recent winners:
+            <ul id="historyList"></ul>
+          </div>
+        </article>
+
+        <article class="card spin-wrap">
+          <div class="pointer" aria-hidden="true"></div>
+          <div class="wheel" id="wheel" role="img" aria-label="Decision wheel"></div>
+          <p class="winner" id="winnerText">Winner: <strong>Not spun yet</strong></p>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      const wheel = document.getElementById('wheel');
+      const optionsEl = document.getElementById('options');
+      const winnerText = document.getElementById('winnerText');
+      const historyList = document.getElementById('historyList');
+      const spinBtn = document.getElementById('spinBtn');
+      const shuffleBtn = document.getElementById('shuffleBtn');
+      const resetBtn = document.getElementById('resetBtn');
+
+      let rotation = 0;
+      const winnerHistory = [];
+      const winCounts = new Map();
+
+      function parseChoices() {
+        return optionsEl.value
+          .split('\n')
+          .map((line) => line.trim())
+          .filter(Boolean)
+          .map((line) => {
+            const parts = line.split('|').map((p) => p.trim());
+            const name = parts[0];
+            const weight = Math.max(1, Number(parts[1]) || 1);
+            const fairnessPenalty = 1 / ((winCounts.get(name) || 0) + 1);
+            return { name, weight: weight * fairnessPenalty };
+          });
+      }
+
+      function renderWheel(choices) {
+        if (!choices.length) {
+          wheel.style.background = 'conic-gradient(#64748b 0 100%)';
+          return;
+        }
+
+        const totalWeight = choices.reduce((sum, c) => sum + c.weight, 0);
+        let running = 0;
+        const palette = ['#06b6d4', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6', '#f97316', '#22c55e'];
+        const slices = choices.map((choice, i) => {
+          const from = (running / totalWeight) * 360;
+          running += choice.weight;
+          const to = (running / totalWeight) * 360;
+          return `${palette[i % palette.length]} ${from}deg ${to}deg`;
+        });
+
+        wheel.style.background = `conic-gradient(${slices.join(',')})`;
+      }
+
+      function pickWinner(choices) {
+        const totalWeight = choices.reduce((sum, c) => sum + c.weight, 0);
+        let threshold = Math.random() * totalWeight;
+        for (const choice of choices) {
+          threshold -= choice.weight;
+          if (threshold <= 0) return choice.name;
+        }
+        return choices[choices.length - 1].name;
+      }
+
+      function updateHistory(name) {
+        winnerHistory.unshift(name);
+        winnerHistory.splice(5);
+        historyList.innerHTML = winnerHistory.map((entry) => `<li>${entry}</li>`).join('');
+      }
+
+      function spin() {
+        const choices = parseChoices();
+        if (choices.length < 2) {
+          winnerText.innerHTML = 'Winner: <strong>Add at least two options</strong>';
+          renderWheel(choices);
+          return;
+        }
+
+        renderWheel(choices);
+        const winner = pickWinner(choices);
+        winCounts.set(winner, (winCounts.get(winner) || 0) + 1);
+
+        rotation += 1440 + Math.floor(Math.random() * 1080);
+        wheel.style.transform = `rotate(${rotation}deg)`;
+
+        setTimeout(() => {
+          winnerText.innerHTML = `Winner: <strong>${winner}</strong>`;
+          updateHistory(winner);
+        }, 3150);
+      }
+
+      function shuffleOptions() {
+        const lines = optionsEl.value
+          .split('\n')
+          .map((x) => x.trim())
+          .filter(Boolean);
+        for (let i = lines.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [lines[i], lines[j]] = [lines[j], lines[i]];
+        }
+        optionsEl.value = lines.join('\n');
+        renderWheel(parseChoices());
+      }
+
+      function resetHistory() {
+        winnerHistory.length = 0;
+        winCounts.clear();
+        historyList.innerHTML = '';
+        winnerText.innerHTML = 'Winner: <strong>Not spun yet</strong>';
+        renderWheel(parseChoices());
+      }
+
+      spinBtn.addEventListener('click', spin);
+      shuffleBtn.addEventListener('click', shuffleOptions);
+      resetBtn.addEventListener('click', resetHistory);
+      optionsEl.addEventListener('input', () => renderWheel(parseChoices()));
+
+      document.addEventListener('keydown', (event) => {
+        if (event.code === 'Space' && document.activeElement !== optionsEl) {
+          event.preventDefault();
+          spin();
+        }
+      });
+
+      renderWheel(parseChoices());
+    </script>
+  </body>
+</html>
