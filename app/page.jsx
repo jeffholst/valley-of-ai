@@ -1,8 +1,12 @@
+'use client'
+
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
-import AppCard from '../components/AppCard'
-import appsData from '../data/apps.json'
-import { useAllVoteCounts } from '../hooks/useVotes'
+import Link from 'next/link'
+import AppCard from '@/components/AppCard'
+import { useAllVoteCounts } from '@/hooks/useVotes'
+
+// Import apps data — synced from legacy root
+import appsData from '@/data/apps.json'
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest' },
@@ -52,10 +56,8 @@ const createInitialPterodactyls = (isMobile) => {
 
 const isLikelyMobileDevice = () => {
   if (typeof window === 'undefined') return false
-
   const hasTouchInput = window.matchMedia('(hover: none) and (pointer: coarse)').matches
   const smallViewport = window.matchMedia('(max-width: 768px)').matches
-
   return hasTouchInput || smallViewport
 }
 
@@ -70,18 +72,15 @@ export default function HomePage() {
   const [sortBy, setSortBy] = useState('newest')
   const [currentPage, setCurrentPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
-  const isMobile = isLikelyMobileDevice()
-  const [animationsEnabled, setAnimationsEnabled] = useState(() => {
-    const saved = localStorage.getItem(PTERODACTYL_PREF_KEY)
-    if (saved !== null) return saved === 'true'
-    return !isMobile
-  })
-  const [pterodactyls, setPterodactyls] = useState(() => createInitialPterodactyls(isMobile))
+  const [mounted, setMounted] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const [animationsEnabled, setAnimationsEnabled] = useState(false)
+  const [pterodactyls, setPterodactyls] = useState([])
   const respawnTimersRef = useRef(new Map())
-  
+
   // Fetch vote counts from Supabase
   const { voteCounts, isLoading: votesLoading } = useAllVoteCounts(allAppIds)
-  
+
   // Filter state
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
@@ -92,30 +91,31 @@ export default function HomePage() {
 
   const activeFilterCount = [categoryFilter, agentFilter, modelFilter, inputModeFilter, searchQuery].filter(Boolean).length
 
+  // Hydrate client-only state
+  useEffect(() => {
+    const mobile = isLikelyMobileDevice()
+    setIsMobile(mobile)
+    const saved = localStorage.getItem(PTERODACTYL_PREF_KEY)
+    const enabled = saved !== null ? saved === 'true' : !mobile
+    setAnimationsEnabled(enabled)
+    setPterodactyls(createInitialPterodactyls(mobile))
+    setMounted(true)
+  }, [])
+
   const filteredApps = useMemo(() => {
     return appsData.filter(app => {
-      // Search filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase()
-        const matchesSearch = 
+        const matchesSearch =
           app.name?.toLowerCase().includes(query) ||
           app.shortDescription?.toLowerCase().includes(query) ||
           app.tags?.some(tag => tag.toLowerCase().includes(query))
         if (!matchesSearch) return false
       }
-      
-      // Category filter
       if (categoryFilter && app.category !== categoryFilter) return false
-      
-      // Agent filter
       if (agentFilter && app.generation?.agentName !== agentFilter) return false
-      
-      // Model filter
       if (modelFilter && app.generation?.llmModel !== modelFilter) return false
-
-      // Input mode filter
       if (inputModeFilter && (app.inputMode || '').toLowerCase() !== inputModeFilter.toLowerCase()) return false
-      
       return true
     })
   }, [searchQuery, categoryFilter, agentFilter, modelFilter, inputModeFilter])
@@ -128,7 +128,6 @@ export default function HomePage() {
       case 'oldest':
         return apps.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
       case 'highest':
-        // Use live vote counts from Supabase
         return apps.sort((a, b) => (voteCounts[b.id] || 0) - (voteCounts[a.id] || 0))
       default:
         return apps
@@ -136,7 +135,7 @@ export default function HomePage() {
   }, [filteredApps, sortBy, voteCounts])
 
   const totalPages = Math.ceil(sortedApps.length / perPage)
-  
+
   const paginatedApps = useMemo(() => {
     const startIndex = (currentPage - 1) * perPage
     return sortedApps.slice(startIndex, startIndex + perPage)
@@ -201,8 +200,10 @@ export default function HomePage() {
   }, [])
 
   useEffect(() => {
-    localStorage.setItem(PTERODACTYL_PREF_KEY, String(animationsEnabled))
-  }, [animationsEnabled])
+    if (mounted) {
+      localStorage.setItem(PTERODACTYL_PREF_KEY, String(animationsEnabled))
+    }
+  }, [animationsEnabled, mounted])
 
   const goToPage = (page) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)))
@@ -218,7 +219,7 @@ export default function HomePage() {
       </div>
       <div className="valley-light-veil" aria-hidden="true" />
 
-      {animationsEnabled && (
+      {mounted && animationsEnabled && (
       <div className="pterodactyl-sky" aria-hidden="true">
         {pterodactyls.map(pterodactyl => {
           const sprite = pterodactyl.direction === 'left' ? '/pterodactyl-left-flapping.svg' : '/pterodactyl-right-flapping.svg'
@@ -261,7 +262,7 @@ export default function HomePage() {
         </p>
         <p className="text-gray-900 dark:text-gray-300 max-w-2xl mx-auto">
           Vote for your favorites and help shape what gets built next.{' '}
-          <Link to="/suggest" className="text-primary-600 dark:text-primary-400 hover:underline font-medium">
+          <Link href="/suggest" className="text-primary-600 dark:text-primary-400 hover:underline font-medium">
             Suggest an app idea
           </Link>{' '}
           and our AI might bring it to life.
@@ -276,8 +277,8 @@ export default function HomePage() {
             {animationsEnabled ? 'Turn off' : 'Turn on'}
             <img
               src={animationsEnabled ? "/pterodactyl-right-static.svg" : "/pterodactyl-right-flapping.svg"}
-              alt="pterodactyl" 
-              width="50" 
+              alt="pterodactyl"
+              width="50"
               height="50"
               className="relative"
               style={{ left: '5px', top: '2px', filter: 'drop-shadow(0 0 1px rgba(255,255,255,0.3)) brightness(1.1)' }}
@@ -291,10 +292,10 @@ export default function HomePage() {
         {/* Search Bar */}
         <div className="flex flex-col sm:flex-row gap-4 mb-4">
           <div className="flex-1 relative">
-            <svg 
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" 
-              fill="none" 
-              stroke="currentColor" 
+            <svg
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
               viewBox="0 0 24 24"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -341,7 +342,7 @@ export default function HomePage() {
                   ))}
                 </select>
               </div>
-              
+
               <div>
                 <label htmlFor="agentFilter" className="label">Agent</label>
                 <select
@@ -356,7 +357,7 @@ export default function HomePage() {
                   ))}
                 </select>
               </div>
-              
+
               <div>
                 <label htmlFor="modelFilter" className="label">Model</label>
                 <select
@@ -386,7 +387,7 @@ export default function HomePage() {
                   ))}
                 </select>
               </div>
-              
+
               <div className="flex items-end">
                 <button
                   onClick={resetFilters}
@@ -406,7 +407,7 @@ export default function HomePage() {
         <p className="text-gray-600 dark:text-gray-400">
           <span className="font-semibold text-gray-900 dark:text-white">{sortedApps.length}</span> apps available
         </p>
-        
+
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
             <label htmlFor="perPage" className="text-sm text-gray-600 dark:text-gray-400">
@@ -425,7 +426,7 @@ export default function HomePage() {
               ))}
             </select>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <label htmlFor="sort" className="text-sm text-gray-600 dark:text-gray-400">
               Sort by:
@@ -474,7 +475,7 @@ export default function HomePage() {
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Showing {(currentPage - 1) * perPage + 1}–{Math.min(currentPage * perPage, sortedApps.length)} of {sortedApps.length}
           </p>
-          
+
           <div className="flex items-center gap-2">
             <button
               onClick={() => goToPage(currentPage - 1)}
@@ -486,17 +487,15 @@ export default function HomePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            
+
             <div className="flex items-center gap-1">
               {Array.from({ length: totalPages }, (_, i) => i + 1)
                 .filter(page => {
-                  // Show first, last, current, and adjacent pages
                   if (page === 1 || page === totalPages) return true
                   if (Math.abs(page - currentPage) <= 1) return true
                   return false
                 })
                 .reduce((acc, page, idx, arr) => {
-                  // Add ellipsis where there are gaps
                   if (idx > 0 && page - arr[idx - 1] > 1) {
                     acc.push('...')
                   }
@@ -521,7 +520,7 @@ export default function HomePage() {
                   )
                 ))}
             </div>
-            
+
             <button
               onClick={() => goToPage(currentPage + 1)}
               disabled={currentPage === totalPages}

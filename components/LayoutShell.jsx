@@ -1,46 +1,50 @@
-import { Outlet } from 'react-router-dom'
+'use client'
+
 import Header from './Header'
-import { siteName, socialXUrl, socialFacebookUrl, socialInstagramUrl } from '../lib/siteConfig'
+import { siteName, socialXUrl, socialFacebookUrl, socialInstagramUrl } from '@/lib/siteConfig'
 
-export default function Layout() {
-  const socialLinks = [
-    {
-      key: 'x',
-      href: socialXUrl,
-      ariaLabel: 'X profile',
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M18.244 2H21l-6.56 7.5L22.16 22h-6.04l-4.73-6.18L5.98 22H3.22l7.02-8.02L1.84 2H8l4.27 5.58L18.244 2zM17.18 20h1.53L7.17 3.9H5.53L17.18 20z" />
-        </svg>
-      ),
-    },
-    {
-      key: 'facebook',
-      href: socialFacebookUrl,
-      ariaLabel: 'Facebook profile',
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M13.5 22v-8h2.7l.5-3h-3.2V9.1c0-.9.3-1.6 1.7-1.6H17V4.8c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.3V11H8v3h2.4v8h3.1z" />
-        </svg>
-      ),
-    },
-    {
-      key: 'instagram',
-      href: socialInstagramUrl,
-      ariaLabel: 'Instagram profile',
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5A3.95 3.95 0 0 0 7.75 20.2h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95h-8.5zm8.95 1.35a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4z" />
-        </svg>
-      ),
-    },
-  ].filter((link) => !!link.href)
+const socialLinks = [
+  {
+    key: 'x',
+    href: socialXUrl,
+    ariaLabel: 'X profile',
+    icon: (
+      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M18.244 2H21l-6.56 7.5L22.16 22h-6.04l-4.73-6.18L5.98 22H3.22l7.02-8.02L1.84 2H8l4.27 5.58L18.244 2zM17.18 20h1.53L7.17 3.9H5.53L17.18 20z" />
+      </svg>
+    ),
+  },
+  {
+    key: 'facebook',
+    href: socialFacebookUrl,
+    ariaLabel: 'Facebook profile',
+    icon: (
+      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M13.5 22v-8h2.7l.5-3h-3.2V9.1c0-.9.3-1.6 1.7-1.6H17V4.8c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.3V11H8v3h2.4v8h3.1z" />
+      </svg>
+    ),
+  },
+  {
+    key: 'instagram',
+    href: socialInstagramUrl,
+    ariaLabel: 'Instagram profile',
+    icon: (
+      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5A3.95 3.95 0 0 0 7.75 20.2h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95h-8.5zm8.95 1.35a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4z" />
+      </svg>
+    ),
+  },
+].filter((link) => !!link.href)
 
+const appVersion = process.env.NEXT_PUBLIC_APP_VERSION || '0.0.0'
+const deployVersion = process.env.NEXT_PUBLIC_DEPLOY_VERSION || appVersion
+
+export default function LayoutShell({ children }) {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <Outlet />
+        {children}
       </main>
       <footer className="relative z-20 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-4 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
@@ -71,8 +75,8 @@ export default function Layout() {
               </a>
             ))}
             <span className="text-gray-300 dark:text-gray-600">•</span>
-            <span className="text-xs" title={`App ${__APP_VERSION__}`}>
-              v{__DEPLOY_VERSION__}
+            <span className="text-xs" title={`App ${appVersion}`}>
+              v{deployVersion}
             </span>
           </div>
         </div>

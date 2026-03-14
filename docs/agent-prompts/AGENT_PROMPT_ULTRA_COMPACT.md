@@ -118,7 +118,8 @@ If failure occurs:
 
 9. Registry + deploy
 - Run `npm run generate:apps`; log `UPDATE_REGISTRY`.
-- Run `npm run deploy`; verify live; log `DEPLOY`.
+- Merge PR to `main` (auto-triggers Vercel build).
+- Verify live site confirms new app visible; log `DEPLOY`.
 
 10. Close
 - Append `TRANSACTION_END`.

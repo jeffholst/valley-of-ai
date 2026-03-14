@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react'
-import { supabase } from '../lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 const STORAGE_KEY = 'valley_voted_apps'
 
 // Get voted apps from localStorage
 function getVotedApps() {
   try {
+    if (typeof window === 'undefined') return {}
     const stored = localStorage.getItem(STORAGE_KEY)
     return stored ? JSON.parse(stored) : {}
   } catch {
@@ -16,7 +17,9 @@ function getVotedApps() {
 // Save voted apps to localStorage
 function saveVotedApps(votedApps) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(votedApps))
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(votedApps))
+    }
   } catch {
     // Ignore storage errors
   }

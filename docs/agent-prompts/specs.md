@@ -3,7 +3,7 @@
 ## 1. Problem statement
 
 OpenClaw can autonomously generate new applications on a recurring basis, but there is currently no cohesive, public‑facing way to browse, rank, and interact with these artifacts in one place.  
-A dedicated showcase application will act as a living gallery of what an AI development agent can build from minimal prompts, with both the showcase UI and the generated apps co‑located in a single GitHub repository and deployed to GitHub Pages at zero hosting cost.
+A dedicated showcase application will act as a living gallery of what an AI development agent can build from minimal prompts, with both the showcase UI and the generated apps co‑located in a single GitHub repository and deployed to Vercel for fast, scalable hosting.
 
 ## 2. Goals
 
@@ -12,7 +12,7 @@ A dedicated showcase application will act as a living gallery of what an AI deve
 - Enable simple community voting to surface the most popular apps, with client‑side sorting and filtering by creation date and rating.  
 - Offer a low‑friction suggestion channel where users can submit ideas for new apps directly within the web UI.  
 - Capture and expose metadata about each app generation (LLM used, agent, timings, token usage, run ID) for transparency and debugging.  
-- Keep hosting free and simple by serving the entire site as a static React app on GitHub Pages, with automated build and deploy on every push to `main`.
+- Keep hosting simple by deploying on Vercel with automated build and deploy on every push to `main`.
 
 ***
 
@@ -25,7 +25,7 @@ A dedicated showcase application will act as a living gallery of what an AI deve
 - Web‑based suggestion form for new app ideas.  
 - Web‑based voting UI for “most popular” apps.  
 - Git‑backed data model using JSON files and predictable folder structure.  
-- Automated CI/CD via GitHub Actions to build and deploy to GitHub Pages on each push to `main`.  
+- Automated CI/CD via GitHub Actions + Vercel to build and deploy on each push to `main`.  
 - Logging of all OpenClaw actions into the repository, including generation metadata.
 
 ### Out of scope (for now)
@@ -55,12 +55,12 @@ A dedicated showcase application will act as a living gallery of what an AI deve
 
 ## 6. Tech stack and constraints
 
-- Front‑end: React (modern functional components and hooks).  
-- Styling: Tailwind CSS, with first‑class support for both dark and light modes.  
-- Hosting: GitHub Pages, using a static build of the React app.  
-- CI/CD: GitHub Actions workflow that installs dependencies, builds the app, and deploys the `build` output to GitHub Pages on every push to `main`.  
-- Routing: React Router (or equivalent), configured to be compatible with GitHub Pages (e.g., hash router or appropriate `basename`).  
-- No server‑side database; persistent content is stored as JSON and static assets in the Git repository.  
+- Front‑end: Next.js 16 with React 19 and App Router (file-based routing).
+- Styling: Tailwind CSS, with first‑class support for both dark and light modes.
+- Hosting: Vercel (auto-deployed on push to `main`).
+- CI/CD: GitHub Actions workflow that builds the app; Vercel handles deployment automatically.
+- Routing: Next.js App Router (file-based, built-in SEO with static generation).
+- No server‑side database; persistent content is stored as JSON and static assets in the Git repository.
 - All administration is Git‑driven: changes are performed via commits and pull requests, primarily by the OpenClaw agent.
 
 ***
@@ -73,15 +73,18 @@ The repository serves as both the codebase and the system of record for all apps
 
 ```text
 /
-  src/                  # React showcase app source
-  public/               # Static assets for the showcase shell
+  app/                  # Next.js App Router pages and layouts
+  components/           # React components (Header, AppCard, etc.)
+  public/               # Static assets (synced apps/ and logs/ at build time)
   apps/                 # Generated apps organized by date and id
   suggestions/          # Stored suggestion JSON files
   logs/                 # Agent action logs (append-only)
-  scripts/              # Build utility scripts (e.g., registry generator)
+  scripts/              # Build utility scripts (e.g., registry generator, sync)
+  data/                 # Generated data (apps.json created at build time)
   package.json
+  next.config.mjs
   tailwind.config.js
-  postcss.config.js
+  postcss.config.cjs
   .github/workflows/deploy.yml
 ```
 

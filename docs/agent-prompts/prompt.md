@@ -3,20 +3,17 @@ Read and follow these instructions carefully. Implement things in small, committ
 
 ## High‑level requirements
 
-Build a static React + Tailwind CSS application that will be deployed to GitHub Pages and will act as a showcase for AI‑generated apps.
+Build a Next.js application with App Router that will be deployed to Vercel and will act as a showcase for AI‑generated apps.
 
 Key points:
 
-- React SPA with modern React (functional components, hooks).
-- Tailwind CSS for styling.
-- Dark and light mode with a toggle and persisted user preference.
-- Routing suitable for GitHub Pages (hash router or basename configuration).
+- Next.js 16 with React 19 and App Router (file-based routing, built-in SEO, static generation).
 - File‑based data model:
   - `apps/YYYY/MM/DD/<app-id>/meta.json` per app.
   - `suggestions/YYYY/MM/*.json` for suggestions.
   - `logs/YYYY/MM/*.jsonl` for append‑only agent logs.
-- A small registry generator script that aggregates all `meta.json` into `src/data/apps.json`.
-- GitHub Actions workflow that builds the app on every push to `main` (deploy step can be stubbed at first).
+- A small registry generator script that aggregates all `meta.json` into `data/apps.json`.
+- GitHub Actions workflow that builds the app on every push to `main`; Vercel handles automated deployment.
 
 ## Project structure to create
 
@@ -77,7 +74,7 @@ Each `apps/.../meta.json` must match this shape (fields can be optional where no
 }
 ```
 
-At build time, a script will aggregate all `meta.json` files into `src/data/apps.json` with entries shaped roughly like:
+At build time, a script will aggregate all `meta.json` files into `data/apps.json` with entries shaped roughly like:
 
 ```json
 {
@@ -106,7 +103,7 @@ At build time, a script will aggregate all `meta.json` files into `src/data/apps
 }
 ```
 
-You can start with a manually authored `src/data/apps.json` that matches this schema before wiring up the generator script.
+You can start with a manually authored `data/apps.json` that matches this schema before wiring up the generator script.
 
 ## Pages and components
 
@@ -170,7 +167,7 @@ For now, you can leave the actual deploy step as a TODO comment.
 
 1. Scaffold the React + Tailwind project with the structure above.  
 2. Implement dark/light theming, routing, and stub pages.  
-3. Implement reading `src/data/apps.json` into the Home and Detail pages, with static sample data.  
+3. Implement reading `data/apps.json` into the Home and Detail pages, with static sample data.  
 4. Add the suggestion form with client‑side validation.  
 5. Add the CI workflow stub.  
 6. Add the registry generator script stub in `scripts/` (it can initially just echo or create a static `apps.json`).

@@ -7,12 +7,6 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
 
 jobs:
   build:
@@ -35,19 +29,3 @@ jobs:
 
       - name: Build
         run: npm run build
-
-      - name: Copy apps to dist
-        run: cp -r apps dist/
-
-      # TODO: Add actual deployment step
-      # - name: Setup Pages
-      #   uses: actions/configure-pages@v4
-      # 
-      # - name: Upload artifact
-      #   uses: actions/upload-pages-artifact@v3
-      #   with:
-      #     path: './dist'
-      # 
-      # - name: Deploy to GitHub Pages
-      #   id: deployment
-      #   uses: actions/deploy-pages@v4

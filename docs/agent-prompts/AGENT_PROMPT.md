@@ -188,9 +188,11 @@ When passed, log `VALIDATE_APP`.
 ### Step 9: Registry + deploy
 1. Run `npm run generate:apps`.
 2. Log `UPDATE_REGISTRY`.
-3. Run `npm run deploy`.
-4. Verify live site.
-5. Log `DEPLOY`.
+3. Merge PR to `main` (automatic GitHub Actions will trigger build).
+4. Verify Vercel deployment completes (auto-builds from pushed `main` branch).
+5. Log `DEPLOY` once the live site confirms new app is visible.
+
+> **Note:** Deployment is automatic via Vercel when code is pushed to `main`. No manual `npm run deploy` step needed.
 
 ### Step 10: Close transaction
 1. Append `TRANSACTION_END`.

@@ -189,9 +189,8 @@ For each new app:
 9. Push branch and open PR against `main`.  
 10. Self‑review and ensure CI passes.  
 11. Merge via squash.  
-12. Deploy with `npm run deploy`.  
-13. Confirm app is live on `https://www.valleyofai.com`.  
-14. Append deployment logs and commit them if needed.
+12. Vercel auto-deploys when code is pushed to `main` (no manual deploy step needed).  
+13. Confirm app is live on `https://www.valleyofai.com` (typically within 1-2 minutes).
 
 ***
 
@@ -207,7 +206,7 @@ Only mark the transaction as complete after all are true:
 - [ ] `meta.json` is valid, complete, and matches logs (`runId`, times, tokens).  
 - [ ] `thumbnail.svg` matches the current UI and state.  
 - [ ] GA snippet + placeholders present in `<head>`.  
-- [ ] `npm run generate:apps` and `npm run deploy` ran successfully and the app appears in the gallery.  
+- [ ] `npm run generate:apps` ran successfully, PR was merged to `main`, and the app appears in the gallery (Vercel auto-deployed).  
 - [ ] All relevant log entries written with the same `runId`, ending with `TRANSACTION_END`.
 
 ***

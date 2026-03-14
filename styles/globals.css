@@ -321,7 +321,6 @@
   z-index: 1;
   pointer-events: none;
   background:
-    /* More opaque, closer to pure white */
     linear-gradient(
       180deg,
       rgba(249, 250, 255, 0.8) 0%,

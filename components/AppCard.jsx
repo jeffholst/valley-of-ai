@@ -1,5 +1,7 @@
-import { Link } from 'react-router-dom'
-import { useVotes } from '../hooks/useVotes'
+'use client'
+
+import Link from 'next/link'
+import { useVotes } from '@/hooks/useVotes'
 
 export default function AppCard({ app }) {
   const { voteCount, hasVoted, isLoading, isVoting, vote } = useVotes(app.id)
@@ -19,7 +21,7 @@ export default function AppCard({ app }) {
   }
 
   return (
-    <Link to={`/apps/${app.id}`} className="card overflow-hidden group">
+    <Link href={`/apps/${app.id}`} className="card overflow-hidden group">
       <div className="aspect-video bg-gradient-to-br from-primary-400 to-primary-600 relative overflow-hidden">
         {app.thumbnailUrl ? (
           <img

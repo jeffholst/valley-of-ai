@@ -1,18 +1,7 @@
+'use client'
+
 import { useState, useEffect, useMemo } from 'react'
 
-/**
- * Logs Dashboard Page
- * 
- * Displays transactional logs for agent app generation.
- * Features:
- * - Transaction view grouped by runId
- * - Step-by-step progress tracking
- * - Error highlighting
- * - Date navigation
- * - Filter by status
- */
-
-// Step type display names and icons
 const STEP_INFO = {
   SELECT_SUGGESTION: { name: 'Select Suggestion', icon: '💡' },
   GENERATE_HTML: { name: 'Generate HTML', icon: '📝' },
@@ -28,7 +17,6 @@ const STEP_INFO = {
   DEPLOY: { name: 'Deploy', icon: '🚀' },
 }
 
-// Status colors
 const STATUS_COLORS = {
   started: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
   in_progress: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
@@ -63,7 +51,7 @@ function StatusBadge({ status }) {
 
 function StepRow({ entry }) {
   const stepInfo = STEP_INFO[entry.step] || { name: entry.step, icon: '⚡' }
-  
+
   return (
     <div className={`flex items-center gap-3 py-2 px-3 border-l-2 ml-4 ${
       entry.status === 'failed' ? 'border-red-500 bg-red-50 dark:bg-red-900/20' :
@@ -117,36 +105,35 @@ function StepRow({ entry }) {
 
 function TransactionCard({ transaction, entries }) {
   const [expanded, setExpanded] = useState(true)
-  
+
   const startEntry = entries.find(e => e.type === 'TRANSACTION_START')
   const endEntry = entries.find(e => e.type === 'TRANSACTION_END')
   const stepEntries = entries.filter(e => e.type === 'STEP')
-  
+
   const status = endEntry?.status || startEntry?.status || 'started'
   const isSuccess = status === 'success'
   const isFailed = status === 'failed'
-  
+
   return (
     <div className={`card mb-4 ${
-      isFailed ? 'ring-2 ring-red-500' : 
+      isFailed ? 'ring-2 ring-red-500' :
       isSuccess ? 'ring-1 ring-green-500/30' : ''
     }`}>
-      {/* Transaction header */}
-      <div 
+      <div
         className="flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50"
         onClick={() => setExpanded(!expanded)}
       >
         <button className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-          <svg 
-            className={`w-5 h-5 transition-transform ${expanded ? 'rotate-90' : ''}`} 
-            fill="none" 
-            viewBox="0 0 24 24" 
+          <svg
+            className={`w-5 h-5 transition-transform ${expanded ? 'rotate-90' : ''}`}
+            fill="none"
+            viewBox="0 0 24 24"
             stroke="currentColor"
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
-        
+
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-semibold text-gray-900 dark:text-white">
@@ -165,7 +152,7 @@ function TransactionCard({ transaction, entries }) {
             {transaction.llmModel && <span>{transaction.llmModel}</span>}
           </div>
         </div>
-        
+
         <div className="text-right text-sm">
           {endEntry && (
             <>
@@ -183,8 +170,7 @@ function TransactionCard({ transaction, entries }) {
           )}
         </div>
       </div>
-      
-      {/* Steps */}
+
       {expanded && stepEntries.length > 0 && (
         <div className="border-t border-gray-200 dark:border-gray-700 py-2">
           {stepEntries.map((entry, idx) => (
@@ -192,8 +178,7 @@ function TransactionCard({ transaction, entries }) {
           ))}
         </div>
       )}
-      
-      {/* End summary */}
+
       {expanded && endEntry && (
         <div className="border-t border-gray-200 dark:border-gray-700 p-3 bg-gray-50 dark:bg-gray-800/50 text-sm">
           <div className="flex flex-wrap gap-4 text-gray-600 dark:text-gray-400">
@@ -224,23 +209,21 @@ export default function LogsPage() {
     return today.toISOString().split('T')[0]
   })
   const [statusFilter, setStatusFilter] = useState('all')
-  
-  // Parse date for file path
+
   const dateParts = useMemo(() => {
     const [year, month, day] = selectedDate.split('-')
     return { year, month, day }
   }, [selectedDate])
-  
-  // Fetch logs for selected date
+
   useEffect(() => {
     async function fetchLogs() {
       setLoading(true)
       setError(null)
-      
+
       try {
         const { year, month, day } = dateParts
         const response = await fetch(`/logs/${year}/${month}/${day}.jsonl`)
-        
+
         if (!response.ok) {
           if (response.status === 404) {
             setLogs([])
@@ -248,7 +231,7 @@ export default function LogsPage() {
           }
           throw new Error(`Failed to fetch logs: ${response.status}`)
         }
-        
+
         const text = await response.text()
         const entries = text
           .split('\n')
@@ -261,7 +244,7 @@ export default function LogsPage() {
             }
           })
           .filter(Boolean)
-        
+
         setLogs(entries)
       } catch (err) {
         setError(err.message)
@@ -270,18 +253,17 @@ export default function LogsPage() {
         setLoading(false)
       }
     }
-    
+
     fetchLogs()
   }, [dateParts])
-  
-  // Group logs by transaction (runId)
+
   const transactions = useMemo(() => {
     const grouped = new Map()
-    
+
     for (const entry of logs) {
       const runId = entry.runId
       if (!runId) continue
-      
+
       if (!grouped.has(runId)) {
         grouped.set(runId, {
           runId,
@@ -291,48 +273,43 @@ export default function LogsPage() {
           entries: [],
         })
       }
-      
+
       const txn = grouped.get(runId)
       txn.entries.push(entry)
-      
-      // Update transaction metadata from entries
+
       if (entry.appId) txn.appId = entry.appId
       if (entry.agent) txn.agent = entry.agent
       if (entry.llmModel) txn.llmModel = entry.llmModel
     }
-    
-    // Sort entries within each transaction by timestamp
+
     for (const txn of grouped.values()) {
       txn.entries.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
     }
-    
-    // Convert to array and sort by first entry timestamp (newest first)
+
     return Array.from(grouped.values()).sort((a, b) => {
       const aTime = a.entries[0]?.timestamp || ''
       const bTime = b.entries[0]?.timestamp || ''
       return bTime.localeCompare(aTime)
     })
   }, [logs])
-  
-  // Filter transactions by status
+
   const filteredTransactions = useMemo(() => {
     if (statusFilter === 'all') return transactions
-    
+
     return transactions.filter(txn => {
       const endEntry = txn.entries.find(e => e.type === 'TRANSACTION_END')
       const status = endEntry?.status || 'started'
-      
+
       if (statusFilter === 'success') return status === 'success'
       if (statusFilter === 'failed') return status === 'failed'
       if (statusFilter === 'in_progress') return !endEntry
       return true
     })
   }, [transactions, statusFilter])
-  
-  // Stats
+
   const stats = useMemo(() => {
     let success = 0, failed = 0, inProgress = 0, totalTokens = 0, totalDuration = 0
-    
+
     for (const txn of transactions) {
       const endEntry = txn.entries.find(e => e.type === 'TRANSACTION_END')
       if (!endEntry) {
@@ -345,10 +322,10 @@ export default function LogsPage() {
         failed++
       }
     }
-    
+
     return { success, failed, inProgress, totalTokens, totalDuration }
   }, [transactions])
-  
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <div className="mb-8">
@@ -359,8 +336,7 @@ export default function LogsPage() {
           Monitor app generation transactions, step progress, and errors.
         </p>
       </div>
-      
-      {/* Controls */}
+
       <div className="flex flex-wrap gap-4 mb-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -373,7 +349,7 @@ export default function LogsPage() {
             className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
           />
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Status
@@ -390,8 +366,7 @@ export default function LogsPage() {
           </select>
         </div>
       </div>
-      
-      {/* Stats */}
+
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
         <div className="card p-4 text-center">
           <div className="text-2xl font-bold text-gray-900 dark:text-white">{transactions.length}</div>
@@ -416,23 +391,20 @@ export default function LogsPage() {
           <div className="text-sm text-gray-500 dark:text-gray-400">Tokens</div>
         </div>
       </div>
-      
-      {/* Loading state */}
+
       {loading && (
         <div className="text-center py-12">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary-500 border-t-transparent"></div>
           <p className="mt-4 text-gray-500 dark:text-gray-400">Loading logs...</p>
         </div>
       )}
-      
-      {/* Error state */}
+
       {error && (
         <div className="card p-6 text-center border-red-500 bg-red-50 dark:bg-red-900/20">
           <p className="text-red-600 dark:text-red-400">{error}</p>
         </div>
       )}
-      
-      {/* Empty state */}
+
       {!loading && !error && filteredTransactions.length === 0 && (
         <div className="card p-12 text-center">
           <span className="text-4xl">📭</span>
@@ -441,13 +413,12 @@ export default function LogsPage() {
           </p>
         </div>
       )}
-      
-      {/* Transactions list */}
+
       {!loading && !error && filteredTransactions.map(txn => (
-        <TransactionCard 
-          key={txn.runId} 
-          transaction={txn} 
-          entries={txn.entries} 
+        <TransactionCard
+          key={txn.runId}
+          transaction={txn}
+          entries={txn.entries}
         />
       ))}
     </div>

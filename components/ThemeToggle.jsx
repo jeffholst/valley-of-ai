@@ -1,18 +1,20 @@
+'use client'
+
 import { useState, useEffect } from 'react'
 
 export default function ThemeToggle() {
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('theme')
-      if (saved) {
-        return saved === 'dark'
-      }
-      return window.matchMedia('(prefers-color-scheme: dark)').matches
-    }
-    return false
-  })
+  const [isDark, setIsDark] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    const saved = localStorage.getItem('theme')
+    const dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches
+    setIsDark(dark)
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
     const root = document.documentElement
     if (isDark) {
       root.classList.add('dark')
@@ -21,7 +23,7 @@ export default function ThemeToggle() {
       root.classList.remove('dark')
       localStorage.setItem('theme', 'light')
     }
-  }, [isDark])
+  }, [isDark, mounted])
 
   return (
     <button
@@ -29,7 +31,9 @@ export default function ThemeToggle() {
       className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200"
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
-      {isDark ? (
+      {!mounted ? (
+        <span className="w-5 h-5 block" />
+      ) : isDark ? (
         <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
           <path
             fillRule="evenodd"

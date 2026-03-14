@@ -18,7 +18,7 @@ const __dirname = path.dirname(__filename)
 const rootDir = path.resolve(__dirname, '..')
 
 const APPS_DIR = path.join(rootDir, 'apps')
-const OUTPUT_FILE = path.join(rootDir, 'src', 'data', 'apps.json')
+const OUTPUT_FILE = path.join(rootDir, 'data', 'apps.json')
 const BASE_PATH = ''
 
 /**
