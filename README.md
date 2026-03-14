@@ -158,6 +158,12 @@ If these values are missing, parts of the app may fail at runtime.
 | `npm run dev` | 🔥 Start Next.js development server with hot reload |
 | `npm run build` | 📦 Build for production (automatically runs `generate:apps` and `sync` first) |
 | `npm run start` | 🚀 Start production server (use after `build`) |
+| `npm run lint` | 🔍 Run ESLint to check code quality (0 warnings allowed) |
+| `npm run lint:fix` | 🔧 Auto-fix linting issues (semicolons, quotes, etc.) |
+| `npm run format` | 💅 Format code with Prettier (100 char line width) |
+| `npm test` | ✅ Run Jest test suite |
+| `npm run test:watch` | 👁️ Run tests in watch mode (re-run on file changes) |
+| `npm run test:coverage` | 📊 Generate test coverage report |
 | `npm run generate:apps` | 🔄 Regenerate `data/apps.json` from `apps/*/meta.json` files |
 | `npm run sync` | 📋 Copy `apps/` and `logs/` into `public/` for static access |
 | `npm run validate:apps` | ✅ Validate standalone app HTML structure and metadata |
@@ -240,12 +246,41 @@ Alternatively, run locally with `npm run build && npm run start` for testing bef
 │
 ├── 🛠️ scripts/            # Build and generation scripts
 │   ├── 📄 generate-apps.js    # Scan apps/ → generate data/apps.json
-│   ├── 📄 sync-public-content.mjs  # Copy apps/ & logs/ → public/
+│   ├── 📄 sync-public-content.mjs  # Copy apps/ & logs/ → public/ (with placeholder replacement)
 │   ├── 📄 validate-apps.js    # Validate app HTML/metadata
 │   ├── 📄 validate-responsive.js  # Test responsive design
 │   └── 📄 logger.js           # Logging utility
 │
+├── 🧪 Tests
+│   ├── 📄 jest.config.js      # Jest configuration
+│   ├── 📄 jest.setup.js       # Test environment setup (mocks window.matchMedia)
+│   └── 📁 __tests__/
+│       ├── 📁 components/
+│       │   └── ThemeToggle.test.js       # Component tests
+│       ├── 📁 lib/
+│       │   └── siteConfig.test.js        # Utility function tests
+│       ├── 📁 data/
+│       │   └── apps.test.js              # Registry validation tests
+│       └── env.test.js                   # Environment variable checks
+│
+├── 📖 Documentation
+│   ├── 📄 docs/STYLE_GUIDE.md      # Code style, naming, conventions, best practices
+│   └── 📄 docs/TESTING.md          # Testing guide and examples
+│
+├── 📋 GitHub Templates
+│   ├── 📁 .github/
+│   │   ├── 📁 ISSUE_TEMPLATE/
+│   │   │   ├── bug_report.md       # Bug report template with environment/steps
+│   │   │   └── feature_request.md  # Feature request template with use cases
+│   │   └── pull_request_template.md # PR template with checklist
+│
 ├── ⚙️ Configuration Files
+│   ├── 📄 jest.config.js      # Jest testing configuration
+│   ├── 📄 jest.setup.js       # Test environment setup
+│   ├── 📄 eslint.config.js    # ESLint (flat config format)
+│   ├── 📄 .prettierrc.json    # Prettier formatting
+│   ├── 📄 .prettierignore     # Prettier file exclusions
+│   ├── 📄 .npmrc              # npm config (legacy-peer-deps)
 │   ├── 📄 next.config.mjs     # Next.js configuration
 │   ├── 📄 jsconfig.json       # Path aliases (@/*)
 │   ├── 📄 postcss.config.cjs  # PostCSS + Tailwind pipeline
@@ -343,6 +378,51 @@ Improve the gallery or scripts
 </tr>
 </table>
 
+### Development Guidelines
+
+Before submitting a PR, ensure your code meets our standards:
+
+#### 1️⃣ Style & Format
+- Read [📖 STYLE_GUIDE.md](docs/STYLE_GUIDE.md) for code conventions, naming, React patterns, CSS standards
+- Run `npm run lint:fix` to auto-fix linting issues (semicolons, quotes, spacing)
+- Run `npm run format` to apply Prettier formatting (100 char line width, single quotes)
+- Verify with `npm run lint` — must pass with **0 warnings**
+
+#### 2️⃣ Testing
+- Write tests for new features using Jest + React Testing Library
+- Test files go in `__tests__/` mirroring the source structure
+- Run `npm test` to verify all 17+ tests pass
+- Check coverage with `npm run test:coverage`
+- See [📖 TESTING.md](docs/TESTING.md) for testing examples and best practices
+
+#### 3️⃣ PR Process
+- Use the [Pull Request Template](.github/pull_request_template.md) with:
+  - Type of change (bugfix, feature, docs, etc.)
+  - Testing steps and evidence
+  - Comprehensive pre-submission checklist
+- Link related issues in description (`Closes #123`)
+- Ensure `npm run build` passes without errors
+- Keep PR focused on a single feature or bugfix
+
+#### 4️⃣ Issue Reporting
+- Use the [Bug Report Template](.github/ISSUE_TEMPLATE/bug_report.md) with:
+  - Steps to reproduce
+  - Expected vs actual behavior
+  - Screenshots/console errors
+  - Environment details (Node version, OS, browser)
+- Use the [Feature Request Template](.github/ISSUE_TEMPLATE/feature_request.md) with:
+  - Problem statement
+  - Proposed solution
+  - Use cases and examples
+
+### Code Quality Checks
+
+All changes are validated before merge:
+- ✅ **ESLint**: 0 errors, 0 warnings
+- ✅ **Prettier**: Consistent formatting
+- ✅ **Jest Tests**: 17+ tests passing
+- ✅ **Build**: `npm run build` succeeds
+
 ---
 
 ## 🛠️ Tech Stack
@@ -352,6 +432,8 @@ Improve the gallery or scripts
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Jest](https://img.shields.io/badge/Jest-Testing-15C213?style=for-the-badge&logo=jest&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-Lint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)
 ![Supabase](https://img.shields.io/badge/Supabase-Votes-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Turnstile-Captcha-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Vercel-Deployed-000000?style=for-the-badge&logo=vercel&logoColor=white)
@@ -362,6 +444,8 @@ Core stack used in this project:
 
 - **Next.js 16** + **React 19**: Modern framework with App Router for file-based routing, server/client components, and static generation.
 - **Tailwind CSS 3** + **PostCSS** + **Autoprefixer**: Utility-first styling pipeline.
+- **Jest** + **React Testing Library**: 17+ test cases covering components, utilities, and environment variables with coverage reporting.
+- **ESLint 9** + **Prettier**: Code quality enforcement (strict 0 warnings policy) and consistent formatting (100 char lines, single quotes).
 - **Supabase**: App voting data storage, retrieval, and real-time updates.
 - **EmailJS**: Suggestion form submission from the browser.
 - **Cloudflare Turnstile**: Bot protection on suggestion flow.
