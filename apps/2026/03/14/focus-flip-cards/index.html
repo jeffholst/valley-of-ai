@@ -1,0 +1,33 @@
+<!doctype html><html lang="en"><head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config', '__GA_MEASUREMENT_ID__');</script>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Focus Flip Cards - __MAIN_SITE_NAME__</title>
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__"><meta name="voa-main-site-name" content="__MAIN_SITE_NAME__"><meta name="voa-social-x-url" content="__SOCIAL_X_URL__"><meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__"><meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__"><script src="/apps/shared/app-shell.js" defer></script>
+  <style>
+    :root{--bg:#0b1220;--surface:#101a31;--text:#edf3ff;--accent:#22d3ee;--shadow:rgba(0,0,0,.35);--muted:#9eb1da;--ok:#22c55e}
+    [data-theme='light']{--bg:#eef4ff;--surface:#fff;--text:#1f2f52;--accent:#0891b2;--shadow:rgba(31,47,82,.12);--muted:#60739a;--ok:#15803d}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px;font-family:Inter,system-ui;background:radial-gradient(1000px 700px at 20% 20%,color-mix(in srgb,var(--accent) 18%,var(--bg)),var(--bg));color:var(--text)}
+    .app{width:min(860px,100%);background:color-mix(in srgb,var(--surface) 92%,transparent);border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);border-radius:18px;padding:14px;box-shadow:0 18px 45px var(--shadow)}
+    h1{margin:0 0 6px}.sub{margin:0 0 10px;color:var(--muted)}.top{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.pill{font-size:.86rem;padding:6px 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(60px,1fr));gap:10px}
+    .card{min-height:84px;border:none;border-radius:12px;font-size:1.8rem;font-weight:700;cursor:pointer;background:color-mix(in srgb,var(--accent) 15%,var(--surface));color:var(--text);touch-action:manipulation}
+    .card.revealed,.card.matched{background:color-mix(in srgb,var(--surface) 90%,var(--accent));box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--accent) 45%,transparent)}
+    .card.matched{outline:2px solid var(--ok)}
+    .actions{display:flex;justify-content:center;margin-top:12px}button{min-height:44px;padding:10px 14px;border:none;border-radius:999px;font:inherit;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(90deg,#7c3aed,var(--accent));touch-action:manipulation}
+    @media (max-width:640px){.grid{gap:8px}.card{min-height:72px;font-size:1.5rem}}
+  </style>
+</head><body><main class="app"><h1>🃏 Focus Flip Cards</h1><p class="sub">Match all symbol pairs in the fewest moves and fastest time.</p>
+<div class="top"><span class="pill" id="moves">Moves: 0</span><span class="pill" id="time">Time: 0s</span><span class="pill" id="state">State: Ready</span></div>
+<section class="grid" id="grid"></section><div class="actions"><button id="restart">Restart</button></div></main>
+<script>
+const icons=['🍎','🚀','🎵','⚽','🌙','🔥','🐼','💎']; let deck=[],open=[],lock=false,moves=0,t=0,timer=null,matched=0;
+const grid=document.getElementById('grid'),movesEl=document.getElementById('moves'),timeEl=document.getElementById('time'),stateEl=document.getElementById('state');
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function setState(s){stateEl.textContent=`State: ${s}`}
+function startTimer(){clearInterval(timer);timer=setInterval(()=>{t++;timeEl.textContent=`Time: ${t}s`},1000)}
+function init(){deck=shuffle([...icons,...icons]).map((v,i)=>({v,i,m:false}));open=[];lock=false;moves=0;t=0;matched=0;clearInterval(timer);movesEl.textContent='Moves: 0';timeEl.textContent='Time: 0s';setState('Ready');render();}
+function render(){grid.innerHTML='';deck.forEach((c,idx)=>{const b=document.createElement('button');b.className='card'+((c.m||open.includes(idx))?' revealed':'')+(c.m?' matched':'');b.textContent=(c.m||open.includes(idx))?c.v:'?';b.onclick=()=>tap(idx);grid.appendChild(b);});}
+function tap(i){if(lock||deck[i].m||open.includes(i))return;if(moves===0&&open.length===0){startTimer();setState('Running')} open.push(i);render();if(open.length===2){moves++;movesEl.textContent=`Moves: ${moves}`;const[a,b]=open;if(deck[a].v===deck[b].v){deck[a].m=deck[b].m=true;matched+=2;open=[];if(matched===deck.length){clearInterval(timer);setState(`Win in ${moves} moves / ${t}s`)}}else{lock=true;setTimeout(()=>{open=[];lock=false;render();},650)}}}
+document.getElementById('restart').onclick=init;init();
+</script></body></html>
