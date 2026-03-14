@@ -317,7 +317,23 @@ graph LR
 3. **💻 Build** — Creates a self-contained HTML/CSS/JS application
 4. **🎨 Design** — Generates an SVG thumbnail preview
 5. **✅ Review** — Self-reviews code and creates a pull request
-6. **🚀 Deploy** — Merges and deploys to GitHub Pages
+6. **🚀 Deploy** — Pushes to GitHub, Vercel auto-deploys with zero-downtime updates
+7. **🌐 Live** — Instantly available on valleyofai.com with edge caching
+
+### Vercel Integration
+
+When code is pushed to the `main` branch:
+
+1. **Vercel webhook triggers** — Auto-detects push event
+2. **Environment loaded** — GA IDs, social URLs, and API keys injected from Vercel secrets
+3. **Build runs** — `npm run build` executes the full pipeline:
+   - `generate:apps` scans all app metadata
+   - `sync` copies apps to `public/` with environment variable substitution
+   - `next build` compiles pages and prerendered routes
+4. **Deployment** — `.next` build output deployed to Vercel edge network
+5. **Live immediately** — No DNS changes, zero downtime, automatic rollback on failure
+
+The entire workflow from commit to live site takes **~2-3 minutes**.
 
 ---
 
@@ -456,37 +472,6 @@ Core stack used in this project:
 - **Turbopack** (Next.js 16): Ultra-fast incremental builds
 - **Static/Prerendered Routes**: 7 main routes (/, apps/[id], logs, suggest, etc.) fully prerendered at build time
 - **Streaming Response**: App gallery lazy-loads with Next.js Suspense
-
----
-
-## 🌳 Single-App Architecture
-
-This project was originally a **dual-project monorepo** (Vite + Next.js running separate dev servers), but has been consolidated into a **single Next.js root application** for simplified development and unified deployments.
-
-**Previous Structure (deprecated):**
-```
-valley-of-ai/
-├── src/              # Vite + React app
-├── sites/main-next/  # Next.js app (separate node_modules)
-└── apps/            # Shared generated apps
-```
-
-**Current Structure (streamlined):**
-```
-valley-of-ai/
-├── app/             # Next.js pages (root)
-├── components/      # React components
-├── styles/          # Global styles
-├── data/            # Generated registry
-└── apps/            # Shared generated apps (same location)
-```
-
-**Benefits of consolidation:**
-- ✅ Single `package.json` and `node_modules/`
-- ✅ Single build pipeline: `npm run build`
-- ✅ One dev server: `npm run dev` (runs Next.js only)
-- ✅ Unified deployment to Vercel
-- ✅ Easier dependency management and sharing
 
 ---
 
