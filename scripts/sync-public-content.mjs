@@ -2,31 +2,90 @@
  * Sync public content
  *
  * Copies runtime assets (apps/, logs/) into public/ so Next.js can serve them.
+ * For apps, replaces environment variable placeholders in HTML files.
  * SVG assets already live in public/ — no copy needed.
  * data/apps.json is imported directly — no copy needed.
  */
 
-import { cpSync, existsSync, mkdirSync } from 'fs'
-import { dirname, resolve } from 'path'
+import { config } from 'dotenv'
+import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync, readdirSync } from 'fs'
+import { dirname, resolve, join } from 'path'
 import { fileURLToPath } from 'url'
+
+// Load environment variables from .env file
+config()
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = resolve(__dirname, '..')
 
+// Map of placeholder names to environment variable names
+const PLACEHOLDER_MAP = {
+  '__GA_MEASUREMENT_ID__': 'NEXT_PUBLIC_GA_MEASUREMENT_ID',
+  '__MAIN_SITE_URL__': 'NEXT_PUBLIC_MAIN_SITE_URL',
+  '__MAIN_SITE_NAME__': 'NEXT_PUBLIC_SITE_NAME',
+  '__SOCIAL_X_URL__': 'NEXT_PUBLIC_SOCIAL_X_URL',
+  '__SOCIAL_FACEBOOK_URL__': 'NEXT_PUBLIC_SOCIAL_FACEBOOK_URL',
+  '__SOCIAL_INSTAGRAM_URL__': 'NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL',
+}
+
+/**
+ * Recursively process files in a directory, replacing placeholders in HTML files
+ */
+function processDirectory(sourceDir, targetDir) {
+  const entries = readdirSync(sourceDir, { withFileTypes: true })
+  
+  for (const entry of entries) {
+    const sourcePath = join(sourceDir, entry.name)
+    const targetPath = join(targetDir, entry.name)
+    
+    if (entry.isDirectory()) {
+      mkdirSync(targetPath, { recursive: true })
+      processDirectory(sourcePath, targetPath)
+    } else if (entry.name.endsWith('.html')) {
+      // Read HTML file and replace placeholders
+      let content = readFileSync(sourcePath, 'utf-8')
+      
+      for (const [placeholder, envVar] of Object.entries(PLACEHOLDER_MAP)) {
+        const value = process.env[envVar] || ''
+        if (value) {
+          content = content.replaceAll(placeholder, value)
+        }
+      }
+      
+      writeFileSync(targetPath, content, 'utf-8')
+    } else {
+      // Copy non-HTML files as-is
+      cpSync(sourcePath, targetPath, { recursive: true, force: true })
+    }
+  }
+}
+
 const targets = [
-  { from: resolve(root, 'apps'), to: resolve(root, 'public/apps') },
-  { from: resolve(root, 'logs'), to: resolve(root, 'public/logs') },
+  { from: resolve(root, 'apps'), to: resolve(root, 'public/apps'), processPlaceholders: true },
+  { from: resolve(root, 'logs'), to: resolve(root, 'public/logs'), processPlaceholders: false },
 ]
 
 console.log('[sync] Copying runtime assets into public/...\n')
 
-for (const { from, to } of targets) {
+for (const { from, to, processPlaceholders } of targets) {
   if (!existsSync(from)) {
     console.warn(`⚠️  Skipped missing source: ${from}`)
     continue
   }
+  
   mkdirSync(dirname(to), { recursive: true })
-  cpSync(from, to, { recursive: true, force: true })
+  
+  if (processPlaceholders) {
+    // Remove existing directory before processing
+    if (existsSync(to)) {
+      cpSync(to, to + '.backup', { recursive: true, force: true })
+    }
+    mkdirSync(to, { recursive: true })
+    processDirectory(from, to)
+  } else {
+    cpSync(from, to, { recursive: true, force: true })
+  }
+  
   console.log(`✅ ${from} → ${to}`)
 }
 

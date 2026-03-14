@@ -1,0 +1,28 @@
+{
+  "id": "gravity-dodge",
+  "name": "Gravity Dodge",
+  "shortDescription": "An arcade survival game where gravity drags you toward a central orb while you dodge incoming hazards.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-09T02:58:38Z",
+  "category": "Games",
+  "votes": 0,
+  "status": "active",
+  "tags": [
+    "arcade",
+    "survival",
+    "physics",
+    "keyboard-controls"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "desktop",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "gpt-5.1",
+    "startTime": "2026-03-09T02:57:39Z",
+    "endTime": "2026-03-09T02:58:38Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-20260309T025838Z-f8372e",
+    "notes": "Nightly run app. Token counters unavailable in runtime."
+  }
+}

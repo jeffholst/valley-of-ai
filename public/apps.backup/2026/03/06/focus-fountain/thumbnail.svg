@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#18294a"/>
+      <stop offset="1" stop-color="#0a1325"/>
+    </linearGradient>
+    <linearGradient id="stream" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b2f1ff"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg)"/>
+  <rect x="110" y="36" width="580" height="378" rx="22" fill="#101c34" stroke="#9eb2da" stroke-opacity="0.25"/>
+
+  <text x="140" y="78" font-family="system-ui,sans-serif" font-size="30" font-weight="700" fill="#e8f0ff">⛲ Focus Fountain</text>
+  <text x="140" y="102" font-family="system-ui,sans-serif" font-size="15" fill="#9eb2da">Stay focused and watch your fountain rise with each productive minute.</text>
+
+  <rect x="140" y="124" width="520" height="170" rx="16" fill="#0f203d" stroke="#9eb2da" stroke-opacity="0.22"/>
+  <rect x="384" y="170" width="32" height="92" rx="16" fill="url(#stream)"/>
+  <ellipse cx="400" cy="268" rx="170" ry="15" fill="#22d3ee" fill-opacity="0.45"/>
+  <circle cx="370" cy="160" r="8" fill="#c7f6ff"/>
+  <circle cx="400" cy="148" r="9" fill="#c7f6ff"/>
+  <circle cx="430" cy="162" r="8" fill="#c7f6ff"/>
+
+  <rect x="140" y="312" width="165" height="66" rx="12" fill="#13264a" stroke="#9eb2da" stroke-opacity="0.24"/>
+  <rect x="318" y="312" width="165" height="66" rx="12" fill="#13264a" stroke="#9eb2da" stroke-opacity="0.24"/>
+  <rect x="496" y="312" width="165" height="66" rx="12" fill="#13264a" stroke="#9eb2da" stroke-opacity="0.24"/>
+
+  <text x="158" y="336" font-family="system-ui,sans-serif" font-size="11" fill="#9eb2da" letter-spacing="1">SESSION</text>
+  <text x="158" y="364" font-family="system-ui,sans-serif" font-size="25" font-weight="700" fill="#e8f0ff">17:42</text>
+
+  <text x="336" y="336" font-family="system-ui,sans-serif" font-size="11" fill="#9eb2da" letter-spacing="1">FOCUS SCORE</text>
+  <text x="336" y="364" font-family="system-ui,sans-serif" font-size="25" font-weight="700" fill="#e8f0ff">86</text>
+
+  <text x="514" y="336" font-family="system-ui,sans-serif" font-size="11" fill="#9eb2da" letter-spacing="1">STREAK MINS</text>
+  <text x="514" y="364" font-family="system-ui,sans-serif" font-size="25" font-weight="700" fill="#e8f0ff">7</text>
+</svg>

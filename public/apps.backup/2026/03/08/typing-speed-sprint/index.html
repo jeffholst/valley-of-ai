@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Typing Speed Sprint - Valley of AI</title>
+
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-NYDGLSJPFT"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'G-NYDGLSJPFT');
+	</script>
+
+	<style>
+		:root {
+			--bg: #0c1220;
+			--bg2: #1b2a4a;
+			--surface: #111a31;
+			--text: #ecf2ff;
+			--muted: #9eb1da;
+			--primary: #22d3ee;
+			--good: #2563eb;
+			--bad: #ef4444;
+			--prompt-bg: #0b1428;
+			--input-bg: #101b34;
+		;--accent:#22d3ee;--shadow:rgba(0, 0, 0, 0.35);}
+
+		[data-theme="light"] {
+			--bg: #edf4ff;
+			--bg2: #dbeafe;
+			--surface: #ffffff;
+			--text: #1f2f52;
+			--muted: #60739a;
+			--primary: #0891b2;
+			--good: #2563eb;
+			--bad: #b91c1c;
+			--prompt-bg: #f8fbff;
+			--input-bg: #ffffff;
+		;--accent:#0891b2;--shadow:rgba(31, 47, 82, 0.12);}
+
+		* { box-sizing: border-box; }
+
+		body {
+			margin: 0;
+			min-height: 100vh;
+			display: grid;
+			place-items: center;
+			padding: 16px;
+			font-family: system-ui, -apple-system, sans-serif;
+			background: radial-gradient(1000px 700px at 20% 20%, var(--bg2), var(--bg));
+			color: var(--text);
+		}
+
+		.theme-toggle {
+			position: fixed;
+			top: 1rem;
+			right: 1rem;
+			width: 40px;
+			height: 40px;
+			border: 0;
+			border-radius: 999px;
+			cursor: pointer;
+			font-size: 1.1rem;
+			color: var(--text);
+			background: var(--surface);
+			box-shadow: 0 8px 25px #0003;
+		}
+
+		.card {
+			width: min(860px, 100%);
+			background: color-mix(in srgb, var(--surface) 90%, transparent);
+			border: 1px solid color-mix(in srgb, var(--muted) 24%, transparent);
+			border-radius: 18px;
+			padding: 14px;
+			box-shadow: 0 18px 45px #0004;
+		}
+
+		h1 { margin: 0 0 4px; }
+
+		.sub {
+			margin: 0 0 10px;
+			color: var(--muted);
+		}
+
+		.stats {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap;
+			margin-bottom: 10px;
+		}
+
+		.level-row {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			margin-bottom: 10px;
+		}
+
+		.level-row label {
+			color: var(--muted);
+			font-size: 0.9rem;
+		}
+
+		.level-row select {
+			border-radius: 999px;
+			padding: 6px 10px;
+			border: 1px solid color-mix(in srgb, var(--muted) 24%, transparent);
+			background: var(--input-bg);
+			color: var(--text);
+			font: inherit;
+		}
+
+		.pill {
+			font-size: 0.86rem;
+			padding: 6px 10px;
+			border-radius: 999px;
+			border: 1px solid color-mix(in srgb, var(--muted) 24%, transparent);
+			color: var(--muted);
+		}
+
+		.prompt {
+			border: 1px solid color-mix(in srgb, var(--muted) 24%, transparent);
+			border-radius: 12px;
+			padding: 12px;
+			line-height: 1.65;
+			background: var(--prompt-bg);
+			color: var(--text);
+			font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+			min-height: 120px;
+			white-space: pre-wrap;
+		}
+
+		.ok { color: var(--good); }
+		.bad { color: var(--bad); }
+
+		textarea {
+			width: 100%;
+			margin-top: 10px;
+			min-height: 120px;
+			border-radius: 12px;
+			border: 1px solid color-mix(in srgb, var(--muted) 24%, transparent);
+			background: var(--input-bg);
+			color: var(--text);
+			padding: 10px;
+			font: inherit;
+		}
+
+		.controls {
+			display: flex;
+			gap: 8px;
+			justify-content: center;
+			margin-top: 10px;
+		}
+
+		button {
+			border: none;
+			border-radius: 999px;
+			padding: 9px 13px;
+			font: inherit;
+			font-weight: 700;
+			cursor: pointer;
+			color: #fff;
+			background: linear-gradient(90deg, #7c3aed, var(--primary));
+		}
+
+		.site-link {
+			margin-top: 12px;
+			text-align: center;
+			font-size: 0.9rem;
+			color: var(--muted);
+		}
+
+		.site-link a {
+			color: var(--primary);
+			text-decoration: none;
+			font-weight: 700;
+		}
+
+		.site-link a:hover {
+			text-decoration: underline;
+		}
+
+		.modal-backdrop {
+			position: fixed;
+			inset: 0;
+			display: grid;
+			place-items: center;
+			padding: 16px;
+			background: #0008;
+		}
+
+		.modal-backdrop.hidden {
+			display: none;
+		}
+
+		.modal {
+			width: min(460px, 100%);
+			background: var(--surface);
+			color: var(--text);
+			border: 1px solid color-mix(in srgb, var(--muted) 24%, transparent);
+			border-radius: 16px;
+			padding: 16px;
+			box-shadow: 0 20px 60px #0006;
+		}
+
+		.modal h2 {
+			margin: 0 0 8px;
+		}
+
+		.modal p {
+			margin: 0 0 12px;
+			color: var(--muted);
+		}
+
+		.summary-grid {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 8px;
+			margin-bottom: 12px;
+		}
+
+		.summary-item {
+			padding: 10px;
+			border-radius: 10px;
+			background: color-mix(in srgb, var(--surface) 80%, var(--bg2));
+			border: 1px solid color-mix(in srgb, var(--muted) 20%, transparent);
+		}
+
+		.summary-label {
+			font-size: 0.8rem;
+			color: var(--muted);
+		}
+
+		.summary-value {
+			font-size: 1.1rem;
+			font-weight: 800;
+		}
+	
+
+    /* Responsive/touch accessibility pass */
+    @media (max-width: 1024px) {
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot,
+      input[type="button"],
+      input[type="submit"] {
+        min-height: 44px;
+      }
+
+      .theme-toggle {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        touch-action: manipulation;
+        pointer-events: auto;
+        z-index: 999;
+      }
+
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot {
+        touch-action: manipulation;
+      }
+    }
+
+</style>
+  <meta name="voa-main-site-url" content="https://www.valleyofai.com">
+  <meta name="voa-main-site-name" content="Valley of AI">
+    <meta name="voa-social-x-url" content="https://x.com/ValleyOfAI">
+  <meta name="voa-social-facebook-url" content="https://www.facebook.com/profile.php?id=61582281233012">
+  <meta name="voa-social-instagram-url" content="https://www.instagram.com/valley_of_ai/">
+  <script src="/apps/shared/app-shell.js" defer></script>
+</head>
+<body>
+	<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
+
+	<main class="card">
+		<h1>⌨️ Typing Speed Sprint</h1>
+		<p class="sub">60-second typing challenge with difficulty levels, live WPM, and mistake tracking.</p>
+
+		<div class="level-row">
+			<label for="level">Level:</label>
+			<select id="level" aria-label="Typing difficulty level">
+				<option value="easy">Easy</option>
+				<option value="medium">Medium</option>
+				<option value="hard">Hard</option>
+			</select>
+		</div>
+
+		<div class="stats">
+			<span class="pill" id="time">Time: 60s</span>
+			<span class="pill" id="wpm">WPM: 0</span>
+			<span class="pill" id="mistakes">Mistakes: 0</span>
+			<span class="pill" id="state">State: Ready</span>
+		</div>
+
+		<div id="prompt" class="prompt"></div>
+		<textarea id="input" placeholder="Start typing to begin..." aria-label="Typing input"></textarea>
+
+		<div class="controls">
+			<button id="restart">New Sprint</button>
+		</div>
+
+		<div class="site-link">
+			Built in Valley of AI.
+			<a href="https://www.valleyofai.com" target="_blank" rel="noopener noreferrer">Back to valleyofai.com</a>
+		</div>
+	</main>
+
+	<div id="resultModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+		<div class="modal">
+			<h2 id="resultTitle">Sprint Complete</h2>
+			<p>You finished the sentence correctly.</p>
+			<div class="summary-grid">
+				<div class="summary-item"><div class="summary-label">WPM</div><div class="summary-value" id="sumWpm">0</div></div>
+				<div class="summary-item"><div class="summary-label">Mistakes</div><div class="summary-value" id="sumMistakes">0</div></div>
+				<div class="summary-item"><div class="summary-label">Time Left</div><div class="summary-value" id="sumLeft">0s</div></div>
+				<div class="summary-item"><div class="summary-label">Chars Typed</div><div class="summary-value" id="sumChars">0</div></div>
+			</div>
+			<div class="controls">
+				<button id="closeModal">Close</button>
+				<button id="playAgain">Play Again</button>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// Theme init — MUST use shared key 'theme' in localStorage
+		const theme = localStorage.getItem('theme') ||
+			(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+		document.documentElement.setAttribute('data-theme', theme);
+		document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+
+		function toggleTheme() {
+			const current = document.documentElement.getAttribute('data-theme');
+			const next = current === 'dark' ? 'light' : 'dark';
+			document.documentElement.setAttribute('data-theme', next);
+			localStorage.setItem('theme', next);
+			document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+		}
+
+		const promptsByLevel = {
+			easy: [
+				'the sun sets over calm water and soft winds drift through quiet trees',
+				'small steps each day can build strong habits and steady progress',
+				'focus on clean typing and gentle rhythm to improve speed over time',
+				'kind words and clear thoughts help teams solve hard tasks together'
+			],
+			medium: [
+				'At 7:30, the pilot logged 142 miles, then wrote: "steady climb, light rain."',
+				'Build v2.4 by Friday; fix 3 bugs, update docs, and re-test all key paths.',
+				'Track goals weekly: 12 workouts/month, 8 books/year, and 10k steps/day.',
+				'Practice timing, punctuation, and CAPS so real-world typing feels smooth.'
+			],
+			hard: [
+				'Parse {alpha[2]*beta-17}/(gamma+delta)! while "xYz_42" stays unchanged.',
+				'Use Ctrl+Shift+P, run build --prod, then verify hash=a9F!7k before deploy.',
+				'Edge-case test: if (score>=99.5 && lives!=0) { status="WIN"; } else { retry(); }',
+				'Mix symbols #@$%^&* with CaseSwap and digits 314159 to stress every finger.'
+			]
+		};
+
+		const promptEl = document.getElementById('prompt');
+		const inputEl = document.getElementById('input');
+		const timeEl = document.getElementById('time');
+		const wpmEl = document.getElementById('wpm');
+		const mistakesEl = document.getElementById('mistakes');
+		const stateEl = document.getElementById('state');
+		const levelEl = document.getElementById('level');
+		const resultModal = document.getElementById('resultModal');
+		const sumWpmEl = document.getElementById('sumWpm');
+		const sumMistakesEl = document.getElementById('sumMistakes');
+		const sumLeftEl = document.getElementById('sumLeft');
+		const sumCharsEl = document.getElementById('sumChars');
+
+		let target = '';
+		let targetIndex = -1;
+		let currentLevel = 'easy';
+		const lastIndexByLevel = { easy: -1, medium: -1, hard: -1 };
+		let time = 60;
+		let timer = null;
+		let started = false;
+		let finished = false;
+		let totalKeystrokes = 0;
+		let correctKeystrokes = 0;
+
+		function esc(ch) {
+			if (ch === '&') return '&amp;';
+			if (ch === '<') return '&lt;';
+			if (ch === '>') return '&gt;';
+			return ch;
+		}
+
+		function pick() {
+			const samples = promptsByLevel[currentLevel];
+			if (samples.length === 1) {
+				targetIndex = 0;
+			} else {
+				let next = Math.floor(Math.random() * samples.length);
+				while (next === lastIndexByLevel[currentLevel]) {
+					next = Math.floor(Math.random() * samples.length);
+				}
+				targetIndex = next;
+			}
+
+			lastIndexByLevel[currentLevel] = targetIndex;
+			target = samples[targetIndex];
+			renderPrompt('');
+		}
+
+		function renderPrompt(text) {
+			let html = '';
+			for (let idx = 0; idx < target.length; idx++) {
+				const ch = esc(target[idx]);
+				const typed = text[idx];
+				if (typed == null) {
+					html += ch;
+				} else if (typed === target[idx]) {
+					html += `<span class="ok">${ch}</span>`;
+				} else {
+					html += `<span class="bad">${ch}</span>`;
+				}
+			}
+			promptEl.innerHTML = html;
+		}
+
+		function metrics(text) {
+			let correct = 0;
+			for (let k = 0; k < text.length; k++) {
+				if (text[k] === target[k]) {
+					correct++;
+				}
+			}
+
+			const mistakes = Math.max(0, totalKeystrokes - correctKeystrokes);
+			const words = correct / 5;
+			const mins = (60 - time) / 60 || (1 / 60);
+			const wpm = Math.max(0, Math.round(words / mins));
+
+			wpmEl.textContent = `WPM: ${wpm}`;
+			mistakesEl.textContent = `Mistakes: ${mistakes}`;
+
+			return {
+				wpm,
+				correct,
+				totalTyped: text.length,
+				totalKeystrokes,
+				mistakes
+			};
+		}
+
+		function showResultModal(summary) {
+			sumWpmEl.textContent = String(summary.wpm);
+			sumMistakesEl.textContent = String(summary.mistakes);
+			sumLeftEl.textContent = `${time}s`;
+			sumCharsEl.textContent = String(summary.totalTyped);
+			resultModal.classList.remove('hidden');
+		}
+
+		function hideResultModal() {
+			resultModal.classList.add('hidden');
+		}
+
+		function completeSprint(summary) {
+			if (finished) return;
+			finished = true;
+			clearInterval(timer);
+			timer = null;
+			inputEl.disabled = true;
+			stateEl.textContent = 'State: Completed';
+			showResultModal(summary);
+		}
+
+		function tick() {
+			time--;
+			timeEl.textContent = `Time: ${time}s`;
+			if (time <= 0) {
+				clearInterval(timer);
+				timer = null;
+				inputEl.disabled = true;
+				stateEl.textContent = 'State: Finished';
+			}
+		}
+
+		function reset() {
+			clearInterval(timer);
+			timer = null;
+			time = 60;
+			started = false;
+			finished = false;
+			totalKeystrokes = 0;
+			correctKeystrokes = 0;
+			inputEl.disabled = false;
+			inputEl.value = '';
+			timeEl.textContent = 'Time: 60s';
+			wpmEl.textContent = 'WPM: 0';
+			mistakesEl.textContent = 'Mistakes: 0';
+			stateEl.textContent = 'State: Ready';
+			hideResultModal();
+			pick();
+			inputEl.focus();
+		}
+
+		inputEl.addEventListener('input', () => {
+			if (finished) return;
+
+			if (!started) {
+				started = true;
+				stateEl.textContent = 'State: Running';
+				timer = setInterval(tick, 1000);
+			}
+			renderPrompt(inputEl.value);
+			const summary = metrics(inputEl.value);
+
+			if (inputEl.value === target) {
+				completeSprint(summary);
+			}
+		});
+
+		inputEl.addEventListener('keydown', (event) => {
+			if (finished) return;
+			if (event.ctrlKey || event.metaKey || event.altKey) return;
+			if (event.key.length !== 1) return;
+
+			const caretPos = inputEl.selectionStart ?? inputEl.value.length;
+			const expectedChar = target[caretPos] || '';
+
+			totalKeystrokes++;
+			if (event.key === expectedChar) {
+				correctKeystrokes++;
+			}
+		});
+
+		document.getElementById('restart').addEventListener('click', reset);
+		levelEl.addEventListener('change', () => {
+			currentLevel = levelEl.value;
+			reset();
+		});
+		document.getElementById('closeModal').addEventListener('click', hideResultModal);
+		document.getElementById('playAgain').addEventListener('click', reset);
+		resultModal.addEventListener('click', (event) => {
+			if (event.target === resultModal) {
+				hideResultModal();
+			}
+		});
+		reset();
+	</script>
+</body>
+</html>

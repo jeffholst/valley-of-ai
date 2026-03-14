@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NYDGLSJPFT"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-NYDGLSJPFT');
+    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daredevil Moto Jump - Valley of AI</title>
+  <style>
+    :root {
+      --bg: #0a0a1a;
+      --surface: #151530;
+      --text: #f0f0ff;
+      --text-dim: #8888aa;
+      --primary: #ff4400;
+      --primary-glow: #ff660066;
+      --accent: #ffcc00;
+      --accent-glow: #ffcc0066;
+      --sky-top: #0a0a2e;
+      --sky-bottom: #1a1040;
+      --ground: #1a1a0a;
+      --ramp: #cc3300;
+      --ramp-dark: #991100;
+      --bus-body: #2244aa;
+      --bus-window: #88bbff;
+      --star-color: #ffcc00;
+      --success: #00ff88;
+      --danger: #ff2200;
+    ;--shadow:rgba(0, 0, 0, 0.35);}
+    [data-theme="light"] {
+      --bg: #e8e8f0;
+      --surface: #ffffff;
+      --text: #1a1a2e;
+      --text-dim: #666688;
+      --sky-top: #87CEEB;
+      --sky-bottom: #b0d4f1;
+      --ground: #5a8a3a;
+      --ramp: #cc4400;
+      --ramp-dark: #aa2200;
+      --bus-body: #2255cc;
+      --bus-window: #aaddff;
+      --primary-glow: #ff440033;
+      --accent-glow: #ffcc0033;
+    ;--accent:#0891b2;--shadow:rgba(31, 47, 82, 0.12);}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .theme-toggle {
+      position: fixed; top: 0.75rem; right: 0.75rem;
+      background: var(--surface); border: 1px solid var(--text-dim);
+      border-radius: 50%; width: 36px; height: 36px; cursor: pointer;
+      font-size: 1rem; display: flex; align-items: center; justify-content: center;
+      z-index: 100; transition: transform 0.2s;
+    }
+    .theme-toggle:hover { transform: scale(1.15); }
+
+    .home-link {
+      position: fixed; top: 0.75rem; left: 0.75rem;
+      z-index: 100;
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      background: color-mix(in srgb, var(--surface) 82%, transparent);
+      border: 1px solid var(--text-dim);
+      backdrop-filter: blur(6px);
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .home-link:hover {
+      transform: translateY(-1px);
+      border-color: var(--primary);
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    #game-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      aspect-ratio: 16/9;
+      margin: 0 auto;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      box-shadow: 0 0 40px var(--primary-glow);
+    }
+
+    .hud {
+      position: absolute; top: 0; left: 0; right: 0;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 12px 16px; pointer-events: none; z-index: 10;
+    }
+    .hud-item {
+      background: rgba(0,0,0,0.6); border-radius: 8px;
+      padding: 6px 14px; backdrop-filter: blur(6px);
+      text-align: center;
+    }
+    .hud-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); }
+    .hud-value { font-size: 22px; font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; }
+    .hud-value.score-val { color: var(--primary); }
+
+    .overlay {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
+      border-radius: 12px; z-index: 20; transition: opacity 0.3s;
+    }
+    .overlay.hidden { opacity: 0; pointer-events: none; }
+    .overlay h1 {
+      font-size: clamp(28px, 5vw, 52px); font-weight: 900;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 8px;
+      text-shadow: none;
+    }
+    .overlay .subtitle {
+      font-size: clamp(12px, 2.5vw, 18px); color: var(--text-dim);
+      margin-bottom: 24px; text-align: center; line-height: 1.5;
+    }
+    .overlay .big-score {
+      font-size: clamp(40px, 8vw, 80px); font-weight: 900;
+      color: var(--accent); margin: 12px 0;
+    }
+    .overlay .stat-row {
+      display: flex; gap: 24px; margin: 10px 0;
+    }
+    .overlay .stat { text-align: center; }
+    .overlay .stat-num { font-size: 24px; font-weight: 700; color: var(--primary); }
+    .overlay .stat-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; }
+
+    .btn {
+      padding: 14px 40px; border: none; border-radius: 50px; cursor: pointer;
+      font-size: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+      background: linear-gradient(135deg, var(--primary), #ff6600);
+      color: #fff; margin-top: 16px;
+      box-shadow: 0 4px 20px var(--primary-glow);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 30px var(--primary-glow); }
+    .btn:active { transform: translateY(0); }
+
+    .controls-hint {
+      font-size: 12px; color: var(--text-dim); margin-top: 16px; text-align: center;
+    }
+    .controls-hint kbd {
+      background: var(--surface); border: 1px solid var(--text-dim);
+      border-radius: 4px; padding: 2px 8px; font-family: inherit;
+    }
+
+    .power-bar-container {
+      position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+      width: 200px; height: 16px; background: rgba(0,0,0,0.5);
+      border-radius: 8px; overflow: hidden; z-index: 10;
+      border: 1px solid var(--text-dim);
+    }
+    .power-bar-container.hidden { display: none; }
+    .power-bar {
+      height: 100%; width: 0%; border-radius: 8px;
+      background: linear-gradient(90deg, #00ff88, #ffcc00, #ff4400);
+      transition: width 0.05s linear;
+    }
+
+    .combo-text {
+      position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
+      font-size: 36px; font-weight: 900; pointer-events: none; z-index: 15;
+      opacity: 0; transition: opacity 0.3s;
+      text-shadow: 0 0 20px var(--accent-glow);
+    }
+    .combo-text.show {
+      opacity: 1;
+      animation: comboPopup 1.2s ease-out forwards;
+    }
+
+    @keyframes comboPopup {
+      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+      20% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+      50% { transform: translate(-50%, -50%) scale(1.0); opacity: 1; }
+      100% { transform: translate(-50%, -60%) scale(0.8); opacity: 0; }
+    }
+
+    @media (max-width: 600px) {
+      .hud { padding: 6px 8px; }
+      .hud-item { padding: 4px 8px; }
+      .hud-value { font-size: 16px; }
+      .hud-label { font-size: 8px; }
+      .btn { padding: 12px 28px; font-size: 14px; }
+    }
+  
+
+    /* Responsive/touch accessibility pass */
+    @media (max-width: 1024px) {
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot,
+      input[type="button"],
+      input[type="submit"] {
+        min-height: 44px;
+      }
+
+      .theme-toggle {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        touch-action: manipulation;
+        pointer-events: auto;
+        z-index: 999;
+      }
+
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot {
+        touch-action: manipulation;
+      }
+    }
+
+</style>
+  <meta name="voa-main-site-url" content="https://www.valleyofai.com">
+  <meta name="voa-main-site-name" content="Valley of AI">
+    <meta name="voa-social-x-url" content="https://x.com/ValleyOfAI">
+  <meta name="voa-social-facebook-url" content="https://www.facebook.com/profile.php?id=61582281233012">
+  <meta name="voa-social-instagram-url" content="https://www.instagram.com/valley_of_ai/">
+  <script src="/apps/shared/app-shell.js" defer></script>
+</head>
+<body>
+  <a class="home-link" href="https://valleyofai.com" aria-label="Back to Valley of AI">← Valley of AI</a>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
+
+  <div id="game-wrapper">
+    <canvas id="game"></canvas>
+
+    <div class="hud">
+      <div class="hud-item">
+        <div class="hud-label">Score</div>
+        <div class="hud-value score-val" id="hud-score">0</div>
+      </div>
+      <div class="hud-item">
+        <div class="hud-label">Level</div>
+        <div class="hud-value" id="hud-level">1</div>
+      </div>
+      <div class="hud-item">
+        <div class="hud-label">Flips</div>
+        <div class="hud-value" id="hud-flips">0</div>
+      </div>
+      <div class="hud-item">
+        <div class="hud-label">Stars</div>
+        <div class="hud-value" id="hud-stars">0</div>
+      </div>
+    </div>
+
+    <div class="power-bar-container hidden" id="power-bar-container">
+      <div class="power-bar" id="power-bar"></div>
+    </div>
+
+    <div class="combo-text" id="combo-text"></div>
+
+    <!-- Start Screen -->
+    <div class="overlay" id="start-screen">
+      <h1>🏍️ Daredevil Moto Jump</h1>
+      <div class="subtitle">
+        Launch off ramps, flip over buses, collect stars!<br>
+        Channel your inner Evel Knievel!
+      </div>
+      <button class="btn" onclick="startGame()">RIDE!</button>
+      <div class="controls-hint">
+        <kbd>SPACE</kbd> or <kbd>TAP</kbd> to charge &amp; launch
+        &nbsp;|&nbsp;
+        <kbd>↑</kbd><kbd>↓</kbd> or <kbd>SWIPE</kbd> to flip
+      </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div class="overlay hidden" id="gameover-screen">
+      <h1>WIPEOUT!</h1>
+      <div class="big-score" id="final-score">0</div>
+      <div class="stat-row">
+        <div class="stat">
+          <div class="stat-num" id="final-flips">0</div>
+          <div class="stat-label">Flips</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="final-stars">0</div>
+          <div class="stat-label">Stars</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="final-level">1</div>
+          <div class="stat-label">Level</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="final-best">0</div>
+          <div class="stat-label">Best</div>
+        </div>
+      </div>
+      <button class="btn" onclick="startGame()">RETRY</button>
+      <div class="controls-hint">
+        <kbd>SPACE</kbd> or <kbd>TAP</kbd> to play again
+      </div>
+    </div>
+
+    <!-- Level Complete Screen -->
+    <div class="overlay hidden" id="level-screen">
+      <h1>🔥 LEVEL CLEARED!</h1>
+      <div class="subtitle" id="level-summary"></div>
+      <button class="btn" onclick="nextLevel()">NEXT LEVEL</button>
+    </div>
+  </div>
+
+  <script>
+    /* ============================================================
+       THEME
+    ============================================================ */
+    const theme = localStorage.getItem('theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+    }
+
+    /* ============================================================
+       GAME ENGINE
+    ============================================================ */
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+
+    const W = 900, H = 506;
+    canvas.width = W;
+    canvas.height = H;
+
+    // Game state
+    let state = 'start';
+    let score = 0, totalFlips = 0, totalStars = 0, level = 1, bestScore = 0;
+    let power = 0, powerDir = 1;
+    let cameraX = 0;
+    let rideoutGoalX = 0;
+
+    // Physics constants
+    const GRAVITY = 0.35;
+    const MAX_POWER = 1.0;
+    const FLIP_ACCEL = 0.06;       // How fast player can spin
+    const FLIP_MAX_SPEED = 0.18;   // Max angular velocity
+    const FLIP_DAMPING = 0.96;     // Damping when not pressing keys
+    const FLIP_EPSILON = 0.08;     // Small tolerance so near-complete full turns still count
+    const LANDING_FLIP_MIN_TRAVEL = 4.6; // Visual flip threshold for clean landing credit
+    const MOTO_HITBOX = 22;        // Collision radius for the center of the bike
+
+    // Motorcycle
+    let moto = {
+      x: 0, y: 0, vx: 0, vy: 0,
+      angle: 0, angularVel: 0,
+      wheelRadius: 10,
+      grounded: false,
+      launched: false,
+      flipCount: 0,
+      flipTravel: 0,
+      prevAngle: 0,
+      wasInvertedThisJump: false,
+    };
+
+    // Level data
+    let ramps = [];
+    let buses = [];
+    let stars = [];
+    let particles = [];
+    let groundY = H - 60;
+    let landingRamp = null;
+    let launchRamp = null;
+
+    // Input
+    const keysDown = new Set();
+
+    function awardCompletedFlips(completedFlips, source) {
+      if (completedFlips <= 0) return;
+
+      const prevFlipCount = moto.flipCount;
+      moto.flipCount += completedFlips;
+      totalFlips += completedFlips;
+
+      let bonus = 0;
+      for (let n = prevFlipCount + 1; n <= moto.flipCount; n++) {
+        bonus += 100 * n;
+      }
+      score += bonus;
+
+      spawnParticles(moto.x, moto.y, 20, '#ff4400', 5);
+      showCombo(`🔥 ${moto.flipCount}x FLIP! +${bonus}`);
+    }
+
+    /* ============================================================
+       LEVEL GENERATION — computes launch velocity from geometry
+    ============================================================ */
+    function generateLevel(lvl) {
+      ramps = [];
+      buses = [];
+      stars = [];
+      particles = [];
+
+      const numBuses = Math.min(2 + lvl, 10);
+      const busWidth = 70;
+      const busHeight = 45;
+      const busGap = 6;
+      const totalBusWidth = numBuses * (busWidth + busGap) - busGap;
+
+      const launchX = 180;
+      const rampWidth = 90;
+      const rampHeight = Math.min(55 + lvl * 4, 110);
+
+      // Launch ramp
+      launchRamp = {
+        x: launchX,
+        y: groundY,
+        width: rampWidth,
+        height: rampHeight,
+        type: 'launch'
+      };
+      ramps.push(launchRamp);
+
+      // Buses start after a small gap from the ramp lip
+      const busStartX = launchX + rampWidth + 30;
+      for (let i = 0; i < numBuses; i++) {
+        buses.push({
+          x: busStartX + i * (busWidth + busGap),
+          y: groundY - busHeight,
+          width: busWidth,
+          height: busHeight,
+          color: ['#2244aa', '#cc2222', '#22aa44', '#aa8800', '#8822aa'][i % 5],
+        });
+      }
+
+      // Landing ramp after the buses
+      const landX = busStartX + totalBusWidth + 30;
+      landingRamp = {
+        x: landX,
+        y: groundY,
+        width: rampWidth,
+        height: rampHeight,
+        type: 'landing'
+      };
+      ramps.push(landingRamp);
+
+      // Stars scattered above the buses in the flight arc
+      const numStars = 3 + Math.floor(lvl * 1.2);
+      const starZoneLeft = busStartX + 20;
+      const starZoneRight = busStartX + totalBusWidth - 20;
+      const busTopY = groundY - busHeight;
+      for (let i = 0; i < numStars; i++) {
+        const t = numStars > 1 ? i / (numStars - 1) : 0.5;
+        const sx = starZoneLeft + t * (starZoneRight - starZoneLeft);
+        // Place stars in an arc above the buses
+        const arcT = t;
+        const arcHeight = 80 + lvl * 12;
+        const starY = busTopY - 40 - arcHeight * 4 * arcT * (1 - arcT) + (Math.random() - 0.5) * 30;
+        stars.push({
+          x: sx,
+          y: Math.max(starY, 50),
+          radius: 12,
+          collected: false,
+          sparkle: Math.random() * Math.PI * 2,
+        });
+      }
+
+      // Reset moto position: sitting on ground before the ramp
+      moto.x = launchX - 100;
+      moto.y = groundY - MOTO_HITBOX;
+      moto.vx = 0;
+      moto.vy = 0;
+      moto.angle = 0;
+      moto.angularVel = 0;
+      moto.grounded = true;
+      moto.launched = false;
+      moto.flipCount = 0;
+      moto.flipTravel = 0;
+      moto.prevAngle = moto.angle;
+      moto.wasInvertedThisJump = false;
+      power = 0;
+      powerDir = 1;
+      cameraX = 0;
+      rideoutGoalX = 0;
+    }
+
+    /**
+     * Compute launch vx/vy using exact discrete Euler math.
+     * The game physics run: vy += GRAVITY, then y += vy each frame.
+     * After N frames: y(N) = y0 + N*vy0 + GRAVITY*N*(N+1)/2.
+     * We solve for vy0 given a target (dx, dy) and chosen N.
+     * Power now controls BOTH jump speed and landing point.
+     */
+    function computeLaunchVelocity(powerFactor) {
+      const p = Math.max(0, Math.min(1, powerFactor));
+      const x0 = launchRamp.x + launchRamp.width;
+      const y0 = launchRamp.y - launchRamp.height;
+
+      // Low power lands near ramp start; high power lands deep into the ramp.
+      const landFraction = 0.08 + p * 0.78;
+      const targetX = landingRamp.x + landingRamp.width * landFraction;
+      const tRamp = (targetX - landingRamp.x) / landingRamp.width;
+      const targetY = landingRamp.y - (1 - tRamp) * landingRamp.height;
+
+      const dx = targetX - x0;
+      const dy = targetY - y0;
+
+      // Speed indicator -> actual jump speed:
+      // low power => slower, floatier jump; high power => faster, punchier jump.
+      const desiredVx = 4.8 + p * 7.2;
+      const N = Math.max(32, Math.min(92, Math.round(dx / desiredVx)));
+
+      const vx = dx / N;
+      const vy = (dy - GRAVITY * N * (N + 1) / 2) / N;
+
+      return { vx, vy };
+    }
+
+    /* ============================================================
+       PARTICLES
+    ============================================================ */
+    function spawnParticles(x, y, count, color, speed) {
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const spd = Math.random() * speed + 1;
+        particles.push({
+          x, y,
+          vx: Math.cos(angle) * spd,
+          vy: Math.sin(angle) * spd - 2,
+          life: 1,
+          decay: 0.015 + Math.random() * 0.02,
+          color,
+          size: 2 + Math.random() * 4,
+        });
+      }
+    }
+
+    function spawnFireTrail(x, y) {
+      particles.push({
+        x: x + (Math.random() - 0.5) * 10,
+        y: y + (Math.random() - 0.5) * 5,
+        vx: -moto.vx * 0.3 + (Math.random() - 0.5) * 2,
+        vy: Math.random() * -2,
+        life: 1,
+        decay: 0.04 + Math.random() * 0.03,
+        color: Math.random() > 0.5 ? '#ff4400' : '#ffcc00',
+        size: 3 + Math.random() * 5,
+      });
+    }
+
+    function updateParticles() {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.08;
+        p.life -= p.decay;
+        if (p.life <= 0) particles.splice(i, 1);
+      }
+    }
+
+    /* ============================================================
+       DRAWING
+    ============================================================ */
+    function drawSky() {
+      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+      const grad = ctx.createLinearGradient(0, 0, 0, H);
+      if (isDark) {
+        grad.addColorStop(0, '#0a0a2e');
+        grad.addColorStop(1, '#1a1040');
+      } else {
+        grad.addColorStop(0, '#87CEEB');
+        grad.addColorStop(1, '#b0d4f1');
+      }
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      if (isDark) {
+        for (let i = 0; i < 50; i++) {
+          const sx = ((i * 137.5 + 50) % W + cameraX * 0.05) % W;
+          const sy = (i * 97.3 + 20) % (groundY - 50);
+          const bright = 0.3 + Math.sin(Date.now() * 0.001 + i) * 0.3;
+          ctx.fillStyle = `rgba(255,255,255,${bright})`;
+          ctx.beginPath();
+          ctx.arc(sx, sy, 1 + (i % 3) * 0.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
+    function drawGround() {
+      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+      ctx.fillStyle = isDark ? '#1a1a0a' : '#5a8a3a';
+      ctx.fillRect(0, groundY, W, H - groundY);
+
+      ctx.strokeStyle = isDark ? '#333300' : '#4a7a2a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, groundY);
+      ctx.lineTo(W, groundY);
+      ctx.stroke();
+
+      ctx.strokeStyle = isDark ? '#2a2a10' : '#6aaa4a';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 30; i++) {
+        const gx = ((i * 31 + 10 - cameraX * 0.3) % W + W) % W;
+        ctx.beginPath();
+        ctx.moveTo(gx, groundY + 5);
+        ctx.lineTo(gx - 3, groundY + 15);
+        ctx.moveTo(gx, groundY + 5);
+        ctx.lineTo(gx + 3, groundY + 15);
+        ctx.stroke();
+      }
+    }
+
+    function drawRamp(ramp) {
+      const rx = ramp.x - cameraX;
+      const ry = ramp.y;
+      const rw = ramp.width;
+      const rh = ramp.height;
+      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+
+      ctx.save();
+      ctx.beginPath();
+      if (ramp.type === 'launch') {
+        ctx.moveTo(rx, ry);
+        ctx.lineTo(rx + rw, ry - rh);
+        ctx.lineTo(rx + rw, ry);
+      } else {
+        ctx.moveTo(rx, ry - rh);
+        ctx.lineTo(rx, ry);
+        ctx.lineTo(rx + rw, ry);
+      }
+      ctx.closePath();
+
+      const rampGrad = ctx.createLinearGradient(rx, ry - rh, rx, ry);
+      rampGrad.addColorStop(0, isDark ? '#cc3300' : '#dd4400');
+      rampGrad.addColorStop(1, isDark ? '#991100' : '#bb2200');
+      ctx.fillStyle = rampGrad;
+      ctx.fill();
+
+      ctx.strokeStyle = isDark ? '#ff6600' : '#ff7722';
+      ctx.lineWidth = 2;
+      const stripeCount = 4;
+      for (let s = 1; s <= stripeCount; s++) {
+        const t = s / (stripeCount + 1);
+        if (ramp.type === 'launch') {
+          const sx = rx + t * rw;
+          const sy = ry - t * rh;
+          ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx, ry); ctx.stroke();
+        } else {
+          const sx = rx + t * rw;
+          const sy = ry - (1 - t) * rh;
+          ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx, ry); ctx.stroke();
+        }
+      }
+
+      // Draw a bright lip at the top edge of the ramp
+      ctx.strokeStyle = '#ffaa00';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      if (ramp.type === 'launch') {
+        ctx.moveTo(rx + rw - 1, ry - rh);
+        ctx.lineTo(rx + rw - 1, ry);
+      } else {
+        ctx.moveTo(rx + 1, ry - rh);
+        ctx.lineTo(rx + 1, ry);
+      }
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawBus(bus) {
+      const bx = bus.x - cameraX;
+      const by = bus.y;
+      const bw = bus.width;
+      const bh = bus.height;
+
+      ctx.fillStyle = bus.color;
+      ctx.beginPath();
+      ctx.roundRect(bx, by, bw, bh, 6);
+      ctx.fill();
+
+      ctx.fillStyle = '#88bbff';
+      const winW = 12, winH = 14, winGap = 5;
+      const winY = by + 6;
+      const numWin = Math.floor((bw - 12) / (winW + winGap));
+      for (let w = 0; w < numWin; w++) {
+        ctx.beginPath();
+        ctx.roundRect(bx + 6 + w * (winW + winGap), winY, winW, winH, 2);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = '#222';
+      ctx.beginPath(); ctx.arc(bx + 15, by + bh, 7, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(bx + bw - 15, by + bh, 7, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#555';
+      ctx.beginPath(); ctx.arc(bx + 15, by + bh, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(bx + bw - 15, by + bh, 3, 0, Math.PI * 2); ctx.fill();
+    }
+
+    function drawStar(star) {
+      if (star.collected) return;
+      const sx = star.x - cameraX;
+      const sy = star.y;
+      const r = star.radius;
+      const t = Date.now() * 0.003 + star.sparkle;
+
+      ctx.save();
+      ctx.translate(sx, sy);
+      ctx.rotate(t * 0.5);
+
+      ctx.shadowColor = '#ffcc00';
+      ctx.shadowBlur = 15;
+
+      // 5-pointed star using outer and inner radii
+      ctx.fillStyle = '#ffcc00';
+      ctx.beginPath();
+      for (let i = 0; i < 10; i++) {
+        const a = (i * Math.PI) / 5 - Math.PI / 2;
+        const rad = i % 2 === 0 ? r : r * 0.45;
+        ctx[i === 0 ? 'moveTo' : 'lineTo'](Math.cos(a) * rad, Math.sin(a) * rad);
+      }
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#ffe066';
+      ctx.beginPath();
+      for (let i = 0; i < 10; i++) {
+        const a = (i * Math.PI) / 5 - Math.PI / 2;
+        const rad = i % 2 === 0 ? r * 0.5 : r * 0.22;
+        ctx[i === 0 ? 'moveTo' : 'lineTo'](Math.cos(a) * rad, Math.sin(a) * rad);
+      }
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.shadowBlur = 0;
+      ctx.restore();
+    }
+
+    function drawMotorcycle() {
+      const mx = moto.x - cameraX;
+      const my = moto.y;
+
+      ctx.save();
+      ctx.translate(mx, my);
+      ctx.rotate(moto.angle);
+
+      // Fire trail when airborne
+      if (!moto.grounded && moto.launched) {
+        spawnFireTrail(moto.x - 25, moto.y + 5);
+      }
+
+      // Bike body
+      ctx.fillStyle = '#cc0000';
+      ctx.beginPath();
+      ctx.ellipse(0, -5, 28, 12, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Seat
+      ctx.fillStyle = '#222';
+      ctx.beginPath();
+      ctx.ellipse(-5, -14, 15, 6, -0.15, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Tank
+      ctx.fillStyle = '#ee0000';
+      ctx.beginPath();
+      ctx.ellipse(10, -12, 10, 7, 0.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Chrome accent
+      ctx.fillStyle = '#ccc';
+      ctx.beginPath();
+      ctx.ellipse(10, -12, 6, 3, 0.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Handlebars
+      ctx.strokeStyle = '#888';
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(20, -10); ctx.lineTo(26, -22); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(26, -26); ctx.lineTo(26, -18); ctx.stroke();
+
+      // Front fender
+      ctx.fillStyle = '#cc0000';
+      ctx.beginPath(); ctx.arc(24, 5, 14, -Math.PI, 0); ctx.fill();
+
+      // Rear fender
+      ctx.beginPath(); ctx.arc(-24, 5, 14, -Math.PI, 0); ctx.fill();
+
+      // Exhaust pipe
+      ctx.strokeStyle = '#999';
+      ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.moveTo(-10, 2); ctx.quadraticCurveTo(-28, 5, -30, 10); ctx.stroke();
+      ctx.fillStyle = '#666';
+      ctx.beginPath(); ctx.arc(-30, 11, 4, 0, Math.PI * 2); ctx.fill();
+
+      // Wheels
+      const wheelR = moto.wheelRadius;
+      ctx.fillStyle = '#111';
+      ctx.beginPath(); ctx.arc(-24, 8, wheelR, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#444'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = '#888';
+      ctx.beginPath(); ctx.arc(-24, 8, 3, 0, Math.PI * 2); ctx.fill();
+
+      ctx.fillStyle = '#111';
+      ctx.beginPath(); ctx.arc(24, 8, wheelR, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#444'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = '#888';
+      ctx.beginPath(); ctx.arc(24, 8, 3, 0, Math.PI * 2); ctx.fill();
+
+      // Rider
+      drawRider();
+
+      ctx.restore();
+    }
+
+    function drawRider() {
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.ellipse(-2, -26, 8, 14, 0, 0, Math.PI * 2); ctx.fill();
+
+      ctx.fillStyle = '#0044cc';
+      ctx.fillRect(-6, -32, 8, 8);
+
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(0, -44, 9, 0, Math.PI * 2); ctx.fill();
+
+      ctx.fillStyle = '#224';
+      ctx.beginPath(); ctx.arc(3, -43, 6, -0.5, 0.8); ctx.lineTo(3, -43); ctx.closePath(); ctx.fill();
+
+      ctx.fillStyle = '#ffcc00';
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('★', -2, -24);
+
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(4, -30); ctx.lineTo(20, -18); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-6, -30); ctx.lineTo(-15, -20); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-4, -14); ctx.lineTo(-14, -2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(2, -14); ctx.lineTo(12, -2); ctx.stroke();
+    }
+
+    function drawParticles() {
+      for (const p of particles) {
+        ctx.globalAlpha = p.life;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x - cameraX, p.y, p.size * p.life, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    /* ============================================================
+       COLLISION HELPERS
+    ============================================================ */
+    function getRampSurfaceY(ramp, x) {
+      if (x < ramp.x || x > ramp.x + ramp.width) return null;
+      const t = (x - ramp.x) / ramp.width;
+      if (ramp.type === 'launch') {
+        return ramp.y - t * ramp.height;
+      } else {
+        return ramp.y - (1 - t) * ramp.height;
+      }
+    }
+
+    function checkStarCollision() {
+      for (const star of stars) {
+        if (star.collected) continue;
+        const dx = moto.x - star.x;
+        const dy = moto.y - star.y;
+        if (dx * dx + dy * dy < (star.radius + MOTO_HITBOX) * (star.radius + MOTO_HITBOX)) {
+          star.collected = true;
+          totalStars++;
+          score += 50;
+          spawnParticles(star.x, star.y, 15, '#ffcc00', 4);
+          showCombo('⭐ +50');
+        }
+      }
+    }
+
+    function checkBusCollision() {
+      for (const bus of buses) {
+        // AABB closest-point test with circle
+        const closestX = Math.max(bus.x, Math.min(moto.x, bus.x + bus.width));
+        const closestY = Math.max(bus.y, Math.min(moto.y, bus.y + bus.height));
+        const dx = moto.x - closestX;
+        const dy = moto.y - closestY;
+        if (dx * dx + dy * dy < MOTO_HITBOX * MOTO_HITBOX) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function showCombo(text) {
+      const el = document.getElementById('combo-text');
+      el.textContent = text;
+      el.className = 'combo-text';
+      void el.offsetWidth;
+      el.className = 'combo-text show';
+      el.style.color = text.includes('FLIP') ? '#ff4400' : '#ffcc00';
+    }
+
+    /** Normalize angle to [-PI, PI] */
+    function normalizeAngle(a) {
+      while (a > Math.PI) a -= Math.PI * 2;
+      while (a < -Math.PI) a += Math.PI * 2;
+      return a;
+    }
+
+    /* ============================================================
+       GAME UPDATE
+    ============================================================ */
+    function update() {
+      // --- Charging state: oscillate power bar ---
+      if (state === 'charging') {
+        power += powerDir * 0.02;
+        if (power >= MAX_POWER) { power = MAX_POWER; powerDir = -1; }
+        if (power <= 0) { power = 0; powerDir = 1; }
+        document.getElementById('power-bar').style.width = (power * 100) + '%';
+        return;
+      }
+
+      if (state !== 'riding' && state !== 'airborne' && state !== 'rideout') return;
+
+      // --- Pre-launch: auto-ride toward the ramp ---
+      if (state === 'riding' && !moto.launched) {
+        const rideSpeed = 5 + level * 0.3;
+        const rampStartX = launchRamp.x;
+        const rampEndX = launchRamp.x + launchRamp.width;
+        const prevRideX = moto.x;
+
+        moto.vx = rideSpeed;
+        moto.vy = 0;
+        moto.x += moto.vx;
+
+        // If we crossed the ramp lip this frame, force launch from the exact lip.
+        const crossedLaunchLip = prevRideX < rampEndX && moto.x >= rampEndX;
+        if (crossedLaunchLip) {
+          moto.x = rampEndX;
+          moto.y = launchRamp.y - launchRamp.height - MOTO_HITBOX;
+          moto.angle = -Math.atan2(launchRamp.height, launchRamp.width);
+
+          const vel = computeLaunchVelocity(power);
+          moto.vx = vel.vx;
+          moto.vy = vel.vy;
+          moto.launched = true;
+          moto.grounded = false;
+          moto.flipCount = 0;
+          moto.flipTravel = 0;
+          moto.prevAngle = moto.angle;
+          moto.wasInvertedThisJump = false;
+          moto.angularVel = 0;
+          state = 'airborne';
+          spawnParticles(moto.x, moto.y + MOTO_HITBOX, 30, '#ff6600', 6);
+          updateCamera();
+          updateHUD();
+          return;
+        }
+
+        // Check if on the launch ramp surface
+        const surfY = getRampSurfaceY(launchRamp, moto.x);
+        if (surfY !== null) {
+          // Ride along ramp surface
+          moto.y = surfY - MOTO_HITBOX;
+          moto.angle = -Math.atan2(launchRamp.height, launchRamp.width);
+
+          // Reached the top lip of the ramp → LAUNCH!
+          if (moto.x >= launchRamp.x + launchRamp.width - 2) {
+            moto.x = launchRamp.x + launchRamp.width;
+            moto.y = launchRamp.y - launchRamp.height - MOTO_HITBOX;
+
+            const vel = computeLaunchVelocity(power);
+            moto.vx = vel.vx;
+            moto.vy = vel.vy;
+            moto.launched = true;
+            moto.grounded = false;
+            moto.flipCount = 0;
+            moto.flipTravel = 0;
+            moto.prevAngle = moto.angle;
+            moto.wasInvertedThisJump = false;
+            moto.angularVel = 0;
+            state = 'airborne';
+            spawnParticles(moto.x, moto.y + MOTO_HITBOX, 30, '#ff6600', 6);
+          }
+        } else {
+          if (moto.x < rampStartX) {
+            // On flat ground before ramp
+            moto.y = groundY - MOTO_HITBOX;
+            moto.angle = 0;
+          } else {
+            // Safety net: if we are past ramp end for any reason, launch immediately.
+            moto.x = rampEndX;
+            moto.y = launchRamp.y - launchRamp.height - MOTO_HITBOX;
+            moto.angle = -Math.atan2(launchRamp.height, launchRamp.width);
+
+            const vel = computeLaunchVelocity(power);
+            moto.vx = vel.vx;
+            moto.vy = vel.vy;
+            moto.launched = true;
+            moto.grounded = false;
+            moto.flipCount = 0;
+            moto.flipTravel = 0;
+            moto.prevAngle = moto.angle;
+            moto.wasInvertedThisJump = false;
+            moto.angularVel = 0;
+            state = 'airborne';
+            spawnParticles(moto.x, moto.y + MOTO_HITBOX, 30, '#ff6600', 6);
+            updateCamera();
+            updateHUD();
+            return;
+          }
+        }
+
+        updateCamera();
+        updateHUD();
+        return;
+      }
+
+      // --- Airborne / post-launch physics ---
+      if (state === 'rideout') {
+        const rideoutSpeed = 4.3 + Math.min(level, 10) * 0.08;
+        moto.vx = rideoutSpeed;
+        moto.vy = 0;
+        moto.angularVel = 0;
+
+        moto.x += moto.vx;
+
+        const rideSurfY = getRampSurfaceY(landingRamp, moto.x);
+        if (rideSurfY !== null) {
+          // Continue along landing ramp slope
+          moto.y = rideSurfY - MOTO_HITBOX;
+          moto.angle = Math.atan2(landingRamp.height, landingRamp.width);
+        } else {
+          // Then roll on flat ground for a short confirmation distance
+          moto.y = groundY - MOTO_HITBOX;
+          moto.angle *= 0.8;
+          if (Math.abs(moto.angle) < 0.02) moto.angle = 0;
+        }
+
+        // Safety: if somehow unstable during rideout, fail the run.
+        if (moto.y + MOTO_HITBOX > groundY + 6) {
+          crash();
+          return;
+        }
+
+        if (moto.x >= rideoutGoalX) {
+          moto.vx = 0;
+          moto.vy = 0;
+          moto.angularVel = 0;
+          moto.angle = 0;
+          state = 'levelComplete';
+          setTimeout(showLevelComplete, 350);
+          return;
+        }
+
+        updateCamera();
+        updateHUD();
+        return;
+      }
+
+      // --- Airborne / post-launch physics ---
+      // Gravity
+      moto.vy += GRAVITY;
+
+      // Player flip control (integrated into main loop)
+      if (keysDown.has('up')) {
+        moto.angularVel = Math.max(moto.angularVel - FLIP_ACCEL, -FLIP_MAX_SPEED);
+      } else if (keysDown.has('down')) {
+        moto.angularVel = Math.min(moto.angularVel + FLIP_ACCEL, FLIP_MAX_SPEED);
+      } else {
+        moto.angularVel *= FLIP_DAMPING;
+      }
+
+      moto.angle += moto.angularVel;
+
+      // Track completed flips from cumulative angle travel.
+      // This ensures last-second correction with the opposite arrow doesn't
+      // erase flip credit already earned in the air.
+      const angleDelta = normalizeAngle(moto.angle - moto.prevAngle);
+      moto.prevAngle = moto.angle;
+      const spinTravel = Math.abs(angleDelta);
+      moto.flipTravel += spinTravel;
+
+      if (Math.abs(normalizeAngle(moto.angle)) > 2.2) {
+        moto.wasInvertedThisJump = true;
+      }
+
+      let completedFlips = 0;
+      while (moto.flipTravel + FLIP_EPSILON >= Math.PI * 2) {
+        completedFlips++;
+        moto.flipTravel -= Math.PI * 2;
+      }
+      if (completedFlips > 0) {
+        awardCompletedFlips(completedFlips, 'airborne');
+      }
+
+      // Move (keep previous position to avoid tunneling through the landing ramp)
+      const prevX = moto.x;
+      const prevY = moto.y;
+      moto.x += moto.vx;
+      moto.y += moto.vy;
+
+      // Star collection
+      checkStarCollision();
+
+      // Bus collision
+      if (checkBusCollision()) {
+        crash();
+        return;
+      }
+
+      // Landing ramp collision (swept across this frame so high-speed jumps still land)
+      if (moto.vy > 0) {
+        let landingX = null;
+        let landingSurfY = null;
+        const fromX = Math.min(prevX, moto.x);
+        const toX = Math.max(prevX, moto.x);
+
+        if (toX >= landingRamp.x && fromX <= landingRamp.x + landingRamp.width) {
+          const span = Math.max(1, toX - fromX);
+          const sampleCount = Math.max(2, Math.ceil(span / 4));
+          for (let i = 0; i <= sampleCount; i++) {
+            const sx = fromX + (i / sampleCount) * span;
+            const surfY = getRampSurfaceY(landingRamp, sx);
+            if (surfY === null) continue;
+
+            const tx = moto.x === prevX ? 0 : (sx - prevX) / (moto.x - prevX);
+            const sy = prevY + (moto.y - prevY) * tx;
+            const prevBottom = prevY + MOTO_HITBOX;
+            const currBottom = sy + MOTO_HITBOX;
+
+            if (prevBottom <= surfY + 12 && currBottom >= surfY) {
+              landingX = sx;
+              landingSurfY = surfY;
+              break;
+            }
+          }
+        }
+
+        if (landingX !== null) {
+          // Check landing angle: wheels should be roughly aligned
+          const norm = normalizeAngle(moto.angle);
+          const tolerance = 1.05;
+          const isClean = Math.abs(norm) < tolerance;
+
+          if (isClean) {
+            // Visual-flip credit: if the rider went inverted and accumulated enough
+            // rotation travel, award one flip on a clean landing.
+            if (moto.wasInvertedThisJump && moto.flipTravel >= LANDING_FLIP_MIN_TRAVEL) {
+              moto.flipTravel = 0;
+              awardCompletedFlips(1, 'landing visual grace');
+            }
+
+            // Successful landing: transition into required rideout phase
+            moto.x = landingX;
+            moto.y = landingSurfY - MOTO_HITBOX;
+            moto.vx = 4.3;
+            moto.vy = 0;
+            moto.grounded = true;
+            moto.launched = false;
+            moto.angularVel = 0;
+            moto.angle = Math.atan2(landingRamp.height, landingRamp.width);
+            rideoutGoalX = landingRamp.x + landingRamp.width + 70;
+
+            const landingBonus = 200 + level * 50;
+            score += landingBonus;
+            spawnParticles(moto.x, moto.y + MOTO_HITBOX, 40, '#00ff88', 5);
+            showCombo(`✅ LANDED! +${landingBonus}`);
+
+            if (stars.length > 0 && stars.every(s => s.collected)) {
+              score += 500;
+              setTimeout(() => showCombo('🌟 ALL STARS! +500'), 600);
+            }
+
+            showCombo('🏁 RIDE IT OUT!');
+            state = 'rideout';
+            return;
+          }
+
+          crash();
+          return;
+        }
+      }
+
+      // Ground collision (only after launched → means you missed the landing ramp or fell short)
+      if (moto.y + MOTO_HITBOX >= groundY) {
+        // If the bike is past the launch ramp and on the ground, it's a crash
+        if (moto.launched) {
+          moto.y = groundY - MOTO_HITBOX;
+          crash();
+          return;
+        }
+      }
+
+      // Fell off the bottom of the screen
+      if (moto.y > H + 150) {
+        crash();
+        return;
+      }
+
+      updateCamera();
+      updateHUD();
+    }
+
+    function updateCamera() {
+      const targetCamX = moto.x - W * 0.3;
+      cameraX += (targetCamX - cameraX) * 0.1;
+      if (cameraX < 0) cameraX = 0;
+    }
+
+    function crash() {
+      state = 'crashed';
+      spawnParticles(moto.x, moto.y, 50, '#ff2200', 8);
+      spawnParticles(moto.x, moto.y, 30, '#ffaa00', 6);
+      bestScore = Math.max(bestScore, score);
+      localStorage.setItem('daredevil-moto-best', String(bestScore));
+      setTimeout(showGameOver, 1000);
+    }
+
+    function updateHUD() {
+      document.getElementById('hud-score').textContent = score;
+      document.getElementById('hud-level').textContent = level;
+      document.getElementById('hud-flips').textContent = totalFlips;
+      document.getElementById('hud-stars').textContent = totalStars;
+    }
+
+    /* ============================================================
+       DRAW + GAME LOOP
+    ============================================================ */
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      drawSky();
+      drawGround();
+      for (const ramp of ramps) drawRamp(ramp);
+      for (const bus of buses) drawBus(bus);
+      for (const star of stars) drawStar(star);
+      drawParticles();
+      updateParticles();
+      if (state !== 'start') drawMotorcycle();
+    }
+
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    /* ============================================================
+       SCREENS & CONTROLS
+    ============================================================ */
+    function showScreen(id) {
+      document.querySelectorAll('.overlay').forEach(el => el.classList.add('hidden'));
+      if (id) document.getElementById(id).classList.remove('hidden');
+    }
+
+    function startGame() {
+      score = 0;
+      totalFlips = 0;
+      totalStars = 0;
+      level = 1;
+      bestScore = parseInt(localStorage.getItem('daredevil-moto-best') || '0', 10);
+      generateLevel(level);
+      state = 'charging';
+      showScreen(null);
+      document.getElementById('power-bar-container').classList.remove('hidden');
+      updateHUD();
+    }
+
+    function nextLevel() {
+      level++;
+      generateLevel(level);
+      state = 'charging';
+      showScreen(null);
+      document.getElementById('power-bar-container').classList.remove('hidden');
+      updateHUD();
+    }
+
+    function showGameOver() {
+      document.getElementById('final-score').textContent = score;
+      document.getElementById('final-flips').textContent = totalFlips;
+      document.getElementById('final-stars').textContent = totalStars;
+      document.getElementById('final-level').textContent = level;
+      document.getElementById('final-best').textContent = bestScore;
+      document.getElementById('power-bar-container').classList.add('hidden');
+      showScreen('gameover-screen');
+      state = 'start';
+    }
+
+    function showLevelComplete() {
+      const starsCollected = stars.filter(s => s.collected).length;
+      document.getElementById('level-summary').innerHTML =
+        `Jumped over <strong>${buses.length} buses</strong>!<br>` +
+        `Flips: <strong>${moto.flipCount}</strong> | Stars: <strong>${starsCollected}/${stars.length}</strong><br>` +
+        `Score: <strong>${score}</strong>`;
+      document.getElementById('power-bar-container').classList.add('hidden');
+      showScreen('level-screen');
+    }
+
+    function launchFromCharge() {
+      if (state === 'charging') {
+        state = 'riding';
+        document.getElementById('power-bar-container').classList.add('hidden');
+      }
+    }
+
+    // --- Keyboard ---
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (state === 'start') {
+          const goScreen = document.getElementById('gameover-screen');
+          if (!goScreen.classList.contains('hidden')) { startGame(); return; }
+        }
+        if (state === 'charging') launchFromCharge();
+      }
+      if (e.code === 'ArrowUp' || e.code === 'ArrowDown') {
+        e.preventDefault();
+      }
+      if (e.code === 'ArrowUp' || e.code === 'KeyW') keysDown.add('up');
+      if (e.code === 'ArrowDown' || e.code === 'KeyS') keysDown.add('down');
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'ArrowUp' || e.code === 'KeyW') keysDown.delete('up');
+      if (e.code === 'ArrowDown' || e.code === 'KeyS') keysDown.delete('down');
+    });
+
+    // --- Touch ---
+    let touchStartY = 0;
+
+    canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      touchStartY = e.touches[0].clientY;
+      if (state === 'charging') launchFromCharge();
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      if (state === 'airborne' && moto.launched) {
+        const dy = e.touches[0].clientY - touchStartY;
+        // Stronger touch response
+        if (Math.abs(dy) > 3) {
+          moto.angularVel += dy * 0.003;
+          moto.angularVel = Math.max(-FLIP_MAX_SPEED, Math.min(FLIP_MAX_SPEED, moto.angularVel));
+        }
+        touchStartY = e.touches[0].clientY;
+      }
+    }, { passive: false });
+
+    canvas.addEventListener('click', () => {
+      if (state === 'charging') launchFromCharge();
+    });
+
+    // --- Init ---
+    generateLevel(1);
+    gameLoop();
+    bestScore = parseInt(localStorage.getItem('daredevil-moto-best') || '0', 10);
+  </script>
+</body>
+</html>

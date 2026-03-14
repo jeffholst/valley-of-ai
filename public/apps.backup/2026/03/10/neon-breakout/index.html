@@ -1,0 +1,260 @@
+<!doctype html><html lang='en'><head><meta charset='UTF-8'/><meta name='viewport' content='width=device-width,initial-scale=1'/><title>Neon Breakout - Valley of AI</title>
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-NYDGLSJPFT"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'G-NYDGLSJPFT');
+	</script>
+	<meta name="voa-main-site-url" content="https://www.valleyofai.com">
+	<meta name="voa-main-site-name" content="Valley of AI">
+	<meta name="voa-social-x-url" content="https://x.com/ValleyOfAI">
+	<meta name="voa-social-facebook-url" content="https://www.facebook.com/profile.php?id=61582281233012">
+	<meta name="voa-social-instagram-url" content="https://www.instagram.com/valley_of_ai/">
+	<script src="/apps/shared/app-shell.js" defer></script><style>
+:root{--bg:#0b1220;--bg2:#1a2a4a;--surface:#101932;--text:#edf3ff;--muted:#9eb1da;--paddle:#22d3ee;--ball:#fef08a;--brick:#a78bfa;--accent:#22d3ee;--shadow:rgba(0, 0, 0, 0.35);}
+[data-theme='light']{--bg:#eef4ff;--bg2:#dbeafe;--surface:#fff;--text:#1f2f52;--muted:#60739a;--paddle:#0891b2;--ball:#b45309;--brick:#7c3aed;--accent:#0891b2;--shadow:rgba(31, 47, 82, 0.12);}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px;font-family:Inter,system-ui;background:radial-gradient(1000px 700px at 20% 20%,var(--bg2),var(--bg));color:var(--text)}
+.card{width:min(860px,100%);background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);border-radius:18px;padding:14px;box-shadow:0 18px 45px #0004}
+h1{margin:0 0 4px}.sub{margin:0 0 10px;color:var(--muted)}.top{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.pill{font-size:.86rem;padding:6px 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);color:var(--muted)}
+canvas{width:100%;max-width:760px;aspect-ratio:4/3;display:block;margin:auto;background:#050a14;border-radius:12px;border:1px solid color-mix(in srgb,var(--muted) 26%,transparent);touch-action:none}
+.controls{text-align:center;margin-top:10px}button{border:none;border-radius:999px;padding:9px 13px;font:inherit;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(90deg,#7c3aed,#22d3ee)}
+.k{text-align:center;color:var(--muted);font-size:.9rem;margin-top:8px}
+.legend{margin-top:10px;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,var(--surface) 84%,transparent);border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);font-size:.83rem;color:var(--muted)}
+.legend strong{color:var(--text);font-size:.82rem;display:block;margin-bottom:4px}
+@media(max-width:640px){body{padding:10px}.card{padding:10px;border-radius:14px}.top{gap:6px}.pill{font-size:.8rem;padding:5px 8px}h1{font-size:1.2rem}.sub{font-size:.92rem}.k{font-size:.82rem}}
+
+
+    /* Responsive/touch accessibility pass */
+    @media (max-width: 1024px) {
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot,
+      input[type="button"],
+      input[type="submit"] {
+        min-height: 44px;
+      }
+
+      .theme-toggle {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        touch-action: manipulation;
+        pointer-events: auto;
+        z-index: 999;
+      }
+
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot {
+        touch-action: manipulation;
+      }
+    }
+
+</style></head><body><main class='card'><h1>🧱 Neon Breakout</h1><p class='sub'>Break all bricks, keep the ball alive, chase high score.</p>
+<div class='top'><span class='pill' id='score'>Score: 0</span><span class='pill' id='lives'>Lives: 3</span><span class='pill' id='state'>State: Ready</span></div>
+<canvas id='g' width='760' height='570'></canvas><div class='controls'><button id='start'>Start / Restart</button></div><p class='k'>Controls: ← → or A/D • Mouse move • Touch drag/swipe</p><div class='legend'><strong>Powerup Key</strong>⚡ speed x2 • 🎯 speed normal • 🟡 multiball • 🤏 smaller paddle • 📏 normal paddle</div></main>
+<script>
+const c=document.getElementById('g'),x=c.getContext('2d');
+const BASE_PADDLE_W=110,SMALL_PADDLE_W=72,BASE_SPEED=5.1;
+const SPECIAL_POOL=['speedUp','speedNormal','multiball','paddleSmall','paddleNormal'];
+const SPECIAL_LABEL={speedUp:'⚡',speedNormal:'🎯',multiball:'🟡',paddleSmall:'🤏',paddleNormal:'📏'};
+const S={run:false,score:0,lives:3,p:{x:380,y:540,w:BASE_PADDLE_W,h:14,s:8},balls:[],br:[],keys:{}};
+
+const ui=(id,v)=>document.getElementById(id).textContent=v;
+const cssVar=(name,fallback='')=>getComputedStyle(document.documentElement).getPropertyValue(name).trim()||fallback;
+function status(s){ui('state',`State: ${s}`)}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function randDir(){return Math.random()<0.5?-1:1}
+
+function mkBall(xPos=S.p.x,yPos=510,vx=3.4*randDir(),vy=-3.8){
+	return {x:xPos,y:yPos,r:8,vx,vy};
+}
+
+function normalizeBallSpeed(ball,target){
+	const mag=Math.hypot(ball.vx,ball.vy)||1;
+	ball.vx=(ball.vx/mag)*target;
+	ball.vy=(ball.vy/mag)*target;
+}
+
+function addSpecialBricks(){
+	const candidates=S.br.slice();
+	const specialCount=Math.min(8,candidates.length);
+	for(let i=0;i<specialCount;i+=1){
+		const idx=Math.floor(Math.random()*candidates.length);
+		const brick=candidates.splice(idx,1)[0];
+		brick.special=SPECIAL_POOL[Math.floor(Math.random()*SPECIAL_POOL.length)];
+	}
+}
+
+function mk(){
+	S.br=[];
+	const rows=6,cols=10,w=64,h=22,pad=10,ox=22,oy=60;
+	for(let r=0;r<rows;r+=1){
+		for(let col=0;col<cols;col+=1){
+			S.br.push({x:ox+col*(w+pad),y:oy+r*(h+pad),w,h,on:true,row:r,special:null});
+		}
+	}
+	addSpecialBricks();
+}
+
+function applySpecial(type,ball){
+	if(type==='speedUp'){
+		normalizeBallSpeed(ball,Math.min(9.2,BASE_SPEED*2));
+		status('Speed x2!');
+		return;
+	}
+	if(type==='speedNormal'){
+		normalizeBallSpeed(ball,BASE_SPEED);
+		status('Speed normal');
+		return;
+	}
+	if(type==='multiball'){
+		if(S.balls.length<4){
+			S.balls.push(mkBall(ball.x,ball.y,-ball.vx,ball.vy));
+			status('Multiball!');
+		}else{
+			status('Multiball maxed');
+		}
+		return;
+	}
+	if(type==='paddleSmall'){
+		S.p.w=SMALL_PADDLE_W;
+		status('Paddle smaller');
+		return;
+	}
+	if(type==='paddleNormal'){
+		S.p.w=BASE_PADDLE_W;
+		status('Paddle normal');
+	}
+}
+
+function reset(){
+	S.score=0;
+	S.lives=3;
+	S.p.x=380;
+	S.p.w=BASE_PADDLE_W;
+	S.balls=[mkBall(380,510,3.4,-3.8)];
+	mk();
+	ui('score','Score: 0');
+	ui('lives','Lives: 3');
+	status('Ready');
+	draw();
+}
+
+function launch(){if(!S.run){S.run=true;status('Running');}}
+
+function upd(){
+	if(!S.run)return;
+	if(S.keys.ArrowLeft||S.keys.a)S.p.x-=S.p.s;
+	if(S.keys.ArrowRight||S.keys.d)S.p.x+=S.p.s;
+	S.p.x=clamp(S.p.x,S.p.w/2,c.width-S.p.w/2);
+
+	for(let bi=S.balls.length-1;bi>=0;bi-=1){
+		const b=S.balls[bi];
+		b.x+=b.vx;b.y+=b.vy;
+		if(b.x-b.r<0||b.x+b.r>c.width)b.vx*=-1;
+		if(b.y-b.r<0)b.vy*=-1;
+
+		const p=S.p;
+		if(b.y+b.r>=p.y-p.h/2&&b.y+b.r<=p.y+p.h/2&&b.x>=p.x-p.w/2&&b.x<=p.x+p.w/2&&b.vy>0){
+			const off=(b.x-p.x)/(p.w/2);
+			b.vx=off*5.2;
+			b.vy=-Math.abs(b.vy);
+		}
+
+		for(const br of S.br){
+			if(!br.on)continue;
+			if(b.x+b.r>br.x&&b.x-b.r<br.x+br.w&&b.y+b.r>br.y&&b.y-b.r<br.y+br.h){
+				br.on=false;
+				S.score+=10+(5-br.row)+(br.special?5:0);
+				ui('score',`Score: ${S.score}`);
+				b.vy*=-1;
+				if(br.special)applySpecial(br.special,b);
+				break;
+			}
+		}
+
+		if(b.y-b.r>c.height){
+			if(S.balls.length>1){
+				S.balls.splice(bi,1);
+			}else{
+				S.lives-=1;
+				ui('lives',`Lives: ${S.lives}`);
+				if(S.lives<=0){
+					S.run=false;
+					status('Game Over');
+				}else{
+					S.p.w=BASE_PADDLE_W;
+					S.balls=[mkBall(S.p.x,510,3.2*randDir(),-3.8)];
+					status('Press Start');
+					S.run=false;
+				}
+			}
+		}
+	}
+
+	if(S.br.every(z=>!z.on)){
+		S.run=false;
+		status('You Win!');
+	}
+}
+
+
+function setPaddleFromClientX(clientX){
+	const rect=c.getBoundingClientRect();
+	const xPos=((clientX-rect.left)/rect.width)*c.width;
+	S.p.x=clamp(xPos,S.p.w/2,c.width-S.p.w/2);
+}
+let touchDragging=false;
+function draw(){
+	x.clearRect(0,0,c.width,c.height);
+	x.fillStyle='#0a0f1f';
+	for(let i=0;i<120;i+=1)x.fillRect((i*61)%c.width,(i*37)%c.height,1,1);
+
+	for(const br of S.br){
+		if(!br.on)continue;
+		x.fillStyle=`hsl(${260+br.row*18} 85% 65%)`;
+		x.fillRect(br.x,br.y,br.w,br.h);
+		if(br.special){
+			x.strokeStyle='#fff8';
+			x.lineWidth=1.5;
+			x.strokeRect(br.x+1,br.y+1,br.w-2,br.h-2);
+			x.fillStyle='#fff';
+			x.font='700 11px Inter, system-ui, sans-serif';
+			x.textAlign='center';
+			x.textBaseline='middle';
+			x.fillText(SPECIAL_LABEL[br.special],br.x+br.w/2,br.y+br.h/2+0.5);
+		}
+	}
+
+	const p=S.p;
+	x.fillStyle=cssVar('--paddle','#22d3ee');
+	x.fillRect(p.x-p.w/2,p.y-p.h/2,p.w,p.h);
+
+	x.fillStyle=cssVar('--ball','#fef08a');
+	for(const b of S.balls){
+		x.beginPath();
+		x.arc(b.x,b.y,b.r,0,Math.PI*2);
+		x.fill();
+	}
+}
+
+function loop(){upd();draw();requestAnimationFrame(loop)}
+document.addEventListener('keydown',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;S.keys[k]=true});
+document.addEventListener('keyup',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;S.keys[k]=false});
+
+c.addEventListener('mousemove',e=>{if(e.pointerType==='touch')return;setPaddleFromClientX(e.clientX);});
+c.addEventListener('pointerdown',e=>{if(e.pointerType==='touch'){touchDragging=true;setPaddleFromClientX(e.clientX);if(!S.run)launch();e.preventDefault();}});
+c.addEventListener('pointermove',e=>{if(e.pointerType==='touch'&&touchDragging){setPaddleFromClientX(e.clientX);e.preventDefault();}});
+c.addEventListener('pointerup',e=>{if(e.pointerType==='touch')touchDragging=false;});
+c.addEventListener('pointercancel',e=>{if(e.pointerType==='touch')touchDragging=false;});
+document.getElementById('start').onclick=()=>{if(!S.run && (S.lives<=0 || S.br.every(z=>!z.on)))reset();launch();};
+reset();loop();
+</script></body></html>

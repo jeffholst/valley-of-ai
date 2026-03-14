@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="aBar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#67e8f9"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="bBar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c4b5fd"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#bg)"/>
+  <rect x="42" y="30" width="716" height="390" rx="20" fill="#1e293b" stroke="#344158"/>
+
+  <text x="68" y="65" fill="#f8fafc" font-family="system-ui, sans-serif" font-size="27" font-weight="700">⚡ Sorting Race Visualizer</text>
+  <text x="68" y="89" fill="#a8b3c6" font-family="system-ui, sans-serif" font-size="14">Bubble vs Insertion on the same shuffled data</text>
+
+  <rect x="68" y="112" width="300" height="245" rx="14" fill="#27354a" stroke="#344158"/>
+  <rect x="432" y="112" width="300" height="245" rx="14" fill="#27354a" stroke="#344158"/>
+
+  <text x="84" y="138" fill="#f8fafc" font-family="system-ui, sans-serif" font-size="16" font-weight="600">Bubble Sort</text>
+  <text x="448" y="138" fill="#f8fafc" font-family="system-ui, sans-serif" font-size="16" font-weight="600">Insertion Sort</text>
+
+  <g transform="translate(78,336)">
+    <rect x="0" y="-45" width="15" height="45" rx="4" fill="url(#aBar)"/>
+    <rect x="19" y="-92" width="15" height="92" rx="4" fill="url(#aBar)"/>
+    <rect x="38" y="-63" width="15" height="63" rx="4" fill="#e11d48"/>
+    <rect x="57" y="-128" width="15" height="128" rx="4" fill="url(#aBar)"/>
+    <rect x="76" y="-74" width="15" height="74" rx="4" fill="url(#aBar)"/>
+    <rect x="95" y="-150" width="15" height="150" rx="4" fill="url(#aBar)"/>
+    <rect x="114" y="-103" width="15" height="103" rx="4" fill="url(#aBar)"/>
+    <rect x="133" y="-176" width="15" height="176" rx="4" fill="#22c55e"/>
+    <rect x="152" y="-116" width="15" height="116" rx="4" fill="url(#aBar)"/>
+    <rect x="171" y="-188" width="15" height="188" rx="4" fill="#22c55e"/>
+    <rect x="190" y="-141" width="15" height="141" rx="4" fill="url(#aBar)"/>
+    <rect x="209" y="-201" width="15" height="201" rx="4" fill="#22c55e"/>
+    <rect x="228" y="-160" width="15" height="160" rx="4" fill="url(#aBar)"/>
+    <rect x="247" y="-214" width="15" height="214" rx="4" fill="#22c55e"/>
+    <rect x="266" y="-178" width="15" height="178" rx="4" fill="url(#aBar)"/>
+  </g>
+
+  <g transform="translate(442,336)">
+    <rect x="0" y="-45" width="15" height="45" rx="4" fill="url(#bBar)"/>
+    <rect x="19" y="-68" width="15" height="68" rx="4" fill="url(#bBar)"/>
+    <rect x="38" y="-84" width="15" height="84" rx="4" fill="url(#bBar)"/>
+    <rect x="57" y="-99" width="15" height="99" rx="4" fill="url(#bBar)"/>
+    <rect x="76" y="-112" width="15" height="112" rx="4" fill="url(#bBar)"/>
+    <rect x="95" y="-124" width="15" height="124" rx="4" fill="url(#bBar)"/>
+    <rect x="114" y="-133" width="15" height="133" rx="4" fill="url(#bBar)"/>
+    <rect x="133" y="-142" width="15" height="142" rx="4" fill="url(#bBar)"/>
+    <rect x="152" y="-152" width="15" height="152" rx="4" fill="url(#bBar)"/>
+    <rect x="171" y="-162" width="15" height="162" rx="4" fill="url(#bBar)"/>
+    <rect x="190" y="-171" width="15" height="171" rx="4" fill="url(#bBar)"/>
+    <rect x="209" y="-180" width="15" height="180" rx="4" fill="#22c55e"/>
+    <rect x="228" y="-190" width="15" height="190" rx="4" fill="#22c55e"/>
+    <rect x="247" y="-201" width="15" height="201" rx="4" fill="#22c55e"/>
+    <rect x="266" y="-214" width="15" height="214" rx="4" fill="#22c55e"/>
+  </g>
+
+  <rect x="68" y="374" width="664" height="32" rx="10" fill="#123727" stroke="#1f6f4c"/>
+  <text x="82" y="396" fill="#86efac" font-family="system-ui, sans-serif" font-size="15" font-weight="700">🏆 Insertion Sort wins (1,280ms vs 1,960ms)</text>
+</svg>

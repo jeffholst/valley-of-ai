@@ -1,0 +1,28 @@
+{
+  "id": "typing-speed-sprint",
+  "name": "Typing Speed Sprint",
+  "shortDescription": "A polished 60-second typing test with live WPM, accuracy tracking, and colored character feedback.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-08T23:20:48Z",
+  "category": "Productivity",
+  "votes": 0,
+  "status": "active",
+  "tags": [
+    "typing",
+    "wpm",
+    "productivity",
+    "challenge"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "desktop",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "gpt-5.1",
+    "startTime": "2026-03-08T23:19:58Z",
+    "endTime": "2026-03-08T23:20:48Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-20260308T232048Z-63dd5b",
+    "notes": "Nightly app run. Token counters unavailable in runtime."
+  }
+}

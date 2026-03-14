@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NYDGLSJPFT"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-NYDGLSJPFT');
+    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Realtor Tycoon - Valley of AI</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+  <style>
+    :root {
+      --bg-primary: #f0f4f8;
+      --bg-secondary: #e2e8f0;
+      --surface: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --gold: #fbbf24;
+      --shadow: rgba(0, 0, 0, 0.1);
+    ;--bg:#0b1220;--text:#edf3ff;}
+
+    [data-theme="dark"] {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --surface: #334155;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --shadow: rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      z-index: 100;
+      background: linear-gradient(to bottom, var(--bg-primary), transparent);
+    }
+
+    .home-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .home-link:hover {
+      color: var(--accent);
+    }
+
+    .home-link svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .theme-toggle {
+      background: var(--surface);
+      border: 1px solid var(--text-secondary);
+      color: var(--text-primary);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: all 0.3s;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--accent);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 70px 20px 40px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .header .subtitle {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .stat-value.cash { color: var(--success); }
+    .stat-value.day { color: var(--accent); }
+    .stat-value.sales { color: var(--gold); }
+
+    /* Game Areas */
+    .game-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 700px) {
+      .game-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 12px var(--shadow);
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Market Conditions */
+    .market-indicator {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--bg-secondary);
+    }
+
+    .market-indicator:last-child {
+      border-bottom: none;
+    }
+
+    .indicator-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .indicator-value {
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+
+    .indicator-value.hot { background: #fee2e2; color: #dc2626; }
+    .indicator-value.warm { background: #fef3c7; color: #d97706; }
+    .indicator-value.normal { background: #dbeafe; color: #2563eb; }
+    .indicator-value.cool { background: #e0e7ff; color: #4f46e5; }
+    .indicator-value.cold { background: #f0f9ff; color: #0284c7; }
+
+    [data-theme="dark"] .indicator-value.hot { background: #7f1d1d; color: #fca5a5; }
+    [data-theme="dark"] .indicator-value.warm { background: #78350f; color: #fcd34d; }
+    [data-theme="dark"] .indicator-value.normal { background: #1e3a5f; color: #93c5fd; }
+    [data-theme="dark"] .indicator-value.cool { background: #312e81; color: #a5b4fc; }
+    [data-theme="dark"] .indicator-value.cold { background: #0c4a6e; color: #7dd3fc; }
+
+    /* Form Controls */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--bg-secondary);
+      border-radius: 10px;
+      font-size: 1rem;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .help-text {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--accent);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, var(--success), #059669);
+      color: white;
+    }
+
+    /* Results Area */
+    .results-card {
+      grid-column: 1 / -1;
+    }
+
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--bg-secondary);
+    }
+
+    .result-item:last-child {
+      border-bottom: none;
+    }
+
+    .result-item.total {
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding-top: 12px;
+      margin-top: 4px;
+      border-top: 2px solid var(--accent);
+      border-bottom: none;
+    }
+
+    .positive { color: var(--success); }
+    .negative { color: var(--danger); }
+
+    /* History Log */
+    .history-log {
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 0.85rem;
+    }
+
+    .log-entry {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--bg-secondary);
+    }
+
+    .log-day {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    /* Screens */
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    /* Start Screen */
+    .start-screen {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .start-screen h1 {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+    }
+
+    .start-screen .intro {
+      max-width: 500px;
+      margin: 0 auto 30px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .difficulty-select {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .difficulty-btn {
+      padding: 16px 32px;
+      border: 2px solid var(--bg-secondary);
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--text-primary);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .difficulty-btn:hover,
+    .difficulty-btn.selected {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: white;
+    }
+
+    /* Game Over Screen */
+    .game-over-screen {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .final-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      max-width: 400px;
+      margin: 30px auto;
+    }
+
+    .final-stat {
+      background: var(--surface);
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .final-stat .value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .final-stat .label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* Animations */
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+      animation: slideIn 0.4s ease-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .pulse {
+      animation: pulse 0.5s ease-in-out;
+    }
+
+    /* Message Toast */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface);
+      color: var(--text-primary);
+      padding: 14px 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px var(--shadow);
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    .toast.success { border-left: 4px solid var(--success); }
+    .toast.warning { border-left: 4px solid var(--warning); }
+    .toast.error { border-left: 4px solid var(--danger); }
+  [data-theme='light']{--bg:#eef4ff;--surface:#ffffff;--text:#1f2f52;--accent:#0891b2;--shadow:rgba(31, 47, 82, 0.12);}
+.theme-sentinel{background:var(--bg);color:var(--text);}
+
+
+    /* Responsive/touch accessibility pass */
+    @media (max-width: 1024px) {
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot,
+      input[type="button"],
+      input[type="submit"] {
+        min-height: 44px;
+      }
+
+      .theme-toggle {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        touch-action: manipulation;
+        pointer-events: auto;
+        z-index: 999;
+      }
+
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot {
+        touch-action: manipulation;
+      }
+    }
+
+</style>
+  <meta name="voa-main-site-url" content="https://www.valleyofai.com">
+  <meta name="voa-main-site-name" content="Valley of AI">
+    <meta name="voa-social-x-url" content="https://x.com/ValleyOfAI">
+  <meta name="voa-social-facebook-url" content="https://www.facebook.com/profile.php?id=61582281233012">
+  <meta name="voa-social-instagram-url" content="https://www.instagram.com/valley_of_ai/">
+  <script src="/apps/shared/app-shell.js" defer></script>
+</head>
+<body>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <a href="https://www.valleyofai.com" class="home-link">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Valley of AI
+    </a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
+  </div>
+
+  <div class="container">
+    <!-- Start Screen -->
+    <div id="start-screen" class="screen active start-screen">
+      <h1>🏠 Realtor Tycoon</h1>
+      <p class="intro">
+        You're a real estate agent starting your career! Buy listings, set prices, invest in marketing, and navigate the ever-changing housing market. Can you become the top realtor in town?
+      </p>
+      <p style="color: var(--text-secondary); margin-bottom: 20px;">Select your starting week:</p>
+      <div class="difficulty-select">
+        <button class="difficulty-btn selected" data-weeks="4">4 Weeks</button>
+        <button class="difficulty-btn" data-weeks="8">8 Weeks</button>
+        <button class="difficulty-btn" data-weeks="12">12 Weeks</button>
+      </div>
+      <button class="btn btn-primary" onclick="startGame()" style="max-width: 300px; margin: 0 auto;">
+        🚀 Start Your Career
+      </button>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen">
+      <div class="header">
+        <h1>🏠 Realtor Tycoon</h1>
+        <p class="subtitle">Make your fortune in real estate!</p>
+      </div>
+
+      <!-- Stats Bar -->
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="stat-label">Cash</div>
+          <div class="stat-value cash" id="cash">$10,000</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Week</div>
+          <div class="stat-value day" id="week">1 / 4</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Homes Sold</div>
+          <div class="stat-value sales" id="sales">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Reputation</div>
+          <div class="stat-value" id="reputation">⭐⭐⭐</div>
+        </div>
+      </div>
+
+      <!-- Game Grid -->
+      <div class="game-grid">
+        <!-- Market Conditions -->
+        <div class="card">
+          <h2>📊 This Week's Market</h2>
+          <div class="market-indicator">
+            <span class="indicator-label">Market Temperature</span>
+            <span class="indicator-value normal" id="market-temp">Normal</span>
+          </div>
+          <div class="market-indicator">
+            <span class="indicator-label">Interest Rates</span>
+            <span class="indicator-value" id="interest-rate">5.5%</span>
+          </div>
+          <div class="market-indicator">
+            <span class="indicator-label">Buyer Demand</span>
+            <span class="indicator-value" id="buyer-demand">Medium</span>
+          </div>
+          <div class="market-indicator">
+            <span class="indicator-label">Season</span>
+            <span class="indicator-value" id="season">🌸 Spring</span>
+          </div>
+        </div>
+
+        <!-- Your Decisions -->
+        <div class="card">
+          <h2>📋 Your Decisions</h2>
+          <div class="form-group">
+            <label>Listings to Acquire</label>
+            <input type="number" id="listings" min="0" max="10" value="2">
+            <p class="help-text">Cost: $500 per listing. More listings = more chances to sell!</p>
+          </div>
+          <div class="form-group">
+            <label>Pricing Strategy</label>
+            <select id="pricing">
+              <option value="aggressive">Aggressive (+20% price, harder sell)</option>
+              <option value="competitive" selected>Competitive (market price)</option>
+              <option value="undercut">Undercut (-15% price, easier sell)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Marketing Budget</label>
+            <input type="number" id="marketing" min="0" max="5000" step="100" value="500">
+            <p class="help-text">Increases buyer interest. $100-$5,000 per week.</p>
+          </div>
+        </div>
+
+        <!-- Week Result (hidden until day ends) -->
+        <div class="card results-card" id="results-card" style="display: none;">
+          <h2>📈 Week Results</h2>
+          <div id="results-content"></div>
+        </div>
+
+        <!-- History -->
+        <div class="card" style="grid-column: 1 / -1;">
+          <h2>📜 History</h2>
+          <div class="history-log" id="history-log">
+            <p style="color: var(--text-secondary); text-align: center;">Your journey begins...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <button class="btn btn-primary" id="action-btn" onclick="runWeek()">
+        📅 Run This Week
+      </button>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="game-over-screen" class="screen game-over-screen">
+      <h1 id="game-over-title">🎉 Career Complete!</h1>
+      <p style="color: var(--text-secondary); margin-bottom: 10px;" id="game-over-subtitle">Here's how you did:</p>
+      
+      <div class="final-stats">
+        <div class="final-stat">
+          <div class="value" id="final-cash">$0</div>
+          <div class="label">Final Cash</div>
+        </div>
+        <div class="final-stat">
+          <div class="value" id="final-profit">$0</div>
+          <div class="label">Total Profit</div>
+        </div>
+        <div class="final-stat">
+          <div class="value" id="final-homes">0</div>
+          <div class="label">Homes Sold</div>
+        </div>
+        <div class="final-stat">
+          <div class="value" id="final-rep">⭐⭐⭐</div>
+          <div class="label">Final Reputation</div>
+        </div>
+      </div>
+
+      <div id="rank-display" style="font-size: 1.3rem; margin-bottom: 30px;"></div>
+
+      <button class="btn btn-success" onclick="restartGame()" style="max-width: 300px; margin: 0 auto;">
+        🔄 Play Again
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Theme Management
+    const storedTheme = localStorage.getItem('theme') || 
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', storedTheme);
+    updateThemeIcon();
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      updateThemeIcon();
+    }
+
+    function updateThemeIcon() {
+      const btn = document.querySelector('.theme-toggle');
+      if (btn) btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+    }
+
+    // Game State
+    let state = {
+      cash: 10000,
+      startingCash: 10000,
+      week: 1,
+      maxWeeks: 4,
+      homesSold: 0,
+      reputation: 3, // 1-5 stars
+      history: [],
+      marketConditions: {}
+    };
+
+    // Market simulation
+    const SEASONS = ['🌸 Spring', '☀️ Summer', '🍂 Fall', '❄️ Winter'];
+    const MARKET_TEMPS = ['Hot', 'Warm', 'Normal', 'Cool', 'Cold'];
+    const DEMAND_LEVELS = ['Very High', 'High', 'Medium', 'Low', 'Very Low'];
+
+    // Difficulty selection
+    const diffBtns = document.querySelectorAll('.difficulty-btn');
+    diffBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        diffBtns.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        state.maxWeeks = parseInt(btn.dataset.weeks);
+      });
+    });
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = 'toast ' + type + ' show';
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function startGame() {
+      state = {
+        cash: 10000,
+        startingCash: 10000,
+        week: 1,
+        maxWeeks: parseInt(document.querySelector('.difficulty-btn.selected').dataset.weeks),
+        homesSold: 0,
+        reputation: 3,
+        history: [],
+        marketConditions: {}
+      };
+      
+      generateMarketConditions();
+      updateUI();
+      showScreen('game-screen');
+      document.getElementById('results-card').style.display = 'none';
+      document.getElementById('history-log').innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Your journey begins...</p>';
+      showToast('Good luck, agent! 🏠', 'success');
+    }
+
+    function generateMarketConditions() {
+      // Market temperature based on random + season
+      const seasonIdx = (state.week - 1) % 4;
+      const seasonBonus = seasonIdx === 0 || seasonIdx === 1 ? 1 : -1; // Spring/Summer better
+      
+      const tempRoll = Math.random() * 5 + seasonBonus;
+      let tempIdx = Math.floor(tempRoll);
+      tempIdx = Math.max(0, Math.min(4, tempIdx));
+      
+      // Interest rate (3% to 8%)
+      const interestRate = (3 + Math.random() * 5).toFixed(1);
+      
+      // Buyer demand influenced by interest rate
+      let demandIdx = interestRate < 4.5 ? 0 : interestRate < 5.5 ? 1 : interestRate < 6.5 ? 2 : interestRate < 7.5 ? 3 : 4;
+      demandIdx = Math.max(0, Math.min(4, demandIdx + (Math.random() > 0.5 ? 1 : -1)));
+      
+      state.marketConditions = {
+        temp: MARKET_TEMPS[tempIdx],
+        tempIdx: tempIdx,
+        interestRate: interestRate,
+        demand: DEMAND_LEVELS[demandIdx],
+        demandIdx: demandIdx,
+        season: SEASONS[seasonIdx]
+      };
+      
+      // Update display
+      const tempEl = document.getElementById('market-temp');
+      tempEl.textContent = state.marketConditions.temp;
+      tempEl.className = 'indicator-value ' + ['hot', 'warm', 'normal', 'cool', 'cold'][tempIdx];
+      
+      document.getElementById('interest-rate').textContent = interestRate + '%';
+      const rateEl = document.getElementById('interest-rate');
+      rateEl.className = 'indicator-value ' + (interestRate < 5 ? 'hot' : interestRate < 6 ? 'warm' : interestRate < 7 ? 'normal' : 'cool');
+      
+      const demandEl = document.getElementById('buyer-demand');
+      demandEl.textContent = state.marketConditions.demand;
+      demandEl.className = 'indicator-value ' + ['hot', 'warm', 'normal', 'cool', 'cold'][demandIdx];
+      
+      document.getElementById('season').textContent = state.marketConditions.season;
+    }
+
+    function updateUI() {
+      document.getElementById('cash').textContent = '$' + state.cash.toLocaleString();
+      document.getElementById('week').textContent = state.week + ' / ' + state.maxWeeks;
+      document.getElementById('sales').textContent = state.homesSold;
+      
+      // Reputation stars
+      const stars = '⭐'.repeat(state.reputation) + '☆'.repeat(5 - state.reputation);
+      document.getElementById('reputation').textContent = stars;
+    }
+
+    function runWeek() {
+      const listingsInput = document.getElementById('listings');
+      const pricingSelect = document.getElementById('pricing');
+      const marketingInput = document.getElementById('marketing');
+      
+      const listings = parseInt(listingsInput.value) || 0;
+      const pricing = pricingSelect.value;
+      const marketing = parseInt(marketingInput.value) || 0;
+      
+      // Calculate costs
+      const listingCost = listings * 500;
+      const totalCost = listingCost + marketing;
+      
+      if (totalCost > state.cash) {
+        showToast('Not enough cash! Reduce expenses.', 'error');
+        return;
+      }
+      
+      // Calculate sales
+      const mc = state.marketConditions;
+      
+      // Base sell chance per listing
+      let baseChance = 0.5;
+      
+      // Market temperature modifier (-0.2 cold to +0.2 hot)
+      baseChance += (2 - mc.tempIdx) * 0.1;
+      
+      // Demand modifier (-0.2 very low to +0.2 very high)
+      baseChance += (2 - mc.demandIdx) * 0.1;
+      
+      // Pricing strategy modifier
+      if (pricing === 'aggressive') baseChance -= 0.2;
+      else if (pricing === 'undercut') baseChance += 0.2;
+      
+      // Marketing bonus (0-10% based on spend)
+      baseChance += Math.min(0.2, marketing / 2500);
+      
+      // Reputation modifier
+      baseChance += (state.reputation - 3) * 0.05;
+      
+      // Run sales simulation
+      let homesSoldThisWeek = 0;
+      let revenue = 0;
+      const avgHomePrice = 350000; // Base home price
+      
+      for (let i = 0; i < listings; i++) {
+        if (Math.random() < baseChance) {
+          homesSoldThisWeek++;
+          
+          // Calculate sale price
+          let salePrice = avgHomePrice * (0.9 + Math.random() * 0.2); // 90-110% variance
+          
+          // Market temp affects prices
+          salePrice *= 1 + (2 - mc.tempIdx) * 0.05;
+          
+          // Pricing strategy
+          if (pricing === 'aggressive') salePrice *= 1.2;
+          else if (pricing === 'undercut') salePrice *= 0.85;
+          
+          // Commission (3% of sale)
+          const commission = salePrice * 0.03;
+          revenue += commission;
+        }
+      }
+      
+      // Random events
+      let eventMessage = '';
+      const eventRoll = Math.random();
+      let bonusCash = 0;
+      let repChange = 0;
+      
+      if (eventRoll < 0.1 && homesSoldThisWeek > 0) {
+        // Great review!
+        eventMessage = '⭐ A client left a glowing review!';
+        repChange = 1;
+      } else if (eventRoll < 0.15) {
+        // Referral bonus
+        bonusCash = 1000;
+        eventMessage = '🎁 Referral bonus: +$1,000!';
+      } else if (eventRoll < 0.2 && homesSoldThisWeek === 0 && listings > 0) {
+        // Bad review
+        eventMessage = '😔 A difficult client hurt your reputation.';
+        repChange = -1;
+      }
+      
+      // Apply changes
+      state.cash -= totalCost;
+      state.cash += Math.round(revenue);
+      state.cash += bonusCash;
+      state.homesSold += homesSoldThisWeek;
+      state.reputation = Math.max(1, Math.min(5, state.reputation + repChange));
+      
+      // Calculate profit this week
+      const profit = Math.round(revenue) + bonusCash - totalCost;
+      
+      // Show results
+      const resultsCard = document.getElementById('results-card');
+      resultsCard.style.display = 'block';
+      resultsCard.classList.add('animate-in');
+      
+      const resultsContent = document.getElementById('results-content');
+      resultsContent.innerHTML = `
+        <div class="result-item">
+          <span>Listings Acquired</span>
+          <span>${listings}</span>
+        </div>
+        <div class="result-item">
+          <span>Listing Costs</span>
+          <span class="negative">-$${listingCost.toLocaleString()}</span>
+        </div>
+        <div class="result-item">
+          <span>Marketing Spend</span>
+          <span class="negative">-$${marketing.toLocaleString()}</span>
+        </div>
+        <div class="result-item">
+          <span>Homes Sold</span>
+          <span>${homesSoldThisWeek} / ${listings}</span>
+        </div>
+        <div class="result-item">
+          <span>Commission Earned</span>
+          <span class="positive">+$${Math.round(revenue).toLocaleString()}</span>
+        </div>
+        ${bonusCash > 0 ? `<div class="result-item">
+          <span>Bonus</span>
+          <span class="positive">+$${bonusCash.toLocaleString()}</span>
+        </div>` : ''}
+        ${eventMessage ? `<div class="result-item">
+          <span>Event</span>
+          <span>${eventMessage}</span>
+        </div>` : ''}
+        <div class="result-item total">
+          <span>Week Profit</span>
+          <span class="${profit >= 0 ? 'positive' : 'negative'}">${profit >= 0 ? '+' : ''}$${profit.toLocaleString()}</span>
+        </div>
+      `;
+      
+      // Update history
+      state.history.push({
+        week: state.week,
+        listings: listings,
+        sold: homesSoldThisWeek,
+        profit: profit,
+        market: mc.temp
+      });
+      
+      const historyLog = document.getElementById('history-log');
+      if (state.week === 1) historyLog.innerHTML = '';
+      historyLog.innerHTML = `<div class="log-entry">
+        <span class="log-day">Week ${state.week}:</span> 
+        Listed ${listings}, sold ${homesSoldThisWeek}, 
+        <span class="${profit >= 0 ? 'positive' : 'negative'}">${profit >= 0 ? '+' : ''}$${profit.toLocaleString()}</span>
+        | Market: ${mc.temp}
+      </div>` + historyLog.innerHTML;
+      
+      updateUI();
+      
+      // Next week or game over
+      state.week++;
+      
+      if (state.week > state.maxWeeks) {
+        setTimeout(() => endGame(), 1500);
+      } else {
+        // Update button
+        document.getElementById('action-btn').textContent = '📅 Start Week ' + state.week;
+        document.getElementById('action-btn').onclick = () => {
+          document.getElementById('results-card').style.display = 'none';
+          generateMarketConditions();
+          document.getElementById('action-btn').textContent = '📅 Run This Week';
+          document.getElementById('action-btn').onclick = runWeek;
+        };
+        
+        showToast(homesSoldThisWeek > 0 ? '🏠 Great sales this week!' : '📊 No sales, try adjusting your strategy.', 
+          homesSoldThisWeek > 0 ? 'success' : 'warning');
+      }
+    }
+
+    function endGame() {
+      const profit = state.cash - state.startingCash;
+      
+      // Determine rank
+      let rank = '';
+      if (profit > 50000) rank = '🏆 Legendary Agent';
+      else if (profit > 30000) rank = '🥇 Elite Realtor';
+      else if (profit > 15000) rank = '🥈 Top Producer';
+      else if (profit > 5000) rank = '🥉 Rising Star';
+      else if (profit > 0) rank = '📈 Making Progress';
+      else if (profit > -5000) rank = '📉 Struggling Starter';
+      else rank = '💸 Back to Training';
+      
+      document.getElementById('final-cash').textContent = '$' + state.cash.toLocaleString();
+      document.getElementById('final-profit').textContent = (profit >= 0 ? '+$' : '-$') + Math.abs(profit).toLocaleString();
+      document.getElementById('final-profit').className = 'value ' + (profit >= 0 ? 'positive' : 'negative');
+      document.getElementById('final-homes').textContent = state.homesSold;
+      document.getElementById('final-rep').textContent = '⭐'.repeat(state.reputation) + '☆'.repeat(5 - state.reputation);
+      document.getElementById('rank-display').textContent = rank;
+      
+      if (profit < 0) {
+        document.getElementById('game-over-title').textContent = '😅 Career Ended';
+        document.getElementById('game-over-subtitle').textContent = 'The market was tough!';
+      } else {
+        document.getElementById('game-over-title').textContent = '🎉 Career Complete!';
+        document.getElementById('game-over-subtitle').textContent = 'Here\'s how you did:';
+      }
+      
+      showScreen('game-over-screen');
+    }
+
+    function restartGame() {
+      showScreen('start-screen');
+    }
+  </script>
+</body>
+</html>

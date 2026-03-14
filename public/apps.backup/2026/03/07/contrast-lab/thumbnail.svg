@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Contrast Lab app thumbnail">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a1324"/>
+      <stop offset="55%" stop-color="#09101d"/>
+      <stop offset="100%" stop-color="#060d18"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#bg)"/>
+  <rect x="70" y="34" width="660" height="66" rx="16" fill="#0f172a" stroke="#27364f"/>
+  <text x="102" y="75" fill="#e2e8f0" font-size="26" font-family="system-ui, sans-serif" font-weight="700">🎨 Contrast Lab</text>
+  <text x="102" y="93" fill="#9fb0c7" font-size="13" font-family="system-ui, sans-serif">Tune two colors until your typography passes WCAG AA/AAA</text>
+  <rect x="686" y="47" width="32" height="32" rx="10" fill="#111c33" stroke="#27364f"/>
+  <text x="696" y="69" fill="#e2e8f0" font-size="15">☀️</text>
+
+  <rect x="70" y="116" width="660" height="300" rx="18" fill="#0f172a" stroke="#27364f"/>
+
+  <rect x="90" y="136" width="245" height="86" rx="12" fill="#111c33" stroke="#27364f"/>
+  <text x="104" y="160" fill="#e2e8f0" font-size="15" font-family="system-ui, sans-serif" font-weight="700">Foreground</text>
+  <rect x="102" y="172" width="30" height="30" rx="8" fill="#0f172a" stroke="#27364f"/>
+  <rect x="142" y="172" width="175" height="30" rx="8" fill="#0f172a" stroke="#27364f"/>
+  <text x="152" y="192" fill="#e2e8f0" font-size="14" font-family="ui-monospace, monospace">#0f172a</text>
+
+  <rect x="90" y="232" width="245" height="86" rx="12" fill="#111c33" stroke="#27364f"/>
+  <text x="104" y="256" fill="#e2e8f0" font-size="15" font-family="system-ui, sans-serif" font-weight="700">Background</text>
+  <rect x="102" y="268" width="30" height="30" rx="8" fill="#f8fafc" stroke="#27364f"/>
+  <rect x="142" y="268" width="175" height="30" rx="8" fill="#0f172a" stroke="#27364f"/>
+  <text x="152" y="288" fill="#e2e8f0" font-size="14" font-family="ui-monospace, monospace">#f8fafc</text>
+
+  <rect x="90" y="332" width="80" height="32" rx="10" fill="#38bdf8"/>
+  <text x="103" y="353" fill="white" font-size="13" font-family="system-ui, sans-serif" font-weight="700">Fix AA</text>
+  <rect x="176" y="332" width="84" height="32" rx="10" fill="#111c33" stroke="#27364f"/>
+  <text x="194" y="353" fill="#e2e8f0" font-size="13" font-family="system-ui, sans-serif" font-weight="700">Fix AAA</text>
+
+  <rect x="356" y="136" width="354" height="260" rx="14" fill="#111c33" stroke="#27364f"/>
+  <rect x="370" y="148" width="106" height="64" rx="10" fill="#0f172a" stroke="#27364f"/>
+  <text x="390" y="168" fill="#9fb0c7" font-size="12" font-family="system-ui, sans-serif">Contrast</text>
+  <text x="390" y="192" fill="#e2e8f0" font-size="22" font-family="system-ui, sans-serif" font-weight="700">15.77:1</text>
+
+  <rect x="484" y="148" width="106" height="64" rx="10" fill="#0f172a" stroke="#27364f"/>
+  <text x="520" y="168" fill="#9fb0c7" font-size="12" text-anchor="middle" font-family="system-ui, sans-serif">WCAG AA</text>
+  <rect x="514" y="176" width="48" height="22" rx="11" fill="#0f172a" stroke="#22c55e"/>
+  <text x="538" y="191" fill="#22c55e" font-size="12" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="700">PASS</text>
+
+  <rect x="598" y="148" width="106" height="64" rx="10" fill="#0f172a" stroke="#27364f"/>
+  <text x="652" y="168" fill="#9fb0c7" font-size="12" text-anchor="middle" font-family="system-ui, sans-serif">WCAG AAA</text>
+  <rect x="628" y="176" width="48" height="22" rx="11" fill="#0f172a" stroke="#22c55e"/>
+  <text x="652" y="191" fill="#22c55e" font-size="12" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="700">PASS</text>
+
+  <rect x="374" y="226" width="318" height="156" rx="12" fill="#f8fafc" stroke="#27364f"/>
+  <text x="394" y="262" fill="#0f172a" font-size="24" font-family="system-ui, sans-serif" font-weight="700">Accessible headline</text>
+  <text x="394" y="292" fill="#1e293b" font-size="15" font-family="system-ui, sans-serif">The quick brown fox jumps over the lazy dog.</text>
+  <text x="394" y="316" fill="#1e293b" font-size="15" font-family="system-ui, sans-serif">1234567890</text>
+</svg>

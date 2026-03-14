@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NYDGLSJPFT"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-NYDGLSJPFT');
+    </script>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Space Invaders Clone - Valley of AI</title>
+<style>
+:root{--bg:#0a1020;--bg2:#162448;--surface:#0f1730;--text:#edf3ff;--muted:#9ab0e0;--primary:#22d3ee;--enemy:#f43f5e;--player:#4ade80;--bullet:#fef08a;--accent:#22d3ee;--shadow:rgba(0, 0, 0, 0.35);}
+[data-theme="light"]{--bg:#edf4ff;--bg2:#dbeafe;--surface:#fff;--text:#1f2f52;--muted:#60739a;--primary:#0891b2;--enemy:#be123c;--player:#15803d;--bullet:#b45309;--accent:#0891b2;--shadow:rgba(31, 47, 82, 0.12);}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px;font-family:Inter,system-ui;background:radial-gradient(1000px 700px at 20% 20%,var(--bg2),var(--bg));color:var(--text)}
+.top-bar{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;z-index:100;background:linear-gradient(to bottom,var(--bg2),transparent)}
+.home-link{display:flex;align-items:center;gap:8px;color:var(--muted);text-decoration:none;font-size:14px;transition:color .2s}
+.home-link:hover{color:var(--primary)}
+.home-link svg{width:20px;height:20px}
+.theme-toggle{background:var(--surface);border:1px solid var(--muted);color:var(--text);width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .3s}
+.theme-toggle:hover{border-color:var(--primary);box-shadow:0 0 15px var(--primary)}
+.card{width:min(860px,100%);background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);border-radius:18px;padding:14px;box-shadow:0 18px 45px #0004}
+h1{margin:0 0 4px}.sub{margin:0 0 10px;color:var(--muted)}
+.top{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.pill{font-size:.86rem;padding:6px 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);color:var(--muted)}
+canvas{width:100%;max-width:760px;aspect-ratio:4/3;display:block;margin:auto;background:#050a14;border-radius:12px;border:1px solid color-mix(in srgb,var(--muted) 26%,transparent)}
+.controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}button{border:none;border-radius:999px;padding:9px 13px;font:inherit;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(90deg,#7c3aed,var(--primary))}
+.kbd{text-align:center;color:var(--muted);margin-top:8px;font-size:.9rem}
+
+
+    /* Responsive/touch accessibility pass */
+    @media (max-width: 1024px) {
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot,
+      input[type="button"],
+      input[type="submit"] {
+        min-height: 44px;
+      }
+
+      .theme-toggle {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        touch-action: manipulation;
+        pointer-events: auto;
+        z-index: 999;
+      }
+
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot {
+        touch-action: manipulation;
+      }
+    }
+
+</style>  <meta name="voa-main-site-url" content="https://www.valleyofai.com">
+  <meta name="voa-main-site-name" content="Valley of AI">
+    <meta name="voa-social-x-url" content="https://x.com/ValleyOfAI">
+  <meta name="voa-social-facebook-url" content="https://www.facebook.com/profile.php?id=61582281233012">
+  <meta name="voa-social-instagram-url" content="https://www.instagram.com/valley_of_ai/">
+  <script src="/apps/shared/app-shell.js" defer></script>
+</head>
+<body>
+<div class="top-bar">
+  <a href="https://www.valleyofai.com" class="home-link">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    Valley of AI
+  </a>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
+</div>
+<main class="card"><h1>👾 Space Invaders Clone</h1><p class="sub">Defend Earth. Move, shoot, clear waves, survive enemy fire.</p>
+<div class="top"><span class="pill" id="score">Score: 0</span><span class="pill" id="lives">Lives: 3</span><span class="pill" id="wave">Wave: 1</span><span class="pill" id="state">State: Ready</span></div>
+<canvas id="game" width="760" height="570" aria-label="Space Invaders game"></canvas>
+<div class="controls"><button id="start">Start</button><button id="restart">Restart</button></div>
+<p class="kbd">Controls: ← → (or A/D), Space shoot</p></main>
+<script>
+// Theme Management
+const storedTheme = localStorage.getItem('theme') || 
+  (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+document.documentElement.setAttribute('data-theme', storedTheme);
+updateThemeIcon();
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  updateThemeIcon();
+  updateColors();
+}
+
+function updateThemeIcon() {
+  const btn = document.querySelector('.theme-toggle');
+  if (btn) btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+}
+
+const c=document.getElementById('game'),x=c.getContext('2d');
+// Canvas colors (canvas doesn't support CSS variables)
+const colors = {
+  enemy: '#f43f5e',
+  player: '#4ade80', 
+  bullet: '#fef08a',
+  primary: '#22d3ee'
+};
+function updateColors() {
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  colors.enemy = isDark ? '#f43f5e' : '#be123c';
+  colors.player = isDark ? '#4ade80' : '#15803d';
+  colors.bullet = isDark ? '#fef08a' : '#b45309';
+  colors.primary = isDark ? '#22d3ee' : '#0891b2';
+}
+updateColors();
+
+const S={run:false,score:0,lives:3,wave:1,keys:{},player:{x:380,y:530,w:44,h:18,cool:0},bullets:[],enemyBullets:[],enemies:[],dir:1,speed:0.55,drop:18,lastShot:0};
+const ui=id=>document.getElementById(id); function u(state=''){ui('score').textContent=`Score: ${S.score}`;ui('lives').textContent=`Lives: ${S.lives}`;ui('wave').textContent=`Wave: ${S.wave}`;if(state)ui('state').textContent=`State: ${state}`;}
+function mkWave(){S.enemies=[];const rows=5,cols=10,gx=58,gy=48,spx=58,spy=44;for(let r=0;r<rows;r++)for(let col=0;col<cols;col++)S.enemies.push({x:gx+col*spx,y:gy+r*spy,w:34,h:24,alive:true,row:r});S.dir=1;S.speed=0.5+(S.wave-1)*0.09;}
+function reset(all=true){if(all){S.score=0;S.lives=3;S.wave=1;}S.player.x=380;S.player.cool=0;S.bullets=[];S.enemyBullets=[];mkWave();u('Ready');draw();}
+function shoot(){const now=performance.now();if(now-S.lastShot<220)return;S.lastShot=now;S.bullets.push({x:S.player.x,y:S.player.y-12,v:-7});}
+function enemyShoot(){const alive=S.enemies.filter(e=>e.alive);if(!alive.length)return;const pick=alive[Math.floor(Math.random()*alive.length)];S.enemyBullets.push({x:pick.x+pick.w/2,y:pick.y+pick.h,v:3.2+Math.random()*1.5});}
+function rectHit(a,b){return a.x<a2(b)&&a2(a)>b.x&&a.y<a3(b)&&a3(a)>b.y;} const a2=o=>o.x+(o.w||2), a3=o=>o.y+(o.h||8);
+function upd(){if(!S.run)return;const p=S.player;if(S.keys.ArrowLeft||S.keys.a)p.x-=5;if(S.keys.ArrowRight||S.keys.d)p.x+=5;p.x=Math.max(26,Math.min(c.width-26,p.x));
+if((S.keys[' ']||S.keys.Spacebar) && p.cool<=0){shoot();p.cool=8;} if(p.cool>0)p.cool--;
+S.bullets.forEach(b=>b.y+=b.v);S.bullets=S.bullets.filter(b=>b.y>-20);
+let hitEdge=false;S.enemies.forEach(e=>{if(!e.alive)return;e.x+=S.dir*S.speed;if(e.x<16||e.x+e.w>c.width-16)hitEdge=true;}); if(hitEdge){S.dir*=-1;S.enemies.forEach(e=>e.y+=S.drop);} 
+S.enemyBullets.forEach(b=>b.y+=b.v);S.enemyBullets=S.enemyBullets.filter(b=>b.y<c.height+10);
+if(Math.random()<0.03+S.wave*0.003)enemyShoot();
+for(const b of S.bullets){for(const e of S.enemies){if(e.alive && rectHit({x:b.x-2,y:b.y,w:4,h:10},e)){e.alive=false;b.y=-999;S.score+=10+(4-e.row)*2;break;}}}
+for(const b of S.enemyBullets){if(rectHit({x:b.x-2,y:b.y,w:4,h:10},{x:p.x-p.w/2,y:p.y-p.h/2,w:p.w,h:p.h})){b.y=999;S.lives--;u();if(S.lives<=0){S.run=false;u('Game Over');}}}
+if(S.enemies.some(e=>e.alive && e.y+e.h>=p.y-18)){S.run=false;S.lives=0;u('Invaders Win');}
+if(S.enemies.every(e=>!e.alive)){S.wave++;mkWave();u('Next Wave');}
+}
+function drawEnemy(e){x.fillStyle=colors.enemy;x.fillRect(e.x,e.y,e.w,e.h);x.clearRect(e.x+7,e.y+7,5,5);x.clearRect(e.x+22,e.y+7,5,5);x.fillRect(e.x+6,e.y+18,22,4);}
+function draw(){x.clearRect(0,0,c.width,c.height);x.fillStyle='#0a0f1f';for(let i=0;i<80;i++){x.fillRect((i*97)%c.width,(i*53)%c.height,1,1);} // stars
+x.fillStyle=colors.player;x.fillRect(S.player.x-S.player.w/2,S.player.y-S.player.h/2,S.player.w,S.player.h);x.fillRect(S.player.x-10,S.player.y-18,20,8);
+x.fillStyle=colors.bullet;S.bullets.forEach(b=>x.fillRect(b.x-2,b.y,4,10));x.fillStyle=colors.primary;S.enemyBullets.forEach(b=>x.fillRect(b.x-2,b.y,4,10));S.enemies.forEach(e=>e.alive&&drawEnemy(e));
+}
+function loop(){upd();draw();requestAnimationFrame(loop);} 
+document.addEventListener('keydown',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;S.keys[k]=true;if(k===' ')e.preventDefault();});
+document.addEventListener('keyup',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;S.keys[k]=false;});
+ui('start').onclick=()=>{S.run=true;u('Running');}; ui('restart').onclick=()=>{reset(true);S.run=true;u('Running');};
+reset(true); loop();
+</script></body></html>

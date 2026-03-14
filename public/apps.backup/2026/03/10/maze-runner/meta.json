@@ -1,0 +1,28 @@
+{
+  "id": "maze-runner",
+  "name": "Maze Runner",
+  "shortDescription": "A maze navigation challenge with procedural generation and best-time tracking.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-10T22:14:53Z",
+  "category": "Games",
+  "votes": 0,
+  "status": "active",
+  "tags": [
+    "maze",
+    "puzzle",
+    "speedrun",
+    "keyboard-controls"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "desktop",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "gpt-5.1",
+    "startTime": "2026-03-10T22:13:58Z",
+    "endTime": "2026-03-10T22:14:53Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-20260310T221453Z-76dfc5",
+    "notes": "Nightly app run. Token counters unavailable in runtime."
+  }
+}

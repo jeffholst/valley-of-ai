@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en" data-theme="auto">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NYDGLSJPFT"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-NYDGLSJPFT');
+    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pacman Classic - Valley of AI</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🟡%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --bg: #0b1020;
+      --bg2: #17233f;
+      --surface: #101933;
+      --text: #eef3ff;
+      --muted: #9eb0d9;
+      --wall: #3b82f6;
+      --dot: #fde68a;
+      --pac: #facc15;
+      --ghost-red: #ef4444;
+      --ghost-cyan: #22d3ee;
+      --ghost-pink: #f472b6;
+      --btn: #7c3aed;
+    ;--accent:#22d3ee;--shadow:rgba(0, 0, 0, 0.35);}
+    [data-theme="light"] {
+      --bg: #edf4ff;
+      --bg2: #d8e7ff;
+      --surface: #ffffff;
+      --text: #1e2b4a;
+      --muted: #607197;
+      --wall: #2563eb;
+      --dot: #ca8a04;
+      --pac: #eab308;
+      --ghost-red: #dc2626;
+      --ghost-cyan: #0891b2;
+      --ghost-pink: #db2777;
+      --btn: #6d28d9;
+    ;--accent:#0891b2;--shadow:rgba(31, 47, 82, 0.12);}
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme="dark"]) {
+        --bg: #edf4ff;
+        --bg2: #d8e7ff;
+        --surface: #ffffff;
+        --text: #1e2b4a;
+        --muted: #607197;
+        --wall: #2563eb;
+        --dot: #ca8a04;
+        --pac: #eab308;
+        --ghost-red: #dc2626;
+        --ghost-cyan: #0891b2;
+        --ghost-pink: #db2777;
+        --btn: #6d28d9;
+      }
+    }
+    .theme-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: var(--surface, #fff);
+      border: 1px solid var(--muted, #ccc);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      font-size: 1.3rem;
+      cursor: pointer;
+      z-index: 100;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(1100px 700px at 20% 20%, var(--bg2), var(--bg));
+      color: var(--text);
+    }
+    .card {
+      width: min(760px, 100%);
+      background: color-mix(in srgb, var(--surface) 90%, transparent);
+      border: 1px solid color-mix(in srgb, var(--muted) 24%, transparent);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 18px 50px #0004;
+    }
+    h1 { margin: 0 0 6px; font-size: 1.6rem; }
+    .sub { margin: 0 0 12px; color: var(--muted); }
+    .topbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .pill { border: 1px solid color-mix(in srgb, var(--muted) 26%, transparent); padding: 6px 10px; border-radius: 999px; color: var(--muted); font-size: .88rem; }
+    canvas {
+      width: 100%;
+      max-width: 640px;
+      aspect-ratio: 1 / 1;
+      display: block;
+      margin: 0 auto;
+      border-radius: 14px;
+      border: 1px solid color-mix(in srgb, var(--muted) 26%, transparent);
+      background: #070b16;
+      image-rendering: pixelated;
+    }
+    .controls { display: flex; gap: 8px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      color: #fff;
+      background: var(--btn);
+    }
+    .kbd { color: var(--muted); text-align: center; margin-top: 10px; font-size: .9rem; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  
+
+    /* Responsive/touch accessibility pass */
+    @media (max-width: 1024px) {
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot,
+      input[type="button"],
+      input[type="submit"] {
+        min-height: 44px;
+      }
+
+      .theme-toggle {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        touch-action: manipulation;
+        pointer-events: auto;
+        z-index: 999;
+      }
+
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot {
+        touch-action: manipulation;
+      }
+    }
+
+</style>
+  <meta name="voa-main-site-url" content="https://www.valleyofai.com">
+  <meta name="voa-main-site-name" content="Valley of AI">
+    <meta name="voa-social-x-url" content="https://x.com/ValleyOfAI">
+  <meta name="voa-social-facebook-url" content="https://www.facebook.com/profile.php?id=61582281233012">
+  <meta name="voa-social-instagram-url" content="https://www.instagram.com/valley_of_ai/">
+  <script src="/apps/shared/app-shell.js" defer></script>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
+  <main class="card">
+    <h1>🟡 Pacman Classic</h1>
+    <p class="sub">Eat all dots, dodge ghosts, and survive with 3 lives. Arrow keys or WASD.</p>
+    <section class="topbar">
+      <span class="pill" id="score">Score: 0</span>
+      <span class="pill" id="lives">Lives: 3</span>
+      <span class="pill" id="dots">Dots: 0</span>
+      <span class="pill" id="state">State: Ready</span>
+    </section>
+    <canvas id="game" width="560" height="560" aria-label="Pacman game board"></canvas>
+    <section class="controls">
+      <button id="start">Start</button>
+      <button id="restart">Restart</button>
+    </section>
+    <p class="kbd">Controls: ↑ ↓ ← → or W A S D</p>
+  </main>
+
+<script>
+const mapRows = [
+"####################",
+"#........##........#",
+"#.####.#.##.#.####.#",
+"#o#  #.#.##.#.#  #o#",
+"#.####.#.##.#.####.#",
+"#..................#",
+"#.####.######.####.#",
+"#......#....#......#",
+"######.#.##.#.######",
+"     #.#....#.#     ",
+"######.#.##.#.######",
+"#........P.........#",
+"#.####.######.####.#",
+"#o...#....##....#o.#",
+"###.#.###.##.###.#.#",
+"#.....#...G....#...#",
+"#.##########.#######",
+"#..................#",
+"####################"
+];
+
+const TILE = 28;
+const ROWS = mapRows.length;
+const COLS = mapRows[0].length;
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+canvas.width = COLS * TILE;
+canvas.height = ROWS * TILE;
+
+const scoreEl = document.getElementById('score');
+const livesEl = document.getElementById('lives');
+const dotsEl = document.getElementById('dots');
+const stateEl = document.getElementById('state');
+
+const DIRS = { ArrowUp:[0,-1], ArrowDown:[0,1], ArrowLeft:[-1,0], ArrowRight:[1,0], w:[0,-1], s:[0,1], a:[-1,0], d:[1,0] };
+let grid, pac, ghosts, score, lives, dotsLeft, running, mouth, tick, frightenedTimer, ghostsEaten;
+
+const FRIGHTENED_DURATION = 50; // Game ticks ghosts stay frightened
+
+function resetGame() {
+  grid = mapRows.map(r => r.split(''));
+  score = 0; lives = 3; running = false; mouth = 0; tick = 0; frightenedTimer = 0; ghostsEaten = 0;
+  let pacStart = {x: 10, y: 11};
+  ghosts = [];
+  dotsLeft = 0;
+  for (let y=0; y<ROWS; y++) {
+    for (let x=0; x<COLS; x++) {
+      if (grid[y][x] === 'P') { pacStart = {x,y}; grid[y][x]='.'; }
+      if (grid[y][x] === 'G') { ghosts.push({x,y,dx:1,dy:0,color:'#ef4444',startX:x,startY:y}); grid[y][x]=' '; }
+      if (grid[y][x] === '.') dotsLeft++;
+      if (grid[y][x] === 'o') dotsLeft++;
+    }
+  }
+  ghosts.push({x:9,y:15,dx:0,dy:-1,color:'#22d3ee',startX:9,startY:15});
+  ghosts.push({x:11,y:15,dx:0,dy:1,color:'#f472b6',startX:11,startY:15});
+  pac = { x: pacStart.x, y: pacStart.y, dx: 0, dy: 0, nextDx: 0, nextDy: 0, dir: 'right' };
+  updateUI('Ready');
+}
+
+function wall(x,y){ if (x<0||y<0||x>=COLS||y>=ROWS) return true; return grid[y][x] === '#'; }
+
+function movePac() {
+  if (!running) return;
+  if (!wall(pac.x + pac.nextDx, pac.y + pac.nextDy)) {
+    pac.dx = pac.nextDx; pac.dy = pac.nextDy;
+  }
+  const nx = pac.x + pac.dx, ny = pac.y + pac.dy;
+  if (!wall(nx, ny)) {
+    pac.x = nx; pac.y = ny;
+    if (pac.dx === 1) pac.dir='right'; if (pac.dx === -1) pac.dir='left';
+    if (pac.dy === 1) pac.dir='down'; if (pac.dy === -1) pac.dir='up';
+  }
+
+  const cell = grid[pac.y][pac.x];
+  if (cell === '.') { grid[pac.y][pac.x] = ' '; score += 10; dotsLeft--; }
+  if (cell === 'o') { 
+    grid[pac.y][pac.x] = ' '; 
+    score += 50; 
+    dotsLeft--; 
+    // Activate power-up: frighten all ghosts
+    frightenedTimer = FRIGHTENED_DURATION;
+    ghostsEaten = 0;
+  }
+
+  if (dotsLeft <= 0) { running = false; updateUI('You win!'); }
+}
+
+function moveGhost(g) {
+  if (!running || g.eaten) return;
+  const options = [[1,0],[-1,0],[0,1],[0,-1]].filter(([dx,dy]) => !wall(g.x+dx, g.y+dy));
+  
+  // When frightened, ghosts move randomly away from Pacman
+  const isFrightened = frightenedTimer > 0;
+  const sortedOptions = options.sort((a,b)=>{
+    const da = Math.abs((g.x+a[0]) - pac.x) + Math.abs((g.y+a[1]) - pac.y);
+    const db = Math.abs((g.x+b[0]) - pac.x) + Math.abs((g.y+b[1]) - pac.y);
+    if (isFrightened) {
+      // Run away from Pacman (prefer farther distance) with more randomness
+      return Math.random() < 0.5 ? db - da : da - db;
+    }
+    return (Math.random()<0.25? db-da : da-db);
+  });
+  const [dx,dy] = sortedOptions[0] || [0,0];
+  g.dx = dx; g.dy = dy;
+  g.x += dx; g.y += dy;
+}
+
+function collide() {
+  for (const g of ghosts) {
+    if (g.eaten) continue;
+    if (g.x === pac.x && g.y === pac.y) {
+      if (frightenedTimer > 0) {
+        // Eat the ghost!
+        ghostsEaten++;
+        score += 200 * ghostsEaten; // 200, 400, 600, 800 points
+        g.eaten = true;
+        // Respawn ghost after a delay
+        setTimeout(() => {
+          g.x = g.startX;
+          g.y = g.startY;
+          g.eaten = false;
+        }, 3000);
+      } else {
+        // Ghost catches Pacman
+        lives -= 1;
+        if (lives <= 0) { running = false; updateUI('Game over'); }
+        else {
+          pac.x = 10; pac.y = 11; pac.dx = 0; pac.dy = 0; pac.nextDx = 0; pac.nextDy = 0;
+          updateUI('Ouch! Continue');
+        }
+      }
+      return;
+    }
+  }
+}
+
+function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for (let y=0; y<ROWS; y++) {
+    for (let x=0; x<COLS; x++) {
+      const c = grid[y][x];
+      const px = x*TILE, py = y*TILE;
+      if (c === '#') {
+        ctx.fillStyle = '#3b82f6';
+        ctx.fillRect(px+2,py+2,TILE-4,TILE-4);
+      }
+      if (c === '.' || c === 'o') {
+        ctx.fillStyle = '#fde68a';
+        const r = c === '.' ? 3 : 6;
+        ctx.beginPath(); ctx.arc(px+TILE/2, py+TILE/2, r, 0, Math.PI*2); ctx.fill();
+      }
+    }
+  }
+
+  for (const g of ghosts) {
+    if (g.eaten) continue; // Don't draw eaten ghosts
+    const cx = g.x*TILE + TILE/2, cy = g.y*TILE + TILE/2;
+    
+    // Frightened ghosts are blue, flashing white when about to end
+    let ghostColor = g.color;
+    if (frightenedTimer > 0) {
+      ghostColor = frightenedTimer < 15 && Math.floor(frightenedTimer / 3) % 2 === 0 ? '#ffffff' : '#3b82f6';
+    }
+    
+    ctx.fillStyle = ghostColor;
+    ctx.beginPath(); ctx.arc(cx, cy, TILE*0.38, Math.PI, 0); ctx.lineTo(cx+TILE*0.38, cy+TILE*0.35); ctx.lineTo(cx-TILE*0.38, cy+TILE*0.35); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = frightenedTimer > 0 ? '#fff' : '#fff';
+    ctx.beginPath(); ctx.arc(cx-6, cy-4, 4, 0, Math.PI*2); ctx.arc(cx+6, cy-4, 4, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = frightenedTimer > 0 ? '#3b82f6' : '#111';
+    ctx.beginPath(); ctx.arc(cx-6, cy-3, 2, 0, Math.PI*2); ctx.arc(cx+6, cy-3, 2, 0, Math.PI*2); ctx.fill();
+  }
+
+  const cx = pac.x*TILE + TILE/2, cy = pac.y*TILE + TILE/2;
+  const angle = (Math.sin(mouth)*0.28 + 0.28);
+  let rot = 0;
+  if (pac.dir === 'left') rot = Math.PI;
+  if (pac.dir === 'up') rot = -Math.PI/2;
+  if (pac.dir === 'down') rot = Math.PI/2;
+  ctx.save();
+  ctx.translate(cx, cy); ctx.rotate(rot);
+  ctx.fillStyle = '#facc15';
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.arc(0,0,TILE*0.4, angle, Math.PI*2-angle);
+  ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+
+function updateUI(state) {
+  scoreEl.textContent = `Score: ${score}`;
+  livesEl.textContent = `Lives: ${lives}`;
+  dotsEl.textContent = `Dots: ${dotsLeft}`;
+  stateEl.textContent = `State: ${state}`;
+}
+
+// Game speed control - lower = faster (milliseconds per game tick)
+const GAME_SPEED = 120;
+let lastUpdate = 0;
+
+function loop(timestamp) {
+  // Smooth mouth animation based on real time
+  mouth = timestamp * 0.01;
+  
+  // Only update game logic at fixed intervals
+  if (timestamp - lastUpdate >= GAME_SPEED) {
+    tick++;
+    if (running) {
+      // Decrease frightened timer
+      if (frightenedTimer > 0) frightenedTimer--;
+      
+      movePac();
+      if (tick % 2 === 0) ghosts.forEach(moveGhost);
+      collide();
+      updateUI(frightenedTimer > 0 ? 'Power Up!' : 'Running');
+    }
+    lastUpdate = timestamp;
+  }
+  draw();
+  requestAnimationFrame(loop);
+}
+
+document.addEventListener('keydown', (e) => {
+  const d = DIRS[e.key];
+  if (!d) return;
+  e.preventDefault();
+  [pac.nextDx, pac.nextDy] = d;
+});
+
+document.getElementById('start').onclick = () => {
+  if (!running && lives > 0 && dotsLeft > 0) { running = true; updateUI('Running'); }
+};
+document.getElementById('restart').onclick = () => resetGame();
+
+resetGame();
+requestAnimationFrame(loop);
+
+function getPreferredTheme() {
+  const stored = localStorage.getItem('theme');
+  if (stored) return stored;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('theme', next);
+  applyTheme(next);
+}
+applyTheme(getPreferredTheme());
+</script>
+<footer style="text-align: center; padding: 20px; margin-top: 20px; opacity: 0.7;">
+  <a href="https://www.valleyofai.com" target="_blank" rel="noopener" style="color: var(--btn, #3b82f6); text-decoration: none;">← Back to Valley of AI</a>
+</footer>
+</body>
+</html>

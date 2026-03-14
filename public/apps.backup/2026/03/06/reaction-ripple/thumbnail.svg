@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b2a4a"/>
+      <stop offset="1" stop-color="#0b1020"/>
+    </linearGradient>
+    <radialGradient id="orb" cx="35%" cy="35%" r="70%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".6"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg)"/>
+  <rect x="95" y="30" width="610" height="390" rx="22" fill="#121b33" stroke="#9db0d8" stroke-opacity=".26"/>
+  <text x="128" y="72" font-family="system-ui,sans-serif" font-size="30" font-weight="700" fill="#eef4ff">⚡ Reaction Ripple</text>
+  <text x="128" y="98" font-family="system-ui,sans-serif" font-size="14" fill="#9db0d8">Tap the glowing orb as fast as possible. 10 rounds.</text>
+
+  <rect x="128" y="116" width="544" height="188" rx="18" fill="#152647" stroke="#9db0d8" stroke-opacity=".25"/>
+  <circle cx="476" cy="192" r="36" fill="url(#orb)"/>
+  <circle cx="476" cy="192" r="56" fill="none" stroke="#22d3ee" stroke-opacity=".55" stroke-width="4"/>
+
+  <rect x="128" y="320" width="168" height="76" rx="12" fill="#152647" stroke="#9db0d8" stroke-opacity=".24"/>
+  <rect x="316" y="320" width="168" height="76" rx="12" fill="#152647" stroke="#9db0d8" stroke-opacity=".24"/>
+  <rect x="504" y="320" width="168" height="76" rx="12" fill="#152647" stroke="#9db0d8" stroke-opacity=".24"/>
+
+  <text x="144" y="344" font-family="system-ui,sans-serif" font-size="11" fill="#9db0d8" letter-spacing="1">ROUND</text>
+  <text x="144" y="376" font-family="system-ui,sans-serif" font-size="28" font-weight="700" fill="#eef4ff">7 / 10</text>
+
+  <text x="332" y="344" font-family="system-ui,sans-serif" font-size="11" fill="#9db0d8" letter-spacing="1">LAST REACTION</text>
+  <text x="332" y="376" font-family="system-ui,sans-serif" font-size="28" font-weight="700" fill="#eef4ff">286 ms</text>
+
+  <text x="520" y="344" font-family="system-ui,sans-serif" font-size="11" fill="#9db0d8" letter-spacing="1">AVERAGE</text>
+  <text x="520" y="376" font-family="system-ui,sans-serif" font-size="28" font-weight="700" fill="#eef4ff">312 ms</text>
+</svg>

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Interval Breathing Coach thumbnail">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0b1223"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#14b8a6"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#bg)"/>
+  <rect x="36" y="30" width="728" height="390" rx="24" fill="#111b33" stroke="#2a3a58"/>
+
+  <text x="74" y="86" fill="#f8fafc" font-size="34" font-family="Inter,Segoe UI,sans-serif" font-weight="700">Interval Breathing Coach</text>
+  <text x="74" y="118" fill="#94a3b8" font-size="18" font-family="Inter,Segoe UI,sans-serif">Inhale • Hold • Exhale • Pause</text>
+
+  <circle cx="280" cy="242" r="112" fill="none" stroke="#2b3e5f" stroke-width="24"/>
+  <circle cx="280" cy="242" r="112" fill="none" stroke="url(#ring)" stroke-width="24" stroke-linecap="round" stroke-dasharray="520 184" filter="url(#glow)"/>
+  <circle cx="280" cy="242" r="78" fill="#10303a" opacity="0.65"/>
+  <text x="280" y="230" text-anchor="middle" fill="#e2e8f0" font-size="28" font-family="Inter,Segoe UI,sans-serif" font-weight="700">Inhale</text>
+  <text x="280" y="262" text-anchor="middle" fill="#94a3b8" font-size="18" font-family="Inter,Segoe UI,sans-serif">3.2s</text>
+
+  <rect x="452" y="158" width="260" height="54" rx="12" fill="#182845" stroke="#2a3a58"/>
+  <text x="472" y="191" fill="#cbd5e1" font-size="18" font-family="Inter,Segoe UI,sans-serif">Cycle</text>
+  <text x="690" y="191" text-anchor="end" fill="#f8fafc" font-size="22" font-family="Inter,Segoe UI,sans-serif" font-weight="700">04</text>
+
+  <rect x="452" y="222" width="260" height="54" rx="12" fill="#182845" stroke="#2a3a58"/>
+  <text x="472" y="255" fill="#cbd5e1" font-size="18" font-family="Inter,Segoe UI,sans-serif">Elapsed</text>
+  <text x="690" y="255" text-anchor="end" fill="#f8fafc" font-size="22" font-family="Inter,Segoe UI,sans-serif" font-weight="700">02:14</text>
+
+  <rect x="452" y="286" width="260" height="54" rx="12" fill="#182845" stroke="#2a3a58"/>
+  <text x="472" y="319" fill="#cbd5e1" font-size="18" font-family="Inter,Segoe UI,sans-serif">Remaining</text>
+  <text x="690" y="319" text-anchor="end" fill="#f8fafc" font-size="22" font-family="Inter,Segoe UI,sans-serif" font-weight="700">02:46</text>
+
+  <rect x="74" y="372" width="638" height="14" rx="7" fill="#2b3e5f"/>
+  <rect x="74" y="372" width="350" height="14" rx="7" fill="url(#ring)"/>
+</svg>

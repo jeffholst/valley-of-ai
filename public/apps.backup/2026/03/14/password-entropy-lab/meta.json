@@ -1,0 +1,22 @@
+{
+  "id": "password-entropy-lab",
+  "name": "Password Entropy Lab",
+  "shortDescription": "A mobile-first password analyzer that estimates entropy, keyspace size, and crack-time under configurable attack rates.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-14T07:03:06Z",
+  "category": "Utilities",
+  "status": "active",
+  "tags": ["password", "security", "entropy", "utility", "mobile-friendly"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "gpt-5.1",
+    "startTime": "2026-03-14T07:01:02Z",
+    "endTime": "2026-03-14T07:03:06Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-20260314T070102Z-48238d",
+    "notes": "Inspired by zxcvbn-style strength meters; added attack-rate controls and entropy/keyspace visibility for educational use."
+  }
+}

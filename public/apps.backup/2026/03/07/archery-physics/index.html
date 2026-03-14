@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NYDGLSJPFT"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-NYDGLSJPFT');
+    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Archery Physics - Valley of AI</title>
+  <style>
+    :root {
+      --sky-top: #87CEEB;
+      --sky-bottom: #E0F6FF;
+      --grass: #4CAF50;
+      --wood: #8B4513;
+      --wood-light: #A0522D;
+      --target-red: #DC3545;
+      --target-blue: #0077B6;
+      --target-yellow: #FFD700;
+      --accent: #FF6B35;
+    ;--bg:#0b1220;--surface:#101a31;--text:#edf3ff;--shadow:rgba(0, 0, 0, 0.35);}
+
+    [data-theme="dark"] {
+      --sky-top: #1a1a2e;
+      --sky-bottom: #16213e;
+      --grass: #2d5a27;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      z-index: 20;
+      background: rgba(0,0,0,0.5);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+    .theme-toggle:hover { transform: scale(1.1); }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(to bottom, var(--sky-top), var(--sky-bottom));
+      min-height: 100vh;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    #game-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+      touch-action: none;
+    }
+
+    #ui-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .ui-panel {
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: white;
+      pointer-events: auto;
+    }
+
+    .score-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .score-label {
+      font-size: 12px;
+      opacity: 0.8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .score-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .info-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 140px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .info-label {
+      opacity: 0.8;
+    }
+
+    .info-value {
+      font-weight: 600;
+    }
+
+    .wind-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .wind-arrow {
+      font-size: 16px;
+      transition: transform 0.3s;
+    }
+
+    .wind-left {
+      transform: scaleX(-1);
+    }
+
+    #instructions {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 12px 24px;
+      color: white;
+      font-size: 14px;
+      text-align: center;
+      pointer-events: none;
+      transition: opacity 0.5s;
+    }
+
+    #power-meter {
+      position: absolute;
+      left: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 200px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    #power-fill {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: linear-gradient(to top, #4CAF50, #FFC107, #FF5722);
+      border-radius: 10px;
+      transition: height 0.05s;
+    }
+
+    .arrow-count {
+      display: flex;
+      gap: 4px;
+      margin-top: 5px;
+    }
+
+    .arrow-icon {
+      width: 6px;
+      height: 20px;
+      background: linear-gradient(to bottom, #666, #999);
+      border-radius: 3px 3px 0 0;
+      position: relative;
+    }
+
+    .arrow-icon::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 8px solid #888;
+    }
+
+    .arrow-icon.used {
+      opacity: 0.3;
+    }
+
+    #game-over {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s, visibility 0.5s;
+    }
+
+    #game-over.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    #game-over h2 {
+      color: white;
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .final-score {
+      color: var(--accent);
+      font-size: 72px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .score-breakdown {
+      color: #aaa;
+      font-size: 18px;
+      margin-bottom: 40px;
+    }
+
+    #play-again {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 16px 48px;
+      font-size: 20px;
+      font-weight: 600;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    #play-again:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+    }
+
+    .hit-score {
+      position: absolute;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      pointer-events: none;
+      animation: scorePopup 1s ease-out forwards;
+      z-index: 50;
+    }
+
+    @keyframes scorePopup {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-50px) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .ui-panel {
+        padding: 8px 12px;
+      }
+
+      .score-value {
+        font-size: 22px;
+      }
+
+      .info-row {
+        font-size: 12px;
+      }
+
+      #instructions {
+        font-size: 12px;
+        padding: 10px 16px;
+      }
+
+      #power-meter {
+        left: 15px;
+        width: 16px;
+        height: 150px;
+      }
+    }
+  [data-theme='light']{--bg:#eef4ff;--surface:#ffffff;--text:#1f2f52;--accent:#0891b2;--shadow:rgba(31, 47, 82, 0.12);}
+.theme-sentinel{background:var(--bg);color:var(--text);}
+
+
+    /* Responsive/touch accessibility pass */
+    @media (max-width: 1024px) {
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot,
+      input[type="button"],
+      input[type="submit"] {
+        min-height: 44px;
+      }
+
+      .theme-toggle {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        touch-action: manipulation;
+        pointer-events: auto;
+        z-index: 999;
+      }
+
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot {
+        touch-action: manipulation;
+      }
+    }
+
+</style>
+  <meta name="voa-main-site-url" content="https://www.valleyofai.com">
+  <meta name="voa-main-site-name" content="Valley of AI">
+    <meta name="voa-social-x-url" content="https://x.com/ValleyOfAI">
+  <meta name="voa-social-facebook-url" content="https://www.facebook.com/profile.php?id=61582281233012">
+  <meta name="voa-social-instagram-url" content="https://www.instagram.com/valley_of_ai/">
+  <script src="/apps/shared/app-shell.js" defer></script>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
+  <div id="game-container">
+    <canvas id="game-canvas"></canvas>
+    
+    <div id="ui-overlay">
+      <div class="ui-panel score-panel">
+        <span class="score-label">Score</span>
+        <span class="score-value" id="score">0</span>
+        <div class="arrow-count" id="arrow-count"></div>
+      </div>
+      
+      <div class="ui-panel info-panel">
+        <div class="info-row">
+          <span class="info-label">Round</span>
+          <span class="info-value" id="round">1 / 5</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Wind</span>
+          <div class="wind-indicator">
+            <span class="wind-arrow" id="wind-arrow">➤</span>
+            <span class="info-value" id="wind-value">0 m/s</span>
+          </div>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Distance</span>
+          <span class="info-value" id="distance">50m</span>
+        </div>
+      </div>
+    </div>
+    
+    <div id="power-meter">
+      <div id="power-fill" style="height: 0%"></div>
+    </div>
+    
+    <div id="instructions">
+      <strong>Click & Hold</strong> to draw bow • <strong>Drag</strong> to aim • <strong>Release</strong> to shoot
+    </div>
+    
+    <div id="game-over">
+      <h2>Round Complete!</h2>
+      <div class="final-score" id="final-score">0</div>
+      <div class="score-breakdown" id="score-breakdown">5 arrows shot</div>
+      <button id="play-again">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    // Game Constants
+    const GRAVITY = 9.81;
+    const AIR_RESISTANCE = 0.001;
+    const ARROW_MASS = 0.02; // kg
+    const PIXELS_PER_METER = 10;
+    const MAX_ARROWS = 5;
+    const ROUNDS = 5;
+    
+    // Target scoring zones (from center)
+    const SCORING_ZONES = [
+      { radius: 10, points: 10, color: '#FFD700' },  // Gold/Bullseye
+      { radius: 20, points: 9, color: '#FFD700' },
+      { radius: 30, points: 8, color: '#DC3545' },
+      { radius: 40, points: 7, color: '#DC3545' },
+      { radius: 50, points: 6, color: '#0077B6' },
+      { radius: 60, points: 5, color: '#0077B6' },
+      { radius: 70, points: 4, color: '#222' },
+      { radius: 80, points: 3, color: '#222' },
+      { radius: 90, points: 2, color: '#fff' },
+      { radius: 100, points: 1, color: '#fff' }
+    ];
+    
+    // Canvas setup
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Game state
+    let gameState = {
+      arrows: [],
+      stuckArrows: [],
+      currentArrow: null,
+      bowPosition: { x: 0, y: 0 },
+      targetPosition: { x: 0, y: 0 },
+      targetDistance: 50, // meters
+      wind: 0, // m/s, positive = right
+      power: 0,
+      angle: 0,
+      isDrawing: false,
+      drawStart: null,
+      mousePos: { x: 0, y: 0 },
+      score: 0,
+      arrowsShot: 0,
+      round: 1,
+      gameOver: false,
+      groundLevel: 0,
+      lastTime: 0
+    };
+    
+    // UI elements
+    const scoreEl = document.getElementById('score');
+    const roundEl = document.getElementById('round');
+    const windArrowEl = document.getElementById('wind-arrow');
+    const windValueEl = document.getElementById('wind-value');
+    const distanceEl = document.getElementById('distance');
+    const powerFillEl = document.getElementById('power-fill');
+    const arrowCountEl = document.getElementById('arrow-count');
+    const instructionsEl = document.getElementById('instructions');
+    const gameOverEl = document.getElementById('game-over');
+    const finalScoreEl = document.getElementById('final-score');
+    const scoreBreakdownEl = document.getElementById('score-breakdown');
+    const playAgainBtn = document.getElementById('play-again');
+    
+    // Resize canvas
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      // Reset positions based on new size
+      gameState.groundLevel = canvas.height * 0.75;
+      gameState.bowPosition = {
+        x: 120,
+        y: gameState.groundLevel - 60
+      };
+      gameState.targetPosition = {
+        x: canvas.width - 150,
+        y: gameState.groundLevel - 80
+      };
+    }
+    
+    // Initialize new round
+    function initRound() {
+      gameState.stuckArrows = [];
+      gameState.currentArrow = null;
+      gameState.arrowsShot = 0;
+      gameState.isDrawing = false;
+      gameState.power = 0;
+      
+      // Randomize wind
+      gameState.wind = (Math.random() - 0.5) * 10; // -5 to 5 m/s
+      
+      // Update distance based on round
+      gameState.targetDistance = 40 + gameState.round * 10;
+      
+      updateUI();
+      updateArrowIcons();
+    }
+    
+    // Update UI
+    function updateUI() {
+      scoreEl.textContent = gameState.score;
+      roundEl.textContent = `${gameState.round} / ${ROUNDS}`;
+      
+      const absWind = Math.abs(gameState.wind).toFixed(1);
+      windValueEl.textContent = `${absWind} m/s`;
+      windArrowEl.classList.toggle('wind-left', gameState.wind < 0);
+      windArrowEl.style.opacity = absWind > 0.5 ? 1 : 0.3;
+      
+      distanceEl.textContent = `${gameState.targetDistance}m`;
+    }
+    
+    // Update arrow icons
+    function updateArrowIcons() {
+      arrowCountEl.innerHTML = '';
+      for (let i = 0; i < MAX_ARROWS; i++) {
+        const arrow = document.createElement('div');
+        arrow.className = 'arrow-icon' + (i < gameState.arrowsShot ? ' used' : '');
+        arrowCountEl.appendChild(arrow);
+      }
+    }
+    
+    // Show score popup
+    function showScorePopup(x, y, points) {
+      const popup = document.createElement('div');
+      popup.className = 'hit-score';
+      popup.textContent = points > 0 ? `+${points}` : 'Miss!';
+      popup.style.left = `${x}px`;
+      popup.style.top = `${y}px`;
+      popup.style.color = points >= 8 ? '#FFD700' : points > 0 ? '#fff' : '#f44';
+      document.getElementById('game-container').appendChild(popup);
+      
+      setTimeout(() => popup.remove(), 1000);
+    }
+    
+    // Create arrow
+    function createArrow(x, y, vx, vy) {
+      return {
+        x, y,
+        vx, vy,
+        angle: Math.atan2(vy, vx),
+        trail: [],
+        active: true
+      };
+    }
+    
+    // Physics update for arrow
+    function updateArrowPhysics(arrow, dt) {
+      if (!arrow.active) return;
+      
+      // Store trail point
+      if (arrow.trail.length === 0 || 
+          Math.hypot(arrow.x - arrow.trail[arrow.trail.length - 1].x,
+                     arrow.y - arrow.trail[arrow.trail.length - 1].y) > 10) {
+        arrow.trail.push({ x: arrow.x, y: arrow.y });
+        if (arrow.trail.length > 30) arrow.trail.shift();
+      }
+      
+      // Calculate forces
+      const speed = Math.hypot(arrow.vx, arrow.vy);
+      
+      // Gravity
+      arrow.vy += GRAVITY * PIXELS_PER_METER * dt;
+      
+      // Air resistance (drag)
+      const dragForce = AIR_RESISTANCE * speed * speed;
+      if (speed > 0) {
+        arrow.vx -= (arrow.vx / speed) * dragForce * dt;
+        arrow.vy -= (arrow.vy / speed) * dragForce * dt;
+      }
+      
+      // Wind effect
+      arrow.vx += gameState.wind * PIXELS_PER_METER * 0.1 * dt;
+      
+      // Update position
+      arrow.x += arrow.vx * dt;
+      arrow.y += arrow.vy * dt;
+      
+      // Update angle based on velocity
+      arrow.angle = Math.atan2(arrow.vy, arrow.vx);
+      
+      // Check collision with target
+      const targetX = gameState.targetPosition.x;
+      const targetY = gameState.targetPosition.y;
+      const targetRadius = 100;
+      
+      // Check if arrow tip hits target plane
+      if (arrow.x >= targetX - 5 && arrow.x <= targetX + 15) {
+        const distFromCenter = Math.abs(arrow.y - targetY);
+        
+        if (distFromCenter <= targetRadius) {
+          // Hit the target!
+          arrow.active = false;
+          arrow.x = targetX;
+          
+          // Calculate score
+          let points = 0;
+          for (const zone of SCORING_ZONES) {
+            if (distFromCenter <= zone.radius) {
+              points = zone.points;
+              break;
+            }
+          }
+          
+          gameState.score += points;
+          gameState.stuckArrows.push({
+            x: arrow.x + 5,
+            y: arrow.y,
+            angle: arrow.angle,
+            points
+          });
+          
+          showScorePopup(arrow.x, arrow.y - 30, points);
+          updateUI();
+          checkRoundEnd();
+          return;
+        }
+      }
+      
+      // Check ground collision
+      if (arrow.y >= gameState.groundLevel) {
+        arrow.active = false;
+        arrow.y = gameState.groundLevel;
+        gameState.stuckArrows.push({
+          x: arrow.x,
+          y: arrow.y - 5,
+          angle: Math.PI * 0.2,
+          points: 0
+        });
+        showScorePopup(arrow.x, arrow.y - 50, 0);
+        checkRoundEnd();
+      }
+      
+      // Check out of bounds
+      if (arrow.x > canvas.width + 100 || arrow.x < -100 || arrow.y < -500) {
+        arrow.active = false;
+        showScorePopup(canvas.width / 2, canvas.height / 2, 0);
+        checkRoundEnd();
+      }
+    }
+    
+    // Check if round ended
+    function checkRoundEnd() {
+      if (gameState.arrowsShot >= MAX_ARROWS) {
+        setTimeout(() => {
+          if (gameState.round >= ROUNDS) {
+            showGameOver();
+          } else {
+            gameState.round++;
+            initRound();
+          }
+        }, 1500);
+      }
+    }
+    
+    // Show game over
+    function showGameOver() {
+      gameState.gameOver = true;
+      finalScoreEl.textContent = gameState.score;
+      scoreBreakdownEl.textContent = `${gameState.round * MAX_ARROWS} arrows shot over ${ROUNDS} rounds`;
+      gameOverEl.classList.add('show');
+    }
+    
+    // Draw background
+    function drawBackground() {
+      // Sky gradient
+      const skyGradient = ctx.createLinearGradient(0, 0, 0, gameState.groundLevel);
+      
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        skyGradient.addColorStop(0, '#1a1a2e');
+        skyGradient.addColorStop(1, '#16213e');
+      } else {
+        skyGradient.addColorStop(0, '#87CEEB');
+        skyGradient.addColorStop(1, '#E0F6FF');
+      }
+      
+      ctx.fillStyle = skyGradient;
+      ctx.fillRect(0, 0, canvas.width, gameState.groundLevel);
+      
+      // Distant mountains
+      ctx.fillStyle = isDark ? '#2a2a4a' : '#9CB4C2';
+      ctx.beginPath();
+      ctx.moveTo(0, gameState.groundLevel);
+      for (let x = 0; x <= canvas.width; x += 100) {
+        const h = 50 + Math.sin(x * 0.01) * 30 + Math.cos(x * 0.02) * 20;
+        ctx.lineTo(x, gameState.groundLevel - h);
+      }
+      ctx.lineTo(canvas.width, gameState.groundLevel);
+      ctx.closePath();
+      ctx.fill();
+      
+      // Ground
+      ctx.fillStyle = isDark ? '#2d5a27' : '#4CAF50';
+      ctx.fillRect(0, gameState.groundLevel, canvas.width, canvas.height - gameState.groundLevel);
+      
+      // Grass texture
+      ctx.strokeStyle = isDark ? '#3d6a37' : '#66BB6A';
+      ctx.lineWidth = 2;
+      for (let x = 0; x < canvas.width; x += 15) {
+        const h = 5 + Math.random() * 10;
+        ctx.beginPath();
+        ctx.moveTo(x, gameState.groundLevel);
+        ctx.lineTo(x + 3, gameState.groundLevel - h);
+        ctx.stroke();
+      }
+      
+      // Sun or moon
+      const celestialX = canvas.width - 100;
+      const celestialY = 80;
+      ctx.fillStyle = isDark ? '#f5f5dc' : '#FFE066';
+      ctx.beginPath();
+      ctx.arc(celestialX, celestialY, 30, 0, Math.PI * 2);
+      ctx.fill();
+      
+      if (!isDark) {
+        // Sun rays
+        ctx.strokeStyle = 'rgba(255, 224, 102, 0.3)';
+        ctx.lineWidth = 3;
+        for (let i = 0; i < 8; i++) {
+          const angle = (i / 8) * Math.PI * 2;
+          ctx.beginPath();
+          ctx.moveTo(celestialX + Math.cos(angle) * 35, celestialY + Math.sin(angle) * 35);
+          ctx.lineTo(celestialX + Math.cos(angle) * 50, celestialY + Math.sin(angle) * 50);
+          ctx.stroke();
+        }
+      }
+    }
+    
+    // Draw target
+    function drawTarget() {
+      const x = gameState.targetPosition.x;
+      const y = gameState.targetPosition.y;
+      
+      // Target stand
+      ctx.fillStyle = '#5D4037';
+      ctx.fillRect(x - 5, y + 100, 10, gameState.groundLevel - y - 100);
+      
+      // Diagonal supports
+      ctx.strokeStyle = '#5D4037';
+      ctx.lineWidth = 8;
+      ctx.beginPath();
+      ctx.moveTo(x, y + 100);
+      ctx.lineTo(x - 40, gameState.groundLevel);
+      ctx.moveTo(x, y + 100);
+      ctx.lineTo(x + 40, gameState.groundLevel);
+      ctx.stroke();
+      
+      // Target face (draw from outside in)
+      for (let i = SCORING_ZONES.length - 1; i >= 0; i--) {
+        const zone = SCORING_ZONES[i];
+        ctx.fillStyle = zone.color;
+        ctx.beginPath();
+        ctx.arc(x, y, zone.radius, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Ring outline
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+      
+      // Bullseye marker
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.arc(x, y, 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    // Draw bow and archer
+    function drawBow() {
+      const x = gameState.bowPosition.x;
+      const y = gameState.bowPosition.y;
+      
+      // Archer body
+      ctx.fillStyle = '#444';
+      
+      // Legs
+      ctx.fillRect(x - 25, y + 30, 8, 30);
+      ctx.fillRect(x - 10, y + 30, 8, 30);
+      
+      // Torso
+      ctx.fillRect(x - 30, y, 25, 35);
+      
+      // Head
+      ctx.fillStyle = '#DEB887';
+      ctx.beginPath();
+      ctx.arc(x - 17, y - 15, 15, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Calculate bow angle based on aiming
+      let bowAngle = -gameState.angle;
+      if (gameState.isDrawing) {
+        const dx = gameState.mousePos.x - x;
+        const dy = gameState.mousePos.y - y;
+        bowAngle = Math.atan2(dy, dx);
+      }
+      
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(bowAngle);
+      
+      // Arm holding bow
+      ctx.fillStyle = '#DEB887';
+      ctx.fillRect(0, -5, 40, 10);
+      
+      // Bow
+      const bowSize = 60;
+      const drawAmount = gameState.isDrawing ? gameState.power / 100 : 0;
+      
+      ctx.strokeStyle = '#8B4513';
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      
+      // Bow curve
+      ctx.beginPath();
+      const curveAmount = 25 - drawAmount * 10;
+      ctx.moveTo(30, -bowSize / 2);
+      ctx.quadraticCurveTo(30 + curveAmount, 0, 30, bowSize / 2);
+      ctx.stroke();
+      
+      // Bow string
+      ctx.strokeStyle = '#555';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(30, -bowSize / 2);
+      ctx.lineTo(30 - drawAmount * 25, 0);
+      ctx.lineTo(30, bowSize / 2);
+      ctx.stroke();
+      
+      // Arrow on bow (if drawing)
+      if (gameState.isDrawing) {
+        const arrowStart = 30 - drawAmount * 25;
+        
+        // Arrow shaft
+        ctx.strokeStyle = '#654321';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(arrowStart, 0);
+        ctx.lineTo(arrowStart + 60, 0);
+        ctx.stroke();
+        
+        // Arrow head
+        ctx.fillStyle = '#888';
+        ctx.beginPath();
+        ctx.moveTo(arrowStart + 70, 0);
+        ctx.lineTo(arrowStart + 60, -5);
+        ctx.lineTo(arrowStart + 60, 5);
+        ctx.closePath();
+        ctx.fill();
+        
+        // Fletching
+        ctx.fillStyle = '#e74c3c';
+        ctx.beginPath();
+        ctx.moveTo(arrowStart, 0);
+        ctx.lineTo(arrowStart + 15, -8);
+        ctx.lineTo(arrowStart + 15, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(arrowStart, 0);
+        ctx.lineTo(arrowStart + 15, 8);
+        ctx.lineTo(arrowStart + 15, 0);
+        ctx.closePath();
+        ctx.fill();
+      }
+      
+      // Drawing arm
+      ctx.fillStyle = '#DEB887';
+      const armEnd = 30 - drawAmount * 25;
+      ctx.fillRect(-10, -5, armEnd + 15, 10);
+      
+      ctx.restore();
+    }
+    
+    // Draw flying arrow
+    function drawArrow(arrow) {
+      if (!arrow) return;
+      
+      // Draw trail
+      if (arrow.trail.length > 1) {
+        ctx.strokeStyle = 'rgba(100, 100, 100, 0.3)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(arrow.trail[0].x, arrow.trail[0].y);
+        for (let i = 1; i < arrow.trail.length; i++) {
+          ctx.lineTo(arrow.trail[i].x, arrow.trail[i].y);
+        }
+        ctx.stroke();
+      }
+      
+      // Draw arrow
+      ctx.save();
+      ctx.translate(arrow.x, arrow.y);
+      ctx.rotate(arrow.angle);
+      
+      // Shaft
+      ctx.strokeStyle = '#654321';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(-50, 0);
+      ctx.lineTo(10, 0);
+      ctx.stroke();
+      
+      // Head
+      ctx.fillStyle = '#888';
+      ctx.beginPath();
+      ctx.moveTo(20, 0);
+      ctx.lineTo(10, -5);
+      ctx.lineTo(10, 5);
+      ctx.closePath();
+      ctx.fill();
+      
+      // Fletching
+      ctx.fillStyle = '#e74c3c';
+      ctx.beginPath();
+      ctx.moveTo(-50, 0);
+      ctx.lineTo(-35, -8);
+      ctx.lineTo(-35, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(-50, 0);
+      ctx.lineTo(-35, 8);
+      ctx.lineTo(-35, 0);
+      ctx.closePath();
+      ctx.fill();
+      
+      ctx.restore();
+    }
+    
+    // Draw stuck arrows
+    function drawStuckArrows() {
+      for (const arrow of gameState.stuckArrows) {
+        ctx.save();
+        ctx.translate(arrow.x, arrow.y);
+        ctx.rotate(arrow.angle);
+        
+        // Shaft (shorter, stuck in target)
+        ctx.strokeStyle = '#654321';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(-40, 0);
+        ctx.lineTo(0, 0);
+        ctx.stroke();
+        
+        // Fletching
+        ctx.fillStyle = '#e74c3c';
+        ctx.beginPath();
+        ctx.moveTo(-40, 0);
+        ctx.lineTo(-25, -6);
+        ctx.lineTo(-25, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(-40, 0);
+        ctx.lineTo(-25, 6);
+        ctx.lineTo(-25, 0);
+        ctx.closePath();
+        ctx.fill();
+        
+        ctx.restore();
+      }
+    }
+    
+    // Draw trajectory preview
+    function drawTrajectoryPreview() {
+      if (!gameState.isDrawing || gameState.power < 10) return;
+      
+      const x = gameState.bowPosition.x;
+      const y = gameState.bowPosition.y;
+      
+      const dx = gameState.mousePos.x - x;
+      const dy = gameState.mousePos.y - y;
+      const angle = Math.atan2(dy, dx);
+      
+      const speed = gameState.power * 8;
+      let vx = Math.cos(angle) * speed;
+      let vy = Math.sin(angle) * speed;
+      
+      let px = x + Math.cos(angle) * 80;
+      let py = y + Math.sin(angle) * 80;
+      
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([10, 10]);
+      ctx.beginPath();
+      ctx.moveTo(px, py);
+      
+      const dt = 0.05;
+      for (let t = 0; t < 2; t += dt) {
+        vy += GRAVITY * PIXELS_PER_METER * dt;
+        vx += gameState.wind * PIXELS_PER_METER * 0.1 * dt;
+        px += vx * dt;
+        py += vy * dt;
+        
+        if (py > gameState.groundLevel || px > gameState.targetPosition.x + 50) break;
+        
+        ctx.lineTo(px, py);
+      }
+      
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    
+    // Draw wind visualization
+    function drawWindVisualization() {
+      if (Math.abs(gameState.wind) < 0.5) return;
+      
+      const windDir = gameState.wind > 0 ? 1 : -1;
+      const windStrength = Math.abs(gameState.wind);
+      
+      ctx.strokeStyle = `rgba(255, 255, 255, ${windStrength * 0.05})`;
+      ctx.lineWidth = 1;
+      
+      const time = Date.now() * 0.001;
+      
+      for (let i = 0; i < windStrength * 3; i++) {
+        const baseX = (i * 150 + time * windStrength * 50 * windDir) % canvas.width;
+        const baseY = 100 + i * 30;
+        
+        ctx.beginPath();
+        ctx.moveTo(baseX, baseY);
+        ctx.lineTo(baseX + windDir * 30, baseY);
+        ctx.lineTo(baseX + windDir * 20, baseY - 5);
+        ctx.moveTo(baseX + windDir * 30, baseY);
+        ctx.lineTo(baseX + windDir * 20, baseY + 5);
+        ctx.stroke();
+      }
+    }
+    
+    // Main game loop
+    function gameLoop(currentTime) {
+      if (gameState.gameOver) {
+        requestAnimationFrame(gameLoop);
+        return;
+      }
+      
+      const dt = Math.min((currentTime - gameState.lastTime) / 1000, 0.05);
+      gameState.lastTime = currentTime;
+      
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw scene
+      drawBackground();
+      drawWindVisualization();
+      drawTarget();
+      drawStuckArrows();
+      drawTrajectoryPreview();
+      drawBow();
+      
+      // Update and draw flying arrow
+      if (gameState.currentArrow && gameState.currentArrow.active) {
+        updateArrowPhysics(gameState.currentArrow, dt);
+        drawArrow(gameState.currentArrow);
+      }
+      
+      // Update power meter
+      powerFillEl.style.height = `${gameState.power}%`;
+      
+      requestAnimationFrame(gameLoop);
+    }
+    
+    // Input handlers
+    function getPointerPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: clientX - rect.left,
+        y: clientY - rect.top
+      };
+    }
+    
+    function startDraw(e) {
+      if (gameState.gameOver) return;
+      if (gameState.arrowsShot >= MAX_ARROWS) return;
+      if (gameState.currentArrow && gameState.currentArrow.active) return;
+      
+      e.preventDefault();
+      
+      gameState.isDrawing = true;
+      gameState.drawStart = Date.now();
+      gameState.mousePos = getPointerPos(e);
+      
+      // Hide instructions after first draw
+      instructionsEl.style.opacity = '0';
+      
+      // Power charging
+      const chargeInterval = setInterval(() => {
+        if (!gameState.isDrawing) {
+          clearInterval(chargeInterval);
+          return;
+        }
+        
+        gameState.power = Math.min(100, gameState.power + 2);
+      }, 30);
+    }
+    
+    function moveDraw(e) {
+      if (!gameState.isDrawing) return;
+      e.preventDefault();
+      
+      gameState.mousePos = getPointerPos(e);
+    }
+    
+    function endDraw(e) {
+      if (!gameState.isDrawing) return;
+      e.preventDefault();
+      
+      gameState.isDrawing = false;
+      
+      if (gameState.power < 10) {
+        gameState.power = 0;
+        return;
+      }
+      
+      // Calculate launch velocity
+      const x = gameState.bowPosition.x;
+      const y = gameState.bowPosition.y;
+      const dx = gameState.mousePos.x - x;
+      const dy = gameState.mousePos.y - y;
+      const angle = Math.atan2(dy, dx);
+      
+      const speed = gameState.power * 8;
+      const vx = Math.cos(angle) * speed;
+      const vy = Math.sin(angle) * speed;
+      
+      // Create and launch arrow
+      gameState.currentArrow = createArrow(
+        x + Math.cos(angle) * 80,
+        y + Math.sin(angle) * 80,
+        vx,
+        vy
+      );
+      
+      gameState.arrowsShot++;
+      gameState.power = 0;
+      updateArrowIcons();
+    }
+    
+    // Event listeners
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', moveDraw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mouseleave', endDraw);
+    
+    canvas.addEventListener('touchstart', startDraw, { passive: false });
+    canvas.addEventListener('touchmove', moveDraw, { passive: false });
+    canvas.addEventListener('touchend', endDraw, { passive: false });
+    
+    playAgainBtn.addEventListener('click', () => {
+      gameState.score = 0;
+      gameState.round = 1;
+      gameState.gameOver = false;
+      gameOverEl.classList.remove('show');
+      initRound();
+    });
+    
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Theme handling
+    function initTheme() {
+      const stored = localStorage.getItem('theme');
+      const theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+    }
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+    }
+    initTheme();
+
+    // Initialize game
+    resizeCanvas();
+    initRound();
+    requestAnimationFrame(gameLoop);
+  </script>
+</body>
+</html>

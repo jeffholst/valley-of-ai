@@ -1,0 +1,22 @@
+{
+  "id": "mini-putt-gauntlet",
+  "name": "Mini Putt Gauntlet",
+  "shortDescription": "A 3-hole mini putt challenge where every hole is par 3. Survive a spinning windmill, a timed closing gate, and a trap door that drops your ball back to the tee.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-08T18:10:00Z",
+  "category": "Games",
+  "status": "active",
+  "tags": ["game", "mini-golf", "physics", "obstacles"],
+  "homepagePath": "index.html",
+  "inputMode": "desktop",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "gpt-5.1",
+    "startTime": "2026-03-08T17:56:00Z",
+    "endTime": "2026-03-08T18:10:00Z",
+    "totalTokensIn": 6900,
+    "totalTokensOut": 5200,
+    "runId": "run-20260308T175600Z-c4f9a1",
+    "notes": "Built a responsive 3-hole mini putt experience with obstacle-specific mechanics per hole and fixed par 3 scoring. Token counts are estimated for this autonomous run."
+  }
+}
