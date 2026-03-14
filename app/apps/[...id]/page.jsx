@@ -1,27 +1,27 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { useVotes } from '@/hooks/useVotes'
-import { notFound } from 'next/navigation'
-import { use } from 'react'
+import Link from 'next/link';
+import { useVotes } from '@/hooks/useVotes';
+import { notFound } from 'next/navigation';
+import { use } from 'react';
 
-import appsData from '@/data/apps.json'
+import appsData from '@/data/apps.json';
 
 export default function AppDetailPage({ params }) {
-  const { id: idSegments } = use(params)
-  const id = idSegments.join('/')
+  const { id: idSegments } = use(params);
+  const id = idSegments.join('/');
 
-  const app = appsData.find((a) => a.id === id)
+  const app = appsData.find((a) => a.id === id);
 
   if (!app) {
-    notFound()
+    notFound();
   }
 
-  return <AppDetailContent app={app} id={id} />
+  return <AppDetailContent app={app} id={id} />;
 }
 
 function AppDetailContent({ app, id }) {
-  const { voteCount, hasVoted, isLoading, isVoting, vote } = useVotes(id)
+  const { voteCount, hasVoted, isLoading, isVoting, vote } = useVotes(id);
 
   const formattedDate = new Date(app.createdAt).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -29,11 +29,12 @@ function AppDetailContent({ app, id }) {
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-  })
+  });
 
-  const generationDuration = app.generation?.startTime && app.generation?.endTime
-    ? Math.round((new Date(app.generation.endTime) - new Date(app.generation.startTime)) / 1000)
-    : null
+  const generationDuration =
+    app.generation?.startTime && app.generation?.endTime
+      ? Math.round((new Date(app.generation.endTime) - new Date(app.generation.startTime)) / 1000)
+      : null;
 
   return (
     <>
@@ -51,7 +52,12 @@ function AppDetailContent({ app, id }) {
           className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-6 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
           Back to gallery
         </Link>
@@ -65,7 +71,7 @@ function AppDetailContent({ app, id }) {
                 alt={app.name}
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  e.target.style.display = 'none'
+                  e.target.style.display = 'none';
                 }}
               />
             )}
@@ -79,9 +85,7 @@ function AppDetailContent({ app, id }) {
         <div className="mb-8">
           <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                {app.name}
-              </h1>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{app.name}</h1>
               <div className="flex flex-wrap items-center gap-3">
                 <span className="inline-block px-3 py-1 text-sm font-medium bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 rounded-full">
                   {app.category}
@@ -95,33 +99,34 @@ function AppDetailContent({ app, id }) {
                       : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-yellow-100 dark:hover:bg-yellow-900 hover:text-yellow-700 dark:hover:text-yellow-300'
                   } ${isVoting ? 'opacity-50' : ''}`}
                 >
-                  <svg className="w-5 h-5" fill={hasVoted ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 20 20">
+                  <svg
+                    className="w-5 h-5"
+                    fill={hasVoted ? 'currentColor' : 'none'}
+                    stroke="currentColor"
+                    viewBox="0 0 20 20"
+                  >
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                   {isLoading ? '...' : `${voteCount} vote${voteCount !== 1 ? 's' : ''}`}
                 </button>
-                <span className="text-gray-500 dark:text-gray-400">
-                  {formattedDate}
-                </span>
+                <span className="text-gray-500 dark:text-gray-400">{formattedDate}</span>
               </div>
             </div>
 
-            <a
-              href={app.appPath}
-              target="_blank"
-              rel="noopener"
-              className="btn-primary"
-            >
+            <a href={app.appPath} target="_blank" rel="noopener" className="btn-primary">
               Open App
               <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
               </svg>
             </a>
           </div>
 
-          <p className="text-gray-600 dark:text-gray-300 text-lg">
-            {app.shortDescription}
-          </p>
+          <p className="text-gray-600 dark:text-gray-300 text-lg">{app.shortDescription}</p>
 
           {app.tags && app.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-4">
@@ -141,8 +146,18 @@ function AppDetailContent({ app, id }) {
         {app.generation && (
           <div className="card p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              <svg
+                className="w-5 h-5 text-primary-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
               </svg>
               Generated by AI
             </h2>
@@ -197,5 +212,5 @@ function AppDetailContent({ app, id }) {
         )}
       </div>
     </>
-  )
+  );
 }

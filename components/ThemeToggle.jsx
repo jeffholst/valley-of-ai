@@ -1,29 +1,33 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 
 export default function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const [isDark, setIsDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('theme')
-    const dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches
-    setIsDark(dark)
-    setMounted(true)
-  }, [])
+    const saved = localStorage.getItem('theme');
+    const dark = saved
+      ? saved === 'dark'
+      : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setIsDark(dark);
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
-    if (!mounted) return
-    const root = document.documentElement
-    if (isDark) {
-      root.classList.add('dark')
-      localStorage.setItem('theme', 'dark')
-    } else {
-      root.classList.remove('dark')
-      localStorage.setItem('theme', 'light')
+    if (!mounted) {
+      return;
     }
-  }, [isDark, mounted])
+    const root = document.documentElement;
+    if (isDark) {
+      root.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDark, mounted]);
 
   return (
     <button
@@ -47,5 +51,5 @@ export default function ThemeToggle() {
         </svg>
       )}
     </button>
-  )
+  );
 }

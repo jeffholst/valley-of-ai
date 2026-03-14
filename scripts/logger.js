@@ -21,14 +21,14 @@
  *   logger.endTransaction(runId, 'success', ['index.html', 'meta.json'])
  */
 
-import fs from 'fs'
-import path from 'path'
-import crypto from 'crypto'
-import { fileURLToPath } from 'url'
+import fs from 'fs';
+import path from 'path';
+import crypto from 'crypto';
+import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-const rootDir = path.resolve(__dirname, '..')
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, '..');
 
 /**
  * Step types for the app generation pipeline
@@ -47,7 +47,7 @@ export const StepType = {
   MERGE_PR: 'MERGE_PR',
   UPDATE_REGISTRY: 'UPDATE_REGISTRY',
   DEPLOY: 'DEPLOY',
-}
+};
 
 /**
  * Step sequence numbers (default order)
@@ -66,7 +66,7 @@ export const StepSequence = {
   [StepType.MERGE_PR]: 11,
   [StepType.UPDATE_REGISTRY]: 12,
   [StepType.DEPLOY]: 13,
-}
+};
 
 /**
  * Status values for steps and transactions
@@ -79,7 +79,7 @@ export const Status = {
   RETRYING: 'retrying',
   SKIPPED: 'skipped',
   CANCELLED: 'cancelled',
-}
+};
 
 /**
  * Error codes for structured error logging
@@ -95,24 +95,24 @@ export const ErrorCode = {
   FILE_WRITE_ERROR: 'FILE_WRITE_ERROR',
   PARSE_ERROR: 'PARSE_ERROR',
   UNKNOWN: 'UNKNOWN',
-}
+};
 
 /**
  * Transaction state for tracking in-progress transactions
  */
 class Transaction {
   constructor(runId, appId, agent, llmModel, suggestionId = null) {
-    this.runId = runId
-    this.appId = appId
-    this.agent = agent
-    this.llmModel = llmModel
-    this.suggestionId = suggestionId
-    this.startTime = Date.now()
-    this.totalTokensIn = 0
-    this.totalTokensOut = 0
-    this.filesCreated = []
-    this.currentStep = null
-    this.stepAttempts = {}
+    this.runId = runId;
+    this.appId = appId;
+    this.agent = agent;
+    this.llmModel = llmModel;
+    this.suggestionId = suggestionId;
+    this.startTime = Date.now();
+    this.totalTokensIn = 0;
+    this.totalTokensOut = 0;
+    this.filesCreated = [];
+    this.currentStep = null;
+    this.stepAttempts = {};
   }
 }
 
@@ -126,40 +126,40 @@ export class AgentLogger {
    * @param {string} logsDir - Base directory for logs (default: 'logs')
    */
   constructor(agentId, llmModel, logsDir = null) {
-    this.agentId = agentId
-    this.llmModel = llmModel
-    this.logsDir = logsDir || path.join(rootDir, 'logs')
-    this.transactions = new Map()
+    this.agentId = agentId;
+    this.llmModel = llmModel;
+    this.logsDir = logsDir || path.join(rootDir, 'logs');
+    this.transactions = new Map();
   }
 
   /**
    * Get current date parts for file path
    */
   _getDateParts() {
-    const now = new Date()
+    const now = new Date();
     return {
       year: now.getFullYear().toString(),
       month: (now.getMonth() + 1).toString().padStart(2, '0'),
       day: now.getDate().toString().padStart(2, '0'),
-    }
+    };
   }
 
   /**
    * Get the log file path for today
    */
   _getLogFilePath() {
-    const { year, month, day } = this._getDateParts()
-    return path.join(this.logsDir, year, month, `${day}.jsonl`)
+    const { year, month, day } = this._getDateParts();
+    return path.join(this.logsDir, year, month, `${day}.jsonl`);
   }
 
   /**
    * Ensure log directory exists
    */
   _ensureLogDir() {
-    const logFile = this._getLogFilePath()
-    const logDir = path.dirname(logFile)
+    const logFile = this._getLogFilePath();
+    const logDir = path.dirname(logFile);
     if (!fs.existsSync(logDir)) {
-      fs.mkdirSync(logDir, { recursive: true })
+      fs.mkdirSync(logDir, { recursive: true });
     }
   }
 
@@ -167,10 +167,10 @@ export class AgentLogger {
    * Write a log entry to the daily log file
    */
   _writeLog(entry) {
-    this._ensureLogDir()
-    const logFile = this._getLogFilePath()
-    const line = JSON.stringify(entry) + '\n'
-    fs.appendFileSync(logFile, line, 'utf8')
+    this._ensureLogDir();
+    const logFile = this._getLogFilePath();
+    const line = JSON.stringify(entry) + '\n';
+    fs.appendFileSync(logFile, line, 'utf8');
   }
 
   /**
@@ -179,16 +179,16 @@ export class AgentLogger {
    * Example: run-20260306T142530Z-a7f3b2
    */
   _generateRunId() {
-    const ts = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z'
-    const suffix = crypto.randomBytes(3).toString('hex')
-    return `run-${ts}-${suffix}`
+    const ts = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z';
+    const suffix = crypto.randomBytes(3).toString('hex');
+    return `run-${ts}-${suffix}`;
   }
 
   /**
    * Get current ISO timestamp
    */
   _timestamp() {
-    return new Date().toISOString()
+    return new Date().toISOString();
   }
 
   /**
@@ -199,9 +199,9 @@ export class AgentLogger {
    * @returns {string} The runId for this transaction
    */
   startTransaction(appId, suggestionId = null) {
-    const runId = this._generateRunId()
-    const txn = new Transaction(runId, appId, this.agentId, this.llmModel, suggestionId)
-    this.transactions.set(runId, txn)
+    const runId = this._generateRunId();
+    const txn = new Transaction(runId, appId, this.agentId, this.llmModel, suggestionId);
+    this.transactions.set(runId, txn);
 
     const entry = {
       timestamp: this._timestamp(),
@@ -211,14 +211,14 @@ export class AgentLogger {
       status: Status.STARTED,
       agent: this.agentId,
       llmModel: this.llmModel,
-    }
+    };
     
     if (suggestionId) {
-      entry.suggestionId = suggestionId
+      entry.suggestionId = suggestionId;
     }
 
-    this._writeLog(entry)
-    return runId
+    this._writeLog(entry);
+    return runId;
   }
 
   /**
@@ -228,14 +228,14 @@ export class AgentLogger {
    * @param {string} step - Step type from StepType
    */
   stepStarted(runId, step) {
-    const txn = this.transactions.get(runId)
+    const txn = this.transactions.get(runId);
     if (!txn) {
-      console.error(`Unknown transaction: ${runId}`)
-      return
+      console.error(`Unknown transaction: ${runId}`);
+      return;
     }
 
-    txn.currentStep = step
-    txn.stepAttempts[step] = (txn.stepAttempts[step] || 0) + 1
+    txn.currentStep = step;
+    txn.stepAttempts[step] = (txn.stepAttempts[step] || 0) + 1;
 
     const entry = {
       timestamp: this._timestamp(),
@@ -244,13 +244,13 @@ export class AgentLogger {
       step,
       seq: StepSequence[step] || 0,
       status: Status.STARTED,
-    }
+    };
 
     if (txn.stepAttempts[step] > 1) {
-      entry.attempt = txn.stepAttempts[step]
+      entry.attempt = txn.stepAttempts[step];
     }
 
-    this._writeLog(entry)
+    this._writeLog(entry);
   }
 
   /**
@@ -265,15 +265,15 @@ export class AgentLogger {
    * @param {object} options.details - Additional details object
    */
   stepCompleted(runId, step, durationMs, options = {}) {
-    const txn = this.transactions.get(runId)
+    const txn = this.transactions.get(runId);
     if (!txn) {
-      console.error(`Unknown transaction: ${runId}`)
-      return
+      console.error(`Unknown transaction: ${runId}`);
+      return;
     }
 
     // Track totals
-    if (options.tokensIn) txn.totalTokensIn += options.tokensIn
-    if (options.tokensOut) txn.totalTokensOut += options.tokensOut
+    if (options.tokensIn) {txn.totalTokensIn += options.tokensIn;}
+    if (options.tokensOut) {txn.totalTokensOut += options.tokensOut;}
 
     const entry = {
       timestamp: this._timestamp(),
@@ -283,15 +283,15 @@ export class AgentLogger {
       seq: StepSequence[step] || 0,
       status: Status.COMPLETED,
       durationMs,
-    }
+    };
 
-    if (options.tokensIn) entry.tokensIn = options.tokensIn
-    if (options.tokensOut) entry.tokensOut = options.tokensOut
-    if (options.details) entry.details = options.details
-    if (txn.stepAttempts[step] > 1) entry.attempt = txn.stepAttempts[step]
+    if (options.tokensIn) {entry.tokensIn = options.tokensIn;}
+    if (options.tokensOut) {entry.tokensOut = options.tokensOut;}
+    if (options.details) {entry.details = options.details;}
+    if (txn.stepAttempts[step] > 1) {entry.attempt = txn.stepAttempts[step];}
 
-    this._writeLog(entry)
-    txn.currentStep = null
+    this._writeLog(entry);
+    txn.currentStep = null;
   }
 
   /**
@@ -305,10 +305,10 @@ export class AgentLogger {
    * @param {boolean} retryable - Whether the error is retryable
    */
   stepFailed(runId, step, durationMs, errorCode, errorMessage, retryable = false) {
-    const txn = this.transactions.get(runId)
+    const txn = this.transactions.get(runId);
     if (!txn) {
-      console.error(`Unknown transaction: ${runId}`)
-      return
+      console.error(`Unknown transaction: ${runId}`);
+      return;
     }
 
     const entry = {
@@ -324,11 +324,11 @@ export class AgentLogger {
         message: errorMessage,
         retryable,
       },
-    }
+    };
 
-    if (txn.stepAttempts[step] > 1) entry.attempt = txn.stepAttempts[step]
+    if (txn.stepAttempts[step] > 1) {entry.attempt = txn.stepAttempts[step];}
 
-    this._writeLog(entry)
+    this._writeLog(entry);
   }
 
   /**
@@ -338,13 +338,13 @@ export class AgentLogger {
    * @param {string} step - Step type from StepType
    */
   stepRetrying(runId, step) {
-    const txn = this.transactions.get(runId)
+    const txn = this.transactions.get(runId);
     if (!txn) {
-      console.error(`Unknown transaction: ${runId}`)
-      return
+      console.error(`Unknown transaction: ${runId}`);
+      return;
     }
 
-    txn.stepAttempts[step] = (txn.stepAttempts[step] || 0) + 1
+    txn.stepAttempts[step] = (txn.stepAttempts[step] || 0) + 1;
 
     const entry = {
       timestamp: this._timestamp(),
@@ -354,9 +354,9 @@ export class AgentLogger {
       seq: StepSequence[step] || 0,
       status: Status.RETRYING,
       attempt: txn.stepAttempts[step],
-    }
+    };
 
-    this._writeLog(entry)
+    this._writeLog(entry);
   }
 
   /**
@@ -374,11 +374,11 @@ export class AgentLogger {
       step,
       seq: StepSequence[step] || 0,
       status: Status.SKIPPED,
-    }
+    };
 
-    if (reason) entry.details = { reason }
+    if (reason) {entry.details = { reason };}
 
-    this._writeLog(entry)
+    this._writeLog(entry);
   }
 
   /**
@@ -388,9 +388,9 @@ export class AgentLogger {
    * @param {string} fileName - Name of the file created
    */
   fileCreated(runId, fileName) {
-    const txn = this.transactions.get(runId)
+    const txn = this.transactions.get(runId);
     if (txn) {
-      txn.filesCreated.push(fileName)
+      txn.filesCreated.push(fileName);
     }
   }
 
@@ -402,13 +402,13 @@ export class AgentLogger {
    * @param {string[]} filesCreated - Optional override for files created
    */
   endTransaction(runId, status = 'success', filesCreated = null) {
-    const txn = this.transactions.get(runId)
+    const txn = this.transactions.get(runId);
     if (!txn) {
-      console.error(`Unknown transaction: ${runId}`)
-      return
+      console.error(`Unknown transaction: ${runId}`);
+      return;
     }
 
-    const totalDurationMs = Date.now() - txn.startTime
+    const totalDurationMs = Date.now() - txn.startTime;
 
     const entry = {
       timestamp: this._timestamp(),
@@ -420,10 +420,10 @@ export class AgentLogger {
       totalTokensIn: txn.totalTokensIn,
       totalTokensOut: txn.totalTokensOut,
       filesCreated: filesCreated || txn.filesCreated,
-    }
+    };
 
-    this._writeLog(entry)
-    this.transactions.delete(runId)
+    this._writeLog(entry);
+    this.transactions.delete(runId);
   }
 
   /**
@@ -436,38 +436,38 @@ export class AgentLogger {
    * @returns {*} Result from the function
    */
   async executeStep(runId, step, fn, options = {}) {
-    this.stepStarted(runId, step)
-    const startTime = Date.now()
+    this.stepStarted(runId, step);
+    const startTime = Date.now();
 
     try {
-      const result = await fn()
-      const durationMs = Date.now() - startTime
+      const result = await fn();
+      const durationMs = Date.now() - startTime;
       this.stepCompleted(runId, step, durationMs, {
         tokensIn: options.tokensIn,
         tokensOut: options.tokensOut,
         details: options.details,
-      })
-      return result
+      });
+      return result;
     } catch (error) {
-      const durationMs = Date.now() - startTime
-      const errorCode = options.errorCode || ErrorCode.UNKNOWN
-      this.stepFailed(runId, step, durationMs, errorCode, error.message, options.retryable || false)
-      throw error
+      const durationMs = Date.now() - startTime;
+      const errorCode = options.errorCode || ErrorCode.UNKNOWN;
+      this.stepFailed(runId, step, durationMs, errorCode, error.message, options.retryable || false);
+      throw error;
     }
   }
 }
 
 // Export a singleton for simple usage
-export const logger = new AgentLogger('openclaw-dev-agent', 'gpt-5.1')
+export const logger = new AgentLogger('openclaw-dev-agent', 'gpt-5.1');
 
 // CLI usage example
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  console.log('Logger module loaded. Example usage:')
-  console.log('')
-  console.log('import { AgentLogger, StepType, ErrorCode } from "./logger.js"')
-  console.log('')
-  console.log('const logger = new AgentLogger("openclaw-dev-agent", "gpt-5.1")')
-  console.log('const runId = logger.startTransaction("my-app")')
-  console.log('logger.stepCompleted(runId, StepType.GENERATE_HTML, 4500, { tokensIn: 3200, tokensOut: 2800 })')
-  console.log('logger.endTransaction(runId, "success")')
+  console.log('Logger module loaded. Example usage:');
+  console.log('');
+  console.log('import { AgentLogger, StepType, ErrorCode } from "./logger.js"');
+  console.log('');
+  console.log('const logger = new AgentLogger("openclaw-dev-agent", "gpt-5.1")');
+  console.log('const runId = logger.startTransaction("my-app")');
+  console.log('logger.stepCompleted(runId, StepType.GENERATE_HTML, 4500, { tokensIn: 3200, tokensOut: 2800 })');
+  console.log('logger.endTransaction(runId, "success")');
 }

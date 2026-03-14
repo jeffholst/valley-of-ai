@@ -9,39 +9,39 @@
  * Usage: node scripts/generate-apps.js
  */
 
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-const rootDir = path.resolve(__dirname, '..')
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, '..');
 
-const APPS_DIR = path.join(rootDir, 'apps')
-const OUTPUT_FILE = path.join(rootDir, 'data', 'apps.json')
-const BASE_PATH = ''
+const APPS_DIR = path.join(rootDir, 'apps');
+const OUTPUT_FILE = path.join(rootDir, 'data', 'apps.json');
+const BASE_PATH = '';
 
 /**
  * Recursively find all meta.json files in the apps directory
  */
 function findMetaFiles(dir, files = []) {
   if (!fs.existsSync(dir)) {
-    return files
+    return files;
   }
 
-  const entries = fs.readdirSync(dir, { withFileTypes: true })
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
   
   for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name)
+    const fullPath = path.join(dir, entry.name);
     
     if (entry.isDirectory()) {
-      findMetaFiles(fullPath, files)
+      findMetaFiles(fullPath, files);
     } else if (entry.name === 'meta.json') {
-      files.push(fullPath)
+      files.push(fullPath);
     }
   }
   
-  return files
+  return files;
 }
 
 /**
@@ -49,8 +49,8 @@ function findMetaFiles(dir, files = []) {
  * Expected path: apps/YYYY/MM/DD/<app-id>/meta.json
  */
 function parseDateFromPath(filePath) {
-  const relativePath = path.relative(APPS_DIR, filePath)
-  const parts = relativePath.split(path.sep)
+  const relativePath = path.relative(APPS_DIR, filePath);
+  const parts = relativePath.split(path.sep);
   
   if (parts.length >= 4) {
     return {
@@ -58,21 +58,21 @@ function parseDateFromPath(filePath) {
       month: parseInt(parts[1], 10),
       day: parseInt(parts[2], 10),
       appId: parts[3],
-    }
+    };
   }
   
-  return null
+  return null;
 }
 
 /**
  * Transform a meta.json into an apps.json entry
  */
 function transformMeta(meta, filePath, dateInfo) {
-  const appDir = path.dirname(filePath)
-  const relativeAppDir = path.relative(APPS_DIR, appDir)
+  const appDir = path.dirname(filePath);
+  const relativeAppDir = path.relative(APPS_DIR, appDir);
   
   // Use the full path as the unique id (e.g., "2026/03/07/contrast-lab")
-  const uniqueId = relativeAppDir.split(path.sep).join('/')
+  const uniqueId = relativeAppDir.split(path.sep).join('/');
   
   return {
     id: uniqueId,
@@ -92,51 +92,51 @@ function transformMeta(meta, filePath, dateInfo) {
     route: `/apps/${uniqueId}`,
     appPath: `${BASE_PATH}/apps/${relativeAppDir}/${meta.homepagePath || 'index.html'}`,
     generation: meta.generation || null,
-  }
+  };
 }
 
 /**
  * Main function
  */
 function main() {
-  console.log('🔍 Scanning for apps...')
+  console.log('🔍 Scanning for apps...');
   
-  const metaFiles = findMetaFiles(APPS_DIR)
-  console.log(`   Found ${metaFiles.length} app(s)`)
+  const metaFiles = findMetaFiles(APPS_DIR);
+  console.log(`   Found ${metaFiles.length} app(s)`);
   
-  const apps = []
+  const apps = [];
   
   for (const filePath of metaFiles) {
     try {
-      const content = fs.readFileSync(filePath, 'utf-8')
-      const meta = JSON.parse(content)
-      const dateInfo = parseDateFromPath(filePath)
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const meta = JSON.parse(content);
+      const dateInfo = parseDateFromPath(filePath);
       
       if (!dateInfo) {
-        console.warn(`   ⚠️  Skipping ${filePath}: could not parse date from path`)
-        continue
+        console.warn(`   ⚠️  Skipping ${filePath}: could not parse date from path`);
+        continue;
       }
       
-      const appEntry = transformMeta(meta, filePath, dateInfo)
-      apps.push(appEntry)
-      console.log(`   ✅ ${meta.name} (${meta.id})`)
+      const appEntry = transformMeta(meta, filePath, dateInfo);
+      apps.push(appEntry);
+      console.log(`   ✅ ${meta.name} (${meta.id})`);
     } catch (error) {
-      console.error(`   ❌ Error processing ${filePath}:`, error.message)
+      console.error(`   ❌ Error processing ${filePath}:`, error.message);
     }
   }
   
   // Sort by createdAt descending (newest first)
-  apps.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  apps.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   
   // Ensure output directory exists
-  const outputDir = path.dirname(OUTPUT_FILE)
+  const outputDir = path.dirname(OUTPUT_FILE);
   if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true })
+    fs.mkdirSync(outputDir, { recursive: true });
   }
   
   // Write the registry
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(apps, null, 2))
-  console.log(`\n✨ Generated ${OUTPUT_FILE} with ${apps.length} app(s)`)
+  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(apps, null, 2));
+  console.log(`\n✨ Generated ${OUTPUT_FILE} with ${apps.length} app(s)`);
 }
 
-main()
+main();

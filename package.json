@@ -11,7 +11,10 @@
     "generate:apps": "node scripts/generate-apps.js",
     "validate:apps": "node scripts/validate-apps.js",
     "validate:responsive": "node scripts/validate-responsive.js",
-    "validate:responsive:sample": "node scripts/validate-responsive.js --limit 5"
+    "validate:responsive:sample": "node scripts/validate-responsive.js --limit 5",
+    "lint": "eslint app components hooks lib scripts --max-warnings 0",
+    "lint:fix": "eslint app components hooks lib scripts --fix",
+    "format": "prettier --write \"app/**/*.{js,jsx,ts,tsx}\" \"components/**/*.{js,jsx,ts,tsx}\" \"hooks/**/*.{js,jsx,ts,tsx}\" \"lib/**/*.{js,jsx,ts,tsx}\""
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -22,9 +25,14 @@
     "react-turnstile": "^1.1.5"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "autoprefixer": "^10.4.19",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.1.6",
+    "eslint-plugin-react": "^7.37.5",
     "playwright": "^1.58.2",
     "postcss": "^8.4.38",
+    "prettier": "^3.8.1",
     "tailwindcss": "^3.4.3"
   }
 }

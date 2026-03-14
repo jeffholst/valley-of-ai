@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react';
 
 const STEP_INFO = {
   SELECT_SUGGESTION: { name: 'Select Suggestion', icon: '💡' },
@@ -15,7 +15,7 @@ const STEP_INFO = {
   MERGE_PR: { name: 'Merge PR', icon: '🔀' },
   UPDATE_REGISTRY: { name: 'Update Registry', icon: '📚' },
   DEPLOY: { name: 'Deploy', icon: '🚀' },
-}
+};
 
 const STATUS_COLORS = {
   started: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
@@ -26,45 +26,60 @@ const STATUS_COLORS = {
   skipped: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
   cancelled: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
   success: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-}
+};
 
 function formatDuration(ms) {
-  if (!ms) return '-'
-  if (ms < 1000) return `${ms}ms`
-  if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`
-  return `${Math.floor(ms / 60000)}m ${Math.round((ms % 60000) / 1000)}s`
+  if (!ms) {
+    return '-';
+  }
+  if (ms < 1000) {
+    return `${ms}ms`;
+  }
+  if (ms < 60000) {
+    return `${(ms / 1000).toFixed(1)}s`;
+  }
+  return `${Math.floor(ms / 60000)}m ${Math.round((ms % 60000) / 1000)}s`;
 }
 
 function formatTimestamp(ts) {
-  const date = new Date(ts)
-  return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  const date = new Date(ts);
+  return date.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
 }
 
 function StatusBadge({ status }) {
-  const colorClass = STATUS_COLORS[status] || STATUS_COLORS.started
+  const colorClass = STATUS_COLORS[status] || STATUS_COLORS.started;
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${colorClass}`}>
+    <span
+      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${colorClass}`}
+    >
       {status}
     </span>
-  )
+  );
 }
 
 function StepRow({ entry }) {
-  const stepInfo = STEP_INFO[entry.step] || { name: entry.step, icon: '⚡' }
+  const stepInfo = STEP_INFO[entry.step] || { name: entry.step, icon: '⚡' };
 
   return (
-    <div className={`flex items-center gap-3 py-2 px-3 border-l-2 ml-4 ${
-      entry.status === 'failed' ? 'border-red-500 bg-red-50 dark:bg-red-900/20' :
-      entry.status === 'completed' ? 'border-green-500' :
-      entry.status === 'retrying' ? 'border-orange-500' :
-      'border-gray-300 dark:border-gray-600'
-    }`}>
+    <div
+      className={`flex items-center gap-3 py-2 px-3 border-l-2 ml-4 ${
+        entry.status === 'failed'
+          ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
+          : entry.status === 'completed'
+            ? 'border-green-500'
+            : entry.status === 'retrying'
+              ? 'border-orange-500'
+              : 'border-gray-300 dark:border-gray-600'
+      }`}
+    >
       <span className="text-lg">{stepInfo.icon}</span>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="font-medium text-sm text-gray-900 dark:text-white">
-            {stepInfo.name}
-          </span>
+          <span className="font-medium text-sm text-gray-900 dark:text-white">{stepInfo.name}</span>
           <StatusBadge status={entry.status} />
           {entry.attempt && entry.attempt > 1 && (
             <span className="text-xs text-orange-600 dark:text-orange-400">
@@ -74,15 +89,16 @@ function StepRow({ entry }) {
         </div>
         {entry.error && (
           <div className="mt-1 text-xs text-red-600 dark:text-red-400">
-            <code className="bg-red-100 dark:bg-red-900/30 px-1 rounded">{entry.error.code}</code>
-            {' '}{entry.error.message}
+            <code className="bg-red-100 dark:bg-red-900/30 px-1 rounded">{entry.error.code}</code>{' '}
+            {entry.error.message}
           </div>
         )}
         {entry.details && (
           <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
             {Object.entries(entry.details).map(([key, value]) => (
               <span key={key} className="mr-3">
-                <span className="font-medium">{key}:</span> {typeof value === 'object' ? JSON.stringify(value) : String(value)}
+                <span className="font-medium">{key}:</span>{' '}
+                {typeof value === 'object' ? JSON.stringify(value) : String(value)}
               </span>
             ))}
           </div>
@@ -100,25 +116,26 @@ function StepRow({ entry }) {
         )}
       </div>
     </div>
-  )
+  );
 }
 
 function TransactionCard({ transaction, entries }) {
-  const [expanded, setExpanded] = useState(true)
+  const [expanded, setExpanded] = useState(true);
 
-  const startEntry = entries.find(e => e.type === 'TRANSACTION_START')
-  const endEntry = entries.find(e => e.type === 'TRANSACTION_END')
-  const stepEntries = entries.filter(e => e.type === 'STEP')
+  const startEntry = entries.find((e) => e.type === 'TRANSACTION_START');
+  const endEntry = entries.find((e) => e.type === 'TRANSACTION_END');
+  const stepEntries = entries.filter((e) => e.type === 'STEP');
 
-  const status = endEntry?.status || startEntry?.status || 'started'
-  const isSuccess = status === 'success'
-  const isFailed = status === 'failed'
+  const status = endEntry?.status || startEntry?.status || 'started';
+  const isSuccess = status === 'success';
+  const isFailed = status === 'failed';
 
   return (
-    <div className={`card mb-4 ${
-      isFailed ? 'ring-2 ring-red-500' :
-      isSuccess ? 'ring-1 ring-green-500/30' : ''
-    }`}>
+    <div
+      className={`card mb-4 ${
+        isFailed ? 'ring-2 ring-red-500' : isSuccess ? 'ring-1 ring-green-500/30' : ''
+      }`}
+    >
       <div
         className="flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50"
         onClick={() => setExpanded(!expanded)}
@@ -183,10 +200,13 @@ function TransactionCard({ transaction, entries }) {
         <div className="border-t border-gray-200 dark:border-gray-700 p-3 bg-gray-50 dark:bg-gray-800/50 text-sm">
           <div className="flex flex-wrap gap-4 text-gray-600 dark:text-gray-400">
             <span>
-              <span className="font-medium">Duration:</span> {formatDuration(endEntry.totalDurationMs)}
+              <span className="font-medium">Duration:</span>{' '}
+              {formatDuration(endEntry.totalDurationMs)}
             </span>
             <span>
-              <span className="font-medium">Tokens:</span> ↓{endEntry.totalTokensIn?.toLocaleString() || 0} / ↑{endEntry.totalTokensOut?.toLocaleString() || 0}
+              <span className="font-medium">Tokens:</span> ↓
+              {endEntry.totalTokensIn?.toLocaleString() || 0} / ↑
+              {endEntry.totalTokensOut?.toLocaleString() || 0}
             </span>
             {endEntry.filesCreated?.length > 0 && (
               <span>
@@ -197,72 +217,74 @@ function TransactionCard({ transaction, entries }) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
 export default function LogsPage() {
-  const [logs, setLogs] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [logs, setLogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(() => {
-    const today = new Date()
-    return today.toISOString().split('T')[0]
-  })
-  const [statusFilter, setStatusFilter] = useState('all')
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  });
+  const [statusFilter, setStatusFilter] = useState('all');
 
   const dateParts = useMemo(() => {
-    const [year, month, day] = selectedDate.split('-')
-    return { year, month, day }
-  }, [selectedDate])
+    const [year, month, day] = selectedDate.split('-');
+    return { year, month, day };
+  }, [selectedDate]);
 
   useEffect(() => {
     async function fetchLogs() {
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
 
       try {
-        const { year, month, day } = dateParts
-        const response = await fetch(`/logs/${year}/${month}/${day}.jsonl`)
+        const { year, month, day } = dateParts;
+        const response = await fetch(`/logs/${year}/${month}/${day}.jsonl`);
 
         if (!response.ok) {
           if (response.status === 404) {
-            setLogs([])
-            return
+            setLogs([]);
+            return;
           }
-          throw new Error(`Failed to fetch logs: ${response.status}`)
+          throw new Error(`Failed to fetch logs: ${response.status}`);
         }
 
-        const text = await response.text()
+        const text = await response.text();
         const entries = text
           .split('\n')
-          .filter(line => line.trim())
-          .map(line => {
+          .filter((line) => line.trim())
+          .map((line) => {
             try {
-              return JSON.parse(line)
+              return JSON.parse(line);
             } catch {
-              return null
+              return null;
             }
           })
-          .filter(Boolean)
+          .filter(Boolean);
 
-        setLogs(entries)
+        setLogs(entries);
       } catch (err) {
-        setError(err.message)
-        setLogs([])
+        setError(err.message);
+        setLogs([]);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchLogs()
-  }, [dateParts])
+    fetchLogs();
+  }, [dateParts]);
 
   const transactions = useMemo(() => {
-    const grouped = new Map()
+    const grouped = new Map();
 
     for (const entry of logs) {
-      const runId = entry.runId
-      if (!runId) continue
+      const runId = entry.runId;
+      if (!runId) {
+        continue;
+      }
 
       if (!grouped.has(runId)) {
         grouped.set(runId, {
@@ -271,67 +293,83 @@ export default function LogsPage() {
           agent: entry.agent,
           llmModel: entry.llmModel,
           entries: [],
-        })
+        });
       }
 
-      const txn = grouped.get(runId)
-      txn.entries.push(entry)
+      const txn = grouped.get(runId);
+      txn.entries.push(entry);
 
-      if (entry.appId) txn.appId = entry.appId
-      if (entry.agent) txn.agent = entry.agent
-      if (entry.llmModel) txn.llmModel = entry.llmModel
+      if (entry.appId) {
+        txn.appId = entry.appId;
+      }
+      if (entry.agent) {
+        txn.agent = entry.agent;
+      }
+      if (entry.llmModel) {
+        txn.llmModel = entry.llmModel;
+      }
     }
 
     for (const txn of grouped.values()) {
-      txn.entries.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+      txn.entries.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
     }
 
     return Array.from(grouped.values()).sort((a, b) => {
-      const aTime = a.entries[0]?.timestamp || ''
-      const bTime = b.entries[0]?.timestamp || ''
-      return bTime.localeCompare(aTime)
-    })
-  }, [logs])
+      const aTime = a.entries[0]?.timestamp || '';
+      const bTime = b.entries[0]?.timestamp || '';
+      return bTime.localeCompare(aTime);
+    });
+  }, [logs]);
 
   const filteredTransactions = useMemo(() => {
-    if (statusFilter === 'all') return transactions
+    if (statusFilter === 'all') {
+      return transactions;
+    }
 
-    return transactions.filter(txn => {
-      const endEntry = txn.entries.find(e => e.type === 'TRANSACTION_END')
-      const status = endEntry?.status || 'started'
+    return transactions.filter((txn) => {
+      const endEntry = txn.entries.find((e) => e.type === 'TRANSACTION_END');
+      const status = endEntry?.status || 'started';
 
-      if (statusFilter === 'success') return status === 'success'
-      if (statusFilter === 'failed') return status === 'failed'
-      if (statusFilter === 'in_progress') return !endEntry
-      return true
-    })
-  }, [transactions, statusFilter])
+      if (statusFilter === 'success') {
+        return status === 'success';
+      }
+      if (statusFilter === 'failed') {
+        return status === 'failed';
+      }
+      if (statusFilter === 'in_progress') {
+        return !endEntry;
+      }
+      return true;
+    });
+  }, [transactions, statusFilter]);
 
   const stats = useMemo(() => {
-    let success = 0, failed = 0, inProgress = 0, totalTokens = 0, totalDuration = 0
+    let success = 0,
+      failed = 0,
+      inProgress = 0,
+      totalTokens = 0,
+      totalDuration = 0;
 
     for (const txn of transactions) {
-      const endEntry = txn.entries.find(e => e.type === 'TRANSACTION_END')
+      const endEntry = txn.entries.find((e) => e.type === 'TRANSACTION_END');
       if (!endEntry) {
-        inProgress++
+        inProgress++;
       } else if (endEntry.status === 'success') {
-        success++
-        totalTokens += (endEntry.totalTokensIn || 0) + (endEntry.totalTokensOut || 0)
-        totalDuration += endEntry.totalDurationMs || 0
+        success++;
+        totalTokens += (endEntry.totalTokensIn || 0) + (endEntry.totalTokensOut || 0);
+        totalDuration += endEntry.totalDurationMs || 0;
       } else {
-        failed++
+        failed++;
       }
     }
 
-    return { success, failed, inProgress, totalTokens, totalDuration }
-  }, [transactions])
+    return { success, failed, inProgress, totalTokens, totalDuration };
+  }, [transactions]);
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          📊 Agent Logs
-        </h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">📊 Agent Logs</h1>
         <p className="text-gray-600 dark:text-gray-400">
           Monitor app generation transactions, step progress, and errors.
         </p>
@@ -369,7 +407,9 @@ export default function LogsPage() {
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
         <div className="card p-4 text-center">
-          <div className="text-2xl font-bold text-gray-900 dark:text-white">{transactions.length}</div>
+          <div className="text-2xl font-bold text-gray-900 dark:text-white">
+            {transactions.length}
+          </div>
           <div className="text-sm text-gray-500 dark:text-gray-400">Total</div>
         </div>
         <div className="card p-4 text-center">
@@ -408,19 +448,15 @@ export default function LogsPage() {
       {!loading && !error && filteredTransactions.length === 0 && (
         <div className="card p-12 text-center">
           <span className="text-4xl">📭</span>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">
-            No logs found for {selectedDate}
-          </p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">No logs found for {selectedDate}</p>
         </div>
       )}
 
-      {!loading && !error && filteredTransactions.map(txn => (
-        <TransactionCard
-          key={txn.runId}
-          transaction={txn}
-          entries={txn.entries}
-        />
-      ))}
+      {!loading &&
+        !error &&
+        filteredTransactions.map((txn) => (
+          <TransactionCard key={txn.runId} transaction={txn} entries={txn.entries} />
+        ))}
     </div>
-  )
+  );
 }

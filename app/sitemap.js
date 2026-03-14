@@ -1,6 +1,6 @@
-import appsData from '@/data/apps.json'
+import appsData from '@/data/apps.json';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://valleyofai.com'
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://valleyofai.com';
 
 export default function sitemap() {
   const appEntries = appsData.map((app) => ({
@@ -8,7 +8,7 @@ export default function sitemap() {
     lastModified: app.createdAt ? new Date(app.createdAt) : new Date(),
     changeFrequency: 'monthly',
     priority: 0.7,
-  }))
+  }));
 
   return [
     {
@@ -24,5 +24,5 @@ export default function sitemap() {
       priority: 0.5,
     },
     ...appEntries,
-  ]
+  ];
 }

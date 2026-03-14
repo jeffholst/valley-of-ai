@@ -134,7 +134,7 @@ function validateProperty(key, value, schema) {
     if (schema.format === 'date-time') {
       try {
         new Date(value);
-        if (isNaN(Date.parse(value))) throw new Error();
+        if (isNaN(Date.parse(value))) {throw new Error();}
       } catch {
         errors.push(`${key}: invalid date-time format`);
       }

@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://valleyofai.com'
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://valleyofai.com';
 
 export default function robots() {
   return {
@@ -7,5 +7,5 @@ export default function robots() {
       allow: '/',
     },
     sitemap: `${BASE_URL}/sitemap.xml`,
-  }
+  };
 }

@@ -1,0 +1,10 @@
+node_modules
+.next
+dist
+out
+build
+.vercel
+coverage
+.git
+public/apps
+public/logs

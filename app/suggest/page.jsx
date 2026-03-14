@@ -1,13 +1,13 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import emailjs from '@emailjs/browser'
-import { Turnstile } from 'react-turnstile'
+import { useState } from 'react';
+import emailjs from '@emailjs/browser';
+import { Turnstile } from 'react-turnstile';
 
-const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
-const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
-const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
-const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 const CATEGORIES = [
   'Productivity',
@@ -17,7 +17,7 @@ const CATEGORIES = [
   'Design',
   'Entertainment',
   'Other',
-]
+];
 
 export default function SuggestPage() {
   const [form, setForm] = useState({
@@ -26,44 +26,44 @@ export default function SuggestPage() {
     category: '',
     name: '',
     email: '',
-  })
-  const [errors, setErrors] = useState({})
-  const [submitted, setSubmitted] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitError, setSubmitError] = useState(null)
-  const [turnstileToken, setTurnstileToken] = useState(null)
+  });
+  const [errors, setErrors] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+  const [turnstileToken, setTurnstileToken] = useState(null);
 
   const validate = () => {
-    const newErrors = {}
+    const newErrors = {};
     if (!form.title.trim()) {
-      newErrors.title = 'Title is required'
+      newErrors.title = 'Title is required';
     } else if (form.title.trim().length < 3) {
-      newErrors.title = 'Title must be at least 3 characters'
+      newErrors.title = 'Title must be at least 3 characters';
     }
     if (!form.description.trim()) {
-      newErrors.description = 'Description is required'
+      newErrors.description = 'Description is required';
     } else if (form.description.trim().length < 20) {
-      newErrors.description = 'Description must be at least 20 characters'
+      newErrors.description = 'Description must be at least 20 characters';
     }
-    return newErrors
-  }
+    return newErrors;
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    const newErrors = validate()
+    e.preventDefault();
+    const newErrors = validate();
 
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      return
+      setErrors(newErrors);
+      return;
     }
 
-    setIsSubmitting(true)
-    setSubmitError(null)
+    setIsSubmitting(true);
+    setSubmitError(null);
 
     if (!turnstileToken) {
-      setSubmitError('Please complete the security verification.')
-      setIsSubmitting(false)
-      return
+      setSubmitError('Please complete the security verification.');
+      setIsSubmitting(false);
+      return;
     }
 
     const templateParams = {
@@ -74,7 +74,7 @@ export default function SuggestPage() {
       email: form.email.trim() || 'Not provided',
       submitted_at: new Date().toLocaleString(),
       'cf-turnstile-response': turnstileToken,
-    }
+    };
 
     try {
       await emailjs.send(
@@ -82,23 +82,23 @@ export default function SuggestPage() {
         EMAILJS_TEMPLATE_ID,
         templateParams,
         EMAILJS_PUBLIC_KEY
-      )
-      setSubmitted(true)
+      );
+      setSubmitted(true);
     } catch (error) {
-      console.error('EmailJS error:', error)
-      setSubmitError('Failed to send suggestion. Please try again.')
+      console.error('EmailJS error:', error);
+      setSubmitError('Failed to send suggestion. Please try again.');
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setForm((prev) => ({ ...prev, [name]: value }))
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: null }))
+      setErrors((prev) => ({ ...prev, [name]: null }));
     }
-  }
+  };
 
   if (submitted) {
     return (
@@ -113,21 +113,30 @@ export default function SuggestPage() {
         <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
           <div className="card p-8">
             <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-8 h-8 text-green-600 dark:text-green-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              Thank You!
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Thank You!</h2>
             <p className="text-gray-600 dark:text-gray-300 mb-6">
-              Your suggestion has been submitted. Our AI agents will review it and may create an app based on your idea!
+              Your suggestion has been submitted. Our AI agents will review it and may create an app
+              based on your idea!
             </p>
             <button
               onClick={() => {
-                setSubmitted(false)
-                setForm({ title: '', description: '', category: '', name: '', email: '' })
-                setTurnstileToken(null)
+                setSubmitted(false);
+                setForm({ title: '', description: '', category: '', name: '', email: '' });
+                setTurnstileToken(null);
               }}
               className="btn-secondary"
             >
@@ -136,7 +145,7 @@ export default function SuggestPage() {
           </div>
         </div>
       </>
-    )
+    );
   }
 
   return (
@@ -150,9 +159,7 @@ export default function SuggestPage() {
 
       <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-            Suggest an App
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Suggest an App</h1>
           <p className="text-gray-900 dark:text-gray-300">
             Have an idea for an AI-generated app? Share it with us and our agents might build it!
           </p>
@@ -173,9 +180,7 @@ export default function SuggestPage() {
                 placeholder="e.g., Pomodoro Timer"
                 className={`input ${errors.title ? 'border-red-500 focus:ring-red-500' : ''}`}
               />
-              {errors.title && (
-                <p className="mt-1 text-sm text-red-500">{errors.title}</p>
-              )}
+              {errors.title && <p className="mt-1 text-sm text-red-500">{errors.title}</p>}
             </div>
 
             <div>
@@ -219,7 +224,8 @@ export default function SuggestPage() {
             {/* Optional Contact Section */}
             <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                The following fields are optional. Only fill them out if you'd like to be contacted when your suggestion is implemented.
+                The following fields are optional. Only fill them out if you'd like to be contacted
+                when your suggestion is implemented.
               </p>
 
               <div className="space-y-4">
@@ -282,5 +288,5 @@ export default function SuggestPage() {
         </div>
       </div>
     </>
-  )
+  );
 }

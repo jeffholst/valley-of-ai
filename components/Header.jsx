@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import ThemeToggle from './ThemeToggle'
-import { siteName } from '@/lib/siteConfig'
+import Link from 'next/link';
+import ThemeToggle from './ThemeToggle';
+import { siteName } from '@/lib/siteConfig';
 
 export default function Header() {
   return (
@@ -11,11 +11,9 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
             <span className="text-2xl">🏔️</span>
-            <span className="text-xl font-bold text-gray-900 dark:text-white">
-              {siteName}
-            </span>
+            <span className="text-xl font-bold text-gray-900 dark:text-white">{siteName}</span>
           </Link>
-          
+
           <nav className="flex items-center gap-6">
             <Link
               href="/"
@@ -42,5 +40,5 @@ export default function Header() {
         </div>
       </div>
     </header>
-  )
+  );
 }

@@ -50,14 +50,14 @@ function walkIndexFiles(dir, found = []) {
 }
 
 function mimeType(file) {
-  if (file.endsWith('.html')) return 'text/html; charset=utf-8';
-  if (file.endsWith('.js')) return 'application/javascript; charset=utf-8';
-  if (file.endsWith('.css')) return 'text/css; charset=utf-8';
-  if (file.endsWith('.json')) return 'application/json; charset=utf-8';
-  if (file.endsWith('.svg')) return 'image/svg+xml';
-  if (file.endsWith('.png')) return 'image/png';
-  if (file.endsWith('.jpg') || file.endsWith('.jpeg')) return 'image/jpeg';
-  if (file.endsWith('.webp')) return 'image/webp';
+  if (file.endsWith('.html')) {return 'text/html; charset=utf-8';}
+  if (file.endsWith('.js')) {return 'application/javascript; charset=utf-8';}
+  if (file.endsWith('.css')) {return 'text/css; charset=utf-8';}
+  if (file.endsWith('.json')) {return 'application/json; charset=utf-8';}
+  if (file.endsWith('.svg')) {return 'image/svg+xml';}
+  if (file.endsWith('.png')) {return 'image/png';}
+  if (file.endsWith('.jpg') || file.endsWith('.jpeg')) {return 'image/jpeg';}
+  if (file.endsWith('.webp')) {return 'image/webp';}
   return 'application/octet-stream';
 }
 
@@ -119,7 +119,7 @@ function findInteractiveSelector(page) {
 
     for (const sel of selectors) {
       const el = document.querySelector(sel);
-      if (el) return sel;
+      if (el) {return sel;}
     }
     return null;
   });
@@ -157,9 +157,9 @@ async function runChecks(page, viewportId) {
   const hasVisibleMain = await page.evaluate(() => {
     const candidates = [document.querySelector('main'), document.querySelector('#app'), document.querySelector('canvas'), document.body];
     for (const el of candidates) {
-      if (!el) continue;
+      if (!el) {continue;}
       const rect = el.getBoundingClientRect();
-      if (rect.width > 0 && rect.height > 0) return true;
+      if (rect.width > 0 && rect.height > 0) {return true;}
     }
     return false;
   });
@@ -173,7 +173,7 @@ async function runChecks(page, viewportId) {
   } else {
     const interactiveInfo = await page.evaluate((sel) => {
       const el = document.querySelector(sel);
-      if (!el) return null;
+      if (!el) {return null;}
       const rect = el.getBoundingClientRect();
       const style = getComputedStyle(el);
       return {
@@ -209,8 +209,8 @@ async function main() {
   }
 
   let files = walkIndexFiles(appsRoot).map((f) => path.relative(root, f));
-  if (ONLY) files = files.filter((f) => f.includes(ONLY));
-  if (LIMIT && Number.isFinite(LIMIT)) files = files.slice(0, LIMIT);
+  if (ONLY) {files = files.filter((f) => f.includes(ONLY));}
+  if (LIMIT && Number.isFinite(LIMIT)) {files = files.slice(0, LIMIT);}
 
   const { server, port } = await createServer(root);
   const browser = await chromium.launch({ headless: true });
@@ -265,14 +265,14 @@ async function main() {
           check.errors.push(...pageErrors.map((e) => `pageerror: ${e}`));
         }
 
-        if (check.errors.length) appResult.failed = true;
+        if (check.errors.length) {appResult.failed = true;}
         report.warnings += check.warnings.length;
 
         appResult.viewports.push(check);
         await context.close();
       }
 
-      if (appResult.failed) report.failures += 1;
+      if (appResult.failed) {report.failures += 1;}
       report.apps.push(appResult);
     }
   } finally {
@@ -290,9 +290,9 @@ async function main() {
     for (const app of report.apps.filter((a) => a.failed).slice(0, 10)) {
       console.error(`- ${app.app}`);
       for (const vp of app.viewports) {
-        if (!vp.errors.length) continue;
+        if (!vp.errors.length) {continue;}
         console.error(`  [${vp.viewport}]`);
-        for (const e of vp.errors) console.error(`    - ${e}`);
+        for (const e of vp.errors) {console.error(`    - ${e}`);}
       }
     }
 
