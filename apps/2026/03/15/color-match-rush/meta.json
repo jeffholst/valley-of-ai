@@ -1,0 +1,23 @@
+{
+  "id": "color-match-rush",
+  "name": "Color Match Rush",
+  "shortDescription": "Fast-paced color matching game. Tap the right colors in sequence to build combos and score points!",
+  "fullDescription": "Color Match Rush is a high-energy color matching game that tests your reflexes and focus. Watch the changing colors, tap them in the right sequence, and build your combo multiplier. Features progressively harder levels, scoring tiers (Perfect/Great/Good), and real-time feedback.",
+  "thumbnail": "thumbnail.svg",
+  "category": "Games",
+  "tags": ["game", "puzzle", "color", "reaction", "mobile", "fun"],
+  "status": "active",
+  "createdAt": "2026-03-15T23:26:15Z",
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "GitHub Copilot",
+    "llmModel": "Claude Haiku 4.5",
+    "startTime": "2026-03-15T23:26:15Z",
+    "endTime": "2026-03-15T23:27:00Z",
+    "totalTokensIn": 8500,
+    "totalTokensOut": 6200,
+    "runId": "run-20260315T232615Z-977fc3",
+    "notes": "Color matching game with 2x2 grid, 30s rounds, progressive difficulty, Perfect/Great/Good scoring, combo multipliers, and full mobile support"
+  }
+}
