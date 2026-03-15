@@ -79,9 +79,14 @@ Each app run is one transaction:
 
 ### Critical logging rule
 Create the app folder before any logging begins so `log.jsonl` exists in the final app location from the start.
-Write each log line immediately after that step completes.
+Write each log line immediately after that step completes (Steps 1-9).
 Never batch logs at the end.
 Never log to a shared daily file under `/logs` for app-generation workflow state.
+
+**Commit strategy:** 
+- Commit app files (index.html, meta.json, thumbnail.svg) in Step 7 first.
+- Append `TRANSACTION_END` after all steps (8-9) complete.
+- Commit `log.jsonl` **as a final, separate commit (Step 10)** after all logging transactions are finalized — this prevents stale log states after PR merges.
 
 ### `runId` format
 `run-YYYYMMDDTHHMMSSZ-xxxxxx`
@@ -131,7 +136,8 @@ Error format:
 3. Derive `YYYY/MM/DD`, log path, app path.
 4. Create the app folder immediately: `apps/YYYY/MM/DD/<app-id>/`.
 5. Create `runId`.
-6. Append `TRANSACTION_START` to `apps/YYYY/MM/DD/<app-id>/log.jsonl`.
+6. **Create empty `log.jsonl` file** in `apps/YYYY/MM/DD/<app-id>/log.jsonl` (will be populated as pipeline progresses).
+7. Write initial `TRANSACTION_START` to `apps/YYYY/MM/DD/<app-id>/log.jsonl`.
 
 ### Step 1: Idea selection
 1. Check all existing apps in /apps folder to avoid duplicates.
@@ -173,10 +179,11 @@ If validation fails:
 
 When passed, log `VALIDATE_APP`.
 
-### Step 7: Git branch and commit
+### Step 7: Git branch and commit (app files only)
 1. `git checkout -b feat/<app-id>`
 2. Log `GIT_BRANCH`.
-3. Stage and commit app + logs.
+3. **Stage and commit app files ONLY** (index.html, meta.json, thumbnail.svg).
+   - **Do NOT commit log.jsonl yet** — it will be updated with final transaction entries.
 4. Log `GIT_COMMIT` with commit SHA.
 
 ### Step 8: PR flow
@@ -198,9 +205,13 @@ When passed, log `VALIDATE_APP`.
 
 > **Note:** Deployment is fully automatic via Vercel when code is pushed to `main`. No manual steps needed. Environment variable placeholders (`__GA_MEASUREMENT_ID__`, `__MAIN_SITE_URL__`, `__SOCIAL_*_URL__`) are replaced during the `sync-public-content.mjs` phase from `.env.production` secrets.
 
-### Step 10: Close transaction
-1. Append `TRANSACTION_END`.
-2. Ensure `apps/YYYY/MM/DD/<app-id>/log.jsonl` is staged with the app files.
+### Step 10: Finalize transaction log and commit
+After all logging transactions are complete (Steps 1-9), perform the final log commit:
+1. Append `TRANSACTION_END` to `apps/YYYY/MM/DD/<app-id>/log.jsonl`.
+2. **This is the FINAL COMMIT:** Stage only `log.jsonl` with the transaction data.
+3. Commit: `git add apps/YYYY/MM/DD/<app-id>/log.jsonl && git commit -m "chore: finalize transaction log [skip deploy]"`
+   - [skip deploy] in comment tells vercel not to redploy
+4. **Push this commit directly to the main branch.**
 
 ## 5) Quality Gates (Must Pass)
 
