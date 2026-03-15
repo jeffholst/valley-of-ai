@@ -4,3 +4,4 @@
 {"timestamp":"2026-03-15T07:02:54Z","runId":"run-20260315T070254Z-dea346","type":"STEP","step":"GENERATE_HTML","seq":3,"status":"completed","durationMs":21000,"tokensIn":0,"tokensOut":0}
 {"timestamp":"2026-03-15T07:02:54Z","runId":"run-20260315T070254Z-dea346","type":"STEP","step":"GENERATE_THUMBNAIL","seq":4,"status":"completed","durationMs":2200,"tokensIn":0,"tokensOut":0}
 {"timestamp":"2026-03-15T07:02:54Z","runId":"run-20260315T070254Z-dea346","type":"STEP","step":"CREATE_META_JSON","seq":5,"status":"completed","durationMs":1000,"tokensIn":0,"tokensOut":0}
+{"timestamp": "2026-03-15T14:26:30Z", "runId": "run-20260315T142146Z-afcd88", "type": "STEP", "step": "PR_REVIEW", "seq": 10, "status": "completed", "durationMs": 2600, "details": {"review": "self-review completed via gh pr view", "mergeStateStatus": "UNSTABLE"}}
