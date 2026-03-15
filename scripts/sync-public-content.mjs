@@ -2,13 +2,14 @@
  * Sync public content
  *
  * Copies runtime assets (apps/, logs/) into public/ so Next.js can serve them.
- * For apps, replaces environment variable placeholders in HTML files.
+ * For apps, replaces environment variable placeholders in HTML files while
+ * copying all other app assets as-is, including app-local log.jsonl files.
  * SVG assets already live in public/ — no copy needed.
  * data/apps.json is imported directly — no copy needed.
  */
 
 import { config } from 'dotenv'
-import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync, readdirSync } from 'fs'
+import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync, readdirSync, rmSync } from 'fs'
 import { dirname, resolve, join } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -29,7 +30,9 @@ const PLACEHOLDER_MAP = {
 }
 
 /**
- * Recursively process files in a directory, replacing placeholders in HTML files
+ * Recursively process files in a directory, replacing placeholders in HTML files.
+ * All non-HTML assets are copied verbatim, including meta.json, thumbnail.svg,
+ * and app-local log.jsonl files.
  */
 function processDirectory(sourceDir, targetDir) {
   const entries = readdirSync(sourceDir, { withFileTypes: true })
@@ -74,6 +77,10 @@ for (const { from, to, processPlaceholders } of targets) {
   }
   
   mkdirSync(dirname(to), { recursive: true })
+
+  // Generated public targets should mirror the source exactly so newly added
+  // files like app-local log.jsonl entries are always present after sync.
+  rmSync(to, { recursive: true, force: true })
   
   if (processPlaceholders) {
     mkdirSync(to, { recursive: true })

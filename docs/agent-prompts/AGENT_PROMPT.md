@@ -16,7 +16,7 @@ Always use OS UTC time before creating paths or timestamps:
 
 Use UTC consistently for:
 - File paths: `apps/YYYY/MM/DD/<app-id>/`
-- Log file: `logs/YYYY/MM/DD.jsonl`
+- App-local log file: `apps/YYYY/MM/DD/<app-id>/log.jsonl`
 - `meta.json`: `createdAt`, `generation.startTime`, `generation.endTime`
 - `runId` timestamp portion
 
@@ -27,6 +27,7 @@ Make best attempt effort to report your agent name correctly AND the LLM being u
 ```
 apps/YYYY/MM/DD/<app-id>/
   index.html
+  log.jsonl
   thumbnail.svg
   meta.json
 ```
@@ -69,7 +70,7 @@ Use CSS variables and support shared theme switching:
 ```
 
 ## 3) Logging Model (Most Important)
-Log in JSONL to `logs/YYYY/MM/DD.jsonl`.
+Log in JSONL to `apps/YYYY/MM/DD/<app-id>/log.jsonl`.
 
 Each app run is one transaction:
 1. `TRANSACTION_START`
@@ -77,8 +78,10 @@ Each app run is one transaction:
 3. `TRANSACTION_END`
 
 ### Critical logging rule
+Create the app folder before any logging begins so `log.jsonl` exists in the final app location from the start.
 Write each log line immediately after that step completes.
 Never batch logs at the end.
+Never log to a shared daily file under `/logs` for app-generation workflow state.
 
 ### `runId` format
 `run-YYYYMMDDTHHMMSSZ-xxxxxx`
@@ -126,8 +129,9 @@ Error format:
 1. Pull latest main.
 2. Get current UTC time.
 3. Derive `YYYY/MM/DD`, log path, app path.
-4. Create `runId`.
-5. Append `TRANSACTION_START`.
+4. Create the app folder immediately: `apps/YYYY/MM/DD/<app-id>/`.
+5. Create `runId`.
+6. Append `TRANSACTION_START` to `apps/YYYY/MM/DD/<app-id>/log.jsonl`.
 
 ### Step 1: Idea selection
 1. Check all existing apps in /apps folder to avoid duplicates.
@@ -196,10 +200,7 @@ When passed, log `VALIDATE_APP`.
 
 ### Step 10: Close transaction
 1. Append `TRANSACTION_END`.
-2. If logs changed on `main`, commit and push:
-   - `git add logs/`
-   - `git commit -m "chore(logs): record deploy for <app-id>"`
-   - `git push`
+2. Ensure `apps/YYYY/MM/DD/<app-id>/log.jsonl` is staged with the app files.
 
 ## 5) Quality Gates (Must Pass)
 
@@ -235,6 +236,7 @@ See [STYLE_GUIDE.md](../STYLE_GUIDE.md) for code conventions and [TESTING.md](..
 
 **File Requirements**:
 - [ ] index.html created with shared shell + analytics tags + placeholders (not hardcoded)
+- [ ] log.jsonl created in the app folder before the first log entry is written
 - [ ] meta.json created with all required fields (id, name, tags, generation metadata)
 - [ ] thumbnail.svg created (800x450 viewBox) matching app UI/colors/state
 - [ ] favicon present in app directory

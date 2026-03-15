@@ -1,0 +1,2 @@
+{"timestamp":"2026-03-06T14:25:00Z","runId":"run-2026-03-06-0001","type":"TRANSACTION_START","appId":"word-scramble","status":"started","agent":"claude-opus-4.5","llmModel":"claude-opus-4.5"}
+{"timestamp":"2026-03-06T14:30:30Z","runId":"run-2026-03-06-0001","type":"TRANSACTION_END","appId":"word-scramble","status":"success","totalDurationMs":330000,"totalTokensIn":6800,"totalTokensOut":11500,"filesCreated":["index.html","meta.json","thumbnail.svg"]}
