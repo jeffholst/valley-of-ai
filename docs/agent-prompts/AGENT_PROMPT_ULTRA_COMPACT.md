@@ -115,18 +115,23 @@ If failure occurs:
 - Commit app + logs.
 - Log `GIT_COMMIT` (include SHA).
 
-8. PR flow
-- Push branch and create PR.
+8. PR flow + Merge
+- Push branch and create PR: `git push origin feat/<app-id>` then `gh pr create --title "..." --body "..."`.
 - Log `CREATE_PR` (PR number/url).
 - Self-review and log `PR_REVIEW`.
-- Squash merge and log `MERGE_PR`.
+- **Execute squash merge**: `gh pr merge <pr-number> --squash --auto`.
+- Verify merge succeeded: `git log --oneline -1` should show commit on main.
+- Verify on main branch: `git checkout main && git pull origin main`.
+- Delete feature branch if not auto-deleted: `git branch -D feat/<app-id>`.
+- Log `MERGE_PR` with status confirmed.
 
 9. Registry + deploy
 - Run `npm run generate:apps`; log `UPDATE_REGISTRY`.
-- Merge PR to `main` (auto-triggers Vercel webhook).
-- Vercel pipeline: loads env → `sync-public-content.mjs` (replace placeholders) → `next build` → deploy to edge.
+- Verify PR is merged to `main` (git status should show no uncommitted app changes).
+- Run `npm run sync` to copy app to public/apps.
+- Vercel pipeline (if enabled): auto-triggers on main merge → loads env → replaces placeholders → next build → deploy to edge.
 - Zero-downtime deploy + auto-rollback on fail. Live in ~2–3 min.
-- Verify live site confirms new app visible; log `DEPLOY`.
+- Verify app files in public/apps/YYYY/MM/DD/<app-id>/; log `DEPLOY`.
 
 10. Close
 - Append `TRANSACTION_END`.
