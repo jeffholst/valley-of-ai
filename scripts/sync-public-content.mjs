@@ -76,10 +76,6 @@ for (const { from, to, processPlaceholders } of targets) {
   mkdirSync(dirname(to), { recursive: true })
   
   if (processPlaceholders) {
-    // Remove existing directory before processing
-    if (existsSync(to)) {
-      cpSync(to, to + '.backup', { recursive: true, force: true })
-    }
     mkdirSync(to, { recursive: true })
     processDirectory(from, to)
   } else {
