@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import AppCard from '@/components/AppCard';
+import OptionsDrawer from '@/components/OptionsDrawer';
 import { useAllVoteCounts } from '@/hooks/useVotes';
 
 // Import apps data — synced from legacy root
@@ -15,7 +16,22 @@ const SORT_OPTIONS = [
 ];
 
 const PER_PAGE_OPTIONS = [10, 25, 100];
-const PTERODACTYL_PREF_KEY = 'pterodactyl-animations-enabled-v2';
+/**
+ * localStorage key for all page options (JSON object).
+ * Replaces the legacy single-toggle 'pterodactyl-animations-enabled-v2' key.
+ */
+const OPTIONS_STORAGE_KEY = 'voa-page-options';
+
+/** Default option values — pterodactyl defaults on for desktop, all others off */
+const DEFAULT_OPTIONS = {
+  pterodactyl: true,
+  wind: false,
+  rain: false,
+  snow: false,
+  clouds: false,
+  lightning: false,
+  sound: false,
+};
 
 const PTERODACTYL_CONFIG = {
   total_desktop: 12,
@@ -84,9 +100,12 @@ export default function HomePage() {
   const [perPage, setPerPage] = useState(10);
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [animationsEnabled, setAnimationsEnabled] = useState(false);
+  /** All visual/audio effect toggles — synced to localStorage */
+  const [options, setOptions] = useState(DEFAULT_OPTIONS);
   const [pterodactyls, setPterodactyls] = useState([]);
   const respawnTimersRef = useRef(new Map());
+  /** Web Audio API context for ambient sound */
+  const audioCtxRef = useRef(null);
 
   // Fetch vote counts from Supabase
   const { voteCounts, isLoading: _votesLoading } = useAllVoteCounts(allAppIds);
@@ -111,9 +130,16 @@ export default function HomePage() {
   useEffect(() => {
     const mobile = isLikelyMobileDevice();
     setIsMobile(mobile);
-    const saved = localStorage.getItem(PTERODACTYL_PREF_KEY);
-    const enabled = saved !== null ? saved === 'true' : !mobile;
-    setAnimationsEnabled(enabled);
+    // Load saved options; migrate legacy pterodactyl key if present
+    const saved = localStorage.getItem(OPTIONS_STORAGE_KEY);
+    if (saved) {
+      try { setOptions((prev) => ({ ...prev, ...JSON.parse(saved) })); }
+      catch { /* ignore corrupt data */ }
+    } else {
+      const legacy = localStorage.getItem('pterodactyl-animations-enabled-v2');
+      const pteroOn = legacy !== null ? legacy === 'true' : !mobile;
+      setOptions((prev) => ({ ...prev, pterodactyl: pteroOn }));
+    }
     setPterodactyls(createInitialPterodactyls(mobile));
     setMounted(true);
   }, []);
@@ -232,11 +258,65 @@ export default function HomePage() {
     };
   }, []);
 
+  /** Persist all options to localStorage whenever they change */
   useEffect(() => {
     if (mounted) {
-      localStorage.setItem(PTERODACTYL_PREF_KEY, String(animationsEnabled));
+      localStorage.setItem(OPTIONS_STORAGE_KEY, JSON.stringify(options));
     }
-  }, [animationsEnabled, mounted]);
+  }, [options, mounted]);
+
+  /** Toggle a single option by key */
+  const handleOptionToggle = (key, value) => {
+    setOptions((prev) => ({ ...prev, [key]: value }));
+  };
+
+  /**
+   * Ambient sound — generates brown noise via Web Audio API.
+   * Created on first enable, suspended/resumed on subsequent toggles.
+   */
+  useEffect(() => {
+    if (!mounted) {return;}
+    if (options.sound) {
+      if (!audioCtxRef.current) {
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const len = ctx.sampleRate * 2;
+          const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+          const data = buf.getChannelData(0);
+          let last = 0;
+          for (let i = 0; i < len; i++) {
+            const white = Math.random() * 2 - 1;
+            data[i] = (last + 0.02 * white) / 1.02;
+            last = data[i];
+            data[i] *= 3.5;
+          }
+          const src = ctx.createBufferSource();
+          src.buffer = buf;
+          src.loop = true;
+          const gain = ctx.createGain();
+          gain.gain.value = 0.07;
+          src.connect(gain);
+          gain.connect(ctx.destination);
+          src.start();
+          audioCtxRef.current = ctx;
+        } catch { /* Web Audio not available */ }
+      } else if (audioCtxRef.current.state === 'suspended') {
+        audioCtxRef.current.resume();
+      }
+    } else if (audioCtxRef.current?.state === 'running') {
+      audioCtxRef.current.suspend();
+    }
+  }, [options.sound, mounted]);
+
+  /** Clean up audio context on unmount */
+  useEffect(() => {
+    return () => {
+      if (audioCtxRef.current) {
+        audioCtxRef.current.close();
+        audioCtxRef.current = null;
+      }
+    };
+  }, []);
 
   const goToPage = (page) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)));
@@ -252,7 +332,14 @@ export default function HomePage() {
       </div>
       <div className="valley-light-veil" aria-hidden="true" />
 
-      {mounted && animationsEnabled && (
+      {/* ── Weather effect overlays (CSS-only, see globals.css) ── */}
+      {mounted && options.rain && <div className="weather-rain" aria-hidden="true" />}
+      {mounted && options.snow && <div className="weather-snow" aria-hidden="true" />}
+      {mounted && options.wind && <div className="weather-wind" aria-hidden="true" />}
+      {mounted && options.clouds && <div className="weather-clouds" aria-hidden="true" />}
+      {mounted && options.lightning && <div className="weather-lightning" aria-hidden="true" />}
+
+      {mounted && options.pterodactyl && (
         <div className="pterodactyl-sky" aria-hidden="true">
           {pterodactyls.map((pterodactyl) => {
             const sprite =
@@ -305,32 +392,6 @@ export default function HomePage() {
             </Link>{' '}
             and our AI might bring it to life.
           </p>
-          <div className="mt-6">
-            <button
-              type="button"
-              onClick={() => setAnimationsEnabled((enabled) => !enabled)}
-              className="btn-secondary"
-              aria-pressed={animationsEnabled}
-            >
-              {animationsEnabled ? 'Turn off' : 'Turn on'}
-              <img
-                src={
-                  animationsEnabled
-                    ? '/pterodactyl-right-static.svg'
-                    : '/pterodactyl-right-flapping.svg'
-                }
-                alt="pterodactyl"
-                width="50"
-                height="50"
-                className="relative"
-                style={{
-                  left: '5px',
-                  top: '2px',
-                  filter: 'drop-shadow(0 0 1px rgba(255,255,255,0.3)) brightness(1.1)',
-                }}
-              />
-            </button>
-          </div>
         </div>
 
         {/* Search and Filters */}
@@ -628,6 +689,9 @@ export default function HomePage() {
           </div>
         )}
       </div>
+
+      {/* ── Options drawer (right-side pull-out panel) ── */}
+      {mounted && <OptionsDrawer options={options} onToggle={handleOptionToggle} />}
     </>
   );
 }
