@@ -41,10 +41,21 @@
     .status{margin-top:8px;font-weight:600;color:var(--ok)}
     .history{display:grid;gap:8px;max-height:200px;overflow:auto}
     .pill{font-size:.85rem;padding:6px 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--muted) 25%,transparent);display:inline-block}
+    .confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:9999}
+    .confetti{position:absolute;width:10px;height:10px;background:#22d3ee;border-radius:50%}
+    @keyframes fall{
+      0%{transform:translateY(-10px) rotate(0deg);opacity:1}
+      100%{transform:translateY(100vh) rotate(720deg);opacity:0}
+    }
+    @keyframes sway{
+      0%,100%{transform:translateX(0)}
+      50%{transform:translateX(50px)}
+    }
     @media (max-width:760px){.layout{grid-template-columns:1fr}.quick{grid-template-columns:repeat(2,1fr)}}
   </style>
 </head>
 <body>
+  <div class="confetti-container" id="confettiContainer"></div>
   <main class="app">
     <h1>💧 Hydration Nudge Tracker</h1>
     <p class="sub">Track water intake, keep a streak, and get gentle reminders during your active hours.</p>
@@ -59,7 +70,7 @@
           </div>
         </div>
         <div class="quick" id="quickButtons"></div>
-        <div class="row"><span>Unit</span><select id="unit" aria-label="Unit selection"><option value="ml">mL</option><option value="oz">oz</option></select></div>
+        <div class="row"><span>Unit</span><select id="unit" aria-label="Unit selection"><option value="oz" selected>oz</option><option value="ml">mL</option></select></div>
         <div class="row"><span id="goalLabel">Daily goal (mL)</span><input id="goal" type="number" min="250" step="1" value="2000" aria-label="Daily goal"></div>
         <div class="row"><span>Wake hour</span><input id="wake" type="number" min="0" max="23" value="8" aria-label="Wake hour"></div>
         <div class="row"><span>Sleep hour</span><input id="sleep" type="number" min="0" max="23" value="22" aria-label="Sleep hour"></div>
@@ -92,7 +103,7 @@ function load(){try{return JSON.parse(localStorage.getItem(key))||{};}catch{retu
 function save(data){localStorage.setItem(key,JSON.stringify(data));}
 function normalize(st){
   if(st.goalMl==null) st.goalMl=Number(st.goal)||2000; // migrate older state
-  st.unit=st.unit==='oz'?'oz':'ml';
+  st.unit=st.unit==='ml'?'ml':'oz';
   st.entries=Array.isArray(st.entries)?st.entries.map(e=>({ml:Math.max(1,Number(e.ml)||0),ts:e.ts||Date.now()})):[];
   st.goalMl=Math.max(250,Number(st.goalMl)||2000);
   st.wake=Math.min(23,Math.max(0,Number(st.wake)||8));
@@ -102,7 +113,7 @@ function normalize(st){
 }
 function getState(){
   const all=load();
-  if(!all[today()]) all[today()]={goalMl:2000,wake:8,sleep:22,entries:[],streak:0,lastHit:null,unit:'ml'};
+  if(!all[today()]) all[today()]={goalMl:1893,wake:8,sleep:22,entries:[],streak:0,lastHit:null,unit:'oz'};
   all[today()]=normalize(all[today()]);
   save(all);
   return all[today()];
@@ -142,28 +153,11 @@ function calc(){
     ? `Goal reached (${fmt(toDisplay(st.goalMl,st.unit),st.unit)}). Great hydration discipline!`
     : `Keep sipping — ${fmt(toDisplay(remMl,st.unit),st.unit)} to goal.`;
 }
-
-function add(ml){
-  const st=getState();
-  st.entries.push({ml:Math.max(1,Math.round(ml)),ts:Date.now()});
-  const total=st.entries.reduce((a,e)=>a+e.ml,0);
-  if(total>=st.goalMl && st.lastHit!==today()){st.streak=(st.streak||0)+1; st.lastHit=today();}
-  setState(st);
-  calc();
-}
+function add(ml){const st=getState(); const prevTotal=st.entries.reduce((a,e)=>a+e.ml,0); st.entries.push({ml,ts:Date.now()}); const total=st.entries.reduce((a,e)=>a+e.ml,0); if(total>=st.goalMl && prevTotal<st.goalMl){triggerConfetti();} if(total>=st.goalMl && st.lastHit!==today()){st.streak=(st.streak||0)+1; st.lastHit=today();} setState(st); calc();}
 function undo(){const st=getState(); st.entries.pop(); setState(st); calc();}
-function resetDay(){const st=getState(); st.entries=[]; setState(st); calc();}
-function savePrefs(){
-  const st=getState();
-  st.unit=unitSelect.value==='oz'?'oz':'ml';
-  st.goalMl=Math.max(250,toMl(Number(goalInput.value)||toDisplay(st.goalMl,st.unit),st.unit));
-  st.wake=Math.min(23,Math.max(0,Number(wakeInput.value)||8));
-  st.sleep=Math.min(23,Math.max(0,Number(sleepInput.value)||22));
-  setState(st);
-  calc();
-}
-function onUnitChange(){const st=getState(); st.unit=unitSelect.value==='oz'?'oz':'ml'; setState(st); calc();}
-
+function resetDay(){const st=getState(); st.entries=[]; st.lastHit=null; setState(st); calc();}
+function savePrefs(){const st=getState(); const raw=Number(goalInput.value)||2000; st.goalMl=Math.round(st.unit==='oz'?toMl(raw,'oz'):raw); st.goalMl=Math.max(250,st.goalMl); st.wake=Math.min(23,Math.max(0,Number(wakeInput.value)||8)); st.sleep=Math.min(23,Math.max(0,Number(sleepInput.value)||22)); setState(st); calc();}
+function triggerConfetti(){const container=$('#confettiContainer'); const colors=['#22d3ee','#38bdf8','#0ea5e9','#06b6d4','#0891b2','#f59e0b','#34d399']; for(let i=0;i<60;i++){const piece=document.createElement('div'); piece.className='confetti'; piece.style.left=Math.random()*100+'%'; piece.style.top='-12px'; piece.style.backgroundColor=colors[Math.floor(Math.random()*colors.length)]; const size=Math.random()*8+6; piece.style.width=size+'px'; piece.style.height=size+'px'; piece.style.borderRadius=Math.random()>.5?'50%':'3px'; const dur=2+Math.random()*1.5; const delay=Math.random()*400; piece.style.animation=`fall ${dur}s linear ${delay}ms forwards`; container.appendChild(piece); setTimeout(()=>piece.remove(),dur*1000+delay+100);}}
 function inActiveHours(){const st=getState(); const h=new Date().getHours(); return st.wake<=st.sleep ? h>=st.wake && h<st.sleep : (h>=st.wake || h<st.sleep);}
 function notifyNudge(){
   if(!inActiveHours()) return;
@@ -173,6 +167,7 @@ function notifyNudge(){
   nudgeText.textContent=remMl>0?`Time for a quick sip 💧 (${fmt(toDisplay(remMl,st.unit),st.unit)} left)`:'You already hit goal today 🎉';
   setTimeout(()=>{if(nudgesOn) nudgeText.textContent='Nudges active';},4000);
 }
+function onUnitChange(){const st=getState(); st.unit=unitSelect.value; setState(st); calc();}
 function toggleNudges(){nudgesOn=!nudgesOn; nudgeToggle.textContent=nudgesOn?'Stop nudges':'Start nudges'; nudgeText.textContent=nudgesOn?'Nudges active':'Nudges off'; if(nudgesOn){notifyNudge(); nudgeTimer=setInterval(notifyNudge,45*60*1000);} else {clearInterval(nudgeTimer);}}
 
 $('#undo').addEventListener('click',undo);
