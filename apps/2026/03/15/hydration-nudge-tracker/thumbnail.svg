@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Hydration Nudge Tracker thumbnail">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#0b3a5c"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="0" x2="1">
+      <stop offset="0" stop-color="#0ea5e9"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" rx="28" fill="url(#bg)"/>
+  <rect x="40" y="34" width="720" height="382" rx="22" fill="#1e293b" opacity="0.94"/>
+  <text x="76" y="86" fill="#f8fafc" font-family="Inter,Arial" font-size="38" font-weight="700">💧 Hydration Nudge Tracker</text>
+  <text x="76" y="118" fill="#94a3b8" font-family="Inter,Arial" font-size="20">Track water, hit daily goal, and keep your streak alive.</text>
+  <circle cx="230" cy="250" r="92" fill="none" stroke="#334155" stroke-width="24"/>
+  <circle cx="230" cy="250" r="92" fill="none" stroke="url(#ring)" stroke-width="24" stroke-linecap="round" stroke-dasharray="430 578" transform="rotate(-90 230 250)"/>
+  <circle cx="230" cy="250" r="66" fill="#0f172a"/>
+  <text x="230" y="245" text-anchor="middle" fill="#e2e8f0" font-family="Inter,Arial" font-size="34" font-weight="700">1480</text>
+  <text x="230" y="272" text-anchor="middle" fill="#94a3b8" font-family="Inter,Arial" font-size="18">of 2000 ml</text>
+  <rect x="390" y="165" width="320" height="36" rx="10" fill="#0f172a"/>
+  <text x="408" y="189" fill="#e2e8f0" font-family="Inter,Arial" font-size="18">+150 ml   +250 ml   +350 ml   +500 ml</text>
+  <rect x="390" y="220" width="150" height="34" rx="10" fill="#0f172a"/>
+  <text x="404" y="243" fill="#cbd5e1" font-family="Inter,Arial" font-size="17">72% complete</text>
+  <rect x="560" y="220" width="150" height="34" rx="10" fill="#0f172a"/>
+  <text x="578" y="243" fill="#cbd5e1" font-family="Inter,Arial" font-size="17">Streak: 6 days</text>
+  <text x="390" y="292" fill="#34d399" font-family="Inter,Arial" font-size="22" font-weight="700">Goal reached. Great hydration discipline!</text>
+</svg>
