@@ -11,3 +11,4 @@
 {"timestamp": "2026-03-15T14:24:51Z", "runId": "run-20260315T142146Z-afcd88", "type": "STEP", "step": "VALIDATE_APP", "seq": 6, "status": "retrying"}
 {"timestamp": "2026-03-15T14:25:25Z", "runId": "run-20260315T142146Z-afcd88", "type": "STEP", "step": "VALIDATE_APP", "seq": 6, "status": "completed", "durationMs": 78000}
 {"timestamp": "2026-03-15T14:25:35Z", "runId": "run-20260315T142146Z-afcd88", "type": "STEP", "step": "GIT_BRANCH", "seq": 7, "status": "completed", "durationMs": 1200, "details": {"branch": "feat/focus-sprint-planner"}}
+{"timestamp": "2026-03-15T14:25:55Z", "runId": "run-20260315T142146Z-afcd88", "type": "STEP", "step": "GIT_COMMIT", "seq": 8, "status": "completed", "durationMs": 4100, "details": {"commit": "1823e68"}}
