@@ -4,3 +4,10 @@
 {"timestamp":"2026-03-15T07:02:54Z","runId":"run-20260315T070254Z-dea346","type":"STEP","step":"GENERATE_HTML","seq":3,"status":"completed","durationMs":21000,"tokensIn":0,"tokensOut":0}
 {"timestamp":"2026-03-15T07:02:54Z","runId":"run-20260315T070254Z-dea346","type":"STEP","step":"GENERATE_THUMBNAIL","seq":4,"status":"completed","durationMs":2200,"tokensIn":0,"tokensOut":0}
 {"timestamp":"2026-03-15T07:02:54Z","runId":"run-20260315T070254Z-dea346","type":"STEP","step":"CREATE_META_JSON","seq":5,"status":"completed","durationMs":1000,"tokensIn":0,"tokensOut":0}
+{"timestamp": "2026-03-15T14:23:32Z", "runId": "run-20260315T142146Z-afcd88", "type": "STEP", "step": "GENERATE_HTML", "seq": 3, "status": "completed", "durationMs": 184000, "tokensIn": 0, "tokensOut": 0}
+{"timestamp": "2026-03-15T14:24:06Z", "runId": "run-20260315T142146Z-afcd88", "type": "STEP", "step": "GENERATE_THUMBNAIL", "seq": 4, "status": "completed", "durationMs": 52000, "tokensIn": 0, "tokensOut": 0}
+{"timestamp": "2026-03-15T14:24:19Z", "runId": "run-20260315T142146Z-afcd88", "type": "STEP", "step": "CREATE_META_JSON", "seq": 5, "status": "completed", "durationMs": 29000}
+{"timestamp": "2026-03-15T14:24:51Z", "runId": "run-20260315T142146Z-afcd88", "type": "STEP", "step": "VALIDATE_APP", "seq": 6, "status": "failed", "durationMs": 2100, "error": {"code": "VALIDATION_FAILED", "message": "Missing strict meta placeholders and meta schema mismatches", "retryable": true}}
+{"timestamp": "2026-03-15T14:24:51Z", "runId": "run-20260315T142146Z-afcd88", "type": "STEP", "step": "VALIDATE_APP", "seq": 6, "status": "retrying"}
+{"timestamp": "2026-03-15T14:25:25Z", "runId": "run-20260315T142146Z-afcd88", "type": "STEP", "step": "VALIDATE_APP", "seq": 6, "status": "completed", "durationMs": 78000}
+{"timestamp": "2026-03-15T14:25:35Z", "runId": "run-20260315T142146Z-afcd88", "type": "STEP", "step": "GIT_BRANCH", "seq": 7, "status": "completed", "durationMs": 1200, "details": {"branch": "feat/focus-sprint-planner"}}

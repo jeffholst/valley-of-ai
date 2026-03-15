@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Focus Sprint Planner - __MAIN_SITE_NAME__</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --muted: #94a3b8;
+        --primary: #22d3ee;
+        --ok: #34d399;
+        --warn: #fbbf24;
+        --danger: #fb7185;
+        --ring: 0 0 0 3px color-mix(in srgb, var(--primary) 45%, transparent);
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+        --muted: #6b7280;
+        --primary: #0891b2;
+        --ok: #059669;
+        --warn: #d97706;
+        --danger: #e11d48;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        background: radial-gradient(circle at 15% 10%, color-mix(in srgb, var(--primary) 16%, var(--bg)), var(--bg));
+        color: var(--text);
+      }
+      .app {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 1rem;
+        display: grid;
+        gap: 0.85rem;
+      }
+      .panel {
+        background: color-mix(in srgb, var(--surface) 88%, transparent);
+        border: 1px solid color-mix(in srgb, var(--muted) 25%, transparent);
+        border-radius: 14px;
+        padding: 0.9rem;
+        backdrop-filter: blur(4px);
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+      .sub {
+        color: var(--muted);
+        margin-top: 0.2rem;
+        font-size: 0.92rem;
+      }
+      .timer {
+        text-align: center;
+        font-size: clamp(2rem, 10vw, 4rem);
+        font-variant-numeric: tabular-nums;
+        font-weight: 700;
+      }
+      .row {
+        display: flex;
+        gap: 0.55rem;
+        flex-wrap: wrap;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+      button {
+        border: 1px solid color-mix(in srgb, var(--muted) 30%, transparent);
+        background: color-mix(in srgb, var(--surface) 70%, var(--bg));
+        color: var(--text);
+        border-radius: 10px;
+        padding: 0.55rem 0.8rem;
+        cursor: pointer;
+      }
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible {
+        outline: none;
+        box-shadow: var(--ring);
+      }
+      .primary {
+        background: color-mix(in srgb, var(--primary) 30%, var(--surface));
+      }
+      .ok {
+        background: color-mix(in srgb, var(--ok) 28%, var(--surface));
+      }
+      .danger {
+        background: color-mix(in srgb, var(--danger) 22%, var(--surface));
+      }
+      .controls {
+        justify-content: center;
+      }
+      form {
+        display: grid;
+        gap: 0.6rem;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+      label {
+        display: grid;
+        gap: 0.2rem;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+      input,
+      select {
+        border: 1px solid color-mix(in srgb, var(--muted) 35%, transparent);
+        border-radius: 10px;
+        background: color-mix(in srgb, var(--surface) 80%, var(--bg));
+        color: var(--text);
+        padding: 0.55rem 0.65rem;
+      }
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 0.5rem;
+      }
+      .task {
+        display: grid;
+        gap: 0.45rem;
+        border: 1px solid color-mix(in srgb, var(--muted) 22%, transparent);
+        border-radius: 12px;
+        padding: 0.65rem;
+        background: color-mix(in srgb, var(--surface) 84%, transparent);
+      }
+      .task-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.6rem;
+        align-items: start;
+      }
+      .chips {
+        display: flex;
+        gap: 0.35rem;
+        flex-wrap: wrap;
+      }
+      .chip {
+        border-radius: 999px;
+        font-size: 0.75rem;
+        padding: 0.2rem 0.5rem;
+        border: 1px solid color-mix(in srgb, var(--muted) 24%, transparent);
+        color: var(--muted);
+      }
+      .next {
+        color: var(--ok);
+        border-color: color-mix(in srgb, var(--ok) 35%, transparent);
+      }
+      .score {
+        font-weight: 600;
+      }
+      .hint {
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      @media (min-width: 800px) {
+        .grid {
+          grid-template-columns: 1fr 1.1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app" aria-live="polite">
+      <section class="panel">
+        <h1>Focus Sprint Planner</h1>
+        <p class="sub">Plan tasks by priority score, then execute in short sprints.</p>
+      </section>
+
+      <section class="panel">
+        <div class="timer" id="timer">25:00</div>
+        <div class="row controls">
+          <button id="startBtn" class="primary" aria-keyshortcuts="Space">Start / Pause (Space)</button>
+          <button id="resetBtn">Reset (R)</button>
+          <button id="doneBtn" class="ok">Complete Suggested (D)</button>
+        </div>
+        <p class="hint">Input-friendly on touch and keyboard. Suggestion updates as priorities change.</p>
+      </section>
+
+      <section class="grid">
+        <div class="panel">
+          <form id="taskForm">
+            <label>
+              Task
+              <input id="taskName" maxlength="60" required placeholder="Ship release notes" />
+            </label>
+            <div class="row">
+              <label>
+                Urgency (1-5)
+                <select id="urgency">
+                  <option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option>
+                </select>
+              </label>
+              <label>
+                Impact (1-5)
+                <select id="impact">
+                  <option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option>
+                </select>
+              </label>
+              <label>
+                Effort (1-5)
+                <select id="effort">
+                  <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+                </select>
+              </label>
+            </div>
+            <button class="primary" type="submit">Add Task</button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="row" style="justify-content: space-between; align-items: center">
+            <strong>Task Queue</strong>
+            <span class="muted" id="stats">0 tasks · 0 completed</span>
+          </div>
+          <ul id="taskList"></ul>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const timerEl = document.getElementById('timer');
+      const startBtn = document.getElementById('startBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const doneBtn = document.getElementById('doneBtn');
+      const form = document.getElementById('taskForm');
+      const taskList = document.getElementById('taskList');
+      const stats = document.getElementById('stats');
+
+      let total = 25 * 60;
+      let remaining = total;
+      let ticker = null;
+      const tasks = [];
+
+      const scoreTask = (t) => t.urgency * 2 + t.impact * 2 - t.effort;
+
+      function format(s) {
+        const m = Math.floor(s / 60).toString().padStart(2, '0');
+        const sec = (s % 60).toString().padStart(2, '0');
+        return `${m}:${sec}`;
+      }
+
+      function renderTimer() {
+        timerEl.textContent = format(remaining);
+        document.title = `${format(remaining)} · Focus Sprint Planner - __MAIN_SITE_NAME__`;
+      }
+
+      function nextTaskIndex() {
+        let idx = -1;
+        let best = -Infinity;
+        tasks.forEach((t, i) => {
+          if (t.done) return;
+          const s = scoreTask(t);
+          if (s > best) {
+            best = s;
+            idx = i;
+          }
+        });
+        return idx;
+      }
+
+      function renderTasks() {
+        const next = nextTaskIndex();
+        const completed = tasks.filter((t) => t.done).length;
+        stats.textContent = `${tasks.length} tasks · ${completed} completed`;
+
+        taskList.innerHTML = '';
+        tasks
+          .map((t, i) => ({ t, i, score: scoreTask(t) }))
+          .sort((a, b) => b.score - a.score)
+          .forEach(({ t, i, score }) => {
+            const li = document.createElement('li');
+            li.className = 'task';
+            const isNext = i === next && !t.done;
+            li.innerHTML = `
+              <div class="task-head">
+                <strong>${t.name}</strong>
+                <span class="score">Score ${score}</span>
+              </div>
+              <div class="chips">
+                <span class="chip">Urgency ${t.urgency}</span>
+                <span class="chip">Impact ${t.impact}</span>
+                <span class="chip">Effort ${t.effort}</span>
+                ${isNext ? '<span class="chip next">Suggested next</span>' : ''}
+                ${t.done ? '<span class="chip" style="color:var(--ok)">Completed</span>' : ''}
+              </div>
+              <div class="row">
+                <button data-act="up" data-id="${i}" aria-label="Increase priority for ${t.name}">↑ Priority</button>
+                <button data-act="down" data-id="${i}" aria-label="Decrease priority for ${t.name}">↓ Priority</button>
+                <button data-act="toggle" data-id="${i}" class="ok">${t.done ? 'Undo' : 'Done'}</button>
+              </div>
+            `;
+            taskList.appendChild(li);
+          });
+      }
+
+      function tick() {
+        remaining -= 1;
+        if (remaining <= 0) {
+          remaining = 0;
+          clearInterval(ticker);
+          ticker = null;
+          startBtn.textContent = 'Start / Pause (Space)';
+          alert('Sprint complete. Review completed tasks and start next round.');
+        }
+        renderTimer();
+      }
+
+      startBtn.addEventListener('click', () => {
+        if (ticker) {
+          clearInterval(ticker);
+          ticker = null;
+        } else {
+          ticker = setInterval(tick, 1000);
+        }
+      });
+
+      resetBtn.addEventListener('click', () => {
+        clearInterval(ticker);
+        ticker = null;
+        remaining = total;
+        renderTimer();
+      });
+
+      doneBtn.addEventListener('click', () => {
+        const next = nextTaskIndex();
+        if (next !== -1) {
+          tasks[next].done = true;
+          renderTasks();
+        }
+      });
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('taskName').value.trim();
+        if (!name) return;
+        tasks.push({
+          name,
+          urgency: Number(document.getElementById('urgency').value),
+          impact: Number(document.getElementById('impact').value),
+          effort: Number(document.getElementById('effort').value),
+          done: false,
+        });
+        form.reset();
+        document.getElementById('urgency').value = '4';
+        document.getElementById('impact').value = '4';
+        document.getElementById('effort').value = '3';
+        renderTasks();
+      });
+
+      taskList.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-id]');
+        if (!btn) return;
+        const id = Number(btn.dataset.id);
+        const act = btn.dataset.act;
+        const task = tasks[id];
+        if (!task) return;
+        if (act === 'toggle') task.done = !task.done;
+        if (act === 'up') {
+          task.urgency = Math.min(5, task.urgency + 1);
+          task.impact = Math.min(5, task.impact + 1);
+        }
+        if (act === 'down') {
+          task.urgency = Math.max(1, task.urgency - 1);
+          task.impact = Math.max(1, task.impact - 1);
+        }
+        renderTasks();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && !['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+          e.preventDefault();
+          startBtn.click();
+        }
+        if (e.key.toLowerCase() === 'r') resetBtn.click();
+        if (e.key.toLowerCase() === 'd') doneBtn.click();
+      });
+
+      renderTimer();
+      renderTasks();
+    </script>
+  </body>
+</html>
