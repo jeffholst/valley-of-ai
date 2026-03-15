@@ -4,12 +4,17 @@
   "shortDescription": "A mobile-first water intake tracker with quick-add buttons, streak tracking, and gentle active-hour nudges.",
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-15T07:02:54Z",
-  "category": "Health & Wellness",
+  "category": "Utilities",
   "votes": 0,
   "status": "active",
-  "tags": ["hydration", "wellness", "tracker", "mobile-friendly"],
+  "tags": [
+    "hydration",
+    "wellness",
+    "tracker",
+    "mobile-friendly"
+  ],
   "homepagePath": "index.html",
-  "inputMode": "touch,keyboard",
+  "inputMode": "responsive",
   "generation": {
     "agentName": "openclaw-dev-agent",
     "llmModel": "gpt-5.1",
