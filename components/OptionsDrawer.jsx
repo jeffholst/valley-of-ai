@@ -23,7 +23,7 @@ import { useEffect, useState } from 'react';
 
 /** Toggle definitions — order here = order in drawer UI */
 const TOGGLES = [
-  { key: 'pterodactyl', label: 'Pterodactyl', icon: '🦖' },
+  { key: 'pterodactyl', label: 'Pterodactyl', iconSrc: '/pterodactyl-right-flapping.svg' },
   { key: 'wind',        label: 'Wind',        icon: '💨' },
   { key: 'rain',        label: 'Rain',        icon: '🌧️' },
   { key: 'snow',        label: 'Snow',        icon: '❄️' },
@@ -71,10 +71,14 @@ export default function OptionsDrawer({ options, onToggle }) {
           <h2 className="options-drawer-title">Options</h2>
 
           <div className="options-toggle-list">
-            {TOGGLES.map(({ key, label, icon }) => (
+            {TOGGLES.map(({ key, label, icon, iconSrc }) => (
               <label key={key} className="options-toggle-row">
                 <span className="options-toggle-label">
-                  <span className="options-toggle-icon">{icon}</span>
+                  <span className="options-toggle-icon">
+                    {iconSrc
+                      ? <img src={iconSrc} alt="" width={22} height={22} style={{ display: 'block' }} />
+                      : icon}
+                  </span>
                   {label}
                 </span>
 
