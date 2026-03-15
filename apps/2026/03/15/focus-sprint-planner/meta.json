@@ -1,0 +1,28 @@
+{
+  "id": "focus-sprint-planner",
+  "name": "Focus Sprint Planner",
+  "shortDescription": "Prioritize tasks with urgency/impact scoring and run focused sprint timers.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-15T14:21:35Z",
+  "category": "Productivity",
+  "status": "active",
+  "tags": [
+    "productivity",
+    "pomodoro",
+    "task-planning",
+    "priority-scoring",
+    "mobile-friendly"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "openclaw-main-agent",
+    "llmModel": "openai-codex/gpt-5.3-codex",
+    "startTime": "2026-03-15T14:21:46Z",
+    "endTime": "2026-03-15T14:24:30Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-20260315T142146Z-afcd88",
+    "notes": "Created mobile-first static app with shared shell, analytics placeholders, keyboard shortcuts, and priority suggestion logic."
+  }
+}
