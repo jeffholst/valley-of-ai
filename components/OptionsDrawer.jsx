@@ -37,8 +37,8 @@ export default function OptionsDrawer({ options, onToggle }) {
 
   /* Close drawer on Escape key */
   useEffect(() => {
-    if (!open) return;
-    const onKey = (e) => { if (e.key === 'Escape') setOpen(false); };
+    if (!open) {return;}
+    const onKey = (e) => { if (e.key === 'Escape') {setOpen(false);} };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [open]);

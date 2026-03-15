@@ -275,7 +275,7 @@ export default function HomePage() {
    * Created on first enable, suspended/resumed on subsequent toggles.
    */
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted) {return;}
     if (options.sound) {
       if (!audioCtxRef.current) {
         try {
