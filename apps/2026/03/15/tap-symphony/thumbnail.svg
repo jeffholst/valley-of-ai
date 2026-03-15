@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+    <!-- Background Gradient -->
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#4ecdc4;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ffe66d;stop-opacity:1" />
+        </linearGradient>
+        <radialGradient id="targetGradient" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:0.2;"/>
+            <stop offset="100%" style="stop-color:#ff6b6b;stop-opacity:0"/>
+        </radialGradient>
+        <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- Main Background -->
+    <rect width="800" height="450" fill="url(#bgGradient)"/>
+
+    <!-- Decorative circles background -->
+    <circle cx="100" cy="80" r="80" fill="#4ecdc4" opacity="0.05"/>
+    <circle cx="750" cy="350" r="120" fill="#ff6b6b" opacity="0.05"/>
+    <circle cx="400" cy="225" r="200" fill="#ffe66d" opacity="0.02"/>
+
+    <!-- Title -->
+    <text x="400" y="70" font-family="Arial, sans-serif" font-size="48" font-weight="900" text-anchor="middle" fill="url(#textGradient)" letter-spacing="3">
+        🎵 TAP SYMPHONY
+    </text>
+
+    <!-- Stats Display -->
+    <g id="stats">
+        <!-- Score Stat -->
+        <rect x="50" y="100" width="140" height="60" rx="8" fill="#ffffff" opacity="0.08" stroke="#4ecdc4" stroke-width="1" stroke-opacity="0.3"/>
+        <text x="120" y="125" font-family="Arial" font-size="12" text-anchor="middle" fill="#aaa" opacity="0.7">Score</text>
+        <text x="120" y="150" font-family="Arial" font-size="28" font-weight="bold" text-anchor="middle" fill="#ff6b6b">8,420</text>
+
+        <!-- Combo Stat -->
+        <rect x="210" y="100" width="140" height="60" rx="8" fill="#ffffff" opacity="0.08" stroke="#4ecdc4" stroke-width="1" stroke-opacity="0.3"/>
+        <text x="280" y="125" font-family="Arial" font-size="12" text-anchor="middle" fill="#aaa" opacity="0.7">Combo</text>
+        <text x="280" y="150" font-family="Arial" font-size="28" font-weight="bold" text-anchor="middle" fill="#4ecdc4">23</text>
+
+        <!-- Multiplier Stat -->
+        <rect x="370" y="100" width="140" height="60" rx="8" fill="#ffffff" opacity="0.08" stroke="#4ecdc4" stroke-width="1" stroke-opacity="0.3"/>
+        <text x="440" y="125" font-family="Arial" font-size="12" text-anchor="middle" fill="#aaa" opacity="0.7">Multiplier</text>
+        <text x="440" y="150" font-family="Arial" font-size="28" font-weight="bold" text-anchor="middle" fill="#ffe66d">5x</text>
+
+        <!-- Level Stat -->
+        <rect x="530" y="100" width="140" height="60" rx="8" fill="#ffffff" opacity="0.08" stroke="#4ecdc4" stroke-width="1" stroke-opacity="0.3"/>
+        <text x="600" y="125" font-family="Arial" font-size="12" text-anchor="middle" fill="#aaa" opacity="0.7">Level</text>
+        <text x="600" y="150" font-family="Arial" font-size="28" font-weight="bold" text-anchor="middle" fill="#ff9ff3">3</text>
+
+        <!-- Time Stat -->
+        <rect x="690" y="100" width="110" height="60" rx="8" fill="#ffffff" opacity="0.08" stroke="#4ecdc4" stroke-width="1" stroke-opacity="0.3"/>
+        <text x="745" y="125" font-family="Arial" font-size="12" text-anchor="middle" fill="#aaa" opacity="0.7">Time</text>
+        <text x="745" y="150" font-family="Arial" font-size="28" font-weight="bold" text-anchor="middle" fill="#4ecdc4">35s</text>
+    </g>
+
+    <!-- Target Zone Circle -->
+    <g>
+        <!-- Outer ring with glow -->
+        <circle cx="400" cy="240" r="100" fill="url(#targetGradient)" stroke="#4ecdc4" stroke-width="3" stroke-opacity="0.5" filter="url(#glow)"/>
+        
+        <!-- Active pulse effect -->
+        <circle cx="400" cy="240" r="95" fill="none" stroke="#4ecdc4" stroke-width="2" opacity="0.6"/>
+        <circle cx="400" cy="240" r="85" fill="none" stroke="#4ecdc4" stroke-width="1" opacity="0.3"/>
+        
+        <!-- Center target -->
+        <circle cx="400" cy="240" r="40" fill="none" stroke="#ff6b6b" stroke-width="2" stroke-opacity="0.7"/>
+        <circle cx="400" cy="240" r="35" fill="#ff6b6b" opacity="0.15"/>
+        
+        <!-- Beat indicators -->
+        <circle cx="400" cy="240" r="15" fill="#ffe66d" opacity="0.9"/>
+        <circle cx="400" cy="240" r="8" fill="#ff6b6b" opacity="0.8"/>
+        
+        <!-- Feedback text -Perfect -->
+        <text x="380" y="245" font-family="Arial" font-size="16" font-weight="bold" fill="#ffe66d" opacity="0.8">PERFECT!</text>
+    </g>
+
+    <!-- Combo Counter (top right) -->
+    <text x="700" y="60" font-family="Arial" font-size="18" font-weight="bold" fill="#ffe66d" text-anchor="end" opacity="0.9">
+        23 COMBO!
+    </text>
+
+    <!-- Bottom UI Info -->
+    <g id="bottomInfo">
+        <!-- Difficulty indicator -->
+        <rect x="50" y="380" width="150" height="50" rx="6" fill="#ffffff" opacity="0.06" stroke="#ffffff" stroke-width="0.5" stroke-opacity="0.2"/>
+        <text x="125" y="400" font-family="Arial" font-size="11" text-anchor="middle" fill="#aaa" opacity="0.6">DIFFICULTY</text>
+        <text x="125" y="420" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#4ecdc4">Level 3</text>
+
+        <!-- Game features -->
+        <text x="250" y="395" font-family="Arial" font-size="12" fill="#aaa" opacity="0.5">✓ Mobile Optimized</text>
+        <text x="250" y="420" font-family="Arial" font-size="12" fill="#aaa" opacity="0.5">✓ Endless Mode  ✓ Leaderboard Ready</text>
+
+        <!-- Playing indicator -->
+        <rect x="680" y="380" width="100" height="50" rx="6" fill="#ff6b6b" opacity="0.2" stroke="#ff6b6b" stroke-width="1" stroke-opacity="0.4"/>
+        <text x="730" y="405" font-family="Arial" font-size="13" text-anchor="middle" fill="#ff6b6b" font-weight="bold">▶ PLAYING</text>
+        <text x="730" y="425" font-family="Arial" font-size="10" text-anchor="middle" fill="#ff6b6b" opacity="0.7">Tap to beat</text>
+    </g>
+
+    <!-- Animated note particles (static representation) -->
+    <g opacity="0.3">
+        <circle cx="450" cy="180" r="3" fill="#4ecdc4"/>
+        <circle cx="350" cy="200" r="2" fill="#ff6b6b"/>
+        <circle cx="480" cy="220" r="2.5" fill="#ffe66d"/>
+        <circle cx="320" cy="250" r="2" fill="#4ecdc4"/>
+        <circle cx="500" cy="270" r="3" fill="#ff9ff3"/>
+    </g>
+</svg>

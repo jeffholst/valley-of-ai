@@ -1,0 +1,47 @@
+{
+  "id": "tap-symphony",
+  "name": "Tap Symphony",
+  "shortDescription": "Rhythm-based addictive tapping game with dynamic difficulty and competitive leaderboard",
+  "fullDescription": "Tap Symphony is a mobile-first rhythm game that challenges your timing and reflexes. Tap to the beat with perfect rhythm to achieve high scores, build combos, and unlock difficulty levels. Features procedurally-generated beat patterns, real-time feedback, and endless gameplay mode.",
+  "thumbnail": "thumbnail.svg",
+  "category": "Games",
+  "tags": ["rhythm", "tapping", "mobile", "addictive", "competitive", "rhythm-game", "casual", "endless"],
+  "createdAt": "2026-03-15T20:06:57Z",
+  "status": "active",
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "gpt-5.1",
+    "startTime": "2026-03-15T20:06:57Z",
+    "endTime": "2026-03-15T20:09:45Z",
+    "totalTokensIn": 3240,
+    "totalTokensOut": 8950,
+    "runId": "run-20260315T200657Z-7243ca",
+    "notes": "Ultra-Compact pipeline execution. Game includes dynamic difficulty scaling (levels 1-4), combo system with 5x multiplier cap, real-time beat timing validation, procedural sequence generation, and comprehensive game-over analytics. Mobile-optimized with touch and keyboard controls."
+  },
+  "features": [
+    "Dynamic difficulty scaling (4 levels)",
+    "Combo system with progressive multipliers",
+    "Real-time beat timing validation",
+    "Procedural beat pattern generation",
+    "Mobile-first responsive design",
+    "Touch and keyboard controls",
+    "Dark/light theme support",
+    "Game-over analytics (score, accuracy, max combo)",
+    "Endless gameplay mode",
+    "Visual feedback animations"
+  ],
+  "stats": {
+    "developmentTime": "2m 48s",
+    "codeLines": 477,
+    "components": ["Game state manager", "UI renderer", "Beat sequencer", "Timing validator", "Animation effects"],
+    "designPatterns": ["State machine", "Event-driven gameplay", "Procedural generation"]
+  },
+  "performance": {
+    "estimatedLoad": "< 2s",
+    "mobileOptimized": true,
+    "touchResponsive": true,
+    "accessibilitySupport": ["Keyboard controls", "High contrast mode support"]
+  }
+}

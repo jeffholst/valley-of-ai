@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tap Symphony - __MAIN_SITE_NAME__</title>
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%23ff6b6b' width='32' height='32' rx='8'/><circle cx='8' cy='16' r='4' fill='white' opacity='0.8'/><circle cx='16' cy='10' r='4' fill='white' opacity='0.6'/><circle cx='24' cy='16' r='4' fill='white' opacity='0.8'/><circle cx='16' cy='22' r='4' fill='white' opacity='0.7'/></svg>">
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #ff6b6b;
+            --secondary: #4ecdc4;
+            --accent: #ffe66d;
+            --dark-bg: #1a1a2e;
+            --light-bg: #f5f5f5;
+            --dark-text: #0f3460;
+            --light-text: #f5f5f5;
+            --dark-card: #16213e;
+            --light-card: #ffffff;
+            --scheme: light;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --scheme: dark;
+            }
+        }
+
+        html {
+            --bg: var(--scheme, light) == light ? var(--light-bg) : var(--dark-bg);
+            --text: var(--scheme, light) == light ? var(--dark-text) : var(--light-text);
+            --card: var(--scheme, light) == light ? var(--light-card) : var(--dark-card);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        body.light-mode {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            color: #1a1a2e;
+        }
+
+        .game-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            z-index: 10;
+        }
+
+        .header h1 {
+            font-size: clamp(24px, 6vw, 48px);
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #ffe66d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #ff6b6b;
+            font-size: 18px;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .target-zone {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            max-width: 400px;
+            background: radial-gradient(circle at center, rgba(255, 107, 107, 0.1), transparent);
+            border: 3px solid rgba(78, 205, 196, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s ease-out;
+        }
+
+        .target-zone.active {
+            border-color: #4ecdc4;
+            box-shadow: 0 0 30px rgba(78, 205, 196, 0.5), inset 0 0 30px rgba(78, 205, 196, 0.2);
+            transform: scale(1.05);
+        }
+
+        .target-zone.hit {
+            box-shadow: 0 0 50px rgba(255, 107, 107, 0.8), inset 0 0 50px rgba(255, 107, 107, 0.3);
+            animation: pulse-hit 0.3s ease-out;
+        }
+
+        @keyframes pulse-hit {
+            0% { transform: scale(1.05); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1.05); }
+        }
+
+        .beat-indicator {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ff6b6b, #ff6b6b80);
+            animation: beat-pulse 0.5s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes beat-pulse {
+            0% { 
+                transform: scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+
+        .feedback-text {
+            position: absolute;
+            font-size: 24px;
+            font-weight: bold;
+            pointer-events: none;
+            animation: feedback-float 0.6s ease-out forwards;
+        }
+
+        @keyframes feedback-float {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-60px) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        .perfect { color: #ffe66d; }
+        .good { color: #4ecdc4; }
+        .ok { color: #ff9ff3; }
+        .miss { color: #ff6b6b; }
+
+        .controls {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b6b, #ff5252);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(78, 205, 196, 0.2);
+            color: #4ecdc4;
+            border: 2px solid #4ecdc4;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(78, 205, 196, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .game-over-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            animation: fade-in 0.3s ease-out forwards;
+        }
+
+        @keyframes fade-in {
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #16213e, #0f3460);
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            border: 2px solid #4ecdc4;
+            max-width: 90%;
+            animation: slide-up 0.4s ease-out;
+        }
+
+        @keyframes slide-up {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-content h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ff6b6b, #ffe66d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 30px 0;
+            font-size: 18px;
+        }
+
+        .modal-stat {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(78, 205, 196, 0.3);
+        }
+
+        .modal-stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            opacity: 0.7;
+            margin-bottom: 4px;
+        }
+
+        .modal-stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .level-indicator {
+            font-size: 16px;
+            margin-top: 20px;
+            color: #ffe66d;
+            font-weight: bold;
+        }
+
+        .combo-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffe66d;
+            text-shadow: 0 0 20px rgba(255, 230, 109, 0.5);
+            z-index: 100;
+            animation: combo-pulse 0.3s ease-out;
+        }
+
+        @keyframes combo-pulse {
+            0% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .difficulty-info {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(78, 205, 196, 0.3);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 16px;
+            }
+
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .stat {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .combo-counter {
+                font-size: 20px;
+                top: 16px;
+                right: 16px;
+            }
+
+            .difficulty-info {
+                font-size: 11px;
+                bottom: 16px;
+                right: 16px;
+            }
+
+            .target-zone {
+                max-width: 320px;
+            }
+
+            button {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>🎵 TAP SYMPHONY</h1>
+            <div class="stats">
+                <div class="stat">Score: <span class="stat-value" id="scoreDisplay">0</span></div>
+                <div class="stat">Multiplier: <span class="stat-value" id="multiplierDisplay">1x</span></div>
+                <div class="stat">Combo: <span class="stat-value" id="comboDisplay">0</span></div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="target-zone" id="targetZone">
+                <div id="beatContainer"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-primary" id="playBtn">Play Game</button>
+            <button class="btn-secondary" id="restartBtn" style="display:none;">Restart</button>
+        </div>
+    </div>
+
+    <div class="combo-counter" id="comboCounter" style="display:none;"></div>
+    <div class="difficulty-info" id="difficultyInfo" style="display:none;"></div>
+
+    <div class="game-over-modal" id="gameOverModal" style="display:none;">
+        <div class="modal-content">
+            <h2 id="gameOverTitle">Game Over!</h2>
+            <div class="modal-stats">
+                <div class="modal-stat">
+                    <div class="modal-stat-label">Final Score</div>
+                    <div class="modal-stat-value" id="finalScore">0</div>
+                </div>
+                <div class="modal-stat">
+                    <div class="modal-stat-label">Max Combo</div>
+                    <div class="modal-stat-value" id="maxCombo">0</div>
+                </div>
+                <div class="modal-stat">
+                    <div class="modal-stat-label">Taps</div>
+                    <div class="modal-stat-value" id="totalTaps">0</div>
+                </div>
+                <div class="modal-stat">
+                    <div class="modal-stat-label">Accuracy</div>
+                    <div class="modal-stat-value" id="accuracy">0%</div>
+                </div>
+            </div>
+            <div class="level-indicator" id="levelInfo"></div>
+            <div class="controls" style="margin-top:30px;">
+                <button class="btn-primary" id="playAgainBtn">Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/apps/shared/app-shell.js" defer></script>
+    <script>
+        // Game State
+        const gameState = {
+            isPlaying: false,
+            score: 0,
+            combo: 0,
+            maxCombo: 0,
+            multiplier: 1,
+            level: 1,
+            totalTaps: 0,
+            hits: 0,
+            misses: 0,
+            beatSequence: [],
+            currentBeatIndex: 0,
+            timeElapsed: 0,
+            maxDuration: 60000, // 60 seconds
+            beatTiming: 500,
+        };
+
+        const DOM = {
+            playBtn: document.getElementById('playBtn'),
+            restartBtn: document.getElementById('restartBtn'),
+            targetZone: document.getElementById('targetZone'),
+            beatContainer: document.getElementById('beatContainer'),
+            scoreDisplay: document.getElementById('scoreDisplay'),
+            multiplierDisplay: document.getElementById('multiplierDisplay'),
+            comboDisplay: document.getElementById('comboDisplay'),
+            comboCounter: document.getElementById('comboCounter'),
+            difficultyInfo: document.getElementById('difficultyInfo'),
+            gameOverModal: document.getElementById('gameOverModal'),
+            gameOverTitle: document.getElementById('gameOverTitle'),
+            finalScore: document.getElementById('finalScore'),
+            maxCombo: document.getElementById('maxCombo'),
+            totalTaps: document.getElementById('totalTaps'),
+            accuracy: document.getElementById('accuracy'),
+            levelInfo: document.getElementById('levelInfo'),
+            playAgainBtn: document.getElementById('playAgainBtn'),
+        };
+
+        function getTimingWindow() {
+            const baseWindow = 200;
+            return Math.max(100, baseWindow - gameState.level * 5);
+        }
+
+        function generateBeatSequence() {
+            const sequenceLength = Math.min(120, 30 + gameState.level * 5);
+            gameState.beatSequence = [];
+            for (let i = 0; i < sequenceLength; i++) {
+                gameState.beatSequence.push({
+                    time: (i + 1) * gameState.beatTiming,
+                    hit: false,
+                    timing: 0,
+                });
+            }
+        }
+
+        function startGame() {
+            gameState.isPlaying = true;
+            gameState.score = 0;
+            gameState.combo = 0;
+            gameState.maxCombo = 0;
+            gameState.multiplier = 1;
+            gameState.level = 1;
+            gameState.totalTaps = 0;
+            gameState.hits = 0;
+            gameState.misses = 0;
+            gameState.currentBeatIndex = 0;
+            gameState.timeElapsed = 0;
+            gameState.beatTiming = Math.max(250, 500 - gameState.level * 20);
+
+            generateBeatSequence();
+            updateUI();
+            DOM.playBtn.style.display = 'none';
+            DOM.restartBtn.style.display = 'inline-block';
+            DOM.comboCounter.style.display = 'block';
+            DOM.difficultyInfo.style.display = 'block';
+            DOM.gameOverModal.style.display = 'none';
+
+            playGameLoop();
+        }
+
+        function playGameLoop() {
+            const startTime = Date.now();
+            const gameSequence = gameState.beatSequence;
+
+            const loop = () => {
+                if (!gameState.isPlaying) return;
+
+                gameState.timeElapsed = Date.now() - startTime;
+
+                // Update difficulty
+                if (gameState.timeElapsed > 15000 && gameState.level < 2) gameState.level = 2;
+                if (gameState.timeElapsed > 30000 && gameState.level < 3) gameState.level = 3;
+                if (gameState.timeElapsed > 45000 && gameState.level < 4) gameState.level = 4;
+
+                gameState.beatTiming = Math.max(250, 500 - gameState.level * 20);
+
+                // Show next beat
+                const nextBeatIndex = Math.floor(gameState.timeElapsed / gameState.beatTiming);
+                if (nextBeatIndex < gameSequence.length) {
+                    gameState.currentBeatIndex = nextBeatIndex;
+                    if (!gameSequence[nextBeatIndex].hit) {
+                        showBeat();
+                    }
+                } else {
+                    endGame();
+                    return;
+                }
+
+                updateUI();
+                requestAnimationFrame(loop);
+            };
+
+            loop();
+        }
+
+        function showBeat() {
+            const beat = DOM.targetZone.querySelector('.beat-indicator');
+            if (beat) beat.remove();
+
+            const indicator = document.createElement('div');
+            indicator.className = 'beat-indicator';
+            DOM.targetZone.appendChild(indicator);
+
+            DOM.targetZone.classList.add('active');
+            setTimeout(() => {
+                DOM.targetZone.classList.remove('active');
+                if (!gameState.beatSequence[gameState.currentBeatIndex].hit) {
+                    gameState.misses++;
+                    gameState.combo = 0;
+                    showFeedback('MISS', 'miss');
+                    gameState.beatSequence[gameState.currentBeatIndex].hit = true;
+                }
+            }, gameState.beatTiming * 0.8);
+        }
+
+        function handleTap() {
+            if (!gameState.isPlaying) return;
+
+            gameState.totalTaps++;
+            const nextBeat = gameState.beatSequence[gameState.currentBeatIndex];
+
+            if (!nextBeat || nextBeat.hit) return;
+
+            const timingWindow = getTimingWindow();
+            const timeSinceExpected = gameState.timeElapsed - nextBeat.time;
+            const timing = Math.abs(timeSinceExpected);
+
+            if (timing <= timingWindow) {
+                nextBeat.hit = true;
+                gameState.hits++;
+                let feedback = 'GOOD';
+                let multiplier = 1;
+
+                if (timing <= timingWindow * 0.3) {
+                    feedback = 'PERFECT!';
+                    multiplier = 3;
+                } else if (timing <= timingWindow * 0.7) {
+                    feedback = 'GREAT!';
+                    multiplier = 2;
+                }
+
+                gameState.combo++;
+                if (gameState.combo > gameState.maxCombo) gameState.maxCombo = gameState.combo;
+                gameState.multiplier = 1 + Math.floor(gameState.combo / 5);
+
+                const baseScore = 100 * multiplier * gameState.multiplier;
+                gameState.score += baseScore;
+
+                showFeedback(feedback, feedback.toLowerCase().replace('!', ''));
+                updateComboDisplay();
+            } else {
+                gameState.combo = 0;
+                gameState.multiplier = 1;
+                gameState.misses++;
+                showFeedback('TOO SLOW', 'miss');
+            }
+
+            updateUI();
+        }
+
+        function showFeedback(text, type) {
+            const feedback = document.createElement('div');
+            feedback.className = `feedback-text ${type}`;
+            feedback.textContent = text;
+            feedback.style.left = '50%';
+            feedback.style.top = '50%';
+            feedback.style.transform = 'translate(-50%, -50%)';
+            DOM.targetZone.appendChild(feedback);
+
+            setTimeout(() => feedback.remove(), 600);
+        }
+
+        function updateComboDisplay() {
+            if (gameState.combo > 0) {
+                DOM.comboCounter.textContent = `${gameState.combo} COMBO!`;
+                DOM.comboCounter.style.animation = 'none';
+                setTimeout(() => {
+                    DOM.comboCounter.style.animation = 'combo-pulse 0.3s ease-out';
+                }, 10);
+            }
+        }
+
+        function updateUI() {
+            DOM.scoreDisplay.textContent = gameState.score;
+            DOM.multiplierDisplay.textContent = `${gameState.multiplier}x`;
+            DOM.comboDisplay.textContent = gameState.combo;
+            DOM.difficultyInfo.textContent = `Level ${gameState.level} • ${(gameState.timeElapsed / 1000).toFixed(1)}s`;
+
+            if (gameState.combo === 0) {
+                DOM.comboCounter.style.display = 'none';
+            }
+        }
+
+        function endGame() {
+            gameState.isPlaying = false;
+            const accuracy = gameState.totalTaps > 0 ? Math.round((gameState.hits / gameState.totalTaps) * 100) : 0;
+
+            DOM.finalScore.textContent = gameState.score;
+            DOM.maxCombo.textContent = gameState.maxCombo;
+            DOM.totalTaps.textContent = gameState.totalTaps;
+            DOM.accuracy.textContent = `${accuracy}%`;
+
+            let levelMessage = 'Beginner';
+            if (gameState.level >= 4) levelMessage = 'EXPERT';
+            else if (gameState.level >= 3) levelMessage = 'Advanced';
+            else if (gameState.level >= 2) levelMessage = 'Intermediate';
+
+            DOM.levelInfo.textContent = `Reached Level ${gameState.level} (${levelMessage})`;
+            DOM.gameOverModal.style.display = 'flex';
+            DOM.playBtn.style.display = 'inline-block';
+            DOM.restartBtn.style.display = 'none';
+            DOM.comboCounter.style.display = 'none';
+            DOM.difficultyInfo.style.display = 'none';
+        }
+
+        DOM.playBtn.addEventListener('click', startGame);
+        DOM.restartBtn.addEventListener('click', startGame);
+        DOM.playAgainBtn.addEventListener('click', startGame);
+        DOM.targetZone.addEventListener('click', handleTap);
+        DOM.targetZone.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            handleTap();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'Enter') {
+                e.preventDefault();
+                handleTap();
+            }
+        });
+
+        console.log('Tap Symphony loaded');
+    </script>
+</body>
+</html>
