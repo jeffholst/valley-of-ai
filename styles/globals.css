@@ -381,4 +381,418 @@
   .pterodactyl-sprite.is-dead {
     animation: pterodactyl-kill 0.65s ease-out forwards;
   }
+
+  /* ════════════════════════════════════════════════════════════
+     OPTIONS DRAWER
+     Right-side sliding panel with effect toggles.
+     Animates via translateX; mobile-first sizing.
+     See components/OptionsDrawer.jsx for the React component.
+     ════════════════════════════════════════════════════════════ */
+
+  /* ── Container: drawer + tab, slides in/out as one unit ── */
+  .options-drawer-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 280px;
+    z-index: 50;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+  }
+
+  .options-drawer-container.is-open {
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  /* ── Tab handle: sticks out from left edge of container ── */
+  .options-drawer-tab {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(-100%, -50%);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    padding: 14px 7px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: #e2e8f0;
+    background: rgba(30, 27, 60, 0.92);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    cursor: pointer;
+    pointer-events: auto;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background 0.2s;
+    user-select: none;
+    touch-action: manipulation;
+    z-index: 1;
+  }
+
+  .options-drawer-tab:hover {
+    background: rgba(40, 36, 80, 0.95);
+  }
+
+  /* Light-mode overrides for tab */
+  :root:not(.dark) .options-drawer-tab {
+    color: #4a3880;
+    background: rgba(255, 255, 255, 0.92);
+    border-color: rgba(139, 92, 246, 0.25);
+  }
+  :root:not(.dark) .options-drawer-tab:hover {
+    background: rgba(245, 243, 255, 0.97);
+  }
+
+  /* ── Panel body ── */
+  .options-drawer-panel {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background: rgba(15, 13, 35, 0.95);
+    border-left: 1px solid rgba(139, 92, 246, 0.25);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  :root:not(.dark) .options-drawer-panel {
+    background: rgba(255, 255, 255, 0.95);
+    border-left-color: rgba(139, 92, 246, 0.2);
+  }
+
+  .options-drawer-title {
+    padding: 20px 20px 4px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #e2e8f0;
+  }
+
+  :root:not(.dark) .options-drawer-title {
+    color: #1e1b3c;
+  }
+
+  /* ── Toggle list ── */
+  .options-toggle-list {
+    padding: 12px 16px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .options-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 4px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.15s;
+    user-select: none;
+  }
+
+  .options-toggle-row:hover {
+    background: rgba(139, 92, 246, 0.08);
+  }
+
+  .options-toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #cbd5e1;
+  }
+
+  :root:not(.dark) .options-toggle-label {
+    color: #374151;
+  }
+
+  .options-toggle-icon {
+    font-size: 20px;
+    width: 28px;
+    text-align: center;
+  }
+
+  /* ── Toggle switch (iOS-style track + knob) ── */
+  .options-switch-track {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    border-radius: 12px;
+    background: rgba(100, 100, 120, 0.4);
+    transition: background 0.2s;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .options-switch-track.is-on {
+    background: #8b5cf6;
+  }
+
+  .options-switch-knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .options-switch-track.is-on .options-switch-knob {
+    transform: translateX(20px);
+  }
+
+  /* ── Backdrop (dims background when drawer is open) ── */
+  .options-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 49;
+    background: rgba(0, 0, 0, 0.4);
+    animation: options-fade-in 0.3s ease;
+  }
+
+  @keyframes options-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Mobile: wider relative to viewport */
+  @media (max-width: 480px) {
+    .options-drawer-container {
+      width: min(280px, 85vw);
+    }
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     WEATHER EFFECT LAYERS
+     CSS-only atmospheric animations controlled by toggles in
+     the Options drawer. Each layer is a fixed overlay that is
+     conditionally rendered via React.
+
+     z-index stacking:
+       clouds (24) < rain / snow / wind (25) < lightning (27)
+
+     To add a new weather effect:
+       1. Create the CSS class + keyframes below
+       2. Add a toggle entry in OptionsDrawer TOGGLES array
+       3. Add a default in DEFAULT_OPTIONS (page.jsx)
+       4. Render the div conditionally in page.jsx
+     ════════════════════════════════════════════════════════════ */
+
+  /* ── Rain: elongated drops falling at a slight angle ──
+     Two pseudo-element layers offset for density.
+     Parent rotation creates the diagonal slant. */
+  .weather-rain {
+    position: fixed;
+    inset: -10%;
+    pointer-events: none;
+    z-index: 25;
+    overflow: hidden;
+    transform: rotate(4deg);
+  }
+
+  .weather-rain::before,
+  .weather-rain::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -100%;
+    bottom: 0;
+    background-image:
+      radial-gradient(1px 8px at 50% 50%, rgba(150, 180, 220, 0.45), transparent),
+      radial-gradient(1px 10px at 50% 50%, rgba(150, 180, 220, 0.35), transparent),
+      radial-gradient(1px 6px at 50% 50%, rgba(150, 180, 220, 0.40), transparent);
+    background-size: 80px 100px, 55px 85px, 95px 120px;
+    background-position: 0 0, 30px 40px, 60px 70px;
+    animation: weather-rain-fall 0.6s linear infinite;
+  }
+
+  .weather-rain::after {
+    background-size: 65px 110px, 90px 75px, 50px 130px;
+    background-position: 15px 20px, 45px 55px, 70px 10px;
+    animation-duration: 0.45s;
+    animation-delay: -0.18s;
+  }
+
+  @keyframes weather-rain-fall {
+    from { transform: translateY(0); }
+    to { transform: translateY(50%); }
+  }
+
+  /* ── Snow: round flakes drifting gently with horizontal sway ──
+     Uses radial-gradient circles at various sizes.
+     translateX in the keyframe adds a subtle side-drift. */
+  .weather-snow {
+    position: fixed;
+    inset: -10%;
+    pointer-events: none;
+    z-index: 25;
+    overflow: hidden;
+  }
+
+  .weather-snow::before,
+  .weather-snow::after {
+    content: '';
+    position: absolute;
+    left: -10%;
+    right: -10%;
+    top: -100%;
+    bottom: 0;
+    background-image:
+      radial-gradient(3px 3px at 50% 50%, rgba(255, 255, 255, 0.85), transparent 70%),
+      radial-gradient(2px 2px at 50% 50%, rgba(255, 255, 255, 0.65), transparent 70%),
+      radial-gradient(4px 4px at 50% 50%, rgba(255, 255, 255, 0.55), transparent 70%);
+    background-size: 120px 160px, 80px 110px, 150px 200px;
+    background-position: 0 0, 40px 80px, 80px 40px;
+    animation: weather-snow-fall 4s linear infinite;
+  }
+
+  .weather-snow::after {
+    background-size: 100px 140px, 130px 180px, 70px 120px;
+    background-position: 60px 20px, 20px 60px, 100px 100px;
+    animation-duration: 5.5s;
+    animation-delay: -2s;
+  }
+
+  @keyframes weather-snow-fall {
+    from { transform: translate(0, 0); }
+    to { transform: translate(30px, 50%); }
+  }
+
+  /* ── Wind: thin horizontal streaks rushing across ──
+     Elongated 1px-tall radial gradients create individual streaks.
+     The left: -200% + 66% translateX ensures seamless looping. */
+  .weather-wind {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 25;
+    overflow: hidden;
+  }
+
+  .weather-wind::before,
+  .weather-wind::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -200%;
+    right: 0;
+    background-image:
+      radial-gradient(120px 1px at 50% 50%, rgba(255, 255, 255, 0.12), transparent),
+      radial-gradient(80px 1px at 50% 50%, rgba(255, 255, 255, 0.08), transparent),
+      radial-gradient(160px 1px at 50% 50%, rgba(255, 255, 255, 0.10), transparent);
+    background-size: 300px 60px, 250px 45px, 350px 80px;
+    background-position: 0 0, 100px 25px, 50px 50px;
+    animation: weather-wind-blow 2.5s linear infinite;
+  }
+
+  .weather-wind::after {
+    background-size: 280px 70px, 200px 50px, 320px 55px;
+    background-position: 140px 10px, 50px 35px, 200px 60px;
+    animation-duration: 1.8s;
+    animation-delay: -0.9s;
+  }
+
+  @keyframes weather-wind-blow {
+    from { transform: translateX(0); }
+    to { transform: translateX(66.67%); }
+  }
+
+  /* ── Clouds: large soft shapes drifting slowly ──
+     Oversized radial gradients in the upper portion of the screen.
+     Two layers at different speeds for depth parallax. */
+  .weather-clouds {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 24;
+    overflow: hidden;
+  }
+
+  .weather-clouds::before,
+  .weather-clouds::after {
+    content: '';
+    position: absolute;
+    top: -5%;
+    bottom: 40%;
+    left: -200%;
+    right: 0;
+    background-image:
+      radial-gradient(180px 80px at 50% 50%, rgba(255, 255, 255, 0.12), transparent 70%),
+      radial-gradient(120px 55px at 50% 50%, rgba(255, 255, 255, 0.09), transparent 70%),
+      radial-gradient(220px 90px at 50% 50%, rgba(255, 255, 255, 0.08), transparent 70%);
+    background-size: 500px 250px, 400px 200px, 600px 300px;
+    background-position: 0 0, 200px 100px, 100px 50px;
+    animation: weather-cloud-drift 25s linear infinite;
+  }
+
+  .weather-clouds::after {
+    top: 5%;
+    bottom: 50%;
+    background-size: 450px 220px, 550px 280px, 380px 190px;
+    background-position: 250px 30px, 100px 80px, 350px 120px;
+    animation-duration: 35s;
+    animation-delay: -12s;
+  }
+
+  @keyframes weather-cloud-drift {
+    from { transform: translateX(0); }
+    to { transform: translateX(66.67%); }
+  }
+
+  /* ── Lightning: brief white-out flashes with unpredictable cadence ──
+     Two pseudo-elements with different cycle lengths so flashes
+     don't feel rhythmic. Keep flash durations very short (< 1s). */
+  .weather-lightning {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 27;
+  }
+
+  .weather-lightning::before,
+  .weather-lightning::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.85);
+    opacity: 0;
+  }
+
+  .weather-lightning::before {
+    animation: weather-lightning-a 7s ease-in-out infinite;
+  }
+
+  .weather-lightning::after {
+    background: rgba(200, 220, 255, 0.65);
+    animation: weather-lightning-b 11s ease-in-out infinite 3s;
+  }
+
+  @keyframes weather-lightning-a {
+    0%, 88%, 100% { opacity: 0; }
+    89%  { opacity: 0.7; }
+    90%  { opacity: 0; }
+    92%  { opacity: 0.5; }
+    93%  { opacity: 0; }
+  }
+
+  @keyframes weather-lightning-b {
+    0%, 83%, 100% { opacity: 0; }
+    84%  { opacity: 0.6; }
+    85%  { opacity: 0; }
+    86.5% { opacity: 0.4; }
+    87%  { opacity: 0; }
+  }
 }
