@@ -188,6 +188,17 @@ npm run build
 
 Alternatively, run locally with `npm run build && npm run start` for testing before deploy.
 
+**Conditional Builds (Skip Deploy):**
+
+The `vercel.json` includes an `ignoreCommand` that skips builds when the commit message contains `[skip deploy]`:
+
+```bash
+git commit -m "docs: update README [skip deploy]"
+git push
+```
+
+This is useful for documentation-only changes or quick fixes that don't require redeployment. The ignore script is located at [scripts/ignore-build.sh](scripts/ignore-build.sh) and can be customized per your workflow.
+
 ---
 
 ## 📁 Project Structure
