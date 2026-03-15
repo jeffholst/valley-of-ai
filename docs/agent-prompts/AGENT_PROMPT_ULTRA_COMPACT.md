@@ -12,9 +12,10 @@ Goal: generate one Valley of AI app with strict step-by-step execution and immed
 
 ## Required Output Paths
 - App dir: `apps/YYYY/MM/DD/<app-id>/`
-- Log file: `logs/YYYY/MM/DD.jsonl`
+- Log file: `apps/YYYY/MM/DD/<app-id>/log.jsonl`
 - Required app files:
   - `index.html`
+  - `log.jsonl`
   - `thumbnail.svg` (800x450)
   - `meta.json`
 
@@ -39,6 +40,9 @@ Goal: generate one Valley of AI app with strict step-by-step execution and immed
   - `agentName`, `llmModel`, `startTime`, `endTime`, `totalTokensIn`, `totalTokensOut`, `runId`, `notes`
 
 ## Logging Contract
+Create the app folder before any logging starts so logging begins directly in the final app location.
+Never log app-generation workflow state to a shared daily file under `/logs`.
+
 Transaction format:
 1. `TRANSACTION_START`
 2. `STEP` entries
@@ -74,7 +78,8 @@ If failure occurs:
 - Pull latest main.
 - Fetch UTC time.
 - Derive paths and `runId`.
-- Append `TRANSACTION_START`.
+- Create `apps/YYYY/MM/DD/<app-id>/` first.
+- Append `TRANSACTION_START` to `apps/YYYY/MM/DD/<app-id>/log.jsonl`.
 
 1. Select concept
 - Check all existing apps in /apps folder and do not duplicate concepts.
@@ -125,7 +130,7 @@ If failure occurs:
 
 10. Close
 - Append `TRANSACTION_END`.
-- If logs changed on main, commit and push logs.
+- Ensure `apps/YYYY/MM/DD/<app-id>/log.jsonl` is staged with the app files.
 
 ## Final Gate Checklist
 - Shared shell header/footer visible.
@@ -134,6 +139,7 @@ If failure occurs:
 - Game runtime checks pass (visibility, controls, score/state, win/loss, restart).
 - `npm run validate:apps` passes.
 - Thumbnail matches app.
+- `log.jsonl` exists in the app folder before the first log entry.
 - If modifying src/ (codebase components): `npm run lint` + `npm run format` + `npm test` + `npm run build` all pass.
 - All steps logged in sequence with same `runId`.
 
