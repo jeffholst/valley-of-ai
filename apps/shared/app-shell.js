@@ -166,6 +166,31 @@
         font: 700 0.98rem/1.2 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
         color: var(--text, var(--text-primary, #f8fafc));
         letter-spacing: 0.01em;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+
+      .voa-shell-ai-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        font: 600 0.72rem/1 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        letter-spacing: 0.03em;
+        color: #0f172a;
+        background: linear-gradient(120deg, #22d3ee, #a78bfa);
+        border-radius: 999px;
+        padding: 2px 8px 2px 5px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform 150ms ease, box-shadow 150ms ease;
+      }
+
+      .voa-shell-ai-tag:hover {
+        transform: scale(1.08);
+        box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3);
       }
 
       #voa-theme-toggle.theme-toggle {
@@ -264,7 +289,14 @@
 
     const appName = document.createElement('div');
     appName.className = 'voa-shell-app-name';
-    appName.textContent = getAppName();
+    const nameText = document.createTextNode(getAppName());
+    appName.appendChild(nameText);
+    const aiTag = document.createElement('a');
+    aiTag.className = 'voa-shell-ai-tag';
+    aiTag.href = resolveMainSiteUrl();
+    aiTag.textContent = '🤖 Built by AI';
+    aiTag.setAttribute('aria-label', 'Back to Valley of AI');
+    appName.appendChild(aiTag);
 
     const toggle = document.createElement('button');
     toggle.id = 'voa-theme-toggle';
