@@ -20,23 +20,23 @@
   <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
   <script src="/apps/shared/app-shell.js" defer></script>
   <style>
-    :root{--bg:#0f172a;--text:#f9fafb;--surface:#1e293b;--muted:#94a3b8;--accent:#22d3ee;--accent2:#38bdf8;--ok:#34d399;--ring:#0ea5e9}
-    [data-theme="light"]{--bg:#ffffff;--text:#1f2937;--surface:#f3f4f6;--muted:#64748b;--accent:#0891b2;--accent2:#0ea5e9;--ok:#059669;--ring:#0284c7}
+    :root{--bg:#0f172a;--text:#f9fafb;--surface:#1e293b;--muted:#94a3b8;--accent:#22d3ee;--accent2:#38bdf8;--ok:#34d399;--ring:#0ea5e9;--shadow:rgba(0,0,0,.35)}
+    [data-theme="light"]{--bg:#ffffff;--text:#1f2937;--surface:#f3f4f6;--muted:#64748b;--accent:#0891b2;--accent2:#0ea5e9;--ok:#059669;--ring:#0284c7;--shadow:rgba(31,47,82,.12)}
     *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:radial-gradient(1000px 700px at 20% 0%,color-mix(in oklab,var(--accent) 16%,var(--bg)),var(--bg));color:var(--text);min-height:100vh;padding:14px}
-    .app{width:min(900px,100%);margin:0 auto;background:color-mix(in srgb,var(--surface) 92%,transparent);border:1px solid color-mix(in oklab,var(--muted) 28%,transparent);border-radius:20px;padding:16px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+    .app{width:min(900px,100%);margin:0 auto;background:color-mix(in srgb,var(--surface) 92%,transparent);border:1px solid color-mix(in oklab,var(--muted) 28%,transparent);border-radius:20px;padding:16px;box-shadow:0 20px 50px var(--shadow)}
     h1{margin:0 0 6px;font-size:clamp(1.35rem,2.8vw,1.9rem)}
     .sub{margin:0 0 14px;color:var(--muted)}
     .layout{display:grid;gap:14px;grid-template-columns:1.1fr .9fr}
     .card{background:color-mix(in srgb,var(--surface) 85%,transparent);border:1px solid color-mix(in srgb,var(--muted) 20%,transparent);border-radius:14px;padding:12px}
     .ring{aspect-ratio:1;display:grid;place-items:center;max-width:260px;margin:auto;border-radius:50%;background:conic-gradient(var(--ring) calc(var(--pct)*1%),color-mix(in srgb,var(--surface) 60%,#0000) 0)}
     .ring-inner{width:78%;height:78%;border-radius:50%;display:grid;place-items:center;background:var(--bg)}
-    .liters{font-size:1.7rem;font-weight:800}.tiny{font-size:.88rem;color:var(--muted)}
+    .amount{font-size:1.7rem;font-weight:800}.tiny{font-size:.88rem;color:var(--muted)}
     .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
-    button,input{font:inherit}
+    button,input,select{font:inherit}
     .btn{min-height:44px;border:none;border-radius:12px;padding:10px 8px;font-weight:700;color:white;background:linear-gradient(135deg,var(--accent2),var(--accent));cursor:pointer;touch-action:manipulation}
     .btn.secondary{background:color-mix(in srgb,var(--surface) 75%,var(--muted));color:var(--text)}
     .row{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:8px 0}
-    input[type="number"]{width:90px;padding:8px;border-radius:10px;border:1px solid color-mix(in srgb,var(--muted) 40%,transparent);background:transparent;color:var(--text)}
+    input[type="number"],select{width:110px;padding:8px;border-radius:10px;border:1px solid color-mix(in srgb,var(--muted) 40%,transparent);background:transparent;color:var(--text)}
     .nudge{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     .status{margin-top:8px;font-weight:600;color:var(--ok)}
     .history{display:grid;gap:8px;max-height:200px;overflow:auto}
@@ -53,18 +53,14 @@
         <div class="ring" id="ring" style="--pct:0">
           <div class="ring-inner">
             <div style="text-align:center">
-              <div class="liters" id="total">0 ml</div>
-              <div class="tiny" id="goalText">of 2000 ml goal</div>
+              <div class="amount" id="total">0 mL</div>
+              <div class="tiny" id="goalText">of 2000 mL goal</div>
             </div>
           </div>
         </div>
-        <div class="quick">
-          <button class="btn" data-add="150">+150 ml</button>
-          <button class="btn" data-add="250">+250 ml</button>
-          <button class="btn" data-add="350">+350 ml</button>
-          <button class="btn" data-add="500">+500 ml</button>
-        </div>
-        <div class="row"><span>Daily goal (ml)</span><input id="goal" type="number" min="500" step="100" value="2000" aria-label="Daily goal in ml"></div>
+        <div class="quick" id="quickButtons"></div>
+        <div class="row"><span>Unit</span><select id="unit" aria-label="Unit selection"><option value="ml">mL</option><option value="oz">oz</option></select></div>
+        <div class="row"><span id="goalLabel">Daily goal (mL)</span><input id="goal" type="number" min="250" step="1" value="2000" aria-label="Daily goal"></div>
         <div class="row"><span>Wake hour</span><input id="wake" type="number" min="0" max="23" value="8" aria-label="Wake hour"></div>
         <div class="row"><span>Sleep hour</span><input id="sleep" type="number" min="0" max="23" value="22" aria-label="Sleep hour"></div>
         <div class="nudge">
@@ -85,27 +81,108 @@
 <script>
 const $=s=>document.querySelector(s);
 const ring=$('#ring'), totalEl=$('#total'), goalText=$('#goalText'), progressPill=$('#progressPill'), streakEl=$('#streak'), historyEl=$('#history'), statusEl=$('#status');
-const goalInput=$('#goal'), wakeInput=$('#wake'), sleepInput=$('#sleep'), nudgeToggle=$('#nudgeToggle'), nudgeText=$('#nudgeText');
-let entries=[]; let nudgeTimer=null; let nudgesOn=false;
+const goalInput=$('#goal'), wakeInput=$('#wake'), sleepInput=$('#sleep'), nudgeToggle=$('#nudgeToggle'), nudgeText=$('#nudgeText'), unitSelect=$('#unit'), goalLabel=$('#goalLabel'), quickButtons=$('#quickButtons');
 const key='voa-hydration-nudge-tracker';
+const OZ_TO_ML=29.5735;
+const PRESETS={ml:[150,250,350,500],oz:[8,12,16,20]};
+let nudgeTimer=null,nudgesOn=false;
 const today=()=>new Date().toISOString().slice(0,10);
+
 function load(){try{return JSON.parse(localStorage.getItem(key))||{};}catch{return {};}}
 function save(data){localStorage.setItem(key,JSON.stringify(data));}
-function getState(){const all=load(); if(!all[today()]) all[today()]={goal:2000,wake:8,sleep:22,entries:[],streak:0,lastHit:null}; return all[today()];}
-function setState(st){const all=load(); all[today()]=st; save(all);}
-function calc(){const st=getState(); const total=st.entries.reduce((a,e)=>a+e.ml,0); const pct=Math.min(100,Math.round((total/st.goal)*100)); ring.style.setProperty('--pct',pct); totalEl.textContent=`${total} ml`; goalText.textContent=`of ${st.goal} ml goal`; progressPill.textContent=`${pct}% complete`; streakEl.textContent=`Streak: ${st.streak||0} days`; goalInput.value=st.goal; wakeInput.value=st.wake; sleepInput.value=st.sleep;
-  historyEl.innerHTML=st.entries.length?st.entries.slice().reverse().map(e=>`<div class="pill">${e.ml} ml • ${new Date(e.ts).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</div>`).join(''):'<div class="tiny">No intake logged yet.</div>';
-  statusEl.textContent=pct>=100?'Goal reached. Great hydration discipline!':'Keep sipping — small wins compound.';
+function normalize(st){
+  if(st.goalMl==null) st.goalMl=Number(st.goal)||2000; // migrate older state
+  st.unit=st.unit==='oz'?'oz':'ml';
+  st.entries=Array.isArray(st.entries)?st.entries.map(e=>({ml:Math.max(1,Number(e.ml)||0),ts:e.ts||Date.now()})):[];
+  st.goalMl=Math.max(250,Number(st.goalMl)||2000);
+  st.wake=Math.min(23,Math.max(0,Number(st.wake)||8));
+  st.sleep=Math.min(23,Math.max(0,Number(st.sleep)||22));
+  st.streak=Number(st.streak)||0;
+  return st;
 }
-function add(ml){const st=getState(); st.entries.push({ml,ts:Date.now()}); const total=st.entries.reduce((a,e)=>a+e.ml,0); if(total>=st.goal && st.lastHit!==today()){st.streak=(st.streak||0)+1; st.lastHit=today();} setState(st); calc();}
+function getState(){
+  const all=load();
+  if(!all[today()]) all[today()]={goalMl:2000,wake:8,sleep:22,entries:[],streak:0,lastHit:null,unit:'ml'};
+  all[today()]=normalize(all[today()]);
+  save(all);
+  return all[today()];
+}
+function setState(st){const all=load(); all[today()]=normalize(st); save(all);}
+function toDisplay(ml,unit){return unit==='oz'?ml/OZ_TO_ML:ml;}
+function toMl(v,unit){return unit==='oz'?v*OZ_TO_ML:v;}
+function fmt(value,unit){const n=unit==='oz'?value.toFixed(1).replace(/\.0$/,''):Math.round(value).toString(); return `${n} ${unit==='oz'?'oz':'mL'}`;}
+
+function renderQuickButtons(unit){
+  quickButtons.innerHTML=PRESETS[unit].map(v=>`<button class="btn" data-add="${v}">+${fmt(v,unit)}</button>`).join('');
+  quickButtons.querySelectorAll('[data-add]').forEach(btn=>btn.addEventListener('click',()=>add(toMl(Number(btn.dataset.add),unit))));
+}
+
+function calc(){
+  const st=getState();
+  const totalMl=st.entries.reduce((a,e)=>a+e.ml,0);
+  const pct=Math.min(100,Math.round((totalMl/st.goalMl)*100));
+  ring.style.setProperty('--pct',pct);
+  totalEl.textContent=fmt(toDisplay(totalMl,st.unit),st.unit);
+  goalText.textContent=`of ${fmt(toDisplay(st.goalMl,st.unit),st.unit)} goal`;
+  progressPill.textContent=`${pct}% complete`;
+  streakEl.textContent=`Streak: ${st.streak||0} days`;
+  unitSelect.value=st.unit;
+  goalLabel.textContent=`Daily goal (${st.unit==='oz'?'oz':'mL'})`;
+  goalInput.value=st.unit==='oz'?toDisplay(st.goalMl,st.unit).toFixed(1):Math.round(st.goalMl);
+  goalInput.step=st.unit==='oz'?'0.1':'1';
+  goalInput.min=st.unit==='oz'?'8':'250';
+  wakeInput.value=st.wake;
+  sleepInput.value=st.sleep;
+  renderQuickButtons(st.unit);
+  historyEl.innerHTML=st.entries.length
+    ? st.entries.slice().reverse().map(e=>`<div class="pill">${fmt(toDisplay(e.ml,st.unit),st.unit)} • ${new Date(e.ts).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</div>`).join('')
+    : '<div class="tiny">No intake logged yet.</div>';
+  const remMl=Math.max(0,st.goalMl-totalMl);
+  statusEl.textContent=pct>=100
+    ? `Goal reached (${fmt(toDisplay(st.goalMl,st.unit),st.unit)}). Great hydration discipline!`
+    : `Keep sipping — ${fmt(toDisplay(remMl,st.unit),st.unit)} to goal.`;
+}
+
+function add(ml){
+  const st=getState();
+  st.entries.push({ml:Math.max(1,Math.round(ml)),ts:Date.now()});
+  const total=st.entries.reduce((a,e)=>a+e.ml,0);
+  if(total>=st.goalMl && st.lastHit!==today()){st.streak=(st.streak||0)+1; st.lastHit=today();}
+  setState(st);
+  calc();
+}
 function undo(){const st=getState(); st.entries.pop(); setState(st); calc();}
 function resetDay(){const st=getState(); st.entries=[]; setState(st); calc();}
-function savePrefs(){const st=getState(); st.goal=Math.max(500,Number(goalInput.value)||2000); st.wake=Math.min(23,Math.max(0,Number(wakeInput.value)||8)); st.sleep=Math.min(23,Math.max(0,Number(sleepInput.value)||22)); setState(st); calc();}
+function savePrefs(){
+  const st=getState();
+  st.unit=unitSelect.value==='oz'?'oz':'ml';
+  st.goalMl=Math.max(250,toMl(Number(goalInput.value)||toDisplay(st.goalMl,st.unit),st.unit));
+  st.wake=Math.min(23,Math.max(0,Number(wakeInput.value)||8));
+  st.sleep=Math.min(23,Math.max(0,Number(sleepInput.value)||22));
+  setState(st);
+  calc();
+}
+function onUnitChange(){const st=getState(); st.unit=unitSelect.value==='oz'?'oz':'ml'; setState(st); calc();}
+
 function inActiveHours(){const st=getState(); const h=new Date().getHours(); return st.wake<=st.sleep ? h>=st.wake && h<st.sleep : (h>=st.wake || h<st.sleep);}
-function notifyNudge(){if(!inActiveHours()) return; nudgeText.textContent='Time for a quick sip 💧'; setTimeout(()=>{if(nudgesOn) nudgeText.textContent='Nudges active';},4000);}
+function notifyNudge(){
+  if(!inActiveHours()) return;
+  const st=getState();
+  const totalMl=st.entries.reduce((a,e)=>a+e.ml,0);
+  const remMl=Math.max(0,st.goalMl-totalMl);
+  nudgeText.textContent=remMl>0?`Time for a quick sip 💧 (${fmt(toDisplay(remMl,st.unit),st.unit)} left)`:'You already hit goal today 🎉';
+  setTimeout(()=>{if(nudgesOn) nudgeText.textContent='Nudges active';},4000);
+}
 function toggleNudges(){nudgesOn=!nudgesOn; nudgeToggle.textContent=nudgesOn?'Stop nudges':'Start nudges'; nudgeText.textContent=nudgesOn?'Nudges active':'Nudges off'; if(nudgesOn){notifyNudge(); nudgeTimer=setInterval(notifyNudge,45*60*1000);} else {clearInterval(nudgeTimer);}}
-document.querySelectorAll('[data-add]').forEach(b=>{b.addEventListener('click',()=>add(Number(b.dataset.add))); b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ') {e.preventDefault(); add(Number(b.dataset.add));}});});
-$('#undo').addEventListener('click',undo); $('#reset').addEventListener('click',resetDay); goalInput.addEventListener('change',savePrefs); wakeInput.addEventListener('change',savePrefs); sleepInput.addEventListener('change',savePrefs); nudgeToggle.addEventListener('click',toggleNudges);
+
+$('#undo').addEventListener('click',undo);
+$('#reset').addEventListener('click',resetDay);
+goalInput.addEventListener('change',savePrefs);
+wakeInput.addEventListener('change',savePrefs);
+sleepInput.addEventListener('change',savePrefs);
+unitSelect.addEventListener('change',onUnitChange);
+nudgeToggle.addEventListener('click',toggleNudges);
+
 calc();
 </script>
 </body>
