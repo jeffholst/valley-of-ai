@@ -40,12 +40,17 @@ Goal: generate one Valley of AI app with strict step-by-step execution and immed
   - `agentName`, `llmModel`, `startTime`, `endTime`, `totalTokensIn`, `totalTokensOut`, `runId`, `notes`
 
 ## Logging Contract
-Create the app folder before any logging starts so logging begins directly in the final app location.
-Never log app-generation workflow state to a shared daily file under `/logs`.
+**⚠️ CRITICAL: REAL-TIME LOGGING (DO NOT SKIP)**
+- Create the app folder before any logging starts so `log.jsonl` exists in final location from the start
+- **After EVERY step (1-13), immediately append the log entry to `log.jsonl` within seconds of step completion**
+- Execution pattern (MANDATORY): Execute step → Log immediately → Move to next step
+- **DO NOT batch logs at the end. DO NOT skip logging any step.**
+- Never log app-generation workflow state to a shared daily file under `/logs`
+- Failure consequence: Missing logs = broken pipeline audit trail
 
 Transaction format:
 1. `TRANSACTION_START`
-2. `STEP` entries
+2. `STEP` entries (must log all 13)
 3. `TRANSACTION_END`
 
 Run id format:
@@ -106,34 +111,49 @@ If failure occurs:
 - Log `CREATE_META_JSON`.
 
 6. Validate (blocking)
-- Run `npm run validate:apps`.
-- Must pass before continuing.
-- Log `VALIDATE_APP`.
+
+### Functional Testing
+Before continuing confirm:
+- App runs without errors.
+- Shared shell header/footer visible.
+- Dark/light theme works.
+- Mobile + desktop layout works.
+- Interactive controls work (touch + keyboard where applicable).
+- If game: gameplay objects visible, score/state updates, win/loss/restart all work.
+- Thumbnail matches app UI.
+
+Run:
+- `npm run validate:apps`
+- `npm run generate:apps`
+- `npm run lint` passes (0 errors, 0 warnings).
+- `npm run format` applied (Prettier 100-char, single quotes, 2-space indentation).
+- `npm test` passes (all test suites passing).
+- `npm run build` completes successfully. 
+
+If validation fails:
+- fix issues,
+- log failed/retrying/completed statuses accordingly,
+- do not continue until passing.
+
+When passed, **Log `VALIDATE_APP` immediately**.
 
 7. Git branch + commit (app files only)
-- `git checkout -b feat/<app-id>`
-- Log `GIT_BRANCH`.
-- **Stage and commit app files ONLY** (index.html, meta.json, thumbnail.svg).
-  - **Do NOT commit log.jsonl yet** — it will be finalized after all git transactions complete.
-- Log `GIT_COMMIT` (include SHA).
+- Execute: `git checkout -b feat/<app-id>` → **Log `GIT_BRANCH` immediately**
+- Stage and commit app files ONLY (index.html, meta.json, thumbnail.svg): `git add ...` then `git commit ...`
+  - **Log `GIT_COMMIT` immediately with SHA** (capture from commit output)
+  - **Do NOT commit log.jsonl yet** — it will be finalized in step 10 after all transactions complete
 
 8. PR flow + Merge
-- Push branch and create PR: `git push origin feat/<app-id>` then `gh pr create --title "..." --body "..."`.
-- Log `CREATE_PR` (PR number/url).
-- Self-review and log `PR_REVIEW`.
-- **Execute squash merge**: `gh pr merge <pr-number> --squash --auto`.
-- Verify merge succeeded: `git log --oneline -1` should show commit on main.
-- Verify on main branch: `git checkout main && git pull origin main`.
-- Delete feature branch if not auto-deleted: `git branch -D feat/<app-id>`.
-- Log `MERGE_PR` with status confirmed.
+- Execute: `git push origin feat/<app-id>` → **Log `GIT_PUSH` immediately**
+- Execute: `gh pr create --title "..." --body "..."` → **Log `CREATE_PR` with PR #/URL immediately**
+- Execute: Self-review → **Log `PR_REVIEW` immediately**
+- Execute: `gh pr merge <pr-number> --squash --auto` → **Log `MERGE_PR` immediately after merge succeeds**
+- Verify on main: `git checkout main && git pull origin main`
 
 9. Registry + deploy
-- Run `npm run generate:apps`; log `UPDATE_REGISTRY`.
-- Verify PR is merged to `main` (git status should show no uncommitted app changes).
-- Run `npm run sync` to copy app to public/apps.
-- Vercel pipeline (if enabled): auto-triggers on main merge → loads env → replaces placeholders → next build → deploy to edge.
-- Zero-downtime deploy + auto-rollback on fail. Live in ~2–3 min.
-- Verify app files in public/apps/YYYY/MM/DD/<app-id>/; log `DEPLOY`.
+- Execute: `npm run generate:apps` → **Log `UPDATE_REGISTRY` immediately**
+- Verify PR merged to main (Vercel auto-deploys on main merge). Wait ~2–3 min for deployment.
+- Verify app files live in public/apps/YYYY/MM/DD/<app-id>/ → **Log `DEPLOY` immediately once confirmed live**
 
 10. Finalize transaction log and commit (Step 10)
 - Switch back to main: `git checkout main && git pull origin main`.
@@ -145,16 +165,3 @@ If failure occurs:
   git push origin main
   ```
   - **MUST include `[skip deploy]` in commit message** — prevents unnecessary Vercel redeploy (log.jsonl is metadata only, app already deployed in Step 9).
-
-## Final Gate Checklist
-- Shared shell header/footer visible.
-- Dark/light mode works.
-- App works on mobile + desktop.
-- Game runtime checks pass (visibility, controls, score/state, win/loss, restart).
-- `npm run validate:apps` passes.
-- Thumbnail matches app.
-- `log.jsonl` exists in the app folder before the first log entry.
-- If modifying src/ (codebase components): `npm run lint` + `npm run format` + `npm test` + `npm run build` all pass.
-- All steps logged in sequence with same `runId`.
-
-Agent: openclaw-dev-agent | Model: gpt-5.1 | Priority: reliable pipeline + immediate logging

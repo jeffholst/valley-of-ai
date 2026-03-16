@@ -1,9 +1,9 @@
 ## 1) Mission
-Build one polished, mobile-first, responsive web app for Valley of AI.
+Build one production ready web app with the following requirements: 
 
-Constraints:
 - Static only: HTML/CSS/JS (no backend).
 - Must work on mobile and desktop and be fully responsive.
+- Must support keyboard, mouse and gesture touch
 - Must be visually polished and usable immediately.
 - Must include accurate metadata and logs.
 - Must complete full git workflow: branch -> commit -> PR -> merge 
@@ -77,11 +77,24 @@ Each app run is one transaction:
 2. `STEP` entries for each pipeline stage
 3. `TRANSACTION_END`
 
-### Critical logging rule
-Create the app folder before any logging begins so `log.jsonl` exists in the final app location from the start.
-Write each log line immediately after that step completes (Steps 1-9).
-Never batch logs at the end.
-Never log to a shared daily file under `/logs` for app-generation workflow state.
+### ⚠️ CRITICAL: REAL-TIME LOGGING (DO NOT SKIP)
+**This rule is non-negotiable and must be followed exactly:**
+
+1. Create the app folder **before any logging begins** so `log.jsonl` exists in the final app location from the start.
+2. **After EVERY step completes (Steps 1-13), immediately append the log entry to `log.jsonl`.**
+3. **Execution pattern (MANDATORY):**
+   - Execute step (validate, git command, PR, merge, deploy, etc.)
+   - Immediately log that step to `log.jsonl` (within seconds, not later)
+   - Move to next step
+   - **DO NOT batch logs at the end. DO NOT skip logging any step.**
+4. Never log to a shared daily file under `/logs` for app-generation workflow state.
+
+**Failure consequence:** Missing logs = incomplete transaction records = pipeline audit trail is broken. This defeats the purpose of the transaction log.
+
+**Implementation:** After running each command/operation in the pipeline, always call:
+```bash
+echo '{"timestamp":"<ISO8601>","runId":"<runId>","type":"STEP","step":"<STEP_NAME>","seq":<N>,"status":"completed","durationMs":<duration>}' >> apps/YYYY/MM/DD/<app-id>/log.jsonl
+```
 
 **Commit strategy:** 
 - Commit app files (index.html, meta.json, thumbnail.svg) in Step 7 first.
@@ -159,7 +172,8 @@ Error format:
 ### Step 4: Generate thumbnail
 1. Create `thumbnail.svg` (`viewBox="0 0 800 450"`).
 2. Match actual app UI/colors/state.
-3. Log `GENERATE_THUMBNAIL`.
+3. Make the thumbnail visually appealling
+4. Log `GENERATE_THUMBNAIL`.
 
 ### Step 5: Metadata
 Create `meta.json` with required fields:
@@ -169,8 +183,24 @@ Create `meta.json` with required fields:
 Then log `CREATE_META_JSON`.
 
 ### Step 6: Validate (blocking gate)
+
+#### Functional Testing
+Before continuing confirm:
+- App runs without errors.
+- Shared shell header/footer visible.
+- Dark/light theme works.
+- Mobile + desktop layout works.
+- Interactive controls work (touch + keyboard where applicable).
+- If game: gameplay objects visible, score/state updates, win/loss/restart all work.
+- Thumbnail matches app UI.
+
 Run:
 - `npm run validate:apps`
+- `npm run generate:apps`
+- `npm run lint` passes (0 errors, 0 warnings).
+- `npm run format` applied (Prettier 100-char, single quotes, 2-space indentation).
+- `npm test` passes (all test suites passing).
+- `npm run build` completes successfully. 
 
 If validation fails:
 - fix issues,
@@ -180,30 +210,41 @@ If validation fails:
 When passed, log `VALIDATE_APP`.
 
 ### Step 7: Git branch and commit (app files only)
-1. `git checkout -b feat/<app-id>`
-2. Log `GIT_BRANCH`.
-3. **Stage and commit app files ONLY** (index.html, meta.json, thumbnail.svg).
-   - **Do NOT commit log.jsonl yet** — it will be updated with final transaction entries.
-4. Log `GIT_COMMIT` with commit SHA.
+**Pattern: Execute → Log immediately → Move to next**
+
+1. Execute: `git checkout -b feat/<app-id>`
+   - **LOG IMMEDIATELY:** `GIT_BRANCH` step to `log.jsonl`
+2. **Stage and commit app files ONLY** (index.html, meta.json, thumbnail.svg).
+   - Execute: `git add` and `git commit`
+   - **LOG IMMEDIATELY:** `GIT_COMMIT` step with commit SHA to `log.jsonl` (capture SHA from commit output)
+   - **Do NOT commit log.jsonl yet** — it will be finalized in Step 10 after all transactions complete.
 
 ### Step 8: PR flow
-1. Push branch.
-2. Create PR to `main`.
-3. Log `CREATE_PR` with PR number/url.
-4. Self-review PR.
-5. Log `PR_REVIEW`.
-6. Merge PR (squash).
-7. Log `MERGE_PR`.
+**Pattern: Execute → Log immediately → Move to next**
+
+1. Execute: Push branch: `git push -u origin feat/<app-id>`
+   - **LOG IMMEDIATELY:** `GIT_PUSH` step to `log.jsonl`
+2. Execute: Create PR: `gh pr create --title "..." --body "..."`
+   - **LOG IMMEDIATELY:** `CREATE_PR` step with PR number/URL to `log.jsonl`
+3. Execute: Self-review PR (check code quality, tests, etc.)
+   - **LOG IMMEDIATELY:** `PR_REVIEW` step to `log.jsonl`
+4. Execute: Merge PR with squash: `gh pr merge <pr-number> --squash --auto`
+   - **LOG IMMEDIATELY:** `MERGE_PR` step to `log.jsonl` after merge succeeds
+   - Verify merge on main: `git checkout main && git pull origin main`
 
 ### Step 9: Registry + deploy
-1. Run `npm run generate:apps`.
-2. Log `UPDATE_REGISTRY`.
-3. Merge PR to `main` (automatic GitHub Actions will trigger build).
-4. Vercel auto-deploys: webhook triggers → loads env vars → runs build pipeline (`generate-apps` → `sync-public-content.mjs` replaces placeholders → `next build`) → deploys to edge network with zero-downtime updates.
-5. Rollback automatic if build/deployment fails.
-6. Log `DEPLOY` once the live site confirms new app is visible (~2–3 minutes from push).
+**Pattern: Execute → Log immediately → Move to next**
 
-> **Note:** Deployment is fully automatic via Vercel when code is pushed to `main`. No manual steps needed. Environment variable placeholders (`__GA_MEASUREMENT_ID__`, `__MAIN_SITE_URL__`, `__SOCIAL_*_URL__`) are replaced during the `sync-public-content.mjs` phase from `.env.production` secrets.
+1. Execute: `npm run generate:apps`
+   - **LOG IMMEDIATELY:** `UPDATE_REGISTRY` step to `log.jsonl`
+2. Verify PR is merged to `main` (git log should show your commit)
+   - **Merged on main: Vercel auto-deploys** (webhook → build → deploy to edge)
+   - Wait ~2–3 minutes for deployment to complete
+3. Verify app is live in public folder and accessible
+   - Execute: `npm run sync` (if needed to manually copy to public)
+   - **LOG IMMEDIATELY:** `DEPLOY` step to `log.jsonl` once app is confirmed live
+
+> **Note:** Deployment is automatic via Vercel when code is pushed to `main`. Environment variable placeholders are replaced during build from `.env.production` secrets.
 
 ### Step 10: Finalize transaction log and commit
 After all logging transactions are complete (Steps 1-9), perform the final log commit:
@@ -219,69 +260,3 @@ After all logging transactions are complete (Steps 1-9), perform the final log c
 
 > **⚠️ CRITICAL WARNING:** If `[skip deploy]` is omitted from the commit message, Vercel will trigger an unnecessary rebuild/redeploy cycle. ALWAYS verify the commit message contains `[skip deploy]` before pushing.
 
-## 5) Quality Gates (Must Pass)
-
-### Functional Testing
-Before commit/PR/deploy, confirm:
-- App runs without errors.
-- Shared shell header/footer visible.
-- Dark/light theme works.
-- Mobile + desktop layout works.
-- Interactive controls work (touch + keyboard where applicable).
-- If game: gameplay objects visible, score/state updates, win/loss/restart all work.
-- Thumbnail matches app UI.
-
-### Validation & Standards
-- `npm run validate:apps` passes (registry structure validation).
-- `npm run generate:apps` completes without errors.
-
-### Main Codebase Changes (if modifying src/)
-- `npm run lint` passes (0 errors, 0 warnings).
-- `npm run format` applied (Prettier 100-char, single quotes, 2-space indentation).
-- `npm test` passes (all test suites passing).
-- `npm run build` completes successfully.
-
-See [STYLE_GUIDE.md](../STYLE_GUIDE.md) for code conventions and [TESTING.md](../TESTING.md) for test requirements.
-
-## 6) Compact Checklist (Quick Reference)
-
-**Setup & Logging**:
-- [ ] UTC time fetched from OS; transaction started with `runId`
-- [ ] RESEARCH_IDEAS logged with mechanics, UX insights, 2-3 inspirations
-- [ ] GENERATE_HTML logged after index.html creation
-- [ ] GENERATE_THUMBNAIL logged after thumbnail.svg creation
-
-**File Requirements**:
-- [ ] index.html created with shared shell + analytics tags + placeholders (not hardcoded)
-- [ ] log.jsonl created in the app folder before the first log entry is written
-- [ ] meta.json created with all required fields (id, name, tags, generation metadata)
-- [ ] thumbnail.svg created (800x450 viewBox) matching app UI/colors/state
-- [ ] favicon present in app directory
-
-**Functionality & UI**:
-- [ ] App runs without errors on localhost
-- [ ] Shared shell header/footer visible; theme toggle functional
-- [ ] Mobile + desktop layouts both working
-- [ ] Interactive controls work (touch + keyboard)
-- [ ] Game apps: objects visible, score updates, win/loss/restart work
-
-**Code Quality** (if modifying src/):
-- [ ] `npm run lint` passes (0 errors/warnings)
-- [ ] `npm run format` applied
-- [ ] `npm test` passes (all suites)
-- [ ] `npm run build` succeeds
-
-**Validation & Deploy**:
-- [ ] `npm run validate:apps` passes
-- [ ] PR created with description + testing steps
-- [ ] Merged to `main`; Vercel deployment completes (~2–3 min)
-- [ ] DEPLOY logged once live site confirms
-- [ ] Validation passed
-- [ ] Branch/commit/PR/review/merge completed
-- [ ] Deploy completed and verified
-- [ ] Transaction ended
-
-## 7) Operating Principle
-Prefer simple, complete, and shippable over complex.
-If a step fails, log failure immediately, recover, log retry, continue.
-Never skip logging.
