@@ -79,6 +79,7 @@ If failure occurs:
 - Fetch UTC time.
 - Derive paths and `runId`.
 - Create `apps/YYYY/MM/DD/<app-id>/` first.
+- **Create empty `log.jsonl` file** in `apps/YYYY/MM/DD/<app-id>/log.jsonl` before any logging begins.
 - Append `TRANSACTION_START` to `apps/YYYY/MM/DD/<app-id>/log.jsonl`.
 
 1. Select concept
@@ -109,10 +110,11 @@ If failure occurs:
 - Must pass before continuing.
 - Log `VALIDATE_APP`.
 
-7. Git branch + commit
+7. Git branch + commit (app files only)
 - `git checkout -b feat/<app-id>`
 - Log `GIT_BRANCH`.
-- Commit app + logs.
+- **Stage and commit app files ONLY** (index.html, meta.json, thumbnail.svg).
+  - **Do NOT commit log.jsonl yet** — it will be finalized after all git transactions complete.
 - Log `GIT_COMMIT` (include SHA).
 
 8. PR flow + Merge
@@ -133,9 +135,16 @@ If failure occurs:
 - Zero-downtime deploy + auto-rollback on fail. Live in ~2–3 min.
 - Verify app files in public/apps/YYYY/MM/DD/<app-id>/; log `DEPLOY`.
 
-10. Close
-- Append `TRANSACTION_END`.
-- Ensure `apps/YYYY/MM/DD/<app-id>/log.jsonl` is staged with the app files.
+10. Finalize transaction log and commit (Step 10)
+- Switch back to main: `git checkout main && git pull origin main`.
+- Append `TRANSACTION_END` to `apps/YYYY/MM/DD/<app-id>/log.jsonl`.
+- **CRITICAL: Commit log.jsonl with `[skip deploy]` tag (separate, final commit):**
+  ```bash
+  git add apps/YYYY/MM/DD/<app-id>/log.jsonl
+  git commit -m "chore: finalize transaction log for <app-id> [skip deploy]"
+  git push origin main
+  ```
+  - **MUST include `[skip deploy]` in commit message** — prevents unnecessary Vercel redeploy (log.jsonl is metadata only, app already deployed in Step 9).
 
 ## Final Gate Checklist
 - Shared shell header/footer visible.
