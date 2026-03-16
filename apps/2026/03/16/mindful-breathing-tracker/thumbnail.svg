@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="circleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#22c55e;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="450" fill="url(#bgGradient)"/>
+  
+  <!-- Circle 1: Inner (solid) -->
+  <circle cx="400" cy="225" r="80" fill="url(#circleGradient)"/>
+  
+  <!-- Circle 2: Middle (pulsing effect) -->
+  <circle cx="400" cy="225" r="100" fill="none" stroke="url(#circleGradient)" stroke-width="4"/>
+  
+  <!-- Circle 3: Outer (faint glow) -->
+  <circle cx="400" cy="225" r="130" fill="none" stroke="rgba(99,102,241,0.3)" stroke-width="2"/>
+  
+  <!-- Emoji -->
+  <text x="400" y="232" font-size="60" text-anchor="middle" dominant-baseline="central">🧘</text>
+  
+  <!-- Title text -->
+  <text x="400" y="320" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white" text-anchor="middle">Mindful Breathing</text>
+  <text x="400" y="355" font-family="Arial, sans-serif" font-size="20" fill="#f1f5f9" text-anchor="middle">4-7-8 Practice • Stress Relief</text>
+  
+  <!-- Bottom badge -->
+  <rect x="250" y="380" width="300" height="50" rx="25" fill="rgba(34,197,94,0.2)"/>
+  <text x="400" y="410" font-family="Arial, sans-serif" font-size="16" fill="#22c55e" text-anchor="middle">🔥 3 Day Streak</text>
+</svg>

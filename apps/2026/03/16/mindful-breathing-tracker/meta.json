@@ -1,0 +1,22 @@
+{
+  "id": "mindful-breathing-tracker",
+  "name": "Mindful Breathing Tracker",
+  "shortDescription": "Track your 4-7-8 breathing practice and build a calming daily habit",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-16T04:16:30Z",
+  "category": "Utilities",
+  "status": "active",
+  "tags": ["breathing", "meditation", "stress-relief", "habit-tracking", "4-7-8"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "ollama/qwen3.5:35b",
+    "startTime": "2026-03-16T04:16:30Z",
+    "endTime": "2026-03-16T04:16:35Z",
+    "totalTokensIn": 5000,
+    "totalTokensOut": 3500,
+    "runId": "run-20260316T041541Z-3410bf",
+    "notes": "Built responsive breathing app with 4-7-8 technique, dark/light theme support, progress tracking, and streak gamification"
+  }
+}
