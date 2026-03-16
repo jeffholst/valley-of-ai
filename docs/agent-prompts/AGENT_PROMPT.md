@@ -209,9 +209,15 @@ When passed, log `VALIDATE_APP`.
 After all logging transactions are complete (Steps 1-9), perform the final log commit:
 1. Append `TRANSACTION_END` to `apps/YYYY/MM/DD/<app-id>/log.jsonl`.
 2. **This is the FINAL COMMIT:** Stage only `log.jsonl` with the transaction data.
-3. Commit: `git add apps/YYYY/MM/DD/<app-id>/log.jsonl && git commit -m "chore: finalize transaction log [skip deploy]"`
-   - [skip deploy] in comment tells vercel not to redploy
-4. **Push this commit directly to the main branch.**
+3. **CRITICAL: Commit with `[skip deploy]` tag to prevent unnecessary Vercel redeploy:**
+   ```bash
+   git add apps/YYYY/MM/DD/<app-id>/log.jsonl
+   git commit -m "chore: finalize transaction log for <app-id> [skip deploy]"
+   ```
+   - **MUST include `[skip deploy]` in commit message** — tells Vercel not to redeploy (log.jsonl is metadata only, app already deployed in Step 9)
+4. **Push this commit directly to the main branch:** `git push origin main`
+
+> **⚠️ CRITICAL WARNING:** If `[skip deploy]` is omitted from the commit message, Vercel will trigger an unnecessary rebuild/redeploy cycle. ALWAYS verify the commit message contains `[skip deploy]` before pushing.
 
 ## 5) Quality Gates (Must Pass)
 
