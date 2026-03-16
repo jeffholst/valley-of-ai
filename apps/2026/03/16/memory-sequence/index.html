@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Sequence - __MAIN_SITE_NAME__</title>
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%234f46e5' width='32' height='32' rx='8'/><rect fill='%23ec4899' x='0' y='0' width='16' height='16'/><rect fill='%2310b981' x='16' y='0' width='16' height='16'/><rect fill='%23f59e0b' x='0' y='16' width='16' height='16'/><rect fill='%236366f1' x='16' y='16' width='16' height='16'/></svg>">
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0f172a;
+            --text: #f9fafb;
+            --surface: #1e293b;
+            --red: #ef4444;
+            --green: #10b981;
+            --blue: #3b82f6;
+            --yellow: #fbbf24;
+        }
+
+        [data-theme="light"] {
+            --bg: #ffffff;
+            --text: #1f2937;
+            --surface: #f3f4f6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--bg), var(--surface));
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .game-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            z-index: 10;
+        }
+
+        .header h1 {
+            font-size: clamp(24px, 6vw, 48px);
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #4f46e5, #ec4899, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #4f46e5;
+            font-size: 18px;
+        }
+
+        .game-area {
+            flex: 0 1 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px 0;
+            max-height: 50vh;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            width: 100%;
+            aspect-ratio: 1;
+            max-width: 360px;
+        }
+
+        .square {
+            background: var(--surface);
+            border: 3px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.08s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .square:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .square.red { color: var(--red); }
+        .square.green { color: var(--green); }
+        .square.blue { color: var(--blue); }
+        .square.yellow { color: var(--yellow); }
+
+        .square.active {
+            filter: brightness(1.5);
+            transform: scale(0.95);
+            box-shadow: 0 0 25px currentColor;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: #4f46e5;
+            color: white;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .game-status {
+            text-align: center;
+            font-size: 18px;
+            margin: 16px 0;
+            min-height: 24px;
+            color: #a0aec0;
+        }
+
+        .game-over-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .game-over-modal.is-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            border: 2px solid #4f46e5;
+            max-width: 90%;
+            animation: slide-up 0.4s ease-out;
+        }
+
+        @keyframes slide-up {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-content h2 {
+            font-size: 32px;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #4f46e5, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .modal-stat {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            opacity: 0.7;
+            margin-bottom: 4px;
+        }
+
+        .modal-stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 12px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+                margin-bottom: 6px;
+            }
+
+            .stat {
+                font-size: 11px;
+                padding: 4px 8px;
+            }
+
+            .stats {
+                gap: 8px;
+            }
+
+            .game-board {
+                gap: 12px;
+                max-width: 280px;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            button {
+                width: 100%;
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+
+            .modal-content {
+                padding: 24px;
+            }
+
+            .modal-content h2 {
+                font-size: 24px;
+                margin-bottom: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>🧠 Memory Sequence</h1>
+            <div class="stats">
+                <div class="stat">Round: <span class="stat-value" id="roundDisplay">1</span></div>
+                <div class="stat">Score: <span class="stat-value" id="scoreDisplay">0</span></div>
+                <div class="stat">High Score: <span class="stat-value" id="highScoreDisplay">0</span></div>
+            </div>
+        </div>
+
+        <div class="game-status" id="gameStatus">Click "Start Game" to begin</div>
+
+        <div class="game-area">
+            <div class="game-board" id="gameBoard"></div>
+        </div>
+
+        <div class="controls">
+            <button id="startBtn">Start Game</button>
+            <button id="restartBtn" style="display:none;">Restart</button>
+        </div>
+    </div>
+
+    <div class="game-over-modal" id="gameOverModal">
+        <div class="modal-content">
+            <h2>Game Over!</h2>
+            <div class="modal-stats">
+                <div class="modal-stat">
+                    <div class="modal-stat-label">Final Score</div>
+                    <div class="modal-stat-value" id="finalScore">0</div>
+                </div>
+                <div class="modal-stat">
+                    <div class="modal-stat-label">Max Round</div>
+                    <div class="modal-stat-value" id="maxRound">1</div>
+                </div>
+            </div>
+            <button id="playAgainBtn">Play Again</button>
+        </div>
+    </div>
+
+    <script src="/apps/shared/app-shell.js" defer></script>
+    <script>
+        // Game State
+        const gameState = {
+            isPlaying: false,
+            isWaitingForInput: false,
+            sequence: [],
+            userSequence: [],
+            score: 0,
+            highScore: parseInt(localStorage.getItem('memoryHighScore') || '0'),
+            round: 1,
+        };
+
+        const COLORS = [
+            { name: 'red', emoji: '🔴', key: 0 },
+            { name: 'green', emoji: '🟢', key: 1 },
+            { name: 'blue', emoji: '🔵', key: 2 },
+            { name: 'yellow', emoji: '🟡', key: 3 },
+        ];
+
+        const DOM = {
+            startBtn: document.getElementById('startBtn'),
+            restartBtn: document.getElementById('restartBtn'),
+            gameBoard: document.getElementById('gameBoard'),
+            gameStatus: document.getElementById('gameStatus'),
+            gameOverModal: document.getElementById('gameOverModal'),
+            finalScore: document.getElementById('finalScore'),
+            maxRound: document.getElementById('maxRound'),
+            playAgainBtn: document.getElementById('playAgainBtn'),
+            roundDisplay: document.getElementById('roundDisplay'),
+            scoreDisplay: document.getElementById('scoreDisplay'),
+            highScoreDisplay: document.getElementById('highScoreDisplay'),
+        };
+
+        function initBoard() {
+            DOM.gameBoard.innerHTML = '';
+            COLORS.forEach((color) => {
+                const square = document.createElement('button');
+                square.className = `square ${color.name}`;
+                square.textContent = color.emoji;
+                square.dataset.color = color.name;
+                square.dataset.index = color.key;
+                square.addEventListener('click', () => handleSquareClick(color.key));
+                DOM.gameBoard.appendChild(square);
+            });
+        }
+
+        function startGame() {
+            gameState.isPlaying = true;
+            gameState.sequence = [];
+            gameState.userSequence = [];
+            gameState.score = 0;
+            gameState.round = 1;
+            updateUI();
+            DOM.startBtn.style.display = 'none';
+            DOM.restartBtn.style.display = 'inline-block';
+            DOM.gameOverModal.classList.remove('is-open');
+            playNextRound();
+        }
+
+        function playNextRound() {
+            gameState.userSequence = [];
+            gameState.sequence.push(Math.floor(Math.random() * 4));
+            DOM.gameStatus.textContent = `Round ${gameState.round}: Watch!`;
+            gameState.isWaitingForInput = false;
+            disableSquares();
+
+            setTimeout(() => playSequence(), 800);
+        }
+
+        function playSequence() {
+            let delay = 0;
+            for (let i = 0; i < gameState.sequence.length; i++) {
+                setTimeout(() => {
+                    highlightSquare(gameState.sequence[i]);
+                }, delay);
+                delay += 700;
+            }
+
+            setTimeout(() => {
+                gameState.isWaitingForInput = true;
+                enableSquares();
+                DOM.gameStatus.textContent = `Your turn! Repeat the sequence...`;
+            }, delay);
+        }
+
+        function highlightSquare(index) {
+            const square = document.querySelector(`[data-index="${index}"]`);
+            if (square) {
+                square.classList.add('active');
+                setTimeout(() => square.classList.remove('active'), 400);
+            }
+        }
+
+        function handleSquareClick(index) {
+            if (!gameState.isWaitingForInput) return;
+
+            highlightSquare(index);
+            gameState.userSequence.push(index);
+
+            // Check if user's input matches sequence
+            if (gameState.userSequence[gameState.userSequence.length - 1] !== gameState.sequence[gameState.userSequence.length - 1]) {
+                endGame();
+                return;
+            }
+
+            // Check if user completed the round
+            if (gameState.userSequence.length === gameState.sequence.length) {
+                gameState.isWaitingForInput = false;
+                disableSquares();
+
+                // Award points based on round
+                gameState.score += gameState.round * 10;
+                gameState.round++;
+
+                DOM.gameStatus.textContent = `Correct! ${gameState.round - 1} colors matched.`;
+
+                setTimeout(() => {
+                    playNextRound();
+                }, 1200);
+            }
+        }
+
+        function disableSquares() {
+            document.querySelectorAll('.square').forEach(btn => btn.disabled = true);
+        }
+
+        function enableSquares() {
+            document.querySelectorAll('.square').forEach(btn => btn.disabled = false);
+        }
+
+        function endGame() {
+            gameState.isPlaying = false;
+            gameState.isWaitingForInput = false;
+            disableSquares();
+            DOM.gameStatus.textContent = '✗ Game Over! Wrong sequence!';
+
+            if (gameState.score > gameState.highScore) {
+                gameState.highScore = gameState.score;
+                localStorage.setItem('memoryHighScore', gameState.highScore);
+            }
+
+            DOM.finalScore.textContent = gameState.score;
+            DOM.maxRound.textContent = gameState.round;
+            DOM.gameOverModal.classList.add('is-open');
+        }
+
+        function updateUI() {
+            DOM.roundDisplay.textContent = gameState.round;
+            DOM.scoreDisplay.textContent = gameState.score;
+            DOM.highScoreDisplay.textContent = gameState.highScore;
+        }
+
+        initBoard();
+        updateUI();
+        DOM.startBtn.addEventListener('click', startGame);
+        DOM.playAgainBtn.addEventListener('click', startGame);
+        DOM.restartBtn.addEventListener('click', startGame);
+
+        console.log('Memory Sequence loaded');
+    </script>
+</body>
+</html>
