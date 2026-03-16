@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mindful Breathing Tracker - __MAIN_SITE_NAME__</title>
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '__GA_MEASUREMENT_ID__');
+  </script>
+  
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+  <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
+  <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">
+  <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
+  <script src="/apps/shared/app-shell.js" defer></script>
+  
+  <meta name="description" content="A mindful breathing tracker that combines 4-7-8 breathing exercises with habit formation for stress management. Track your daily sessions and build a calming practice.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧘</text></svg>">
+  
+  <style>
+    :root {
+      --bg: #0f172a;
+      --text: #f9fafb;
+      --surface: #1e293b;
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --success: #22c55e;
+      --surface-light: #334155;
+    }
+    
+    [data-theme="light"] {
+      --bg: #ffffff;
+      --text: #1f2937;
+      --surface: #f3f4f6;
+      --primary: #4f46e5;
+      --primary-light: #6366f1;
+      --success: #16a34a;
+      --surface-light: #e5e7eb;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s, color 0.3s;
+    }
+    
+    .container {
+      text-align: center;
+      padding: 2rem;
+      max-width: 600px;
+      width: 100%;
+    }
+    
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .subtitle {
+      color: var(--text);
+      opacity: 0.7;
+      margin-bottom: 2rem;
+    }
+    
+    .tracker {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      margin: 0 auto 2rem;
+    }
+    
+    .circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+    }
+    
+    .circle-inhale {
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      animation: breathe-inhale 4s ease-in-out;
+    }
+    
+    .circle-exhale {
+      width: 240px;
+      height: 240px;
+      background: linear-gradient(135deg, var(--primary-light), var(--primary));
+      animation: breathe-exhale 7s ease-in-out;
+    }
+    
+    .circle-hold {
+      width: 180px;
+      height: 180px;
+      background: var(--success);
+      animation: breathe-hold 8s ease-in-out;
+    }
+    
+    @keyframes breathe-inhale {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.5); }
+    }
+    
+    @keyframes breathe-exhale {
+      0%, 100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.5; }
+      50% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+    
+    @keyframes breathe-hold {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+      50% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+    
+    .breath-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: white;
+      z-index: 10;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .timer {
+      font-size: 3rem;
+      font-weight: 700;
+      margin: 1rem 0;
+      font-variant-numeric: tabular-nums;
+    }
+    
+    .instructions {
+      background: var(--surface);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+    
+    .instructions h2 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    
+    .instructions ol {
+      padding-left: 1.5rem;
+      line-height: 1.8;
+    }
+    
+    .instructions li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .progress-bar {
+      height: 8px;
+      background: var(--surface-light);
+      border-radius: 4px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--success));
+      transition: width 1s ease;
+      border-radius: 4px;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat {
+      background: var(--surface);
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .stat-label {
+      font-size: 0.875rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    button {
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .btn-secondary {
+      background: var(--surface-light);
+      color: var(--text);
+    }
+    
+    .streak {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      .tracker {
+        width: 250px;
+        height: 250px;
+      }
+      
+      .circle-inhale {
+        width: 160px;
+        height: 160px;
+      }
+      
+      .circle-exhale {
+        width: 190px;
+        height: 190px;
+      }
+      
+      .circle-hold {
+        width: 140px;
+        height: 140px;
+      }
+      
+      .stat-value {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧘 Mindful Breathing</h1>
+    <p class="subtitle">Practice 4-7-8 breathing for stress relief</p>
+    
+    <div class="streak">
+      <span>🔥</span>
+      <span id="streakCount">3</span> day streak!
+    </div>
+    
+    <div class="tracker">
+      <div class="circle circle-inhale" id="circleInhale"></div>
+      <div class="circle circle-exhale" id="circleExhale"></div>
+      <div class="circle circle-hold" id="circleHold"></div>
+      <div class="breath-text" id="breathText">Breathe In</div>
+    </div>
+    
+    <div class="timer" id="timer">4</div>
+    
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+    </div>
+    
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-value" id="sessionsToday">0</div>
+        <div class="stat-label">Sessions Today</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="totalBreaths">0</div>
+        <div class="stat-label">Total Breath Cycles</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="avgDuration">0</div>
+        <div class="stat-label">Min Avg Duration</div>
+      </div>
+    </div>
+    
+    <div class="instructions">
+      <h2>How to Practice 4-7-8 Breathing:</h2>
+      <ol>
+        <li><strong> Inhale through nose for 4 seconds</strong> - Fill your lungs completely</li>
+        <li><strong> Hold your breath for 7 seconds</strong> - Let the oxygen spread through your body</li>
+        <li><strong> Exhale slowly through mouth for 8 seconds</strong> - Release all tension</li>
+        <li>Repeat 4 times for best results</li>
+      </ol>
+    </div>
+    
+    <div class="controls">
+      <button class="btn-primary" id="startBtn">Start Session</button>
+      <button class="btn-secondary" id="resetBtn">Reset Progress</button>
+    </div>
+  </div>
+  
+  <script>
+    // App state
+    let state = {
+      isRunning: false,
+      sessionCount: 0,
+      totalBreaths: 0,
+      streak: 3,
+      currentPhase: null,
+      phaseProgress: 0,
+      sessionStartTime: null
+    };
+    
+    const phases = [
+      { name: 'Breathe In', duration: 4, color: '#6366f1' },
+      { name: 'Hold', duration: 7, color: '#22c55e' },
+      { name: 'Exhale', duration: 8, color: '#818cf8' }
+    ];
+    
+    let currentPhaseIndex = 0;
+    let phaseTimer;
+    let phaseProgressTimer;
+    
+    // DOM elements
+    const breathText = document.getElementById('breathText');
+    const timerDisplay = document.getElementById('timer');
+    const progressBar = document.getElementById('progressBar');
+    const circleInhale = document.getElementById('circleInhale');
+    const circleExhale = document.getElementById('circleExhale');
+    const circleHold = document.getElementById('circleHold');
+    const startBtn = document.getElementById('startBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const sessionsTodayDisplay = document.getElementById('sessionsToday');
+    const totalBreathsDisplay = document.getElementById('totalBreaths');
+    const avgDurationDisplay = document.getElementById('avgDuration');
+    const streakDisplay = document.getElementById('streakCount');
+    
+    // Load saved stats
+    const savedStats = JSON.parse(localStorage.getItem('breathingStats') || '{}');
+    if (savedStats.date === new Date().toISOString().split('T')[0]) {
+      state.sessionCount = savedStats.sessions || 0;
+      state.totalBreaths = savedStats.breaths || 0;
+    }
+    updateStatsDisplay();
+    
+    function updateStatsDisplay() {
+      sessionsTodayDisplay.textContent = state.sessionCount;
+      totalBreathsDisplay.textContent = state.totalBreaths;
+      streakDisplay.textContent = state.streak;
+    }
+    
+    function startSession() {
+      if (state.isRunning) {
+        stopSession();
+        return;
+      }
+      
+      state.isRunning = true;
+      state.sessionStartTime = Date.now();
+      startBtn.textContent = 'Stop Session';
+      startBtn.classList.remove('btn-primary');
+      startBtn.classList.add('btn-secondary');
+      
+      startPhase();
+    }
+    
+    function startPhase() {
+      if (!state.isRunning) return;
+      
+      clearInterval(phaseTimer);
+      clearInterval(phaseProgressTimer);
+      
+      resetCircles();
+      
+      const phase = phases[currentPhaseIndex];
+      breathText.textContent = phase.name;
+      timerDisplay.textContent = phase.duration;
+      progressBar.style.backgroundColor = phase.color;
+      progressBar.style.width = '0%';
+      
+      // Update UI based on phase
+      if (phase.name === 'Breathe In') {
+        circleInhale.style.animation = 'none';
+        circleInhale.offsetHeight; // Trigger reflow
+        circleInhale.style.animation = 'breathe-inhale 4s ease-in-out';
+      } else if (phase.name === 'Exhale') {
+        circleExhale.style.animation = 'breathe-exhale 7s ease-in-out';
+      } else if (phase.name === 'Hold') {
+        circleHold.style.animation = 'breathe-hold 8s ease-in-out';
+      }
+      
+      let progress = 0;
+      const interval = 100;
+      const progressInterval = interval / phase.duration * 100;
+      
+      phaseProgressTimer = setInterval(() => {
+        progress += progressInterval;
+        progressBar.style.width = Math.min(progress, 100) + '%';
+      }, interval);
+      
+      phaseTimer = setTimeout(() => {
+        state.totalBreaths++;
+        currentPhaseIndex = (currentPhaseIndex + 1) % phases.length;
+        
+        if (currentPhaseIndex === 0) {
+          state.totalBreaths++;
+          state.sessionCount++;
+          saveStats();
+          updateStatsDisplay();
+        }
+        
+        if (state.isRunning) {
+          startPhase();
+        }
+      }, phase.duration * 1000);
+    }
+    
+    function stopSession() {
+      state.isRunning = false;
+      clearInterval(phaseTimer);
+      clearInterval(phaseProgressTimer);
+      resetCircles();
+      
+      startBtn.textContent = 'Start Session';
+      startBtn.classList.remove('btn-secondary');
+      startBtn.classList.add('btn-primary');
+      
+      breathText.textContent = 'Ready';
+      timerDisplay.textContent = '0';
+      progressBar.style.width = '0%';
+      
+      state.sessionCount++;
+      saveStats();
+      updateStatsDisplay();
+    }
+    
+    function resetCircles() {
+      circleInhale.style.animation = 'none';
+      circleExhale.style.animation = 'none';
+      circleHold.style.animation = 'none';
+    }
+    
+    function resetProgress() {
+      if (state.isRunning) stopSession();
+      
+      state.sessionCount = 0;
+      state.totalBreaths = 0;
+      localStorage.removeItem('breathingStats');
+      updateStatsDisplay();
+    }
+    
+    function saveStats() {
+      const today = new Date().toISOString().split('T')[0];
+      localStorage.setItem('breathingStats', JSON.stringify({
+        date: today,
+        sessions: state.sessionCount,
+        breaths: state.totalBreaths
+      }));
+    }
+    
+    // Event listeners
+    startBtn.addEventListener('click', startSession);
+    resetBtn.addEventListener('click', resetProgress);
+    
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        startSession();
+      }
+    });
+    
+    // Touch support
+    document.querySelector('.tracker').addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      startSession();
+    });
+    
+    // Initialize
+    updateStatsDisplay();
+  </script>
+</body>
+</html>
