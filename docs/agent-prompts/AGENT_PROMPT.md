@@ -81,7 +81,7 @@ Each app run is one transaction:
 **This rule is non-negotiable and must be followed exactly:**
 
 1. Create the app folder **before any logging begins** so `log.jsonl` exists in the final app location from the start.
-2. **After EVERY step completes (Steps 1-13), immediately append the log entry to `log.jsonl`.**
+2. **After EVERY step completes (Steps 1-14), immediately append the log entry to `log.jsonl`.**
 3. **Execution pattern (MANDATORY):**
    - Execute step (validate, git command, PR, merge, deploy, etc.)
    - Immediately log that step to `log.jsonl` (within seconds, not later)
@@ -112,13 +112,14 @@ echo '{"timestamp":"<ISO8601>","runId":"<runId>","type":"STEP","step":"<STEP_NAM
 4. `GENERATE_THUMBNAIL`
 5. `CREATE_META_JSON`
 6. `VALIDATE_APP`
-7. `GIT_BRANCH`
+7. `GIT_CHECKOUT_BRANCH`
 8. `GIT_COMMIT`
-9. `CREATE_PR`
-10. `PR_REVIEW`
-11. `MERGE_PR`
+9. `GIT_PUSH`
+10. `CREATE_PR`
+11. `PR_REVIEW`
 12. `UPDATE_REGISTRY`
-13. `DEPLOY`
+13. `MERGE_PR_DEPLOY`
+14. `DELETE_BRANCH`
 
 ### Minimal log schemas
 `TRANSACTION_START`
@@ -213,11 +214,11 @@ When passed, log `VALIDATE_APP`.
 **Pattern: Execute → Log immediately → Move to next**
 
 1. Execute: `git checkout -b feat/<app-id>`
-   - **LOG IMMEDIATELY:** `GIT_BRANCH` step to `log.jsonl`
+   - **LOG IMMEDIATELY:** `GIT_CHECKOUT_BRANCH` step to `log.jsonl`
 2. **Stage and commit app files ONLY** (index.html, meta.json, thumbnail.svg).
    - Execute: `git add` and `git commit`
    - **LOG IMMEDIATELY:** `GIT_COMMIT` step with commit SHA to `log.jsonl` (capture SHA from commit output)
-   - **Do NOT commit log.jsonl yet** — it will be finalized in Step 10 after all transactions complete.
+   - **Do NOT commit log.jsonl yet** — it will be finalized in Step 9 after all transactions complete.
 
 ### Step 8: PR flow
 **Pattern: Execute → Log immediately → Move to next**
@@ -228,26 +229,20 @@ When passed, log `VALIDATE_APP`.
    - **LOG IMMEDIATELY:** `CREATE_PR` step with PR number/URL to `log.jsonl`
 3. Execute: Self-review PR (check code quality, tests, etc.)
    - **LOG IMMEDIATELY:** `PR_REVIEW` step to `log.jsonl`
-4. Execute: Merge PR with squash: `gh pr merge <pr-number> --squash --auto`
-   - **LOG IMMEDIATELY:** `MERGE_PR` step to `log.jsonl` after merge succeeds
-   - Verify merge on main: `git checkout main && git pull origin main`
-
-### Step 9: Registry + deploy
-**Pattern: Execute → Log immediately → Move to next**
-
-1. Execute: `npm run generate:apps`
+4. Execute: `npm run generate:apps` (update registry before merge, so registry and app deploy together)
    - **LOG IMMEDIATELY:** `UPDATE_REGISTRY` step to `log.jsonl`
-2. Verify PR is merged to `main` (git log should show your commit)
-   - **Merged on main: Vercel auto-deploys** (webhook → build → deploy to edge)
-   - Wait ~2–3 minutes for deployment to complete
-3. Verify app is live in public folder and accessible
-   - Execute: `npm run sync` (if needed to manually copy to public)
-   - **LOG IMMEDIATELY:** `DEPLOY` step to `log.jsonl` once app is confirmed live
+5. Execute: Merge PR with squash: `gh pr merge <pr-number> --squash --auto`
+   - **LOG IMMEDIATELY:** `MERGE_PR_DEPLOY` step to `log.jsonl` after merge succeeds
+   - Wait ~2–3 minutes for Vercel auto-deployment to complete (webhook triggered automatically on main merge)
+6. Verify merge on main: `git checkout main && git pull origin main`
+7. Verify app is live in public folder and accessible
+8. Execute: Delete the feature branch (local and remote)
+   - `git branch -d feat/<app-id>`  # Delete local branch
+   - `git push origin --delete feat/<app-id>`  # Delete remote branch
+   - **LOG IMMEDIATELY:** `DELETE_BRANCH` step to `log.jsonl`
 
-> **Note:** Deployment is automatic via Vercel when code is pushed to `main`. Environment variable placeholders are replaced during build from `.env.production` secrets.
-
-### Step 10: Finalize transaction log and commit
-After all logging transactions are complete (Steps 1-9), perform the final log commit:
+### Step 9: Finalize transaction log and commit
+After all logging transactions are complete (Steps 1-14), perform the final log commit:
 1. Append `TRANSACTION_END` to `apps/YYYY/MM/DD/<app-id>/log.jsonl`.
 2. **This is the FINAL COMMIT:** Stage only `log.jsonl` with the transaction data.
 3. **CRITICAL: Commit with `[skip deploy]` tag to prevent unnecessary Vercel redeploy:**
@@ -255,7 +250,7 @@ After all logging transactions are complete (Steps 1-9), perform the final log c
    git add apps/YYYY/MM/DD/<app-id>/log.jsonl
    git commit -m "chore: finalize transaction log for <app-id> [skip deploy]"
    ```
-   - **MUST include `[skip deploy]` in commit message** — tells Vercel not to redeploy (log.jsonl is metadata only, app already deployed in Step 9)
+   - **MUST include `[skip deploy]` in commit message** — tells Vercel not to redeploy (log.jsonl is metadata only, app is already deployed as part of Step 13 MERGE_PR_DEPLOY)
 4. **Push this commit directly to the main branch:** `git push origin main`
 
 > **⚠️ CRITICAL WARNING:** If `[skip deploy]` is omitted from the commit message, Vercel will trigger an unnecessary rebuild/redeploy cycle. ALWAYS verify the commit message contains `[skip deploy]` before pushing.

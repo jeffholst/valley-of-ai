@@ -1,6 +1,6 @@
 # Openclaw Agent - Ultra-Compact Pipeline Prompt
 
-Goal: generate one Valley of AI app with strict step-by-step execution and immediate logging.
+Goal: generate one polished web app with strict step-by-step execution and immediate logging.
 
 ## Hard Rules
 - Build static app only (HTML/CSS/JS), mobile + desktop.
@@ -42,7 +42,7 @@ Goal: generate one Valley of AI app with strict step-by-step execution and immed
 ## Logging Contract
 **⚠️ CRITICAL: REAL-TIME LOGGING (DO NOT SKIP)**
 - Create the app folder before any logging starts so `log.jsonl` exists in final location from the start
-- **After EVERY step (1-13), immediately append the log entry to `log.jsonl` within seconds of step completion**
+- **After EVERY step (1-14), immediately append the log entry to `log.jsonl` within seconds of step completion**
 - Execution pattern (MANDATORY): Execute step → Log immediately → Move to next step
 - **DO NOT batch logs at the end. DO NOT skip logging any step.**
 - Never log app-generation workflow state to a shared daily file under `/logs`
@@ -50,26 +50,27 @@ Goal: generate one Valley of AI app with strict step-by-step execution and immed
 
 Transaction format:
 1. `TRANSACTION_START`
-2. `STEP` entries (must log all 13)
+2. `STEP` entries (must log all 14)
 3. `TRANSACTION_END`
 
 Run id format:
 - `run-YYYYMMDDTHHMMSSZ-xxxxxx`
 
-Step names + seq:
+Step order and sequence numbers:
 1. `SELECT_SUGGESTION`
 2. `RESEARCH_IDEAS`
 3. `GENERATE_HTML`
 4. `GENERATE_THUMBNAIL`
 5. `CREATE_META_JSON`
 6. `VALIDATE_APP`
-7. `GIT_BRANCH`
+7. `GIT_CHECKOUT_BRANCH`
 8. `GIT_COMMIT`
-9. `CREATE_PR`
-10. `PR_REVIEW`
-11. `MERGE_PR`
+9. `GIT_PUSH`
+10. `CREATE_PR`
+11. `PR_REVIEW`
 12. `UPDATE_REGISTRY`
-13. `DEPLOY`
+13. `MERGE_PR_DEPLOY`
+14. `DELETE_BRANCH`
 
 Status values:
 - `started`, `in_progress`, `completed`, `failed`, `retrying`, `skipped`, `cancelled`
@@ -138,30 +139,31 @@ If validation fails:
 When passed, **Log `VALIDATE_APP` immediately**.
 
 7. Git branch + commit (app files only)
-- Execute: `git checkout -b feat/<app-id>` → **Log `GIT_BRANCH` immediately**
+- Execute: `git checkout -b feat/<app-id>` → **Log `GIT_CHECKOUT_BRANCH` immediately**
 - Stage and commit app files ONLY (index.html, meta.json, thumbnail.svg): `git add ...` then `git commit ...`
   - **Log `GIT_COMMIT` immediately with SHA** (capture from commit output)
-  - **Do NOT commit log.jsonl yet** — it will be finalized in step 10 after all transactions complete
+  - **Do NOT commit log.jsonl yet** — it will be finalized in step 9 after all transactions complete
 
 8. PR flow + Merge
 - Execute: `git push origin feat/<app-id>` → **Log `GIT_PUSH` immediately**
 - Execute: `gh pr create --title "..." --body "..."` → **Log `CREATE_PR` with PR #/URL immediately**
 - Execute: Self-review → **Log `PR_REVIEW` immediately**
-- Execute: `gh pr merge <pr-number> --squash --auto` → **Log `MERGE_PR` immediately after merge succeeds**
+- Execute: `npm run generate:apps` (update registry before merge, so registry and app deploy together) → **Log `UPDATE_REGISTRY` immediately**
+- Execute: `gh pr merge <pr-number> --squash --auto` → **Log `MERGE_PR_DEPLOY` immediately after merge succeeds**
+- Wait ~2–3 min for Vercel auto-deployment (webhook triggered automatically on main merge)
 - Verify on main: `git checkout main && git pull origin main`
+- Verify app files live in public/apps/YYYY/MM/DD/<app-id>/
+- Delete feature branch (local and remote):
+  - `git branch -d feat/<app-id>`
+  - `git push origin --delete feat/<app-id>`
+  - → **Log `DELETE_BRANCH` immediately**
 
-9. Registry + deploy
-- Execute: `npm run generate:apps` → **Log `UPDATE_REGISTRY` immediately**
-- Verify PR merged to main (Vercel auto-deploys on main merge). Wait ~2–3 min for deployment.
-- Verify app files live in public/apps/YYYY/MM/DD/<app-id>/ → **Log `DEPLOY` immediately once confirmed live**
-
-10. Finalize transaction log and commit (Step 10)
-- Switch back to main: `git checkout main && git pull origin main`.
-- Append `TRANSACTION_END` to `apps/YYYY/MM/DD/<app-id>/log.jsonl`.
+9. Finalize transaction log and commit
+- Append `TRANSACTION_END` to `apps/YYYY/MM/DD/<app-id>/log.jsonl` after all logging steps (1-14) complete.
 - **CRITICAL: Commit log.jsonl with `[skip deploy]` tag (separate, final commit):**
   ```bash
   git add apps/YYYY/MM/DD/<app-id>/log.jsonl
   git commit -m "chore: finalize transaction log for <app-id> [skip deploy]"
   git push origin main
   ```
-  - **MUST include `[skip deploy]` in commit message** — prevents unnecessary Vercel redeploy (log.jsonl is metadata only, app already deployed in Step 9).
+  - **MUST include `[skip deploy]` in commit message** — prevents unnecessary Vercel redeploy (log.jsonl is metadata only, app is already deployed as part of Step 13 MERGE_PR_DEPLOY).
