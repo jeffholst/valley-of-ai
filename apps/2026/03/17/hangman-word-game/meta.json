@@ -1,0 +1,36 @@
+{
+  "id": "hangman-word-game",
+  "name": "Hangman Word Game",
+  "shortDescription": "An animated Hangman word game with keyboard and touch controls.",
+  "description": "A polished browser Hangman with smooth part-by-part animation, keyboard and touch letter entry, responsive layout, and instant replay. Includes category labels, wrong-letter tracking, and win feedback animation.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-17T02:31:29Z",
+  "category": "Games",
+  "status": "active",
+  "tags": [
+    "hangman",
+    "word-game",
+    "puzzle",
+    "animation",
+    "keyboard",
+    "touch"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "GitHub Copilot",
+    "llmModel": "GPT-5.3-Codex",
+    "startTime": "2026-03-17T02:31:29Z",
+    "endTime": "2026-03-17T02:35:42Z",
+    "totalTokensIn": 4200,
+    "totalTokensOut": 7600,
+    "runId": "run-20260317T023129Z-4f9a1c",
+    "notes": "Built a non-violent animated Hangman app with responsive UI, keyboard/touch support, and shared shell compliance."
+  },
+  "accessibility": {
+    "ariaLabels": true,
+    "keyboardNavigation": true,
+    "darkModeSupport": true,
+    "motionPreferences": false
+  }
+}
