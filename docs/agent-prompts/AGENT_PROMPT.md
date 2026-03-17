@@ -207,7 +207,6 @@ npm run log -- --runId <runId> --appId <app-id> --category pipeline \
   --tokensIn <in> --tokensOut <out> \
   --message "Created meta.json with app metadata"
 ```
-```
 
 ### Step 6: Validate (blocking gate)
 
