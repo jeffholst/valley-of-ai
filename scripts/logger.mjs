@@ -56,9 +56,33 @@
 
 import fs from 'fs';
 import path from 'path';
-import minimist from 'minimist';
+import { program } from 'commander';
 
-const args = minimist(process.argv.slice(2));
+// Configure command-line arguments using commander
+program
+  .option('--runId <id>', 'Unique run identifier')
+  .option('--appId <id>', 'Application identifier')
+  .option('--category <type>', 'Log category: pipeline|reasoning|validation')
+  .option('--step <name>', 'Pipeline step name')
+  .option('--seq <number>', 'Step sequence number')
+  .option('--phase <name>', 'Pipeline or reasoning phase')
+  .option('--status <status>', 'Entry status')
+  .option('--durationMs <number>', 'Duration in milliseconds')
+  .option('--tokensIn <number>', 'Input tokens')
+  .option('--tokensOut <number>', 'Output tokens')
+  .option('--message <text>', 'Log message')
+  .option('--appPath <path>', 'Optional app path')
+  .option('--checkType <type>', 'Validation check type')
+  .option('--name <text>', 'Check or decision name')
+  .option('--result <result>', 'Validation result')
+  .option('--details <json>', 'Additional details as JSON')
+  .option('--decision <text>', 'Decision made')
+  .option('--alternatives <csv>', 'Comma-separated alternatives')
+  .option('--rationale <text>', 'Decision rationale')
+  .option('--dry-run', 'Print entry without appending')
+  .parse(process.argv);
+
+const args = program.opts();
 
 // Validation
 if (!args.runId || !args.appId || !args.category) {
@@ -183,7 +207,7 @@ if (args.category === 'pipeline') {
 console.log(JSON.stringify(entry, null, 2));
 
 // Append to logs (unless dry-run)
-if (!args['dry-run']) {
+if (!args.dryRun) {
   try {
     appendToLogs(args.appId, entry);
   } catch (err) {

@@ -148,6 +148,7 @@ For reasoning decisions and validation checks, use `--category reasoning` or `--
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --category pipeline \
      --step SELECT_SUGGESTION --seq 1 --status completed --durationMs <duration> \
+     --tokensIn <in> --tokensOut <out> \
      --message "Selected [app-name] concept in [category]"
    ```
 5. Optionally log reasoning (why this app over alternatives):
@@ -165,6 +166,7 @@ For reasoning decisions and validation checks, use `--category reasoning` or `--
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --category pipeline \
      --step RESEARCH_IDEAS --seq 2 --status completed --durationMs <duration> \
+     --tokensIn <in> --tokensOut <out> \
      --message "Research complete: [mechanic summary]"
    ```
 4. Optionally log reasoning about design choices:
