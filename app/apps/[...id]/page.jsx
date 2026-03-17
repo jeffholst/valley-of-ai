@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useVotes } from '@/hooks/useVotes';
 import { notFound } from 'next/navigation';
 import { use } from 'react';
+import AppLog from '@/components/AppLog';
 
 import appsData from '@/data/apps.json';
 
@@ -210,6 +211,11 @@ function AppDetailContent({ app, id }) {
             </div>
           </div>
         )}
+
+        {/* App Log */}
+        <div className="mt-8">
+          <AppLog appId={id} />
+        </div>
       </div>
     </>
   );
