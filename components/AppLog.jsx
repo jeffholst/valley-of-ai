@@ -7,6 +7,19 @@ export default function AppLog({ appId }) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [expandedMessages, setExpandedMessages] = useState(new Set());
+
+  const toggleMessageExpansion = (messageIndex) => {
+    setExpandedMessages(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(messageIndex)) {
+        newSet.delete(messageIndex);
+      } else {
+        newSet.add(messageIndex);
+      }
+      return newSet;
+    });
+  };
 
 
 
@@ -149,6 +162,8 @@ export default function AppLog({ appId }) {
               const step = log.pipeline?.step;
               const status = log.pipeline?.status;
               const isDone = status === 'completed' || status === 'success' || status === 'failed';
+              const isMessageExpanded = expandedMessages.has(idx);
+              const hasLongMessage = log.message && log.message.length > 50;
 
               return (
                 <div
@@ -162,7 +177,36 @@ export default function AppLog({ appId }) {
                       <div className="text-xs opacity-75">seq: {log.pipeline.seq}</div>
                     )}
                     {log.message && (
-                      <div className="text-xs opacity-75 truncate">{log.message}</div>
+                      <div 
+                        className={`text-xs opacity-75 transition-all duration-200 ${
+                          hasLongMessage 
+                            ? 'cursor-pointer select-none hover:opacity-100' 
+                            : ''
+                        } ${
+                          hasLongMessage && !isMessageExpanded ? 'truncate' : ''
+                        }`}
+                        onClick={() => hasLongMessage && toggleMessageExpansion(idx)}
+                        style={hasLongMessage ? { WebkitTapHighlightColor: 'rgba(59, 130, 246, 0.1)' } : {}}
+                      >
+                        <div className="flex items-start gap-1">
+                          <span className={hasLongMessage ? 'flex-grow' : 'w-full'}>
+                            {log.message}
+                          </span>
+                          {hasLongMessage && (
+                            <button className="flex-shrink-0 text-blue-500 hover:text-blue-700 ml-1 transition-colors">
+                              {isMessageExpanded ? (
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                                </svg>
+                              ) : (
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                              )}
+                            </button>
+                          )}
+                        </div>
+                      </div>
                     )}
                   </div>
                   {isDone && log.pipeline?.durationMs && (
