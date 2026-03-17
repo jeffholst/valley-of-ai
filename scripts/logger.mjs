@@ -112,14 +112,27 @@ if (args.phase) {
 
 // Populate category-specific fields
 if (args.category === 'pipeline') {
+  const pipelineStatus = args.status || 'completed';
   entry.pipeline = {
     step: args.step,
     seq: args.seq ? parseInt(args.seq) : null,
-    status: args.status || 'completed',
+    status: pipelineStatus,
     durationMs: args.durationMs ? parseInt(args.durationMs) : null,
     tokensIn: args.tokensIn ? parseInt(args.tokensIn) : null,
     tokensOut: args.tokensOut ? parseInt(args.tokensOut) : null,
   };
+
+  // Backward-compatible top-level fields for existing logs UI
+  // The logs UI expects:
+  //   - entry.type in {'TRANSACTION_START', 'TRANSACTION_END', 'STEP'}
+  //   - entry.step, entry.status, entry.seq, entry.durationMs, entry.tokensIn, entry.tokensOut
+  entry.type = 'STEP';
+  entry.step = entry.pipeline.step;
+  entry.seq = entry.pipeline.seq;
+  entry.status = entry.pipeline.status;
+  entry.durationMs = entry.pipeline.durationMs;
+  entry.tokensIn = entry.pipeline.tokensIn;
+  entry.tokensOut = entry.pipeline.tokensOut;
 } else if (args.category === 'reasoning') {
   entry.reasoning = {
     decision: args.decision || null,
