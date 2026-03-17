@@ -143,7 +143,7 @@ Then log step: `npm run log -- --runId <ID> --appId <app-id> --category pipeline
   - Log: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step GIT_COMMIT --seq 8 --message "Committed with SHA: <SHA>"`
   - **Do NOT commit log.jsonl yet** — it will be finalized in step 9 after all transactions complete
 
-8. PR flow + Merge
+8. PR flow + Merge (seq 9-14)
 - Execute: `git push origin feat/<app-id>` → Log: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step GIT_PUSH --seq 9 --message "..."`
 - Execute: `gh pr create --title "..." --body "..."` → Log: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step CREATE_PR --seq 10 --message "Created PR #<N>"`
 - Execute: Self-review → Log: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step PR_REVIEW --seq 11 --message "..."`
@@ -157,7 +157,7 @@ Then log step: `npm run log -- --runId <ID> --appId <app-id> --category pipeline
   - `git push origin --delete feat/<app-id>`
   - Log: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step DELETE_BRANCH --seq 14 --message "..."`
 
-9. Finalize transaction log and commit
+9. Finalize transaction log and commit (finalization)
 - Log TRANSACTION_END: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step TRANSACTION_END --status success --message "Pipeline complete"`
 - **CRITICAL: Commit log.jsonl with `[skip deploy]` tag (separate, final commit):**
   ```bash

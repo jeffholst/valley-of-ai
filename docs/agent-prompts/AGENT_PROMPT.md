@@ -252,7 +252,7 @@ npm run log -- --runId <runId> --appId <app-id> --category pipeline \
   --message "All validation checks passed"
 ```
 
-### Step 7: Git branch and commit (app files only)
+### Step 7: Git branch and commit (seq 7-8)
 **Pattern: Execute → Log immediately → Move to next**
 
 1. Execute: `git checkout -b feat/<app-id>`
@@ -272,7 +272,7 @@ npm run log -- --runId <runId> --appId <app-id> --category pipeline \
    ```
    - **Do NOT commit log.jsonl yet** — it will be finalized in Step 9 after all transactions complete.
 
-### Step 8: PR flow
+### Step 8: PR flow (seq 9-13)
 **Pattern: Execute → Log immediately → Move to next**
 
 1. Execute: Push branch: `git push -u origin feat/<app-id>`
@@ -323,14 +323,13 @@ npm run log -- --runId <runId> --appId <app-id> --category pipeline \
      --message "Deleted feature branch feat/<app-id>"
    ```
 
-### Step 9: Finalize transaction log and commit
+### Step 9: Finalize transaction log and commit (finalization)
 After all logging transactions are complete (Steps 1-14), perform the final log entry and commit:
 1. Log the `TRANSACTION_END` using npm run log:
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --category pipeline \
      --step TRANSACTION_END --status success --durationMs <total_duration> \
-     --message "App generation pipeline complete" \
-     --details '{"filesCreated":["index.html","meta.json","thumbnail.svg","log.jsonl"],"totalTokens":<count>}'
+     --message "App generation pipeline complete"
    ```
    This appends TRANSACTION_END to both `apps/YYYY/MM/DD/<app-id>/log.jsonl` and `logs/YYYY/MM/DD.jsonl`.
 
