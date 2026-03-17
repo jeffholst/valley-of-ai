@@ -147,6 +147,13 @@ if (args.category === 'pipeline') {
   entry.durationMs = entry.pipeline.durationMs;
   entry.tokensIn = entry.pipeline.tokensIn;
   entry.tokensOut = entry.pipeline.tokensOut;
+
+  // Also expose aggregate fields used by dashboards for TRANSACTION_END entries.
+  // For callers that use this script to emit TRANSACTION_END, they can treat these
+  // as totals; for regular STEP entries these simply mirror the step metrics.
+  entry.totalDurationMs = entry.pipeline.durationMs;
+  entry.totalTokensIn = entry.pipeline.tokensIn;
+  entry.totalTokensOut = entry.pipeline.tokensOut;
 } else if (args.category === 'reasoning') {
   entry.reasoning = {
     decision: args.decision || null,
