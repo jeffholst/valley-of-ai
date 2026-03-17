@@ -158,12 +158,8 @@ function appendToLogs(appId, entry) {
     appPath = `apps/${year}/${month}/${day}/${appId}`;
   }
 
-  const logsDir = path.dirname(appPath);
-  const centralLogsDir = path.dirname(logsDir);
-
-  // Ensure directories exist
+  // Ensure app-level directory exists
   ensureDirectoryExists(appPath);
-  ensureDirectoryExists(centralLogsDir);
 
   // Append to app-level log
   const appLogPath = path.join(appPath, 'log.jsonl');
