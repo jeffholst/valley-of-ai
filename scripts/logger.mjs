@@ -24,6 +24,7 @@
  *   --durationMs <N>      Duration in milliseconds
  *   --tokensIn <N>        Input tokens consumed
  *   --tokensOut <N>       Output tokens produced
+ *   --details <JSON>      Additional metadata (e.g., filesCreated, totalDurationMs for TRANSACTION_END)
  *
  * Reasoning-specific OPTIONS:
  *   --decision <DECISION> Decision made (will be part of reasoning object)
@@ -113,6 +114,16 @@ if (args.phase) {
 // Populate category-specific fields
 if (args.category === 'pipeline') {
   const pipelineStatus = args.status || 'completed';
+  let details = {};
+  if (args.details) {
+    try {
+      details = JSON.parse(args.details);
+    } catch (err) {
+      console.error('ERROR: --details must be valid JSON');
+      console.error(`Parsing error: ${err.message}`);
+      process.exit(1);
+    }
+  }
   entry.pipeline = {
     step: args.step,
     seq: args.seq ? parseInt(args.seq) : null,
@@ -120,6 +131,7 @@ if (args.category === 'pipeline') {
     durationMs: args.durationMs ? parseInt(args.durationMs) : null,
     tokensIn: args.tokensIn ? parseInt(args.tokensIn) : null,
     tokensOut: args.tokensOut ? parseInt(args.tokensOut) : null,
+    details,
   };
 
   // Backward-compatible top-level fields for existing logs UI
