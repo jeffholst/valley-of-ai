@@ -414,29 +414,29 @@ All examples use the same `npm run log` pattern with `--category`:
 
 ```bash
 # Step 0: Prep (transaction start)
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category pipeline --step TRANSACTION_START --status started \
   --message "Starting app generation pipeline"
 
 # Step 1: SELECT_SUGGESTION (pipeline + reasoning)
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category pipeline --step SELECT_SUGGESTION --seq 1 --durationMs 1500 \
   --message "Selected memory-sequence concept"
 
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category reasoning --phase SELECT_SUGGESTION \
   --message "Memory/Simon game proven addictive pattern" \
   --decision "memory-sequence" --alternatives "tile-match,word-guess" \
   --rationale "Not in current /apps, high engagement, simple mechanics"
 
 # Step 3: GENERATE_HTML (pipeline + multiple reasoning entries)
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category reasoning --phase GENERATE_HTML \
   --message "2x2 grid optimal for mobile responsiveness" \
   --decision "2x2-grid" --alternatives "3x3-grid,responsive-grid" \
   --rationale "Better thumb reach on mobile, adequate difficulty"
 
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category reasoning --phase GENERATE_HTML \
   --message "Sequence generation: 1-color start, +1 per round" \
   --decision "incremental-sequence" --alternatives "random-length,fixed-length"] \
