@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focus Timer - __MAIN_SITE_NAME__</title>
+  <meta name="description" content="A minimalist focus timer with customizable durations and audio cues.">
+  <meta name="theme-color" content="#1e293b">
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+  <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
+  <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">
+  <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%231e293b'/><circle cx='50' cy='50' r='40' fill='%230f172a'/></svg>">
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '__GA_MEASUREMENT_ID__');
+  </script>
+  
+  <script src="/apps/shared/app-shell.js" defer></script>
+  
+  <style>
+    :root {
+      --bg: #0f172a;
+      --text: #f9fafb;
+      --surface: #1e293b;
+      --accent: #3b82f6;
+      --accent-dark: #1d4ed8;
+    }
+    
+    [data-theme="light"] {
+      --bg: #ffffff;
+      --text: #1f2937;
+      --surface: #f3f4f6;
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 400px;
+      background-color: var(--surface);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    h1 {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      font-weight: 600;
+    }
+    
+    .timer-display {
+      text-align: center;
+      font-size: 4rem;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      letter-spacing: 0.05em;
+      line-height: 1.2;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .duration-input {
+      flex: 1;
+      min-width: 120px;
+      padding: 0.75rem;
+      border: 2px solid var(--accent);
+      border-radius: 6px;
+      background-color: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    
+    .duration-input:focus {
+      outline: none;
+      border-color: var(--accent-dark);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .btn-primary {
+      background-color: var(--accent);
+      color: white;
+      grid-column: 1 / -1;
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--accent-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+    }
+    
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--accent);
+      border: 2px solid var(--accent);
+    }
+    
+    .btn-secondary:hover:not(:disabled) {
+      background-color: var(--accent);
+      color: white;
+      transform: translateY(-2px);
+    }
+    
+    .btn-secondary:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .preset-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+    
+    .btn-preset {
+      padding: 0.5rem;
+      font-size: 0.875rem;
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-preset:hover:not(:disabled) {
+      background-color: var(--accent-dark);
+      transform: scale(1.05);
+    }
+    
+    .status {
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--text);
+      opacity: 0.75;
+      margin-top: 1rem;
+    }
+    
+    .status.completed {
+      color: #10b981;
+      font-weight: 600;
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: 1.5rem;
+      }
+      
+      .timer-display {
+        font-size: 3rem;
+      }
+      
+      h1 {
+        font-size: 1.25rem;
+      }
+      
+      .buttons {
+        grid-template-columns: 1fr;
+      }
+      
+      .btn-primary {
+        grid-column: 1;
+      }
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Focus Timer</h1>
+    
+    <div class="timer-display" role="status" aria-live="polite" aria-atomic="true">
+      <span id="timer">25:00</span>
+    </div>
+    
+    <div class="controls">
+      <input 
+        type="number" 
+        id="duration" 
+        class="duration-input" 
+        min="1" 
+        max="120" 
+        value="25"
+        placeholder="Minutes"
+        aria-label="Duration in minutes"
+      >
+    </div>
+    
+    <div class="buttons">
+      <button id="startBtn" class="btn-primary" aria-label="Start timer">Start</button>
+      <button id="resetBtn" class="btn-secondary" aria-label="Reset timer">Reset</button>
+      <button id="pauseBtn" class="btn-secondary" aria-label="Pause timer" disabled>Pause</button>
+    </div>
+    
+    <div class="preset-buttons">
+      <button id="preset5" class="btn-preset" aria-label="Set 5 minutes">5 min</button>
+      <button id="preset15" class="btn-preset" aria-label="Set 15 minutes">15 min</button>
+      <button id="preset25" class="btn-preset" aria-label="Set 25 minutes">25 min</button>
+      <button id="preset45" class="btn-preset" aria-label="Set 45 minutes">45 min</button>
+      <button id="preset60" class="btn-preset" aria-label="Set 60 minutes">60 min</button>
+      <button id="preset90" class="btn-preset" aria-label="Set 90 minutes">90 min</button>
+    </div>
+    
+    <div class="status" id="status"></div>
+  </div>
+  
+  <script>
+    class FocusTimer {
+      constructor() {
+        this.duration = 25 * 60; // Default 25 minutes in seconds
+        this.remaining = this.duration;
+        this.isRunning = false;
+        this.intervalId = null;
+        this.startTime = null;
+        
+        this.timerDisplay = document.getElementById('timer');
+        this.durationInput = document.getElementById('duration');
+        this.startBtn = document.getElementById('startBtn');
+        this.resetBtn = document.getElementById('resetBtn');
+        this.pauseBtn = document.getElementById('pauseBtn');
+        this.statusEl = document.getElementById('status');
+        
+        this.setupEventListeners();
+        this.updateDisplay();
+      }
+      
+      setupEventListeners() {
+        this.startBtn.addEventListener('click', () => this.start());
+        this.resetBtn.addEventListener('click', () => this.reset());
+        this.pauseBtn.addEventListener('click', () => this.pause());
+        this.durationInput.addEventListener('change', (e) => this.setDuration(parseInt(e.target.value)));
+        
+        document.getElementById('preset5').addEventListener('click', () => this.setDuration(5));
+        document.getElementById('preset15').addEventListener('click', () => this.setDuration(15));
+        document.getElementById('preset25').addEventListener('click', () => this.setDuration(25));
+        document.getElementById('preset45').addEventListener('click', () => this.setDuration(45));
+        document.getElementById('preset60').addEventListener('click', () => this.setDuration(60));
+        document.getElementById('preset90').addEventListener('click', () => this.setDuration(90));
+      }
+      
+      setDuration(minutes) {
+        if (!this.isRunning) {
+          this.duration = minutes * 60;
+          this.remaining = this.duration;
+          this.durationInput.value = minutes;
+          this.updateDisplay();
+          this.statusEl.textContent = '';
+        }
+      }
+      
+      start() {
+        if (this.isRunning) return;
+        
+        this.isRunning = true;
+        this.startTime = Date.now() - (this.duration - this.remaining) * 1000;
+        this.startBtn.disabled = true;
+        this.pauseBtn.disabled = false;
+        this.durationInput.disabled = true;
+        this.statusEl.textContent = 'Timer running...';
+        
+        this.intervalId = setInterval(() => this.tick(), 100);
+      }
+      
+      pause() {
+        if (!this.isRunning) return;
+        
+        clearInterval(this.intervalId);
+        this.isRunning = false;
+        this.startBtn.disabled = false;
+        this.pauseBtn.disabled = true;
+        this.startBtn.textContent = 'Resume';
+        this.statusEl.textContent = 'Timer paused';
+      }
+      
+      reset() {
+        clearInterval(this.intervalId);
+        this.isRunning = false;
+        this.remaining = this.duration;
+        this.startBtn.disabled = false;
+        this.pauseBtn.disabled = true;
+        this.startBtn.textContent = 'Start';
+        this.durationInput.disabled = false;
+        this.updateDisplay();
+        this.statusEl.textContent = '';
+      }
+      
+      tick() {
+        this.remaining = Math.max(0, this.duration - Math.floor((Date.now() - this.startTime) / 1000));
+        this.updateDisplay();
+        
+        if (this.remaining === 0) {
+          this.complete();
+        }
+      }
+      
+      complete() {
+        clearInterval(this.intervalId);
+        this.isRunning = false;
+        this.remaining = 0;
+        this.startBtn.disabled = false;
+        this.pauseBtn.disabled = true;
+        this.startBtn.textContent = 'Start';
+        this.durationInput.disabled = false;
+        this.updateDisplay();
+        this.statusEl.textContent = 'Time\'s up! 🎉';
+        this.statusEl.classList.add('completed');
+        
+        // Play completion sound
+        try {
+          const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = audioContext.createOscillator();
+          const gain = audioContext.createGain();
+          osc.connect(gain);
+          gain.connect(audioContext.destination);
+          osc.frequency.value = 800;
+          gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+          osc.start();
+          osc.stop(audioContext.currentTime + 0.5);
+        } catch (e) {
+          console.log('Audio playback not available');
+        }
+      }
+      
+      updateDisplay() {
+        const mins = Math.floor(this.remaining / 60);
+        const secs = this.remaining % 60;
+        this.timerDisplay.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      }
+    }
+    
+    // Initialize timer when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      new FocusTimer();
+    });
+  </script>
+</body>
+</html>
