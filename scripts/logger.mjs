@@ -73,6 +73,13 @@ if (!['pipeline', 'reasoning', 'validation'].includes(args.category)) {
   process.exit(1);
 }
 
+// Validate appId as a safe slug to avoid path traversal and invalid characters
+const appIdSlugPattern = /^[a-zA-Z0-9_-]+$/;
+if (!appIdSlugPattern.test(args.appId)) {
+  console.error(`ERROR: --appId must match ${appIdSlugPattern} (got: ${args.appId})`);
+  process.exit(1);
+}
+
 // Validate pipeline-specific requirements
 if (args.category === 'pipeline' && !args.step) {
   console.error('ERROR: --step is required for pipeline entries');
@@ -147,7 +154,10 @@ if (!args['dry-run']) {
  * @param {object} entry - Log entry
  */
 function appendToLogs(appId, entry) {
-  // Parse appPath (format: YYYY/MM/DD/<appId> or custom path)
+  // Base directory for all apps; all app paths must stay within this directory
+  const baseAppsDir = path.resolve('apps');
+
+  // Parse appPath (format: YYYY/MM/DD/<appId> or custom path relative to apps/)
   let appPath = args.appPath;
   if (!appPath) {
     const timestamp = entry.timestamp;
@@ -155,7 +165,16 @@ function appendToLogs(appId, entry) {
     const year = date.getUTCFullYear();
     const month = String(date.getUTCMonth() + 1).padStart(2, '0');
     const day = String(date.getUTCDate()).padStart(2, '0');
-    appPath = `apps/${year}/${month}/${day}/${appId}`;
+    // Default structure: apps/YYYY/MM/DD/<appId>
+    appPath = path.join(baseAppsDir, year.toString(), month, day, appId);
+  } else {
+    // Treat custom appPath as relative to baseAppsDir and enforce it stays under baseAppsDir
+    const resolvedAppPath = path.resolve(baseAppsDir, appPath);
+    const relative = path.relative(baseAppsDir, resolvedAppPath);
+    if (relative.startsWith('..') || path.isAbsolute(relative)) {
+      throw new Error(`Invalid --appPath; must resolve within ${baseAppsDir} (got: ${args.appPath})`);
+    }
+    appPath = resolvedAppPath;
   }
 
   // Ensure app-level directory exists
