@@ -196,13 +196,13 @@ if (!args['dry-run']) {
  * Append entry to both central and app-level logs
  * @param {string} appId - App ID
  * @param {object} entry - Log entry
+ * @param {string} [appPath] - Optional app path (overrides YYYY/MM/DD/<appId>)
  */
-function appendToLogs(appId, entry) {
+function appendToLogs(appId, entry, appPath = args.appPath) {
   // Base directory for all apps; all app paths must stay within this directory
   const baseAppsDir = path.resolve('apps');
 
   // Parse appPath (format: YYYY/MM/DD/<appId> or custom path relative to apps/)
-  let appPath = args.appPath;
   if (!appPath) {
     const timestamp = entry.timestamp;
     const date = new Date(timestamp);
@@ -216,7 +216,7 @@ function appendToLogs(appId, entry) {
     const resolvedAppPath = path.resolve(baseAppsDir, appPath);
     const relative = path.relative(baseAppsDir, resolvedAppPath);
     if (relative.startsWith('..') || path.isAbsolute(relative)) {
-      throw new Error(`Invalid --appPath; must resolve within ${baseAppsDir} (got: ${args.appPath})`);
+      throw new Error(`Invalid --appPath; must resolve within ${baseAppsDir} (got: ${appPath})`);
     }
     appPath = resolvedAppPath;
   }
