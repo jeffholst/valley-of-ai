@@ -126,7 +126,21 @@ if (args.category === 'pipeline') {
   // The logs UI expects:
   //   - entry.type in {'TRANSACTION_START', 'TRANSACTION_END', 'STEP'}
   //   - entry.step, entry.status, entry.seq, entry.durationMs, entry.tokensIn, entry.tokensOut
-  entry.type = 'STEP';
+  //
+  // Derive entry.type from status where possible so transaction boundaries are visible
+  const normalizedStatus = String(pipelineStatus).toLowerCase();
+  let entryType = 'STEP';
+  if (normalizedStatus === 'started' || normalizedStatus === 'in_progress' || normalizedStatus === 'in-progress') {
+    entryType = 'TRANSACTION_START';
+  } else if (
+    normalizedStatus === 'success' ||
+    normalizedStatus === 'failed' ||
+    normalizedStatus === 'completed'
+  ) {
+    entryType = 'TRANSACTION_END';
+  }
+
+  entry.type = entryType;
   entry.step = entry.pipeline.step;
   entry.seq = entry.pipeline.seq;
   entry.status = entry.pipeline.status;
