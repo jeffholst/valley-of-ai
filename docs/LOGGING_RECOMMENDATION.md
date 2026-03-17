@@ -442,40 +442,40 @@ npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --decision "incremental-sequence" --alternatives "random-length,fixed-length"] \
   --rationale "Progressive difficulty increases engagement"
 
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category pipeline --step GENERATE_HTML --seq 3 \
   --durationMs 15000 --tokensIn 3000 --tokensOut 2500 \
   --message "Generated index.html with game engine and responsive layout"
 
 # Step 6: VALIDATE_APP (validation entries)
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category validation --checkType "file-exists" \
   --name "index.html" --result PASS \
   --message "HTML file created and readable"
 
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category validation --checkType "schema-valid" \
   --name "meta.json structure" --result PASS \
   --message "Metadata conforms to required schema"
 
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category pipeline --step VALIDATE_APP --seq 6 \
   --durationMs 2000 --message "All validation checks passed"
 
 # Step 7: GIT_CHECKOUT_BRANCH
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category pipeline --step GIT_CHECKOUT_BRANCH --seq 7 \
   --durationMs 500 --message "Created feature branch feat/memory-sequence"
 
 # ... continue through all steps ...
 
 # Step 13: MERGE_PR_DEPLOY
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category pipeline --step MERGE_PR_DEPLOY --seq 13 \
   --durationMs 3000 --message "PR merged to main and deployed via Vercel"
 
 # Step 14: TRANSACTION_END
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category pipeline --step TRANSACTION_END \
   --status success --message "Pipeline complete" \
   --details '{"filesCreated":["index.html","meta.json","thumbnail.svg","log.jsonl"],"totalDurationMs":302000,"totalTokens":47300}'
