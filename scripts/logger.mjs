@@ -115,11 +115,11 @@ if (args.category === 'pipeline') {
   const pipelineStatus = args.status || 'completed';
   entry.pipeline = {
     step: args.step,
-    seq: args.seq ? parseInt(args.seq) : null,
+    seq: args.seq !== undefined ? parseInt(args.seq, 10) : null,
     status: pipelineStatus,
-    durationMs: args.durationMs ? parseInt(args.durationMs) : null,
-    tokensIn: args.tokensIn ? parseInt(args.tokensIn) : null,
-    tokensOut: args.tokensOut ? parseInt(args.tokensOut) : null,
+    durationMs: args.durationMs !== undefined ? parseInt(args.durationMs, 10) : null,
+    tokensIn: args.tokensIn !== undefined ? parseInt(args.tokensIn, 10) : null,
+    tokensOut: args.tokensOut !== undefined ? parseInt(args.tokensOut, 10) : null,
   };
 
   // Backward-compatible top-level fields for existing logs UI
