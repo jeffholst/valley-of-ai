@@ -140,11 +140,21 @@ if (args.category === 'pipeline') {
     rationale: args.rationale || null,
   };
 } else if (args.category === 'validation') {
+  let details = {};
+  if (args.details) {
+    try {
+      details = JSON.parse(args.details);
+    } catch (err) {
+      console.error('ERROR: --details must be valid JSON');
+      console.error(`Parsing error: ${err.message}`);
+      process.exit(1);
+    }
+  }
   entry.validation = {
     checkType: args.checkType,
     name: args.name || null,
     result: args.result,
-    details: args.details ? JSON.parse(args.details) : {},
+    details,
   };
 }
 
