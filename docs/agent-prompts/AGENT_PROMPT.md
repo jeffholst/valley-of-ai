@@ -136,7 +136,7 @@ For reasoning decisions and validation checks, use `--category reasoning` or `--
 6. Log the transaction start:
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --category pipeline \
-     --step TRANSACTION_START --status started --message "Starting app generation pipeline"
+     --step TRANSACTION_START --status completed --message "Starting app generation pipeline"
    ```
    This creates `apps/YYYY/MM/DD/<app-id>/log.jsonl` and appends to central logs automatically.
 
