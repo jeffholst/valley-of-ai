@@ -25,6 +25,7 @@ const OPTIONS_STORAGE_KEY = 'voa-page-options';
 /** Default option values — pterodactyl defaults on for desktop, all others off */
 const DEFAULT_OPTIONS = {
   pterodactyl: true,
+  shootingStars: 1,
   wind: false,
   rain: false,
   snow: false,
@@ -328,7 +329,9 @@ export default function HomePage() {
       <div className="valley-cinematic-bg" aria-hidden="true">
         <div className="valley-mountain-row-back" />
         <div className="valley-mountain-row-mid" />
-        <div className="valley-shooting-stars" />
+        {options.shootingStars >= 1 && <div className="valley-shooting-stars" />}
+        {options.shootingStars >= 2 && <div className="valley-shooting-stars-mid" />}
+        {options.shootingStars >= 3 && <div className="valley-shooting-stars-low" />}
       </div>
       <div className="valley-light-veil" aria-hidden="true" />
 

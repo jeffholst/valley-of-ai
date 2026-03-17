@@ -119,18 +119,41 @@
     50% { filter: drop-shadow(0 0 7px rgba(246, 240, 223, 0.22)); }
   }
 
-  @keyframes valley-shooting-star-a {
-    0%, 74% { opacity: 0; transform: translate3d(-20vw, -8vh, 0) rotate(-23deg) scaleX(0.2); }
-    76% { opacity: 0.95; }
-    88% { opacity: 0.78; transform: translate3d(18vw, 13vh, 0) rotate(-23deg) scaleX(1); }
-    100% { opacity: 0; transform: translate3d(34vw, 24vh, 0) rotate(-23deg) scaleX(1.2); }
+  /* ── Shooting star keyframes ──
+     Right-to-left: star head on left, tail trails to right (default gradient)
+     Left-to-right: star head on right, tail trails to left (reversed gradient)
+     All fly downward. opacity:0 at start prevents artifacts on load. */
+
+  /* Right-to-left, steep angle */
+  @keyframes valley-star-rtl-a {
+    0%, 72% { opacity: 0; transform: translate3d(12vw, -4vh, 0) rotate(-25deg) scaleX(0.2); }
+    74% { opacity: 0.95; transform: translate3d(6vw, -1vh, 0) rotate(-25deg) scaleX(0.6); }
+    88% { opacity: 0.7; transform: translate3d(-20vw, 14vh, 0) rotate(-25deg) scaleX(1); }
+    100% { opacity: 0; transform: translate3d(-34vw, 22vh, 0) rotate(-25deg) scaleX(1.2); }
   }
 
-  @keyframes valley-shooting-star-b {
-    0%, 58% { opacity: 0; transform: translate3d(8vw, -6vh, 0) rotate(-28deg) scaleX(0.25); }
-    61% { opacity: 0.9; }
-    76% { opacity: 0.72; transform: translate3d(-22vw, 17vh, 0) rotate(-28deg) scaleX(1); }
-    100% { opacity: 0; transform: translate3d(-33vw, 26vh, 0) rotate(-28deg) scaleX(1.25); }
+  /* Right-to-left, shallow angle */
+  @keyframes valley-star-rtl-b {
+    0%, 55% { opacity: 0; transform: translate3d(10vw, -3vh, 0) rotate(-18deg) scaleX(0.25); }
+    58% { opacity: 0.9; transform: translate3d(5vw, 0vh, 0) rotate(-18deg) scaleX(0.5); }
+    76% { opacity: 0.65; transform: translate3d(-25vw, 12vh, 0) rotate(-18deg) scaleX(1); }
+    100% { opacity: 0; transform: translate3d(-38vw, 20vh, 0) rotate(-18deg) scaleX(1.15); }
+  }
+
+  /* Left-to-right, steep angle */
+  @keyframes valley-star-ltr-a {
+    0%, 65% { opacity: 0; transform: translate3d(-12vw, -4vh, 0) rotate(25deg) scaleX(0.2); }
+    68% { opacity: 0.92; transform: translate3d(-6vw, -1vh, 0) rotate(25deg) scaleX(0.6); }
+    84% { opacity: 0.7; transform: translate3d(22vw, 16vh, 0) rotate(25deg) scaleX(1); }
+    100% { opacity: 0; transform: translate3d(36vw, 24vh, 0) rotate(25deg) scaleX(1.2); }
+  }
+
+  /* Left-to-right, shallow angle */
+  @keyframes valley-star-ltr-b {
+    0%, 48% { opacity: 0; transform: translate3d(-10vw, -3vh, 0) rotate(20deg) scaleX(0.25); }
+    51% { opacity: 0.88; transform: translate3d(-5vw, 0vh, 0) rotate(20deg) scaleX(0.5); }
+    70% { opacity: 0.65; transform: translate3d(28vw, 14vh, 0) rotate(20deg) scaleX(1.1); }
+    100% { opacity: 0; transform: translate3d(40vw, 20vh, 0) rotate(20deg) scaleX(1.25); }
   }
 
   .valley-cinematic-bg {
@@ -288,31 +311,97 @@
     mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 92%);
   }
 
+  /* ── Shared pseudo-element base for shooting stars ── */
   .valley-shooting-stars::before,
-  .valley-shooting-stars::after {
+  .valley-shooting-stars::after,
+  .valley-shooting-stars-mid::before,
+  .valley-shooting-stars-mid::after,
+  .valley-shooting-stars-low::before,
+  .valley-shooting-stars-low::after {
     content: '';
     position: absolute;
-    width: 180px;
     height: 2px;
     border-radius: 999px;
-    transform-origin: left center;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 1), rgba(185, 219, 255, 0.82) 44%, rgba(98, 146, 228, 0));
-    box-shadow: 0 0 11px rgba(186, 216, 255, 0.75);
     opacity: 0;
   }
 
+  /* ── Gradient for right-to-left stars (head left, tail right) ── */
+  .valley-shooting-stars::before,
+  .valley-shooting-stars-mid::before,
+  .valley-shooting-stars-low::before {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 1), rgba(185, 219, 255, 0.82) 44%, rgba(98, 146, 228, 0));
+    box-shadow: 0 0 11px rgba(186, 216, 255, 0.75), -6px 0 12px rgba(255, 255, 255, 0.2);
+  }
+
+  /* ── Gradient for left-to-right stars (head right, tail left) ── */
+  .valley-shooting-stars::after,
+  .valley-shooting-stars-mid::after,
+  .valley-shooting-stars-low::after {
+    background: linear-gradient(90deg, rgba(98, 146, 228, 0), rgba(185, 219, 255, 0.82) 56%, rgba(255, 255, 255, 1));
+    box-shadow: 0 0 11px rgba(186, 216, 255, 0.75), 6px 0 12px rgba(255, 255, 255, 0.2);
+  }
+
+  /* ── High altitude stars (top 8-18%) ── */
   .valley-shooting-stars::before {
-    top: 16%;
-    left: 66%;
-    background: linear-gradient(90deg, rgba(98, 146, 228, 0) 0%, rgba(185, 219, 255, 0.82) 58%, rgba(255, 255, 255, 1) 100%);
-    box-shadow: 0 0 11px rgba(186, 216, 255, 0.75), 8px 0 14px rgba(255, 255, 255, 0.25);
-    display: none;
+    top: 8%;
+    left: 72%;
+    width: 170px;
+    animation: valley-star-rtl-a 13.2s linear infinite 2s;
   }
 
   .valley-shooting-stars::after {
-    top: 28%;
-    left: 42%;
-    animation: valley-shooting-star-b 11.7s linear infinite 1.8s;
+    top: 14%;
+    left: 18%;
+    width: 155px;
+    animation: valley-star-ltr-a 15.8s linear infinite 7.4s;
+  }
+
+  /* ── Mid altitude stars (top 22-35%) ── */
+  .valley-shooting-stars-mid {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 92%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 92%);
+  }
+
+  .valley-shooting-stars-mid::before {
+    top: 24%;
+    left: 55%;
+    width: 190px;
+    animation: valley-star-rtl-b 11.5s linear infinite 4.6s;
+  }
+
+  .valley-shooting-stars-mid::after {
+    top: 32%;
+    left: 30%;
+    width: 145px;
+    animation: valley-star-ltr-b 10.2s linear infinite 1.3s;
+  }
+
+  /* ── Low altitude stars (top 40-52%) ── */
+  .valley-shooting-stars-low {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 92%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 92%);
+  }
+
+  .valley-shooting-stars-low::before {
+    top: 42%;
+    left: 65%;
+    width: 180px;
+    animation: valley-star-rtl-a 17.1s linear infinite 9.2s;
+  }
+
+  .valley-shooting-stars-low::after {
+    top: 50%;
+    left: 12%;
+    width: 165px;
+    animation: valley-star-ltr-b 14.6s linear infinite 5.8s;
   }
 
 .valley-light-veil {

@@ -32,6 +32,11 @@ const TOGGLES = [
   { key: 'sound',       label: 'Sound',       icon: '🔊' },
 ];
 
+/** Range/slider definitions — order here = order in drawer UI (rendered after toggles) */
+const RANGES = [
+  { key: 'shootingStars', label: 'Shooting Stars', icon: '🌠', min: 0, max: 3, step: 1 },
+];
+
 export default function OptionsDrawer({ options, onToggle }) {
   const [open, setOpen] = useState(false);
 
@@ -97,6 +102,30 @@ export default function OptionsDrawer({ options, onToggle }) {
                 <div className={`options-switch-track${options[key] ? ' is-on' : ''}`}>
                   <div className="options-switch-knob" />
                 </div>
+              </label>
+            ))}
+
+            {RANGES.map(({ key, label, icon, min, max, step }) => (
+              <label key={key} className="options-toggle-row">
+                <span className="options-toggle-label">
+                  <span className="options-toggle-icon">{icon}</span>
+                  {label}
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <input
+                    type="range"
+                    min={min}
+                    max={max}
+                    step={step}
+                    value={options[key] ?? min}
+                    onChange={(e) => onToggle(key, Number(e.target.value))}
+                    aria-label={`${label} count`}
+                    style={{ width: '80px', accentColor: '#818cf8' }}
+                  />
+                  <span style={{ minWidth: '16px', textAlign: 'center', fontSize: '14px', fontWeight: 600, color: 'var(--text, #f9fafb)' }}>
+                    {options[key] ?? min}
+                  </span>
+                </span>
               </label>
             ))}
           </div>
