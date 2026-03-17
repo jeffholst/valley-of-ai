@@ -21,7 +21,7 @@ Use UTC consistently for:
 - `runId` timestamp portion
 
 ### Model Reporting
-⚠️ Make best attempt effort to report your agent name correctly AND the LLM being used.
+⚠️ Make your best effort to report your agent name correctly AND the LLM being used.
 
 ### Required app files
 ```
