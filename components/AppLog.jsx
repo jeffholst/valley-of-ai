@@ -208,6 +208,29 @@ export default function AppLog({ appId }) {
                         </div>
                       </div>
                     )}
+                    {/* Token counts for LLM steps */}
+                    {(log.tokensIn || log.pipeline?.tokensIn || log.tokensOut || log.pipeline?.tokensOut) && (
+                      <div className="text-xs opacity-60 mt-1 flex items-center gap-2">
+                        {(log.tokensIn || log.pipeline?.tokensIn) && (
+                          <span className="inline-flex items-center gap-1">
+                            <span>🔽</span>
+                            <span>{(log.tokensIn || log.pipeline?.tokensIn)?.toLocaleString()}</span>
+                          </span>
+                        )}
+                        {(log.tokensOut || log.pipeline?.tokensOut) && (
+                          <span className="inline-flex items-center gap-1">
+                            <span>🔼</span>
+                            <span>{(log.tokensOut || log.pipeline?.tokensOut)?.toLocaleString()}</span>
+                          </span>
+                        )}
+                        {(log.tokensIn || log.pipeline?.tokensIn) && (log.tokensOut || log.pipeline?.tokensOut) && (
+                          <span className="inline-flex items-center gap-1 opacity-50">
+                            <span>💰</span>
+                            <span>{((log.tokensIn || log.pipeline?.tokensIn) + (log.tokensOut || log.pipeline?.tokensOut))?.toLocaleString()}</span>
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                   {isDone && log.pipeline?.durationMs && (
                     <div className="flex-shrink-0 text-xs opacity-75 whitespace-nowrap">
