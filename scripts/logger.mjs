@@ -7,14 +7,14 @@
  * npm run log -- --runId <RUN_ID> --appId <APP_ID> --category <CATEGORY> [OPTIONS]
  *
  * Categories:
- *   pipeline    - Pipeline steps (requires: --step, --status)
+ *   pipeline    - Pipeline steps (requires: --step)
  *   reasoning   - Agent reasoning/decisions (requires: --message, optionally --decision)
  *   validation  - Checks and validation (requires: --checkType, --result)
  *
  * Common OPTIONS:
  *   --message <TEXT>      Human-readable description of the log entry
  *   --phase <PHASE>       Pipeline phase (e.g., GENERATE_HTML, VALIDATE_APP)
- *   --status <STATUS>     completed|failed|in-progress (default: completed)
+ *   --status <STATUS>     started|success|in_progress|failed (default: completed; legacy: completed|in-progress)
  *   --appPath <PATH>      Optional app path (overrides YYYY/MM/DD/<appId>)
  *   --dry-run             Print entry without appending
  *
@@ -39,7 +39,7 @@
  * EXAMPLES:
  *   # Pipeline step with seq for progress tracking
  *   npm run log -- --runId run-20260316-abc123 --appId my-app --category pipeline \
- *     --step GENERATE_HTML --seq 3 --status completed --durationMs 5000 \
+ *     --step GENERATE_HTML --seq 3 --status success --durationMs 5000 \
  *     --tokensIn 3000 --tokensOut 2500 --message "Generated index.html"
  *
  *   # Reasoning entry (no seq needed)
