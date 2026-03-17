@@ -6,7 +6,7 @@
 1. **Centralized Log Storage** — All transactions logged to `/logs/YYYY/MM/DD.jsonl`
 2. **App-Level Tracking** — Logs copied to each app's folder (`apps/YYYY/MM/DD/<app-id>/log.jsonl`)
 3. **Frontend Dashboard** — `/logs` page displays transactions with filtering, status tracking, token counts
-4. **Audit Trail** — Complete step-by-step pipeline logging (SELECT_SUGGESTION through DEPLOY)
+4. **Audit Trail** — Complete step-by-step pipeline logging (SELECT_SUGGESTION through MERGE_PR_DEPLOY)
 5. **Transaction Grouping** — Logs grouped by `runId` for cohesive agent runs
 
 ### Current Limitations ❌
@@ -167,7 +167,7 @@ npm run log -- \
  *
  * Pipeline-specific OPTIONS (only for --category pipeline):
  *   --step <STEP_NAME>    Step name (SELECT_SUGGESTION, GENERATE_HTML, etc.)
- *   --seq <N>             Step sequence number (1-13) — for progress tracking only
+ *   --seq <N>             Step sequence number (1-14) — for progress tracking only
  *   --durationMs <N>      Duration in milliseconds
  *   --tokensIn <N>        Input tokens consumed
  *   --tokensOut <N>       Output tokens produced
@@ -414,69 +414,69 @@ All examples use the same `npm run log` pattern with `--category`:
 
 ```bash
 # Step 0: Prep (transaction start)
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
-  --category pipeline --step TRANSACTION_START --seq 0 --status started \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+  --category pipeline --step TRANSACTION_START --status started \
   --message "Starting app generation pipeline"
 
 # Step 1: SELECT_SUGGESTION (pipeline + reasoning)
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category pipeline --step SELECT_SUGGESTION --seq 1 --durationMs 1500 \
   --message "Selected memory-sequence concept"
 
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category reasoning --phase SELECT_SUGGESTION \
   --message "Memory/Simon game proven addictive pattern" \
   --decision "memory-sequence" --alternatives "tile-match,word-guess" \
   --rationale "Not in current /apps, high engagement, simple mechanics"
 
 # Step 3: GENERATE_HTML (pipeline + multiple reasoning entries)
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category reasoning --phase GENERATE_HTML \
   --message "2x2 grid optimal for mobile responsiveness" \
   --decision "2x2-grid" --alternatives "3x3-grid,responsive-grid" \
   --rationale "Better thumb reach on mobile, adequate difficulty"
 
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category reasoning --phase GENERATE_HTML \
   --message "Sequence generation: 1-color start, +1 per round" \
   --decision "incremental-sequence" --alternatives "random-length,fixed-length"] \
   --rationale "Progressive difficulty increases engagement"
 
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category pipeline --step GENERATE_HTML --seq 3 \
   --durationMs 15000 --tokensIn 3000 --tokensOut 2500 \
   --message "Generated index.html with game engine and responsive layout"
 
 # Step 6: VALIDATE_APP (validation entries)
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category validation --checkType "file-exists" \
   --name "index.html" --result PASS \
   --message "HTML file created and readable"
 
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category validation --checkType "schema-valid" \
   --name "meta.json structure" --result PASS \
   --message "Metadata conforms to required schema"
 
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
   --category pipeline --step VALIDATE_APP --seq 6 \
   --durationMs 2000 --message "All validation checks passed"
 
-# Step 7: GIT_BRANCH
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
-  --category pipeline --step GIT_BRANCH --seq 7 \
+# Step 7: GIT_CHECKOUT_BRANCH
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+  --category pipeline --step GIT_CHECKOUT_BRANCH --seq 7 \
   --durationMs 500 --message "Created feature branch feat/memory-sequence"
 
 # ... continue through all steps ...
 
-# Step 13: DEPLOY
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
-  --category pipeline --step DEPLOY --seq 13 \
-  --durationMs 3000 --message "App deployed and verified live"
+# Step 13: MERGE_PR_DEPLOY
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+  --category pipeline --step MERGE_PR_DEPLOY --seq 13 \
+  --durationMs 3000 --message "PR merged to main and deployed via Vercel"
 
 # Step 14: TRANSACTION_END
-npm run log --runId run-20260316T000246Z-b6352c --appId memory-sequence \
-  --category pipeline --step TRANSACTION_END --seq 14 \
+npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
+  --category pipeline --step TRANSACTION_END \
   --status success --message "Pipeline complete" \
   --details '{"filesCreated":["index.html","meta.json","thumbnail.svg","log.jsonl"],"totalDurationMs":302000,"totalTokens":47300}'
 ```

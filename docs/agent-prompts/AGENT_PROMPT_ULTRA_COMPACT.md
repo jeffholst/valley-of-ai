@@ -91,25 +91,23 @@ If failure occurs:
 1. Select concept
 - Check all existing apps in /apps folder and do not duplicate concepts.
 - Pick non-duplicate app.
-- Log `SELECT_SUGGESTION`.
+- Log with: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step SELECT_SUGGESTION --seq 1 --message "..."`
 
 2. Research
 - Capture 2-3 inspirations + one unique angle.
-- Log `RESEARCH_IDEAS`.
+- Log with: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step RESEARCH_IDEAS --seq 2 --message "..."`
 
 3. Build app
-- Create `index.html` with required contracts.
-- Ensure touch + keyboard support where needed.
-- Add favicon.
-- Log `GENERATE_HTML`.
+Generate `index.html` with required contracts, touch/keyboard support, and favicon.
+Log with: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step GENERATE_HTML --seq 3 --durationMs <ms> --tokensIn <in> --tokensOut <out> --message "Generated index.html with responsive layout"`
 
 4. Thumbnail
-- Create `thumbnail.svg` (actual UI look/state).
-- Log `GENERATE_THUMBNAIL`.
+Generate `thumbnail.svg` (viewBox="0 0 800 450") matching the app's UI, colors, and state.
+Log with: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step GENERATE_THUMBNAIL --seq 4 --durationMs <ms> --tokensIn <in> --tokensOut <out> --message "Generated thumbnail.svg"`
 
 5. Metadata
-- Create `meta.json` with required fields and accurate generation timing/token counts.
-- Log `CREATE_META_JSON`.
+Generate `meta.json` with all required fields and accurate generation timing/token counts.
+Log with: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step CREATE_META_JSON --seq 5 --durationMs <ms> --tokensIn <in> --tokensOut <out> --message "Created meta.json with app metadata"`
 
 6. Validate (blocking)
 
@@ -136,30 +134,31 @@ If validation fails:
 - log failed/retrying/completed statuses accordingly,
 - do not continue until passing.
 
-When passed, **Log `VALIDATE_APP` immediately**.
+When passed, log validation: `npm run log -- --runId <ID> --appId <app-id> --category validation --checkType "<type>" --name "<name>" --result PASS --message "..."`
+Then log step: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step VALIDATE_APP --seq 6 --message "..."`
 
 7. Git branch + commit (app files only)
-- Execute: `git checkout -b feat/<app-id>` → **Log `GIT_CHECKOUT_BRANCH` immediately**
+- Execute: `git checkout -b feat/<app-id>` → Log: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step GIT_CHECKOUT_BRANCH --seq 7 --message "..."`
 - Stage and commit app files ONLY (index.html, meta.json, thumbnail.svg): `git add ...` then `git commit ...`
-  - **Log `GIT_COMMIT` immediately with SHA** (capture from commit output)
+  - Log: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step GIT_COMMIT --seq 8 --message "Committed with SHA: <SHA>"`
   - **Do NOT commit log.jsonl yet** — it will be finalized in step 9 after all transactions complete
 
-8. PR flow + Merge
-- Execute: `git push origin feat/<app-id>` → **Log `GIT_PUSH` immediately**
-- Execute: `gh pr create --title "..." --body "..."` → **Log `CREATE_PR` with PR #/URL immediately**
-- Execute: Self-review → **Log `PR_REVIEW` immediately**
-- Execute: `npm run generate:apps` (update registry before merge, so registry and app deploy together) → **Log `UPDATE_REGISTRY` immediately**
-- Execute: `gh pr merge <pr-number> --squash --auto` → **Log `MERGE_PR_DEPLOY` immediately after merge succeeds**
+8. PR flow + Merge (seq 9-14)
+- Execute: `git push origin feat/<app-id>` → Log: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step GIT_PUSH --seq 9 --message "..."`
+- Execute: `gh pr create --title "..." --body "..."` → Log: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step CREATE_PR --seq 10 --message "Created PR #<N>"`
+- Execute: Self-review → Log: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step PR_REVIEW --seq 11 --message "..."`
+- Execute: `npm run generate:apps` (update registry before merge, so registry and app deploy together) → Log: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step UPDATE_REGISTRY --seq 12 --message "..."`
+- Execute: `gh pr merge <pr-number> --squash --auto` → Log: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step MERGE_PR_DEPLOY --seq 13 --message "PR merged and deployed"`
 - Wait ~2–3 min for Vercel auto-deployment (webhook triggered automatically on main merge)
 - Verify on main: `git checkout main && git pull origin main`
 - Verify app files live in public/apps/YYYY/MM/DD/<app-id>/
 - Delete feature branch (local and remote):
   - `git branch -d feat/<app-id>`
   - `git push origin --delete feat/<app-id>`
-  - → **Log `DELETE_BRANCH` immediately**
+  - Log: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step DELETE_BRANCH --seq 14 --message "..."`
 
-9. Finalize transaction log and commit
-- Append `TRANSACTION_END` to `apps/YYYY/MM/DD/<app-id>/log.jsonl` after all logging steps (1-14) complete.
+9. Finalize transaction log and commit (finalization)
+- Log TRANSACTION_END: `npm run log -- --runId <ID> --appId <app-id> --category pipeline --step TRANSACTION_END --status success --message "Pipeline complete"`
 - **CRITICAL: Commit log.jsonl with `[skip deploy]` tag (separate, final commit):**
   ```bash
   git add apps/YYYY/MM/DD/<app-id>/log.jsonl

@@ -12,6 +12,7 @@
     "validate:apps": "node scripts/validate-apps.js",
     "validate:responsive": "node scripts/validate-responsive.js",
     "validate:responsive:sample": "node scripts/validate-responsive.js --limit 5",
+    "log": "node scripts/logger.mjs",
     "lint": "eslint app components hooks lib scripts __tests__ --max-warnings 0",
     "lint:fix": "eslint app components hooks lib scripts __tests__ --fix",
     "format": "prettier --write \"app/**/*.{js,jsx,ts,tsx}\" \"components/**/*.{js,jsx,ts,tsx}\" \"hooks/**/*.{js,jsx,ts,tsx}\" \"lib/**/*.{js,jsx,ts,tsx}\"",
@@ -22,6 +23,7 @@
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "@supabase/supabase-js": "^2.98.0",
+    "minimist": "^1.2.8",
     "next": "^16.1.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

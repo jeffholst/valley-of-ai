@@ -21,7 +21,7 @@ Use UTC consistently for:
 - `runId` timestamp portion
 
 ### Model Reporting
-Make best attempt effort to report your agent name correctly AND the LLM being used.
+⚠️ Make your best effort to report your agent name correctly AND the LLM being used.
 
 ### Required app files
 ```
@@ -70,12 +70,7 @@ Use CSS variables and support shared theme switching:
 ```
 
 ## 3) Logging Model (Most Important)
-Log in JSONL to `apps/YYYY/MM/DD/<app-id>/log.jsonl`.
-
-Each app run is one transaction:
-1. `TRANSACTION_START`
-2. `STEP` entries for each pipeline stage
-3. `TRANSACTION_END`
+All logging is handled by `npm run log`. Each app run is one transaction (TRANSACTION_START → STEP entries → TRANSACTION_END), automatically logged to `apps/YYYY/MM/DD/<app-id>/log.jsonl`.
 
 ### ⚠️ CRITICAL: REAL-TIME LOGGING (DO NOT SKIP)
 **This rule is non-negotiable and must be followed exactly:**
@@ -91,15 +86,24 @@ Each app run is one transaction:
 
 **Failure consequence:** Missing logs = incomplete transaction records = pipeline audit trail is broken. This defeats the purpose of the transaction log.
 
-**Implementation:** After running each command/operation in the pipeline, always call:
+**Implementation:** Use the unified logging utility to log each step immediately after completion:
 ```bash
-echo '{"timestamp":"<ISO8601>","runId":"<runId>","type":"STEP","step":"<STEP_NAME>","seq":<N>,"status":"completed","durationMs":<duration>}' >> apps/YYYY/MM/DD/<app-id>/log.jsonl
+npm run log -- \
+  --runId <runId> \
+  --appId <app-id> \
+  --category pipeline \
+  --step <STEP_NAME> \
+  --seq <N> \
+  --status completed \
+  --durationMs <duration> \
+  --tokensIn <tokens> \
+  --tokensOut <tokens> \
+  --message "Step description"
 ```
 
-**Commit strategy:** 
-- Commit app files (index.html, meta.json, thumbnail.svg) in Step 7 first.
-- Append `TRANSACTION_END` after all steps (8-9) complete.
-- Commit `log.jsonl` **as a final, separate commit (Step 10)** after all logging transactions are finalized — this prevents stale log states after PR merges.
+For reasoning decisions and validation checks, use `--category reasoning` or `--category validation` (see examples in Steps 1, 2, and 6 below).
+
+**Log immediately after step completes** — don't batch or save for later. Timestamps are recorded automatically.
 
 ### `runId` format
 `run-YYYYMMDDTHHMMSSZ-xxxxxx`
@@ -121,67 +125,88 @@ echo '{"timestamp":"<ISO8601>","runId":"<runId>","type":"STEP","step":"<STEP_NAM
 13. `MERGE_PR_DEPLOY`
 14. `DELETE_BRANCH`
 
-### Minimal log schemas
-`TRANSACTION_START`
-```json
-{"timestamp":"2026-03-12T20:00:00Z","runId":"run-20260312T200000Z-a1b2c3","type":"TRANSACTION_START","appId":"example-app","status":"started","agent":"openclaw-dev-agent","llmModel":"gpt-5.1"}
-```
-
-`STEP`
-```json
-{"timestamp":"2026-03-12T20:00:10Z","runId":"run-20260312T200000Z-a1b2c3","type":"STEP","step":"GENERATE_HTML","seq":3,"status":"completed","durationMs":6500,"tokensIn":3000,"tokensOut":2500}
-```
-
-`TRANSACTION_END`
-```json
-{"timestamp":"2026-03-12T20:05:00Z","runId":"run-20260312T200000Z-a1b2c3","type":"TRANSACTION_END","appId":"example-app","status":"success","totalDurationMs":300000,"totalTokensIn":5000,"totalTokensOut":4500,"filesCreated":["index.html","meta.json","thumbnail.svg"]}
-```
-
-Error format:
-```json
-{"code":"VALIDATION_FAILED","message":"Missing shared-shell tag","retryable":true}
-```
-
 ## 4) Pipeline (Do Exactly In Order)
 
 ### Step 0: Prep
 1. Pull latest main.
-2. Get current UTC time.
-3. Derive `YYYY/MM/DD`, log path, app path.
-4. Create the app folder immediately: `apps/YYYY/MM/DD/<app-id>/`.
-5. Create `runId`.
-6. **Create empty `log.jsonl` file** in `apps/YYYY/MM/DD/<app-id>/log.jsonl` (will be populated as pipeline progresses).
-7. Write initial `TRANSACTION_START` to `apps/YYYY/MM/DD/<app-id>/log.jsonl`.
+2. Get current UTC time: `date -u +"%Y-%m-%dT%H:%M:%SZ"`
+3. Derive `YYYY/MM/DD` and app paths.
+4. Create the app folder: `apps/YYYY/MM/DD/<app-id>/`.
+5. Generate `runId` in format: `run-YYYYMMDDTHHMMSSZ-<6-char-hex>`.
+6. Log the transaction start:
+   ```bash
+   npm run log -- --runId <runId> --appId <app-id> --category pipeline \
+     --step TRANSACTION_START --status started --message "Starting app generation pipeline"
+   ```
+   This creates `apps/YYYY/MM/DD/<app-id>/log.jsonl` and appends to central logs automatically.
 
 ### Step 1: Idea selection
 1. Check all existing apps in /apps folder to avoid duplicates.
 2. Check suggestions files if present.
 3. Choose one app concept and category.
-4. Log `SELECT_SUGGESTION`.
+4. Log `SELECT_SUGGESTION`:
+   ```bash
+   npm run log -- --runId <runId> --appId <app-id> --category pipeline \
+     --step SELECT_SUGGESTION --seq 1 --status completed --durationMs <duration> \
+     --message "Selected [app-name] concept in [category]"
+   ```
+5. Optionally log reasoning (why this app over alternatives):
+   ```bash
+   npm run log -- --runId <runId> --appId <app-id> --category reasoning \
+     --phase SELECT_SUGGESTION --message "Why this app was chosen" \
+     --decision "<app-name>" --alternatives "alt1,alt2,alt3" \
+     --rationale "Reason for choice: good learning opportunity, unique mechanics, etc."
+   ```
 
 ### Step 2: Research
 1. Do brief targeted research for mechanics + UX.
 2. Capture 2-3 inspirations and one unique angle.
-3. Log `RESEARCH_IDEAS` with details.
+3. Log `RESEARCH_IDEAS`:
+   ```bash
+   npm run log -- --runId <runId> --appId <app-id> --category pipeline \
+     --step RESEARCH_IDEAS --seq 2 --status completed --durationMs <duration> \
+     --message "Research complete: [mechanic summary]"
+   ```
+4. Optionally log reasoning about design choices:
+   ```bash
+   npm run log -- --runId <runId> --appId <app-id> --category reasoning \
+     --phase RESEARCH_IDEAS --message "Design decision rationale" \
+     --decision "chosen-mechanic" --alternatives "alt-mechanic1,alt-mechanic2" \
+     --rationale "Why this mechanic: proven engagement, good learning curve, fits constraints"
+   ```
 
 ### Step 3: Generate app
-1. Create `index.html` with required shell/analytics tags.
-2. Ensure mobile-first, keyboard/touch friendly.
-3. Add favicon.
-4. Log `GENERATE_HTML`.
+Generate `index.html` with shell config tags, mobile-first responsive design, and favicon reference.
+
+Log completion:
+```bash
+npm run log -- --runId <runId> --appId <app-id> --category pipeline \
+  --step GENERATE_HTML --seq 3 --status completed --durationMs <duration> \
+  --tokensIn <in> --tokensOut <out> \
+  --message "Generated index.html with responsive layout"
+```
 
 ### Step 4: Generate thumbnail
-1. Create `thumbnail.svg` (`viewBox="0 0 800 450"`).
-2. Match actual app UI/colors/state.
-3. Make the thumbnail visually appealling
-4. Log `GENERATE_THUMBNAIL`.
+Generate `thumbnail.svg` (viewBox="0 0 800 450") matching the app's UI, colors, and state.
+
+Log completion:
+```bash
+npm run log -- --runId <runId> --appId <app-id> --category pipeline \
+  --step GENERATE_THUMBNAIL --seq 4 --status completed --durationMs <duration> \
+  --tokensIn <in> --tokensOut <out> \
+  --message "Generated thumbnail.svg"
+```
 
 ### Step 5: Metadata
-Create `meta.json` with required fields:
-- `id`, `name`, `shortDescription`, `thumbnail`, `createdAt`, `category`, `status`, `tags`, `homepagePath`, `inputMode`, `generation`
-- `generation` must include: `agentName`, `llmModel`, `startTime`, `endTime`, `totalTokensIn`, `totalTokensOut`, `runId`, `notes`
+Generate `meta.json` with all required fields: `id`, `name`, `shortDescription`, `thumbnail`, `createdAt`, `category`, `status`, `tags`, `homepagePath`, `inputMode`, `generation` (include agentName, llmModel, startTime, endTime, totalTokensIn/Out, runId, notes).
 
-Then log `CREATE_META_JSON`.
+Log completion:
+```bash
+npm run log -- --runId <runId> --appId <app-id> --category pipeline \
+  --step CREATE_META_JSON --seq 5 --status completed --durationMs <duration> \
+  --tokensIn <in> --tokensOut <out> \
+  --message "Created meta.json with app metadata"
+```
 
 ### Step 6: Validate (blocking gate)
 
@@ -208,50 +233,112 @@ If validation fails:
 - log failed/retrying/completed statuses accordingly,
 - do not continue until passing.
 
-When passed, log `VALIDATE_APP`.
+When passed, log validation checks and pipeline step:
+```bash
+# Example 1: Validation check - file exists
+npm run log -- --runId <runId> --appId <app-id> --category validation \
+  --checkType "file-exists" --name "index.html" --result PASS \
+  --message "HTML file created and readable"
 
-### Step 7: Git branch and commit (app files only)
+# Example 2: Validation check - tests pass
+npm run log -- --runId <runId> --appId <app-id> --category validation \
+  --checkType "test-pass" --name "npm test" --result PASS \
+  --message "All test suites passing"
+
+# Example 3: Pipeline step completion
+npm run log -- --runId <runId> --appId <app-id> --category pipeline \
+  --step VALIDATE_APP --seq 6 --status completed --durationMs <duration> \
+  --message "All validation checks passed"
+```
+
+### Step 7: Git branch and commit (seq 7-8)
 **Pattern: Execute → Log immediately → Move to next**
 
 1. Execute: `git checkout -b feat/<app-id>`
-   - **LOG IMMEDIATELY:** `GIT_CHECKOUT_BRANCH` step to `log.jsonl`
+   - **LOG IMMEDIATELY:**
+   ```bash
+   npm run log -- --runId <runId> --appId <app-id> --category pipeline \
+     --step GIT_CHECKOUT_BRANCH --seq 7 --status completed --durationMs <duration> \
+     --message "Created feature branch feat/<app-id>"
+   ```
 2. **Stage and commit app files ONLY** (index.html, meta.json, thumbnail.svg).
-   - Execute: `git add` and `git commit`
-   - **LOG IMMEDIATELY:** `GIT_COMMIT` step with commit SHA to `log.jsonl` (capture SHA from commit output)
+   - Execute: `git add` and `git commit` (capture commit SHA)
+   - **LOG IMMEDIATELY:**
+   ```bash
+   npm run log -- --runId <runId> --appId <app-id> --category pipeline \
+     --step GIT_COMMIT --seq 8 --status completed --durationMs <duration> \
+     --message "Committed app files (sha: <COMMIT_SHA>)"
+   ```
    - **Do NOT commit log.jsonl yet** — it will be finalized in Step 9 after all transactions complete.
 
-### Step 8: PR flow
+### Step 8: PR flow (seq 9-13)
 **Pattern: Execute → Log immediately → Move to next**
 
 1. Execute: Push branch: `git push -u origin feat/<app-id>`
-   - **LOG IMMEDIATELY:** `GIT_PUSH` step to `log.jsonl`
+   - **LOG IMMEDIATELY:**
+   ```bash
+   npm run log -- --runId <runId> --appId <app-id> --category pipeline \
+     --step GIT_PUSH --seq 9 --status completed --durationMs <duration> \
+     --message "Pushed feature branch to origin"
+   ```
 2. Execute: Create PR: `gh pr create --title "..." --body "..."`
-   - **LOG IMMEDIATELY:** `CREATE_PR` step with PR number/URL to `log.jsonl`
+   - **LOG IMMEDIATELY:**
+   ```bash
+   npm run log -- --runId <runId> --appId <app-id> --category pipeline \
+     --step CREATE_PR --seq 10 --status completed --durationMs <duration> \
+     --message "Created PR #<NUMBER> for feat/<app-id>"
+   ```
 3. Execute: Self-review PR (check code quality, tests, etc.)
-   - **LOG IMMEDIATELY:** `PR_REVIEW` step to `log.jsonl`
+   - **LOG IMMEDIATELY:**
+   ```bash
+   npm run log -- --runId <runId> --appId <app-id> --category pipeline \
+     --step PR_REVIEW --seq 11 --status completed --durationMs <duration> \
+     --message "PR review complete - code quality good"
+   ```
 4. Execute: `npm run generate:apps` (update registry before merge, so registry and app deploy together)
-   - **LOG IMMEDIATELY:** `UPDATE_REGISTRY` step to `log.jsonl`
+   - **LOG IMMEDIATELY:**
+   ```bash
+   npm run log -- --runId <runId> --appId <app-id> --category pipeline \
+     --step UPDATE_REGISTRY --seq 12 --status completed --durationMs <duration> \
+     --message "Updated app registry with new app metadata"
+   ```
 5. Execute: Merge PR with squash: `gh pr merge <pr-number> --squash --auto`
-   - **LOG IMMEDIATELY:** `MERGE_PR_DEPLOY` step to `log.jsonl` after merge succeeds
+   - **LOG IMMEDIATELY:**
+   ```bash
+   npm run log -- --runId <runId> --appId <app-id> --category pipeline \
+     --step MERGE_PR_DEPLOY --seq 13 --status completed --durationMs <duration> \
+     --message "PR merged to main and Vercel deployment triggered"
+   ```
    - Wait ~2–3 minutes for Vercel auto-deployment to complete (webhook triggered automatically on main merge)
 6. Verify merge on main: `git checkout main && git pull origin main`
 7. Verify app is live in public folder and accessible
 8. Execute: Delete the feature branch (local and remote)
    - `git branch -d feat/<app-id>`  # Delete local branch
    - `git push origin --delete feat/<app-id>`  # Delete remote branch
-   - **LOG IMMEDIATELY:** `DELETE_BRANCH` step to `log.jsonl`
+   - **LOG IMMEDIATELY:**
+   ```bash
+   npm run log -- --runId <runId> --appId <app-id> --category pipeline \
+     --step DELETE_BRANCH --seq 14 --status completed --durationMs <duration> \
+     --message "Deleted feature branch feat/<app-id>"
+   ```
 
-### Step 9: Finalize transaction log and commit
-After all logging transactions are complete (Steps 1-14), perform the final log commit:
-1. Append `TRANSACTION_END` to `apps/YYYY/MM/DD/<app-id>/log.jsonl`.
-2. **This is the FINAL COMMIT:** Stage only `log.jsonl` with the transaction data.
-3. **CRITICAL: Commit with `[skip deploy]` tag to prevent unnecessary Vercel redeploy:**
+### Step 9: Finalize transaction log and commit (finalization)
+After all logging transactions are complete (Steps 1-14), perform the final log entry and commit:
+1. Log the `TRANSACTION_END` using npm run log:
+   ```bash
+   npm run log -- --runId <runId> --appId <app-id> --category pipeline \
+     --step TRANSACTION_END --status success --durationMs <total_duration> \
+     --message "App generation pipeline complete"
+   ```
+   This appends TRANSACTION_END to both `apps/YYYY/MM/DD/<app-id>/log.jsonl` and `logs/YYYY/MM/DD.jsonl`.
+
+2. **This is the FINAL COMMIT:** Verify all 14 logging entries are in the log file, then commit:
    ```bash
    git add apps/YYYY/MM/DD/<app-id>/log.jsonl
    git commit -m "chore: finalize transaction log for <app-id> [skip deploy]"
    ```
    - **MUST include `[skip deploy]` in commit message** — tells Vercel not to redeploy (log.jsonl is metadata only, app is already deployed as part of Step 13 MERGE_PR_DEPLOY)
-4. **Push this commit directly to the main branch:** `git push origin main`
+3. **Push this commit directly to the main branch:** `git push origin main`
 
 > **⚠️ CRITICAL WARNING:** If `[skip deploy]` is omitted from the commit message, Vercel will trigger an unnecessary rebuild/redeploy cycle. ALWAYS verify the commit message contains `[skip deploy]` before pushing.
 
