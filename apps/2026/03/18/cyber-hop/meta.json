@@ -1,0 +1,23 @@
+{
+  "id": "cyber-hop",
+  "name": "Cyber Hop",
+  "shortDescription": "A cyberpunk twist on Frogger — guide your neon cyber-frog across glowing data streams and neon highways. Features smooth tween animation, a time-warp power-up, and full mobile touch controls.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-18T18:27:54Z",
+  "category": "Games",
+  "votes": 0,
+  "status": "active",
+  "tags": ["arcade", "frogger", "cyberpunk", "neon", "mobile", "canvas", "time-warp", "touch-controls"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "claude-code",
+    "llmModel": "claude-sonnet-4-6",
+    "startTime": "2026-03-18T18:27:54Z",
+    "endTime": "2026-03-18T18:34:33Z",
+    "totalTokensIn": 7900,
+    "totalTokensOut": 12800,
+    "runId": "run-20260318T182754Z-1209f1",
+    "notes": "Cyberpunk Frogger with canvas rendering, requestAnimationFrame smooth tween movement (110ms easing), neon hover vehicles, glowing data-stream platforms, time-warp power-up (slows obstacles 72%), particle death effects, mobile D-pad + swipe controls, keyboard WASD/arrow support, level progression with speed scaling, lives system, local high score."
+  }
+}

@@ -1,0 +1,1261 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Cyber Hop - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --neon-cyan: #00f5ff;
+        --neon-pink: #ff00aa;
+        --neon-yellow: #ffe600;
+        --neon-green: #00ff88;
+        --neon-purple: #bb00ff;
+        --neon-orange: #ff6600;
+        --grid-size: 52px;
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Courier New', monospace;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        overflow: hidden;
+        touch-action: none;
+      }
+
+      #game-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 520px;
+        padding: 8px 8px 0;
+        gap: 8px;
+        user-select: none;
+      }
+
+      #hud {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 4px 8px;
+        background: var(--surface);
+        border: 1px solid var(--neon-cyan);
+        border-radius: 6px;
+        font-size: 13px;
+        box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+      }
+
+      .hud-stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1px;
+      }
+
+      .hud-label {
+        font-size: 9px;
+        color: var(--neon-cyan);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        opacity: 0.7;
+      }
+
+      .hud-value {
+        font-size: 15px;
+        font-weight: bold;
+        color: var(--neon-yellow);
+        text-shadow: 0 0 8px var(--neon-yellow);
+      }
+
+      #lives-display {
+        display: flex;
+        gap: 4px;
+        font-size: 16px;
+      }
+
+      #warp-bar-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+      }
+
+      #warp-bar {
+        width: 80px;
+        height: 8px;
+        background: rgba(187, 0, 255, 0.2);
+        border: 1px solid var(--neon-purple);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      #warp-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan));
+        border-radius: 4px;
+        transition: width 0.3s ease;
+        width: 100%;
+        box-shadow: 0 0 6px var(--neon-purple);
+      }
+
+      #canvas-container {
+        position: relative;
+        width: 100%;
+        line-height: 0;
+      }
+
+      #gameCanvas {
+        width: 100%;
+        height: auto;
+        display: block;
+        border: 1px solid rgba(0, 245, 255, 0.3);
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0, 245, 255, 0.15), inset 0 0 40px rgba(0, 0, 30, 0.5);
+      }
+
+      /* Overlay screens */
+      .overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(10, 15, 40, 0.92);
+        border-radius: 8px;
+        gap: 14px;
+        backdrop-filter: blur(4px);
+        z-index: 10;
+      }
+
+      .overlay.hidden {
+        display: none;
+      }
+
+      .overlay h1 {
+        font-size: clamp(22px, 6vw, 36px);
+        color: var(--neon-cyan);
+        text-shadow:
+          0 0 10px var(--neon-cyan),
+          0 0 30px var(--neon-cyan);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        text-align: center;
+      }
+
+      .overlay h2 {
+        font-size: clamp(16px, 4vw, 24px);
+        color: var(--neon-pink);
+        text-shadow: 0 0 10px var(--neon-pink);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      .overlay p {
+        font-size: clamp(11px, 2.5vw, 14px);
+        color: rgba(200, 220, 255, 0.75);
+        text-align: center;
+        line-height: 1.6;
+        max-width: 280px;
+      }
+
+      .overlay .score-display {
+        font-size: clamp(24px, 7vw, 44px);
+        color: var(--neon-yellow);
+        text-shadow:
+          0 0 12px var(--neon-yellow),
+          0 0 30px var(--neon-yellow);
+        font-weight: bold;
+      }
+
+      .btn {
+        padding: 10px 28px;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        background: transparent;
+        border: 2px solid var(--neon-cyan);
+        color: var(--neon-cyan);
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.15s;
+        box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+        text-shadow: 0 0 6px var(--neon-cyan);
+      }
+
+      .btn:hover,
+      .btn:active {
+        background: rgba(0, 245, 255, 0.12);
+        box-shadow: 0 0 20px rgba(0, 245, 255, 0.6);
+        transform: scale(1.04);
+      }
+
+      .btn-pink {
+        border-color: var(--neon-pink);
+        color: var(--neon-pink);
+        box-shadow: 0 0 10px rgba(255, 0, 170, 0.3);
+        text-shadow: 0 0 6px var(--neon-pink);
+      }
+
+      .btn-pink:hover,
+      .btn-pink:active {
+        background: rgba(255, 0, 170, 0.12);
+        box-shadow: 0 0 20px rgba(255, 0, 170, 0.6);
+      }
+
+      /* D-Pad controls */
+      #dpad {
+        display: grid;
+        grid-template-areas:
+          '. up .'
+          'left . right'
+          '. down .';
+        gap: 4px;
+        width: 150px;
+        height: 150px;
+      }
+
+      .dpad-btn {
+        width: 46px;
+        height: 46px;
+        background: rgba(0, 245, 255, 0.08);
+        border: 1px solid rgba(0, 245, 255, 0.4);
+        border-radius: 8px;
+        color: var(--neon-cyan);
+        font-size: 22px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.1s;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+
+      .dpad-btn:active,
+      .dpad-btn.pressed {
+        background: rgba(0, 245, 255, 0.25);
+        box-shadow: 0 0 14px rgba(0, 245, 255, 0.5);
+        transform: scale(0.92);
+      }
+
+      #btn-up {
+        grid-area: up;
+      }
+      #btn-left {
+        grid-area: left;
+      }
+      #btn-right {
+        grid-area: right;
+      }
+      #btn-down {
+        grid-area: down;
+      }
+
+      #controls-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 4px 8px 8px;
+      }
+
+      #warp-btn {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(187, 0, 255, 0.1);
+        border: 2px solid var(--neon-purple);
+        color: var(--neon-purple);
+        font-size: 10px;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        transition: all 0.15s;
+        box-shadow: 0 0 10px rgba(187, 0, 255, 0.3);
+        text-shadow: 0 0 6px var(--neon-purple);
+      }
+
+      #warp-btn .warp-icon {
+        font-size: 24px;
+      }
+
+      #warp-btn:active,
+      #warp-btn.active {
+        background: rgba(187, 0, 255, 0.3);
+        box-shadow: 0 0 24px rgba(187, 0, 255, 0.7);
+        transform: scale(0.94);
+      }
+
+      #warp-btn.disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+
+      #keyboard-hint {
+        font-size: 10px;
+        color: rgba(150, 180, 220, 0.45);
+        text-align: center;
+        padding-bottom: 4px;
+        letter-spacing: 0.5px;
+      }
+
+      @media (min-width: 480px) {
+        :root {
+          --grid-size: 56px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-wrapper">
+      <!-- HUD -->
+      <div id="hud">
+        <div class="hud-stat">
+          <span class="hud-label">Score</span>
+          <span class="hud-value" id="score-val">0</span>
+        </div>
+        <div class="hud-stat">
+          <span class="hud-label">Best</span>
+          <span class="hud-value" id="best-val">0</span>
+        </div>
+        <div class="hud-stat">
+          <span class="hud-label">Level</span>
+          <span class="hud-value" id="level-val">1</span>
+        </div>
+        <div class="hud-stat">
+          <span class="hud-label">Lives</span>
+          <span id="lives-display"></span>
+        </div>
+        <div class="hud-stat" id="warp-bar-wrap">
+          <span class="hud-label">Warp</span>
+          <div id="warp-bar"><div id="warp-fill"></div></div>
+        </div>
+      </div>
+
+      <!-- Canvas -->
+      <div id="canvas-container">
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- Start overlay -->
+        <div class="overlay" id="start-overlay">
+          <h1>Cyber Hop</h1>
+          <p>
+            Navigate your cyber-frog across neon highways and data streams.<br />
+            Reach the safe zones at the top!
+          </p>
+          <p>⬆⬇⬅➡ Arrow keys &nbsp;|&nbsp; WASD &nbsp;|&nbsp; Swipe &nbsp;|&nbsp; D-Pad</p>
+          <p>
+            <span style="color: var(--neon-purple)">⚡ TIME WARP</span> — slow down obstacles (Space
+            / Warp button)
+          </p>
+          <button class="btn" id="start-btn">▶ &nbsp;START</button>
+        </div>
+
+        <!-- Game over overlay -->
+        <div class="overlay hidden" id="gameover-overlay">
+          <h2>Game Over</h2>
+          <div class="score-display" id="final-score">0</div>
+          <p id="gameover-msg">Try again?</p>
+          <div style="display: flex; gap: 12px">
+            <button class="btn" id="restart-btn">↺ &nbsp;Retry</button>
+          </div>
+        </div>
+
+        <!-- Level up overlay -->
+        <div class="overlay hidden" id="levelup-overlay">
+          <h2 style="color: var(--neon-green)">Level Up!</h2>
+          <div
+            class="score-display"
+            id="levelup-num"
+            style="color: var(--neon-green); text-shadow: 0 0 16px var(--neon-green)"
+          >
+            2
+          </div>
+          <p style="color: rgba(0,255,136,0.8)">Speed increased!</p>
+        </div>
+      </div>
+
+      <!-- Mobile controls -->
+      <div id="controls-row">
+        <div id="dpad">
+          <button class="dpad-btn" id="btn-up" aria-label="Up">▲</button>
+          <button class="dpad-btn" id="btn-left" aria-label="Left">◀</button>
+          <button class="dpad-btn" id="btn-right" aria-label="Right">▶</button>
+          <button class="dpad-btn" id="btn-down" aria-label="Down">▼</button>
+        </div>
+        <button id="warp-btn" aria-label="Time Warp">
+          <span class="warp-icon">⚡</span>
+          <span>WARP</span>
+        </button>
+      </div>
+
+      <div id="keyboard-hint">Keyboard: Arrow Keys / WASD &nbsp;·&nbsp; Space = Time Warp</div>
+    </div>
+
+    <script>
+      (() => {
+        'use strict';
+
+        // ─── Constants ───────────────────────────────────────────────
+        const COLS = 9;
+        const ROWS = 13; // 1 safe top, 5 stream, 1 safe mid, 5 road, 1 safe bottom
+        const CELL = 52;
+        const W = COLS * CELL;
+        const H = ROWS * CELL;
+        const FROG_TWEEN_DURATION = 110; // ms for movement tween
+        const DEATH_FLASH_MS = 700;
+        const LEVELUP_SHOW_MS = 1400;
+        const WARP_DURATION_MS = 4000;
+        const WARP_COOLDOWN_MS = 10000;
+        const WARP_SLOW = 0.28;
+
+        // Row layout (row 0 = top)
+        // 0: safe zone (home pads)
+        // 1-5: data streams (platforms move on these)
+        // 6: safe zone (median)
+        // 7-11: cyber roads (vehicles)
+        // 12: safe zone (spawn)
+
+        const ROW_SAFE = new Set([0, 6, 12]);
+        const ROW_STREAM = [1, 2, 3, 4, 5];
+        const ROW_ROAD = [7, 8, 9, 10, 11];
+
+        const HOME_COLS = [1, 3, 5, 7]; // goal positions in row 0
+        const HOMES_TOTAL = HOME_COLS.length;
+
+        // ─── Canvas setup ────────────────────────────────────────────
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = W;
+        canvas.height = H;
+
+        // ─── State ───────────────────────────────────────────────────
+        let score = 0;
+        let best = parseInt(localStorage.getItem('cyberHopBest') || '0');
+        let lives = 3;
+        let level = 1;
+        let homesReached = new Set();
+        let gameState = 'idle'; // idle | playing | dead | gameover | levelup
+
+        let frog = { col: 4, row: 12, drawX: 4 * CELL, drawY: 12 * CELL };
+        let tweenFrom = null;
+        let tweenStart = 0;
+
+        let lanes = [];
+        let particles = [];
+        let deathFlash = 0;
+        let lastTime = 0;
+
+        let warpActive = false;
+        let warpMs = 0;
+        let warpCooldown = 0;
+        let warpCharge = 1.0;
+
+        // Touch swipe
+        let touchStart = null;
+
+        // ─── DOM refs ────────────────────────────────────────────────
+        const scoreEl = document.getElementById('score-val');
+        const bestEl = document.getElementById('best-val');
+        const levelEl = document.getElementById('level-val');
+        const livesEl = document.getElementById('lives-display');
+        const warpFill = document.getElementById('warp-fill');
+        const startOverlay = document.getElementById('start-overlay');
+        const gameoverOverlay = document.getElementById('gameover-overlay');
+        const levelupOverlay = document.getElementById('levelup-overlay');
+        const finalScore = document.getElementById('final-score');
+        const gameoverMsg = document.getElementById('gameover-msg');
+        const levelupNum = document.getElementById('levelup-num');
+        const warpBtn = document.getElementById('warp-btn');
+
+        bestEl.textContent = best;
+
+        // ─── Lane definitions ─────────────────────────────────────────
+        function buildLanes(lvl) {
+          const spd = 1 + (lvl - 1) * 0.18;
+          lanes = [];
+
+          // Data streams (rows 1-5): moving platforms
+          const streamDefs = [
+            { dir: 1, baseSpeed: 1.1, platformW: 2, count: 3 },
+            { dir: -1, baseSpeed: 1.5, platformW: 2, count: 2 },
+            { dir: 1, baseSpeed: 1.8, platformW: 1, count: 3 },
+            { dir: -1, baseSpeed: 1.3, platformW: 3, count: 2 },
+            { dir: 1, baseSpeed: 2.0, platformW: 1, count: 4 },
+          ];
+          ROW_STREAM.forEach((row, i) => {
+            const def = streamDefs[i];
+            const platforms = [];
+            for (let p = 0; p < def.count; p++) {
+              const offset = (p / def.count) * W;
+              platforms.push({
+                x: offset,
+                w: def.platformW * CELL,
+                h: CELL * 0.62,
+              });
+            }
+            lanes.push({
+              row,
+              type: 'stream',
+              dir: def.dir,
+              speed: def.baseSpeed * spd,
+              platforms,
+            });
+          });
+
+          // Roads (rows 7-11): cyber vehicles
+          const roadDefs = [
+            { dir: -1, baseSpeed: 2.4, vehW: 1.8, count: 3, color: '#ff00aa' },
+            { dir: 1, baseSpeed: 1.8, vehW: 2.4, count: 2, color: '#00f5ff' },
+            { dir: -1, baseSpeed: 3.0, vehW: 1.4, count: 4, color: '#ff6600' },
+            { dir: 1, baseSpeed: 2.2, vehW: 2.0, count: 3, color: '#ffe600' },
+            { dir: -1, baseSpeed: 2.8, vehW: 1.6, count: 2, color: '#00ff88' },
+          ];
+          ROW_ROAD.forEach((row, i) => {
+            const def = roadDefs[i];
+            const vehicles = [];
+            for (let v = 0; v < def.count; v++) {
+              const offset = (v / def.count) * W + (def.dir === -1 ? W - def.vehW * CELL : 0);
+              vehicles.push({ x: offset, w: def.vehW * CELL, h: CELL * 0.7, color: def.color });
+            }
+            lanes.push({
+              row,
+              type: 'road',
+              dir: def.dir,
+              speed: def.baseSpeed * spd,
+              vehicles,
+            });
+          });
+        }
+
+        // ─── Particles ───────────────────────────────────────────────
+        function spawnParticles(cx, cy, color, count) {
+          for (let i = 0; i < count; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 1.5 + Math.random() * 3;
+            particles.push({
+              x: cx,
+              y: cy,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+              life: 1,
+              decay: 0.025 + Math.random() * 0.03,
+              r: 2 + Math.random() * 4,
+              color,
+            });
+          }
+        }
+
+        // ─── Reset / Init ─────────────────────────────────────────────
+        function resetFrog() {
+          frog.col = 4;
+          frog.row = 12;
+          frog.drawX = 4 * CELL;
+          frog.drawY = 12 * CELL;
+          tweenFrom = null;
+        }
+
+        function startGame() {
+          score = 0;
+          lives = 3;
+          level = 1;
+          homesReached = new Set();
+          warpActive = false;
+          warpMs = 0;
+          warpCooldown = 0;
+          warpCharge = 1.0;
+          particles = [];
+          buildLanes(level);
+          resetFrog();
+          updateHUD();
+          gameState = 'playing';
+          startOverlay.classList.add('hidden');
+          gameoverOverlay.classList.add('hidden');
+          levelupOverlay.classList.add('hidden');
+        }
+
+        function updateHUD() {
+          scoreEl.textContent = score;
+          bestEl.textContent = best;
+          levelEl.textContent = level;
+          livesEl.innerHTML = Array(lives).fill('🐸').join('') + Array(3 - lives).fill('💀').join('');
+          warpFill.style.width = warpCharge * 100 + '%';
+          warpBtn.classList.toggle('disabled', warpCharge < 1 || warpActive);
+          warpBtn.classList.toggle('active', warpActive);
+        }
+
+        // ─── Movement ────────────────────────────────────────────────
+        function tryMove(dc, dr) {
+          if (gameState !== 'playing') return;
+          if (tweenFrom) return; // mid-tween: queue nothing (simple approach)
+
+          const newCol = frog.col + dc;
+          const newRow = frog.row + dr;
+
+          if (newCol < 0 || newCol >= COLS || newRow < 0 || newRow >= ROWS) return;
+
+          // Save tween origin
+          tweenFrom = { x: frog.drawX, y: frog.drawY };
+          tweenStart = performance.now();
+
+          frog.col = newCol;
+          frog.row = newRow;
+
+          // Score for moving forward
+          if (dr < 0) {
+            const rowBonus = Math.max(0, 12 - newRow) * 10;
+            score += rowBonus;
+            if (score > best) {
+              best = score;
+              localStorage.setItem('cyberHopBest', best);
+            }
+            updateHUD();
+          }
+
+          // Check home
+          if (newRow === 0 && HOME_COLS.includes(newCol) && !homesReached.has(newCol)) {
+            homesReached.add(newCol);
+            score += 200;
+            if (score > best) {
+              best = score;
+              localStorage.setItem('cyberHopBest', best);
+            }
+            spawnParticles(newCol * CELL + CELL / 2, CELL / 2, '#00ff88', 25);
+            updateHUD();
+
+            if (homesReached.size >= HOMES_TOTAL) {
+              // Level up!
+              level++;
+              score += 500;
+              if (score > best) {
+                best = score;
+                localStorage.setItem('cyberHopBest', best);
+              }
+              homesReached = new Set();
+              buildLanes(level);
+              resetFrog();
+              tweenFrom = null;
+              levelupNum.textContent = level;
+              levelupOverlay.classList.remove('hidden');
+              gameState = 'levelup';
+              updateHUD();
+              setTimeout(() => {
+                levelupOverlay.classList.add('hidden');
+                gameState = 'playing';
+              }, LEVELUP_SHOW_MS);
+            } else {
+              resetFrog();
+              tweenFrom = null;
+            }
+          }
+        }
+
+        // ─── Collision ───────────────────────────────────────────────
+        function checkCollision() {
+          const fx = frog.drawX;
+          const fy = frog.drawY;
+          const fw = CELL * 0.72;
+          const fh = CELL * 0.72;
+          const fLeft = fx + (CELL - fw) / 2;
+          const fRight = fLeft + fw;
+          const fTop = fy + (CELL - fh) / 2;
+          const fBottom = fTop + fh;
+
+          const row = frog.row;
+
+          // Stream rows: must be ON a platform
+          if (ROW_STREAM.includes(row)) {
+            const lane = lanes.find(l => l.row === row);
+            if (!lane) return killFrog();
+            let onPlatform = false;
+            for (const p of lane.platforms) {
+              const pl = p.x;
+              const pr = p.x + p.w;
+              const pt = row * CELL + (CELL - p.h) / 2;
+              const pb = pt + p.h;
+              if (fRight > pl + 4 && fLeft < pr - 4 && fBottom > pt + 4 && fTop < pb - 4) {
+                onPlatform = true;
+                break;
+              }
+            }
+            if (!onPlatform) killFrog();
+            return;
+          }
+
+          // Road rows: must NOT be hit by a vehicle
+          if (ROW_ROAD.includes(row)) {
+            const lane = lanes.find(l => l.row === row);
+            if (!lane) return;
+            for (const v of lane.vehicles) {
+              const vl = v.x;
+              const vr = v.x + v.w;
+              const vt = row * CELL + (CELL - v.h) / 2;
+              const vb = vt + v.h;
+              if (fRight > vl + 2 && fLeft < vr - 2 && fBottom > vt + 2 && fTop < vb - 2) {
+                killFrog();
+                return;
+              }
+            }
+          }
+        }
+
+        function killFrog() {
+          if (gameState !== 'playing') return;
+          gameState = 'dead';
+          deathFlash = DEATH_FLASH_MS;
+          spawnParticles(frog.drawX + CELL / 2, frog.drawY + CELL / 2, '#ff00aa', 30);
+          lives--;
+          updateHUD();
+          setTimeout(() => {
+            if (lives <= 0) {
+              gameState = 'gameover';
+              finalScore.textContent = score;
+              gameoverMsg.textContent =
+                score >= best ? '🏆 New High Score!' : `Best: ${best}`;
+              gameoverOverlay.classList.remove('hidden');
+            } else {
+              resetFrog();
+              tweenFrom = null;
+              gameState = 'playing';
+            }
+          }, DEATH_FLASH_MS);
+        }
+
+        // ─── Update ──────────────────────────────────────────────────
+        function update(dt) {
+          if (gameState !== 'playing' && gameState !== 'dead') return;
+
+          const slowFactor = warpActive ? WARP_SLOW : 1;
+
+          // Move lanes
+          for (const lane of lanes) {
+            const pixelSpeed = lane.speed * 60 * (dt / 1000) * slowFactor;
+            const items = lane.type === 'stream' ? lane.platforms : lane.vehicles;
+            for (const item of items) {
+              item.x += lane.dir * pixelSpeed;
+              // wrap
+              if (lane.dir > 0 && item.x > W) item.x = -item.w;
+              if (lane.dir < 0 && item.x + item.w < 0) item.x = W;
+            }
+          }
+
+          // Frog rides platform
+          if (ROW_STREAM.includes(frog.row) && !tweenFrom) {
+            const lane = lanes.find(l => l.row === frog.row);
+            if (lane) {
+              const rideSpeed = lane.speed * 60 * (dt / 1000) * slowFactor;
+              frog.drawX += lane.dir * rideSpeed;
+              frog.col = Math.round(frog.drawX / CELL);
+              if (frog.drawX < -CELL / 2 || frog.drawX > W) {
+                killFrog();
+              }
+            }
+          }
+
+          // Tween frog movement
+          if (tweenFrom) {
+            const elapsed = performance.now() - tweenStart;
+            const t = Math.min(elapsed / FROG_TWEEN_DURATION, 1);
+            const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+            const targetX = frog.col * CELL;
+            const targetY = frog.row * CELL;
+            frog.drawX = tweenFrom.x + (targetX - tweenFrom.x) * ease;
+            frog.drawY = tweenFrom.y + (targetY - tweenFrom.y) * ease;
+            if (t >= 1) {
+              frog.drawX = targetX;
+              frog.drawY = targetY;
+              tweenFrom = null;
+              checkCollision();
+            }
+          }
+
+          // Collision check on road (continuous)
+          if (gameState === 'playing' && ROW_ROAD.includes(frog.row) && !tweenFrom) {
+            checkCollision();
+          }
+
+          // Death flash countdown
+          if (deathFlash > 0) deathFlash -= dt;
+
+          // Warp
+          if (warpActive) {
+            warpMs -= dt;
+            warpCharge = Math.max(0, warpMs / WARP_DURATION_MS);
+            if (warpMs <= 0) {
+              warpActive = false;
+              warpCharge = 0;
+              warpCooldown = WARP_COOLDOWN_MS;
+            }
+          } else if (warpCooldown > 0) {
+            warpCooldown -= dt;
+            warpCharge = Math.max(0, 1 - warpCooldown / WARP_COOLDOWN_MS);
+            if (warpCooldown <= 0) {
+              warpCooldown = 0;
+              warpCharge = 1;
+            }
+          }
+
+          // Particles
+          for (let i = particles.length - 1; i >= 0; i--) {
+            const p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.08;
+            p.life -= p.decay;
+            if (p.life <= 0) particles.splice(i, 1);
+          }
+
+          updateHUD();
+        }
+
+        // ─── Draw ─────────────────────────────────────────────────────
+        function draw(now) {
+          ctx.clearRect(0, 0, W, H);
+
+          // Background grid
+          ctx.fillStyle = '#060c1a';
+          ctx.fillRect(0, 0, W, H);
+
+          // Draw lane backgrounds
+          for (let row = 0; row < ROWS; row++) {
+            const y = row * CELL;
+            if (ROW_SAFE.has(row)) {
+              ctx.fillStyle = row === 0 ? '#001a0d' : '#0a1020';
+              ctx.fillRect(0, y, W, CELL);
+              // Grid lines
+              ctx.strokeStyle = 'rgba(0,255,136,0.08)';
+              ctx.lineWidth = 1;
+              ctx.strokeRect(0.5, y + 0.5, W - 1, CELL - 1);
+            } else if (ROW_STREAM.includes(row)) {
+              // Data stream lane
+              const grad = ctx.createLinearGradient(0, y, 0, y + CELL);
+              grad.addColorStop(0, '#001a33');
+              grad.addColorStop(1, '#000d1a');
+              ctx.fillStyle = grad;
+              ctx.fillRect(0, y, W, CELL);
+              // stream glow lines
+              ctx.strokeStyle = 'rgba(0,245,255,0.06)';
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(0, y + CELL / 2);
+              ctx.lineTo(W, y + CELL / 2);
+              ctx.stroke();
+            } else if (ROW_ROAD.includes(row)) {
+              // Road lane
+              ctx.fillStyle = '#0a0a12';
+              ctx.fillRect(0, y, W, CELL);
+              // road markings
+              ctx.strokeStyle = 'rgba(255,230,0,0.06)';
+              ctx.lineWidth = 1;
+              ctx.setLineDash([12, 16]);
+              ctx.beginPath();
+              ctx.moveTo(0, y + CELL / 2);
+              ctx.lineTo(W, y + CELL / 2);
+              ctx.stroke();
+              ctx.setLineDash([]);
+            }
+          }
+
+          // Home pads
+          HOME_COLS.forEach(col => {
+            const reached = homesReached.has(col);
+            const px = col * CELL + 6;
+            const py = 6;
+            const pw = CELL - 12;
+            const ph = CELL - 12;
+            if (reached) {
+              ctx.fillStyle = 'rgba(0,255,136,0.25)';
+              ctx.shadowColor = '#00ff88';
+              ctx.shadowBlur = 12;
+            } else {
+              ctx.fillStyle = 'rgba(0,255,136,0.07)';
+              ctx.shadowBlur = 0;
+            }
+            ctx.strokeStyle = '#00ff88';
+            ctx.lineWidth = 1.5;
+            roundRect(ctx, px, py, pw, ph, 6);
+            ctx.fill();
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+            if (reached) {
+              ctx.fillStyle = '#00ff88';
+              ctx.font = `${CELL * 0.45}px serif`;
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.fillText('🐸', col * CELL + CELL / 2, CELL / 2);
+            }
+          });
+
+          // Lane items
+          for (const lane of lanes) {
+            const y = lane.row * CELL;
+            if (lane.type === 'stream') {
+              for (const p of lane.platforms) {
+                const px = p.x;
+                const py = y + (CELL - p.h) / 2;
+                drawPlatform(ctx, px, py, p.w, p.h);
+              }
+            } else {
+              for (const v of lane.vehicles) {
+                const vx = v.x;
+                const vy = y + (CELL - v.h) / 2;
+                drawVehicle(ctx, vx, vy, v.w, v.h, v.color, lane.dir);
+              }
+            }
+          }
+
+          // Warp overlay effect
+          if (warpActive) {
+            const alpha = 0.04 + 0.03 * Math.sin(now * 0.008);
+            ctx.fillStyle = `rgba(187,0,255,${alpha})`;
+            ctx.fillRect(0, 0, W, H);
+            // scan lines
+            ctx.strokeStyle = `rgba(187,0,255,0.06)`;
+            ctx.lineWidth = 1;
+            for (let sy = 0; sy < H; sy += 4) {
+              ctx.beginPath();
+              ctx.moveTo(0, sy);
+              ctx.lineTo(W, sy);
+              ctx.stroke();
+            }
+          }
+
+          // Particles
+          for (const p of particles) {
+            ctx.globalAlpha = p.life;
+            ctx.fillStyle = p.color;
+            ctx.shadowColor = p.color;
+            ctx.shadowBlur = 6;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.globalAlpha = 1;
+          ctx.shadowBlur = 0;
+
+          // Frog
+          if (gameState !== 'gameover') {
+            drawFrog(ctx, frog.drawX, frog.drawY, deathFlash > 0, now);
+          }
+        }
+
+        function drawPlatform(ctx, x, y, w, h) {
+          ctx.save();
+          ctx.shadowColor = '#00f5ff';
+          ctx.shadowBlur = 8;
+          const grad = ctx.createLinearGradient(x, y, x, y + h);
+          grad.addColorStop(0, '#003344');
+          grad.addColorStop(1, '#001a22');
+          ctx.fillStyle = grad;
+          roundRect(ctx, x, y, w, h, 6);
+          ctx.fill();
+          ctx.strokeStyle = '#00f5ff';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+          // inner glow lines
+          ctx.strokeStyle = 'rgba(0,245,255,0.3)';
+          ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          ctx.moveTo(x + 8, y + h * 0.3);
+          ctx.lineTo(x + w - 8, y + h * 0.3);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        function drawVehicle(ctx, x, y, w, h, color, dir) {
+          ctx.save();
+          ctx.shadowColor = color;
+          ctx.shadowBlur = 10;
+          const grad = ctx.createLinearGradient(x, y, x + w, y);
+          grad.addColorStop(0, color + '22');
+          grad.addColorStop(dir > 0 ? 0.7 : 0.3, color + 'aa');
+          grad.addColorStop(1, color + '22');
+          ctx.fillStyle = grad;
+          roundRect(ctx, x, y, w, h, 5);
+          ctx.fill();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+
+          // headlights
+          const lightR = h * 0.18;
+          const lightY = y + h * 0.3;
+          const lightX = dir > 0 ? x + w - lightR * 2 - 3 : x + lightR * 2 + 3;
+          ctx.fillStyle = color;
+          ctx.shadowBlur = 14;
+          ctx.beginPath();
+          ctx.arc(lightX, lightY, lightR, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(lightX, y + h - h * 0.3, lightR, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        function drawFrog(ctx, x, y, dying, now) {
+          if (dying) {
+            const flicker = Math.floor(now / 60) % 2 === 0;
+            if (!flicker) return;
+          }
+
+          ctx.save();
+          const cx = x + CELL / 2;
+          const cy = y + CELL / 2;
+          const r = CELL * 0.34;
+
+          // Glow
+          ctx.shadowColor = '#00ff88';
+          ctx.shadowBlur = dying ? 4 : 16;
+
+          // Body
+          const grad = ctx.createRadialGradient(cx - r * 0.2, cy - r * 0.2, r * 0.1, cx, cy, r);
+          grad.addColorStop(0, '#00ff88');
+          grad.addColorStop(0.6, '#00cc66');
+          grad.addColorStop(1, '#005533');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.ellipse(cx, cy, r, r * 0.85, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Circuit pattern on body
+          ctx.strokeStyle = 'rgba(0,255,136,0.4)';
+          ctx.lineWidth = 1;
+          ctx.shadowBlur = 0;
+          ctx.beginPath();
+          ctx.moveTo(cx - r * 0.4, cy);
+          ctx.lineTo(cx + r * 0.4, cy);
+          ctx.moveTo(cx, cy - r * 0.3);
+          ctx.lineTo(cx, cy + r * 0.3);
+          ctx.stroke();
+
+          // Eyes
+          const eyeY = cy - r * 0.3;
+          const eyeSpread = r * 0.38;
+          const eyeR = r * 0.2;
+          [-1, 1].forEach(side => {
+            const ex = cx + side * eyeSpread;
+            ctx.fillStyle = '#001a0d';
+            ctx.beginPath();
+            ctx.arc(ex, eyeY, eyeR, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = dying ? '#ff0044' : '#00ffaa';
+            ctx.shadowColor = dying ? '#ff0044' : '#00ffaa';
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.arc(ex, eyeY, eyeR * 0.55, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          // Legs (back)
+          ctx.shadowBlur = 0;
+          ctx.strokeStyle = '#00cc66';
+          ctx.lineWidth = 3;
+          const legAnimOffset = Math.sin(now * 0.004) * 4;
+          [-1, 1].forEach(side => {
+            // back leg
+            ctx.beginPath();
+            ctx.moveTo(cx + side * r * 0.55, cy + r * 0.4);
+            ctx.quadraticCurveTo(
+              cx + side * (r + 8),
+              cy + r * 0.8 + legAnimOffset * side,
+              cx + side * (r * 0.9 + 4),
+              cy + r + legAnimOffset * side
+            );
+            ctx.stroke();
+            // front leg
+            ctx.beginPath();
+            ctx.moveTo(cx + side * r * 0.4, cy - r * 0.15);
+            ctx.lineTo(cx + side * (r + 5), cy - r * 0.5);
+            ctx.stroke();
+          });
+
+          ctx.restore();
+        }
+
+        function roundRect(ctx, x, y, w, h, r) {
+          ctx.beginPath();
+          ctx.moveTo(x + r, y);
+          ctx.lineTo(x + w - r, y);
+          ctx.arcTo(x + w, y, x + w, y + r, r);
+          ctx.lineTo(x + w, y + h - r);
+          ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+          ctx.lineTo(x + r, y + h);
+          ctx.arcTo(x, y + h, x, y + h - r, r);
+          ctx.lineTo(x, y + r);
+          ctx.arcTo(x, y, x + r, y, r);
+          ctx.closePath();
+        }
+
+        // ─── Game loop ────────────────────────────────────────────────
+        function loop(now) {
+          const dt = Math.min(now - (lastTime || now), 50);
+          lastTime = now;
+          update(dt);
+          draw(now);
+          requestAnimationFrame(loop);
+        }
+
+        requestAnimationFrame(loop);
+
+        // ─── Input handlers ───────────────────────────────────────────
+        function activateWarp() {
+          if (gameState !== 'playing') return;
+          if (warpCharge >= 1 && !warpActive) {
+            warpActive = true;
+            warpMs = WARP_DURATION_MS;
+          }
+        }
+
+        document.addEventListener('keydown', e => {
+          switch (e.key) {
+            case 'ArrowUp':
+            case 'w':
+            case 'W':
+              e.preventDefault();
+              tryMove(0, -1);
+              break;
+            case 'ArrowDown':
+            case 's':
+            case 'S':
+              e.preventDefault();
+              tryMove(0, 1);
+              break;
+            case 'ArrowLeft':
+            case 'a':
+            case 'A':
+              e.preventDefault();
+              tryMove(-1, 0);
+              break;
+            case 'ArrowRight':
+            case 'd':
+            case 'D':
+              e.preventDefault();
+              tryMove(1, 0);
+              break;
+            case ' ':
+              e.preventDefault();
+              activateWarp();
+              break;
+          }
+        });
+
+        // D-Pad
+        function dpadPress(dc, dr) {
+          return e => {
+            e.preventDefault();
+            tryMove(dc, dr);
+          };
+        }
+        document.getElementById('btn-up').addEventListener('touchstart', dpadPress(0, -1), {
+          passive: false,
+        });
+        document.getElementById('btn-down').addEventListener('touchstart', dpadPress(0, 1), {
+          passive: false,
+        });
+        document.getElementById('btn-left').addEventListener('touchstart', dpadPress(-1, 0), {
+          passive: false,
+        });
+        document.getElementById('btn-right').addEventListener('touchstart', dpadPress(1, 0), {
+          passive: false,
+        });
+        document.getElementById('btn-up').addEventListener('click', dpadPress(0, -1));
+        document.getElementById('btn-down').addEventListener('click', dpadPress(0, 1));
+        document.getElementById('btn-left').addEventListener('click', dpadPress(-1, 0));
+        document.getElementById('btn-right').addEventListener('click', dpadPress(1, 0));
+
+        // Warp button
+        warpBtn.addEventListener('click', activateWarp);
+        warpBtn.addEventListener('touchstart', e => {
+          e.preventDefault();
+          activateWarp();
+        }, { passive: false });
+
+        // Touch swipe on canvas
+        canvas.addEventListener(
+          'touchstart',
+          e => {
+            touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+          },
+          { passive: true }
+        );
+        canvas.addEventListener(
+          'touchend',
+          e => {
+            if (!touchStart) return;
+            const dx = e.changedTouches[0].clientX - touchStart.x;
+            const dy = e.changedTouches[0].clientY - touchStart.y;
+            touchStart = null;
+            const absX = Math.abs(dx);
+            const absY = Math.abs(dy);
+            if (Math.max(absX, absY) < 14) return;
+            if (absX > absY) {
+              tryMove(dx > 0 ? 1 : -1, 0);
+            } else {
+              tryMove(0, dy > 0 ? 1 : -1);
+            }
+          },
+          { passive: true }
+        );
+
+        // Start / restart buttons
+        document.getElementById('start-btn').addEventListener('click', startGame);
+        document.getElementById('restart-btn').addEventListener('click', () => {
+          gameoverOverlay.classList.add('hidden');
+          startGame();
+        });
+      })();
+    </script>
+  </body>
+</html>
