@@ -408,8 +408,8 @@
           </p>
           <p>⬆⬇⬅➡ Arrow keys &nbsp;|&nbsp; WASD &nbsp;|&nbsp; Swipe &nbsp;|&nbsp; D-Pad</p>
           <p>
-            <span style="color: var(--neon-purple)">⚡ TIME WARP</span> — slow down obstacles (Space
-            / Warp button)
+            <span style="color: var(--neon-purple)">⚡ TIME WARP</span> — slow obstacles (Space /
+            Warp button / double-tap)
           </p>
           <button class="btn" id="start-btn">▶ &nbsp;START</button>
         </div>
@@ -537,12 +537,11 @@
         // Returns array of {offset} positions (relative to platform left edge)
         // where a hazard spike sits. Density grows with level.
         function buildHazards(platW, lvl) {
-          // Level 1 → no hazards. Each level adds more chance and more per platform.
-          // Max hazards: level 2=1, level 3=2, level 4+=3 (capped so safe gap always exists)
-          const maxCount = Math.min(lvl - 1, Math.floor(platW / (CELL * 0.9)));
-          if (maxCount <= 0) return [];
-          // Probability a hazard slot is actually filled increases with level
-          const fillChance = 0.35 + (lvl - 2) * 0.18; // 35% at lvl2, 53% at lvl3, 71% at lvl4…
+          // Level 1 → rare hazard. Each level adds more chance and more per platform.
+          // Max hazards: level 1-2=1, level 3=2, level 4+=3 (capped so safe gap always exists)
+          const maxCount = Math.min(Math.max(lvl - 1, 1), Math.floor(platW / (CELL * 0.9)));
+          // Probability a hazard slot is filled: 12% at lvl1, 35% at lvl2, 53% at lvl3, 71% at lvl4…
+          const fillChance = lvl === 1 ? 0.12 : 0.35 + (lvl - 2) * 0.18;
           const hazW = CELL * 0.44;
           const hazards = [];
           // Evenly-spaced candidate slots across the platform (avoid very edges)
@@ -1387,7 +1386,8 @@
           activateWarp();
         }, { passive: false });
 
-        // Touch swipe on canvas
+        // Touch swipe + double-tap on canvas
+        let lastTapTime = 0;
         canvas.addEventListener(
           'touchstart',
           e => {
@@ -1404,7 +1404,18 @@
             touchStart = null;
             const absX = Math.abs(dx);
             const absY = Math.abs(dy);
-            if (Math.max(absX, absY) < 14) return;
+            // Double-tap (small movement) → warp
+            if (Math.max(absX, absY) < 14) {
+              const now2 = Date.now();
+              if (now2 - lastTapTime < 320) {
+                activateWarp();
+                lastTapTime = 0;
+              } else {
+                lastTapTime = now2;
+              }
+              return;
+            }
+            lastTapTime = 0;
             if (absX > absY) {
               tryMove(dx > 0 ? 1 : -1, 0);
             } else {
