@@ -920,34 +920,84 @@
           }
 
           // Home pads
+          const pulse = 0.5 + 0.5 * Math.sin(now * 0.004);
           HOME_COLS.forEach(col => {
             const reached = homesReached.has(col);
-            const px = col * CELL + 6;
-            const py = 6;
-            const pw = CELL - 12;
-            const ph = CELL - 12;
+            const px = col * CELL + 4;
+            const py = 4;
+            const pw = CELL - 8;
+            const ph = CELL - 8;
+            const cx2 = col * CELL + CELL / 2;
+            const cy2 = CELL / 2;
+
             if (reached) {
-              ctx.fillStyle = 'rgba(0,255,136,0.25)';
+              ctx.fillStyle = 'rgba(0,255,136,0.35)';
               ctx.shadowColor = '#00ff88';
-              ctx.shadowBlur = 12;
+              ctx.shadowBlur = 14;
+              ctx.strokeStyle = '#00ff88';
+              ctx.lineWidth = 2.5;
             } else {
-              ctx.fillStyle = 'rgba(0,255,136,0.07)';
-              ctx.shadowBlur = 0;
+              ctx.fillStyle = `rgba(0,255,136,${0.12 + pulse * 0.14})`;
+              ctx.shadowColor = '#00ff88';
+              ctx.shadowBlur = 6 + pulse * 14;
+              ctx.strokeStyle = `rgba(0,255,136,${0.55 + pulse * 0.45})`;
+              ctx.lineWidth = 1.5 + pulse * 1.5;
             }
-            ctx.strokeStyle = '#00ff88';
-            ctx.lineWidth = 1.5;
-            roundRect(ctx, px, py, pw, ph, 6);
+            roundRect(ctx, px, py, pw, ph, 7);
             ctx.fill();
             ctx.stroke();
             ctx.shadowBlur = 0;
+
             if (reached) {
-              ctx.fillStyle = '#00ff88';
-              ctx.font = `${CELL * 0.45}px serif`;
+              ctx.font = `${CELL * 0.48}px serif`;
               ctx.textAlign = 'center';
               ctx.textBaseline = 'middle';
-              ctx.fillText('🐸', col * CELL + CELL / 2, CELL / 2);
+              ctx.fillText('🐸', cx2, cy2);
+            } else {
+              // Crosshair target icon
+              const cr = CELL * 0.18;
+              ctx.strokeStyle = `rgba(0,255,136,${0.5 + pulse * 0.5})`;
+              ctx.lineWidth = 1.5;
+              ctx.shadowColor = '#00ff88';
+              ctx.shadowBlur = 4 + pulse * 8;
+              ctx.beginPath();
+              ctx.arc(cx2, cy2, cr, 0, Math.PI * 2);
+              ctx.stroke();
+              ctx.beginPath();
+              ctx.moveTo(cx2 - cr * 1.7, cy2);
+              ctx.lineTo(cx2 + cr * 1.7, cy2);
+              ctx.moveTo(cx2, cy2 - cr * 1.7);
+              ctx.lineTo(cx2, cy2 + cr * 1.7);
+              ctx.stroke();
+              // "GOAL" label
+              ctx.shadowBlur = 0;
+              ctx.fillStyle = `rgba(0,255,136,${0.45 + pulse * 0.4})`;
+              ctx.font = `bold ${CELL * 0.18}px 'Courier New', monospace`;
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'bottom';
+              ctx.fillText('GOAL', cx2, py + ph - 3);
+              ctx.shadowBlur = 0;
             }
           });
+
+          // Blinking arrows toward empty goal pads when frog is near the top
+          if (gameState === 'playing' && frog.row <= 2) {
+            const blink = Math.floor(now / 280) % 2 === 0;
+            if (blink) {
+              HOME_COLS.forEach(col => {
+                if (!homesReached.has(col)) {
+                  ctx.fillStyle = '#00ff88';
+                  ctx.shadowColor = '#00ff88';
+                  ctx.shadowBlur = 18;
+                  ctx.font = `bold ${CELL * 0.55}px sans-serif`;
+                  ctx.textAlign = 'center';
+                  ctx.textBaseline = 'top';
+                  ctx.fillText('▲', col * CELL + CELL / 2, CELL + 4);
+                  ctx.shadowBlur = 0;
+                }
+              });
+            }
+          }
 
           // Lane items
           for (const lane of lanes) {
