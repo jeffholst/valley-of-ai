@@ -524,16 +524,16 @@
 
         // ─── Lane definitions ─────────────────────────────────────────
         function buildLanes(lvl) {
-          const spd = 1 + (lvl - 1) * 0.18;
+          const spd = 1 + (lvl - 1) * 0.12;
           lanes = [];
 
           // Data streams (rows 1-5): moving platforms
           const streamDefs = [
-            { dir: 1, baseSpeed: 1.1, platformW: 2, count: 3 },
-            { dir: -1, baseSpeed: 1.5, platformW: 2, count: 2 },
-            { dir: 1, baseSpeed: 1.8, platformW: 1, count: 3 },
-            { dir: -1, baseSpeed: 1.3, platformW: 3, count: 2 },
-            { dir: 1, baseSpeed: 2.0, platformW: 1, count: 4 },
+            { dir: 1, baseSpeed: 0.9, platformW: 3, count: 3 },
+            { dir: -1, baseSpeed: 1.1, platformW: 3, count: 3 },
+            { dir: 1, baseSpeed: 1.3, platformW: 2, count: 3 },
+            { dir: -1, baseSpeed: 1.0, platformW: 3, count: 3 },
+            { dir: 1, baseSpeed: 1.5, platformW: 2, count: 3 },
           ];
           ROW_STREAM.forEach((row, i) => {
             const def = streamDefs[i];
@@ -557,11 +557,11 @@
 
           // Roads (rows 7-11): cyber vehicles
           const roadDefs = [
-            { dir: -1, baseSpeed: 2.4, vehW: 1.8, count: 3, color: '#ff00aa' },
-            { dir: 1, baseSpeed: 1.8, vehW: 2.4, count: 2, color: '#00f5ff' },
-            { dir: -1, baseSpeed: 3.0, vehW: 1.4, count: 4, color: '#ff6600' },
-            { dir: 1, baseSpeed: 2.2, vehW: 2.0, count: 3, color: '#ffe600' },
-            { dir: -1, baseSpeed: 2.8, vehW: 1.6, count: 2, color: '#00ff88' },
+            { dir: -1, baseSpeed: 1.5, vehW: 1.8, count: 2, color: '#ff00aa' },
+            { dir: 1, baseSpeed: 1.2, vehW: 2.4, count: 2, color: '#00f5ff' },
+            { dir: -1, baseSpeed: 1.8, vehW: 1.4, count: 2, color: '#ff6600' },
+            { dir: 1, baseSpeed: 1.4, vehW: 2.0, count: 2, color: '#ffe600' },
+            { dir: -1, baseSpeed: 1.6, vehW: 1.6, count: 2, color: '#00ff88' },
           ];
           ROW_ROAD.forEach((row, i) => {
             const def = roadDefs[i];
