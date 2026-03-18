@@ -1,0 +1,19 @@
+{
+  "id": "frogger-river-dash",
+  "name": "Frogger River Dash",
+  "shortDescription": "Cross roads and rivers — beat your high score. Inspired by the classic Frogger arcade game.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-18T17:50:57Z",
+  "category": "Games",
+  "votes": 0,
+  "status": "active",
+  "tags": ["arcade", "frogger", "crossy", "reaction"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "openrouter-auto",
+    "startTime": "2026-03-18T17:50:57Z",
+    "runId": "run-20260318T174944Z-c86044"
+  }
+}

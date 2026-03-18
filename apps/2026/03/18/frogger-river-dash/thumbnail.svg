@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" fill="#0f172a"/>
+  <g fill="#34d399">
+    <ellipse cx="32" cy="36" rx="14" ry="12"/>
+    <circle cx="28" cy="33" r="2" fill="#0f172a"/>
+    <circle cx="36" cy="33" r="2" fill="#0f172a"/>
+    <path d="M28 40 Q32 46 36 40" stroke="#0f172a" fill="none" stroke-width="2"/>
+  </g>
+  <rect x="12" y="8" width="8" height="20" fill="#78350f"/>
+  <rect x="44" y="8" width="8" height="20" fill="#78350f"/>
+  <path d="M0 16 Q16 8 32 16 T64 16" stroke="#0ea5e9" fill="none" stroke-width="3" opacity="0.6"/>
+</svg>
+echo "Wrote thumbnail.svg"

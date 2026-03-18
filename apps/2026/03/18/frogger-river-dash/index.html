@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '__GA_MEASUREMENT_ID__');
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Frogger River Dash - __MAIN_SITE_NAME__</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='0.9em' font-size='52'%3E🐸%3C/text%3E%3C/svg%3E">
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+  <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
+  <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">
+  <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
+  <script src="/apps/shared/app-shell.js" defer></script>
+  <style>
+    :root{--bg:#0f172a;--text:#f9fafb;--surface:#1e293b;--muted:#94a3b8;--accent:#22d3ee;--accent2:#38bdf8;--ok:#34d399;--ring:#0ea5e9;--shadow:rgba(0,0,0,.35)}
+    [data-theme="light"]{--bg:#ffffff;--text:#1a1a1a;--surface:#f3f4f6;--muted:#6b7280;--accent:#0891b2;--accent2:#0ea5e9;--ok:#059669;--ring:#0284c7;--shadow:rgba(31,47,82,.12)}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:radial-gradient(800px 600px at 30% 0%,color-mix(in oklab,var(--accent) 12%,var(--bg)),var(--bg));color:var(--text);min-height:100vh;padding:14px}
+    .app{width:min(900px,100%);margin:0 auto;background:color-mix(in srgb,var(--surface) 92%,transparent);border:1px solid color-mix(in oklab,var(--muted) 25%,transparent);border-radius:18px;padding:14px;box-shadow:0 16px 40px var(--shadow);display:flex;flex-direction:column;gap:10px}
+    header{text-align:center}
+    h1{margin:0;font-size:clamp(1.35rem,2.8vw,1.9rem)}
+    .sub{margin:4px 0 0;color:var(--muted);font-size:.95rem}
+    #game{width:100%;max-width:800px;height:520px;margin:0 auto;background:#0b1220;border:1px solid var(--muted);border-radius:12px;position:relative;overflow:hidden;touch-action:none}
+    .logix{position:absolute;left:0;right:0;background:#1e3a52}
+    .water{background:#0ea5e9;opacity:.5}
+    .safe{background:#34d399;opacity:.25;border-top:2px dashed var(--ok)}
+    .frog{position:absolute;width:36px;height:36px;border-radius:50%;background:#34d399;box-shadow:0 4px 0 var(--ok);transform:translate(-50%,-50%);transition:transform .06s;z-index:2}
+    .car{position:absolute;width:52px;height:30px;background:#f87171;border-radius:6px;box-shadow:0 4px 0 #b91c1c}
+    .truck{position:absolute;width:72px;height:34px;background:#fbbf24;border-radius:6px;box-shadow:0 4px 0 #b45309}
+    .log{position:absolute;height:38px;background:#78350f;border-radius:6px;box-shadow:inset 0 -6px 6px rgba(0,0,0,.15);transform:translateX(-100%);transition:transform .016s linear}
+    .ui{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;width:100%;max-width:800px;margin:8px auto 0}
+    .stat{font-weight:700;font-size:.95rem;color:var(--muted)}
+    .btn{min-height:44px;border:none;border-radius:10px;padding:10px 12px;font-weight:700;color:white;background:linear-gradient(135deg,var(--accent2),var(--accent));cursor:pointer;touch-action:manipulation}
+    .hint{font-size:.85rem;color:var(--muted);text-align:center}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>🐸 Frogger River Dash</h1>
+      <p class="sub">Cross roads and rivers — beat your high score</p>
+    </header>
+    <div id="game" tabindex="0" aria-label="Frogger game area. Use arrow keys or swipe to move."></div>
+    <div class="ui">
+      <div class="stat">Score: <span id="score">0</span> | Lives: <span id="lives">3</span> | Level: <span id="level">1</span></div>
+      <div>
+        <button id="start" class="btn">Start</button>
+        <button id="pause" class="btn" disabled>Pause</button>
+      </div>
+    </div>
+    <p class="hint">Desktop: arrow keys. Mobile: swipe/tap. Reach the top safe zone to earn points and reset. Avoid cars and fall into water.</p>
+  </div>
+<script>
+const gameEl=document.getElementById('game'), scoreEl=document.getElementById('score'), livesEl=document.getElementById('lives'), levelEl=document.getElementById('level'), startBtn=document.getElementById('start'), pauseBtn=document.getElementById('pause');
+const GAME_W=800, GAME_H=520, TILE=40, COLS=Math.floor(GAME_W/TILE), ROWS=Math.floor(GAME_H/TILE);
+const FREE_Y=ROWS-2; // safe zone row (top)
+const FROG_START={x:Math.floor(COLS/2), y:ROWS-1}; // bottom center
+let state={score:0,lives:3,level:1,frog:FROG_START,items:[],logs:[],cars:[],running:false,paused:false};
+
+function rand(a,b){return a+Math.random()*(b-a)}
+function within(v){return Math.max(0,Math.min(ROWS-1,v))}
+function rect(el){const r=el.getBoundingClientRect();return{left:r.left+window.scrollX, top:r.top+window.scrollY, width:r.width, height:r.height}}
+function collision(a,b){return a.x<b.x+b.w && a.x+a.w>b.x && a.y<b.y+b.h && a.y+a.h>b.y}
+
+function buildLevel(){
+  const items=[];
+  // road rows (lower half)
+  for(let r=Math.floor(ROWS*0.55);r<ROWS-1;r++){
+    const speed=0.4+0.1*state.level+Math.random()*0.2;
+    const count=1+Math.floor(Math.random()*2);
+    for(let i=0;i<count;i++){
+      items.push({type:'car',x:Math.floor(rand(0,COLS))*TILE,y:r*TILE,w:52,h:30,vx:(Math.random()>0.5?1:-1)*speed,color:'#f87171'});
+      items.push({type:'truck',x:Math.floor(rand(0,COILS))*TILE,y:r*TILE,w:72,h:34,vx:(Math.random()>0.5?1:-1)*(speed*0.6),color:'#fbbf24'});
+    }
+  }
+  // river rows (upper half, exclude safe zone)
+  for(let r=2;r<Math.floor(ROWS*0.5);r++){
+    const count=3+Math.floor(Math.random()*2);
+    const speedLog=0.3+0.08*state.level;
+    for(let i=0;i<count;i++){
+      const w=80+Math.floor(Math.random()*40);
+      items.push({type:'log',x:Math.floor(rand(-COLS,COLS))*TILE,y:r*TILE,w:w,h:38,vx:(Math.random()>0.5?1:-1)*speedLog});
+    }
+  }
+  state.items=items;
+}
+
+function clampFrog(){
+  state.frog.x=Math.max(0,Math.min(COLS-1,state.frog.x));
+  state.frog.y=within(state.frog.y);
+}
+
+function render(){
+  gameEl.innerHTML='';
+  // build static background rows for reference (optional)
+  // add dynamic items
+  state.items.forEach(it=>{
+    const el=document.createElement('div');
+    el.className=it.type;
+    Object.assign(el.style,{left:(it.x*TILE)+'px',top:(it.y*TILE)+'px',width:it.w+'px',height:it.h+'px',backgroundColor:it.color,position:'absolute'});
+    if(it.type==='log') el.style.background='#78350f';
+    gameEl.appendChild(el);
+  });
+  // frog
+  const frog=document.createElement('div');
+  frog.className='frog';
+  frog.style.left=(state.frog.x*TILE)+'px';
+  frog.style.top=(state.frog.y*TILE)+'px';
+  gameEl.appendChild(frog);
+}
+
+function moveFrog(dx,dy){
+  if(!state.running||state.paused) return;
+  const nx=state.frog.x+dx, ny=state.frog.y+dy;
+  state.frog.x=within(nx); state.frog.y=within(ny);
+  // check if reached safe zone (top row)
+  if(state.frog.y===0){state.score+=100+state.level*25; state.frog=FROG_START; buildLevel();}
+  checkHit(); render(); updateHud();
+}
+
+function updateHud(){
+  scoreEl.textContent=state.score;
+  livesEl.textContent=state.lives;
+  levelEl.textContent=state.level;
+}
+
+function startGame(){
+  if(state.running) return;
+  state={score:0,lives:3,level:1,frog:FROG_START,items:[],logs:[],cars:[],running:true,paused:false};
+  buildLevel(); render(); updateHud(); startBtn.disabled=true; pauseBtn.disabled=false;
+}
+function togglePause(){state.paused=!state.paused; pauseBtn.textContent=state.paused?'Resume':'Pause';}
+
+function tick(){
+  if(!state.running||state.paused) return;
+  // move items
+  state.items.forEach(it=>{it.x+=it.vx;});
+  // wrap car/truck around horizontally
+  state.items.forEach(it=>{
+    if(it.type!=='log'){
+      if(it.x>COLS) it.x=-it.w/TILE;
+      if(it.x<-(it.w/TILE)) it.x=COLS;
+    } else {
+      if(it.x>COLS) it.x=-it.w/TILE;
+      if(it.x<-(it.w/TILE)) it.x=COLS;
+    }
+  });
+  // frog on log? if so, move with log
+  const onLog=state.items.find(it=>it.type==='log' && collision({x:state.frog.x*TILE+4,y:state.frog.y*TILE+4,w:28,h:28},{x:it.x*TILE,y:it.y*TILE,w:it.w,h:it.h}));
+  if(onLog){state.frog.x+=onLog.vx; clampFrog();}
+  // check collisions with cars
+  const frogRect={x:state.frog.x*TILE+4,y:state.frog.y*TILE+4,w:TILE-8,h:TILE-8};
+  let hit=false;
+  state.items.forEach(it=>{
+    if(it.type==='car'||it.type==='truck'){
+      if(collision(frogRect,{x:it.x*TILE+2,y:it.y*TILE+2,w:it.w-4,h:it.h-4})){hit=true;}
+    }
+  });
+  if(hit){state.lives--; state.frog=FROG_START; if(state.lives<=0){state.running=false; startBtn.disabled=false; pauseBtn.disabled=true; startGame = () => {startBtn.textContent='Start'; startGame();};}}
+  // check if frog fell in water and not on log
+  if(state.frog.y<FREE_Y && !onLog){state.lives--; state.frog=FROG_START; if(state.lives<=0){state.running=false; startBtn.disabled=false; pauseBtn.disabled=true;}}
+  levelEl.textContent=state.level=1+Math.floor(state.score/500);
+  render(); updateHud();
+}
+
+// input
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowUp') moveFrog(0,-1);
+  if(e.key==='ArrowDown') moveFrog(0,1);
+  if(e.key==='ArrowLeft') moveFrog(-1,0);
+  if(e.key==='ArrowRight') moveFrog(1,0);
+});
+let touchStart=null;
+gameEl.addEventListener('touchstart',e=>{touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY};}, {passive:true});
+gameEl.addEventListener('touchend',e=>{
+  if(!touchStart) return;
+  const dx=e.changedTouches[0].clientX-touchStart.x, dy=e.changedTouches[0].clientY-touchStart.y;
+  if(Math.abs(dx)>Math.abs(dy)){
+    if(dx>30) moveFrog(1,0);
+    else if(dx<-30) moveFrog(-1,0);
+  } else {
+    if(dy>30) moveFrog(0,1);
+    else if(dy<-30) moveFrog(0,-1);
+  }
+  touchStart=null;
+},{passive:true});
+startBtn.addEventListener('click',startGame);
+pauseBtn.addEventListener('click',togglePause);
+setInterval(tick,16);
+</script>
+</body>
+</html>
