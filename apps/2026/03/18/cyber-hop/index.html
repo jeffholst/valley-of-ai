@@ -871,8 +871,10 @@
             checkCollision();
           }
 
-          // Hazard check on stream (continuous — hazard may drift under riding frog)
-          if (gameState === 'playing' && ROW_STREAM.includes(frog.row) && !tweenFrom) {
+          // Hazard check on stream — runs while riding AND during horizontal tweens.
+          // (Skipped during vertical tweens to avoid false hits while jumping onto a row.)
+          const isHorizontalTween = tweenFrom && Math.abs(tweenFrom.y - frog.row * CELL) < 4;
+          if (gameState === 'playing' && ROW_STREAM.includes(frog.row) && (!tweenFrom || isHorizontalTween)) {
             const lane = lanes.find(l => l.row === frog.row);
             if (lane) {
               const fx2 = frog.drawX;
