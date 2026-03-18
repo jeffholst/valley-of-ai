@@ -134,8 +134,11 @@ export default function HomePage() {
     // Load saved options; migrate legacy pterodactyl key if present
     const saved = localStorage.getItem(OPTIONS_STORAGE_KEY);
     if (saved) {
-      try { setOptions((prev) => ({ ...prev, ...JSON.parse(saved) })); }
-      catch { /* ignore corrupt data */ }
+      try {
+        setOptions((prev) => ({ ...prev, ...JSON.parse(saved) }));
+      } catch {
+        /* ignore corrupt data */
+      }
     } else {
       const legacy = localStorage.getItem('pterodactyl-animations-enabled-v2');
       const pteroOn = legacy !== null ? legacy === 'true' : !mobile;
@@ -276,7 +279,9 @@ export default function HomePage() {
    * Created on first enable, suspended/resumed on subsequent toggles.
    */
   useEffect(() => {
-    if (!mounted) {return;}
+    if (!mounted) {
+      return;
+    }
     if (options.sound) {
       if (!audioCtxRef.current) {
         try {
@@ -300,7 +305,9 @@ export default function HomePage() {
           gain.connect(ctx.destination);
           src.start();
           audioCtxRef.current = ctx;
-        } catch { /* Web Audio not available */ }
+        } catch {
+          /* Web Audio not available */
+        }
       } else if (audioCtxRef.current.state === 'suspended') {
         audioCtxRef.current.resume();
       }

@@ -132,13 +132,15 @@ export async function GET(request) {
     // Read and parse the JSONL file
     const content = fs.readFileSync(logFilePath, 'utf-8');
     const lines = content.split('\n').filter((line) => line.trim());
-    const logs = lines.map((line) => {
-      try {
-        return JSON.parse(line);
-      } catch {
-        return null;
-      }
-    }).filter(Boolean);
+    const logs = lines
+      .map((line) => {
+        try {
+          return JSON.parse(line);
+        } catch {
+          return null;
+        }
+      })
+      .filter(Boolean);
 
     return Response.json(logs);
   } catch (error) {

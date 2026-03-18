@@ -24,12 +24,12 @@ import { useEffect, useState } from 'react';
 /** Toggle definitions — order here = order in drawer UI */
 const TOGGLES = [
   { key: 'pterodactyl', label: 'Pterodactyl', iconSrc: '/pterodactyl-right-flapping.svg' },
-  { key: 'wind',        label: 'Wind',        icon: '💨' },
-  { key: 'rain',        label: 'Rain',        icon: '🌧️' },
-  { key: 'snow',        label: 'Snow',        icon: '❄️' },
-  { key: 'clouds',      label: 'Clouds',      icon: '☁️' },
-  { key: 'lightning',   label: 'Lightning',   icon: '⚡' },
-  { key: 'sound',       label: 'Sound',       icon: '🔊' },
+  { key: 'wind', label: 'Wind', icon: '💨' },
+  { key: 'rain', label: 'Rain', icon: '🌧️' },
+  { key: 'snow', label: 'Snow', icon: '❄️' },
+  { key: 'clouds', label: 'Clouds', icon: '☁️' },
+  { key: 'lightning', label: 'Lightning', icon: '⚡' },
+  { key: 'sound', label: 'Sound', icon: '🔊' },
 ];
 
 /** Range/slider definitions — order here = order in drawer UI (rendered after toggles) */
@@ -42,8 +42,14 @@ export default function OptionsDrawer({ options, onToggle }) {
 
   /* Close drawer on Escape key */
   useEffect(() => {
-    if (!open) {return;}
-    const onKey = (e) => { if (e.key === 'Escape') {setOpen(false);} };
+    if (!open) {
+      return;
+    }
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        setOpen(false);
+      }
+    };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [open]);
@@ -80,9 +86,17 @@ export default function OptionsDrawer({ options, onToggle }) {
               <label key={key} className="options-toggle-row">
                 <span className="options-toggle-label">
                   <span className="options-toggle-icon">
-                    {iconSrc
-                      ? <img src={iconSrc} alt="" width={22} height={22} style={{ display: 'block' }} />
-                      : icon}
+                    {iconSrc ? (
+                      <img
+                        src={iconSrc}
+                        alt=""
+                        width={22}
+                        height={22}
+                        style={{ display: 'block' }}
+                      />
+                    ) : (
+                      icon
+                    )}
                   </span>
                   {label}
                 </span>
@@ -122,7 +136,15 @@ export default function OptionsDrawer({ options, onToggle }) {
                     aria-label={`${label} count`}
                     style={{ width: '80px', accentColor: '#818cf8' }}
                   />
-                  <span style={{ minWidth: '16px', textAlign: 'center', fontSize: '14px', fontWeight: 600, color: 'var(--text, #f9fafb)' }}>
+                  <span
+                    style={{
+                      minWidth: '16px',
+                      textAlign: 'center',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: 'var(--text, #f9fafb)',
+                    }}
+                  >
                     {options[key] ?? min}
                   </span>
                 </span>
