@@ -180,6 +180,14 @@ For reasoning decisions and validation checks, use `--category reasoning` or `--
 ### Step 3: Generate app
 Generate `index.html` with shell config tags, mobile-first responsive design, and favicon reference.
 
+Quality standards (non-negotiable):
+- **Visually polished**: smooth CSS transitions/animations, consistent spacing, cohesive color palette
+- **Mobile-first**: layout works at 320px wide, touch targets ≥ 44px, no horizontal scroll
+- **Immediately usable**: no loading spinners or setup required — game/tool is ready on first render
+- **Accessible**: semantic HTML, sufficient color contrast, keyboard navigable
+- **No JS errors**: console clean on load and during use
+- **If a game**: clear score display, win/loss/restart states all implemented and functional
+
 Log completion:
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --category pipeline \
@@ -191,6 +199,38 @@ npm run log -- --runId <runId> --appId <app-id> --category pipeline \
 ### Step 4: Generate thumbnail
 Generate `thumbnail.svg` (viewBox="0 0 800 450") matching the app's UI, colors, and state.
 
+#### Thumbnail requirements
+
+**Canvas**
+- `viewBox="0 0 800 450"` — exactly this, no other size. Verify it before saving.
+- Fill the entire canvas. A sparse or mostly-empty thumbnail is a failure.
+- No `<animate>` tags. The SVG renders statically — animations are ignored and waste space.
+- All `<defs>` (gradients, filters) must be declared at the top, before any use.
+
+**Show a mid-use state, not a start screen**
+- Games: player is mid-action, obstacles present, score > 0, lives/progress visible
+- Tools: populated with realistic data/content, not blank defaults
+- The user should instantly understand what the app does just by looking at the thumbnail
+
+**Must include all of these:**
+- Background matching the app's background color/gradient (never plain white or default gray)
+- The app's primary interactive element(s) drawn accurately (game board, cards, canvas, etc.)
+- HUD or UI chrome that mirrors the real app: score, level, lives, timer, toolbar buttons, etc.
+- The app name displayed prominently using a font style and color that matches the app's visual identity
+- At least one `<linearGradient>` or `<radialGradient>` — flat fills look cheap
+- At least one `<filter>` effect (glow, drop shadow, blur) for visual polish
+
+**Match the app exactly**
+- Use the same CSS color values as defined in `index.html` — no generic blues or purples
+- Font family should match (monospace for retro/tech, serif for card games, etc.)
+- Layout zones (where the game area is, where the HUD is) must match the real app layout
+
+**Polish checklist**
+- Corner accents or edge glow to frame the composition
+- Background depth: use a gradient or subtle grid/texture, not a flat fill
+- Title text uses a glow or shadow filter, not plain flat text
+- No placeholder geometry (unlabeled rectangles, meaningless lines)
+
 Log completion:
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --category pipeline \
@@ -201,6 +241,8 @@ npm run log -- --runId <runId> --appId <app-id> --category pipeline \
 
 ### Step 5: Metadata
 Generate `meta.json` with all required fields: `id`, `name`, `shortDescription`, `thumbnail`, `createdAt`, `category`, `status`, `tags`, `homepagePath`, `inputMode`, `generation` (include agentName, llmModel, startTime, endTime, totalTokensIn/Out, runId, notes).
+
+> **Note on `generation.endTime`:** Set it to your best estimate at this step. It will not be exact since the pipeline hasn't completed yet — that is acceptable. Do not leave it blank.
 
 Log completion:
 ```bash
@@ -222,13 +264,16 @@ Before continuing confirm:
 - If game: gameplay objects visible, score/state updates, win/loss/restart all work.
 - Thumbnail matches app UI.
 
-Run:
-- `npm run validate:apps`
-- `npm run generate:apps`
-- `npm run lint` passes (0 errors, 0 warnings).
-- `npm run format` applied (Prettier 100-char, single quotes, 2-space indentation).
-- `npm test` passes (all test suites passing).
-- `npm run build` completes successfully. 
+Run (in order):
+- `npm run validate:apps` — confirms all required app files exist and are valid
+- `npm run lint:fix` — auto-fix any lint issues first
+- `npm run format` — apply Prettier formatting (100-char, single quotes, 2-space indentation)
+- `npm run lint` — must pass with 0 errors, 0 warnings
+- `npm test` — all test suites must pass
+- `npm run validate:responsive:sample` — confirms responsive layout passes (sample check)
+- `npm run build` — must complete successfully
+
+> **Do NOT run `npm run generate:apps` here.** Registry generation happens in seq 12 (UPDATE_REGISTRY) after the PR is created, so all registry files are committed to the feature branch in one clean step.
 
 If validation fails:
 - fix issues,
@@ -297,12 +342,20 @@ npm run log -- --runId <runId> --appId <app-id> --category pipeline \
      --step PR_REVIEW --seq 11 --status completed --durationMs <duration> \
      --message "PR review complete - code quality good"
    ```
-4. Execute: `npm run generate:apps` (update registry before merge, so registry and app deploy together)
+4. Execute: Update the app registry and commit it to the feature branch:
+   ```bash
+   npm run generate:apps
+   git add -A
+   git commit -m "chore: update app registry for <app-id>"
+   git push
+   ```
+   - This ensures registry changes are included in the PR and deploy together with the app.
+   - `git add -A` is safe here: log.jsonl is already committed (or will be committed separately in Step 9), and the only dirty files should be the registry output.
    - **LOG IMMEDIATELY:**
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --category pipeline \
      --step UPDATE_REGISTRY --seq 12 --status completed --durationMs <duration> \
-     --message "Updated app registry with new app metadata"
+     --message "Updated app registry for <app-id> and committed to feature branch"
    ```
 5. Execute: Merge PR with squash: `gh pr merge <pr-number> --squash --auto`
    - **LOG IMMEDIATELY:**
@@ -326,7 +379,13 @@ npm run log -- --runId <runId> --appId <app-id> --category pipeline \
 
 ### Step 9: Finalize transaction log and commit (finalization)
 After all logging transactions are complete (Steps 1-14), perform the final log entry and commit:
-1. Log the `TRANSACTION_END` using npm run log:
+1. **Confirm you are on the main branch** before committing:
+   ```bash
+   git branch --show-current  # must output: main
+   ```
+   If not on main: `git checkout main && git pull origin main`
+
+2. Log the `TRANSACTION_END` using npm run log:
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --category pipeline \
      --step TRANSACTION_END --status success --durationMs <total_duration> \
@@ -334,13 +393,13 @@ After all logging transactions are complete (Steps 1-14), perform the final log 
    ```
    This appends TRANSACTION_END to both `apps/YYYY/MM/DD/<app-id>/log.jsonl` and `logs/YYYY/MM/DD.jsonl`.
 
-2. **This is the FINAL COMMIT:** Verify all 14 logging entries are in the log file, then commit:
+3. **This is the FINAL COMMIT:** Verify all 16 log entries are present (TRANSACTION_START + seq 1–14 + TRANSACTION_END), then commit:
    ```bash
-   git add apps/YYYY/MM/DD/<app-id>/log.jsonl
+   git add apps/YYYY/MM/DD/<app-id>/log.jsonl logs/YYYY/MM/DD.jsonl
    git commit -m "chore: finalize transaction log for <app-id> [skip deploy]"
    ```
    - **MUST include `[skip deploy]` in commit message** — tells Vercel not to redeploy (log.jsonl is metadata only, app is already deployed as part of Step 13 MERGE_PR_DEPLOY)
-3. **Push this commit directly to the main branch:** `git push origin main`
+4. **Push this commit directly to the main branch:** `git push origin main`
 
 > **⚠️ CRITICAL WARNING:** If `[skip deploy]` is omitted from the commit message, Vercel will trigger an unnecessary rebuild/redeploy cycle. ALWAYS verify the commit message contains `[skip deploy]` before pushing.
 
