@@ -533,6 +533,30 @@
 
         bestEl.textContent = best;
 
+        // ─── Hazard generation ────────────────────────────────────────
+        // Returns array of {offset} positions (relative to platform left edge)
+        // where a hazard spike sits. Density grows with level.
+        function buildHazards(platW, lvl) {
+          // Level 1 → no hazards. Each level adds more chance and more per platform.
+          // Max hazards: level 2=1, level 3=2, level 4+=3 (capped so safe gap always exists)
+          const maxCount = Math.min(lvl - 1, Math.floor(platW / (CELL * 0.9)));
+          if (maxCount <= 0) return [];
+          // Probability a hazard slot is actually filled increases with level
+          const fillChance = 0.35 + (lvl - 2) * 0.18; // 35% at lvl2, 53% at lvl3, 71% at lvl4…
+          const hazW = CELL * 0.44;
+          const hazards = [];
+          // Evenly-spaced candidate slots across the platform (avoid very edges)
+          const slots = maxCount + 1;
+          for (let s = 1; s <= maxCount; s++) {
+            if (Math.random() > fillChance) continue;
+            const offset = (s / slots) * platW - hazW / 2;
+            // Ensure it doesn't overlap a previous hazard
+            const tooClose = hazards.some(h => Math.abs(h.offset - offset) < hazW * 1.6);
+            if (!tooClose) hazards.push({ offset: Math.max(4, offset), w: hazW });
+          }
+          return hazards;
+        }
+
         // ─── Lane definitions ─────────────────────────────────────────
         function buildLanes(lvl) {
           const spd = 1 + (lvl - 1) * 0.12;
@@ -551,10 +575,12 @@
             const platforms = [];
             for (let p = 0; p < def.count; p++) {
               const offset = (p / def.count) * W;
+              const platW = def.platformW * CELL;
               platforms.push({
                 x: offset,
-                w: def.platformW * CELL,
+                w: platW,
                 h: CELL * 0.62,
+                hazards: buildHazards(platW, lvl),
               });
             }
             lanes.push({
@@ -726,11 +752,12 @@
 
           const row = frog.row;
 
-          // Stream rows: must be ON a platform
+          // Stream rows: must be ON a platform but NOT on a hazard
           if (ROW_STREAM.includes(row)) {
             const lane = lanes.find(l => l.row === row);
             if (!lane) return killFrog();
             let onPlatform = false;
+            let hitHazard = false;
             for (const p of lane.platforms) {
               const pl = p.x;
               const pr = p.x + p.w;
@@ -738,10 +765,18 @@
               const pb = pt + p.h;
               if (fRight > pl + 4 && fLeft < pr - 4 && fBottom > pt + 4 && fTop < pb - 4) {
                 onPlatform = true;
+                for (const haz of p.hazards) {
+                  const hl = pl + haz.offset;
+                  const hr = hl + haz.w;
+                  if (fRight > hl + 3 && fLeft < hr - 3) {
+                    hitHazard = true;
+                    break;
+                  }
+                }
                 break;
               }
             }
-            if (!onPlatform) killFrog();
+            if (!onPlatform || hitHazard) killFrog();
             return;
           }
 
@@ -835,6 +870,30 @@
           // Collision check on road (continuous)
           if (gameState === 'playing' && ROW_ROAD.includes(frog.row) && !tweenFrom) {
             checkCollision();
+          }
+
+          // Hazard check on stream (continuous — hazard may drift under riding frog)
+          if (gameState === 'playing' && ROW_STREAM.includes(frog.row) && !tweenFrom) {
+            const lane = lanes.find(l => l.row === frog.row);
+            if (lane) {
+              const fx2 = frog.drawX;
+              const fw2 = CELL * 0.72;
+              const fLeft2 = fx2 + (CELL - fw2) / 2;
+              const fRight2 = fLeft2 + fw2;
+              for (const p of lane.platforms) {
+                if (fRight2 > p.x + 4 && fLeft2 < p.x + p.w - 4) {
+                  for (const haz of p.hazards) {
+                    const hl = p.x + haz.offset;
+                    const hr = hl + haz.w;
+                    if (fRight2 > hl + 3 && fLeft2 < hr - 3) {
+                      killFrog();
+                      break;
+                    }
+                  }
+                  break;
+                }
+              }
+            }
           }
 
           // Death flash countdown
@@ -1006,7 +1065,7 @@
               for (const p of lane.platforms) {
                 const px = p.x;
                 const py = y + (CELL - p.h) / 2;
-                drawPlatform(ctx, px, py, p.w, p.h);
+                drawPlatform(ctx, px, py, p.w, p.h, p.hazards, now);
               }
             } else {
               for (const v of lane.vehicles) {
@@ -1052,7 +1111,7 @@
           }
         }
 
-        function drawPlatform(ctx, x, y, w, h) {
+        function drawPlatform(ctx, x, y, w, h, hazards, now) {
           ctx.save();
           ctx.shadowColor = '#00f5ff';
           ctx.shadowBlur = 8;
@@ -1065,13 +1124,58 @@
           ctx.strokeStyle = '#00f5ff';
           ctx.lineWidth = 1.5;
           ctx.stroke();
-          // inner glow lines
+          // inner glow line
           ctx.strokeStyle = 'rgba(0,245,255,0.3)';
           ctx.lineWidth = 0.5;
           ctx.beginPath();
           ctx.moveTo(x + 8, y + h * 0.3);
           ctx.lineTo(x + w - 8, y + h * 0.3);
           ctx.stroke();
+          ctx.restore();
+
+          // Draw hazard spikes on top of platform
+          for (const haz of hazards) {
+            drawHazard(ctx, x + haz.offset, y, haz.w, h, now);
+          }
+        }
+
+        function drawHazard(ctx, x, y, w, h, now) {
+          ctx.save();
+          const spin = now * 0.003;
+          const cx = x + w / 2;
+          const cy = y + h / 2;
+          const outerR = Math.min(w, h) * 0.46;
+          const innerR = outerR * 0.42;
+          const points = 4; // 4-pointed star / blade
+
+          ctx.shadowColor = '#ff3300';
+          ctx.shadowBlur = 12;
+
+          // Spinning blade body
+          ctx.fillStyle = '#cc1100';
+          ctx.beginPath();
+          for (let i = 0; i < points * 2; i++) {
+            const angle = (i * Math.PI) / points + spin;
+            const r = i % 2 === 0 ? outerR : innerR;
+            i === 0 ? ctx.moveTo(cx + Math.cos(angle) * r, cy + Math.sin(angle) * r)
+                    : ctx.lineTo(cx + Math.cos(angle) * r, cy + Math.sin(angle) * r);
+          }
+          ctx.closePath();
+          ctx.fill();
+
+          // Bright outline
+          ctx.strokeStyle = '#ff6600';
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+
+          // Hot centre dot
+          ctx.fillStyle = '#ffcc00';
+          ctx.shadowColor = '#ffcc00';
+          ctx.shadowBlur = 8;
+          ctx.beginPath();
+          ctx.arc(cx, cy, innerR * 0.5, 0, Math.PI * 2);
+          ctx.fill();
+
           ctx.restore();
         }
 
