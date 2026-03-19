@@ -2,9 +2,11 @@
 
 /**
  * Unified Logging Utility for Valley of AI App Generation Pipeline
- * 
+ *
  * USAGE:
- * npm run log -- --runId <RUN_ID> --appId <APP_ID> --category <CATEGORY> [OPTIONS]
+ * npm run log -- --runId <RUN_ID> --appId <APP_ID> --date <YYYY/MM/DD> --category <CATEGORY> [OPTIONS]
+ *
+ * The app path is constructed internally as apps/YYYY/MM/DD/<appId>/log.jsonl.
  *
  * Categories:
  *   pipeline    - Pipeline steps (requires: --step)
@@ -12,12 +14,15 @@
  *   validation  - Checks and validation (requires: --checkType, --result)
  *
  * Common OPTIONS:
+ *   --runId <ID>          Unique run identifier
+ *   --appId <ID>          Application identifier
+ *   --date <YYYY/MM/DD>   Date of the run used to derive app and central log paths
+ *   --category <TYPE>     Log category: pipeline|reasoning|validation
  *   --message <TEXT>      Human-readable description of the log entry
  *   --phase <PHASE>       Pipeline phase (e.g., GENERATE_HTML, VALIDATE_APP)
  *   --status <STATUS>     started|success|in_progress|failed (default: completed; legacy: completed|in-progress)
- *   --appPath <PATH>      Optional app path (overrides YYYY/MM/DD/<appId>)
- *   --dry-run             Print entry without appending
- *
+ *   --dry-run             Print entry without appending*
+ * 
  * Pipeline-specific OPTIONS (only for --category pipeline):
  *   --step <STEP_NAME>    Step name (SELECT_SUGGESTION, GENERATE_HTML, etc.)
  *   --seq <N>             Step sequence number (1-14) — for progress tracking only
@@ -38,18 +43,18 @@
  *
  * EXAMPLES:
  *   # Pipeline step with seq for progress tracking
- *   npm run log -- --runId run-20260316-abc123 --appId my-app --category pipeline \
+ *   npm run log -- --runId run-20260316-abc123 --appId my-app --date 2026/03/16 --category pipeline \
  *     --step GENERATE_HTML --seq 3 --status success --durationMs 5000 \
  *     --tokensIn 3000 --tokensOut 2500 --message "Generated index.html"
  *
  *   # Reasoning entry (no seq needed)
- *   npm run log -- --runId run-20260316-abc123 --appId my-app --category reasoning \
+ *   npm run log -- --runId run-20260316-abc123 --appId my-app --date 2026/03/16 --category reasoning \
  *     --phase GENERATE_HTML --message "2x2 grid optimal for mobile" \
  *     --decision "grid-2x2" --alternatives "grid-3x3,grid-responsive" \
  *     --rationale "Better thumb reach on mobile"
  *
  *   # Validation check (no seq)
- *   npm run log -- --runId run-20260316-abc123 --appId my-app --category validation \
+ *   npm run log -- --runId run-20260316-abc123 --appId my-app --date 2026/03/16 --category validation \
  *     --checkType "file-exists" --name "HTML validation" --result PASS \
  *     --message "All 53 HTML files valid"
  */
@@ -62,6 +67,7 @@ import { program } from 'commander';
 program
   .option('--runId <id>', 'Unique run identifier')
   .option('--appId <id>', 'Application identifier')
+  .option('--date <YYYY/MM/DD>', 'Date of the run in YYYY/MM/DD format')
   .option('--category <type>', 'Log category: pipeline|reasoning|validation')
   .option('--step <name>', 'Pipeline step name')
   .option('--seq <number>', 'Step sequence number')
@@ -71,7 +77,6 @@ program
   .option('--tokensIn <number>', 'Input tokens')
   .option('--tokensOut <number>', 'Output tokens')
   .option('--message <text>', 'Log message')
-  .option('--appPath <path>', 'Optional app path')
   .option('--checkType <type>', 'Validation check type')
   .option('--name <text>', 'Check or decision name')
   .option('--result <result>', 'Validation result')
@@ -85,15 +90,9 @@ program
 const args = program.opts();
 
 // Validation
-if (!args.runId || !args.appId || !args.category) {
-  console.error('ERROR: --runId, --appId, and --category are required');
-  console.error('Usage: npm run log -- --runId <ID> --appId <ID> --category <TYPE> [OPTIONS]');
-  process.exit(1);
-}
-
-// Validate category
-if (!['pipeline', 'reasoning', 'validation'].includes(args.category)) {
-  console.error(`ERROR: --category must be one of: pipeline, reasoning, validation (got: ${args.category})`);
+if (!args.runId || !args.appId || !args.date || !args.category) {
+  console.error('ERROR: --runId, --appId, --date, and --category are required');
+  console.error('Usage: npm run log -- --runId <ID> --appId <ID> --date <YYYY/MM/DD> --category <TYPE> [OPTIONS]');
   process.exit(1);
 }
 
@@ -101,6 +100,19 @@ if (!['pipeline', 'reasoning', 'validation'].includes(args.category)) {
 const appIdSlugPattern = /^[a-zA-Z0-9_-]+$/;
 if (!appIdSlugPattern.test(args.appId)) {
   console.error(`ERROR: --appId must match ${appIdSlugPattern} (got: ${args.appId})`);
+  process.exit(1);
+}
+
+// Validate date format
+const datePattern = /^\d{4}\/\d{2}\/\d{2}$/;
+if (!datePattern.test(args.date)) {
+  console.error(`ERROR: --date must be in the format YYYY/MM/DD (got: ${args.date})`);
+  process.exit(1);
+}
+
+// Validate category
+if (!['pipeline', 'reasoning', 'validation'].includes(args.category)) {
+  console.error(`ERROR: --category must be one of: pipeline, reasoning, validation (got: ${args.category})`);
   process.exit(1);
 }
 
@@ -209,7 +221,7 @@ console.log(JSON.stringify(entry, null, 2));
 // Append to logs (unless dry-run)
 if (!args.dryRun) {
   try {
-    appendToLogs(args.appId, entry);
+    appendToLogs(args.appId, args.date, entry);
   } catch (err) {
     console.error(`ERROR appending to logs: ${err.message}`);
     process.exit(1);
@@ -217,49 +229,33 @@ if (!args.dryRun) {
 }
 
 /**
- * Append entry to both central and app-level logs
- * @param {string} appId - App ID
+ * Append entry to both central and app-level logs.
+ * App path is constructed as apps/<date>/<appId>/log.jsonl.
+ * Central log path is constructed as logs/<YYYY>/<MM>/<DD>.jsonl.
+ * @param {string} appId - App ID slug
+ * @param {string} date - Date in YYYY/MM/DD format
  * @param {object} entry - Log entry
- * @param {string} [appPath] - Optional app path (overrides YYYY/MM/DD/<appId>)
  */
-function appendToLogs(appId, entry, appPath = args.appPath) {
-  // Base directory for all apps; all app paths must stay within this directory
-  const baseAppsDir = path.resolve('apps');
+function appendToLogs(appId, date, entry) {
+  const [year, month, day] = date.split('/');
 
-  // Parse appPath (format: YYYY/MM/DD/<appId> or custom path relative to apps/)
-  if (!appPath) {
-    const timestamp = entry.timestamp;
-    const date = new Date(timestamp);
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(date.getUTCDate()).padStart(2, '0');
-    // Default structure: apps/YYYY/MM/DD/<appId>
-    appPath = path.join(baseAppsDir, year.toString(), month, day, appId);
-  } else {
-    // Treat custom appPath as relative to baseAppsDir and enforce it stays under baseAppsDir
-    const resolvedAppPath = path.resolve(baseAppsDir, appPath);
-    const relative = path.relative(baseAppsDir, resolvedAppPath);
-    if (relative.startsWith('..') || path.isAbsolute(relative)) {
-      throw new Error(`Invalid --appPath; must resolve within ${baseAppsDir} (got: ${appPath})`);
-    }
-    appPath = resolvedAppPath;
+  // Construct and validate the app log path
+  const baseAppsDir = path.resolve('apps');
+  const resolvedAppPath = path.resolve(baseAppsDir, date, appId);
+  const relative = path.relative(baseAppsDir, resolvedAppPath);
+  if (relative.startsWith('..') || path.isAbsolute(relative)) {
+    throw new Error(`Constructed app path escapes apps directory (date: ${date}, appId: ${appId})`);
   }
 
   // Ensure app-level directory exists
-  ensureDirectoryExists(appPath);
+  ensureDirectoryExists(resolvedAppPath);
 
   // Append to app-level log
-  const appLogPath = path.join(appPath, 'log.jsonl');
+  const appLogPath = path.join(resolvedAppPath, 'log.jsonl');
   fs.appendFileSync(appLogPath, JSON.stringify(entry) + '\n', 'utf8');
 
-  // Append to central log (same YYYY/MM/DD structure)
-  const timestamp = entry.timestamp;
-  const date = new Date(timestamp);
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(date.getUTCDate()).padStart(2, '0');
-  const centralLogPath = path.join('logs', year.toString(), month, day + '.jsonl');
-
+  // Append to central log
+  const centralLogPath = path.join('logs', year, month, `${day}.jsonl`);
   ensureDirectoryExists(path.dirname(centralLogPath));
   fs.appendFileSync(centralLogPath, JSON.stringify(entry) + '\n', 'utf8');
 

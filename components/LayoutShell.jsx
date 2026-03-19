@@ -1,7 +1,7 @@
 'use client';
 
 import Header from './Header';
-import { siteName, socialXUrl, socialFacebookUrl, socialInstagramUrl } from '@/lib/siteConfig';
+import { siteName, socialXUrl, socialFacebookUrl, socialInstagramUrl, githubUrl } from '@/lib/siteConfig';
 
 const socialLinks = [
   {
@@ -54,7 +54,7 @@ export default function LayoutShell({ children }) {
             <span>🏔️ {siteName} © 2026</span>
             <span className="text-gray-300 dark:text-gray-600">•</span>
             <a
-              href="https://github.com/jeffholst/valley-of-ai"
+              href={githubUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-gray-900 dark:hover:text-white transition-colors inline-flex items-center gap-1"

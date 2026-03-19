@@ -4,7 +4,7 @@
  * Registry Generator Script
  * 
  * Scans the apps/ directory for meta.json files and generates
- * a consolidated apps.json registry in src/data/
+ * a consolidated apps.json registry in data/
  * 
  * Usage: node scripts/generate-apps.js
  */

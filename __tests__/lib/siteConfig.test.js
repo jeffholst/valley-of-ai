@@ -7,6 +7,7 @@ import {
   socialXUrl,
   socialFacebookUrl,
   socialInstagramUrl,
+  githubUrl,
 } from '@/lib/siteConfig';
 
 describe('siteConfig', () => {
@@ -27,6 +28,20 @@ describe('siteConfig', () => {
     expect(socialXUrl).toMatch(urlRegex);
     expect(socialFacebookUrl).toMatch(urlRegex);
     expect(socialInstagramUrl).toMatch(urlRegex);
+  });
+
+  it('exports GitHub URL', () => {
+    expect(githubUrl).toBeDefined();
+    expect(typeof githubUrl).toBe('string');
+  });
+
+  it('GitHub URL is a valid URL format', () => {
+    const urlRegex = /^https?:\/\/\S+/;
+    expect(githubUrl).toMatch(urlRegex);
+  });
+
+  it('GitHub URL contains expected domain', () => {
+    expect(githubUrl).toContain('github.com');
   });
 
   it('X URL contains expected domain', () => {
