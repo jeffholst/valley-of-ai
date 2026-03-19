@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Orbit Memory Match thumbnail">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg)"/>
+  <g transform="translate(400 228)">
+    <circle r="162" fill="none" stroke="#22d3ee55" stroke-width="4" stroke-dasharray="8 10"/>
+    <circle r="86" fill="#1e293b" stroke="#22d3ee66" stroke-width="2"/>
+    <text x="0" y="8" text-anchor="middle" fill="#f8fafc" font-family="Inter, sans-serif" font-size="28" font-weight="700">ROUND 6</text>
+    <g filter="url(#glow)">
+      <circle cx="0" cy="-162" r="25" fill="#f43f5e"/>
+      <circle cx="114" cy="-114" r="25" fill="#f97316"/>
+      <circle cx="162" cy="0" r="25" fill="#eab308"/>
+      <circle cx="114" cy="114" r="25" fill="#22c55e"/>
+      <circle cx="0" cy="162" r="25" fill="#14b8a6"/>
+      <circle cx="-114" cy="114" r="25" fill="#3b82f6"/>
+      <circle cx="-162" cy="0" r="25" fill="#8b5cf6"/>
+      <circle cx="-114" cy="-114" r="25" fill="#ec4899"/>
+    </g>
+    <circle cx="114" cy="114" r="34" fill="none" stroke="#ffffff" stroke-width="5"/>
+  </g>
+  <text x="28" y="48" fill="#f8fafc" font-family="Inter, sans-serif" font-size="36" font-weight="800">Orbit Memory Match</text>
+  <text x="28" y="82" fill="#bae6fd" font-family="Inter, sans-serif" font-size="20">Repeat the rotating sequence • Touch, click, or keys 1-8</text>
+</svg>
