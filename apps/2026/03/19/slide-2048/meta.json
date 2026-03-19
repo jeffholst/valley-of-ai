@@ -1,0 +1,22 @@
+{
+  "id": "slide-2048",
+  "name": "Slide 2048",
+  "shortDescription": "Swipe or use arrow keys to merge matching tiles and reach 2048 in this addictive neon puzzle game.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-19T21:42:00Z",
+  "category": "Games",
+  "status": "active",
+  "tags": ["puzzle", "numbers", "strategy", "casual", "swipe", "neon"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "Claude Code (claude-sonnet-4-6)",
+    "llmModel": "claude-sonnet-4-6",
+    "startTime": "2026-03-19T21:42:00Z",
+    "endTime": "2026-03-19T21:50:00Z",
+    "totalTokensIn": 7200,
+    "totalTokensOut": 8800,
+    "runId": "run-20260319T214200Z-a3f7b2",
+    "notes": "Neon-themed 2048 sliding tile puzzle. Features: 4x4 grid, keyboard/WASD/swipe controls, merge animations, localStorage best score, win/lose/continue overlays, responsive mobile-first layout, full light/dark theme support."
+  }
+}

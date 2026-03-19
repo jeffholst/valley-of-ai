@@ -1,0 +1,240 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#0d1b35"/>
+    </linearGradient>
+
+    <!-- Grid background -->
+    <linearGradient id="gridBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d1b30"/>
+      <stop offset="100%" style="stop-color:#111f38"/>
+    </linearGradient>
+
+    <!-- Tile gradients -->
+    <linearGradient id="t2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#164e63"/>
+      <stop offset="100%" style="stop-color:#0e7490"/>
+    </linearGradient>
+    <linearGradient id="t4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a5f"/>
+      <stop offset="100%" style="stop-color:#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="t8" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#14532d"/>
+      <stop offset="100%" style="stop-color:#16a34a"/>
+    </linearGradient>
+    <linearGradient id="t16" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#713f12"/>
+      <stop offset="100%" style="stop-color:#ca8a04"/>
+    </linearGradient>
+    <linearGradient id="t32" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c2d12"/>
+      <stop offset="100%" style="stop-color:#ea580c"/>
+    </linearGradient>
+    <linearGradient id="t64" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7f1d1d"/>
+      <stop offset="100%" style="stop-color:#dc2626"/>
+    </linearGradient>
+    <linearGradient id="t128" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#581c87"/>
+      <stop offset="100%" style="stop-color:#9333ea"/>
+    </linearGradient>
+    <linearGradient id="t256" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a1d96"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="t512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#831843"/>
+      <stop offset="100%" style="stop-color:#db2777"/>
+    </linearGradient>
+    <linearGradient id="t1024" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#001a1a"/>
+      <stop offset="100%" style="stop-color:#003333"/>
+    </linearGradient>
+    <linearGradient id="t2048" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24"/>
+      <stop offset="50%" style="stop-color:#f59e0b"/>
+      <stop offset="100%" style="stop-color:#d97706"/>
+    </linearGradient>
+
+    <!-- Glow filters -->
+    <filter id="glowCyan" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glowGold" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glowTitle" x="-20%" y="-60%" width="140%" height="220%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+
+    <!-- Edge glow -->
+    <radialGradient id="edgeGlow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" style="stop-color:#00f5ff;stop-opacity:0"/>
+      <stop offset="80%" style="stop-color:#00f5ff;stop-opacity:0"/>
+      <stop offset="100%" style="stop-color:#00f5ff;stop-opacity:0.06"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="450" fill="url(#bgGrad)"/>
+
+  <!-- Subtle grid texture overlay -->
+  <rect width="800" height="450" fill="url(#edgeGlow)"/>
+
+  <!-- Corner accent lines -->
+  <line x1="0" y1="0" x2="60" y2="0" stroke="#00f5ff" stroke-width="2" opacity="0.5"/>
+  <line x1="0" y1="0" x2="0" y2="60" stroke="#00f5ff" stroke-width="2" opacity="0.5"/>
+  <line x1="800" y1="0" x2="740" y2="0" stroke="#00f5ff" stroke-width="2" opacity="0.5"/>
+  <line x1="800" y1="0" x2="800" y2="60" stroke="#00f5ff" stroke-width="2" opacity="0.5"/>
+  <line x1="0" y1="450" x2="60" y2="450" stroke="#00f5ff" stroke-width="2" opacity="0.5"/>
+  <line x1="0" y1="450" x2="0" y2="390" stroke="#00f5ff" stroke-width="2" opacity="0.5"/>
+  <line x1="800" y1="450" x2="740" y2="450" stroke="#00f5ff" stroke-width="2" opacity="0.5"/>
+  <line x1="800" y1="450" x2="800" y2="390" stroke="#00f5ff" stroke-width="2" opacity="0.5"/>
+
+  <!-- === LEFT PANEL: Game Title + HUD === -->
+
+  <!-- Title: 2048 -->
+  <text x="92" y="88" font-family="'Segoe UI', system-ui, sans-serif" font-size="72" font-weight="900"
+    fill="#00f5ff" filter="url(#glowTitle)" letter-spacing="-3" text-anchor="middle">2048</text>
+
+  <!-- Score boxes -->
+  <rect x="20" y="105" width="100" height="52" rx="10" fill="#1e293b" stroke="#243b55" stroke-width="1"/>
+  <text x="70" y="122" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700"
+    fill="#00f5ff" text-anchor="middle" letter-spacing="1.5" opacity="0.9">SCORE</text>
+  <text x="70" y="146" font-family="'Segoe UI', system-ui, sans-serif" font-size="22" font-weight="900"
+    fill="#f9fafb" text-anchor="middle">4096</text>
+
+  <rect x="130" y="105" width="100" height="52" rx="10" fill="#1e293b" stroke="#243b55" stroke-width="1"/>
+  <text x="180" y="122" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700"
+    fill="#00f5ff" text-anchor="middle" letter-spacing="1.5" opacity="0.9">BEST</text>
+  <text x="180" y="146" font-family="'Segoe UI', system-ui, sans-serif" font-size="22" font-weight="900"
+    fill="#f9fafb" text-anchor="middle">8192</text>
+
+  <!-- New Game button -->
+  <rect x="20" y="170" width="210" height="36" rx="8" fill="#7c3aed" filter="url(#dropShadow)"/>
+  <text x="125" y="193" font-family="'Segoe UI', system-ui, sans-serif" font-size="13" font-weight="700"
+    fill="#ffffff" text-anchor="middle">New Game</text>
+
+  <!-- Hint text -->
+  <text x="125" y="226" font-family="'Segoe UI', system-ui, sans-serif" font-size="11"
+    fill="#94a3b8" text-anchor="middle">Swipe or use arrow keys to merge tiles</text>
+
+  <!-- How to play card -->
+  <rect x="20" y="380" width="210" height="52" rx="10" fill="#1e293b" stroke="#243b55" stroke-width="1" opacity="0.8"/>
+  <text x="125" y="399" font-family="'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700"
+    fill="#00f5ff" text-anchor="middle">HOW TO PLAY</text>
+  <text x="125" y="416" font-family="'Segoe UI', system-ui, sans-serif" font-size="10"
+    fill="#94a3b8" text-anchor="middle">Merge same tiles to reach 2048</text>
+  <text x="125" y="430" font-family="'Segoe UI', system-ui, sans-serif" font-size="10"
+    fill="#94a3b8" text-anchor="middle">Arrow keys · WASD · Swipe</text>
+
+  <!-- === RIGHT PANEL: 4×4 Game Grid === -->
+
+  <!-- Grid container -->
+  <rect x="248" y="20" width="532" height="415" rx="14" fill="url(#gridBg)" stroke="#243b55" stroke-width="2"
+    filter="url(#dropShadow)"/>
+
+  <!-- Grid background cells (4x4) -->
+  <!-- Row 0 -->
+  <rect x="263" y="35" width="114" height="90" rx="8" fill="#1a2d47"/>
+  <rect x="387" y="35" width="114" height="90" rx="8" fill="#1a2d47"/>
+  <rect x="511" y="35" width="114" height="90" rx="8" fill="#1a2d47"/>
+  <rect x="635" y="35" width="114" height="90" rx="8" fill="#1a2d47"/>
+
+  <!-- Row 1 -->
+  <rect x="263" y="135" width="114" height="90" rx="8" fill="#1a2d47"/>
+  <rect x="387" y="135" width="114" height="90" rx="8" fill="#1a2d47"/>
+  <rect x="511" y="135" width="114" height="90" rx="8" fill="#1a2d47"/>
+  <rect x="635" y="135" width="114" height="90" rx="8" fill="#1a2d47"/>
+
+  <!-- Row 2 -->
+  <rect x="263" y="235" width="114" height="90" rx="8" fill="#1a2d47"/>
+  <rect x="387" y="235" width="114" height="90" rx="8" fill="#1a2d47"/>
+  <rect x="511" y="235" width="114" height="90" rx="8" fill="#1a2d47"/>
+  <rect x="635" y="235" width="114" height="90" rx="8" fill="#1a2d47"/>
+
+  <!-- Row 3 -->
+  <rect x="263" y="335" width="114" height="90" rx="8" fill="#1a2d47"/>
+  <rect x="387" y="335" width="114" height="90" rx="8" fill="#1a2d47"/>
+  <rect x="511" y="335" width="114" height="90" rx="8" fill="#1a2d47"/>
+  <rect x="635" y="335" width="114" height="90" rx="8" fill="#1a2d47"/>
+
+  <!-- === TILES (mid-game state) === -->
+
+  <!-- Row 0: 2, 4, 8, [empty] -->
+  <rect x="263" y="35" width="114" height="90" rx="8" fill="url(#t2)" stroke="#0891b2" stroke-width="1"
+    filter="url(#glowCyan)"/>
+  <text x="320" y="91" font-family="'Segoe UI', system-ui, sans-serif" font-size="32" font-weight="900"
+    fill="#e0f7ff" text-anchor="middle" dominant-baseline="auto">2</text>
+
+  <rect x="387" y="35" width="114" height="90" rx="8" fill="url(#t4)" stroke="#3b82f6" stroke-width="1"/>
+  <text x="444" y="91" font-family="'Segoe UI', system-ui, sans-serif" font-size="32" font-weight="900"
+    fill="#dbeafe" text-anchor="middle" dominant-baseline="auto">4</text>
+
+  <rect x="511" y="35" width="114" height="90" rx="8" fill="url(#t8)" stroke="#22c55e" stroke-width="1"/>
+  <text x="568" y="91" font-family="'Segoe UI', system-ui, sans-serif" font-size="32" font-weight="900"
+    fill="#d1fae5" text-anchor="middle" dominant-baseline="auto">8</text>
+
+  <!-- Row 1: 16, 32, 64, 128 -->
+  <rect x="263" y="135" width="114" height="90" rx="8" fill="url(#t16)" stroke="#eab308" stroke-width="1"/>
+  <text x="320" y="191" font-family="'Segoe UI', system-ui, sans-serif" font-size="28" font-weight="900"
+    fill="#fef9c3" text-anchor="middle" dominant-baseline="auto">16</text>
+
+  <rect x="387" y="135" width="114" height="90" rx="8" fill="url(#t32)" stroke="#f97316" stroke-width="1"/>
+  <text x="444" y="191" font-family="'Segoe UI', system-ui, sans-serif" font-size="28" font-weight="900"
+    fill="#fff7ed" text-anchor="middle" dominant-baseline="auto">32</text>
+
+  <rect x="511" y="135" width="114" height="90" rx="8" fill="url(#t64)" stroke="#ef4444" stroke-width="1"/>
+  <text x="568" y="191" font-family="'Segoe UI', system-ui, sans-serif" font-size="28" font-weight="900"
+    fill="#fee2e2" text-anchor="middle" dominant-baseline="auto">64</text>
+
+  <rect x="635" y="135" width="114" height="90" rx="8" fill="url(#t128)" stroke="#a855f7" stroke-width="1"/>
+  <text x="692" y="191" font-family="'Segoe UI', system-ui, sans-serif" font-size="24" font-weight="900"
+    fill="#f3e8ff" text-anchor="middle" dominant-baseline="auto">128</text>
+
+  <!-- Row 2: 256, 512, 1024, [empty] -->
+  <rect x="263" y="235" width="114" height="90" rx="8" fill="url(#t256)" stroke="#8b5cf6" stroke-width="1"/>
+  <text x="320" y="291" font-family="'Segoe UI', system-ui, sans-serif" font-size="24" font-weight="900"
+    fill="#ede9fe" text-anchor="middle" dominant-baseline="auto">256</text>
+
+  <rect x="387" y="235" width="114" height="90" rx="8" fill="url(#t512)" stroke="#ec4899" stroke-width="1"/>
+  <text x="444" y="291" font-family="'Segoe UI', system-ui, sans-serif" font-size="24" font-weight="900"
+    fill="#fce7f3" text-anchor="middle" dominant-baseline="auto">512</text>
+
+  <rect x="511" y="235" width="114" height="90" rx="8" fill="url(#t1024)" stroke="#00f5ff" stroke-width="2"
+    filter="url(#glowCyan)"/>
+  <text x="568" y="291" font-family="'Segoe UI', system-ui, sans-serif" font-size="20" font-weight="900"
+    fill="#00f5ff" text-anchor="middle" dominant-baseline="auto" filter="url(#glowCyan)">1024</text>
+
+  <!-- Row 3: 2, 16, [2048 STAR!], 4 -->
+  <rect x="263" y="335" width="114" height="90" rx="8" fill="url(#t2)" stroke="#0891b2" stroke-width="1"/>
+  <text x="320" y="391" font-family="'Segoe UI', system-ui, sans-serif" font-size="32" font-weight="900"
+    fill="#e0f7ff" text-anchor="middle" dominant-baseline="auto">2</text>
+
+  <rect x="387" y="335" width="114" height="90" rx="8" fill="url(#t16)" stroke="#eab308" stroke-width="1"/>
+  <text x="444" y="391" font-family="'Segoe UI', system-ui, sans-serif" font-size="28" font-weight="900"
+    fill="#fef9c3" text-anchor="middle" dominant-baseline="auto">16</text>
+
+  <!-- 2048 tile (golden hero tile) -->
+  <rect x="511" y="335" width="114" height="90" rx="8" fill="url(#t2048)" stroke="#fbbf24" stroke-width="2"
+    filter="url(#glowGold)"/>
+  <text x="568" y="391" font-family="'Segoe UI', system-ui, sans-serif" font-size="22" font-weight="900"
+    fill="#ffffff" text-anchor="middle" dominant-baseline="auto" filter="url(#glowGold)">2048</text>
+
+  <rect x="635" y="335" width="114" height="90" rx="8" fill="url(#t4)" stroke="#3b82f6" stroke-width="1"/>
+  <text x="692" y="391" font-family="'Segoe UI', system-ui, sans-serif" font-size="32" font-weight="900"
+    fill="#dbeafe" text-anchor="middle" dominant-baseline="auto">4</text>
+
+  <!-- Grid border glow -->
+  <rect x="248" y="20" width="532" height="415" rx="14" fill="none" stroke="#00f5ff" stroke-width="1" opacity="0.2"/>
+
+</svg>
