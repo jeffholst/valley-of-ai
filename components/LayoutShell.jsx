@@ -1,7 +1,13 @@
 'use client';
 
 import Header from './Header';
-import { siteName, socialXUrl, socialFacebookUrl, socialInstagramUrl, githubUrl } from '@/lib/siteConfig';
+import {
+  siteName,
+  socialXUrl,
+  socialFacebookUrl,
+  socialInstagramUrl,
+  githubUrl,
+} from '@/lib/siteConfig';
 
 const socialLinks = [
   {
