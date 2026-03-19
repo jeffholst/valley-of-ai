@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orbit Memory Match - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --surface-2: #334155;
+        --accent: #22d3ee;
+        --ok: #34d399;
+        --warn: #fb7185;
+      }
+
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+        --surface-2: #e5e7eb;
+        --accent: #0e7490;
+        --ok: #047857;
+        --warn: #be123c;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: radial-gradient(circle at top, #1d4ed8 0%, var(--bg) 32%);
+        color: var(--text);
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      }
+
+      .app {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 16px;
+        display: grid;
+        gap: 14px;
+      }
+
+      .card {
+        background: color-mix(in srgb, var(--surface) 86%, transparent);
+        border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
+        border-radius: 16px;
+        padding: 14px;
+        box-shadow: 0 10px 28px rgba(2, 6, 23, 0.34);
+      }
+
+      .top {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .stat { text-align: center; background: var(--surface-2); border-radius: 10px; padding: 8px; }
+      .label { font-size: 11px; opacity: 0.78; text-transform: uppercase; letter-spacing: 0.06em; }
+      .value { font-size: 20px; font-weight: 700; }
+
+      .play {
+        display: grid;
+        gap: 14px;
+      }
+
+      .arena {
+        width: min(92vw, 540px);
+        aspect-ratio: 1 / 1;
+        border-radius: 50%;
+        margin: 0 auto;
+        position: relative;
+        background:
+          radial-gradient(circle at center, color-mix(in srgb, var(--surface-2) 40%, transparent) 0 20%, transparent 21%),
+          radial-gradient(circle, color-mix(in srgb, var(--accent) 16%, transparent), transparent 64%);
+        border: 2px dashed color-mix(in srgb, var(--accent) 48%, transparent);
+      }
+
+      .node {
+        position: absolute;
+        width: 66px;
+        height: 66px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.18);
+        transform: translate(-50%, -50%);
+        cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.2s, filter 0.2s;
+        touch-action: manipulation;
+      }
+      .node:hover,
+      .node:focus-visible { transform: translate(-50%, -50%) scale(1.07); box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25); outline: none; }
+      .node.active { filter: brightness(1.4); box-shadow: 0 0 24px currentColor; }
+      .node.bad { animation: shake 0.24s linear 2; }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+      }
+      button {
+        border: 0;
+        border-radius: 10px;
+        padding: 10px 14px;
+        color: #fff;
+        background: linear-gradient(135deg, #0891b2, #2563eb);
+        font-weight: 650;
+        cursor: pointer;
+      }
+      button.secondary { background: linear-gradient(135deg, #475569, #334155); }
+
+      .help {
+        font-size: 14px;
+        line-height: 1.45;
+        opacity: 0.95;
+      }
+
+      .announce { min-height: 24px; text-align: center; font-weight: 600; color: var(--accent); }
+      .announce.bad { color: var(--warn); }
+      .announce.good { color: var(--ok); }
+
+      @keyframes shake {
+        0%, 100% { transform: translate(-50%, -50%) translateX(0); }
+        25% { transform: translate(-50%, -50%) translateX(-4px); }
+        75% { transform: translate(-50%, -50%) translateX(4px); }
+      }
+
+      @media (max-width: 640px) {
+        .top { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .node { width: 58px; height: 58px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app" aria-label="Orbit Memory Match game">
+      <section class="card top" aria-live="polite">
+        <div class="stat"><div class="label">Round</div><div class="value" id="round">1</div></div>
+        <div class="stat"><div class="label">Sequence</div><div class="value" id="sequenceLen">3</div></div>
+        <div class="stat"><div class="label">Lives</div><div class="value" id="lives">3</div></div>
+        <div class="stat"><div class="label">Best</div><div class="value" id="best">1</div></div>
+      </section>
+
+      <section class="card play">
+        <div class="announce" id="announce">Press Start, then watch and repeat the pattern.</div>
+        <div id="arena" class="arena" role="application" aria-label="Memory nodes"></div>
+        <div class="controls">
+          <button id="startBtn" type="button">Start Round</button>
+          <button id="replayBtn" class="secondary" type="button">Replay Pattern</button>
+          <button id="resetBtn" class="secondary" type="button">Reset Game</button>
+        </div>
+      </section>
+
+      <section class="card help">
+        Keyboard: press keys <strong>1-8</strong> for nodes in clockwise order.<br />
+        Mouse/Touch: tap glowing nodes. Gesture: swipe down anywhere in the arena to replay pattern.
+      </section>
+    </main>
+
+    <script>
+      const colors = ['#f43f5e', '#f97316', '#eab308', '#22c55e', '#14b8a6', '#3b82f6', '#8b5cf6', '#ec4899'];
+      const arena = document.getElementById('arena');
+      const roundEl = document.getElementById('round');
+      const sequenceLenEl = document.getElementById('sequenceLen');
+      const livesEl = document.getElementById('lives');
+      const bestEl = document.getElementById('best');
+      const announceEl = document.getElementById('announce');
+      const startBtn = document.getElementById('startBtn');
+      const replayBtn = document.getElementById('replayBtn');
+      const resetBtn = document.getElementById('resetBtn');
+
+      const state = {
+        sequence: [],
+        input: [],
+        round: 1,
+        lives: 3,
+        busy: false,
+        best: Number(localStorage.getItem('orbit-memory-best') || 1),
+      };
+
+      let touchStartY = null;
+      bestEl.textContent = String(state.best);
+
+      function setMessage(text, cls = '') {
+        announceEl.textContent = text;
+        announceEl.className = `announce ${cls}`.trim();
+      }
+
+      function polarToXY(index, total = 8) {
+        const angle = ((Math.PI * 2) / total) * index - Math.PI / 2;
+        const r = 43;
+        return { x: 50 + r * Math.cos(angle), y: 50 + r * Math.sin(angle) };
+      }
+
+      function createNodes() {
+        arena.innerHTML = '';
+        for (let i = 0; i < 8; i += 1) {
+          const node = document.createElement('button');
+          node.type = 'button';
+          node.className = 'node';
+          node.dataset.index = String(i);
+          node.setAttribute('aria-label', `Node ${i + 1}`);
+          node.style.background = colors[i];
+          node.style.color = colors[i];
+          const pos = polarToXY(i);
+          node.style.left = `${pos.x}%`;
+          node.style.top = `${pos.y}%`;
+          node.addEventListener('click', () => handleInput(i));
+          arena.appendChild(node);
+        }
+      }
+
+      function updateHud() {
+        roundEl.textContent = String(state.round);
+        sequenceLenEl.textContent = String(state.sequence.length || 0);
+        livesEl.textContent = String(state.lives);
+      }
+
+      async function flashNode(index, bad = false) {
+        const node = arena.querySelector(`[data-index="${index}"]`);
+        if (!node) return;
+        node.classList.add('active');
+        if (bad) node.classList.add('bad');
+        await new Promise((r) => setTimeout(r, 340));
+        node.classList.remove('active', 'bad');
+      }
+
+      function generateSequence(length) {
+        return Array.from({ length }, () => Math.floor(Math.random() * 8));
+      }
+
+      async function playSequence() {
+        state.busy = true;
+        setMessage('Watch closely...', '');
+        for (const step of state.sequence) {
+          await flashNode(step);
+          await new Promise((r) => setTimeout(r, 180));
+        }
+        state.busy = false;
+        setMessage('Your turn! Repeat the orbit pattern.', 'good');
+      }
+
+      async function startRound(fresh = false) {
+        if (state.busy) return;
+        if (fresh) {
+          state.round = 1;
+          state.lives = 3;
+        }
+        const len = Math.min(3 + state.round - 1, 12);
+        state.sequence = generateSequence(len);
+        state.input = [];
+        updateHud();
+        await playSequence();
+      }
+
+      async function handleInput(index) {
+        if (state.busy || state.sequence.length === 0) return;
+        state.input.push(index);
+        await flashNode(index);
+
+        const current = state.input.length - 1;
+        if (state.input[current] !== state.sequence[current]) {
+          state.lives -= 1;
+          updateHud();
+          await flashNode(index, true);
+          if (state.lives <= 0) {
+            setMessage(`Game over at round ${state.round}. Press Start for a new run.`, 'bad');
+            state.sequence = [];
+            state.input = [];
+            return;
+          }
+          setMessage('Oops! Pattern mismatch. Watch replay and try again.', 'bad');
+          state.input = [];
+          await playSequence();
+          return;
+        }
+
+        if (state.input.length === state.sequence.length) {
+          state.round += 1;
+          state.best = Math.max(state.best, state.round);
+          localStorage.setItem('orbit-memory-best', String(state.best));
+          bestEl.textContent = String(state.best);
+          setMessage('Perfect! Next round incoming...', 'good');
+          updateHud();
+          setTimeout(() => startRound(), 550);
+        }
+      }
+
+      startBtn.addEventListener('click', () => startRound(true));
+      replayBtn.addEventListener('click', () => {
+        if (!state.busy && state.sequence.length) playSequence();
+      });
+      resetBtn.addEventListener('click', () => {
+        state.round = 1;
+        state.lives = 3;
+        state.sequence = [];
+        state.input = [];
+        updateHud();
+        setMessage('Game reset. Press Start to begin.', '');
+      });
+
+      window.addEventListener('keydown', (e) => {
+        const idx = Number(e.key) - 1;
+        if (idx >= 0 && idx < 8) handleInput(idx);
+      });
+
+      arena.addEventListener('touchstart', (e) => {
+        touchStartY = e.changedTouches[0].clientY;
+      }, { passive: true });
+
+      arena.addEventListener('touchend', (e) => {
+        const endY = e.changedTouches[0].clientY;
+        if (touchStartY !== null && endY - touchStartY > 70 && !state.busy && state.sequence.length) {
+          playSequence();
+        }
+        touchStartY = null;
+      }, { passive: true });
+
+      createNodes();
+      updateHud();
+    </script>
+  </body>
+</html>

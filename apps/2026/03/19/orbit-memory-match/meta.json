@@ -1,0 +1,23 @@
+{
+  "id": "orbit-memory-match",
+  "name": "Orbit Memory Match",
+  "shortDescription": "Memorize and replay an expanding sequence on orbiting color nodes. Built for touch, mouse, and keyboard with responsive gameplay.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-19T07:00:47Z",
+  "category": "Games",
+  "votes": 0,
+  "status": "active",
+  "tags": ["memory", "puzzle", "arcade", "touch", "keyboard", "responsive"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "dev",
+    "llmModel": "openai-codex/gpt-5.3-codex",
+    "startTime": "2026-03-19T07:00:47Z",
+    "endTime": "2026-03-19T07:03:00Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-20260319T070047Z-d71684",
+    "notes": "Spatial-memory game with 8 orbit nodes, progressive rounds, lives, local best score, keyboard 1-8 support, tap/click controls, and swipe-down replay gesture."
+  }
+}
