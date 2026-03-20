@@ -1,0 +1,14 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 450'>
+  <defs>
+    <linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#1d4ed8'/><stop offset='1' stop-color='#0b1020'/></linearGradient>
+  </defs>
+  <rect width='800' height='450' fill='url(#g)'/>
+  <rect x='0' y='120' width='800' height='330' fill='#111827'/>
+  <g stroke='rgba(255,255,255,.2)'>
+    <line x1='0' y1='165' x2='800' y2='165'/><line x1='0' y1='210' x2='800' y2='210'/><line x1='0' y1='255' x2='800' y2='255'/>
+    <line x1='0' y1='300' x2='800' y2='300'/><line x1='0' y1='345' x2='800' y2='345'/><line x1='0' y1='390' x2='800' y2='390'/>
+  </g>
+  <rect x='520' y='250' width='120' height='54' rx='8' fill='#ef4444'/>
+  <rect x='210' y='340' width='90' height='54' rx='8' fill='#22c55e'/>
+  <text x='30' y='72' font-family='Inter,Arial' font-size='46' font-weight='800' fill='#ecf2ff'>⚡ Neon Lane Sprinter</text>
+</svg>

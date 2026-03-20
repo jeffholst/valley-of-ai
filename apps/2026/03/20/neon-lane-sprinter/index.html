@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);} 
+    gtag('js', new Date());
+    gtag('config', '__GA_MEASUREMENT_ID__');
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neon Lane Sprinter - __MAIN_SITE_NAME__</title>
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+  <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
+  <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">
+  <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
+  <script src="/apps/shared/app-shell.js" defer></script>
+  <style>
+    :root{--bg:#0b1020;--surface:#121a2e;--text:#ecf2ff;--accent:#22d3ee;--shadow:0 8px 24px rgba(0,0,0,.3)}
+    [data-theme='light']{--bg:#f6f8ff;--surface:#ffffff;--text:#111827;--accent:#0ea5e9;--shadow:0 8px 24px rgba(0,0,0,.12)}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);padding:16px}
+    .app{max-width:900px;margin:0 auto;background:var(--surface);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+    h1{margin:0 0 6px}.muted{opacity:.8;margin:0 0 10px}
+    .hud{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;align-items:center}
+    .pill{padding:6px 10px;border:1px solid color-mix(in srgb,var(--text) 20%,transparent);border-radius:999px;font-weight:700}
+    canvas{width:100%;height:auto;aspect-ratio:4/3;background:linear-gradient(#1d4ed8 0 42%, #111827 42% 100%);border-radius:12px;display:block;touch-action:none}
+    .controls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:260px;margin:10px auto 0}
+    button{min-height:44px;border:0;border-radius:10px;background:var(--accent);color:#06202b;font-weight:800;cursor:pointer}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <h1>⚡ Neon Lane Sprinter</h1>
+    <p class="muted">Dodge traffic, hop lanes, survive as long as you can. Keyboard arrows + touch controls.</p>
+    <div class="hud">
+      <span class="pill">Score: <span id="score">0</span></span>
+      <span class="pill">Best: <span id="best">0</span></span>
+      <button id="start">Start / Restart</button>
+    </div>
+    <canvas id="game" width="800" height="600" aria-label="lane dodging game"></canvas>
+    <div class="controls">
+      <div></div><button id="up">↑</button><div></div>
+      <button id="left">←</button><button id="down">↓</button><button id="right">→</button>
+    </div>
+  </main>
+<script>
+const c=document.getElementById('game'),x=c.getContext('2d');
+const scoreEl=document.getElementById('score'),bestEl=document.getElementById('best');
+const lanes=8,laneH=60,roadTop=120;let running=false,score=0,speed=2;
+let best=Number(localStorage.getItem('neon-lane-best')||0);bestEl.textContent=best;
+const p={lane:7,w:42,h:42,x:400,y:roadTop+7*laneH+9};let cars=[];
+function spawn(){const lane=Math.floor(Math.random()*lanes);cars.push({lane,x:Math.random()<.5?-80:880,w:70,h:42,v:(Math.random()<.5?1:-1)*(2+Math.random()*2+speed*.2),y:roadTop+lane*laneH+9});}
+function reset(){score=0;speed=2;cars=[];p.lane=7;p.x=400;p.y=roadTop+7*laneH+9;running=true;}
+function move(d){if(!running)return; p.lane=Math.max(0,Math.min(lanes-1,p.lane+d)); p.y=roadTop+p.lane*laneH+9;}
+function draw(){x.clearRect(0,0,800,600); x.fillStyle='#16a34a';x.fillRect(0,0,800,roadTop); x.fillStyle='#111827';x.fillRect(0,roadTop,800,laneH*lanes);
+for(let i=0;i<=lanes;i++){x.strokeStyle='rgba(255,255,255,.2)';x.beginPath();x.moveTo(0,roadTop+i*laneH);x.lineTo(800,roadTop+i*laneH);x.stroke();}
+for(const a of cars){x.fillStyle='#ef4444';x.fillRect(a.x,a.y,a.w,a.h);} x.fillStyle='#22c55e';x.fillRect(p.x,p.y,p.w,p.h);
+if(!running){x.fillStyle='rgba(0,0,0,.55)';x.fillRect(0,0,800,600);x.fillStyle='white';x.font='bold 42px Inter';x.fillText('Game Over',300,290);} }
+function hit(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y}
+function tick(){if(running){if(Math.random()<0.04+speed*0.003)spawn();cars.forEach(a=>a.x+=a.v);cars=cars.filter(a=>a.x>-120&&a.x<920);
+for(const a of cars){if(hit(p,a)){running=false;best=Math.max(best,score);localStorage.setItem('neon-lane-best',best);bestEl.textContent=best;}}
+score++; if(score%500===0)speed+=.4; scoreEl.textContent=Math.floor(score/10);} draw(); requestAnimationFrame(tick);} tick();
+function shiftHoriz(dx){p.x=Math.max(30,Math.min(730,p.x+dx));}
+document.getElementById('start').onclick=reset;document.getElementById('up').onclick=()=>move(-1);document.getElementById('down').onclick=()=>move(1);document.getElementById('left').onclick=()=>shiftHoriz(-50);document.getElementById('right').onclick=()=>shiftHoriz(50);
+window.addEventListener('keydown',e=>{if(e.key==='ArrowUp')move(-1);if(e.key==='ArrowDown')move(1);if(e.key==='ArrowLeft')shiftHoriz(-50);if(e.key==='ArrowRight')shiftHoriz(50);});
+let t0=null;c.addEventListener('touchstart',e=>{const t=e.touches[0];t0=[t.clientX,t.clientY]},{passive:true});c.addEventListener('touchend',e=>{if(!t0)return;const t=e.changedTouches[0],dx=t.clientX-t0[0],dy=t.clientY-t0[1];if(Math.abs(dx)>Math.abs(dy)){shiftHoriz(dx>0?50:-50)}else{move(dy>0?1:-1)}t0=null},{passive:true});
+</script>
+</body>
+</html>
