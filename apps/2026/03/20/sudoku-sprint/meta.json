@@ -1,0 +1,23 @@
+{
+  "id": "sudoku-sprint",
+  "name": "Sudoku Sprint",
+  "shortDescription": "A fast, polished Sudoku challenge with keyboard/touch controls, hints, and mistake tracking.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-20T07:00:25Z",
+  "category": "Games",
+  "votes": 0,
+  "status": "active",
+  "tags": ["sudoku", "puzzle", "keyboard", "touch", "logic"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "dev",
+    "llmModel": "openai-codex/gpt-5.3-codex",
+    "startTime": "2026-03-20T07:00:25Z",
+    "endTime": "2026-03-20T07:04:10Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-20260320T070025Z-921e39",
+    "notes": "Built as a responsive single-file static Sudoku app with full shell integration and accessibility-focused controls."
+  }
+}
