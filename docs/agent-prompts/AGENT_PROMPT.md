@@ -275,8 +275,7 @@ Before continuing confirm:
 - If game: gameplay objects visible, score/state updates, win/loss/restart all work.
 - Thumbnail matches app UI.
 
-Run (in order):
-- `npm run generate:apps` — confirms the app can be incorporated into `data/apps.json` successfully
+Run (in order): ⚠️ do not write any log files
 - `npm run validate:apps` — confirms all required app files exist and are valid
 - `npm run lint:fix` — auto-fix any lint issues first
 - `npm run format` — apply Prettier formatting (100-char, single quotes, 2-space indentation)
@@ -285,7 +284,6 @@ Run (in order):
 - `npm run validate:responsive:sample` — confirms responsive layout passes (sample check)
 - `npm run build` — must complete successfully
 
-> **Validation requirement:** `npm run generate:apps` must run here as part of the blocking validation gate.
 > **Git requirement:** Do not stage or commit `data/apps.json` during Step 6. Commit `data/apps.json` only in Step 8 (`UPDATE_REGISTRY`) so registry changes land on the feature branch in a dedicated commit.
 
 If validation fails:
@@ -321,14 +319,17 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
      --step GIT_CHECKOUT_BRANCH --seq 7 --status completed --durationMs <duration> \
      --message "Created feature branch feat/<app-id>"
    ```
+
 2. **Stage and commit app files ONLY** (index.html, meta.json, thumbnail.svg). Use explicit paths — do NOT use `git add .` or `git add -A` here, as `log.jsonl` is intentionally deferred to Step 9.
    - Execute:
    ```bash
    git add apps/YYYY/MM/DD/<app-id>/index.html \
            apps/YYYY/MM/DD/<app-id>/thumbnail.svg \
        apps/YYYY/MM/DD/<app-id>/meta.json
-   git commit -m "feat: add <app-id>"
+   git commit -m "feat: add <app-id> [skip-deploy]"
    ```
+  - **MUST include `[skip deploy]` in commit message** — tells Vercel not to redeploy
+
    - Capture the commit SHA from the output.
    - **Log immediately:**
    ```bash
@@ -362,21 +363,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
      --step PR_REVIEW --seq 11 --status completed --durationMs <duration> \
      --message "PR review complete - code quality good"
    ```
-4. Execute: Update registry and commit to feature branch:
-   ```bash
-   npm run generate:apps
-   git add data/apps.json
-   git commit -m "chore: update app registry for <app-id> [skip deploy]"
-   git push
-   ```
-  - Use `git add data/apps.json` explicitly — NOT `git add -A`. `log.jsonl` is still being written and must not be staged until Step 9.
-  - **Log immediately:**
-   ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
-     --step UPDATE_REGISTRY --seq 12 --status completed --durationMs <duration> \
-     --message "Updated app registry for <app-id> and committed to feature branch"
-   ```
-5. Execute: Merge PR with squash: `gh pr merge <pr-number> --squash --auto`
+4. Execute: Merge PR with squash: `gh pr merge <pr-number> --squash --auto`
    - `--auto` queues the merge once all required checks pass. Confirm it actually merged:
    ```bash
    gh pr view <pr-number> --json state,mergeStateStatus
@@ -389,9 +376,9 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
      --message "PR merged to main and Vercel deployment triggered"
    ```
    - Wait ~2–3 minutes for Vercel auto-deployment to complete (webhook triggered automatically on main merge)
-6. Verify merge on main: `git checkout main && git pull origin main`
-7. Verify app files are present: confirm `apps/YYYY/MM/DD/<app-id>/index.html` exists in the working tree
-8. Execute: Delete the feature branch (local and remote)
+5. Verify merge on main: `git checkout main && git pull origin main`
+6. Verify app files are present: confirm `apps/YYYY/MM/DD/<app-id>/index.html` exists in the working tree
+7. Execute: Delete the feature branch (local and remote)
    - `git branch -d feat/<app-id>`  # Delete local branch
    - `git push origin --delete feat/<app-id>`  # Delete remote branch
    - **Log immediately:**
@@ -420,10 +407,14 @@ After all logging transactions are complete (Steps 1-14), perform the final log 
 3. **This is the FINAL COMMIT:** Verify all 16 log entries are present (TRANSACTION_START + seq 1–14 + TRANSACTION_END) in BOTH log files, then commit both:
     ```bash
     git add apps/YYYY/MM/DD/<app-id>/log.jsonl logs/YYYY/MM/DD.jsonl
-    git commit -m "chore: finalize transaction logs for <app-id> [skip deploy]"
+    git commit -m "chore: finalize transaction logs for <app-id>"
     ```
-   - **MUST include `[skip deploy]` in commit message** — tells Vercel not to redeploy (log files are metadata only, app is already deployed as part of Step 13 MERGE_PR_DEPLOY)
    - **CRITICAL:** Both files MUST be committed together:
      - `apps/YYYY/MM/DD/<app-id>/log.jsonl` — app-local transaction record
      - `logs/YYYY/MM/DD.jsonl` — central consolidated log entry
 4. **Push this commit directly to the main branch:** `git push origin main`
+
+5. Run `npm run generate:apps` for local repo 
+   ```bash
+   npm run generate:apps
+   ```
