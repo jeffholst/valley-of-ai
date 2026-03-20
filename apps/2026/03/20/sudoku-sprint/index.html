@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sudoku Sprint - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
+    <script src="/apps/shared/app-shell.js" defer></script>
+    <style>
+      :root {
+        --bg: #081229;
+        --text: #e6ecff;
+        --surface: #142447;
+        --surface-2: #1b3260;
+        --accent: #5ce1e6;
+        --accent-2: #7e7cf9;
+        --good: #3ee28d;
+        --bad: #ff6b8a;
+      }
+      [data-theme='light'] {
+        --bg: #f6f9ff;
+        --text: #102145;
+        --surface: #dbe7ff;
+        --surface-2: #c8dbff;
+        --accent: #0b7cc2;
+        --accent-2: #5d4de1;
+        --good: #1f9d5a;
+        --bad: #d63855;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        background: radial-gradient(circle at top, #1a2f58 0%, var(--bg) 55%);
+        color: var(--text);
+      }
+      .app {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 1rem;
+        display: grid;
+        gap: 1rem;
+      }
+      .hud {
+        background: color-mix(in srgb, var(--surface), transparent 8%);
+        border: 1px solid color-mix(in srgb, var(--accent), transparent 60%);
+        border-radius: 14px;
+        padding: 0.9rem;
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+      .stat strong { color: var(--accent); }
+      .board-wrap {
+        background: color-mix(in srgb, var(--surface), transparent 5%);
+        border-radius: 18px;
+        padding: 0.75rem;
+        border: 1px solid color-mix(in srgb, var(--accent-2), transparent 65%);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+      }
+      .board {
+        display: grid;
+        grid-template-columns: repeat(9, 1fr);
+        aspect-ratio: 1 / 1;
+        width: min(100%, 600px);
+        margin: 0 auto;
+        background: #0f1e3f;
+        border: 3px solid var(--text);
+      }
+      .cell {
+        border: 1px solid color-mix(in srgb, var(--text), transparent 70%);
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        font-size: clamp(1rem, 4vw, 1.5rem);
+        min-height: 44px;
+        user-select: none;
+        cursor: pointer;
+        transition: transform 120ms ease, background-color 150ms ease;
+      }
+      .cell:nth-child(3n) { border-right: 2px solid var(--text); }
+      .cell:nth-child(n + 19):nth-child(-n + 27),
+      .cell:nth-child(n + 46):nth-child(-n + 54) { border-bottom: 2px solid var(--text); }
+      .cell.fixed { color: color-mix(in srgb, var(--text), white 12%); }
+      .cell.selected { background: color-mix(in srgb, var(--accent-2), transparent 60%); transform: scale(0.97); }
+      .cell.same { background: color-mix(in srgb, var(--accent), transparent 78%); }
+      .cell.error { background: color-mix(in srgb, var(--bad), transparent 70%); color: #fff; }
+      .controls {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(44px, 1fr));
+        gap: 0.5rem;
+      }
+      button {
+        min-height: 44px;
+        border: 0;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        background: var(--surface-2);
+        color: var(--text);
+        transition: transform 120ms ease, filter 120ms ease;
+      }
+      button:hover, button:focus-visible { transform: translateY(-1px); filter: brightness(1.1); }
+      .numpad { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(9, minmax(36px, 1fr)); gap: 0.35rem; }
+      .message { min-height: 1.5rem; font-weight: 600; color: var(--good); }
+      .message.bad { color: var(--bad); }
+      @media (min-width: 900px) {
+        .app { grid-template-columns: 1.5fr 1fr; align-items: start; }
+        .hud { grid-column: 1 / -1; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <section class="hud" aria-live="polite">
+        <div class="stat">⏱️ Time: <strong id="timer">00:00</strong></div>
+        <div class="stat">❌ Mistakes: <strong id="mistakes">0/3</strong></div>
+        <div class="stat">✅ Filled: <strong id="filled">0/81</strong></div>
+      </section>
+      <section class="board-wrap">
+        <div class="board" id="board" role="grid" aria-label="Sudoku board"></div>
+      </section>
+      <section class="board-wrap">
+        <p class="message" id="message">Tap a cell, then enter 1-9 or use your keyboard.</p>
+        <div class="controls">
+          <button id="eraseBtn" type="button">Erase</button>
+          <button id="hintBtn" type="button">Hint</button>
+          <button id="checkBtn" type="button">Check</button>
+          <button id="restartBtn" type="button">Restart</button>
+          <button id="newBtn" type="button">New</button>
+          <div class="numpad" id="numpad"></div>
+        </div>
+      </section>
+    </main>
+    <script>
+      const puzzle =
+        '530070000600195000098000060800060003400803001700020006060000280000419005000080079';
+      const solution =
+        '534678912672195348198342567859761423426853791713924856961537284287419635345286179';
+      const boardEl = document.getElementById('board');
+      const timerEl = document.getElementById('timer');
+      const mistakesEl = document.getElementById('mistakes');
+      const filledEl = document.getElementById('filled');
+      const messageEl = document.getElementById('message');
+      const numpad = document.getElementById('numpad');
+      const state = { values: puzzle.split(''), selected: 0, mistakes: 0, start: Date.now(), done: false };
+
+      function formatTime(seconds) {
+        const min = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const sec = String(seconds % 60).padStart(2, '0');
+        return `${min}:${sec}`;
+      }
+      function setMsg(text, bad = false) {
+        messageEl.textContent = text;
+        messageEl.classList.toggle('bad', bad);
+      }
+      function render() {
+        boardEl.innerHTML = '';
+        const selectedVal = state.values[state.selected];
+        state.values.forEach((value, index) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'cell';
+          if (puzzle[index] !== '0') btn.classList.add('fixed');
+          if (index === state.selected) btn.classList.add('selected');
+          if (selectedVal !== '0' && value === selectedVal) btn.classList.add('same');
+          if (value !== '0' && value !== solution[index]) btn.classList.add('error');
+          btn.textContent = value === '0' ? '' : value;
+          btn.setAttribute('aria-label', `row ${Math.floor(index / 9) + 1} col ${(index % 9) + 1}`);
+          btn.addEventListener('click', () => {
+            state.selected = index;
+            render();
+          });
+          boardEl.appendChild(btn);
+        });
+        const filled = state.values.filter((value) => value !== '0').length;
+        filledEl.textContent = `${filled}/81`;
+        mistakesEl.textContent = `${state.mistakes}/3`;
+      }
+      function place(number) {
+        if (state.done || puzzle[state.selected] !== '0') return;
+        state.values[state.selected] = String(number);
+        if (String(number) !== solution[state.selected]) {
+          state.mistakes += 1;
+          setMsg('Not quite — keep going.', true);
+          if (state.mistakes >= 3) {
+            state.done = true;
+            setMsg('Game over. Press Restart to try again.', true);
+          }
+        } else {
+          setMsg('Nice move!');
+        }
+        if (state.values.join('') === solution) {
+          state.done = true;
+          setMsg('Solved! You win Sudoku Sprint 🎉');
+        }
+        render();
+      }
+      function erase() {
+        if (puzzle[state.selected] === '0' && !state.done) state.values[state.selected] = '0';
+        render();
+      }
+      function hint() {
+        if (state.done || puzzle[state.selected] !== '0') return;
+        state.values[state.selected] = solution[state.selected];
+        setMsg('Hint used.');
+        render();
+      }
+      function checkBoard() {
+        const wrong = state.values.reduce(
+          (count, value, index) => (value !== '0' && value !== solution[index] ? count + 1 : count),
+          0,
+        );
+        setMsg(wrong === 0 ? 'Board looks good so far.' : `${wrong} cell(s) incorrect.`, wrong > 0);
+      }
+      function restart() {
+        state.values = puzzle.split('');
+        state.mistakes = 0;
+        state.start = Date.now();
+        state.done = false;
+        setMsg('Fresh start.');
+        render();
+      }
+      function newGame() {
+        restart();
+        state.selected = Math.floor(Math.random() * 81);
+        render();
+      }
+      for (let n = 1; n <= 9; n += 1) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = n;
+        button.setAttribute('aria-label', `Insert ${n}`);
+        button.addEventListener('click', () => place(n));
+        numpad.appendChild(button);
+      }
+      document.addEventListener('keydown', (event) => {
+        const { key } = event;
+        if (/^[1-9]$/.test(key)) place(Number(key));
+        if (key === 'Backspace' || key === 'Delete' || key === '0') erase();
+        if (key === 'ArrowRight') state.selected = (state.selected + 1) % 81;
+        if (key === 'ArrowLeft') state.selected = (state.selected + 80) % 81;
+        if (key === 'ArrowDown') state.selected = (state.selected + 9) % 81;
+        if (key === 'ArrowUp') state.selected = (state.selected + 72) % 81;
+        render();
+      });
+      document.getElementById('eraseBtn').onclick = erase;
+      document.getElementById('hintBtn').onclick = hint;
+      document.getElementById('checkBtn').onclick = checkBoard;
+      document.getElementById('restartBtn').onclick = restart;
+      document.getElementById('newBtn').onclick = newGame;
+      setInterval(() => {
+        timerEl.textContent = formatTime(Math.floor((Date.now() - state.start) / 1000));
+      }, 500);
+      render();
+    </script>
+  </body>
+</html>
