@@ -119,12 +119,73 @@ function StepRow({ entry }) {
   );
 }
 
+const FEEDBACK_TYPE_COLORS = {
+  'bug-fix': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+  'ui-fix': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+  enhancement: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
+  content: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+};
+
+function FeedbackRow({ entry }) {
+  const fb = entry.feedback || {};
+  const colorClass =
+    FEEDBACK_TYPE_COLORS[fb.type] ||
+    'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+
+  return (
+    <div className="flex items-start gap-3 py-2 px-3 border-l-2 border-purple-400 ml-4">
+      <span className="text-lg mt-0.5">💬</span>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="font-medium text-sm text-gray-900 dark:text-white">Feedback</span>
+          {fb.type && (
+            <span
+              className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${colorClass}`}
+            >
+              {fb.type}
+            </span>
+          )}
+          {fb.feedbackRunId && (
+            <code className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-gray-500 dark:text-gray-400">
+              {fb.feedbackRunId}
+            </code>
+          )}
+        </div>
+        {entry.message && (
+          <div className="mt-1 text-sm text-gray-700 dark:text-gray-300">{entry.message}</div>
+        )}
+        {fb.userReport && (
+          <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <span className="font-medium text-gray-600 dark:text-gray-300">Reported: </span>
+            {fb.userReport}
+          </div>
+        )}
+        {fb.change && (
+          <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <span className="font-medium text-gray-600 dark:text-gray-300">Changed: </span>
+            {fb.change}
+          </div>
+        )}
+        {fb.files?.length > 0 && (
+          <div className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+            {fb.files.join(', ')}
+          </div>
+        )}
+      </div>
+      <div className="text-right text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
+        {formatTimestamp(entry.timestamp)}
+      </div>
+    </div>
+  );
+}
+
 function TransactionCard({ transaction, entries }) {
   const [expanded, setExpanded] = useState(true);
 
   const startEntry = entries.find((e) => e.type === 'TRANSACTION_START');
   const endEntry = entries.find((e) => e.type === 'TRANSACTION_END');
   const stepEntries = entries.filter((e) => e.type === 'STEP');
+  const feedbackEntries = entries.filter((e) => e.type === 'FEEDBACK');
 
   const status = endEntry?.status || startEntry?.status || 'started';
   const isSuccess = status === 'success';
@@ -192,6 +253,17 @@ function TransactionCard({ transaction, entries }) {
         <div className="border-t border-gray-200 dark:border-gray-700 py-2">
           {stepEntries.map((entry, idx) => (
             <StepRow key={`${entry.step}-${entry.timestamp}-${idx}`} entry={entry} />
+          ))}
+        </div>
+      )}
+
+      {expanded && feedbackEntries.length > 0 && (
+        <div className="border-t border-gray-200 dark:border-gray-700 py-2">
+          <div className="px-4 py-1 text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wide">
+            Post-generation feedback ({feedbackEntries.length})
+          </div>
+          {feedbackEntries.map((entry, idx) => (
+            <FeedbackRow key={`feedback-${entry.timestamp}-${idx}`} entry={entry} />
           ))}
         </div>
       )}
