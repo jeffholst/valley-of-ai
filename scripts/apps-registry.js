@@ -66,6 +66,7 @@ export function transformMeta(appsDir, meta, filePath, dateInfo, basePath = '') 
     route: `/apps/${uniqueId}`,
     appPath: `${basePath}/apps/${normalizedAppDir}/${meta.homepagePath || 'index.html'}`,
     generation: meta.generation || null,
+    suggestion: meta.suggestion || null,
   };
 }
 

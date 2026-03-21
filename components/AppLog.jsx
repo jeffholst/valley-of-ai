@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-export default function AppLog({ appId }) {
+export default function AppLog({ appId, suggestion }) {
   const [logs, setLogs] = useState([]);
   const [isExpanded, setIsExpanded] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -142,6 +142,27 @@ export default function AppLog({ appId }) {
 
   return (
     <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+      {suggestion && (
+        <div className="mb-4 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 text-xs text-amber-800 dark:text-amber-300">
+          <div className="font-semibold mb-1">
+            Built from a community suggestion
+            {suggestion.issueNumber && (
+              <a
+                href={suggestion.issueUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-2 underline opacity-75 hover:opacity-100"
+              >
+                #{suggestion.issueNumber}
+              </a>
+            )}
+            {suggestion.requestor && (
+              <span className="ml-2 opacity-75">by {suggestion.requestor}</span>
+            )}
+          </div>
+          <div className="opacity-75 leading-relaxed">{suggestion.prompt}</div>
+        </div>
+      )}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="flex items-center justify-between w-full text-sm font-semibold text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors"

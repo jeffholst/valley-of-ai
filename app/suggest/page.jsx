@@ -1,13 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import emailjs from '@emailjs/browser';
 import { Turnstile } from 'react-turnstile';
 
-const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
-const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+const IS_DEV = process.env.NODE_ENV === 'development';
 
 const CATEGORIES = [
   'Productivity',
@@ -20,26 +17,15 @@ const CATEGORIES = [
 ];
 
 export default function SuggestPage() {
-  const [form, setForm] = useState({
-    title: '',
-    description: '',
-    category: '',
-    name: '',
-    email: '',
-  });
+  const [form, setForm] = useState({ description: '', category: '', requestor: '' });
   const [errors, setErrors] = useState({});
-  const [submitted, setSubmitted] = useState(false);
+  const [issueUrl, setIssueUrl] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
-  const [turnstileToken, setTurnstileToken] = useState(null);
+  const [turnstileToken, setTurnstileToken] = useState(IS_DEV ? 'dev' : null);
 
   const validate = () => {
     const newErrors = {};
-    if (!form.title.trim()) {
-      newErrors.title = 'Title is required';
-    } else if (form.title.trim().length < 3) {
-      newErrors.title = 'Title must be at least 3 characters';
-    }
     if (!form.description.trim()) {
       newErrors.description = 'Description is required';
     } else if (form.description.trim().length < 20) {
@@ -57,36 +43,36 @@ export default function SuggestPage() {
       return;
     }
 
-    setIsSubmitting(true);
-    setSubmitError(null);
-
     if (!turnstileToken) {
       setSubmitError('Please complete the security verification.');
-      setIsSubmitting(false);
       return;
     }
 
-    const templateParams = {
-      title: form.title.trim(),
-      description: form.description.trim(),
-      category: form.category || 'Other',
-      name: form.name.trim() || 'Not provided',
-      email: form.email.trim() || 'Not provided',
-      submitted_at: new Date().toLocaleString(),
-      'cf-turnstile-response': turnstileToken,
-    };
+    setIsSubmitting(true);
+    setSubmitError(null);
 
     try {
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        templateParams,
-        EMAILJS_PUBLIC_KEY
-      );
-      setSubmitted(true);
-    } catch (error) {
-      console.error('EmailJS error:', error);
-      setSubmitError('Failed to send suggestion. Please try again.');
+      const res = await fetch('/api/suggestions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          turnstileToken,
+          category: form.category || 'Other',
+          requestor: form.requestor.trim() || null,
+          description: form.description.trim(),
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setSubmitError(data.error || 'Failed to submit suggestion. Please try again.');
+        return;
+      }
+
+      setIssueUrl(data.issueUrl);
+    } catch {
+      setSubmitError('Failed to submit suggestion. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -100,7 +86,7 @@ export default function SuggestPage() {
     }
   };
 
-  if (submitted) {
+  if (issueUrl) {
     return (
       <>
         <div className="valley-cinematic-bg" aria-hidden="true">
@@ -127,20 +113,30 @@ export default function SuggestPage() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Thank You!</h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
-              Your suggestion has been submitted. Our AI agents will review it and may create an app
-              based on your idea!
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
+              Your suggestion has been submitted for review. If approved, our AI agents will build
+              it!
             </p>
-            <button
-              onClick={() => {
-                setSubmitted(false);
-                setForm({ title: '', description: '', category: '', name: '', email: '' });
-                setTurnstileToken(null);
-              }}
-              className="btn-secondary"
+            <a
+              href={issueUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block text-sm text-purple-600 dark:text-purple-400 underline mb-6"
             >
-              Submit Another
-            </button>
+              View your suggestion on GitHub
+            </a>
+            <div className="mt-2">
+              <button
+                onClick={() => {
+                  setIssueUrl(null);
+                  setForm({ description: '', category: '', requestor: '' });
+                  setTurnstileToken(null);
+                }}
+                className="btn-secondary"
+              >
+                Submit Another
+              </button>
+            </div>
           </div>
         </div>
       </>
@@ -166,22 +162,6 @@ export default function SuggestPage() {
         <div className="card p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="title" className="label">
-                Title <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={form.title}
-                onChange={handleChange}
-                placeholder="e.g., Pomodoro Timer"
-                className={`input ${errors.title ? 'border-red-500 focus:ring-red-500' : ''}`}
-              />
-              {errors.title && <p className="mt-1 text-sm text-red-500">{errors.title}</p>}
-            </div>
-
-            <div>
               <label htmlFor="description" className="label">
                 Description <span className="text-red-500">*</span>
               </label>
@@ -190,7 +170,7 @@ export default function SuggestPage() {
                 name="description"
                 value={form.description}
                 onChange={handleChange}
-                rows={4}
+                rows={5}
                 placeholder="Describe your app idea in detail. What should it do? What features would you like?"
                 className={`input resize-none ${errors.description ? 'border-red-500 focus:ring-red-500' : ''}`}
               />
@@ -219,55 +199,32 @@ export default function SuggestPage() {
               </select>
             </div>
 
-            {/* Optional Contact Section */}
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                The following fields are optional. Only fill them out if you'd like to be contacted
-                when your suggestion is implemented.
-              </p>
-
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="name" className="label">
-                    Name <span className="text-gray-400">(optional)</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={form.name}
-                    onChange={handleChange}
-                    placeholder="Your name"
-                    className="input"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="label">
-                    Email <span className="text-gray-400">(optional)</span>
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    placeholder="your@email.com"
-                    className="input"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Cloudflare Turnstile */}
-            <div className="flex justify-center">
-              <Turnstile
-                sitekey={TURNSTILE_SITE_KEY}
-                onVerify={(token) => setTurnstileToken(token)}
-                onExpire={() => setTurnstileToken(null)}
-                onError={() => setTurnstileToken(null)}
+            <div>
+              <label htmlFor="requestor" className="label">
+                Your name or handle <span className="text-gray-400">(optional)</span>
+              </label>
+              <input
+                type="text"
+                id="requestor"
+                name="requestor"
+                value={form.requestor}
+                onChange={handleChange}
+                placeholder="e.g. @username or Jane"
+                className="input"
               />
             </div>
+
+            {/* Cloudflare Turnstile (skipped in development) */}
+            {!IS_DEV && (
+              <div className="flex justify-center">
+                <Turnstile
+                  sitekey={TURNSTILE_SITE_KEY}
+                  onVerify={(token) => setTurnstileToken(token)}
+                  onExpire={() => setTurnstileToken(null)}
+                  onError={() => setTurnstileToken(null)}
+                />
+              </div>
+            )}
 
             {submitError && (
               <div className="p-3 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-lg">
@@ -280,7 +237,7 @@ export default function SuggestPage() {
               className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isSubmitting || !turnstileToken}
             >
-              {isSubmitting ? 'Sending...' : 'Submit Suggestion'}
+              {isSubmitting ? 'Submitting...' : 'Submit Suggestion'}
             </button>
           </form>
         </div>
