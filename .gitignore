@@ -32,7 +32,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Generated / synced at build time
-data/apps.json
+# Synced at build time
 public/apps/
 public/logs/

@@ -275,8 +275,9 @@ Before continuing confirm:
 - If game: gameplay objects visible, score/state updates, win/loss/restart all work.
 - Thumbnail matches app UI.
 
-Run (in order): ⚠️ do not write any log files
-- `npm run validate:apps` — confirms all required app files exist and are valid
+Run (in order): ⚠️ do not write any output files that would corrupt repo 
+- `npm run generate:apps` — generates new `data/apps.json` 
+- `npm run validate:apps` — confirms all required app files exist, metadata is valid, and committed `data/apps.json` is synchronized
 - `npm run lint:fix` — auto-fix any lint issues first
 - `npm run format` — apply Prettier formatting (100-char, single quotes, 2-space indentation)
 - `npm run lint` — must pass with 0 errors, 0 warnings
@@ -284,7 +285,6 @@ Run (in order): ⚠️ do not write any log files
 - `npm run validate:responsive:sample` — confirms responsive layout passes (sample check)
 - `npm run build` — must complete successfully
 
-> **Git requirement:** Do not stage or commit `data/apps.json` during Step 6. Commit `data/apps.json` only in Step 8 (`UPDATE_REGISTRY`) so registry changes land on the feature branch in a dedicated commit.
 
 If validation fails:
 - fix issues,
@@ -325,7 +325,9 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
    ```bash
    git add apps/YYYY/MM/DD/<app-id>/index.html \
            apps/YYYY/MM/DD/<app-id>/thumbnail.svg \
-       apps/YYYY/MM/DD/<app-id>/meta.json
+           apps/YYYY/MM/DD/<app-id>/meta.json \
+           data/apps.json
+
    git commit -m "feat: add <app-id> [skip-deploy]"
    ```
   - **MUST include `[skip deploy]` in commit message** — tells Vercel not to redeploy
@@ -413,8 +415,3 @@ After all logging transactions are complete (Steps 1-14), perform the final log 
      - `apps/YYYY/MM/DD/<app-id>/log.jsonl` — app-local transaction record
      - `logs/YYYY/MM/DD.jsonl` — central consolidated log entry
 4. **Push this commit directly to the main branch:** `git push origin main`
-
-5. Run `npm run generate:apps` for local repo 
-   ```bash
-   npm run generate:apps
-   ```

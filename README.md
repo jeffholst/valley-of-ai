@@ -148,6 +148,7 @@ Then edit `.env` with your real values.
 | `NEXT_PUBLIC_SOCIAL_X_URL` | X profile URL used in footer social links |
 | `NEXT_PUBLIC_SOCIAL_FACEBOOK_URL` | Facebook profile/page URL used in footer social links |
 | `NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL` | Instagram profile URL used in footer social links |
+| `NEXT_PUBLIC_GITHUB_URL` | Github repo |
 
 If these values are missing, parts of the app may fail at runtime.
 
@@ -156,7 +157,7 @@ If these values are missing, parts of the app may fail at runtime.
 | Command | Description |
 |---------|-------------|
 | `npm run dev` | 🔥 Start Next.js development server with hot reload |
-| `npm run build` | 📦 Build for production (automatically runs `generate:apps` and `sync` first) |
+| `npm run build` | 📦 Build for production |
 | `npm run start` | 🚀 Start production server (use after `build`) |
 | `npm run lint` | 🔍 Run ESLint to check code quality (0 warnings allowed) |
 | `npm run lint:fix` | 🔧 Auto-fix linting issues (semicolons, quotes, etc.) |
@@ -164,20 +165,29 @@ If these values are missing, parts of the app may fail at runtime.
 | `npm test` | ✅ Run Jest test suite |
 | `npm run test:watch` | 👁️ Run tests in watch mode (re-run on file changes) |
 | `npm run test:coverage` | 📊 Generate test coverage report |
-| `npm run generate:apps` | 🔄 Regenerate `data/apps.json` from `apps/*/meta.json` files |
+| `npm run generate:apps` | 🔄 Regenerate the committed `data/apps.json` registry from `apps/*/meta.json` files |
 | `npm run sync` | 📋 Copy `apps/` and `logs/` into `public/` for static access |
-| `npm run validate:apps` | ✅ Validate standalone app HTML structure and metadata |
+| `npm run validate:apps` | ✅ Validate standalone app HTML structure, metadata, and `data/apps.json` synchronization |
 | `npm run validate:responsive` | 📱 Validate responsive design across breakpoints |
 
 ### Build & Deployment Pipeline
 
-The Next.js build automatically handles the full pipeline:
+`data/apps.json` is a committed registry file, not a build artifact. When app metadata changes, run `npm run generate:apps` and commit the updated registry in the same PR.
+
+The Next.js build handles the app sync and compilation steps:
 
 ```text
 npm run build
-  -> generate:apps          # Scans apps/YYYY/MM/DD/*/meta.json → data/apps.json
   -> sync                   # Copies apps/ and logs/ → public/
   -> next build             # Compiles Next.js + generates static routes
+```
+
+Recommended local workflow after adding or changing an app:
+
+```text
+npm run generate:apps       # Refresh committed data/apps.json
+npm run validate:apps       # Fails if the registry is stale
+npm run build               # Build with the committed registry
 ```
 
 **Deployment to Vercel:**
@@ -338,7 +348,6 @@ When code is pushed to the `main` branch:
 1. **Vercel webhook triggers** — Auto-detects push event
 2. **Environment loaded** — GA IDs, social URLs, and API keys injected from Vercel secrets
 3. **Build runs** — `npm run build` executes the full pipeline:
-   - `generate:apps` scans all app metadata
    - `sync` copies apps to `public/` with environment variable substitution
    - `next build` compiles pages and prerendered routes
 4. **Deployment** — `.next` build output deployed to Vercel edge network

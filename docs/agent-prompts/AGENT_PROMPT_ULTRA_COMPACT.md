@@ -173,8 +173,7 @@ Before continuing confirm:
 - Thumbnail matches app UI.
 
 Run (in order):
-- `npm run generate:apps` — confirms the app can be incorporated into `data/apps.json` successfully
-- `npm run validate:apps` — confirms all required app files exist and are valid
+- `npm run validate:apps` — confirms all required app files exist, metadata is valid, and committed `data/apps.json` is synchronized
 - `npm run lint:fix` — auto-fix any lint issues first
 - `npm run format` — apply Prettier formatting (100-char, single quotes, 2-space indentation)
 - `npm run lint` — must pass with 0 errors, 0 warnings
@@ -182,8 +181,8 @@ Run (in order):
 - `npm run validate:responsive:sample` — confirms responsive layout passes (sample check)
 - `npm run build` — must complete successfully
 
-> **Validation requirement:** `npm run generate:apps` must run here as part of the blocking validation gate.
-> **Git requirement:** Do not stage or commit `data/apps.json` during step 6. Regenerate if needed and commit `data/apps.json` only in step 8 (`UPDATE_REGISTRY`).
+> **Validation requirement:** `npm run validate:apps` must verify that the committed `data/apps.json` is already synchronized.
+> **Git requirement:** Do not stage or commit `data/apps.json` during step 6. Update it in step 8 by running `npm run generate:apps`, then commit `data/apps.json` explicitly.
 
 If validation fails:
 - fix issues,

@@ -1,0 +1,109 @@
+/**
+ * Shared helpers for building the app registry from app metadata files.
+ *
+ * This module is the single source of truth for registry construction so
+ * generate-apps.js and validate-apps.js use identical logic when producing
+ * or checking data/apps.json.
+ */
+import fs from 'fs';
+import path from 'path';
+
+export function findMetaFiles(dir, files = []) {
+  if (!fs.existsSync(dir)) {
+    return files;
+  }
+
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      findMetaFiles(fullPath, files);
+    } else if (entry.name === 'meta.json') {
+      files.push(fullPath);
+    }
+  }
+
+  return files;
+}
+
+export function parseDateFromPath(appsDir, filePath) {
+  const relativePath = path.relative(appsDir, filePath);
+  const parts = relativePath.split(path.sep);
+
+  if (parts.length >= 4) {
+    return {
+      year: parseInt(parts[0], 10),
+      month: parseInt(parts[1], 10),
+      day: parseInt(parts[2], 10),
+      appId: parts[3],
+    };
+  }
+
+  return null;
+}
+
+export function transformMeta(appsDir, meta, filePath, dateInfo, basePath = '') {
+  const appDir = path.dirname(filePath);
+  const relativeAppDir = path.relative(appsDir, appDir);
+  const normalizedAppDir = relativeAppDir.split(path.sep).join('/');
+  const uniqueId = normalizedAppDir;
+
+  return {
+    id: uniqueId,
+    name: meta.name,
+    shortDescription: meta.shortDescription,
+    thumbnailUrl: meta.thumbnail ? `${basePath}/apps/${normalizedAppDir}/${meta.thumbnail}` : null,
+    createdAt: meta.createdAt,
+    year: dateInfo.year,
+    month: dateInfo.month,
+    day: dateInfo.day,
+    category: meta.category,
+    inputMode: meta.inputMode || null,
+    status: meta.status || 'active',
+    tags: meta.tags || [],
+    route: `/apps/${uniqueId}`,
+    appPath: `${basePath}/apps/${normalizedAppDir}/${meta.homepagePath || 'index.html'}`,
+    generation: meta.generation || null,
+  };
+}
+
+export function buildAppsRegistry({ appsDir, basePath = '', onWarning } = {}) {
+  const metaFiles = findMetaFiles(appsDir);
+  const apps = [];
+  const warnings = [];
+
+  for (const filePath of metaFiles) {
+    try {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const meta = JSON.parse(content);
+      const dateInfo = parseDateFromPath(appsDir, filePath);
+
+      if (!dateInfo) {
+        const warning = `Skipping ${filePath}: could not parse date from path`;
+        warnings.push(warning);
+        if (onWarning) {
+          onWarning(warning);
+        }
+        continue;
+      }
+
+      apps.push(transformMeta(appsDir, meta, filePath, dateInfo, basePath));
+    } catch (error) {
+      const warning = `Error processing ${filePath}: ${error.message}`;
+      warnings.push(warning);
+      if (onWarning) {
+        onWarning(warning);
+      }
+    }
+  }
+
+  apps.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  return {
+    apps,
+    metaFiles,
+    warnings,
+  };
+}

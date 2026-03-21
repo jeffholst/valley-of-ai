@@ -12,6 +12,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { buildAppsRegistry } from './apps-registry.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,111 +23,24 @@ const OUTPUT_FILE = path.join(rootDir, 'data', 'apps.json');
 const BASE_PATH = '';
 
 /**
- * Recursively find all meta.json files in the apps directory
- */
-function findMetaFiles(dir, files = []) {
-  if (!fs.existsSync(dir)) {
-    return files;
-  }
-
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-  
-  for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name);
-    
-    if (entry.isDirectory()) {
-      findMetaFiles(fullPath, files);
-    } else if (entry.name === 'meta.json') {
-      files.push(fullPath);
-    }
-  }
-  
-  return files;
-}
-
-/**
- * Parse a meta.json file path to extract date components
- * Expected path: apps/YYYY/MM/DD/<app-id>/meta.json
- */
-function parseDateFromPath(filePath) {
-  const relativePath = path.relative(APPS_DIR, filePath);
-  const parts = relativePath.split(path.sep);
-  
-  if (parts.length >= 4) {
-    return {
-      year: parseInt(parts[0], 10),
-      month: parseInt(parts[1], 10),
-      day: parseInt(parts[2], 10),
-      appId: parts[3],
-    };
-  }
-  
-  return null;
-}
-
-/**
- * Transform a meta.json into an apps.json entry
- */
-function transformMeta(meta, filePath, dateInfo) {
-  const appDir = path.dirname(filePath);
-  const relativeAppDir = path.relative(APPS_DIR, appDir);
-  
-  // Use the full path as the unique id (e.g., "2026/03/07/contrast-lab")
-  const uniqueId = relativeAppDir.split(path.sep).join('/');
-  
-  return {
-    id: uniqueId,
-    name: meta.name,
-    shortDescription: meta.shortDescription,
-    thumbnailUrl: meta.thumbnail 
-      ? `${BASE_PATH}/apps/${relativeAppDir}/${meta.thumbnail}`
-      : null,
-    createdAt: meta.createdAt,
-    year: dateInfo.year,
-    month: dateInfo.month,
-    day: dateInfo.day,
-    category: meta.category,
-    inputMode: meta.inputMode || null,
-    status: meta.status || 'active',
-    tags: meta.tags || [],
-    route: `/apps/${uniqueId}`,
-    appPath: `${BASE_PATH}/apps/${relativeAppDir}/${meta.homepagePath || 'index.html'}`,
-    generation: meta.generation || null,
-  };
-}
-
-/**
  * Main function
  */
 function main() {
   console.log('🔍 Scanning for apps...');
-  
-  const metaFiles = findMetaFiles(APPS_DIR);
+
+  const { apps, metaFiles, warnings } = buildAppsRegistry({
+    appsDir: APPS_DIR,
+    basePath: BASE_PATH,
+  });
   console.log(`   Found ${metaFiles.length} app(s)`);
-  
-  const apps = [];
-  
-  for (const filePath of metaFiles) {
-    try {
-      const content = fs.readFileSync(filePath, 'utf-8');
-      const meta = JSON.parse(content);
-      const dateInfo = parseDateFromPath(filePath);
-      
-      if (!dateInfo) {
-        console.warn(`   ⚠️  Skipping ${filePath}: could not parse date from path`);
-        continue;
-      }
-      
-      const appEntry = transformMeta(meta, filePath, dateInfo);
-      apps.push(appEntry);
-      console.log(`   ✅ ${meta.name} (${meta.id})`);
-    } catch (error) {
-      console.error(`   ❌ Error processing ${filePath}:`, error.message);
-    }
+
+  for (const warning of warnings) {
+    console.warn(`   ⚠️  ${warning}`);
   }
-  
-  // Sort by createdAt descending (newest first)
-  apps.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  for (const app of apps) {
+    console.log(`   ✅ ${app.name} (${app.id})`);
+  }
   
   // Ensure output directory exists
   const outputDir = path.dirname(OUTPUT_FILE);

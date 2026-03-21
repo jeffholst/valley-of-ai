@@ -1,13 +1,23 @@
 #!/usr/bin/env node
 
+/**
+ * Validates generated apps before they are committed or deployed.
+ *
+ * This script checks each app's HTML shell contract, validates meta.json
+ * files against the schema, and confirms the committed data/apps.json
+ * registry is synchronized with the current app metadata.
+ */
+
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { buildAppsRegistry } from './apps-registry.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const root = path.resolve(__dirname, '..');
 const appsRoot = path.join(root, 'apps');
+const registryPath = path.join(root, 'data', 'apps.json');
 const schemaPath = path.join(root, 'docs', 'json-schema', 'meta.json');
 
 const REQUIRED_CHECKS = [
@@ -226,6 +236,38 @@ function walkMetaJsonFiles(dir, found = []) {
   return found;
 }
 
+function validateRegistrySynchronization() {
+  const errors = [];
+
+  if (!fs.existsSync(registryPath)) {
+    errors.push(`registry file not found: ${path.relative(root, registryPath)}`);
+    return errors;
+  }
+
+  let committedRegistry;
+  try {
+    committedRegistry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+  } catch (error) {
+    errors.push(`registry file is not valid JSON: ${error.message}`);
+    return errors;
+  }
+
+  const { apps, warnings } = buildAppsRegistry({ appsDir: appsRoot });
+
+  for (const warning of warnings) {
+    errors.push(warning);
+  }
+
+  const expectedRegistry = JSON.stringify(apps, null, 2);
+  const currentRegistry = JSON.stringify(committedRegistry, null, 2);
+
+  if (currentRegistry !== expectedRegistry) {
+    errors.push('data/apps.json is out of sync with apps/*/meta.json; run `npm run generate:apps` and commit the updated registry');
+  }
+
+  return errors;
+}
+
 function main() {
   if (!fs.existsSync(appsRoot)) {
     console.error('ERROR: apps directory not found.');
@@ -275,6 +317,8 @@ function main() {
     }
   }
 
+  const registryErrors = validateRegistrySynchronization();
+
   // Report results
   let hasFailures = false;
 
@@ -302,6 +346,16 @@ function main() {
     }
   } else {
     console.log(`Validated ${metaFiles.length} app meta.json file(s): all passed.`);
+  }
+
+  if (registryErrors.length > 0) {
+    hasFailures = true;
+    console.error(`\nRegistry validation failed: ${registryErrors.length} issue(s) found.`);
+    for (const error of registryErrors) {
+      console.error(`  - ${error}`);
+    }
+  } else {
+    console.log('Validated data/apps.json registry synchronization: passed.');
   }
 
   if (hasFailures) {
