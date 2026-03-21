@@ -230,7 +230,7 @@ function AppDetailContent({ app, id }) {
 
         {/* App Log */}
         <div className="mt-8">
-          <AppLog appId={id} />
+          <AppLog appId={id} suggestion={app.suggestion ?? null} />
         </div>
       </div>
     </>

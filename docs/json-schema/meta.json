@@ -73,6 +73,34 @@
       "enum": ["desktop", "mobile", "responsive"],
       "description": "Dominant input style: desktop (keyboard/mouse), mobile (touch/gestures), or responsive for both."
     },
+    "suggestion": {
+      "type": "object",
+      "description": "GitHub Issue that originated this app, if generated from a user suggestion.",
+      "required": ["issueNumber", "issueUrl", "prompt"],
+      "properties": {
+        "issueNumber": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "GitHub Issue number."
+        },
+        "issueUrl": {
+          "type": "string",
+          "description": "Full URL to the GitHub Issue."
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 1000,
+          "description": "The original suggestion text submitted by the user."
+        },
+        "requestor": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "GitHub username or display name of the person who submitted the suggestion."
+        }
+      },
+      "additionalProperties": false
+    },
     "generation": {
       "type": "object",
       "required": [

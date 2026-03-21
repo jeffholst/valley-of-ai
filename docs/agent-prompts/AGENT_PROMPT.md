@@ -133,7 +133,12 @@ For reasoning decisions and validation checks, use `--category reasoning` or `--
 
 ### Step 1: Idea selection
 1. Review `data/apps.json` to check the current app registry and avoid starting a duplicate or near-duplicate app.
-2. Check suggestions files if present.
+2. Check for approved community suggestions:
+   ```bash
+   gh issue list --label "status:approved" --state open --json number,title,body,url --limit 5
+   ```
+   - If one or more approved issues are returned, pick the most suitable one. Note its `number`, `url`, and extract the description from the issue `body` (the text under `### Description`). Also extract the requestor name from the `**Requestor:**` line if present.
+   - If no approved issues exist, proceed with a freely chosen concept.
 3. Choose one app concept and category. Derive `<app-id>` as a kebab-case slug (e.g., `color-match-blitz`).
 4. ⚠️ Create the app folder: `apps/YYYY/MM/DD/<app-id>/`.
 5. Log the transaction start (this creates both log files):
@@ -258,6 +263,16 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 
 ### Step 5: Metadata
 Generate `meta.json` with all required fields: `id`, `name`, `shortDescription`, `thumbnail`, `createdAt`, `category`, `status`, `tags`, `homepagePath`, `inputMode`, `generation` (include agentName, llmModel, startTime, endTime, totalTokensIn/Out, runId, notes).
+
+If this app was built from an approved GitHub Issue (Step 1), also include a `suggestion` object:
+```json
+"suggestion": {
+  "issueNumber": <number>,
+  "issueUrl": "<full GitHub issue URL>",
+  "prompt": "<original description text from the issue body>",
+  "requestor": "<requestor name, or omit field if anonymous>"
+}
+```
 
 > **Note on `generation.endTime`:** Set it to your best estimate at this step. It will not be exact since the pipeline hasn't completed yet — that is acceptable. Do not leave it blank.
 
@@ -412,7 +427,13 @@ After all logging transactions are complete (Steps 1-14), perform the final log 
    ```
    This appends `TRANSACTION_END` to both `apps/YYYY/MM/DD/<app-id>/log.jsonl` and `logs/YYYY/MM/DD.jsonl`.
 
-3. **This is the FINAL COMMIT:** Verify all 16 log entries are present (TRANSACTION_START + seq 1–14 + TRANSACTION_END) in BOTH log files, then commit both:
+3. **If this app was built from a GitHub Issue suggestion**, close the issue and mark it implemented:
+   ```bash
+   gh issue edit <issue-number> --add-label "status:implemented" --remove-label "status:approved" --remove-label "status:pending"
+   gh issue close <issue-number> --comment "Built as [<app-name>](/apps/YYYY/MM/DD/<app-id>). Thanks for the suggestion!"
+   ```
+
+4. **This is the FINAL COMMIT:** Verify all 16 log entries are present (TRANSACTION_START + seq 1–14 + TRANSACTION_END) in BOTH log files, then commit both:
     ```bash
     git add apps/YYYY/MM/DD/<app-id>/log.jsonl logs/YYYY/MM/DD.jsonl
     git commit -m "chore: finalize transaction logs for <app-id>"

@@ -114,7 +114,7 @@ The dev server runs at `http://localhost:3000` with Next.js hot reload enabled.
 | Service | Purpose |
 |---------|---------|
 | [Supabase](https://supabase.com) | Storing and retrieving app votes |
-| [EmailJS](https://www.emailjs.com) | Emailing suggestions |
+| [GitHub Issues](https://docs.github.com/en/issues) | Persistent storage for community app suggestions |
 | [Google Analytics](https://analytics.google.com) | Analytic tracking |
 | [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) | Bot protection on suggestion form |
 
@@ -132,23 +132,23 @@ Then edit `.env` with your real values.
 - `.env.example`: Committed template with placeholder values.
 - `.env`: Your local runtime config (should contain real keys/IDs for local/dev/deploy use).
 
-**All environment variables use the `NEXT_PUBLIC_*` prefix** (Next.js convention for client-side access):
+Client-side variables use the `NEXT_PUBLIC_*` prefix (accessible in the browser). Server-side variables have no prefix (never exposed to the client).
 
-| Variable | Used For |
-|----------|----------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL for voting data |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key for client access |
-| `NEXT_PUBLIC_EMAILJS_SERVICE_ID` | EmailJS service for suggestion form delivery |
-| `NEXT_PUBLIC_EMAILJS_TEMPLATE_ID` | EmailJS template for suggestion email payload |
-| `NEXT_PUBLIC_EMAILJS_PUBLIC_KEY` | EmailJS browser public key |
-| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Cloudflare Turnstile site key for spam protection |
-| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | Google Analytics measurement ID (client-loaded) |
-| `NEXT_PUBLIC_MAIN_SITE_URL` | Main site URL used by app footer links |
-| `NEXT_PUBLIC_MAIN_SITE_NAME` | Main site name used by app footer link text |
-| `NEXT_PUBLIC_SOCIAL_X_URL` | X profile URL used in footer social links |
-| `NEXT_PUBLIC_SOCIAL_FACEBOOK_URL` | Facebook profile/page URL used in footer social links |
-| `NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL` | Instagram profile URL used in footer social links |
-| `NEXT_PUBLIC_GITHUB_URL` | Github repo |
+| Variable | Side | Used For |
+|----------|------|----------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Client | Supabase project URL for voting data |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Client | Supabase anonymous key for client access |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Client | Cloudflare Turnstile site key (production only; skipped in development) |
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | Client | Google Analytics measurement ID |
+| `NEXT_PUBLIC_MAIN_SITE_URL` | Client | Main site URL used by app footer links |
+| `NEXT_PUBLIC_MAIN_SITE_NAME` | Client | Main site name used by app footer link text |
+| `NEXT_PUBLIC_SOCIAL_X_URL` | Client | X profile URL used in footer social links |
+| `NEXT_PUBLIC_SOCIAL_FACEBOOK_URL` | Client | Facebook profile/page URL used in footer social links |
+| `NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL` | Client | Instagram profile URL used in footer social links |
+| `NEXT_PUBLIC_GITHUB_URL` | Client | GitHub repo URL |
+| `TURNSTILE_SECRET_KEY` | Server | Cloudflare Turnstile secret for server-side bot verification |
+| `GITHUB_SUGGESTIONS_TOKEN` | Server | Fine-grained PAT with Issues read/write for creating suggestion issues |
+| `GITHUB_REPO` | Server | Target repo for suggestions, e.g. `owner/repo-name` |
 
 If these values are missing, parts of the app may fail at runtime.
 
@@ -258,9 +258,6 @@ This is useful for documentation-only changes or quick fixes that don't require 
 │       ├── 📋 meta.json       # App metadata + generation info
 │       ├── 🖼️ thumbnail.svg   # Preview image
 │       └── 📄 index.html      # Self-contained HTML/CSS/JS app
-│
-├── 💡 suggestions/        # User-submitted app ideas
-│   └── 📁 YYYY/MM/*.json
 │
 ├── 📝 logs/               # Agent transaction logs (source)
 │   └── 📁 YYYY/MM/*.jsonl
@@ -372,20 +369,28 @@ Each app includes rich metadata in `meta.json`:
   "homepagePath": "index.html",
   "createdAt": "2026-03-06T21:30:00Z",
   "status": "active",
+  "suggestion": {
+    "issueNumber": 42,
+    "issueUrl": "https://github.com/owner/valley-of-ai/issues/42",
+    "prompt": "A card memory matching game with smooth flip animations.",
+    "requestor": "@jane"
+  },
   "generation": {
-    "agentName": "claude-opus-4.5",
-    "llmModel": "claude-opus-4.5",
+    "agentName": "Claude Code",
+    "llmModel": "claude-sonnet-4-6",
     "startTime": "2026-03-06T21:30:00Z",
     "endTime": "2026-03-06T21:35:00Z",
     "totalTokensIn": 6000,
     "totalTokensOut": 4500,
-    "runId": "run-2026-03-06-001",
+    "runId": "run-20260306T213000Z-a1b2c3",
     "notes": "Classic memory card game with CSS 3D animations."
   }
 }
 ```
 
-> 💡 **Note:** Votes are stored in Supabase, not in meta.json files.
+> 💡 **Notes:**
+> - Votes are stored in Supabase, not in `meta.json`.
+> - The `suggestion` field is optional — only present when the app was built from a community GitHub Issue suggestion.
 
 ---
 
@@ -483,8 +488,8 @@ Core stack used in this project:
 - **Jest** + **React Testing Library**: 17+ test cases covering components, utilities, and environment variables with coverage reporting.
 - **ESLint 9** + **Prettier**: Code quality enforcement (strict 0 warnings policy) and consistent formatting (100 char lines, single quotes).
 - **Supabase**: App voting data storage, retrieval, and real-time updates.
-- **EmailJS**: Suggestion form submission from the browser.
-- **Cloudflare Turnstile**: Bot protection on suggestion flow.
+- **GitHub Issues**: Persistent storage for community app suggestions, with label-based status workflow (`status:pending` → `status:approved` → `status:implemented`).
+- **Cloudflare Turnstile**: Bot protection on suggestion form (skipped automatically in development).
 - **Vercel**: Serverless deployment with automatic builds and edge caching.
 - **Plain HTML/CSS/JS in `apps/`**: Self-contained generated mini-apps (not Next.js-dependent).
 
