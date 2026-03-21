@@ -99,8 +99,9 @@
       .cell:nth-child(n + 19):nth-child(-n + 27),
       .cell:nth-child(n + 46):nth-child(-n + 54) { border-bottom: 2px solid var(--text); }
       .cell.fixed { color: color-mix(in srgb, var(--text), white 12%); }
-      .cell.selected { background: color-mix(in srgb, var(--accent-2), transparent 60%); transform: scale(0.97); }
+      .cell.selected { background: var(--accent-2); color: #fff; transform: scale(0.97); }
       .cell.same { background: color-mix(in srgb, var(--accent), transparent 78%); }
+      [data-theme='light'] .cell.same { background: color-mix(in srgb, var(--accent), transparent 40%); color: #fff; }
       .cell.error { background: color-mix(in srgb, var(--bad), transparent 70%); color: #fff; }
       .controls {
         display: grid;
@@ -118,7 +119,10 @@
         transition: transform 120ms ease, filter 120ms ease;
       }
       button:hover, button:focus-visible { transform: translateY(-1px); filter: brightness(1.1); }
-      .numpad { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(9, minmax(36px, 1fr)); gap: 0.35rem; }
+      .numpad { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(9, 1fr); gap: 0.35rem; }
+      .difficulty { display: flex; gap: 0.35rem; margin-bottom: 0.75rem; }
+      .diff-btn { flex: 1; }
+      .diff-btn.active { background: var(--accent-2); color: #fff; }
       .message { min-height: 1.5rem; font-weight: 600; color: var(--good); }
       .message.bad { color: var(--bad); }
       @media (min-width: 900px) {
@@ -139,6 +143,11 @@
       </section>
       <section class="board-wrap">
         <p class="message" id="message">Tap a cell, then enter 1-9 or use your keyboard.</p>
+        <div class="difficulty">
+          <button class="diff-btn" data-diff="easy" type="button">Easy</button>
+          <button class="diff-btn" data-diff="medium" type="button">Medium</button>
+          <button class="diff-btn active" data-diff="hard" type="button">Hard</button>
+        </div>
         <div class="controls">
           <button id="eraseBtn" type="button">Erase</button>
           <button id="hintBtn" type="button">Hint</button>
@@ -150,17 +159,62 @@
       </section>
     </main>
     <script>
-      const puzzle =
-        '530070000600195000098000060800060003400803001700020006060000280000419005000080079';
-      const solution =
-        '534678912672195348198342567859761423426853791713924856961537284287419635345286179';
+      const REVEAL_COUNT = { easy: 45, medium: 35, hard: 25 };
+      let currentDifficulty = 'hard';
+      let currentPuzzle;
+      let currentSolution;
+
+      function generateSolution() {
+        const board = Array(81).fill(0);
+        function isValid(pos, num) {
+          const row = Math.floor(pos / 9);
+          const col = pos % 9;
+          const boxRow = Math.floor(row / 3) * 3;
+          const boxCol = Math.floor(col / 3) * 3;
+          for (let i = 0; i < 9; i++) {
+            if (board[row * 9 + i] === num) return false;
+            if (board[i * 9 + col] === num) return false;
+            if (board[(boxRow + Math.floor(i / 3)) * 9 + (boxCol + (i % 3))] === num) return false;
+          }
+          return true;
+        }
+        function solve(pos) {
+          if (pos === 81) return true;
+          if (board[pos] !== 0) return solve(pos + 1);
+          const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9].sort(() => Math.random() - 0.5);
+          for (const num of nums) {
+            if (isValid(pos, num)) {
+              board[pos] = num;
+              if (solve(pos + 1)) return true;
+              board[pos] = 0;
+            }
+          }
+          return false;
+        }
+        solve(0);
+        return board.map(String).join('');
+      }
+
+      function generatePuzzle(difficulty) {
+        currentSolution = generateSolution();
+        const reveal = REVEAL_COUNT[difficulty];
+        const indices = Array.from({ length: 81 }, (_, i) => i);
+        for (let i = indices.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [indices[i], indices[j]] = [indices[j], indices[i]];
+        }
+        const shown = new Set(indices.slice(0, reveal));
+        return currentSolution.split('').map((d, i) => (shown.has(i) ? d : '0')).join('');
+      }
+
       const boardEl = document.getElementById('board');
       const timerEl = document.getElementById('timer');
       const mistakesEl = document.getElementById('mistakes');
       const filledEl = document.getElementById('filled');
       const messageEl = document.getElementById('message');
       const numpad = document.getElementById('numpad');
-      const state = { values: puzzle.split(''), selected: 0, mistakes: 0, start: Date.now(), done: false };
+      currentPuzzle = generatePuzzle(currentDifficulty);
+      const state = { values: currentPuzzle.split(''), selected: 0, mistakes: 0, start: Date.now(), done: false };
 
       function formatTime(seconds) {
         const min = String(Math.floor(seconds / 60)).padStart(2, '0');
@@ -178,10 +232,10 @@
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.className = 'cell';
-          if (puzzle[index] !== '0') btn.classList.add('fixed');
+          if (currentPuzzle[index] !== '0') btn.classList.add('fixed');
           if (index === state.selected) btn.classList.add('selected');
           if (selectedVal !== '0' && value === selectedVal) btn.classList.add('same');
-          if (value !== '0' && value !== solution[index]) btn.classList.add('error');
+          if (value !== '0' && value !== currentSolution[index]) btn.classList.add('error');
           btn.textContent = value === '0' ? '' : value;
           btn.setAttribute('aria-label', `row ${Math.floor(index / 9) + 1} col ${(index % 9) + 1}`);
           btn.addEventListener('click', () => {
@@ -195,9 +249,9 @@
         mistakesEl.textContent = `${state.mistakes}/3`;
       }
       function place(number) {
-        if (state.done || puzzle[state.selected] !== '0') return;
+        if (state.done || currentPuzzle[state.selected] !== '0') return;
         state.values[state.selected] = String(number);
-        if (String(number) !== solution[state.selected]) {
+        if (String(number) !== currentSolution[state.selected]) {
           state.mistakes += 1;
           setMsg('Not quite — keep going.', true);
           if (state.mistakes >= 3) {
@@ -207,31 +261,31 @@
         } else {
           setMsg('Nice move!');
         }
-        if (state.values.join('') === solution) {
+        if (state.values.join('') === currentSolution) {
           state.done = true;
           setMsg('Solved! You win Sudoku Sprint 🎉');
         }
         render();
       }
       function erase() {
-        if (puzzle[state.selected] === '0' && !state.done) state.values[state.selected] = '0';
+        if (currentPuzzle[state.selected] === '0' && !state.done) state.values[state.selected] = '0';
         render();
       }
       function hint() {
-        if (state.done || puzzle[state.selected] !== '0') return;
-        state.values[state.selected] = solution[state.selected];
+        if (state.done || currentPuzzle[state.selected] !== '0') return;
+        state.values[state.selected] = currentSolution[state.selected];
         setMsg('Hint used.');
         render();
       }
       function checkBoard() {
         const wrong = state.values.reduce(
-          (count, value, index) => (value !== '0' && value !== solution[index] ? count + 1 : count),
+          (count, value, index) => (value !== '0' && value !== currentSolution[index] ? count + 1 : count),
           0,
         );
         setMsg(wrong === 0 ? 'Board looks good so far.' : `${wrong} cell(s) incorrect.`, wrong > 0);
       }
       function restart() {
-        state.values = puzzle.split('');
+        state.values = currentPuzzle.split('');
         state.mistakes = 0;
         state.start = Date.now();
         state.done = false;
@@ -239,8 +293,27 @@
         render();
       }
       function newGame() {
-        restart();
-        state.selected = Math.floor(Math.random() * 81);
+        currentPuzzle = generatePuzzle(currentDifficulty);
+        state.values = currentPuzzle.split('');
+        state.mistakes = 0;
+        state.start = Date.now();
+        state.done = false;
+        state.selected = 0;
+        setMsg('New puzzle. Good luck!');
+        render();
+      }
+      function setDifficulty(diff) {
+        currentDifficulty = diff;
+        document.querySelectorAll('.diff-btn').forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.diff === diff);
+        });
+        currentPuzzle = generatePuzzle(diff);
+        state.values = currentPuzzle.split('');
+        state.mistakes = 0;
+        state.start = Date.now();
+        state.done = false;
+        state.selected = 0;
+        setMsg(`${diff.charAt(0).toUpperCase() + diff.slice(1)} puzzle. Good luck!`);
         render();
       }
       for (let n = 1; n <= 9; n += 1) {
@@ -266,6 +339,9 @@
       document.getElementById('checkBtn').onclick = checkBoard;
       document.getElementById('restartBtn').onclick = restart;
       document.getElementById('newBtn').onclick = newGame;
+      document.querySelectorAll('.diff-btn').forEach((btn) => {
+        btn.addEventListener('click', () => setDifficulty(btn.dataset.diff));
+      });
       setInterval(() => {
         timerEl.textContent = formatTime(Math.floor((Date.now() - state.start) / 1000));
       }, 500);
