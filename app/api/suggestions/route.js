@@ -55,7 +55,8 @@ export async function POST(request) {
     if (!turnstileToken) {
       return Response.json({ error: 'Missing required fields' }, { status: 400 });
     }
-    const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || '';
+    const ip =
+      request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || '';
     const turnstileOk = await verifyTurnstile(turnstileToken, ip);
     if (!turnstileOk) {
       return Response.json({ error: 'Bot verification failed' }, { status: 403 });
