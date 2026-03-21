@@ -1,5 +1,38 @@
 [
   {
+    "id": "2026/03/21/morse-code-radio",
+    "name": "Morse Code Radio",
+    "shortDescription": "Translate text to morse code, hear it transmitted with Web Audio API, and key manually with the on-screen or spacebar key.",
+    "thumbnailUrl": "/apps/2026/03/21/morse-code-radio/thumbnail.svg",
+    "createdAt": "2026-03-21T12:21:50Z",
+    "year": 2026,
+    "month": 3,
+    "day": 21,
+    "category": "Education",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "morse-code",
+      "audio",
+      "educational",
+      "translator",
+      "web-audio-api",
+      "radio"
+    ],
+    "route": "/apps/2026/03/21/morse-code-radio",
+    "appPath": "/apps/2026/03/21/morse-code-radio/index.html",
+    "generation": {
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6",
+      "startTime": "2026-03-21T12:21:50Z",
+      "endTime": "2026-03-21T12:35:00Z",
+      "totalTokensIn": 9100,
+      "totalTokensOut": 12300,
+      "runId": "run-20260321T122150Z-46a700",
+      "notes": "Static HTML/CSS/JS app with Web Audio API oscillator for morse code audio, canvas oscilloscope visualization, animated dot/dash symbols, manual key button, speed/frequency sliders, and collapsible reference chart. Mobile-first responsive design with touch support."
+    }
+  },
+  {
     "id": "2026/03/21/pattern-pulse-memory",
     "name": "Pattern Pulse Memory",
     "shortDescription": "A polished Simon-style memory game with keyboard, mouse, and touch controls.",

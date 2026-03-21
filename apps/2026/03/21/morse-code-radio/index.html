@@ -1,0 +1,1258 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Morse Code Radio - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+    <meta name="voa-github-url" content="__GITHUB_URL__">
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #0a0f1a;
+        --surface: #111827;
+        --surface2: #1a2540;
+        --text: #e2e8f0;
+        --text-muted: #64748b;
+        --accent: #22d3ee;
+        --accent2: #0ea5e9;
+        --accent-glow: rgba(34, 211, 238, 0.35);
+        --dot-color: #22d3ee;
+        --dash-color: #0ea5e9;
+        --danger: #f87171;
+        --success: #4ade80;
+        --border: rgba(34, 211, 238, 0.2);
+        --radius: 8px;
+      }
+
+      [data-theme='light'] {
+        --bg: #f0f4f8;
+        --surface: #ffffff;
+        --surface2: #e2e8f0;
+        --text: #1e293b;
+        --text-muted: #64748b;
+        --accent: #0284c7;
+        --accent2: #0369a1;
+        --accent-glow: rgba(2, 132, 199, 0.2);
+        --dot-color: #0284c7;
+        --dash-color: #0369a1;
+        --border: rgba(2, 132, 199, 0.25);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'Courier New', Courier, monospace;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .app-container {
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 16px 12px 32px;
+      }
+
+      /* ── Header ─────────────────────────────────────── */
+      .app-header {
+        text-align: center;
+        margin-bottom: 18px;
+      }
+
+      .app-title {
+        font-size: clamp(1.3rem, 4vw, 1.9rem);
+        font-weight: 700;
+        color: var(--accent);
+        text-shadow: 0 0 18px var(--accent-glow);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .app-subtitle {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-top: 4px;
+        letter-spacing: 0.12em;
+      }
+
+      /* ── Oscilloscope display ───────────────────────── */
+      .scope-wrapper {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 10px;
+        margin-bottom: 14px;
+        box-shadow: 0 0 24px var(--accent-glow), inset 0 0 40px rgba(0, 0, 0, 0.4);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .scope-label {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+
+      #scope-canvas {
+        width: 100%;
+        height: 80px;
+        display: block;
+        border-radius: 4px;
+        background: #050d1a;
+      }
+
+      /* ── Morse signal display ───────────────────────── */
+      .morse-display {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px;
+        margin-bottom: 14px;
+        min-height: 70px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .morse-label {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+      }
+
+      .morse-symbols {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        min-height: 36px;
+      }
+
+      .morse-char-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .morse-char-letter {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .morse-char-code {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+      }
+
+      .morse-dot,
+      .morse-dash {
+        border-radius: 50%;
+        background: var(--text-muted);
+        transition: background 0.1s, box-shadow 0.1s;
+      }
+
+      .morse-dot {
+        width: 8px;
+        height: 8px;
+      }
+
+      .morse-dash {
+        width: 22px;
+        height: 8px;
+        border-radius: 4px;
+      }
+
+      .morse-dot.active {
+        background: var(--dot-color);
+        box-shadow: 0 0 10px var(--accent-glow);
+      }
+
+      .morse-dash.active {
+        background: var(--dash-color);
+        box-shadow: 0 0 10px var(--accent-glow);
+      }
+
+      /* ── Decoded output ─────────────────────────────── */
+      .decoded-display {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 10px 14px;
+        font-size: 0.85rem;
+        color: var(--success);
+        min-height: 38px;
+        letter-spacing: 0.08em;
+        word-break: break-all;
+        text-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+        margin-bottom: 14px;
+      }
+
+      .decoded-placeholder {
+        color: var(--text-muted);
+        text-shadow: none;
+        font-style: italic;
+      }
+
+      /* ── Input area ─────────────────────────────────── */
+      .input-section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px;
+        margin-bottom: 14px;
+      }
+
+      .input-label {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        display: block;
+      }
+
+      #text-input {
+        width: 100%;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--text);
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1rem;
+        padding: 10px 12px;
+        resize: none;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+
+      #text-input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px var(--accent-glow);
+      }
+
+      #text-input::placeholder {
+        color: var(--text-muted);
+        font-style: italic;
+      }
+
+      /* ── Controls ───────────────────────────────────── */
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      @media (max-width: 480px) {
+        .controls {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .control-group {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .control-group label {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .control-value {
+        color: var(--accent);
+        font-size: 0.8rem;
+      }
+
+      input[type='range'] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 4px;
+        background: var(--surface2);
+        border-radius: 2px;
+        outline: none;
+        cursor: pointer;
+      }
+
+      input[type='range']::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 8px var(--accent-glow);
+        cursor: pointer;
+      }
+
+      input[type='range']::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 8px var(--accent-glow);
+        cursor: pointer;
+        border: none;
+      }
+
+      /* ── Buttons ────────────────────────────────────── */
+      .btn-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        flex: 1;
+        min-width: 100px;
+        padding: 12px 18px;
+        border: none;
+        border-radius: var(--radius);
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.15s;
+        min-height: 44px;
+        touch-action: manipulation;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: #0a0f1a;
+        box-shadow: 0 0 16px var(--accent-glow);
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 0 24px var(--accent-glow);
+      }
+
+      .btn-primary:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      .btn-secondary {
+        background: var(--surface2);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      .btn-secondary:hover:not(:disabled) {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .btn-danger {
+        background: transparent;
+        color: var(--danger);
+        border: 1px solid var(--danger);
+      }
+
+      .btn-danger:hover:not(:disabled) {
+        background: rgba(248, 113, 113, 0.1);
+      }
+
+      .btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .btn.playing {
+        background: var(--danger);
+        box-shadow: 0 0 16px rgba(248, 113, 113, 0.4);
+        color: #fff;
+        animation: pulse-btn 1s infinite;
+      }
+
+      @keyframes pulse-btn {
+        0%,
+        100% {
+          box-shadow: 0 0 16px rgba(248, 113, 113, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 28px rgba(248, 113, 113, 0.7);
+        }
+      }
+
+      /* ── Reference table ────────────────────────────── */
+      .reference-section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        margin-bottom: 14px;
+      }
+
+      .reference-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .reference-header-title {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+      }
+
+      .reference-toggle {
+        font-size: 0.75rem;
+        color: var(--accent);
+        transition: transform 0.2s;
+      }
+
+      .reference-toggle.open {
+        transform: rotate(180deg);
+      }
+
+      .reference-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+        gap: 1px;
+        background: var(--border);
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+
+      .reference-grid.open {
+        max-height: 500px;
+      }
+
+      .ref-cell {
+        background: var(--surface);
+        padding: 8px 6px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        transition: background 0.1s;
+      }
+
+      .ref-cell:hover {
+        background: var(--surface2);
+      }
+
+      .ref-char {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--accent);
+      }
+
+      .ref-code {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        letter-spacing: 0.05em;
+      }
+
+      /* ── Status bar ─────────────────────────────────── */
+      .status-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 14px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        letter-spacing: 0.08em;
+      }
+
+      .status-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--text-muted);
+        transition: background 0.1s, box-shadow 0.1s;
+      }
+
+      .status-indicator.transmitting {
+        background: var(--accent);
+        box-shadow: 0 0 8px var(--accent-glow);
+        animation: blink-indicator 0.5s step-end infinite;
+      }
+
+      @keyframes blink-indicator {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.2;
+        }
+      }
+
+      .status-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* ── Morse key (manual tap) ──────────────────────── */
+      .key-section {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 14px;
+      }
+
+      .morse-key {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .morse-key-label {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+      }
+
+      #key-btn {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--surface2);
+        border: 2px solid var(--border);
+        color: var(--text);
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.08s;
+        touch-action: manipulation;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      #key-btn:active,
+      #key-btn.keyed {
+        background: var(--accent);
+        color: #0a0f1a;
+        border-color: var(--accent);
+        box-shadow: 0 0 24px var(--accent-glow);
+        transform: scale(0.93);
+      }
+
+      .key-hint {
+        font-size: 0.6rem;
+        color: var(--text-muted);
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="app-header">
+        <div class="app-title">&#x25BC; Morse Code Radio</div>
+        <div class="app-subtitle">Translate · Transmit · Train</div>
+      </div>
+
+      <!-- Oscilloscope -->
+      <div class="scope-wrapper">
+        <div class="scope-label">&#x25A0; Signal Monitor</div>
+        <canvas id="scope-canvas"></canvas>
+      </div>
+
+      <!-- Morse symbols display -->
+      <div class="morse-display">
+        <div class="morse-label">&#x25A0; Morse Signal</div>
+        <div class="morse-symbols" id="morse-symbols">
+          <span style="color: var(--text-muted); font-size: 0.8rem; font-style: italic"
+            >Enter text below to see morse code...</span
+          >
+        </div>
+      </div>
+
+      <!-- Decoded output -->
+      <div class="decoded-display" id="decoded-display">
+        <span class="decoded-placeholder">Decoded output appears here...</span>
+      </div>
+
+      <!-- Text input -->
+      <div class="input-section">
+        <label class="input-label" for="text-input">&#x25A0; Text to Transmit</label>
+        <textarea
+          id="text-input"
+          rows="2"
+          maxlength="200"
+          placeholder="Type your message here... (max 200 chars)"
+          aria-label="Text to convert to morse code"
+        ></textarea>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls">
+        <div class="control-group">
+          <label for="speed-slider">
+            Speed (WPM)
+            <span class="control-value" id="wpm-value">15</span>
+          </label>
+          <input
+            type="range"
+            id="speed-slider"
+            min="5"
+            max="40"
+            value="15"
+            aria-label="Transmission speed in words per minute"
+          />
+        </div>
+        <div class="control-group">
+          <label for="freq-slider">
+            Tone (Hz)
+            <span class="control-value" id="freq-value">700</span>
+          </label>
+          <input
+            type="range"
+            id="freq-slider"
+            min="400"
+            max="1000"
+            value="700"
+            step="50"
+            aria-label="Tone frequency in hertz"
+          />
+        </div>
+      </div>
+
+      <!-- Play buttons -->
+      <div class="btn-row" style="margin-bottom: 14px">
+        <button class="btn btn-primary" id="play-btn" aria-label="Transmit morse code">
+          ▶ Transmit
+        </button>
+        <button class="btn btn-secondary" id="stop-btn" disabled aria-label="Stop transmission">
+          ■ Stop
+        </button>
+        <button class="btn btn-danger" id="clear-btn" aria-label="Clear input">✕ Clear</button>
+      </div>
+
+      <!-- Manual key -->
+      <div class="key-section">
+        <div class="morse-key">
+          <div class="morse-key-label">&#x25A0; Manual Key</div>
+          <button id="key-btn" aria-label="Manual morse key - hold to transmit">KEY</button>
+          <div class="key-hint">Hold (or Space) to key</div>
+        </div>
+      </div>
+
+      <!-- Reference chart -->
+      <div class="reference-section">
+        <div class="reference-header" id="ref-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="ref-grid">
+          <span class="reference-header-title">&#x25A0; Morse Reference Chart</span>
+          <span class="reference-toggle" id="ref-arrow">&#x25BC;</span>
+        </div>
+        <div class="reference-grid" id="ref-grid" role="list"></div>
+      </div>
+
+      <!-- Status bar -->
+      <div class="status-bar">
+        <div class="status-left">
+          <div class="status-indicator" id="status-indicator"></div>
+          <span id="status-text">STANDBY</span>
+        </div>
+        <span id="char-count">0 / 200 chars</span>
+      </div>
+    </div>
+
+    <script>
+      // ── Morse code table ────────────────────────────────
+      const MORSE = {
+        A: '.-',
+        B: '-...',
+        C: '-.-.',
+        D: '-..',
+        E: '.',
+        F: '..-.',
+        G: '--.',
+        H: '....',
+        I: '..',
+        J: '.---',
+        K: '-.-',
+        L: '.-..',
+        M: '--',
+        N: '-.',
+        O: '---',
+        P: '.--.',
+        Q: '--.-',
+        R: '.-.',
+        S: '...',
+        T: '-',
+        U: '..-',
+        V: '...-',
+        W: '.--',
+        X: '-..-',
+        Y: '-.--',
+        Z: '--..',
+        '0': '-----',
+        '1': '.----',
+        '2': '..---',
+        '3': '...--',
+        '4': '....-',
+        '5': '.....',
+        '6': '-....',
+        '7': '--...',
+        '8': '---..',
+        '9': '----.',
+        '.': '.-.-.-',
+        ',': '--..--',
+        '?': '..--..',
+        "'": '.----.',
+        '!': '-.-.--',
+        '/': '-..-.',
+        '(': '-.--.',
+        ')': '-.--.-',
+        '&': '.-...',
+        ':': '---...',
+        ';': '-.-.-.',
+        '=': '-...-',
+        '+': '.-.-.',
+        '-': '-....-',
+        _: '..--.-',
+        '"': '.-..-.',
+        $: '...-..-',
+        '@': '.--.-.',
+      };
+
+      // ── State ────────────────────────────────────────────
+      let audioCtx = null;
+      let playing = false;
+      let stopRequested = false;
+      let keyOscillator = null;
+      let keyGain = null;
+      let keyActive = false;
+      let scopeAnimId = null;
+      let signalLevel = 0;
+      let manualKeyBuffer = '';
+      let manualKeyStart = 0;
+
+      // ── DOM refs ─────────────────────────────────────────
+      const textInput = document.getElementById('text-input');
+      const playBtn = document.getElementById('play-btn');
+      const stopBtn = document.getElementById('stop-btn');
+      const clearBtn = document.getElementById('clear-btn');
+      const keyBtn = document.getElementById('key-btn');
+      const speedSlider = document.getElementById('speed-slider');
+      const freqSlider = document.getElementById('freq-slider');
+      const wpmValue = document.getElementById('wpm-value');
+      const freqValue = document.getElementById('freq-value');
+      const morseSymbols = document.getElementById('morse-symbols');
+      const decodedDisplay = document.getElementById('decoded-display');
+      const statusIndicator = document.getElementById('status-indicator');
+      const statusText = document.getElementById('status-text');
+      const charCount = document.getElementById('char-count');
+      const scopeCanvas = document.getElementById('scope-canvas');
+      const refToggle = document.getElementById('ref-toggle');
+      const refArrow = document.getElementById('ref-arrow');
+      const refGrid = document.getElementById('ref-grid');
+
+      const ctx2d = scopeCanvas.getContext('2d');
+
+      // ── Audio context init ───────────────────────────────
+      function getAudioCtx() {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        return audioCtx;
+      }
+
+      // ── Timing helpers ───────────────────────────────────
+      function getUnitMs() {
+        const wpm = parseInt(speedSlider.value, 10);
+        // PARIS standard: 1 WPM = 50 units/min → unit = 60000/(50*wpm)
+        return 1200 / wpm;
+      }
+
+      // ── Tone playback ────────────────────────────────────
+      function playTone(durationMs) {
+        return new Promise(resolve => {
+          const ac = getAudioCtx();
+          const osc = ac.createOscillator();
+          const gain = ac.createGain();
+          const freq = parseInt(freqSlider.value, 10);
+          const now = ac.currentTime;
+          const dur = durationMs / 1000;
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+          gain.gain.setValueAtTime(0, now);
+          gain.gain.linearRampToValueAtTime(0.7, now + 0.005);
+          gain.gain.setValueAtTime(0.7, now + dur - 0.005);
+          gain.gain.linearRampToValueAtTime(0, now + dur);
+
+          osc.connect(gain);
+          gain.connect(ac.destination);
+          osc.start(now);
+          osc.stop(now + dur);
+          osc.onended = resolve;
+
+          signalLevel = 1;
+        });
+      }
+
+      function silence(durationMs) {
+        return new Promise(resolve => {
+          signalLevel = 0;
+          setTimeout(resolve, durationMs);
+        });
+      }
+
+      // ── Transmit text ────────────────────────────────────
+      async function transmitText(text) {
+        const unit = getUnitMs();
+        const chars = text.toUpperCase().split('');
+        let charIdx = 0;
+        let symIdx = 0;
+
+        // Build character sequence
+        const sequence = [];
+        for (const ch of chars) {
+          if (ch === ' ') {
+            sequence.push({ type: 'space' });
+          } else if (MORSE[ch]) {
+            sequence.push({ type: 'char', ch, code: MORSE[ch] });
+          }
+        }
+
+        // Highlight helper
+        const allGroups = morseSymbols.querySelectorAll('.morse-char-group');
+
+        function highlightSymbol(groupEl, symIndex) {
+          const elems = groupEl.querySelectorAll('.morse-dot, .morse-dash');
+          elems.forEach((el, i) => {
+            if (i === symIndex) el.classList.add('active');
+            else el.classList.remove('active');
+          });
+        }
+
+        function clearHighlight(groupEl) {
+          groupEl.querySelectorAll('.morse-dot, .morse-dash').forEach(el => el.classList.remove('active'));
+        }
+
+        let groupIdx = 0;
+        for (const item of sequence) {
+          if (stopRequested) break;
+
+          if (item.type === 'space') {
+            // Word gap = 7 units (already 3 from last char gap) → 4 more
+            await silence(unit * 4);
+            groupIdx++;
+            continue;
+          }
+
+          const groupEl = allGroups[groupIdx];
+          const syms = item.code.split('');
+
+          for (let si = 0; si < syms.length; si++) {
+            if (stopRequested) break;
+            if (groupEl) highlightSymbol(groupEl, si);
+            const dur = syms[si] === '.' ? unit : unit * 3;
+            await playTone(dur);
+            signalLevel = 0;
+            if (si < syms.length - 1) await silence(unit); // inter-element gap
+          }
+
+          if (groupEl) clearHighlight(groupEl);
+          // Inter-character gap = 3 units
+          if (!stopRequested) await silence(unit * 3);
+          groupIdx++;
+        }
+      }
+
+      // ── Build morse display ──────────────────────────────
+      function buildMorseDisplay(text) {
+        const upper = text.toUpperCase();
+        const fragment = document.createDocumentFragment();
+        let hasContent = false;
+
+        for (const ch of upper) {
+          if (ch === ' ') {
+            const spacer = document.createElement('div');
+            spacer.style.width = '14px';
+            fragment.appendChild(spacer);
+            continue;
+          }
+          const code = MORSE[ch];
+          if (!code) continue;
+          hasContent = true;
+
+          const group = document.createElement('div');
+          group.className = 'morse-char-group';
+
+          const letter = document.createElement('div');
+          letter.className = 'morse-char-letter';
+          letter.textContent = ch;
+
+          const codeRow = document.createElement('div');
+          codeRow.className = 'morse-char-code';
+
+          for (const sym of code) {
+            const el = document.createElement('div');
+            el.className = sym === '.' ? 'morse-dot' : 'morse-dash';
+            codeRow.appendChild(el);
+          }
+
+          group.appendChild(letter);
+          group.appendChild(codeRow);
+          fragment.appendChild(group);
+        }
+
+        morseSymbols.innerHTML = '';
+        if (hasContent) {
+          morseSymbols.appendChild(fragment);
+        } else {
+          morseSymbols.innerHTML =
+            '<span style="color: var(--text-muted); font-size: 0.8rem; font-style: italic">Enter text below to see morse code...</span>';
+        }
+      }
+
+      // ── Decode morse to text ─────────────────────────────
+      function decodeMorse(morseStr) {
+        const reverseMorse = Object.fromEntries(Object.entries(MORSE).map(([k, v]) => [v, k]));
+        const words = morseStr.trim().split('   '); // 3 spaces = word gap
+        return words
+          .map(word =>
+            word
+              .split(' ')
+              .map(code => reverseMorse[code] || '?')
+              .join('')
+          )
+          .join(' ');
+      }
+
+      // ── Oscilloscope renderer ────────────────────────────
+      function resizeCanvas() {
+        scopeCanvas.width = scopeCanvas.offsetWidth * window.devicePixelRatio;
+        scopeCanvas.height = scopeCanvas.offsetHeight * window.devicePixelRatio;
+        ctx2d.scale(window.devicePixelRatio, window.devicePixelRatio);
+      }
+
+      let scopePhase = 0;
+      function drawScope() {
+        const w = scopeCanvas.offsetWidth;
+        const h = scopeCanvas.offsetHeight;
+        const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+
+        // Clear
+        ctx2d.fillStyle = isDark ? '#050d1a' : '#e8f0f8';
+        ctx2d.fillRect(0, 0, w, h);
+
+        // Grid lines
+        ctx2d.strokeStyle = isDark ? 'rgba(34,211,238,0.06)' : 'rgba(2,132,199,0.08)';
+        ctx2d.lineWidth = 1;
+        for (let x = 0; x < w; x += 40) {
+          ctx2d.beginPath();
+          ctx2d.moveTo(x, 0);
+          ctx2d.lineTo(x, h);
+          ctx2d.stroke();
+        }
+        for (let y = 0; y < h; y += 20) {
+          ctx2d.beginPath();
+          ctx2d.moveTo(0, y);
+          ctx2d.lineTo(w, y);
+          ctx2d.stroke();
+        }
+
+        // Waveform
+        const amplitude = signalLevel > 0 ? h * 0.38 : h * 0.06;
+        const freq = parseInt(freqSlider.value, 10);
+        const cycles = (freq / 200) * 2;
+        scopePhase += signalLevel > 0 ? 0.12 : 0.02;
+
+        ctx2d.beginPath();
+        ctx2d.strokeStyle = isDark ? `rgba(34,211,238,${signalLevel > 0 ? 0.9 : 0.3})` : `rgba(2,132,199,${signalLevel > 0 ? 0.9 : 0.25})`;
+        ctx2d.lineWidth = signalLevel > 0 ? 2 : 1;
+        ctx2d.shadowBlur = signalLevel > 0 ? 12 : 0;
+        ctx2d.shadowColor = isDark ? '#22d3ee' : '#0284c7';
+
+        const centerY = h / 2;
+        for (let px = 0; px <= w; px++) {
+          const t = (px / w) * cycles * Math.PI * 2 + scopePhase;
+          const y = centerY + Math.sin(t) * amplitude;
+          if (px === 0) ctx2d.moveTo(px, y);
+          else ctx2d.lineTo(px, y);
+        }
+        ctx2d.stroke();
+        ctx2d.shadowBlur = 0;
+
+        scopeAnimId = requestAnimationFrame(drawScope);
+      }
+
+      // ── Reference chart ──────────────────────────────────
+      function buildRefGrid() {
+        const entries = Object.entries(MORSE);
+        const frag = document.createDocumentFragment();
+        for (const [ch, code] of entries) {
+          const cell = document.createElement('div');
+          cell.className = 'ref-cell';
+          cell.setAttribute('role', 'listitem');
+          cell.title = `Click to append "${ch}" to input`;
+          cell.setAttribute('tabindex', '0');
+
+          const charEl = document.createElement('div');
+          charEl.className = 'ref-char';
+          charEl.textContent = ch;
+
+          const codeEl = document.createElement('div');
+          codeEl.className = 'ref-code';
+          codeEl.textContent = code;
+
+          cell.appendChild(charEl);
+          cell.appendChild(codeEl);
+          cell.addEventListener('click', () => {
+            const pos = textInput.selectionStart;
+            const val = textInput.value;
+            textInput.value = val.slice(0, pos) + ch.toLowerCase() + val.slice(pos);
+            textInput.setSelectionRange(pos + 1, pos + 1);
+            textInput.focus();
+            updateDisplay();
+          });
+          cell.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              cell.click();
+            }
+          });
+          frag.appendChild(cell);
+        }
+        refGrid.appendChild(frag);
+      }
+
+      // ── Update display on input ──────────────────────────
+      function updateDisplay() {
+        const text = textInput.value;
+        charCount.textContent = `${text.length} / 200 chars`;
+        buildMorseDisplay(text);
+
+        // Build decoded text from morse
+        const upper = text.toUpperCase();
+        let morseStr = '';
+        let prev = '';
+        for (const ch of upper) {
+          if (ch === ' ') {
+            morseStr += '   ';
+            prev = 'space';
+          } else if (MORSE[ch]) {
+            if (prev && prev !== 'space') morseStr += ' ';
+            morseStr += MORSE[ch];
+            prev = 'char';
+          }
+        }
+
+        if (morseStr.trim()) {
+          const decoded = text.toUpperCase();
+          decodedDisplay.innerHTML = '';
+          decodedDisplay.textContent = decoded + '  ›  ' + morseStr.trim();
+        } else {
+          decodedDisplay.innerHTML = '<span class="decoded-placeholder">Decoded output appears here...</span>';
+        }
+      }
+
+      // ── Play / Stop ──────────────────────────────────────
+      async function startTransmission() {
+        const text = textInput.value.trim();
+        if (!text || playing) return;
+
+        playing = true;
+        stopRequested = false;
+        playBtn.textContent = '▶ Transmitting...';
+        playBtn.classList.add('playing');
+        playBtn.disabled = true;
+        stopBtn.disabled = false;
+        statusIndicator.classList.add('transmitting');
+        statusText.textContent = 'TRANSMITTING';
+
+        await transmitText(text);
+
+        playing = false;
+        signalLevel = 0;
+        playBtn.textContent = '▶ Transmit';
+        playBtn.classList.remove('playing');
+        playBtn.disabled = false;
+        stopBtn.disabled = true;
+        statusIndicator.classList.remove('transmitting');
+        statusText.textContent = stopRequested ? 'STOPPED' : 'COMPLETE';
+      }
+
+      function stopTransmission() {
+        stopRequested = true;
+        signalLevel = 0;
+      }
+
+      // ── Manual key ───────────────────────────────────────
+      function keyDown() {
+        if (keyActive) return;
+        keyActive = true;
+        keyBtn.classList.add('keyed');
+        manualKeyStart = Date.now();
+        signalLevel = 1;
+        statusIndicator.classList.add('transmitting');
+        statusText.textContent = 'KEYING';
+
+        const ac = getAudioCtx();
+        keyOscillator = ac.createOscillator();
+        keyGain = ac.createGain();
+        const freq = parseInt(freqSlider.value, 10);
+        keyOscillator.type = 'sine';
+        keyOscillator.frequency.setValueAtTime(freq, ac.currentTime);
+        keyGain.gain.setValueAtTime(0, ac.currentTime);
+        keyGain.gain.linearRampToValueAtTime(0.7, ac.currentTime + 0.005);
+        keyOscillator.connect(keyGain);
+        keyGain.connect(ac.destination);
+        keyOscillator.start();
+      }
+
+      function keyUp() {
+        if (!keyActive) return;
+        keyActive = false;
+        keyBtn.classList.remove('keyed');
+        signalLevel = 0;
+        statusIndicator.classList.remove('transmitting');
+        statusText.textContent = 'STANDBY';
+
+        if (keyOscillator) {
+          const ac = getAudioCtx();
+          keyGain.gain.linearRampToValueAtTime(0, ac.currentTime + 0.005);
+          keyOscillator.stop(ac.currentTime + 0.01);
+          keyOscillator = null;
+          keyGain = null;
+        }
+
+        const dur = Date.now() - manualKeyStart;
+        const unit = getUnitMs();
+        const sym = dur < unit * 2 ? '.' : '-';
+        manualKeyBuffer += sym;
+      }
+
+      // ── Event listeners ──────────────────────────────────
+      textInput.addEventListener('input', updateDisplay);
+
+      speedSlider.addEventListener('input', () => {
+        wpmValue.textContent = speedSlider.value;
+      });
+
+      freqSlider.addEventListener('input', () => {
+        freqValue.textContent = freqSlider.value;
+        if (keyOscillator) {
+          keyOscillator.frequency.setValueAtTime(
+            parseInt(freqSlider.value, 10),
+            getAudioCtx().currentTime
+          );
+        }
+      });
+
+      playBtn.addEventListener('click', startTransmission);
+      stopBtn.addEventListener('click', stopTransmission);
+      clearBtn.addEventListener('click', () => {
+        textInput.value = '';
+        updateDisplay();
+        stopTransmission();
+        statusText.textContent = 'STANDBY';
+      });
+
+      // Key button - pointer events
+      keyBtn.addEventListener('pointerdown', e => {
+        e.preventDefault();
+        keyDown();
+      });
+      keyBtn.addEventListener('pointerup', keyUp);
+      keyBtn.addEventListener('pointerleave', keyUp);
+
+      // Keyboard space for manual key (when not in textarea)
+      document.addEventListener('keydown', e => {
+        if (e.code === 'Space' && document.activeElement !== textInput) {
+          e.preventDefault();
+          keyDown();
+        }
+        if (e.code === 'Enter' && document.activeElement !== textInput) {
+          e.preventDefault();
+          startTransmission();
+        }
+      });
+      document.addEventListener('keyup', e => {
+        if (e.code === 'Space' && document.activeElement !== textInput) {
+          keyUp();
+        }
+      });
+
+      // Reference toggle
+      refToggle.addEventListener('click', toggleRef);
+      refToggle.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleRef();
+        }
+      });
+
+      function toggleRef() {
+        const isOpen = refGrid.classList.toggle('open');
+        refArrow.classList.toggle('open', isOpen);
+        refToggle.setAttribute('aria-expanded', isOpen);
+      }
+
+      // ── Resize observer ──────────────────────────────────
+      const ro = new ResizeObserver(() => resizeCanvas());
+      ro.observe(scopeCanvas);
+
+      // ── Init ─────────────────────────────────────────────
+      resizeCanvas();
+      buildRefGrid();
+      drawScope();
+      updateDisplay();
+    </script>
+  </body>
+</html>
