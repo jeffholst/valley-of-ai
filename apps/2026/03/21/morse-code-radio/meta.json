@@ -1,0 +1,23 @@
+{
+  "id": "morse-code-radio",
+  "name": "Morse Code Radio",
+  "shortDescription": "Translate text to morse code, hear it transmitted with Web Audio API, and key manually with the on-screen or spacebar key.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-21T12:21:50Z",
+  "category": "Education",
+  "votes": 0,
+  "status": "active",
+  "tags": ["morse-code", "audio", "educational", "translator", "web-audio-api", "radio"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "Claude Code",
+    "llmModel": "claude-sonnet-4-6",
+    "startTime": "2026-03-21T12:21:50Z",
+    "endTime": "2026-03-21T12:35:00Z",
+    "totalTokensIn": 9100,
+    "totalTokensOut": 12300,
+    "runId": "run-20260321T122150Z-46a700",
+    "notes": "Static HTML/CSS/JS app with Web Audio API oscillator for morse code audio, canvas oscilloscope visualization, animated dot/dash symbols, manual key button, speed/frequency sliders, and collapsible reference chart. Mobile-first responsive design with touch support."
+  }
+}
