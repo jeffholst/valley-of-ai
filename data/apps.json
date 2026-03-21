@@ -1,5 +1,44 @@
 [
   {
+    "id": "2026/03/21/tetris-classic",
+    "name": "Tetris Classic",
+    "shortDescription": "Classic Tetris with mobile-first touch controls, ghost piece, levels, and scoring.",
+    "thumbnailUrl": "/apps/2026/03/21/tetris-classic/thumbnail.svg",
+    "createdAt": "2026-03-21T14:55:39Z",
+    "year": 2026,
+    "month": 3,
+    "day": 21,
+    "category": "Games",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "tetris",
+      "puzzle",
+      "mobile",
+      "touch",
+      "classic",
+      "arcade"
+    ],
+    "route": "/apps/2026/03/21/tetris-classic",
+    "appPath": "/apps/2026/03/21/tetris-classic/index.html",
+    "generation": {
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6",
+      "startTime": "2026-03-21T14:55:39Z",
+      "endTime": "2026-03-21T15:10:00Z",
+      "totalTokensIn": 15000,
+      "totalTokensOut": 14000,
+      "runId": "run-20260321T145539Z-66db0e",
+      "notes": "Tetris clone with 7 tetrominoes, SRS wall kicks, ghost piece, touch swipe + button controls, keyboard support, level progression, and line scoring."
+    },
+    "suggestion": {
+      "issueNumber": 123,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/123",
+      "prompt": "Create a Tetris clone. Requirements: Make it work very well on phones in portrait orientation. Use touch-first controls with large buttons that are easy to tap. Also support keyboard controls for desktop testing. Gameplay: Classic Tetris rules: 10-column board, tetromino spawning, left/right/down movement, rotation with reasonable wall kicks or simple fallback logic, hard drop, line clearing, scoring/level progression/line count, game over detection. Include: next piece preview, score display, level display, lines cleared display, restart button, pause button.",
+      "requestor": "Jeff Holst"
+    }
+  },
+  {
     "id": "2026/03/21/morse-code-radio",
     "name": "Morse Code Radio",
     "shortDescription": "Translate text to morse code, hear it transmitted with Web Audio API, and key manually with the on-screen or spacebar key.",

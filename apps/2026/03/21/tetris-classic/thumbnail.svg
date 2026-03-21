@@ -1,0 +1,279 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#0c1220"/>
+    </linearGradient>
+    <linearGradient id="boardGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#172034"/>
+    </linearGradient>
+    <linearGradient id="hudGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#172134"/>
+    </linearGradient>
+    <linearGradient id="titleGlow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="cI" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#67e8f9"/>
+      <stop offset="100%" stop-color="#0891b2"/>
+    </linearGradient>
+    <linearGradient id="cO" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fde68a"/>
+      <stop offset="100%" stop-color="#ca8a04"/>
+    </linearGradient>
+    <linearGradient id="cT" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c084fc"/>
+      <stop offset="100%" stop-color="#7e22ce"/>
+    </linearGradient>
+    <linearGradient id="cS" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#86efac"/>
+      <stop offset="100%" stop-color="#15803d"/>
+    </linearGradient>
+    <linearGradient id="cZ" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fca5a5"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+    <linearGradient id="cJ" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#93c5fd"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="cL" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fdba74"/>
+      <stop offset="100%" stop-color="#c2410c"/>
+    </linearGradient>
+    <filter id="titleShadow" x="-10%" y="-40%" width="120%" height="180%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
+      <feFlood flood-color="#38bdf8" flood-opacity="0.8" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glowBlue" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+      <feFlood flood-color="#38bdf8" flood-opacity="0.6" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="boardShadow" x="-5%" y="-2%" width="110%" height="110%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.5" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.05" stroke="#94a3b8" stroke-width="0.5">
+    <line x1="0" y1="50" x2="800" y2="50"/><line x1="0" y1="100" x2="800" y2="100"/>
+    <line x1="0" y1="150" x2="800" y2="150"/><line x1="0" y1="200" x2="800" y2="200"/>
+    <line x1="0" y1="250" x2="800" y2="250"/><line x1="0" y1="300" x2="800" y2="300"/>
+    <line x1="0" y1="350" x2="800" y2="350"/><line x1="0" y1="400" x2="800" y2="400"/>
+    <line x1="50" y1="0" x2="50" y2="450"/><line x1="100" y1="0" x2="100" y2="450"/>
+    <line x1="150" y1="0" x2="150" y2="450"/><line x1="200" y1="0" x2="200" y2="450"/>
+    <line x1="250" y1="0" x2="250" y2="450"/><line x1="300" y1="0" x2="300" y2="450"/>
+    <line x1="350" y1="0" x2="350" y2="450"/><line x1="400" y1="0" x2="400" y2="450"/>
+    <line x1="450" y1="0" x2="450" y2="450"/><line x1="500" y1="0" x2="500" y2="450"/>
+    <line x1="550" y1="0" x2="550" y2="450"/><line x1="600" y1="0" x2="600" y2="450"/>
+    <line x1="650" y1="0" x2="650" y2="450"/><line x1="700" y1="0" x2="700" y2="450"/>
+    <line x1="750" y1="0" x2="750" y2="450"/>
+  </g>
+
+  <!-- Title text at top left -->
+  <text x="55" y="52" font-family="'Courier New', monospace" font-size="38" font-weight="900"
+    fill="url(#titleGlow)" filter="url(#titleShadow)" letter-spacing="4">TETRIS</text>
+  <text x="55" y="72" font-family="'Courier New', monospace" font-size="13" fill="#94a3b8" letter-spacing="2">CLASSIC</text>
+
+  <!-- Board area (10x20 cells, each cell = 18px, board = 180x360) centered left area -->
+  <!-- Board starts at x=55, y=90, cell=18px -->
+  <g filter="url(#boardShadow)">
+    <rect x="53" y="88" width="184" height="364" rx="6" fill="url(#boardGrad)" stroke="#334155" stroke-width="2"/>
+  </g>
+
+  <!-- Grid lines on board -->
+  <g stroke="#1e293b" stroke-width="0.5" opacity="0.7">
+    <!-- vertical lines -->
+    <line x1="71" y1="90" x2="71" y2="450"/><line x1="89" y1="90" x2="89" y2="450"/>
+    <line x1="107" y1="90" x2="107" y2="450"/><line x1="125" y1="90" x2="125" y2="450"/>
+    <line x1="143" y1="90" x2="143" y2="450"/><line x1="161" y1="90" x2="161" y2="450"/>
+    <line x1="179" y1="90" x2="179" y2="450"/><line x1="197" y1="90" x2="197" y2="450"/>
+    <line x1="215" y1="90" x2="215" y2="450"/>
+    <!-- horizontal lines -->
+    <line x1="55" y1="108" x2="235" y2="108"/><line x1="55" y1="126" x2="235" y2="126"/>
+    <line x1="55" y1="144" x2="235" y2="144"/><line x1="55" y1="162" x2="235" y2="162"/>
+    <line x1="55" y1="180" x2="235" y2="180"/><line x1="55" y1="198" x2="235" y2="198"/>
+    <line x1="55" y1="216" x2="235" y2="216"/><line x1="55" y1="234" x2="235" y2="234"/>
+    <line x1="55" y1="252" x2="235" y2="252"/><line x1="55" y1="270" x2="235" y2="270"/>
+    <line x1="55" y1="288" x2="235" y2="288"/><line x1="55" y1="306" x2="235" y2="306"/>
+    <line x1="55" y1="324" x2="235" y2="324"/><line x1="55" y1="342" x2="235" y2="342"/>
+    <line x1="55" y1="360" x2="235" y2="360"/><line x1="55" y1="378" x2="235" y2="378"/>
+    <line x1="55" y1="396" x2="235" y2="396"/><line x1="55" y1="414" x2="235" y2="414"/>
+    <line x1="55" y1="432" x2="235" y2="432"/>
+  </g>
+
+  <!-- Locked cells on board (mid-game state) -->
+  <!-- Row 18 (y=414): partial fills with J,Z,L,O pieces -->
+  <!-- Using cell x offset = 55 + col*18, y = 90 + row*18 -->
+
+  <!-- Row 14 (y=342): J blocks cols 0-3 -->
+  <rect x="56" y="343" width="16" height="16" rx="2" fill="url(#cJ)"/>
+  <rect x="74" y="343" width="16" height="16" rx="2" fill="url(#cJ)"/>
+  <rect x="92" y="343" width="16" height="16" rx="2" fill="url(#cJ)"/>
+  <rect x="110" y="343" width="16" height="16" rx="2" fill="url(#cZ)"/>
+  <rect x="128" y="343" width="16" height="16" rx="2" fill="url(#cZ)"/>
+  <rect x="164" y="343" width="16" height="16" rx="2" fill="url(#cL)"/>
+  <rect x="182" y="343" width="16" height="16" rx="2" fill="url(#cL)"/>
+  <rect x="200" y="343" width="16" height="16" rx="2" fill="url(#cL)"/>
+  <rect x="218" y="343" width="16" height="16" rx="2" fill="url(#cL)"/>
+
+  <!-- Row 15 (y=360) -->
+  <rect x="56" y="361" width="16" height="16" rx="2" fill="url(#cO)"/>
+  <rect x="74" y="361" width="16" height="16" rx="2" fill="url(#cO)"/>
+  <rect x="92" y="361" width="16" height="16" rx="2" fill="url(#cZ)"/>
+  <rect x="110" y="361" width="16" height="16" rx="2" fill="url(#cZ)"/>
+  <rect x="128" y="361" width="16" height="16" rx="2" fill="url(#cS)"/>
+  <rect x="146" y="361" width="16" height="16" rx="2" fill="url(#cS)"/>
+  <rect x="164" y="361" width="16" height="16" rx="2" fill="url(#cT)"/>
+  <rect x="182" y="361" width="16" height="16" rx="2" fill="url(#cT)"/>
+  <rect x="200" y="361" width="16" height="16" rx="2" fill="url(#cT)"/>
+  <rect x="218" y="361" width="16" height="16" rx="2" fill="url(#cI)"/>
+
+  <!-- Row 16 (y=378) -->
+  <rect x="56" y="379" width="16" height="16" rx="2" fill="url(#cO)"/>
+  <rect x="74" y="379" width="16" height="16" rx="2" fill="url(#cO)"/>
+  <rect x="92" y="379" width="16" height="16" rx="2" fill="url(#cI)"/>
+  <rect x="110" y="379" width="16" height="16" rx="2" fill="url(#cI)"/>
+  <rect x="128" y="379" width="16" height="16" rx="2" fill="url(#cI)"/>
+  <rect x="146" y="379" width="16" height="16" rx="2" fill="url(#cI)"/>
+  <rect x="164" y="379" width="16" height="16" rx="2" fill="url(#cT)"/>
+  <rect x="200" y="379" width="16" height="16" rx="2" fill="url(#cZ)"/>
+  <rect x="218" y="379" width="16" height="16" rx="2" fill="url(#cZ)"/>
+
+  <!-- Row 17 (y=396) - nearly full -->
+  <rect x="56" y="397" width="16" height="16" rx="2" fill="url(#cS)"/>
+  <rect x="74" y="397" width="16" height="16" rx="2" fill="url(#cS)"/>
+  <rect x="92" y="397" width="16" height="16" rx="2" fill="url(#cL)"/>
+  <rect x="110" y="397" width="16" height="16" rx="2" fill="url(#cL)"/>
+  <rect x="128" y="397" width="16" height="16" rx="2" fill="url(#cL)"/>
+  <rect x="146" y="397" width="16" height="16" rx="2" fill="url(#cJ)"/>
+  <rect x="164" y="397" width="16" height="16" rx="2" fill="url(#cJ)"/>
+  <rect x="182" y="397" width="16" height="16" rx="2" fill="url(#cJ)"/>
+  <rect x="200" y="397" width="16" height="16" rx="2" fill="url(#cO)"/>
+  <rect x="218" y="397" width="16" height="16" rx="2" fill="url(#cO)"/>
+
+  <!-- Row 18 (y=414) - full line highlight -->
+  <rect x="55" y="413" width="182" height="18" rx="2" fill="#22d3ee" opacity="0.15"/>
+  <rect x="56" y="414" width="16" height="16" rx="2" fill="url(#cI)"/>
+  <rect x="74" y="414" width="16" height="16" rx="2" fill="url(#cJ)"/>
+  <rect x="92" y="414" width="16" height="16" rx="2" fill="url(#cS)"/>
+  <rect x="110" y="414" width="16" height="16" rx="2" fill="url(#cL)"/>
+  <rect x="128" y="414" width="16" height="16" rx="2" fill="url(#cO)"/>
+  <rect x="146" y="414" width="16" height="16" rx="2" fill="url(#cO)"/>
+  <rect x="164" y="414" width="16" height="16" rx="2" fill="url(#cZ)"/>
+  <rect x="182" y="414" width="16" height="16" rx="2" fill="url(#cT)"/>
+  <rect x="200" y="414" width="16" height="16" rx="2" fill="url(#cJ)"/>
+  <rect x="218" y="414" width="16" height="16" rx="2" fill="url(#cS)"/>
+
+  <!-- Row 19 (y=432) -->
+  <rect x="56" y="433" width="16" height="16" rx="2" fill="url(#cZ)"/>
+  <rect x="74" y="433" width="16" height="16" rx="2" fill="url(#cZ)"/>
+  <rect x="92" y="433" width="16" height="16" rx="2" fill="url(#cL)"/>
+  <rect x="128" y="433" width="16" height="16" rx="2" fill="url(#cT)"/>
+  <rect x="146" y="433" width="16" height="16" rx="2" fill="url(#cT)"/>
+  <rect x="164" y="433" width="16" height="16" rx="2" fill="url(#cT)"/>
+  <rect x="182" y="433" width="16" height="16" rx="2" fill="url(#cS)"/>
+  <rect x="200" y="433" width="16" height="16" rx="2" fill="url(#cI)"/>
+  <rect x="218" y="433" width="16" height="16" rx="2" fill="url(#cI)"/>
+
+  <!-- Active T-piece falling (cols 3-5, rows 8-9) -->
+  <!-- ghost piece outline -->
+  <rect x="110" y="379" width="16" height="16" rx="2" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.5"/>
+  <rect x="128" y="361" width="16" height="16" rx="2" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.5"/>
+
+  <!-- Active I-piece at top (rows 5-6) cols 3-6 -->
+  <rect x="110" y="181" width="16" height="16" rx="2" fill="url(#cI)" filter="url(#glowBlue)"/>
+  <rect x="128" y="181" width="16" height="16" rx="2" fill="url(#cI)" filter="url(#glowBlue)"/>
+  <rect x="146" y="181" width="16" height="16" rx="2" fill="url(#cI)" filter="url(#glowBlue)"/>
+  <rect x="164" y="181" width="16" height="16" rx="2" fill="url(#cI)" filter="url(#glowBlue)"/>
+
+  <!-- RIGHT PANEL: HUD boxes -->
+  <!-- Score box -->
+  <rect x="270" y="90" width="160" height="80" rx="10" fill="url(#hudGrad)" stroke="#334155" stroke-width="1.5"/>
+  <text x="350" y="122" font-family="'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="600" fill="#94a3b8" text-anchor="middle" letter-spacing="2">SCORE</text>
+  <text x="350" y="152" font-family="'Courier New', monospace" font-size="28" font-weight="700" fill="#38bdf8" text-anchor="middle">4850</text>
+
+  <!-- Level box -->
+  <rect x="270" y="182" width="74" height="64" rx="10" fill="url(#hudGrad)" stroke="#334155" stroke-width="1.5"/>
+  <text x="307" y="206" font-family="'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="600" fill="#94a3b8" text-anchor="middle" letter-spacing="2">LEVEL</text>
+  <text x="307" y="232" font-family="'Courier New', monospace" font-size="26" font-weight="700" fill="#a855f7" text-anchor="middle">3</text>
+
+  <!-- Lines box -->
+  <rect x="356" y="182" width="74" height="64" rx="10" fill="url(#hudGrad)" stroke="#334155" stroke-width="1.5"/>
+  <text x="393" y="206" font-family="'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="600" fill="#94a3b8" text-anchor="middle" letter-spacing="2">LINES</text>
+  <text x="393" y="232" font-family="'Courier New', monospace" font-size="26" font-weight="700" fill="#4ade80" text-anchor="middle">24</text>
+
+  <!-- Next piece preview box -->
+  <rect x="270" y="258" width="160" height="120" rx="10" fill="url(#hudGrad)" stroke="#334155" stroke-width="1.5"/>
+  <text x="350" y="282" font-family="'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="600" fill="#94a3b8" text-anchor="middle" letter-spacing="2">NEXT</text>
+  <!-- T piece preview -->
+  <rect x="321" y="298" width="20" height="20" rx="3" fill="url(#cT)"/>
+  <rect x="343" y="298" width="20" height="20" rx="3" fill="url(#cT)"/>
+  <rect x="365" y="298" width="20" height="20" rx="3" fill="url(#cT)"/>
+  <rect x="343" y="320" width="20" height="20" rx="3" fill="url(#cT)"/>
+
+  <!-- Control buttons area -->
+  <rect x="270" y="392" width="160" height="52" rx="10" fill="#1e40af" stroke="#1d4ed8" stroke-width="1"/>
+  <text x="350" y="422" font-family="'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700" fill="#e0f2fe" text-anchor="middle">⏸ Pause</text>
+
+  <!-- Touch control pad on right side (phone controls) -->
+  <!-- Row 1: Left Rotate Right Drop -->
+  <rect x="470" y="90" width="80" height="60" rx="10" fill="url(#hudGrad)" stroke="#334155" stroke-width="1.5"/>
+  <text x="510" y="128" font-family="'Segoe UI', system-ui, sans-serif" font-size="28" fill="#f1f5f9" text-anchor="middle">◀</text>
+
+  <rect x="558" y="90" width="80" height="60" rx="10" fill="url(#hudGrad)" stroke="#334155" stroke-width="1.5"/>
+  <text x="598" y="128" font-family="'Segoe UI', system-ui, sans-serif" font-size="28" fill="#f1f5f9" text-anchor="middle">⟳</text>
+
+  <rect x="646" y="90" width="80" height="60" rx="10" fill="url(#hudGrad)" stroke="#334155" stroke-width="1.5"/>
+  <text x="686" y="128" font-family="'Segoe UI', system-ui, sans-serif" font-size="28" fill="#f1f5f9" text-anchor="middle">▶</text>
+
+  <!-- Row 2: Soft drop (wide) + Hard drop -->
+  <rect x="470" y="162" width="168" height="60" rx="10" fill="url(#hudGrad)" stroke="#334155" stroke-width="1.5"/>
+  <text x="554" y="198" font-family="'Segoe UI', system-ui, sans-serif" font-size="16" font-weight="600" fill="#f1f5f9" text-anchor="middle">▼ Soft Drop</text>
+
+  <rect x="646" y="162" width="80" height="60" rx="10" fill="url(#hudGrad)" stroke="#334155" stroke-width="1.5"/>
+  <text x="686" y="198" font-family="'Segoe UI', system-ui, sans-serif" font-size="28" fill="#f1f5f9" text-anchor="middle">⤓</text>
+
+  <!-- Row 3: Pause + Restart -->
+  <rect x="470" y="234" width="120" height="60" rx="10" fill="url(#hudGrad)" stroke="#334155" stroke-width="1.5"/>
+  <text x="530" y="270" font-family="'Segoe UI', system-ui, sans-serif" font-size="26" fill="#f1f5f9" text-anchor="middle">⏸</text>
+
+  <rect x="598" y="234" width="128" height="60" rx="10" fill="#7f1d1d" stroke="#991b1b" stroke-width="1.5"/>
+  <text x="662" y="270" font-family="'Segoe UI', system-ui, sans-serif" font-size="26" fill="#fca5a5" text-anchor="middle">↺</text>
+
+  <!-- Keyboard hints -->
+  <rect x="470" y="314" width="256" height="50" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1" opacity="0.8"/>
+  <text x="598" y="335" font-family="'Segoe UI', system-ui, sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">Keyboard: ← → ↓ ↑=Rotate</text>
+  <text x="598" y="352" font-family="'Segoe UI', system-ui, sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">Space=Hard Drop  P=Pause</text>
+
+  <!-- Corner accent glows -->
+  <circle cx="0" cy="0" r="120" fill="none" stroke="#38bdf8" stroke-width="1" opacity="0.08"/>
+  <circle cx="800" cy="450" r="150" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.08"/>
+
+  <!-- Edge glow top -->
+  <rect x="0" y="0" width="800" height="3" fill="#38bdf8" opacity="0.4"/>
+  <rect x="0" y="447" width="800" height="3" fill="#a855f7" opacity="0.4"/>
+</svg>
