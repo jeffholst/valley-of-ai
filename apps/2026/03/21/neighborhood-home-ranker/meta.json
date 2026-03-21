@@ -1,0 +1,29 @@
+{
+  "id": "neighborhood-home-ranker",
+  "name": "Neighborhood Home Ranker",
+  "shortDescription": "Rank MLS home listings by composite neighborhood score using weighted venue categories (restaurants, coffee, parks, schools, and more) from Google Places data.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-21T17:51:53Z",
+  "category": "Utilities",
+  "votes": 0,
+  "status": "active",
+  "tags": ["real-estate", "mls", "google-places", "neighborhood", "scoring", "ranking", "tools", "data"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "Claude Code",
+    "llmModel": "claude-sonnet-4-6",
+    "startTime": "2026-03-21T17:51:53Z",
+    "endTime": "2026-03-21T18:10:00Z",
+    "totalTokensIn": 20000,
+    "totalTokensOut": 18000,
+    "runId": "run-20260321T175153Z-a3f9c2",
+    "notes": "Demo app using 14 realistic mock MLS listings in Austin TX metro area. Weighted venue category scoring across 7 categories (restaurants, bars, coffee, grocery, parks, schools, health). Adjustable search radius (0.25-5mi), price/beds/baths/sqft filters, sort options, SVG house illustrations, detail modal with full venue breakdown. Mock data shows how real MLS + Google Places API integration would work."
+  },
+  "suggestion": {
+    "issueNumber": 125,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/125",
+    "prompt": "Take all the MLS listings and merge it with Google reviews within a radius of your choosing so you can rank all the homes available in your area by the quality of restaurants, bars, coffee shops, etc surrounding each individual house.",
+    "requestor": "Alexander M."
+  }
+}
