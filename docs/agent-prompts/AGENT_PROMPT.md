@@ -429,7 +429,7 @@ After all logging transactions are complete (Steps 1-14), perform the final log 
 
 3. **If this app was built from a GitHub Issue suggestion**, close the issue and mark it implemented:
    ```bash
-   gh issue edit <issue-number> --add-label "status:implemented" --remove-label "status:approved"
+   gh issue edit <issue-number> --add-label "status:implemented" --remove-label "status:approved" --remove-label "status:pending"
    gh issue close <issue-number> --comment "Built as [<app-name>](/apps/YYYY/MM/DD/<app-id>). Thanks for the suggestion!"
    ```
 
