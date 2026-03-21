@@ -1,0 +1,289 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a2a4a;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Machine viewport gradient -->
+    <radialGradient id="machineGrad" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" style="stop-color:#1a2a4a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0a1628;stop-opacity:1" />
+    </radialGradient>
+
+    <!-- Title glow filter -->
+    <filter id="titleGlow" x="-20%" y="-50%" width="140%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Ball glow filter -->
+    <filter id="ballGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Surface panel gradient -->
+    <linearGradient id="panelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e293b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#162033;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Main ball gradient -->
+    <radialGradient id="ballBlue" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </radialGradient>
+
+    <!-- Powerball red gradient -->
+    <radialGradient id="ballRed" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" style="stop-color:#f87171;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#b91c1c;stop-opacity:1" />
+    </radialGradient>
+
+    <!-- Orange ball gradient -->
+    <radialGradient id="ballOrange" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
+    </radialGradient>
+
+    <!-- Green ball gradient -->
+    <radialGradient id="ballGreen" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" style="stop-color:#34d399;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </radialGradient>
+
+    <!-- Purple ball gradient -->
+    <radialGradient id="ballPurple" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:1" />
+    </radialGradient>
+
+    <!-- White ball gradient -->
+    <radialGradient id="ballWhite" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" style="stop-color:#f0f9ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#bfdbfe;stop-opacity:1" />
+    </radialGradient>
+
+    <!-- Title gradient -->
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ef4444;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Edge glow -->
+    <filter id="edgeGlow" x="-5%" y="-5%" width="110%" height="110%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Confetti colors: these pieces suggest celebration -->
+    <linearGradient id="confetti1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:0.6" />
+    </linearGradient>
+    <linearGradient id="confetti2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ef4444;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#ef4444;stop-opacity:0.6" />
+    </linearGradient>
+    <linearGradient id="confetti3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.6" />
+    </linearGradient>
+    <linearGradient id="confetti4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:0.6" />
+    </linearGradient>
+    <linearGradient id="confetti5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#a78bfa;stop-opacity:0.6" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)" />
+
+  <!-- Subtle star dots -->
+  <circle cx="50" cy="30" r="1.5" fill="#ffffff" opacity="0.15" />
+  <circle cx="120" cy="80" r="1" fill="#ffffff" opacity="0.1" />
+  <circle cx="700" cy="40" r="1.5" fill="#ffffff" opacity="0.15" />
+  <circle cx="750" cy="90" r="1" fill="#ffffff" opacity="0.1" />
+  <circle cx="780" cy="200" r="1.5" fill="#ffffff" opacity="0.1" />
+  <circle cx="30" cy="300" r="1" fill="#ffffff" opacity="0.1" />
+  <circle cx="680" cy="350" r="1.5" fill="#ffffff" opacity="0.1" />
+  <circle cx="200" cy="20" r="1" fill="#ffffff" opacity="0.08" />
+  <circle cx="600" cy="420" r="1" fill="#ffffff" opacity="0.1" />
+
+  <!-- Corner accent glow - top left -->
+  <circle cx="0" cy="0" r="120" fill="url(#confetti1)" opacity="0.06" />
+  <!-- Corner accent glow - bottom right -->
+  <circle cx="800" cy="450" r="120" fill="url(#confetti3)" opacity="0.06" />
+
+  <!-- Title Section -->
+  <text x="400" y="52" font-family="'Segoe UI', system-ui, sans-serif" font-size="36" font-weight="900"
+    text-anchor="middle" fill="url(#titleGrad)" filter="url(#titleGlow)">
+    Texas Lotto Generator
+  </text>
+  <text x="400" y="72" font-family="'Segoe UI', system-ui, sans-serif" font-size="13" font-weight="400"
+    text-anchor="middle" fill="#94a3b8">
+    Official Texas Lottery games — real-time draw simulation
+  </text>
+
+  <!-- Game selector panel -->
+  <rect x="40" y="88" width="720" height="44" rx="10" fill="url(#panelGrad)" stroke="#475569" stroke-width="1" opacity="0.9" />
+  <text x="60" y="115" font-family="'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700"
+    fill="#f9fafb">
+    Powerball
+  </text>
+  <text x="200" y="115" font-family="'Segoe UI', system-ui, sans-serif" font-size="11" fill="#94a3b8">
+    Pick 5 from 1-69 + 1 Powerball from 1-26
+  </text>
+  <!-- Dropdown arrow -->
+  <polygon points="732,106 742,106 737,114" fill="#f59e0b" />
+
+  <!-- Ball Machine Panel -->
+  <rect x="40" y="144" width="720" height="155" rx="12" fill="url(#panelGrad)" stroke="#475569" stroke-width="1" />
+  <text x="400" y="164" font-family="'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700"
+    text-anchor="middle" fill="#64748b" letter-spacing="2">
+    LOTTERY BALL MACHINE
+  </text>
+
+  <!-- Machine viewport -->
+  <rect x="56" y="170" width="688" height="115" rx="10" fill="url(#machineGrad)" stroke="#475569" stroke-width="1.5" />
+
+  <!-- Floating balls in machine (decorative) -->
+  <circle cx="110" cy="210" r="14" fill="url(#ballBlue)" />
+  <text x="110" y="215" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="800"
+    text-anchor="middle" fill="white" opacity="0.8">14</text>
+
+  <circle cx="165" cy="245" r="14" fill="url(#ballOrange)" />
+  <text x="165" y="250" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="800"
+    text-anchor="middle" fill="#1f2937" opacity="0.8">27</text>
+
+  <circle cx="220" cy="195" r="14" fill="url(#ballGreen)" />
+  <text x="220" y="200" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="800"
+    text-anchor="middle" fill="white" opacity="0.8">53</text>
+
+  <circle cx="280" cy="235" r="14" fill="url(#ballPurple)" />
+  <text x="280" y="240" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="800"
+    text-anchor="middle" fill="white" opacity="0.8">8</text>
+
+  <circle cx="340" cy="208" r="14" fill="url(#ballBlue)" />
+  <text x="340" y="213" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="800"
+    text-anchor="middle" fill="white" opacity="0.8">41</text>
+
+  <circle cx="400" cy="255" r="14" fill="url(#ballRed)" />
+  <text x="400" y="260" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="800"
+    text-anchor="middle" fill="white" opacity="0.8">62</text>
+
+  <circle cx="455" cy="200" r="14" fill="url(#ballOrange)" />
+  <text x="455" y="205" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="800"
+    text-anchor="middle" fill="#1f2937" opacity="0.8">33</text>
+
+  <circle cx="510" cy="240" r="14" fill="url(#ballGreen)" />
+  <text x="510" y="245" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="800"
+    text-anchor="middle" fill="white" opacity="0.8">19</text>
+
+  <circle cx="565" cy="212" r="14" fill="url(#ballWhite)" />
+  <text x="565" y="217" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="800"
+    text-anchor="middle" fill="#1e40af" opacity="0.9">7</text>
+
+  <!-- Current drawing ball (highlighted - center of machine) -->
+  <circle cx="640" cy="228" r="30" fill="url(#ballWhite)" filter="url(#ballGlow)" />
+  <circle cx="640" cy="228" r="30" fill="none" stroke="#f59e0b" stroke-width="2" opacity="0.8" />
+  <text x="640" y="236" font-family="'Segoe UI', sans-serif" font-size="20" font-weight="900"
+    text-anchor="middle" fill="#1e40af">23</text>
+  <!-- Shine -->
+  <ellipse cx="630" cy="216" rx="8" ry="5" fill="rgba(255,255,255,0.4)" transform="rotate(-20, 630, 216)" />
+
+  <!-- Tube pipe on right -->
+  <rect x="685" y="203" width="55" height="50" rx="4" fill="#334155" stroke="#475569" stroke-width="1.5" />
+  <text x="712" y="232" font-family="sans-serif" font-size="14" text-anchor="middle" fill="#f59e0b">▶</text>
+
+  <!-- Results Panel -->
+  <rect x="40" y="310" width="720" height="85" rx="12" fill="url(#panelGrad)" stroke="#475569" stroke-width="1" />
+  <text x="400" y="330" font-family="'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700"
+    text-anchor="middle" fill="#64748b" letter-spacing="2">
+    DRAWN NUMBERS
+  </text>
+
+  <!-- Number balls in results row - Powerball numbers -->
+  <!-- Ball 1 -->
+  <circle cx="148" cy="367" r="24" fill="url(#ballWhite)" />
+  <text x="148" y="373" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="900"
+    text-anchor="middle" fill="#1e40af">7</text>
+  <ellipse cx="140" cy="358" rx="7" ry="4" fill="rgba(255,255,255,0.4)" transform="rotate(-20, 140, 358)" />
+
+  <!-- Ball 2 -->
+  <circle cx="210" cy="367" r="24" fill="url(#ballWhite)" />
+  <text x="210" y="373" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="900"
+    text-anchor="middle" fill="#1e40af">23</text>
+  <ellipse cx="202" cy="358" rx="7" ry="4" fill="rgba(255,255,255,0.4)" transform="rotate(-20, 202, 358)" />
+
+  <!-- Ball 3 -->
+  <circle cx="272" cy="367" r="24" fill="url(#ballWhite)" />
+  <text x="272" y="373" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="900"
+    text-anchor="middle" fill="#1e40af">38</text>
+  <ellipse cx="264" cy="358" rx="7" ry="4" fill="rgba(255,255,255,0.4)" transform="rotate(-20, 264, 358)" />
+
+  <!-- Ball 4 -->
+  <circle cx="334" cy="367" r="24" fill="url(#ballWhite)" />
+  <text x="334" y="373" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="900"
+    text-anchor="middle" fill="#1e40af">51</text>
+  <ellipse cx="326" cy="358" rx="7" ry="4" fill="rgba(255,255,255,0.4)" transform="rotate(-20, 326, 358)" />
+
+  <!-- Ball 5 -->
+  <circle cx="396" cy="367" r="24" fill="url(#ballWhite)" />
+  <text x="396" y="373" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="900"
+    text-anchor="middle" fill="#1e40af">66</text>
+  <ellipse cx="388" cy="358" rx="7" ry="4" fill="rgba(255,255,255,0.4)" transform="rotate(-20, 388, 358)" />
+
+  <!-- Plus separator -->
+  <text x="435" y="373" font-family="sans-serif" font-size="20" fill="#475569" text-anchor="middle">+</text>
+
+  <!-- Powerball - special red ball -->
+  <circle cx="478" cy="367" r="24" fill="url(#ballRed)" filter="url(#ballGlow)" />
+  <text x="478" y="373" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="900"
+    text-anchor="middle" fill="white">13</text>
+  <ellipse cx="470" cy="358" rx="7" ry="4" fill="rgba(255,255,255,0.35)" transform="rotate(-20, 470, 358)" />
+  <text x="478" y="398" font-family="'Segoe UI', sans-serif" font-size="9" font-weight="700"
+    text-anchor="middle" fill="#94a3b8" letter-spacing="0.5">POWERBALL</text>
+
+  <!-- Win message area -->
+  <rect x="520" y="338" width="220" height="50" rx="8" fill="rgba(245,158,11,0.12)" stroke="rgba(245,158,11,0.35)" stroke-width="1" />
+  <text x="630" y="359" font-family="'Segoe UI', sans-serif" font-size="16" font-weight="800"
+    text-anchor="middle" fill="#f59e0b">Congratulations!</text>
+  <text x="630" y="378" font-family="'Segoe UI', sans-serif" font-size="11"
+    text-anchor="middle" fill="#94a3b8">You are a winner!</text>
+
+  <!-- Confetti pieces (decorative, scattered around) -->
+  <rect x="80" y="95" width="12" height="7" rx="1" fill="url(#confetti1)" opacity="0.8" transform="rotate(-25, 80, 95)" />
+  <rect x="720" y="105" width="10" height="6" rx="1" fill="url(#confetti2)" opacity="0.8" transform="rotate(15, 720, 105)" />
+  <rect x="100" y="300" width="11" height="6" rx="1" fill="url(#confetti3)" opacity="0.7" transform="rotate(-40, 100, 300)" />
+  <rect x="740" y="290" width="12" height="7" rx="1" fill="url(#confetti4)" opacity="0.7" transform="rotate(30, 740, 290)" />
+  <rect x="60" y="420" width="10" height="6" rx="1" fill="url(#confetti5)" opacity="0.7" transform="rotate(-15, 60, 420)" />
+  <rect x="760" y="410" width="12" height="6" rx="1" fill="url(#confetti1)" opacity="0.7" transform="rotate(20, 760, 410)" />
+  <rect x="170" y="88" width="9" height="5" rx="1" fill="url(#confetti4)" opacity="0.6" transform="rotate(35, 170, 88)" />
+  <rect x="620" y="90" width="11" height="6" rx="1" fill="url(#confetti2)" opacity="0.6" transform="rotate(-30, 620, 90)" />
+  <rect x="75" y="165" width="8" height="5" rx="1" fill="url(#confetti3)" opacity="0.5" transform="rotate(45, 75, 165)" />
+  <rect x="730" y="175" width="9" height="5" rx="1" fill="url(#confetti5)" opacity="0.5" transform="rotate(-45, 730, 175)" />
+
+  <!-- Bottom border accent line -->
+  <rect x="40" y="405" width="720" height="2" rx="1" fill="url(#titleGrad)" opacity="0.4" />
+
+  <!-- Draw button hint -->
+  <rect x="190" y="408" width="420" height="32" rx="10" fill="url(#ballOrange)" opacity="0.85" />
+  <text x="400" y="428" font-family="'Segoe UI', system-ui, sans-serif" font-size="13" font-weight="700"
+    text-anchor="middle" fill="#1f2937">Draw Numbers</text>
+</svg>

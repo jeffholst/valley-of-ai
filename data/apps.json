@@ -1,5 +1,45 @@
 [
   {
+    "id": "2026/03/21/texas-lotto-generator",
+    "name": "Texas Lotto Generator",
+    "shortDescription": "Simulate Texas Lottery draws with real-time animated ball machine and confetti celebration",
+    "thumbnailUrl": "/apps/2026/03/21/texas-lotto-generator/thumbnail.svg",
+    "createdAt": "2026-03-21T18:14:39Z",
+    "year": 2026,
+    "month": 3,
+    "day": 21,
+    "category": "Entertainment",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "lottery",
+      "texas",
+      "random",
+      "numbers",
+      "animation",
+      "confetti",
+      "generator"
+    ],
+    "route": "/apps/2026/03/21/texas-lotto-generator",
+    "appPath": "/apps/2026/03/21/texas-lotto-generator/index.html",
+    "generation": {
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6",
+      "startTime": "2026-03-21T18:14:39Z",
+      "endTime": "2026-03-21T18:45:00Z",
+      "totalTokensIn": 3600,
+      "totalTokensOut": 8700,
+      "runId": "run-20260321T181439Z-a7f3c2",
+      "notes": "All 8 major Texas Lottery games included. Animated ball machine with bouncing balls. One-at-a-time draw reveal with pop animation. Full confetti celebration on draw complete. Mobile-first responsive design."
+    },
+    "suggestion": {
+      "issueNumber": 127,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/127",
+      "prompt": "Create a lotto number generator. Have a pulldown of all the Texas lotto drawing configurations. Display the numbers real-time as if they are being drawn at that moment. Have a confetti celebration after the numbers are displayed as if those were the actual winning numbers.",
+      "requestor": "Gary S."
+    }
+  },
+  {
     "id": "2026/03/21/neighborhood-home-ranker",
     "name": "Neighborhood Home Ranker",
     "shortDescription": "Rank MLS home listings by composite neighborhood score using weighted venue categories (restaurants, coffee, parks, schools, and more) from Google Places data.",

@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Texas Lotto Generator - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --surface2: #2d3f5e;
+        --accent: #f59e0b;
+        --accent2: #ef4444;
+        --accent3: #10b981;
+        --accent4: #3b82f6;
+        --ball-shadow: rgba(0, 0, 0, 0.5);
+        --machine-border: #475569;
+        --border-radius: 16px;
+      }
+
+      [data-theme='light'] {
+        --bg: #f0f4ff;
+        --text: #1f2937;
+        --surface: #ffffff;
+        --surface2: #e2e8f0;
+        --machine-border: #94a3b8;
+        --ball-shadow: rgba(0, 0, 0, 0.3);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .app-container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 16px;
+      }
+
+      .app-header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .app-title {
+        font-size: clamp(1.4rem, 4vw, 2rem);
+        font-weight: 800;
+        background: linear-gradient(135deg, #f59e0b, #ef4444, #f59e0b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.5px;
+        margin-bottom: 4px;
+      }
+
+      .app-subtitle {
+        font-size: 0.85rem;
+        opacity: 0.6;
+      }
+
+      /* Game selector */
+      .game-selector {
+        background: var(--surface);
+        border-radius: var(--border-radius);
+        padding: 16px;
+        margin-bottom: 16px;
+        border: 1px solid var(--machine-border);
+      }
+
+      .game-selector label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        opacity: 0.7;
+        margin-bottom: 8px;
+      }
+
+      .game-select {
+        width: 100%;
+        background: var(--surface2);
+        color: var(--text);
+        border: 2px solid var(--machine-border);
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23f59e0b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        padding-right: 40px;
+        transition: border-color 0.2s;
+      }
+
+      .game-select:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      .game-info {
+        margin-top: 10px;
+        font-size: 0.82rem;
+        opacity: 0.7;
+        line-height: 1.5;
+      }
+
+      /* Ball machine */
+      .machine-container {
+        background: var(--surface);
+        border-radius: var(--border-radius);
+        padding: 16px;
+        margin-bottom: 16px;
+        border: 1px solid var(--machine-border);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .machine-title {
+        text-align: center;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        opacity: 0.5;
+        margin-bottom: 12px;
+      }
+
+      .machine-viewport {
+        position: relative;
+        height: 160px;
+        background: radial-gradient(ellipse at center, #1a2a4a 0%, #0a1628 100%);
+        border-radius: 12px;
+        border: 2px solid var(--machine-border);
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      [data-theme='light'] .machine-viewport {
+        background: radial-gradient(ellipse at center, #c8d8f0 0%, #a0b4d0 100%);
+      }
+
+      /* Spinning balls in machine */
+      .machine-balls {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+
+      .machine-ball {
+        position: absolute;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.65rem;
+        font-weight: 800;
+        color: #fff;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        animation: floatBall linear infinite;
+        will-change: transform;
+      }
+
+      @keyframes floatBall {
+        0% {
+          transform: translate(0px, 0px) rotate(0deg);
+        }
+        25% {
+          transform: translate(var(--dx1), var(--dy1)) rotate(90deg);
+        }
+        50% {
+          transform: translate(var(--dx2), var(--dy2)) rotate(180deg);
+        }
+        75% {
+          transform: translate(var(--dx3), var(--dy3)) rotate(270deg);
+        }
+        100% {
+          transform: translate(0px, 0px) rotate(360deg);
+        }
+      }
+
+      /* Tube pipe */
+      .tube-pipe {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 50px;
+        background: linear-gradient(to right, #334155, #475569, #334155);
+        border-radius: 4px 0 0 4px;
+        border: 2px solid var(--machine-border);
+        border-right: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 5;
+      }
+
+      .tube-arrow {
+        color: var(--accent);
+        font-size: 1rem;
+        animation: pulse 1s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 0.4;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      /* Current drawing ball */
+      .drawing-ball-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        display: none;
+      }
+
+      .drawing-ball-container.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: popOut 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      }
+
+      @keyframes popOut {
+        0% {
+          transform: translate(-50%, -50%) scale(0.3);
+          opacity: 0;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+        }
+      }
+
+      .draw-ball {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        font-weight: 900;
+        color: #fff;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        box-shadow:
+          0 0 30px rgba(245, 158, 11, 0.6),
+          0 0 60px rgba(245, 158, 11, 0.3),
+          inset 0 -4px 8px rgba(0, 0, 0, 0.3),
+          inset 0 4px 8px rgba(255, 255, 255, 0.3);
+        animation: ballSpin 0.4s ease-out;
+      }
+
+      @keyframes ballSpin {
+        0% {
+          transform: rotate(-180deg) scale(0.5);
+        }
+        100% {
+          transform: rotate(0deg) scale(1);
+        }
+      }
+
+      .draw-ball.special {
+        box-shadow:
+          0 0 30px rgba(239, 68, 68, 0.6),
+          0 0 60px rgba(239, 68, 68, 0.3),
+          inset 0 -4px 8px rgba(0, 0, 0, 0.3),
+          inset 0 4px 8px rgba(255, 255, 255, 0.3);
+      }
+
+      /* Status text */
+      .machine-status {
+        text-align: center;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-top: 10px;
+        min-height: 22px;
+        color: var(--accent);
+      }
+
+      /* Drawn numbers display */
+      .results-container {
+        background: var(--surface);
+        border-radius: var(--border-radius);
+        padding: 16px;
+        margin-bottom: 16px;
+        border: 1px solid var(--machine-border);
+      }
+
+      .results-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        opacity: 0.5;
+        margin-bottom: 12px;
+        text-align: center;
+      }
+
+      .numbers-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        min-height: 56px;
+        align-items: center;
+      }
+
+      .number-ball {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        font-weight: 900;
+        color: #fff;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        box-shadow:
+          0 4px 12px var(--ball-shadow),
+          inset 0 -3px 6px rgba(0, 0, 0, 0.3),
+          inset 0 3px 6px rgba(255, 255, 255, 0.25);
+        animation: ballReveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      .number-ball::after {
+        content: '';
+        position: absolute;
+        top: 10%;
+        left: 20%;
+        width: 30%;
+        height: 20%;
+        background: rgba(255, 255, 255, 0.35);
+        border-radius: 50%;
+        transform: rotate(-30deg);
+      }
+
+      @keyframes ballReveal {
+        0% {
+          transform: scale(0) rotate(-180deg);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1) rotate(0deg);
+          opacity: 1;
+        }
+      }
+
+      .number-ball.main {
+        background: radial-gradient(circle at 35% 35%, #60a5fa, #1d4ed8);
+      }
+
+      .number-ball.bonus {
+        background: radial-gradient(circle at 35% 35%, #f87171, #b91c1c);
+      }
+
+      .number-ball.green {
+        background: radial-gradient(circle at 35% 35%, #34d399, #059669);
+      }
+
+      .number-ball.orange {
+        background: radial-gradient(circle at 35% 35%, #fbbf24, #d97706);
+        color: #1f2937;
+        text-shadow: none;
+      }
+
+      .number-ball.purple {
+        background: radial-gradient(circle at 35% 35%, #a78bfa, #7c3aed);
+      }
+
+      .number-ball.white-ball {
+        background: radial-gradient(circle at 35% 35%, #f0f9ff, #bfdbfe);
+        color: #1e40af;
+        text-shadow: none;
+      }
+
+      /* Separator for special ball */
+      .ball-separator {
+        font-size: 1.5rem;
+        font-weight: 300;
+        opacity: 0.3;
+        line-height: 50px;
+      }
+
+      .special-label {
+        font-size: 0.6rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        opacity: 0.6;
+        text-align: center;
+        margin-top: 4px;
+        letter-spacing: 0.05em;
+      }
+
+      .ball-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* Date/time */
+      .draw-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.78rem;
+        opacity: 0.6;
+        margin-top: 10px;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+
+      /* Controls */
+      .controls {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+
+      .btn {
+        flex: 1;
+        padding: 14px 20px;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        touch-action: manipulation;
+      }
+
+      .btn:active {
+        transform: scale(0.97);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: #1f2937;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        box-shadow: 0 4px 20px rgba(245, 158, 11, 0.6);
+        transform: translateY(-1px);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .btn-secondary {
+        background: var(--surface2);
+        color: var(--text);
+        border: 1px solid var(--machine-border);
+      }
+
+      .btn-secondary:hover:not(:disabled) {
+        background: var(--machine-border);
+      }
+
+      /* Confetti canvas */
+      #confetti-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9999;
+      }
+
+      /* Quick pick toggle */
+      .quick-pick-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 8px;
+        font-size: 0.82rem;
+      }
+
+      /* Winning message */
+      .win-message {
+        display: none;
+        text-align: center;
+        padding: 16px;
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.15));
+        border-radius: 12px;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        margin-bottom: 16px;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .win-message.visible {
+        display: block;
+      }
+
+      .win-message h2 {
+        font-size: 1.4rem;
+        margin-bottom: 4px;
+        background: linear-gradient(135deg, #f59e0b, #ef4444);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .win-message p {
+        font-size: 0.85rem;
+        opacity: 0.7;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 400px) {
+        .number-ball {
+          width: 42px;
+          height: 42px;
+          font-size: 0.95rem;
+        }
+
+        .machine-viewport {
+          height: 130px;
+        }
+
+        .draw-ball {
+          width: 58px;
+          height: 58px;
+          font-size: 1.3rem;
+        }
+
+        .numbers-row {
+          gap: 6px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="app-container">
+      <div class="app-header">
+        <div class="app-title">🤠 Texas Lotto Generator</div>
+        <div class="app-subtitle">Official Texas Lottery games — real-time draw simulation</div>
+      </div>
+
+      <!-- Game Selector -->
+      <div class="game-selector">
+        <label for="game-select">Select Texas Lottery Game</label>
+        <select class="game-select" id="game-select" aria-label="Select lottery game">
+          <option value="powerball">🔴 Powerball</option>
+          <option value="megamillions">🔵 Mega Millions</option>
+          <option value="lottotexas">⭐ Lotto Texas</option>
+          <option value="twostep">💃 Texas Two Step</option>
+          <option value="pick3">3️⃣ Pick 3</option>
+          <option value="daily4">4️⃣ Daily 4</option>
+          <option value="cashfive">💵 Cash Five</option>
+          <option value="allornothing">🎯 All or Nothing</option>
+        </select>
+        <div class="game-info" id="game-info">Pick 5 numbers from 1–69 + 1 Powerball from 1–26</div>
+      </div>
+
+      <!-- Ball Machine -->
+      <div class="machine-container">
+        <div class="machine-title">🎱 Lottery Ball Machine</div>
+        <div class="machine-viewport" id="machine-viewport">
+          <div class="machine-balls" id="machine-balls"></div>
+          <div class="tube-pipe">
+            <span class="tube-arrow">▶</span>
+          </div>
+          <div class="drawing-ball-container" id="drawing-ball-container">
+            <div class="draw-ball" id="draw-ball">?</div>
+          </div>
+        </div>
+        <div class="machine-status" id="machine-status">Press "Draw Numbers" to begin</div>
+      </div>
+
+      <!-- Results -->
+      <div class="results-container">
+        <div class="results-title">Drawn Numbers</div>
+        <div class="numbers-row" id="numbers-row">
+          <span style="opacity: 0.3; font-size: 0.9rem">Numbers will appear here</span>
+        </div>
+        <div class="draw-info">
+          <span id="draw-date"></span>
+          <span id="draw-game-name"></span>
+        </div>
+      </div>
+
+      <!-- Win Message -->
+      <div class="win-message" id="win-message">
+        <h2>🎉 Congratulations!</h2>
+        <p>You're a winner! Time to claim your prize!</p>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls">
+        <button class="btn btn-primary" id="draw-btn" onclick="startDraw()">
+          <span>🎰</span>
+          <span>Draw Numbers</span>
+        </button>
+        <button class="btn btn-secondary" id="reset-btn" onclick="resetDraw()" disabled>
+          <span>🔄</span>
+          <span>Reset</span>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // ============================================================
+      // Game Configurations
+      // ============================================================
+      const GAMES = {
+        powerball: {
+          name: 'Powerball',
+          mainCount: 5,
+          mainMax: 69,
+          mainMin: 1,
+          specialCount: 1,
+          specialMax: 26,
+          specialMin: 1,
+          specialName: 'Powerball',
+          ballClass: 'white-ball',
+          specialClass: 'bonus',
+          info: 'Pick 5 numbers from 1–69 + 1 Powerball from 1–26. Jackpot odds: 1 in 292,201,338.',
+          jackpot: true,
+          drawDays: 'Monday, Wednesday & Saturday',
+        },
+        megamillions: {
+          name: 'Mega Millions',
+          mainCount: 5,
+          mainMax: 70,
+          mainMin: 1,
+          specialCount: 1,
+          specialMax: 25,
+          specialMin: 1,
+          specialName: 'Mega Ball',
+          ballClass: 'main',
+          specialClass: 'bonus',
+          info: 'Pick 5 numbers from 1–70 + 1 Mega Ball from 1–25. Jackpot odds: 1 in 302,575,350.',
+          jackpot: true,
+          drawDays: 'Tuesday & Friday',
+        },
+        lottotexas: {
+          name: 'Lotto Texas',
+          mainCount: 6,
+          mainMax: 54,
+          mainMin: 1,
+          specialCount: 0,
+          ballClass: 'orange',
+          info: 'Pick 6 numbers from 1–54. Jackpot odds: 1 in 25,827,165.',
+          jackpot: true,
+          drawDays: 'Monday, Wednesday & Saturday',
+        },
+        twostep: {
+          name: 'Texas Two Step',
+          mainCount: 4,
+          mainMax: 35,
+          mainMin: 1,
+          specialCount: 1,
+          specialMax: 35,
+          specialMin: 1,
+          specialName: 'Bonus Ball',
+          ballClass: 'purple',
+          specialClass: 'green',
+          info: 'Pick 4 numbers from 1–35 + 1 Bonus Ball from 1–35. Top prize odds: 1 in 1,832,600.',
+          jackpot: true,
+          drawDays: 'Monday & Thursday',
+        },
+        pick3: {
+          name: 'Pick 3',
+          mainCount: 3,
+          mainMax: 9,
+          mainMin: 0,
+          specialCount: 0,
+          ballClass: 'green',
+          info: 'Pick 3 digits from 0–9. Exact order wins $500. Draws twice daily.',
+          jackpot: false,
+          drawDays: 'Daily (Morning & Evening)',
+          allowRepeats: true,
+        },
+        daily4: {
+          name: 'Daily 4',
+          mainCount: 4,
+          mainMax: 9,
+          mainMin: 0,
+          specialCount: 0,
+          ballClass: 'purple',
+          info: 'Pick 4 digits from 0–9. Exact order wins $5,000. Draws twice daily.',
+          jackpot: false,
+          drawDays: 'Daily (Morning & Evening)',
+          allowRepeats: true,
+        },
+        cashfive: {
+          name: 'Cash Five',
+          mainCount: 5,
+          mainMax: 35,
+          mainMin: 1,
+          specialCount: 0,
+          ballClass: 'main',
+          info: 'Pick 5 numbers from 1–35. Top prize odds: 1 in 324,632.',
+          jackpot: false,
+          drawDays: 'Daily',
+        },
+        allornothing: {
+          name: 'All or Nothing',
+          mainCount: 12,
+          mainMax: 24,
+          mainMin: 1,
+          specialCount: 0,
+          ballClass: 'orange',
+          info: 'Pick 12 numbers from 1–24. Win by matching ALL 12 or NONE of the 12 drawn. Draws 4 times daily.',
+          jackpot: false,
+          drawDays: 'Daily (4 draws)',
+        },
+      };
+
+      // ============================================================
+      // State
+      // ============================================================
+      let currentGame = 'powerball';
+      let isDrawing = false;
+      let drawTimeout = null;
+      let floatingBalls = [];
+      let animationFrame = null;
+      let confettiPieces = [];
+      let confettiFrame = null;
+      let confettiActive = false;
+
+      // ============================================================
+      // Ball Colors for machine floating balls
+      // ============================================================
+      const FLOAT_COLORS = [
+        ['#60a5fa', '#1d4ed8'],
+        ['#f87171', '#b91c1c'],
+        ['#34d399', '#059669'],
+        ['#fbbf24', '#d97706'],
+        ['#a78bfa', '#7c3aed'],
+        ['#f0f9ff', '#bfdbfe'],
+        ['#fb923c', '#ea580c'],
+        ['#e879f9', '#a21caf'],
+      ];
+
+      // ============================================================
+      // Init
+      // ============================================================
+      function init() {
+        updateGameInfo();
+        createFloatingBalls();
+        updateDateDisplay();
+
+        document.getElementById('game-select').addEventListener('change', (e) => {
+          currentGame = e.target.value;
+          updateGameInfo();
+          resetDraw();
+        });
+      }
+
+      function updateGameInfo() {
+        const game = GAMES[currentGame];
+        document.getElementById('game-info').textContent = game.info;
+        document.getElementById('draw-game-name').textContent = game.drawDays;
+      }
+
+      function updateDateDisplay() {
+        const now = new Date();
+        const opts = {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        };
+        document.getElementById('draw-date').textContent = now.toLocaleDateString('en-US', opts);
+      }
+
+      // ============================================================
+      // Floating Machine Balls
+      // ============================================================
+      function createFloatingBalls() {
+        const container = document.getElementById('machine-balls');
+        container.innerHTML = '';
+        floatingBalls = [];
+
+        const count = 18;
+        const viewport = document.getElementById('machine-viewport');
+        const vw = viewport.clientWidth || 400;
+        const vh = 160;
+        const ballSize = 28;
+
+        for (let i = 0; i < count; i++) {
+          const div = document.createElement('div');
+          div.className = 'machine-ball';
+          const color = FLOAT_COLORS[i % FLOAT_COLORS.length];
+          div.style.width = ballSize + 'px';
+          div.style.height = ballSize + 'px';
+          div.style.background = `radial-gradient(circle at 35% 35%, ${color[0]}, ${color[1]})`;
+          div.style.boxShadow = `0 2px 8px rgba(0,0,0,0.4), inset 0 -2px 4px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.25)`;
+
+          // Random start position (avoid tube pipe area on right)
+          const maxX = vw - ballSize - 50;
+          const startX = Math.random() * maxX;
+          const startY = Math.random() * (vh - ballSize);
+
+          // Random velocity
+          const speed = 0.8 + Math.random() * 1.5;
+          const angle = Math.random() * Math.PI * 2;
+
+          div.style.left = startX + 'px';
+          div.style.top = startY + 'px';
+          div.style.animation = 'none';
+
+          const ballNum = Math.floor(Math.random() * 69) + 1;
+          div.textContent = ballNum;
+          div.style.fontSize = '0.6rem';
+
+          container.appendChild(div);
+
+          floatingBalls.push({
+            el: div,
+            x: startX,
+            y: startY,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            size: ballSize,
+          });
+        }
+
+        animateMachineBalls();
+      }
+
+      function animateMachineBalls() {
+        const viewport = document.getElementById('machine-viewport');
+        const vw = viewport.clientWidth || 400;
+        const vh = viewport.clientHeight || 160;
+        const margin = 50; // leave space for tube pipe on right
+
+        floatingBalls.forEach((ball) => {
+          ball.x += ball.vx;
+          ball.y += ball.vy;
+
+          // Bounce off walls
+          if (ball.x <= 0) {
+            ball.x = 0;
+            ball.vx = Math.abs(ball.vx);
+          }
+          if (ball.x >= vw - ball.size - margin) {
+            ball.x = vw - ball.size - margin;
+            ball.vx = -Math.abs(ball.vx);
+          }
+          if (ball.y <= 0) {
+            ball.y = 0;
+            ball.vy = Math.abs(ball.vy);
+          }
+          if (ball.y >= vh - ball.size) {
+            ball.y = vh - ball.size;
+            ball.vy = -Math.abs(ball.vy);
+          }
+
+          ball.el.style.left = ball.x + 'px';
+          ball.el.style.top = ball.y + 'px';
+        });
+
+        animationFrame = requestAnimationFrame(animateMachineBalls);
+      }
+
+      // ============================================================
+      // Draw Logic
+      // ============================================================
+      function generateNumbers(game) {
+        const mainNumbers = [];
+        if (game.allowRepeats) {
+          for (let i = 0; i < game.mainCount; i++) {
+            mainNumbers.push(Math.floor(Math.random() * (game.mainMax - game.mainMin + 1)) + game.mainMin);
+          }
+        } else {
+          const pool = [];
+          for (let i = game.mainMin; i <= game.mainMax; i++) pool.push(i);
+          // Fisher-Yates shuffle, take mainCount
+          for (let i = pool.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [pool[i], pool[j]] = [pool[j], pool[i]];
+          }
+          mainNumbers.push(...pool.slice(0, game.mainCount));
+          if (!game.allowRepeats) mainNumbers.sort((a, b) => a - b);
+        }
+
+        let specialNumbers = [];
+        if (game.specialCount > 0) {
+          if (game.name === 'Texas Two Step') {
+            // Bonus ball can be same range but separate pool
+            const pool = [];
+            for (let i = game.specialMin; i <= game.specialMax; i++) pool.push(i);
+            for (let i = pool.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [pool[i], pool[j]] = [pool[j], pool[i]];
+            }
+            // Pick one that's not already in mainNumbers
+            const available = pool.filter((n) => !mainNumbers.includes(n));
+            specialNumbers = [available[0] || pool[0]];
+          } else {
+            specialNumbers = [
+              Math.floor(Math.random() * (game.specialMax - game.specialMin + 1)) + game.specialMin,
+            ];
+          }
+        }
+
+        return { mainNumbers, specialNumbers };
+      }
+
+      let drawnMainNumbers = [];
+      let drawnSpecialNumbers = [];
+      let allNumbers = [];
+      let currentDrawIndex = 0;
+
+      function startDraw() {
+        if (isDrawing) return;
+
+        const game = GAMES[currentGame];
+        const { mainNumbers, specialNumbers } = generateNumbers(game);
+
+        drawnMainNumbers = mainNumbers;
+        drawnSpecialNumbers = specialNumbers;
+        allNumbers = [
+          ...mainNumbers.map((n) => ({ num: n, isSpecial: false })),
+          ...specialNumbers.map((n) => ({ num: n, isSpecial: true })),
+        ];
+        currentDrawIndex = 0;
+
+        isDrawing = true;
+        document.getElementById('draw-btn').disabled = true;
+        document.getElementById('reset-btn').disabled = true;
+        document.getElementById('game-select').disabled = true;
+        document.getElementById('numbers-row').innerHTML = '';
+        document.getElementById('win-message').classList.remove('visible');
+
+        // Stop confetti if running
+        stopConfetti();
+
+        updateDateDisplay();
+        drawNextNumber();
+      }
+
+      function drawNextNumber() {
+        if (currentDrawIndex >= allNumbers.length) {
+          // All drawn
+          finishDraw();
+          return;
+        }
+
+        const game = GAMES[currentGame];
+        const item = allNumbers[currentDrawIndex];
+        const label = currentDrawIndex < drawnMainNumbers.length ? `Drawing #${currentDrawIndex + 1}` : `Drawing ${game.specialName}`;
+
+        document.getElementById('machine-status').textContent = label + '...';
+
+        // Show drawing ball in machine
+        const drawingContainer = document.getElementById('drawing-ball-container');
+        const drawBall = document.getElementById('draw-ball');
+
+        drawBall.textContent = item.num;
+        drawBall.className = 'draw-ball' + (item.isSpecial ? ' special' : '');
+
+        // Set ball gradient
+        const ballClass = item.isSpecial ? game.specialClass : game.ballClass;
+        setBallStyle(drawBall, ballClass);
+
+        drawingContainer.className = 'drawing-ball-container active';
+
+        // After showing in machine, add to results
+        drawTimeout = setTimeout(() => {
+          drawingContainer.className = 'drawing-ball-container';
+          addNumberToResults(item.num, item.isSpecial, currentDrawIndex);
+          currentDrawIndex++;
+          drawTimeout = setTimeout(drawNextNumber, 400);
+        }, 900);
+      }
+
+      function setBallStyle(el, ballClass) {
+        const styles = {
+          main: 'radial-gradient(circle at 35% 35%, #60a5fa, #1d4ed8)',
+          bonus: 'radial-gradient(circle at 35% 35%, #f87171, #b91c1c)',
+          green: 'radial-gradient(circle at 35% 35%, #34d399, #059669)',
+          orange: 'radial-gradient(circle at 35% 35%, #fbbf24, #d97706)',
+          purple: 'radial-gradient(circle at 35% 35%, #a78bfa, #7c3aed)',
+          'white-ball': 'radial-gradient(circle at 35% 35%, #f0f9ff, #bfdbfe)',
+        };
+        el.style.background = styles[ballClass] || styles.main;
+        if (ballClass === 'orange' || ballClass === 'white-ball') {
+          el.style.color = '#1f2937';
+          el.style.textShadow = 'none';
+        } else {
+          el.style.color = '#fff';
+          el.style.textShadow = '0 2px 4px rgba(0,0,0,0.5)';
+        }
+      }
+
+      function addNumberToResults(num, isSpecial, index) {
+        const game = GAMES[currentGame];
+        const row = document.getElementById('numbers-row');
+
+        // Add separator before special balls
+        if (isSpecial && game.specialCount > 0 && drawnMainNumbers.length > 0) {
+          const sep = document.createElement('span');
+          sep.className = 'ball-separator';
+          sep.textContent = '+';
+          row.appendChild(sep);
+        }
+
+        const group = document.createElement('div');
+        group.className = 'ball-group';
+
+        const ball = document.createElement('div');
+        const ballClass = isSpecial ? game.specialClass : game.ballClass;
+        ball.className = `number-ball ${ballClass}`;
+        ball.textContent = num;
+        ball.style.animationDelay = '0ms';
+
+        group.appendChild(ball);
+
+        if (isSpecial && game.specialName) {
+          const lbl = document.createElement('div');
+          lbl.className = 'special-label';
+          lbl.textContent = game.specialName;
+          group.appendChild(lbl);
+        }
+
+        row.appendChild(group);
+      }
+
+      function finishDraw() {
+        isDrawing = false;
+        document.getElementById('draw-btn').disabled = false;
+        document.getElementById('reset-btn').disabled = false;
+        document.getElementById('game-select').disabled = false;
+        document.getElementById('machine-status').textContent = '✓ Draw complete! Good luck!';
+        document.getElementById('drawing-ball-container').className = 'drawing-ball-container';
+
+        // Show win message
+        setTimeout(() => {
+          document.getElementById('win-message').classList.add('visible');
+          startConfetti();
+        }, 300);
+      }
+
+      function resetDraw() {
+        if (isDrawing) {
+          clearTimeout(drawTimeout);
+          isDrawing = false;
+        }
+        stopConfetti();
+
+        document.getElementById('draw-btn').disabled = false;
+        document.getElementById('reset-btn').disabled = true;
+        document.getElementById('game-select').disabled = false;
+        document.getElementById('numbers-row').innerHTML =
+          '<span style="opacity:0.3;font-size:0.9rem">Numbers will appear here</span>';
+        document.getElementById('machine-status').textContent = 'Press "Draw Numbers" to begin';
+        document.getElementById('drawing-ball-container').className = 'drawing-ball-container';
+        document.getElementById('win-message').classList.remove('visible');
+
+        drawnMainNumbers = [];
+        drawnSpecialNumbers = [];
+        allNumbers = [];
+        currentDrawIndex = 0;
+      }
+
+      // ============================================================
+      // Confetti
+      // ============================================================
+      const CONFETTI_COLORS = [
+        '#f59e0b',
+        '#ef4444',
+        '#3b82f6',
+        '#10b981',
+        '#a78bfa',
+        '#f97316',
+        '#ec4899',
+        '#facc15',
+      ];
+
+      function startConfetti() {
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        confettiPieces = [];
+        confettiActive = true;
+
+        // Create pieces
+        for (let i = 0; i < 200; i++) {
+          confettiPieces.push({
+            x: Math.random() * canvas.width,
+            y: -20 - Math.random() * 200,
+            w: 8 + Math.random() * 8,
+            h: 4 + Math.random() * 6,
+            color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+            vx: -2 + Math.random() * 4,
+            vy: 3 + Math.random() * 5,
+            angle: Math.random() * Math.PI * 2,
+            spin: (-0.15 + Math.random() * 0.3),
+            opacity: 1,
+          });
+        }
+
+        // Auto stop after 5 seconds
+        setTimeout(stopConfetti, 5000);
+
+        animateConfetti(ctx, canvas);
+      }
+
+      function animateConfetti(ctx, canvas) {
+        if (!confettiActive) return;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        let allDone = true;
+        confettiPieces.forEach((p) => {
+          if (p.y < canvas.height + 20) {
+            allDone = false;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.angle += p.spin;
+            p.vy += 0.05; // gravity
+
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.angle);
+            ctx.globalAlpha = p.opacity;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.restore();
+          }
+        });
+
+        if (!allDone) {
+          confettiFrame = requestAnimationFrame(() => animateConfetti(ctx, canvas));
+        } else {
+          stopConfetti();
+        }
+      }
+
+      function stopConfetti() {
+        confettiActive = false;
+        if (confettiFrame) {
+          cancelAnimationFrame(confettiFrame);
+          confettiFrame = null;
+        }
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        confettiPieces = [];
+      }
+
+      // Handle resize
+      window.addEventListener('resize', () => {
+        const canvas = document.getElementById('confetti-canvas');
+        if (confettiActive) {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+        // Recreate floating balls on significant resize
+        createFloatingBalls();
+      });
+
+      // Keyboard support
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (!isDrawing && !document.getElementById('draw-btn').disabled) {
+            startDraw();
+          }
+        }
+        if (e.key === 'r' || e.key === 'R') {
+          resetDraw();
+        }
+      });
+
+      // Start
+      init();
+    </script>
+  </body>
+</html>
