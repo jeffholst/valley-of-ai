@@ -28,7 +28,6 @@ for (let i = 0; i < args.length; i++) {
 
 const LIMIT = argMap.get('--limit') ? Number(argMap.get('--limit')) : null;
 const ONLY = argMap.get('--only') ? String(argMap.get('--only')) : null;
-const REPORT_PATH = path.join(root, 'logs', 'responsive-validation.json');
 
 const VIEWPORTS = [
   { id: 'mobile-portrait', width: 390, height: 844, mobile: true, hasTouch: true },
@@ -280,12 +279,8 @@ async function main() {
     await new Promise((r) => server.close(r));
   }
 
-  fs.mkdirSync(path.dirname(REPORT_PATH), { recursive: true });
-  fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2));
-
   if (report.failures > 0) {
     console.error(`Responsive validation failed for ${report.failures}/${report.totalApps} app(s).`);
-    console.error(`Full report: ${REPORT_PATH}`);
 
     for (const app of report.apps.filter((a) => a.failed).slice(0, 10)) {
       console.error(`- ${app.app}`);
@@ -301,7 +296,7 @@ async function main() {
 
   console.log(`Responsive validation passed for ${report.totalApps} app(s).`);
   if (report.warnings > 0) {
-    console.log(`Warnings: ${report.warnings} (see ${REPORT_PATH})`);
+    console.log(`Warnings: ${report.warnings}`);
   }
 }
 
