@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pattern Pulse Memory - __MAIN_SITE_NAME__</title>
+    <link rel="icon" type="image/svg+xml" href="thumbnail.svg" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
+    <meta name="voa-github-url" content="__GITHUB_URL__">
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #070d1d;
+        --text: #f6f9ff;
+        --surface: #121b32;
+        --accent: #67e8f9;
+        --muted: #9caecf;
+        --good: #22c55e;
+        --bad: #f43f5e;
+      }
+
+      [data-theme='light'] {
+        --bg: #f8fbff;
+        --text: #0e1a32;
+        --surface: #e7eefb;
+        --accent: #0369a1;
+        --muted: #475569;
+        --good: #15803d;
+        --bad: #be123c;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background: radial-gradient(circle at 10% 10%, #132243 0%, var(--bg) 40%);
+        color: var(--text);
+      }
+
+      main {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 1rem;
+      }
+
+      .app-card {
+        background: color-mix(in oklab, var(--surface) 88%, black 12%);
+        border: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+        border-radius: 20px;
+        padding: 1rem;
+        box-shadow: 0 12px 38px rgba(0, 0, 0, 0.35);
+      }
+
+      h1 {
+        margin: 0 0 0.25rem;
+        font-size: clamp(1.35rem, 3.8vw, 2rem);
+      }
+
+      .subtitle { margin: 0 0 1rem; color: var(--muted); }
+
+      .hud {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.65rem;
+        margin-bottom: 0.9rem;
+      }
+
+      .stat {
+        background: color-mix(in oklab, var(--bg) 78%, white 6%);
+        border-radius: 14px;
+        padding: 0.55rem;
+        text-align: center;
+      }
+
+      .stat small { display: block; color: var(--muted); font-size: 0.73rem; }
+      .stat strong { font-size: 1.08rem; }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(110px, 1fr));
+        gap: 0.8rem;
+      }
+
+      .pad {
+        border: 0;
+        min-height: 110px;
+        border-radius: 16px;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #fff;
+        cursor: pointer;
+        transition: transform 0.12s ease, filter 0.2s ease, box-shadow 0.15s ease;
+        touch-action: manipulation;
+      }
+      .pad:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+      .pad:active, .pad.active { transform: scale(0.96); filter: brightness(1.15); }
+
+      .pad[data-pad='0'] { background: linear-gradient(145deg, #0ea5e9, #0369a1); }
+      .pad[data-pad='1'] { background: linear-gradient(145deg, #8b5cf6, #6d28d9); }
+      .pad[data-pad='2'] { background: linear-gradient(145deg, #22c55e, #15803d); }
+      .pad[data-pad='3'] { background: linear-gradient(145deg, #f97316, #c2410c); }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        margin-top: 1rem;
+      }
+
+      button.control {
+        min-height: 44px;
+        border-radius: 12px;
+        border: 1px solid color-mix(in oklab, var(--accent) 50%, transparent);
+        padding: 0.6rem 0.9rem;
+        color: var(--text);
+        background: color-mix(in oklab, var(--surface) 75%, transparent);
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      #status {
+        margin-top: 0.7rem;
+        min-height: 1.4rem;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .help { margin-top: 0.8rem; font-size: 0.88rem; color: var(--muted); }
+      kbd {
+        border: 1px solid color-mix(in oklab, var(--muted) 70%, white 30%);
+        border-bottom-width: 2px;
+        border-radius: 6px;
+        padding: 0.1rem 0.32rem;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+
+      @media (min-width: 760px) {
+        .app-card { padding: 1.4rem; }
+        .grid { gap: 1rem; }
+        .pad { min-height: 150px; font-size: 1.15rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="app-card" aria-label="Pattern Pulse Memory game">
+        <h1>Pattern Pulse Memory</h1>
+        <p class="subtitle">Watch the sequence. Repeat it with keys 1–4 or taps. One mistake ends the run.</p>
+
+        <div class="hud" role="status" aria-live="polite">
+          <div class="stat"><small>Round</small><strong id="round">0</strong></div>
+          <div class="stat"><small>Best</small><strong id="best">0</strong></div>
+          <div class="stat"><small>Streak</small><strong id="streak">0</strong></div>
+        </div>
+
+        <div class="grid" id="grid">
+          <button class="pad" data-pad="0" aria-label="Pad 1">1</button>
+          <button class="pad" data-pad="1" aria-label="Pad 2">2</button>
+          <button class="pad" data-pad="2" aria-label="Pad 3">3</button>
+          <button class="pad" data-pad="3" aria-label="Pad 4">4</button>
+        </div>
+
+        <div class="controls">
+          <button class="control" id="start">Start Game</button>
+          <button class="control" id="replay">Replay Sequence</button>
+        </div>
+        <p id="status">Press Start to begin.</p>
+        <p class="help">Keyboard: <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd> · Touch + mouse supported.</p>
+      </section>
+    </main>
+
+    <script>
+      const pads = [...document.querySelectorAll('.pad')]
+      const startBtn = document.getElementById('start');
+      const replayBtn = document.getElementById('replay');
+      const statusEl = document.getElementById('status');
+      const roundEl = document.getElementById('round');
+      const bestEl = document.getElementById('best');
+      const streakEl = document.getElementById('streak');
+
+      const tones = [261.63, 329.63, 392.0, 523.25];
+      const audioContext = window.AudioContext || window.webkitAudioContext;
+      const state = {
+        sequence: [],
+        input: [],
+        best: Number(localStorage.getItem('patternPulseBest') || 0),
+        streak: 0,
+        canInput: false,
+        running: false
+      };
+
+      bestEl.textContent = String(state.best);
+
+      const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+      function setStatus(message, tone = 'muted') {
+        statusEl.textContent = message;
+        statusEl.style.color = tone === 'good' ? 'var(--good)' : tone === 'bad' ? 'var(--bad)' : 'var(--muted)';
+      }
+
+      function beep(freq, ms = 170) {
+        if (!audioContext) return;
+        const ctx = new audioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        gain.gain.value = 0.001;
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        gain.gain.exponentialRampToValueAtTime(0.09, ctx.currentTime + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + ms / 1000);
+        osc.stop(ctx.currentTime + ms / 1000 + 0.01);
+      }
+
+      async function flashPad(index, speed = 350) {
+        const pad = pads[index];
+        pad.classList.add('active');
+        beep(tones[index]);
+        await wait(speed * 0.55);
+        pad.classList.remove('active');
+        await wait(speed * 0.45);
+      }
+
+      async function playSequence() {
+        state.canInput = false;
+        setStatus('Watch closely…');
+        const speed = Math.max(170, 360 - state.sequence.length * 12);
+        for (const step of state.sequence) {
+          await flashPad(step, speed);
+        }
+        state.canInput = true;
+        setStatus('Your turn: repeat the pattern.');
+      }
+
+      function updateHud() {
+        roundEl.textContent = String(state.sequence.length ? state.sequence.length - 1 : 0);
+        streakEl.textContent = String(state.streak);
+      }
+
+      function nextRound() {
+        state.input = [];
+        state.sequence.push(Math.floor(Math.random() * 4));
+        updateHud();
+        playSequence();
+      }
+
+      function gameOver() {
+        state.running = false;
+        state.canInput = false;
+        state.streak = 0;
+        updateHud();
+        setStatus('Wrong pad. Game over — press Start to try again.', 'bad');
+      }
+
+      function handleInput(index) {
+        if (!state.running || !state.canInput) return;
+        const expected = state.sequence[state.input.length];
+        state.input.push(index);
+        flashPad(index, 170);
+
+        if (index !== expected) {
+          gameOver();
+          return;
+        }
+
+        if (state.input.length === state.sequence.length) {
+          state.streak += 1;
+          if (state.sequence.length > state.best) {
+            state.best = state.sequence.length;
+            localStorage.setItem('patternPulseBest', String(state.best));
+            bestEl.textContent = String(state.best);
+          }
+          setStatus(`Round cleared! Starting round ${state.sequence.length + 1}.`, 'good');
+          setTimeout(nextRound, 550);
+        }
+      }
+
+      function startGame() {
+        state.sequence = [];
+        state.input = [];
+        state.streak = 0;
+        state.running = true;
+        updateHud();
+        setStatus('Game started!', 'good');
+        nextRound();
+      }
+
+      pads.forEach((pad, index) => {
+        pad.addEventListener('click', () => handleInput(index));
+      });
+
+      startBtn.addEventListener('click', startGame);
+      replayBtn.addEventListener('click', () => {
+        if (!state.running || !state.sequence.length) return;
+        playSequence();
+      });
+
+      document.addEventListener('keydown', event => {
+        const idx = Number(event.key) - 1;
+        if (idx >= 0 && idx < 4) {
+          event.preventDefault();
+          handleInput(idx);
+        }
+      });
+    </script>
+  </body>
+</html>
