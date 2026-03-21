@@ -1,241 +1,329 @@
 <svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Morse Code Radio thumbnail">
   <defs>
-    <!-- Background gradient -->
-    <linearGradient id="bg-grad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#050d1a"/>
-      <stop offset="100%" stop-color="#0a1628"/>
+    <!-- Background -->
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0%" stop-color="#0d1525"/>
+      <stop offset="100%" stop-color="#0a0f1a"/>
     </linearGradient>
 
-    <!-- Accent glow gradient -->
-    <radialGradient id="scope-glow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.18"/>
-      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
-    </radialGradient>
-
-    <!-- Title glow filter -->
-    <filter id="title-glow" x="-20%" y="-60%" width="140%" height="220%">
-      <feGaussianBlur stdDeviation="6" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-
-    <!-- Signal glow filter -->
-    <filter id="signal-glow" x="-10%" y="-80%" width="120%" height="260%">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-
-    <!-- Dot/dash glow filter -->
-    <filter id="elem-glow" x="-30%" y="-100%" width="160%" height="300%">
-      <feGaussianBlur stdDeviation="4" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-
-    <!-- Panel gradient -->
+    <!-- Panel surface -->
     <linearGradient id="panel-grad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#111827"/>
-      <stop offset="100%" stop-color="#0d1525"/>
+      <stop offset="0%" stop-color="#151f35"/>
+      <stop offset="100%" stop-color="#111827"/>
     </linearGradient>
 
-    <!-- Key button gradient -->
-    <radialGradient id="key-grad" cx="40%" cy="35%" r="60%">
+    <!-- Scope background -->
+    <linearGradient id="scope-bg-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#050d1a"/>
+      <stop offset="100%" stop-color="#040b16"/>
+    </linearGradient>
+
+    <!-- Key button radial highlight -->
+    <radialGradient id="key-btn-grad" cx="38%" cy="32%" r="62%">
       <stop offset="0%" stop-color="#22d3ee"/>
       <stop offset="100%" stop-color="#0891b2"/>
     </radialGradient>
 
-    <!-- Oscilloscope bg -->
-    <linearGradient id="scope-bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#050d1a"/>
-      <stop offset="100%" stop-color="#07111f"/>
+    <!-- Transmit button -->
+    <linearGradient id="tx-btn-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
     </linearGradient>
 
-    <!-- Corner edge gradient -->
-    <linearGradient id="edge-grad" x1="0" y1="0" x2="1" y2="0">
+    <!-- Edge glow sweep -->
+    <linearGradient id="edge-sweep" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#22d3ee" stop-opacity="0"/>
-      <stop offset="50%" stop-color="#22d3ee" stop-opacity="0.7"/>
+      <stop offset="40%" stop-color="#22d3ee" stop-opacity="0.8"/>
+      <stop offset="60%" stop-color="#22d3ee" stop-opacity="0.8"/>
       <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
     </linearGradient>
+
+    <!-- Scope ambient glow -->
+    <radialGradient id="scope-ambient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Title glow -->
+    <filter id="title-glow" x="-15%" y="-80%" width="130%" height="260%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Soft element glow -->
+    <filter id="dot-glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Waveform glow -->
+    <filter id="wave-glow" x="-2%" y="-80%" width="104%" height="260%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Key button drop shadow -->
+    <filter id="key-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#22d3ee" flood-opacity="0.5"/>
+    </filter>
   </defs>
 
-  <!-- Background -->
-  <rect width="800" height="450" fill="url(#bg-grad)"/>
+  <!-- ── Full canvas background ─────────────────────── -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bg-grad)"/>
 
-  <!-- Subtle grid -->
-  <g opacity="0.05" stroke="#22d3ee" stroke-width="0.5">
-    <line x1="0" y1="56" x2="800" y2="56"/><line x1="0" y1="112" x2="800" y2="112"/>
-    <line x1="0" y1="168" x2="800" y2="168"/><line x1="0" y1="224" x2="800" y2="224"/>
-    <line x1="0" y1="280" x2="800" y2="280"/><line x1="0" y1="336" x2="800" y2="336"/>
-    <line x1="0" y1="392" x2="800" y2="392"/>
-    <line x1="80" y1="0" x2="80" y2="450"/><line x1="160" y1="0" x2="160" y2="450"/>
-    <line x1="240" y1="0" x2="240" y2="450"/><line x1="320" y1="0" x2="320" y2="450"/>
-    <line x1="400" y1="0" x2="400" y2="450"/><line x1="480" y1="0" x2="480" y2="450"/>
-    <line x1="560" y1="0" x2="560" y2="450"/><line x1="640" y1="0" x2="640" y2="450"/>
-    <line x1="720" y1="0" x2="720" y2="450"/>
+  <!-- Subtle dot grid -->
+  <g fill="#22d3ee" opacity="0.04">
+    <rect x="0" y="0" width="800" height="450" fill="none"/>
+    <!-- grid dots via small rects -->
+    <rect x="60"  y="40"  width="1.5" height="1.5"/><rect x="120" y="40"  width="1.5" height="1.5"/>
+    <rect x="180" y="40"  width="1.5" height="1.5"/><rect x="240" y="40"  width="1.5" height="1.5"/>
+    <rect x="300" y="40"  width="1.5" height="1.5"/><rect x="360" y="40"  width="1.5" height="1.5"/>
+    <rect x="420" y="40"  width="1.5" height="1.5"/><rect x="480" y="40"  width="1.5" height="1.5"/>
+    <rect x="540" y="40"  width="1.5" height="1.5"/><rect x="600" y="40"  width="1.5" height="1.5"/>
+    <rect x="660" y="40"  width="1.5" height="1.5"/><rect x="720" y="40"  width="1.5" height="1.5"/>
+    <rect x="780" y="40"  width="1.5" height="1.5"/>
+    <rect x="60"  y="100" width="1.5" height="1.5"/><rect x="120" y="100" width="1.5" height="1.5"/>
+    <rect x="180" y="100" width="1.5" height="1.5"/><rect x="240" y="100" width="1.5" height="1.5"/>
+    <rect x="300" y="100" width="1.5" height="1.5"/><rect x="360" y="100" width="1.5" height="1.5"/>
+    <rect x="420" y="100" width="1.5" height="1.5"/><rect x="480" y="100" width="1.5" height="1.5"/>
+    <rect x="540" y="100" width="1.5" height="1.5"/><rect x="600" y="100" width="1.5" height="1.5"/>
+    <rect x="660" y="100" width="1.5" height="1.5"/><rect x="720" y="100" width="1.5" height="1.5"/>
+    <rect x="780" y="100" width="1.5" height="1.5"/>
+    <rect x="60"  y="160" width="1.5" height="1.5"/><rect x="120" y="160" width="1.5" height="1.5"/>
+    <rect x="180" y="160" width="1.5" height="1.5"/><rect x="240" y="160" width="1.5" height="1.5"/>
+    <rect x="300" y="160" width="1.5" height="1.5"/><rect x="360" y="160" width="1.5" height="1.5"/>
+    <rect x="420" y="160" width="1.5" height="1.5"/><rect x="480" y="160" width="1.5" height="1.5"/>
+    <rect x="540" y="160" width="1.5" height="1.5"/><rect x="600" y="160" width="1.5" height="1.5"/>
+    <rect x="660" y="160" width="1.5" height="1.5"/><rect x="720" y="160" width="1.5" height="1.5"/>
+    <rect x="60"  y="220" width="1.5" height="1.5"/><rect x="120" y="220" width="1.5" height="1.5"/>
+    <rect x="180" y="220" width="1.5" height="1.5"/><rect x="240" y="220" width="1.5" height="1.5"/>
+    <rect x="300" y="220" width="1.5" height="1.5"/><rect x="360" y="220" width="1.5" height="1.5"/>
+    <rect x="420" y="220" width="1.5" height="1.5"/><rect x="480" y="220" width="1.5" height="1.5"/>
+    <rect x="540" y="220" width="1.5" height="1.5"/><rect x="600" y="220" width="1.5" height="1.5"/>
+    <rect x="660" y="220" width="1.5" height="1.5"/><rect x="720" y="220" width="1.5" height="1.5"/>
+    <rect x="60"  y="280" width="1.5" height="1.5"/><rect x="120" y="280" width="1.5" height="1.5"/>
+    <rect x="180" y="280" width="1.5" height="1.5"/><rect x="240" y="280" width="1.5" height="1.5"/>
+    <rect x="300" y="280" width="1.5" height="1.5"/><rect x="360" y="280" width="1.5" height="1.5"/>
+    <rect x="420" y="280" width="1.5" height="1.5"/><rect x="480" y="280" width="1.5" height="1.5"/>
+    <rect x="540" y="280" width="1.5" height="1.5"/><rect x="600" y="280" width="1.5" height="1.5"/>
+    <rect x="660" y="280" width="1.5" height="1.5"/><rect x="720" y="280" width="1.5" height="1.5"/>
+    <rect x="60"  y="340" width="1.5" height="1.5"/><rect x="120" y="340" width="1.5" height="1.5"/>
+    <rect x="180" y="340" width="1.5" height="1.5"/><rect x="240" y="340" width="1.5" height="1.5"/>
+    <rect x="300" y="340" width="1.5" height="1.5"/><rect x="360" y="340" width="1.5" height="1.5"/>
+    <rect x="420" y="340" width="1.5" height="1.5"/><rect x="480" y="340" width="1.5" height="1.5"/>
+    <rect x="540" y="340" width="1.5" height="1.5"/><rect x="600" y="340" width="1.5" height="1.5"/>
+    <rect x="660" y="340" width="1.5" height="1.5"/><rect x="720" y="340" width="1.5" height="1.5"/>
+    <rect x="60"  y="400" width="1.5" height="1.5"/><rect x="120" y="400" width="1.5" height="1.5"/>
+    <rect x="180" y="400" width="1.5" height="1.5"/><rect x="240" y="400" width="1.5" height="1.5"/>
+    <rect x="300" y="400" width="1.5" height="1.5"/><rect x="360" y="400" width="1.5" height="1.5"/>
+    <rect x="420" y="400" width="1.5" height="1.5"/><rect x="480" y="400" width="1.5" height="1.5"/>
+    <rect x="540" y="400" width="1.5" height="1.5"/><rect x="600" y="400" width="1.5" height="1.5"/>
+    <rect x="660" y="400" width="1.5" height="1.5"/><rect x="720" y="400" width="1.5" height="1.5"/>
   </g>
 
-  <!-- ─── Title block ──────────────────────────────────────── -->
-  <text x="400" y="46" font-family="'Courier New', monospace" font-size="10"
-    fill="#22d3ee" opacity="0.6" text-anchor="middle" letter-spacing="4">▼ MORSE CODE RADIO</text>
+  <!-- ── Title ────────────────────────────────────────── -->
+  <text x="400" y="38" font-family="'Courier New',monospace" font-size="10" font-weight="400"
+    fill="#22d3ee" opacity="0.55" text-anchor="middle" letter-spacing="5">▼ MORSE CODE RADIO ▼</text>
 
-  <text x="400" y="80" font-family="'Courier New', monospace" font-size="34"
-    fill="#22d3ee" font-weight="700" text-anchor="middle" letter-spacing="3"
-    filter="url(#title-glow)">MORSE CODE RADIO</text>
+  <text x="400" y="76" font-family="'Courier New',monospace" font-size="38" font-weight="700"
+    fill="#22d3ee" text-anchor="middle" letter-spacing="4" filter="url(#title-glow)">MORSE CODE RADIO</text>
 
-  <text x="400" y="100" font-family="'Courier New', monospace" font-size="11"
-    fill="#64748b" text-anchor="middle" letter-spacing="6">TRANSLATE · TRANSMIT · TRAIN</text>
+  <text x="400" y="96" font-family="'Courier New',monospace" font-size="11" font-weight="400"
+    fill="#64748b" text-anchor="middle" letter-spacing="7">TRANSLATE · TRANSMIT · TRAIN</text>
 
-  <!-- ─── Oscilloscope panel ──────────────────────────────── -->
-  <rect x="30" y="118" width="740" height="88" rx="6" fill="url(#panel-grad)"
-    stroke="#22d3ee" stroke-width="0.8" stroke-opacity="0.3"/>
-  <rect x="30" y="118" width="740" height="88" rx="6" fill="url(#scope-glow)"/>
+  <!-- ── Oscilloscope panel ─────────────────────────── -->
+  <rect x="24" y="112" width="752" height="96" rx="7" fill="url(#panel-grad)" stroke="#22d3ee" stroke-width="0.8" stroke-opacity="0.25"/>
+  <!-- ambient glow overlay -->
+  <rect x="24" y="112" width="752" height="96" rx="7" fill="url(#scope-ambient)"/>
 
-  <!-- Scope bg -->
-  <rect x="38" y="128" width="724" height="68" rx="4" fill="url(#scope-bg)"/>
+  <!-- scope canvas bg -->
+  <rect x="34" y="122" width="732" height="76" rx="4" fill="url(#scope-bg-grad)"/>
 
-  <!-- Scope grid lines -->
-  <g stroke="#22d3ee" stroke-width="0.4" stroke-opacity="0.08">
-    <line x1="38" y1="148" x2="762" y2="148"/>
-    <line x1="38" y1="162" x2="762" y2="162"/>
-    <line x1="38" y1="176" x2="762" y2="176"/>
-    <line x1="218" y1="128" x2="218" y2="196"/>
-    <line x1="398" y1="128" x2="398" y2="196"/>
-    <line x1="578" y1="128" x2="578" y2="196"/>
+  <!-- scope grid lines -->
+  <g stroke="#22d3ee" stroke-width="0.4" stroke-opacity="0.07">
+    <line x1="34"  y1="147" x2="766" y2="147"/>
+    <line x1="34"  y1="160" x2="766" y2="160"/>
+    <line x1="34"  y1="173" x2="766" y2="173"/>
+    <line x1="218" y1="122" x2="218" y2="198"/>
+    <line x1="400" y1="122" x2="400" y2="198"/>
+    <line x1="582" y1="122" x2="582" y2="198"/>
   </g>
 
-  <!-- Oscilloscope waveform (active signal - sine wave) -->
-  <path d="M38,162 C55,162 60,140 75,140 C90,140 95,184 110,184 C125,184 130,140 145,140 C160,140 165,184 180,184 C195,184 200,140 215,140 C230,140 235,184 250,184 C265,184 270,140 285,140 C300,140 305,184 320,184 C335,184 340,140 355,140 C370,140 375,184 390,184 C405,184 410,140 425,140 C440,140 445,184 460,184 C475,184 480,140 495,140 C510,140 515,184 530,184 C545,184 550,140 565,140 C580,140 585,184 600,184 C615,184 620,140 635,140 C650,140 655,184 670,184 C685,184 690,140 705,140 C720,140 725,184 740,184 C755,184 758,162 762,162"
-    fill="none" stroke="#22d3ee" stroke-width="2.2" filter="url(#signal-glow)" stroke-opacity="0.95"/>
+  <!-- active sine wave — mid-transmission -->
+  <path d="
+    M34,160
+    C50,160 56,136 68,136 C80,136 86,184 98,184
+    C110,184 116,136 128,136 C140,136 146,184 158,184
+    C170,184 176,136 188,136 C200,136 206,184 218,184
+    C230,184 236,136 248,136 C260,136 266,184 278,184
+    C290,184 296,136 308,136 C320,136 326,184 338,184
+    C350,184 356,136 368,136 C380,136 386,184 398,184
+    C410,184 416,136 428,136 C440,136 446,184 458,184
+    C470,184 476,136 488,136 C500,136 506,184 518,184
+    C530,184 536,136 548,136 C560,136 566,184 578,184
+    C590,184 596,136 608,136 C620,136 626,184 638,184
+    C650,184 656,136 668,136 C680,136 686,184 698,184
+    C710,184 716,136 728,136 C740,136 746,184 758,184
+    C762,184 764,160 766,160"
+    fill="none" stroke="#22d3ee" stroke-width="2.2" stroke-linecap="round"
+    filter="url(#wave-glow)" opacity="0.95"/>
 
-  <!-- Scope label -->
-  <text x="46" y="143" font-family="'Courier New', monospace" font-size="8"
-    fill="#22d3ee" opacity="0.5" letter-spacing="2">■ SIGNAL MONITOR</text>
+  <!-- scope label -->
+  <text x="44" y="136" font-family="'Courier New',monospace" font-size="8"
+    fill="#22d3ee" opacity="0.45" letter-spacing="2">■ SIGNAL MONITOR</text>
 
-  <!-- ─── Morse symbols strip ──────────────────────────────── -->
-  <rect x="30" y="220" width="740" height="72" rx="6" fill="url(#panel-grad)"
-    stroke="#22d3ee" stroke-width="0.8" stroke-opacity="0.3"/>
-  <text x="46" y="238" font-family="'Courier New', monospace" font-size="8"
-    fill="#22d3ee" opacity="0.5" letter-spacing="2">■ MORSE SIGNAL</text>
+  <!-- transmitting indicator dot -->
+  <circle cx="740" cy="132" r="4" fill="#22d3ee" filter="url(#dot-glow)" opacity="0.9"/>
+  <text x="750" y="136" font-family="'Courier New',monospace" font-size="8"
+    fill="#22d3ee" opacity="0.6" letter-spacing="1">TX</text>
 
-  <!-- Letter H .... -->
-  <text x="60" y="258" font-family="'Courier New', monospace" font-size="9" fill="#64748b">H</text>
-  <circle cx="60" cy="272" r="5" fill="#22d3ee" filter="url(#elem-glow)"/>
-  <circle cx="73" cy="272" r="5" fill="#22d3ee" filter="url(#elem-glow)"/>
-  <circle cx="86" cy="272" r="5" fill="#22d3ee" filter="url(#elem-glow)"/>
-  <circle cx="99" cy="272" r="5" fill="#22d3ee" filter="url(#elem-glow)"/>
+  <!-- ── Morse signal strip ──────────────────────────── -->
+  <rect x="24" y="218" width="752" height="78" rx="7" fill="url(#panel-grad)" stroke="#22d3ee" stroke-width="0.8" stroke-opacity="0.25"/>
+  <text x="40" y="234" font-family="'Courier New',monospace" font-size="8"
+    fill="#22d3ee" opacity="0.45" letter-spacing="2">■ MORSE SIGNAL — "HELLO WORLD"</text>
 
-  <!-- Letter E . -->
-  <text x="117" y="258" font-family="'Courier New', monospace" font-size="9" fill="#64748b">E</text>
-  <circle cx="117" cy="272" r="5" fill="#22d3ee" filter="url(#elem-glow)"/>
+  <!-- H  ....  (active — all cyan) -->
+  <text x="46" y="255" font-family="'Courier New',monospace" font-size="9" fill="#64748b" text-anchor="middle">H</text>
+  <circle cx="36"  cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
+  <circle cx="50"  cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
+  <circle cx="64"  cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
+  <circle cx="78"  cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
 
-  <!-- Letter L .-.. -->
-  <text x="135" y="258" font-family="'Courier New', monospace" font-size="9" fill="#64748b">L</text>
-  <circle cx="135" cy="272" r="5" fill="#22d3ee" filter="url(#elem-glow)"/>
-  <rect x="146" y="267" width="22" height="10" rx="5" fill="#0ea5e9" filter="url(#elem-glow)"/>
-  <circle cx="175" cy="272" r="5" fill="#22d3ee" filter="url(#elem-glow)"/>
-  <circle cx="188" cy="272" r="5" fill="#22d3ee" filter="url(#elem-glow)"/>
+  <!-- E  .  -->
+  <text x="101" y="255" font-family="'Courier New',monospace" font-size="9" fill="#64748b" text-anchor="middle">E</text>
+  <circle cx="101" cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
 
-  <!-- Letter L .-.. -->
-  <text x="206" y="258" font-family="'Courier New', monospace" font-size="9" fill="#64748b">L</text>
-  <circle cx="206" cy="272" r="5" fill="#22d3ee" filter="url(#elem-glow)"/>
-  <rect x="217" y="267" width="22" height="10" rx="5" fill="#0ea5e9" filter="url(#elem-glow)"/>
-  <circle cx="246" cy="272" r="5" fill="#22d3ee" filter="url(#elem-glow)"/>
-  <circle cx="259" cy="272" r="5" fill="#22d3ee" filter="url(#elem-glow)"/>
+  <!-- L  .-..  -->
+  <text x="137" y="255" font-family="'Courier New',monospace" font-size="9" fill="#64748b" text-anchor="middle">L</text>
+  <circle cx="121" cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
+  <rect x="131"  y="263" width="24" height="11" rx="5.5" fill="#0ea5e9" filter="url(#dot-glow)"/>
+  <circle cx="161" cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
+  <circle cx="175" cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
 
-  <!-- Word gap spacer -->
+  <!-- L  .-..  -->
+  <text x="211" y="255" font-family="'Courier New',monospace" font-size="9" fill="#64748b" text-anchor="middle">L</text>
+  <circle cx="195" cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
+  <rect x="205"  y="263" width="24" height="11" rx="5.5" fill="#0ea5e9" filter="url(#dot-glow)"/>
+  <circle cx="235" cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
+  <circle cx="249" cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
 
-  <!-- Letter W .-- -->
-  <text x="284" y="258" font-family="'Courier New', monospace" font-size="9" fill="#64748b">W</text>
-  <circle cx="284" cy="272" r="5" fill="#22d3ee" filter="url(#elem-glow)"/>
-  <rect x="295" y="267" width="22" height="10" rx="5" fill="#0ea5e9" filter="url(#elem-glow)"/>
-  <rect x="323" y="267" width="22" height="10" rx="5" fill="#0ea5e9" filter="url(#elem-glow)"/>
+  <!-- O: three dashes -->
+  <text x="300" y="255" font-family="'Courier New',monospace" font-size="9" fill="#64748b" text-anchor="middle">O</text>
+  <rect x="272"  y="263" width="24" height="11" rx="5.5" fill="#0ea5e9" filter="url(#dot-glow)"/>
+  <rect x="301"  y="263" width="24" height="11" rx="5.5" fill="#0ea5e9" filter="url(#dot-glow)"/>
+  <rect x="330"  y="263" width="24" height="11" rx="5.5" fill="#0ea5e9" filter="url(#dot-glow)"/>
 
-  <!-- Letter O --- -->
-  <text x="356" y="258" font-family="'Courier New', monospace" font-size="9" fill="#64748b">O</text>
-  <rect x="356" y="267" width="22" height="10" rx="5" fill="#0ea5e9" filter="url(#elem-glow)"/>
-  <rect x="384" y="267" width="22" height="10" rx="5" fill="#0ea5e9" filter="url(#elem-glow)"/>
-  <rect x="412" y="267" width="22" height="10" rx="5" fill="#0ea5e9" filter="url(#elem-glow)"/>
+  <!-- W: dot dash dash -->
+  <text x="381" y="255" font-family="'Courier New',monospace" font-size="9" fill="#64748b" text-anchor="middle">W</text>
+  <circle cx="364" cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
+  <rect x="374"  y="263" width="24" height="11" rx="5.5" fill="#0ea5e9" filter="url(#dot-glow)"/>
+  <rect x="403"  y="263" width="24" height="11" rx="5.5" fill="#0ea5e9" filter="url(#dot-glow)"/>
 
-  <!-- Letter R .-. -->
-  <text x="446" y="258" font-family="'Courier New', monospace" font-size="9" fill="#64748b">R</text>
-  <circle cx="446" cy="272" r="5" fill="#22d3ee" filter="url(#elem-glow)"/>
-  <rect x="457" y="267" width="22" height="10" rx="5" fill="#0ea5e9" filter="url(#elem-glow)"/>
-  <circle cx="486" cy="272" r="5" fill="#22d3ee" filter="url(#elem-glow)"/>
+  <!-- O: three dashes -->
+  <text x="455" y="255" font-family="'Courier New',monospace" font-size="9" fill="#64748b" text-anchor="middle">O</text>
+  <rect x="430"  y="263" width="24" height="11" rx="5.5" fill="#0ea5e9" filter="url(#dot-glow)"/>
+  <rect x="459"  y="263" width="24" height="11" rx="5.5" fill="#0ea5e9" filter="url(#dot-glow)"/>
+  <rect x="488"  y="263" width="24" height="11" rx="5.5" fill="#0ea5e9" filter="url(#dot-glow)"/>
 
-  <!-- Letter L .-.. -->
-  <text x="504" y="258" font-family="'Courier New', monospace" font-size="9" fill="#64748b">D</text>
-  <rect x="504" y="267" width="22" height="10" rx="5" fill="#0ea5e9" filter="url(#elem-glow)"/>
-  <circle cx="533" cy="272" r="5" fill="#22d3ee" filter="url(#elem-glow)"/>
-  <circle cx="546" cy="272" r="5" fill="#22d3ee" filter="url(#elem-glow)"/>
+  <!-- R  .-.  -->
+  <text x="525" y="255" font-family="'Courier New',monospace" font-size="9" fill="#64748b" text-anchor="middle">R</text>
+  <circle cx="511" cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
+  <rect x="521"  y="263" width="24" height="11" rx="5.5" fill="#0ea5e9" filter="url(#dot-glow)"/>
+  <circle cx="551" cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
 
-  <!-- ─── Controls row ─────────────────────────────────────── -->
-  <!-- WPM control -->
-  <rect x="30" y="308" width="220" height="58" rx="6" fill="url(#panel-grad)"
-    stroke="#22d3ee" stroke-width="0.8" stroke-opacity="0.3"/>
-  <text x="46" y="326" font-family="'Courier New', monospace" font-size="8" fill="#64748b" letter-spacing="2">SPEED (WPM)</text>
-  <text x="238" y="326" font-family="'Courier New', monospace" font-size="10" fill="#22d3ee" text-anchor="end">15</text>
-  <rect x="46" y="334" width="192" height="4" rx="2" fill="#1a2540"/>
-  <rect x="46" y="334" width="86" height="4" rx="2" fill="#22d3ee"/>
-  <circle cx="132" cy="336" r="7" fill="#22d3ee" filter="url(#elem-glow)"/>
-  <text x="46" y="358" font-family="'Courier New', monospace" font-size="8" fill="#64748b">5 WPM</text>
-  <text x="238" y="358" font-family="'Courier New', monospace" font-size="8" fill="#64748b" text-anchor="end">40 WPM</text>
+  <!-- L  .-..  -->
+  <text x="590" y="255" font-family="'Courier New',monospace" font-size="9" fill="#64748b" text-anchor="middle">L</text>
+  <circle cx="566" cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
+  <rect x="576"  y="263" width="24" height="11" rx="5.5" fill="#0ea5e9" filter="url(#dot-glow)"/>
+  <circle cx="606" cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
+  <circle cx="620" cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
 
-  <!-- Tone control -->
-  <rect x="264" y="308" width="220" height="58" rx="6" fill="url(#panel-grad)"
-    stroke="#22d3ee" stroke-width="0.8" stroke-opacity="0.3"/>
-  <text x="280" y="326" font-family="'Courier New', monospace" font-size="8" fill="#64748b" letter-spacing="2">TONE (HZ)</text>
-  <text x="472" y="326" font-family="'Courier New', monospace" font-size="10" fill="#22d3ee" text-anchor="end">700</text>
-  <rect x="280" y="334" width="192" height="4" rx="2" fill="#1a2540"/>
-  <rect x="280" y="334" width="110" height="4" rx="2" fill="#22d3ee"/>
-  <circle cx="390" cy="336" r="7" fill="#22d3ee" filter="url(#elem-glow)"/>
-  <text x="280" y="358" font-family="'Courier New', monospace" font-size="8" fill="#64748b">400 Hz</text>
-  <text x="472" y="358" font-family="'Courier New', monospace" font-size="8" fill="#64748b" text-anchor="end">1000 Hz</text>
+  <!-- D  -..  -->
+  <text x="655" y="255" font-family="'Courier New',monospace" font-size="9" fill="#64748b" text-anchor="middle">D</text>
+  <rect x="635"  y="263" width="24" height="11" rx="5.5" fill="#0ea5e9" filter="url(#dot-glow)"/>
+  <circle cx="666" cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
+  <circle cx="680" cy="268" r="5.5" fill="#22d3ee" filter="url(#dot-glow)"/>
 
-  <!-- Manual KEY button -->
-  <circle cx="660" cy="336" r="40" fill="url(#panel-grad)" stroke="#22d3ee" stroke-width="1.5" stroke-opacity="0.4"/>
-  <circle cx="660" cy="336" r="32" fill="url(#key-grad)" filter="url(#elem-glow)"/>
-  <text x="660" y="332" font-family="'Courier New', monospace" font-size="13" font-weight="700"
-    fill="#0a0f1a" text-anchor="middle">KEY</text>
-  <text x="660" y="346" font-family="'Courier New', monospace" font-size="8"
-    fill="#0a0f1a" text-anchor="middle">■</text>
-  <text x="660" y="388" font-family="'Courier New', monospace" font-size="8"
-    fill="#64748b" text-anchor="middle" letter-spacing="1">Hold / Space</text>
+  <!-- ── Bottom row: controls + key ─────────────────── -->
+
+  <!-- WPM slider panel -->
+  <rect x="24"  y="308" width="220" height="60" rx="7" fill="url(#panel-grad)" stroke="#22d3ee" stroke-width="0.8" stroke-opacity="0.25"/>
+  <text x="38"  y="325" font-family="'Courier New',monospace" font-size="8" fill="#64748b" letter-spacing="2">SPEED (WPM)</text>
+  <text x="232" y="325" font-family="'Courier New',monospace" font-size="10" fill="#22d3ee" text-anchor="end">15</text>
+  <!-- track -->
+  <rect x="38"  y="334" width="192" height="4" rx="2" fill="#1a2540"/>
+  <!-- fill -->
+  <rect x="38"  y="334" width="88"  height="4" rx="2" fill="#22d3ee"/>
+  <!-- thumb -->
+  <circle cx="126" cy="336" r="7" fill="#22d3ee" filter="url(#dot-glow)"/>
+  <text x="38"  y="358" font-family="'Courier New',monospace" font-size="7.5" fill="#334155">5</text>
+  <text x="232" y="358" font-family="'Courier New',monospace" font-size="7.5" fill="#334155" text-anchor="end">40</text>
+
+  <!-- Tone slider panel -->
+  <rect x="256" y="308" width="220" height="60" rx="7" fill="url(#panel-grad)" stroke="#22d3ee" stroke-width="0.8" stroke-opacity="0.25"/>
+  <text x="270" y="325" font-family="'Courier New',monospace" font-size="8" fill="#64748b" letter-spacing="2">TONE (HZ)</text>
+  <text x="464" y="325" font-family="'Courier New',monospace" font-size="10" fill="#22d3ee" text-anchor="end">700</text>
+  <rect x="270" y="334" width="192" height="4" rx="2" fill="#1a2540"/>
+  <rect x="270" y="334" width="114" height="4" rx="2" fill="#22d3ee"/>
+  <circle cx="384" cy="336" r="7" fill="#22d3ee" filter="url(#dot-glow)"/>
+  <text x="270" y="358" font-family="'Courier New',monospace" font-size="7.5" fill="#334155">400</text>
+  <text x="464" y="358" font-family="'Courier New',monospace" font-size="7.5" fill="#334155" text-anchor="end">1000</text>
 
   <!-- Transmit button -->
-  <rect x="498" y="308" width="140" height="44" rx="6" fill="#22d3ee" filter="url(#elem-glow)"/>
-  <text x="568" y="335" font-family="'Courier New', monospace" font-size="13" font-weight="700"
-    fill="#0a0f1a" text-anchor="middle">▶ TRANSMIT</text>
+  <rect x="490" y="308" width="152" height="46" rx="7" fill="url(#tx-btn-grad)" filter="url(#dot-glow)"/>
+  <text x="566" y="337" font-family="'Courier New',monospace" font-size="14" font-weight="700"
+    fill="#0a0f1a" text-anchor="middle" letter-spacing="1">▶ TRANSMIT</text>
 
-  <!-- ─── Status bar ────────────────────────────────────────── -->
-  <rect x="30" y="378" width="740" height="36" rx="6" fill="url(#panel-grad)"
-    stroke="#22d3ee" stroke-width="0.8" stroke-opacity="0.25"/>
+  <!-- Stop button -->
+  <rect x="490" y="362" width="72" height="34" rx="7" fill="url(#panel-grad)" stroke="#22d3ee" stroke-width="0.8" stroke-opacity="0.3"/>
+  <text x="526" y="384" font-family="'Courier New',monospace" font-size="11" font-weight="700"
+    fill="#e2e8f0" text-anchor="middle">■ Stop</text>
 
-  <!-- Status dot (active) -->
-  <circle cx="52" cy="396" r="5" fill="#22d3ee" filter="url(#elem-glow)"/>
-  <text x="64" y="400" font-family="'Courier New', monospace" font-size="10"
+  <!-- Clear button -->
+  <rect x="570" y="362" width="72" height="34" rx="7" fill="url(#panel-grad)" stroke="#f87171" stroke-width="0.8" stroke-opacity="0.5"/>
+  <text x="606" y="384" font-family="'Courier New',monospace" font-size="11" font-weight="700"
+    fill="#f87171" text-anchor="middle">✕ Clear</text>
+
+  <!-- Manual KEY button (active / glowing) -->
+  <circle cx="700" cy="348" r="46" fill="url(#panel-grad)" stroke="#22d3ee" stroke-width="1.5" stroke-opacity="0.35"/>
+  <circle cx="700" cy="348" r="36" fill="url(#key-btn-grad)" filter="url(#key-shadow)"/>
+  <text x="700" y="344" font-family="'Courier New',monospace" font-size="15" font-weight="700"
+    fill="#0a0f1a" text-anchor="middle" letter-spacing="2">KEY</text>
+  <text x="700" y="360" font-family="'Courier New',monospace" font-size="9"
+    fill="#083344" text-anchor="middle">●</text>
+  <text x="700" y="406" font-family="'Courier New',monospace" font-size="8"
+    fill="#64748b" text-anchor="middle" letter-spacing="1">Hold · Space</text>
+
+  <!-- ── Status bar ──────────────────────────────────── -->
+  <rect x="24" y="420" width="752" height="20" rx="5" fill="url(#panel-grad)" stroke="#22d3ee" stroke-width="0.6" stroke-opacity="0.2"/>
+  <circle cx="40"  cy="430" r="4" fill="#22d3ee" filter="url(#dot-glow)"/>
+  <text x="51"  cy="430" y="434" font-family="'Courier New',monospace" font-size="9"
     fill="#22d3ee" letter-spacing="2">TRANSMITTING</text>
-
-  <text x="758" y="400" font-family="'Courier New', monospace" font-size="10"
+  <text x="764" y="434" font-family="'Courier New',monospace" font-size="9"
     fill="#64748b" text-anchor="end" letter-spacing="1">12 / 200 chars</text>
 
-  <!-- ─── Edge glow frame ─────────────────────────────────── -->
-  <rect x="0" y="0" width="800" height="2" fill="url(#edge-grad)"/>
-  <rect x="0" y="448" width="800" height="2" fill="url(#edge-grad)"/>
+  <!-- ── Corner accents ─────────────────────────────── -->
+  <rect x="0"   y="0"   width="3"  height="48" fill="#22d3ee" opacity="0.6"/>
+  <rect x="0"   y="0"   width="48" height="3"  fill="#22d3ee" opacity="0.6"/>
+  <rect x="797" y="0"   width="3"  height="48" fill="#22d3ee" opacity="0.6"/>
+  <rect x="752" y="0"   width="48" height="3"  fill="#22d3ee" opacity="0.6"/>
+  <rect x="0"   y="402" width="3"  height="48" fill="#22d3ee" opacity="0.6"/>
+  <rect x="0"   y="447" width="48" height="3"  fill="#22d3ee" opacity="0.6"/>
+  <rect x="797" y="402" width="3"  height="48" fill="#22d3ee" opacity="0.6"/>
+  <rect x="752" y="447" width="48" height="3"  fill="#22d3ee" opacity="0.6"/>
 
-  <!-- Corner accents -->
-  <rect x="0" y="0" width="2" height="40" fill="#22d3ee" opacity="0.5"/>
-  <rect x="0" y="0" width="40" height="2" fill="#22d3ee" opacity="0.5"/>
-  <rect x="798" y="0" width="2" height="40" fill="#22d3ee" opacity="0.5"/>
-  <rect x="760" y="0" width="40" height="2" fill="#22d3ee" opacity="0.5"/>
-  <rect x="0" y="410" width="2" height="40" fill="#22d3ee" opacity="0.5"/>
-  <rect x="0" y="448" width="40" height="2" fill="#22d3ee" opacity="0.5"/>
-  <rect x="798" y="410" width="2" height="40" fill="#22d3ee" opacity="0.5"/>
-  <rect x="760" y="448" width="40" height="2" fill="#22d3ee" opacity="0.5"/>
+  <!-- Top + bottom edge glow lines -->
+  <rect x="0" y="0"   width="800" height="2" fill="url(#edge-sweep)" opacity="0.9"/>
+  <rect x="0" y="448" width="800" height="2" fill="url(#edge-sweep)" opacity="0.7"/>
 </svg>
