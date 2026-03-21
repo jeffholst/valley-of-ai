@@ -38,27 +38,27 @@ const REQUIRED_CHECKS = [
   },
   {
     id: 'meta-main-url',
-    test: (html) => html.includes('<meta name="voa-main-site-url" content="__MAIN_SITE_URL__">'),
+    test: (html) => /voa-main-site-url" content="__MAIN_SITE_URL__"\s*\/?>/.test(html),
     message: 'missing voa-main-site-url meta placeholder',
   },
   {
     id: 'meta-main-name',
-    test: (html) => html.includes('<meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">'),
+    test: (html) => /voa-main-site-name" content="__MAIN_SITE_NAME__"\s*\/?>/.test(html),
     message: 'missing voa-main-site-name meta placeholder',
   },
   {
     id: 'meta-social-x',
-    test: (html) => html.includes('<meta name="voa-social-x-url" content="__SOCIAL_X_URL__">'),
+    test: (html) => /voa-social-x-url" content="__SOCIAL_X_URL__"\s*\/?>/.test(html),
     message: 'missing voa-social-x-url meta placeholder',
   },
   {
     id: 'meta-social-facebook',
-    test: (html) => html.includes('<meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">'),
+    test: (html) => /voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__"\s*\/?>/.test(html),
     message: 'missing voa-social-facebook-url meta placeholder',
   },
   {
     id: 'meta-social-instagram',
-    test: (html) => html.includes('<meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">'),
+    test: (html) => /voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__"\s*\/?>/.test(html),
     message: 'missing voa-social-instagram-url meta placeholder',
   },
   {
