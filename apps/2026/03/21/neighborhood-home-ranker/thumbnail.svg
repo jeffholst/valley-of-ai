@@ -1,0 +1,338 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1a2a42"/>
+    </linearGradient>
+    <linearGradient id="cardGrad1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#162032"/>
+    </linearGradient>
+    <linearGradient id="scoreBar1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="scoreBar2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="scoreBar3" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b45309"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <linearGradient id="skyHouse" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#87CEEB"/>
+      <stop offset="100%" stop-color="#c8e8f8"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="dropShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+      <feOffset dx="0" dy="2" result="offset"/>
+      <feFlood flood-color="#000000" flood-opacity="0.4" result="color"/>
+      <feComposite in="color" in2="offset" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)"/>
+
+  <!-- Subtle grid texture -->
+  <rect x="0" y="0" width="800" height="450" fill="none" stroke="#1e3a5f" stroke-width="0.5" opacity="0.3"/>
+  <line x1="0" y1="75" x2="800" y2="75" stroke="#1e3a5f" stroke-width="0.5" opacity="0.3"/>
+  <line x1="0" y1="150" x2="800" y2="150" stroke="#1e3a5f" stroke-width="0.5" opacity="0.3"/>
+  <line x1="0" y1="225" x2="800" y2="225" stroke="#1e3a5f" stroke-width="0.5" opacity="0.3"/>
+  <line x1="0" y1="300" x2="800" y2="300" stroke="#1e3a5f" stroke-width="0.5" opacity="0.3"/>
+  <line x1="0" y1="375" x2="800" y2="375" stroke="#1e3a5f" stroke-width="0.5" opacity="0.3"/>
+  <line x1="100" y1="0" x2="100" y2="450" stroke="#1e3a5f" stroke-width="0.5" opacity="0.3"/>
+  <line x1="200" y1="0" x2="200" y2="450" stroke="#1e3a5f" stroke-width="0.5" opacity="0.3"/>
+  <line x1="300" y1="0" x2="300" y2="450" stroke="#1e3a5f" stroke-width="0.5" opacity="0.3"/>
+  <line x1="400" y1="0" x2="400" y2="450" stroke="#1e3a5f" stroke-width="0.5" opacity="0.3"/>
+  <line x1="500" y1="0" x2="500" y2="450" stroke="#1e3a5f" stroke-width="0.5" opacity="0.3"/>
+  <line x1="600" y1="0" x2="600" y2="450" stroke="#1e3a5f" stroke-width="0.5" opacity="0.3"/>
+  <line x1="700" y1="0" x2="700" y2="450" stroke="#1e3a5f" stroke-width="0.5" opacity="0.3"/>
+
+  <!-- Top accent bar -->
+  <rect x="0" y="0" width="800" height="3" fill="url(#accentGrad)"/>
+
+  <!-- Title area -->
+  <text x="400" y="42" font-family="'Segoe UI', -apple-system, sans-serif" font-size="28" font-weight="800"
+    fill="url(#titleGrad)" text-anchor="middle" filter="url(#glow)">Neighborhood Home Ranker</text>
+  <text x="400" y="62" font-family="'Segoe UI', -apple-system, sans-serif" font-size="13"
+    fill="#94a3b8" text-anchor="middle">MLS Listings + Google Places Venue Scoring</text>
+
+  <!-- Demo badge -->
+  <rect x="660" y="28" width="110" height="22" rx="11" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1"/>
+  <text x="715" y="43" font-family="'Segoe UI', sans-serif" font-size="11" fill="#60a5fa" text-anchor="middle">🔬 Demo Mode</text>
+
+  <!-- Settings panel (left) -->
+  <rect x="18" y="82" width="190" height="280" rx="10" fill="url(#cardGrad1)" stroke="#334155" stroke-width="1"/>
+  <text x="28" y="102" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#94a3b8">VENUE WEIGHTS</text>
+
+  <!-- Weight sliders -->
+  <text x="28" y="123" font-family="'Segoe UI', sans-serif" font-size="11" fill="#f9fafb">🍽️ Restaurants</text>
+  <rect x="28" y="128" width="140" height="4" rx="2" fill="#334155"/>
+  <rect x="28" y="128" width="112" height="4" rx="2" fill="#3b82f6"/>
+  <circle cx="140" cy="130" r="6" fill="#3b82f6"/>
+  <text x="175" y="133" font-family="monospace" font-size="11" fill="#60a5fa">8</text>
+
+  <text x="28" y="153" font-family="'Segoe UI', sans-serif" font-size="11" fill="#f9fafb">🍺 Bars</text>
+  <rect x="28" y="158" width="140" height="4" rx="2" fill="#334155"/>
+  <rect x="28" y="158" width="70" height="4" rx="2" fill="#3b82f6"/>
+  <circle cx="98" cy="160" r="6" fill="#3b82f6"/>
+  <text x="175" y="163" font-family="monospace" font-size="11" fill="#60a5fa">5</text>
+
+  <text x="28" y="183" font-family="'Segoe UI', sans-serif" font-size="11" fill="#f9fafb">☕ Coffee</text>
+  <rect x="28" y="188" width="140" height="4" rx="2" fill="#334155"/>
+  <rect x="28" y="188" width="98" height="4" rx="2" fill="#3b82f6"/>
+  <circle cx="126" cy="190" r="6" fill="#3b82f6"/>
+  <text x="175" y="193" font-family="monospace" font-size="11" fill="#60a5fa">7</text>
+
+  <text x="28" y="213" font-family="'Segoe UI', sans-serif" font-size="11" fill="#f9fafb">🛒 Grocery</text>
+  <rect x="28" y="218" width="140" height="4" rx="2" fill="#334155"/>
+  <rect x="28" y="218" width="126" height="4" rx="2" fill="#3b82f6"/>
+  <circle cx="154" cy="220" r="6" fill="#3b82f6"/>
+  <text x="175" y="223" font-family="monospace" font-size="11" fill="#60a5fa">9</text>
+
+  <text x="28" y="243" font-family="'Segoe UI', sans-serif" font-size="11" fill="#f9fafb">🌳 Parks</text>
+  <rect x="28" y="248" width="140" height="4" rx="2" fill="#334155"/>
+  <rect x="28" y="248" width="84" height="4" rx="2" fill="#3b82f6"/>
+  <circle cx="112" cy="250" r="6" fill="#3b82f6"/>
+  <text x="175" y="253" font-family="monospace" font-size="11" fill="#60a5fa">6</text>
+
+  <text x="28" y="273" font-family="'Segoe UI', sans-serif" font-size="11" fill="#f9fafb">🏫 Schools</text>
+  <rect x="28" y="278" width="140" height="4" rx="2" fill="#334155"/>
+  <rect x="28" y="278" width="98" height="4" rx="2" fill="#3b82f6"/>
+  <circle cx="126" cy="280" r="6" fill="#3b82f6"/>
+  <text x="175" y="283" font-family="monospace" font-size="11" fill="#60a5fa">7</text>
+
+  <text x="28" y="303" font-family="'Segoe UI', sans-serif" font-size="11" fill="#94a3b8">SEARCH RADIUS</text>
+  <rect x="28" y="312" width="40" height="20" rx="10" fill="#1e3a5f" stroke="#334155" stroke-width="1"/>
+  <text x="48" y="326" font-family="sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">0.25mi</text>
+  <rect x="74" y="312" width="40" height="20" rx="10" fill="#3b82f6"/>
+  <text x="94" y="326" font-family="sans-serif" font-size="10" fill="white" text-anchor="middle" font-weight="700">0.5mi</text>
+  <rect x="120" y="312" width="35" height="20" rx="10" fill="#1e3a5f" stroke="#334155" stroke-width="1"/>
+  <text x="137" y="326" font-family="sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">1mi</text>
+  <rect x="161" y="312" width="35" height="20" rx="10" fill="#1e3a5f" stroke="#334155" stroke-width="1"/>
+  <text x="178" y="326" font-family="sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">2mi</text>
+
+  <!-- Recalculate button -->
+  <rect x="28" y="340" width="168" height="30" rx="15" fill="#3b82f6"/>
+  <text x="112" y="360" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="white" text-anchor="middle">🔄 Recalculate Rankings</text>
+
+  <!-- Home Card 1 (rank 1 - gold) -->
+  <rect x="220" y="82" width="180" height="280" rx="10" fill="url(#cardGrad1)" stroke="#334155" stroke-width="1"/>
+  <!-- House photo -->
+  <rect x="220" y="82" width="180" height="100" rx="10" fill="#1a3a2a"/>
+  <rect x="220" y="152" width="180" height="30" rx="0" fill="#1a3a2a"/>
+  <!-- House illustration -->
+  <rect x="230" y="92" width="160" height="80" fill="url(#skyHouse)" rx="4"/>
+  <rect x="240" y="138" width="140" height="32" fill="#5D8A3C"/>
+  <rect x="258" y="108" width="120" height="52" fill="#8B7355"/>
+  <polygon points="248,110 388,110 318,82" fill="#4A3728"/>
+  <rect x="296" y="126" width="22" height="28" fill="#4A3728"/>
+  <rect x="263" y="115" width="18" height="14" fill="#BFE6FF" rx="1"/>
+  <rect x="347" y="115" width="18" height="14" fill="#BFE6FF" rx="1"/>
+  <!-- Rank badge -->
+  <circle cx="234" cy="96" r="14" fill="#f59e0b"/>
+  <text x="234" y="101" font-family="sans-serif" font-size="12" font-weight="800" fill="#000" text-anchor="middle">#1</text>
+
+  <rect x="225" y="190" width="170" height="1" fill="#334155"/>
+  <text x="232" y="208" font-family="'Segoe UI', sans-serif" font-size="18" font-weight="700" fill="#10b981">$685K</text>
+  <rect x="302" y="196" width="82" height="20" rx="10" fill="rgba(16,185,129,0.2)" stroke="rgba(16,185,129,0.3)" stroke-width="1"/>
+  <text x="343" y="210" font-family="sans-serif" font-size="11" font-weight="700" fill="#10b981" text-anchor="middle">⭐ 87/100</text>
+
+  <text x="232" y="226" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#f9fafb">2847 Maple Grove Ave</text>
+  <text x="232" y="239" font-family="'Segoe UI', sans-serif" font-size="10" fill="#94a3b8">Austin, TX 78704</text>
+
+  <text x="232" y="256" font-family="'Segoe UI', sans-serif" font-size="10" fill="#94a3b8">🛏️ 3 bd  🚿 2 ba  📐 1,850 sqft</text>
+
+  <!-- Venue mini scores -->
+  <rect x="232" y="262" width="48" height="40" rx="6" fill="#2d3f55"/>
+  <text x="256" y="278" font-family="sans-serif" font-size="12" text-anchor="middle">🍽️</text>
+  <text x="256" y="289" font-family="sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">Rest.</text>
+  <text x="256" y="298" font-family="sans-serif" font-size="10" font-weight="700" fill="#f9fafb" text-anchor="middle">4.3</text>
+
+  <rect x="284" y="262" width="48" height="40" rx="6" fill="#2d3f55"/>
+  <text x="308" y="278" font-family="sans-serif" font-size="12" text-anchor="middle">☕</text>
+  <text x="308" y="289" font-family="sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">Coffee</text>
+  <text x="308" y="298" font-family="sans-serif" font-size="10" font-weight="700" fill="#f9fafb" text-anchor="middle">4.5</text>
+
+  <rect x="336" y="262" width="48" height="40" rx="6" fill="#2d3f55"/>
+  <text x="360" y="278" font-family="sans-serif" font-size="12" text-anchor="middle">🌳</text>
+  <text x="360" y="289" font-family="sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">Parks</text>
+  <text x="360" y="298" font-family="sans-serif" font-size="10" font-weight="700" fill="#f9fafb" text-anchor="middle">4.6</text>
+
+  <!-- Score bar -->
+  <text x="232" y="318" font-family="sans-serif" font-size="9" fill="#94a3b8">Neighborhood Score</text>
+  <text x="384" y="318" font-family="sans-serif" font-size="9" fill="#10b981" text-anchor="end">Excellent</text>
+  <rect x="232" y="321" width="152" height="5" rx="2" fill="#334155"/>
+  <rect x="232" y="321" width="132" height="5" rx="2" fill="url(#scoreBar1)"/>
+
+  <text x="232" y="348" font-family="sans-serif" font-size="9" fill="#60a5fa">MLS</text>
+  <rect x="252" y="336" width="60" height="18" rx="9" fill="rgba(59,130,246,0.1)" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+  <text x="282" y="348" font-family="sans-serif" font-size="10" fill="#60a5fa" text-anchor="middle">📊 Details</text>
+
+  <!-- Home Card 2 (rank 2 - silver) -->
+  <rect x="414" y="82" width="180" height="280" rx="10" fill="url(#cardGrad1)" stroke="#334155" stroke-width="1"/>
+  <rect x="414" y="82" width="180" height="100" rx="10" fill="#1a2a3a"/>
+  <rect x="414" y="152" width="180" height="30" rx="0" fill="#1a2a3a"/>
+  <!-- High-rise condo illustration -->
+  <rect x="424" y="92" width="160" height="80" fill="#6BB5D6"/>
+  <rect x="464" y="96" width="80" height="72" fill="#C0C0C0"/>
+  <rect x="464" y="93" width="80" height="6" fill="#556B2F"/>
+  <rect x="474" y="104" width="14" height="10" fill="#BFE6FF" rx="1" opacity="0.9"/>
+  <rect x="494" y="104" width="14" height="10" fill="#BFE6FF" rx="1" opacity="0.9"/>
+  <rect x="514" y="104" width="14" height="10" fill="#BFE6FF" rx="1" opacity="0.9"/>
+  <rect x="474" y="120" width="14" height="10" fill="#BFE6FF" rx="1" opacity="0.9"/>
+  <rect x="494" y="120" width="14" height="10" fill="#BFE6FF" rx="1" opacity="0.9"/>
+  <rect x="514" y="120" width="14" height="10" fill="#BFE6FF" rx="1" opacity="0.9"/>
+  <rect x="474" y="136" width="14" height="10" fill="#BFE6FF" rx="1" opacity="0.9"/>
+  <rect x="494" y="136" width="14" height="10" fill="#BFE6FF" rx="1" opacity="0.9"/>
+  <rect x="514" y="136" width="14" height="10" fill="#BFE6FF" rx="1" opacity="0.9"/>
+  <rect x="497" y="152" width="14" height="16" fill="#556B2F"/>
+  <!-- Rank badge -->
+  <circle cx="428" cy="96" r="14" fill="#94a3b8"/>
+  <text x="428" y="101" font-family="sans-serif" font-size="12" font-weight="800" fill="#000" text-anchor="middle">#2</text>
+
+  <rect x="419" y="190" width="170" height="1" fill="#334155"/>
+  <text x="426" y="208" font-family="'Segoe UI', sans-serif" font-size="18" font-weight="700" fill="#10b981">$1.15M</text>
+  <rect x="498" y="196" width="82" height="20" rx="10" fill="rgba(59,130,246,0.2)" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+  <text x="539" y="210" font-family="sans-serif" font-size="11" font-weight="700" fill="#3b82f6" text-anchor="middle">⭐ 91/100</text>
+
+  <text x="426" y="226" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#f9fafb">415 Cedar Creek Blvd</text>
+  <text x="426" y="239" font-family="'Segoe UI', sans-serif" font-size="10" fill="#94a3b8">Austin, TX 78701</text>
+  <text x="426" y="256" font-family="'Segoe UI', sans-serif" font-size="10" fill="#94a3b8">🛏️ 4 bd  🚿 3.5 ba  📐 3,200 sqft</text>
+
+  <rect x="426" y="262" width="48" height="40" rx="6" fill="#2d3f55"/>
+  <text x="450" y="278" font-family="sans-serif" font-size="12" text-anchor="middle">🍽️</text>
+  <text x="450" y="289" font-family="sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">Rest.</text>
+  <text x="450" y="298" font-family="sans-serif" font-size="10" font-weight="700" fill="#f9fafb" text-anchor="middle">4.6</text>
+
+  <rect x="478" y="262" width="48" height="40" rx="6" fill="#2d3f55"/>
+  <text x="502" y="278" font-family="sans-serif" font-size="12" text-anchor="middle">🛒</text>
+  <text x="502" y="289" font-family="sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">Grocery</text>
+  <text x="502" y="298" font-family="sans-serif" font-size="10" font-weight="700" fill="#f9fafb" text-anchor="middle">4.5</text>
+
+  <rect x="530" y="262" width="48" height="40" rx="6" fill="#2d3f55"/>
+  <text x="554" y="278" font-family="sans-serif" font-size="12" text-anchor="middle">🏫</text>
+  <text x="554" y="289" font-family="sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">Schools</text>
+  <text x="554" y="298" font-family="sans-serif" font-size="10" font-weight="700" fill="#f9fafb" text-anchor="middle">4.4</text>
+
+  <text x="426" y="318" font-family="sans-serif" font-size="9" fill="#94a3b8">Neighborhood Score</text>
+  <text x="578" y="318" font-family="sans-serif" font-size="9" fill="#3b82f6" text-anchor="end">Excellent</text>
+  <rect x="426" y="321" width="152" height="5" rx="2" fill="#334155"/>
+  <rect x="426" y="321" width="138" height="5" rx="2" fill="url(#scoreBar2)"/>
+  <text x="426" y="348" font-family="sans-serif" font-size="9" fill="#60a5fa">MLS · Pending</text>
+
+  <!-- Home Card 3 (rank 3 - bronze) -->
+  <rect x="608" y="82" width="175" height="280" rx="10" fill="url(#cardGrad1)" stroke="#334155" stroke-width="1"/>
+  <rect x="608" y="82" width="175" height="100" rx="10" fill="#2a1a0a"/>
+  <rect x="608" y="152" width="175" height="30" rx="0" fill="#2a1a0a"/>
+  <!-- House 3 illustration -->
+  <rect x="618" y="92" width="155" height="80" fill="#7AB8D4"/>
+  <rect x="628" y="138" width="135" height="30" fill="#4A7A2E"/>
+  <rect x="648" y="108" width="115" height="52" fill="#D2B48C"/>
+  <polygon points="638,110 758,110 698,82" fill="#8B4513"/>
+  <rect x="682" y="126" width="20" height="28" fill="#8B4513"/>
+  <rect x="650" y="115" width="17" height="14" fill="#BFE6FF" rx="1"/>
+  <rect x="726" y="115" width="17" height="14" fill="#BFE6FF" rx="1"/>
+  <!-- Rank badge -->
+  <circle cx="622" cy="96" r="14" fill="#b45309"/>
+  <text x="622" y="101" font-family="sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">#3</text>
+
+  <rect x="613" y="190" width="165" height="1" fill="#334155"/>
+  <text x="620" y="208" font-family="'Segoe UI', sans-serif" font-size="18" font-weight="700" fill="#10b981">$920K</text>
+  <rect x="685" y="196" width="90" height="20" rx="10" fill="rgba(16,185,129,0.2)" stroke="rgba(16,185,129,0.3)" stroke-width="1"/>
+  <text x="730" y="210" font-family="sans-serif" font-size="11" font-weight="700" fill="#10b981" text-anchor="middle">⭐ 89/100</text>
+
+  <text x="620" y="226" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#f9fafb">1104 Brickwall Commons</text>
+  <text x="620" y="239" font-family="'Segoe UI', sans-serif" font-size="10" fill="#94a3b8">Austin, TX 78702</text>
+  <text x="620" y="256" font-family="'Segoe UI', sans-serif" font-size="10" fill="#94a3b8">🛏️ 4 bd  🚿 3 ba  📐 2,400 sqft</text>
+
+  <rect x="620" y="262" width="44" height="40" rx="6" fill="#2d3f55"/>
+  <text x="642" y="278" font-family="sans-serif" font-size="12" text-anchor="middle">🍽️</text>
+  <text x="642" y="289" font-family="sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">Rest.</text>
+  <text x="642" y="298" font-family="sans-serif" font-size="10" font-weight="700" fill="#f9fafb" text-anchor="middle">4.7</text>
+
+  <rect x="668" y="262" width="44" height="40" rx="6" fill="#2d3f55"/>
+  <text x="690" y="278" font-family="sans-serif" font-size="12" text-anchor="middle">☕</text>
+  <text x="690" y="289" font-family="sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">Coffee</text>
+  <text x="690" y="298" font-family="sans-serif" font-size="10" font-weight="700" fill="#f9fafb" text-anchor="middle">4.8</text>
+
+  <rect x="716" y="262" width="44" height="40" rx="6" fill="#2d3f55"/>
+  <text x="738" y="278" font-family="sans-serif" font-size="12" text-anchor="middle">🍺</text>
+  <text x="738" y="289" font-family="sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">Bars</text>
+  <text x="738" y="298" font-family="sans-serif" font-size="10" font-weight="700" fill="#f9fafb" text-anchor="middle">4.5</text>
+
+  <text x="620" y="318" font-family="sans-serif" font-size="9" fill="#94a3b8">Neighborhood Score</text>
+  <text x="778" y="318" font-family="sans-serif" font-size="9" fill="#10b981" text-anchor="end">Excellent</text>
+  <rect x="620" y="321" width="152" height="5" rx="2" fill="#334155"/>
+  <rect x="620" y="321" width="135" height="5" rx="2" fill="url(#scoreBar1)"/>
+  <text x="620" y="348" font-family="sans-serif" font-size="9" fill="#60a5fa">MLS · 2022</text>
+
+  <!-- Bottom stats bar -->
+  <rect x="18" y="374" width="764" height="60" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+
+  <text x="60" y="396" font-family="'Segoe UI', sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">LISTINGS</text>
+  <text x="60" y="415" font-family="'Segoe UI', sans-serif" font-size="20" font-weight="800" fill="#f9fafb" text-anchor="middle">14</text>
+  <text x="60" y="428" font-family="'Segoe UI', sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">Active</text>
+
+  <line x1="112" y1="382" x2="112" y2="426" stroke="#334155" stroke-width="1"/>
+
+  <text x="200" y="396" font-family="'Segoe UI', sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">TOP VENUE SCORE</text>
+  <text x="200" y="415" font-family="'Segoe UI', sans-serif" font-size="20" font-weight="800" fill="#10b981" text-anchor="middle">91/100</text>
+  <text x="200" y="428" font-family="'Segoe UI', sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">Cedar Creek Blvd</text>
+
+  <line x1="292" y1="382" x2="292" y2="426" stroke="#334155" stroke-width="1"/>
+
+  <text x="400" y="396" font-family="'Segoe UI', sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">CATEGORIES WEIGHTED</text>
+  <text x="310" y="415" font-family="sans-serif" font-size="14" text-anchor="start">🍽️ ☕ 🛒 🌳 🏫 🍺 💊</text>
+  <text x="400" y="428" font-family="'Segoe UI', sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">7 venue types scored</text>
+
+  <line x1="510" y1="382" x2="510" y2="426" stroke="#334155" stroke-width="1"/>
+
+  <text x="600" y="396" font-family="'Segoe UI', sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">PRICE RANGE</text>
+  <text x="600" y="415" font-family="'Segoe UI', sans-serif" font-size="17" font-weight="800" fill="#f59e0b" text-anchor="middle">$312K–$1.35M</text>
+  <text x="600" y="428" font-family="'Segoe UI', sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">Austin metro area</text>
+
+  <line x1="692" y1="382" x2="692" y2="426" stroke="#334155" stroke-width="1"/>
+
+  <text x="736" y="396" font-family="'Segoe UI', sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">RADIUS</text>
+  <text x="736" y="415" font-family="'Segoe UI', sans-serif" font-size="20" font-weight="800" fill="#3b82f6" text-anchor="middle">0.5mi</text>
+  <text x="736" y="428" font-family="'Segoe UI', sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">Adjustable</text>
+
+  <!-- Corner accents -->
+  <line x1="0" y1="0" x2="40" y2="0" stroke="url(#accentGrad)" stroke-width="2"/>
+  <line x1="0" y1="0" x2="0" y2="40" stroke="url(#accentGrad)" stroke-width="2"/>
+  <line x1="760" y1="0" x2="800" y2="0" stroke="url(#accentGrad)" stroke-width="2"/>
+  <line x1="800" y1="0" x2="800" y2="40" stroke="url(#accentGrad)" stroke-width="2"/>
+  <line x1="0" y1="450" x2="40" y2="450" stroke="url(#accentGrad)" stroke-width="2"/>
+  <line x1="0" y1="410" x2="0" y2="450" stroke="url(#accentGrad)" stroke-width="2"/>
+  <line x1="760" y1="450" x2="800" y2="450" stroke="url(#accentGrad)" stroke-width="2"/>
+  <line x1="800" y1="410" x2="800" y2="450" stroke="url(#accentGrad)" stroke-width="2"/>
+</svg>

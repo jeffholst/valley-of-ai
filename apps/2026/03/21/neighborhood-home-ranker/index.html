@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neighborhood Home Ranker - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --surface2: #2d3f55;
+        --border: #334155;
+        --accent: #3b82f6;
+        --accent2: #10b981;
+        --accent3: #f59e0b;
+        --accent4: #ef4444;
+        --muted: #94a3b8;
+        --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        --radius: 12px;
+        --radius-sm: 8px;
+      }
+
+      [data-theme='light'] {
+        --bg: #f8fafc;
+        --text: #1f2937;
+        --surface: #ffffff;
+        --surface2: #e2e8f0;
+        --border: #cbd5e1;
+        --accent: #2563eb;
+        --accent2: #059669;
+        --accent3: #d97706;
+        --accent4: #dc2626;
+        --muted: #64748b;
+        --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      .app-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 16px;
+      }
+
+      /* Demo banner */
+      .demo-banner {
+        background: linear-gradient(135deg, #1e3a5f, #1a3a2a);
+        border: 1px solid #3b82f6;
+        border-radius: var(--radius-sm);
+        padding: 10px 16px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        color: #93c5fd;
+      }
+
+      [data-theme='light'] .demo-banner {
+        background: linear-gradient(135deg, #eff6ff, #ecfdf5);
+        border-color: #93c5fd;
+        color: #1d4ed8;
+      }
+
+      .demo-banner .icon {
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+
+      .demo-banner strong {
+        color: #60a5fa;
+      }
+
+      [data-theme='light'] .demo-banner strong {
+        color: #2563eb;
+      }
+
+      /* Controls panel */
+      .controls-panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+
+      .controls-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .controls-header h2 {
+        font-size: 15px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .controls-toggle {
+        font-size: 20px;
+        line-height: 1;
+        color: var(--muted);
+        transition: transform 0.2s;
+      }
+
+      .controls-toggle.open {
+        transform: rotate(180deg);
+      }
+
+      .controls-body {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      @media (max-width: 640px) {
+        .controls-body {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .controls-section h3 {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .weight-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .weight-label {
+        font-size: 13px;
+        width: 130px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .weight-label .cat-icon {
+        font-size: 16px;
+      }
+
+      .weight-slider {
+        flex: 1;
+        -webkit-appearance: none;
+        height: 4px;
+        border-radius: 2px;
+        background: var(--border);
+        outline: none;
+        cursor: pointer;
+      }
+
+      .weight-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--accent);
+        cursor: pointer;
+        transition: transform 0.15s;
+      }
+
+      .weight-slider::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+      }
+
+      .weight-value {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--accent);
+        width: 26px;
+        text-align: right;
+      }
+
+      .filter-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .filter-row label {
+        font-size: 13px;
+        color: var(--muted);
+        width: 90px;
+        flex-shrink: 0;
+      }
+
+      .filter-row input[type='range'] {
+        flex: 1;
+        -webkit-appearance: none;
+        height: 4px;
+        border-radius: 2px;
+        background: var(--border);
+        outline: none;
+        cursor: pointer;
+      }
+
+      .filter-row input[type='range']::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--accent2);
+        cursor: pointer;
+        transition: transform 0.15s;
+      }
+
+      .filter-row input[type='range']::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+      }
+
+      .filter-value {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--accent2);
+        min-width: 60px;
+        text-align: right;
+      }
+
+      .radius-section {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .radius-section label {
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .radius-buttons {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .radius-btn {
+        padding: 6px 14px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text);
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .radius-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .radius-btn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+        font-weight: 600;
+      }
+
+      /* Results section */
+      .results-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .results-count {
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .results-count strong {
+        color: var(--text);
+      }
+
+      .sort-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .sort-bar label {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .sort-select {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        color: var(--text);
+        font-size: 13px;
+        padding: 6px 10px;
+        cursor: pointer;
+        outline: none;
+      }
+
+      /* Home cards grid */
+      .homes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 16px;
+      }
+
+      @media (max-width: 480px) {
+        .homes-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .home-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.2s, box-shadow 0.2s;
+        position: relative;
+      }
+
+      .home-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      }
+
+      .home-rank {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 700;
+        z-index: 2;
+      }
+
+      .rank-1 {
+        background: #f59e0b;
+        color: #000;
+      }
+      .rank-2 {
+        background: #94a3b8;
+        color: #000;
+      }
+      .rank-3 {
+        background: #b45309;
+        color: #fff;
+      }
+      .rank-other {
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        backdrop-filter: blur(4px);
+      }
+
+      .home-photo {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        display: block;
+        background: var(--surface2);
+      }
+
+      .home-photo svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .home-info {
+        padding: 14px;
+      }
+
+      .home-price-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 4px;
+      }
+
+      .home-price {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--accent2);
+      }
+
+      .home-score-badge {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .score-excellent {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+      }
+
+      .score-good {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+      }
+
+      .score-fair {
+        background: rgba(245, 158, 11, 0.2);
+        color: #f59e0b;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+      }
+
+      .score-poor {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+      }
+
+      .home-address {
+        font-size: 14px;
+        color: var(--text);
+        font-weight: 500;
+        margin-bottom: 2px;
+      }
+
+      .home-city {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+
+      .home-specs {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+
+      .spec-item {
+        font-size: 12px;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .spec-item .spec-icon {
+        font-size: 14px;
+      }
+
+      .spec-item strong {
+        color: var(--text);
+      }
+
+      .neighborhood-scores {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+
+      .venue-score {
+        background: var(--surface2);
+        border-radius: var(--radius-sm);
+        padding: 6px 8px;
+        text-align: center;
+      }
+
+      .venue-score .v-icon {
+        font-size: 16px;
+        display: block;
+        margin-bottom: 2px;
+      }
+
+      .venue-score .v-label {
+        font-size: 10px;
+        color: var(--muted);
+        display: block;
+        margin-bottom: 2px;
+      }
+
+      .venue-score .v-rating {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .venue-score .v-count {
+        font-size: 10px;
+        color: var(--muted);
+      }
+
+      .score-bar-container {
+        margin-top: 10px;
+      }
+
+      .score-bar-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+
+      .score-bar {
+        height: 6px;
+        background: var(--border);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+
+      .score-bar-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.5s ease;
+      }
+
+      .fill-excellent {
+        background: linear-gradient(90deg, #059669, #10b981);
+      }
+      .fill-good {
+        background: linear-gradient(90deg, #1d4ed8, #3b82f6);
+      }
+      .fill-fair {
+        background: linear-gradient(90deg, #b45309, #f59e0b);
+      }
+      .fill-poor {
+        background: linear-gradient(90deg, #991b1b, #ef4444);
+      }
+
+      .mls-tag {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: rgba(59, 130, 246, 0.2);
+        color: #60a5fa;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        margin-top: 6px;
+        margin-right: 4px;
+      }
+
+      .detail-btn {
+        width: 100%;
+        margin-top: 10px;
+        padding: 8px;
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        color: var(--text);
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+
+      .detail-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: rgba(59, 130, 246, 0.05);
+      }
+
+      /* Modal */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        backdrop-filter: blur(4px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+
+      .modal-overlay.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .modal {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        max-width: 600px;
+        width: 100%;
+        max-height: 85vh;
+        overflow-y: auto;
+        transform: scale(0.95);
+        transition: transform 0.2s;
+      }
+
+      .modal-overlay.open .modal {
+        transform: scale(1);
+      }
+
+      .modal-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        background: var(--surface);
+        z-index: 1;
+      }
+
+      .modal-header h3 {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .modal-close {
+        background: none;
+        border: none;
+        font-size: 22px;
+        cursor: pointer;
+        color: var(--muted);
+        padding: 0;
+        line-height: 1;
+        transition: color 0.2s;
+      }
+
+      .modal-close:hover {
+        color: var(--text);
+      }
+
+      .modal-body {
+        padding: 20px;
+      }
+
+      .modal-photo {
+        width: 100%;
+        height: 220px;
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+        margin-bottom: 16px;
+        background: var(--surface2);
+      }
+
+      .modal-photo svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .modal-price-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 6px;
+      }
+
+      .modal-price {
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--accent2);
+      }
+
+      .modal-address {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 2px;
+      }
+
+      .modal-city {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+
+      .modal-specs {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .modal-spec {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+      }
+
+      .modal-spec .s-icon {
+        font-size: 18px;
+      }
+
+      .modal-section-title {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+
+      .venue-breakdown {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+
+      .venue-detail-card {
+        background: var(--surface2);
+        border-radius: var(--radius-sm);
+        padding: 10px 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .venue-detail-icon {
+        font-size: 22px;
+      }
+
+      .venue-detail-info .vdi-name {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      .venue-detail-info .vdi-stats {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .venue-detail-info .vdi-sub {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .composite-score-display {
+        background: linear-gradient(135deg, var(--surface2), var(--surface));
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 14px;
+        text-align: center;
+        margin-bottom: 14px;
+      }
+
+      .composite-score-display .cs-label {
+        font-size: 12px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 4px;
+      }
+
+      .composite-score-display .cs-value {
+        font-size: 42px;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 4px;
+      }
+
+      .composite-score-display .cs-tier {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .agent-info {
+        font-size: 12px;
+        color: var(--muted);
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+      }
+
+      .agent-info strong {
+        color: var(--text);
+      }
+
+      /* No results */
+      .no-results {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--muted);
+      }
+
+      .no-results .nr-icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+      }
+
+      .no-results p {
+        font-size: 15px;
+      }
+
+      /* Update button */
+      .update-btn {
+        padding: 8px 20px;
+        background: var(--accent);
+        border: none;
+        border-radius: 20px;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .update-btn:hover {
+        background: #2563eb;
+        transform: translateY(-1px);
+      }
+
+      /* Stars */
+      .stars {
+        color: #f59e0b;
+        font-size: 12px;
+        letter-spacing: -1px;
+      }
+
+      @media (max-width: 480px) {
+        .home-info {
+          padding: 12px;
+        }
+        .neighborhood-scores {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .venue-breakdown {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Demo Banner -->
+      <div class="demo-banner">
+        <span class="icon">🔬</span>
+        <div>
+          <strong>Demo Mode</strong> — Using realistic mock data to showcase the full UI. In
+          production, this would connect to a live
+          <strong>MLS API</strong> for listings and <strong>Google Places API</strong> for venue
+          data.
+        </div>
+      </div>
+
+      <!-- Controls Panel -->
+      <div class="controls-panel">
+        <div class="controls-header" onclick="toggleControls()" role="button" aria-expanded="true">
+          <h2>⚙️ Search &amp; Scoring Settings</h2>
+          <span class="controls-toggle open" id="controlsToggle">▼</span>
+        </div>
+        <div id="controlsBody" class="controls-body">
+          <!-- Venue Weights -->
+          <div class="controls-section">
+            <h3>Venue Category Weights</h3>
+            <div class="weight-row">
+              <span class="weight-label"><span class="cat-icon">🍽️</span> Restaurants</span>
+              <input
+                type="range"
+                class="weight-slider"
+                id="wRestaurants"
+                min="0"
+                max="10"
+                value="8"
+                oninput="updateWeight('restaurants', this.value)"
+              />
+              <span class="weight-value" id="wvRestaurants">8</span>
+            </div>
+            <div class="weight-row">
+              <span class="weight-label"><span class="cat-icon">🍺</span> Bars</span>
+              <input
+                type="range"
+                class="weight-slider"
+                id="wBars"
+                min="0"
+                max="10"
+                value="5"
+                oninput="updateWeight('bars', this.value)"
+              />
+              <span class="weight-value" id="wvBars">5</span>
+            </div>
+            <div class="weight-row">
+              <span class="weight-label"><span class="cat-icon">☕</span> Coffee</span>
+              <input
+                type="range"
+                class="weight-slider"
+                id="wCoffee"
+                min="0"
+                max="10"
+                value="7"
+                oninput="updateWeight('coffee', this.value)"
+              />
+              <span class="weight-value" id="wvCoffee">7</span>
+            </div>
+            <div class="weight-row">
+              <span class="weight-label"><span class="cat-icon">🛒</span> Grocery</span>
+              <input
+                type="range"
+                class="weight-slider"
+                id="wGrocery"
+                min="0"
+                max="10"
+                value="9"
+                oninput="updateWeight('grocery', this.value)"
+              />
+              <span class="weight-value" id="wvGrocery">9</span>
+            </div>
+            <div class="weight-row">
+              <span class="weight-label"><span class="cat-icon">🌳</span> Parks</span>
+              <input
+                type="range"
+                class="weight-slider"
+                id="wParks"
+                min="0"
+                max="10"
+                value="6"
+                oninput="updateWeight('parks', this.value)"
+              />
+              <span class="weight-value" id="wvParks">6</span>
+            </div>
+            <div class="weight-row">
+              <span class="weight-label"><span class="cat-icon">🏫</span> Schools</span>
+              <input
+                type="range"
+                class="weight-slider"
+                id="wSchools"
+                min="0"
+                max="10"
+                value="7"
+                oninput="updateWeight('schools', this.value)"
+              />
+              <span class="weight-value" id="wvSchools">7</span>
+            </div>
+            <div class="weight-row">
+              <span class="weight-label"><span class="cat-icon">💊</span> Health</span>
+              <input
+                type="range"
+                class="weight-slider"
+                id="wHealth"
+                min="0"
+                max="10"
+                value="5"
+                oninput="updateWeight('health', this.value)"
+              />
+              <span class="weight-value" id="wvHealth">5</span>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="controls-section">
+            <h3>Property Filters</h3>
+            <div class="filter-row">
+              <label>Max Price</label>
+              <input
+                type="range"
+                min="300000"
+                max="1500000"
+                step="50000"
+                value="1200000"
+                id="fPrice"
+                oninput="updateFilter('maxPrice', this.value)"
+              />
+              <span class="filter-value" id="fvPrice">$1.2M</span>
+            </div>
+            <div class="filter-row">
+              <label>Min Beds</label>
+              <input
+                type="range"
+                min="1"
+                max="6"
+                value="1"
+                id="fBeds"
+                oninput="updateFilter('minBeds', this.value)"
+              />
+              <span class="filter-value" id="fvBeds">1+</span>
+            </div>
+            <div class="filter-row">
+              <label>Min Baths</label>
+              <input
+                type="range"
+                min="1"
+                max="5"
+                value="1"
+                id="fBaths"
+                oninput="updateFilter('minBaths', this.value)"
+              />
+              <span class="filter-value" id="fvBaths">1+</span>
+            </div>
+            <div class="filter-row">
+              <label>Min Sq Ft</label>
+              <input
+                type="range"
+                min="500"
+                max="5000"
+                step="100"
+                value="500"
+                id="fSqft"
+                oninput="updateFilter('minSqft', this.value)"
+              />
+              <span class="filter-value" id="fvSqft">500+</span>
+            </div>
+            <div class="filter-row">
+              <label>Min Score</label>
+              <input
+                type="range"
+                min="0"
+                max="90"
+                step="5"
+                value="0"
+                id="fScore"
+                oninput="updateFilter('minScore', this.value)"
+              />
+              <span class="filter-value" id="fvScore">Any</span>
+            </div>
+
+            <h3 style="margin-top: 14px">Search Radius</h3>
+            <div class="radius-buttons">
+              <button class="radius-btn" onclick="setRadius(0.25)">0.25 mi</button>
+              <button class="radius-btn active" onclick="setRadius(0.5)">0.5 mi</button>
+              <button class="radius-btn" onclick="setRadius(1)">1 mi</button>
+              <button class="radius-btn" onclick="setRadius(2)">2 mi</button>
+              <button class="radius-btn" onclick="setRadius(5)">5 mi</button>
+            </div>
+
+            <div style="margin-top: 14px">
+              <button class="update-btn" onclick="recalculate()">
+                🔄 Recalculate Rankings
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Header -->
+      <div class="results-header">
+        <div class="results-count">
+          Showing <strong id="resultsCount">0</strong> homes
+          <span id="radiusLabel">within 0.5 mi of venues</span>
+        </div>
+        <div class="sort-bar">
+          <label>Sort by:</label>
+          <select class="sort-select" id="sortSelect" onchange="renderHomes()">
+            <option value="score">Neighborhood Score</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="beds">Bedrooms</option>
+            <option value="sqft">Square Footage</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Homes Grid -->
+      <div class="homes-grid" id="homesGrid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+      <div class="modal" id="modal">
+        <div class="modal-header">
+          <h3 id="modalTitle">Home Details</h3>
+          <button class="modal-close" onclick="closeModalDirect()" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ─── Mock Data ────────────────────────────────────────────────────────────
+      const LISTINGS = [
+        {
+          id: 'L001',
+          mlsId: 'MLS-2024-48391',
+          address: '2847 Maple Grove Ave',
+          city: 'Austin, TX 78704',
+          price: 685000,
+          beds: 3,
+          baths: 2,
+          sqft: 1850,
+          yearBuilt: 2018,
+          parking: 2,
+          status: 'Active',
+          type: 'Single Family',
+          lat: 30.2501,
+          lng: -97.7537,
+          colorSeed: 0,
+          venues: {
+            restaurants: { count: 14, rating: 4.3, topName: 'Uchi Austin' },
+            bars: { count: 8, rating: 4.1, topName: 'Rainey Street Bar' },
+            coffee: { count: 6, rating: 4.5, topName: 'Houndstooth Coffee' },
+            grocery: { count: 3, rating: 4.2, topName: 'Whole Foods Market' },
+            parks: { count: 4, rating: 4.6, topName: 'Barton Creek Greenbelt' },
+            schools: { count: 3, rating: 4.0, topName: 'Travis High School' },
+            health: { count: 5, rating: 4.1, topName: 'St. David\'s Medical' },
+          },
+        },
+        {
+          id: 'L002',
+          mlsId: 'MLS-2024-51207',
+          address: '415 Cedar Creek Blvd',
+          city: 'Austin, TX 78701',
+          price: 1150000,
+          beds: 4,
+          baths: 3.5,
+          sqft: 3200,
+          yearBuilt: 2021,
+          parking: 2,
+          status: 'Active',
+          type: 'Single Family',
+          lat: 30.2659,
+          lng: -97.7437,
+          colorSeed: 1,
+          venues: {
+            restaurants: { count: 22, rating: 4.6, topName: 'Arlo Grey' },
+            bars: { count: 15, rating: 4.3, topName: 'The Driskill Bar' },
+            coffee: { count: 11, rating: 4.7, topName: 'Greater Goods Coffee' },
+            grocery: { count: 5, rating: 4.5, topName: 'Central Market' },
+            parks: { count: 3, rating: 4.2, topName: 'Pease District Park' },
+            schools: { count: 4, rating: 4.4, topName: 'Austin High School' },
+            health: { count: 8, rating: 4.3, topName: 'Ascension Seton' },
+          },
+        },
+        {
+          id: 'L003',
+          mlsId: 'MLS-2024-44028',
+          address: '9112 Whispering Pines Dr',
+          city: 'Austin, TX 78759',
+          price: 520000,
+          beds: 3,
+          baths: 2,
+          sqft: 1650,
+          yearBuilt: 1998,
+          parking: 2,
+          status: 'Active',
+          type: 'Single Family',
+          lat: 30.4019,
+          lng: -97.7521,
+          colorSeed: 2,
+          venues: {
+            restaurants: { count: 7, rating: 3.9, topName: 'Pluckers Wing Bar' },
+            bars: { count: 3, rating: 3.7, topName: 'The Local Bar' },
+            coffee: { count: 3, rating: 4.0, topName: 'Epoch Coffee' },
+            grocery: { count: 2, rating: 4.1, topName: 'H-E-B' },
+            parks: { count: 5, rating: 4.4, topName: 'Bull Creek Park' },
+            schools: { count: 3, rating: 4.2, topName: 'Anderson High School' },
+            health: { count: 3, rating: 3.8, topName: 'Northwest Austin Clinic' },
+          },
+        },
+        {
+          id: 'L004',
+          mlsId: 'MLS-2024-52890',
+          address: '634 Riverside Terrace',
+          city: 'Austin, TX 78741',
+          price: 445000,
+          beds: 2,
+          baths: 2,
+          sqft: 1200,
+          yearBuilt: 2019,
+          parking: 1,
+          status: 'Active',
+          type: 'Condo',
+          lat: 30.2398,
+          lng: -97.7237,
+          colorSeed: 3,
+          venues: {
+            restaurants: { count: 10, rating: 4.0, topName: 'Odd Duck' },
+            bars: { count: 6, rating: 3.9, topName: 'JBGB Bar' },
+            coffee: { count: 4, rating: 4.2, topName: 'Cosmic Coffee' },
+            grocery: { count: 2, rating: 3.8, topName: 'Fiesta Mart' },
+            parks: { count: 6, rating: 4.7, topName: 'Roy G. Guerrero Park' },
+            schools: { count: 2, rating: 3.5, topName: 'Travis Early College' },
+            health: { count: 3, rating: 3.9, topName: 'CommUnityCare Health' },
+          },
+        },
+        {
+          id: 'L005',
+          mlsId: 'MLS-2024-49317',
+          address: '1823 Lakeview Heights Ct',
+          city: 'Austin, TX 78732',
+          price: 875000,
+          beds: 4,
+          baths: 3,
+          sqft: 2800,
+          yearBuilt: 2015,
+          parking: 3,
+          status: 'Active',
+          type: 'Single Family',
+          lat: 30.3892,
+          lng: -97.8891,
+          colorSeed: 4,
+          venues: {
+            restaurants: { count: 5, rating: 4.1, topName: 'Steiner Ranch Steakhouse' },
+            bars: { count: 2, rating: 3.8, topName: 'Lake Travis Sports Bar' },
+            coffee: { count: 2, rating: 4.0, topName: 'Starbucks Reserve' },
+            grocery: { count: 2, rating: 4.3, topName: 'Randalls' },
+            parks: { count: 7, rating: 4.8, topName: 'Lake Travis Park' },
+            schools: { count: 4, rating: 4.6, topName: 'Lake Travis ISD' },
+            health: { count: 2, rating: 4.0, topName: 'Lake Travis Clinic' },
+          },
+        },
+        {
+          id: 'L006',
+          mlsId: 'MLS-2024-47682',
+          address: '3301 Pecan Street',
+          city: 'Austin, TX 78712',
+          price: 795000,
+          beds: 3,
+          baths: 2.5,
+          sqft: 2100,
+          yearBuilt: 2020,
+          parking: 2,
+          status: 'Pending',
+          type: 'Single Family',
+          lat: 30.2861,
+          lng: -97.7379,
+          colorSeed: 5,
+          venues: {
+            restaurants: { count: 18, rating: 4.5, topName: 'Franklin Barbecue' },
+            bars: { count: 11, rating: 4.4, topName: 'Sixth Street District' },
+            coffee: { count: 9, rating: 4.6, topName: 'Caffè Medici' },
+            grocery: { count: 4, rating: 4.3, topName: 'Whole Foods Domain' },
+            parks: { count: 4, rating: 4.3, topName: 'Waller Creek Park' },
+            schools: { count: 5, rating: 4.1, topName: 'UT Austin Area' },
+            health: { count: 6, rating: 4.4, topName: 'UT Health Austin' },
+          },
+        },
+        {
+          id: 'L007',
+          mlsId: 'MLS-2024-53441',
+          address: '7890 Sunset Hills Loop',
+          city: 'Austin, TX 78745',
+          price: 389000,
+          beds: 2,
+          baths: 1,
+          sqft: 980,
+          yearBuilt: 1985,
+          parking: 1,
+          status: 'Active',
+          type: 'Townhouse',
+          lat: 30.2024,
+          lng: -97.7837,
+          colorSeed: 6,
+          venues: {
+            restaurants: { count: 6, rating: 3.7, topName: 'South Congress Cafe' },
+            bars: { count: 4, rating: 3.6, topName: 'South Austin Pub' },
+            coffee: { count: 3, rating: 3.9, topName: 'Jo\'s Coffee' },
+            grocery: { count: 2, rating: 3.7, topName: 'H-E-B Plus' },
+            parks: { count: 3, rating: 4.0, topName: 'Garrison Park' },
+            schools: { count: 2, rating: 3.4, topName: 'Travis Heights Elem' },
+            health: { count: 2, rating: 3.5, topName: 'South Austin Urgent Care' },
+          },
+        },
+        {
+          id: 'L008',
+          mlsId: 'MLS-2024-50234',
+          address: '5520 Oak Summit Drive',
+          city: 'Round Rock, TX 78681',
+          price: 565000,
+          beds: 4,
+          baths: 3,
+          sqft: 2650,
+          yearBuilt: 2016,
+          parking: 2,
+          status: 'Active',
+          type: 'Single Family',
+          lat: 30.5098,
+          lng: -97.6789,
+          colorSeed: 7,
+          venues: {
+            restaurants: { count: 12, rating: 4.1, topName: 'La Margarita' },
+            bars: { count: 5, rating: 3.9, topName: 'Round Rock Tap House' },
+            coffee: { count: 5, rating: 4.2, topName: 'Merit Coffee' },
+            grocery: { count: 4, rating: 4.4, topName: 'H-E-B Central Market' },
+            parks: { count: 5, rating: 4.3, topName: 'Old Settlers Park' },
+            schools: { count: 6, rating: 4.7, topName: 'Round Rock ISD' },
+            health: { count: 4, rating: 4.1, topName: 'Round Rock Medical' },
+          },
+        },
+        {
+          id: 'L009',
+          mlsId: 'MLS-2024-46019',
+          address: '229 Bluebell Lane',
+          city: 'Cedar Park, TX 78613',
+          price: 490000,
+          beds: 3,
+          baths: 2.5,
+          sqft: 2050,
+          yearBuilt: 2014,
+          parking: 2,
+          status: 'Active',
+          type: 'Single Family',
+          lat: 30.5198,
+          lng: -97.8198,
+          colorSeed: 8,
+          venues: {
+            restaurants: { count: 9, rating: 3.9, topName: 'Guerrero\'s Tortilla Factory' },
+            bars: { count: 3, rating: 3.6, topName: 'Cedar Park Tap Room' },
+            coffee: { count: 4, rating: 4.1, topName: 'Lola Savannah Coffee' },
+            grocery: { count: 3, rating: 4.2, topName: 'Costco Business Center' },
+            parks: { count: 4, rating: 4.2, topName: 'Veterans Memorial Park' },
+            schools: { count: 5, rating: 4.5, topName: 'Leander ISD' },
+            health: { count: 3, rating: 3.9, topName: 'Cedar Park Regional' },
+          },
+        },
+        {
+          id: 'L010',
+          mlsId: 'MLS-2024-54103',
+          address: '1104 Brickwall Commons',
+          city: 'Austin, TX 78702',
+          price: 920000,
+          beds: 4,
+          baths: 3,
+          sqft: 2400,
+          yearBuilt: 2022,
+          parking: 2,
+          status: 'Active',
+          type: 'Single Family',
+          lat: 30.2621,
+          lng: -97.7121,
+          colorSeed: 9,
+          venues: {
+            restaurants: { count: 24, rating: 4.7, topName: 'Birdie\'s Restaurant' },
+            bars: { count: 16, rating: 4.5, topName: 'Hold Out Brewing' },
+            coffee: { count: 13, rating: 4.8, topName: 'Flat Track Coffee' },
+            grocery: { count: 4, rating: 4.4, topName: 'Peoples Rx' },
+            parks: { count: 5, rating: 4.5, topName: 'Rosewood Park' },
+            schools: { count: 4, rating: 4.2, topName: 'Kealing Middle School' },
+            health: { count: 7, rating: 4.5, topName: 'Urgent Care of Austin' },
+          },
+        },
+        {
+          id: 'L011',
+          mlsId: 'MLS-2024-47291',
+          address: '3780 Rolling Hills Pkwy',
+          city: 'Pflugerville, TX 78660',
+          price: 398000,
+          beds: 3,
+          baths: 2,
+          sqft: 1780,
+          yearBuilt: 2012,
+          parking: 2,
+          status: 'Active',
+          type: 'Single Family',
+          lat: 30.4358,
+          lng: -97.6209,
+          colorSeed: 10,
+          venues: {
+            restaurants: { count: 8, rating: 3.8, topName: 'Taco Cabana' },
+            bars: { count: 2, rating: 3.5, topName: 'Pflugerville Pub' },
+            coffee: { count: 3, rating: 3.9, topName: 'Starbucks' },
+            grocery: { count: 3, rating: 4.0, topName: 'H-E-B Pflugerville' },
+            parks: { count: 4, rating: 4.1, topName: 'Lake Pflugerville' },
+            schools: { count: 4, rating: 3.9, topName: 'Pflugerville ISD' },
+            health: { count: 2, rating: 3.7, topName: 'St. David\'s Urgent Care' },
+          },
+        },
+        {
+          id: 'L012',
+          mlsId: 'MLS-2024-51800',
+          address: '88 Lavaca Tower Court',
+          city: 'Austin, TX 78701',
+          price: 1350000,
+          beds: 3,
+          baths: 2,
+          sqft: 1600,
+          yearBuilt: 2023,
+          parking: 1,
+          status: 'Active',
+          type: 'Condo',
+          lat: 30.2688,
+          lng: -97.7436,
+          colorSeed: 11,
+          venues: {
+            restaurants: { count: 28, rating: 4.8, topName: 'Juniper' },
+            bars: { count: 18, rating: 4.6, topName: 'Peche' },
+            coffee: { count: 14, rating: 4.8, topName: 'Intelligentsia Coffee' },
+            grocery: { count: 6, rating: 4.6, topName: 'Trader Joe\'s' },
+            parks: { count: 3, rating: 4.0, topName: 'Republic Square Park' },
+            schools: { count: 3, rating: 4.1, topName: 'Austin Community College' },
+            health: { count: 9, rating: 4.6, topName: 'Dell Seton Medical' },
+          },
+        },
+        {
+          id: 'L013',
+          mlsId: 'MLS-2024-43901',
+          address: '6241 Horizon Meadows Rd',
+          city: 'Manor, TX 78653',
+          price: 312000,
+          beds: 3,
+          baths: 2,
+          sqft: 1590,
+          yearBuilt: 2010,
+          parking: 2,
+          status: 'Active',
+          type: 'Single Family',
+          lat: 30.3432,
+          lng: -97.5487,
+          colorSeed: 12,
+          venues: {
+            restaurants: { count: 3, rating: 3.4, topName: 'Sonic Drive-In' },
+            bars: { count: 1, rating: 3.2, topName: 'Manor Tavern' },
+            coffee: { count: 1, rating: 3.5, topName: 'Dunkin\'' },
+            grocery: { count: 2, rating: 3.6, topName: 'Dollar General' },
+            parks: { count: 2, rating: 3.8, topName: 'Walter E. Long Park' },
+            schools: { count: 3, rating: 3.5, topName: 'Manor ISD' },
+            health: { count: 1, rating: 3.3, topName: 'Manor Clinic' },
+          },
+        },
+        {
+          id: 'L014',
+          mlsId: 'MLS-2024-48755',
+          address: '475 Wildwood Crossing',
+          city: 'Kyle, TX 78640',
+          price: 428000,
+          beds: 4,
+          baths: 3,
+          sqft: 2350,
+          yearBuilt: 2017,
+          parking: 2,
+          status: 'Active',
+          type: 'Single Family',
+          lat: 29.9891,
+          lng: -97.8811,
+          colorSeed: 13,
+          venues: {
+            restaurants: { count: 11, rating: 3.9, topName: 'Valentino\'s Tex-Mex' },
+            bars: { count: 4, rating: 3.7, topName: 'Kyle Draughthouse' },
+            coffee: { count: 3, rating: 4.0, topName: 'Cosmic Coffee Kyle' },
+            grocery: { count: 3, rating: 4.2, topName: 'H-E-B Kyle' },
+            parks: { count: 4, rating: 4.3, topName: 'Plum Creek Greenbelt' },
+            schools: { count: 5, rating: 4.3, topName: 'Hays CISD' },
+            health: { count: 3, rating: 3.8, topName: 'Baylor Scott & White' },
+          },
+        },
+      ];
+
+      // ─── State ────────────────────────────────────────────────────────────────
+      const state = {
+        weights: {
+          restaurants: 8,
+          bars: 5,
+          coffee: 7,
+          grocery: 9,
+          parks: 6,
+          schools: 7,
+          health: 5,
+        },
+        filters: {
+          maxPrice: 1200000,
+          minBeds: 1,
+          minBaths: 1,
+          minSqft: 500,
+          minScore: 0,
+        },
+        radius: 0.5,
+      };
+
+      // ─── Score calculation ────────────────────────────────────────────────────
+      function calcScore(listing) {
+        const cats = ['restaurants', 'bars', 'coffee', 'grocery', 'parks', 'schools', 'health'];
+        let totalWeight = 0;
+        let weightedScore = 0;
+
+        // Radius multiplier: more venues visible at larger radius
+        const radiusMult = { 0.25: 0.6, 0.5: 1.0, 1: 1.3, 2: 1.6, 5: 2.0 };
+        const mult = radiusMult[state.radius] || 1.0;
+
+        cats.forEach((cat) => {
+          const w = state.weights[cat];
+          if (w === 0) return;
+          const v = listing.venues[cat];
+          // Effective count based on radius
+          const effectiveCount = Math.min(v.count * mult, v.count * 2.5);
+          // Score: blend of count (0-10) and rating (0-5 normalized to 0-10)
+          const countScore = Math.min((effectiveCount / 20) * 10, 10);
+          const ratingScore = ((v.rating - 1) / 4) * 10;
+          const catScore = countScore * 0.5 + ratingScore * 0.5;
+          weightedScore += catScore * w;
+          totalWeight += w;
+        });
+
+        if (totalWeight === 0) return 0;
+        return Math.round((weightedScore / totalWeight) * 10);
+      }
+
+      function getScoreTier(score) {
+        if (score >= 80) return 'excellent';
+        if (score >= 65) return 'good';
+        if (score >= 45) return 'fair';
+        return 'poor';
+      }
+
+      function getScoreLabel(score) {
+        if (score >= 80) return '🌟 Excellent';
+        if (score >= 65) return '👍 Good';
+        if (score >= 45) return '⚠️ Fair';
+        return '👎 Below Avg';
+      }
+
+      // ─── SVG House Photo ──────────────────────────────────────────────────────
+      function generateHouseSVG(colorSeed, type) {
+        const palettes = [
+          { wall: '#8B7355', roof: '#4A3728', trim: '#F5DEB3', sky: '#87CEEB', grass: '#5D8A3C' },
+          { wall: '#D2B48C', roof: '#8B4513', trim: '#FFF8DC', sky: '#6BB5D6', grass: '#4A7A2E' },
+          { wall: '#C0C0C0', roof: '#556B2F', trim: '#F0F0F0', sky: '#9BC5E8', grass: '#6A9B47' },
+          { wall: '#F4A460', roof: '#2F4F4F', trim: '#FAEBD7', sky: '#87CEEB', grass: '#52824A' },
+          { wall: '#B8860B', roof: '#800000', trim: '#FFFACD', sky: '#7AB8D4', grass: '#4D7A35' },
+          { wall: '#708090', roof: '#1C1C1C', trim: '#E8E8E8', sky: '#8EC5DE', grass: '#5A8840' },
+          { wall: '#CD853F', roof: '#3D2B1F', trim: '#FFF5E1', sky: '#95C8E8', grass: '#638B46' },
+          { wall: '#E8D5B7', roof: '#654321', trim: '#FFFFF0', sky: '#82BCdA', grass: '#4E8038' },
+          { wall: '#9E9E9E', roof: '#424242', trim: '#F5F5F5', sky: '#90BDDB', grass: '#527A3D' },
+          { wall: '#A0522D', roof: '#2D1B00', trim: '#FFDEAD', sky: '#85C2E0', grass: '#5C8742' },
+          { wall: '#D3C4B0', roof: '#5C3317', trim: '#FFFAF0', sky: '#8EC6E6', grass: '#4F7E3A' },
+          { wall: '#BDB76B', roof: '#191970', trim: '#F0E68C', sky: '#7AB4D8', grass: '#547838' },
+          { wall: '#A9A9A9', roof: '#696969', trim: '#DCDCDC', sky: '#8BBDD8', grass: '#4B7636' },
+          { wall: '#CC7722', roof: '#36454F', trim: '#FAF0E6', sky: '#80B9D5', grass: '#527A40' },
+        ];
+        const p = palettes[colorSeed % palettes.length];
+        const isCondo = type === 'Condo';
+        const isTownhouse = type === 'Townhouse';
+
+        if (isCondo) {
+          return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200">
+  <defs>
+    <linearGradient id="skyG${colorSeed}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${p.sky}"/>
+      <stop offset="100%" stop-color="#ffffff60"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="200" fill="url(#skyG${colorSeed})"/>
+  <rect x="0" y="140" width="400" height="60" fill="${p.grass}"/>
+  <rect x="120" y="30" width="160" height="120" fill="${p.wall}"/>
+  <rect x="120" y="25" width="160" height="10" fill="${p.roof}"/>
+  ${[0,1,2,3].map(row => [0,1,2].map(col => `<rect x="${140 + col*40}" y="${40 + row*25}" width="25" height="18" fill="#BFE6FF" rx="1" opacity="0.9"/>`).join('')).join('')}
+  <rect x="185" y="108" width="30" height="32" fill="${p.roof}"/>
+  <rect x="120" y="25" width="160" height="6" fill="${p.trim}"/>
+  <rect x="120" y="55" width="160" height="2" fill="${p.trim}" opacity="0.5"/>
+  <rect x="120" y="80" width="160" height="2" fill="${p.trim}" opacity="0.5"/>
+  <rect x="120" y="105" width="160" height="2" fill="${p.trim}" opacity="0.5"/>
+</svg>`;
+        }
+
+        if (isTownhouse) {
+          return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200">
+  <defs>
+    <linearGradient id="skyG${colorSeed}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${p.sky}"/>
+      <stop offset="100%" stop-color="#ffffff60"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="200" fill="url(#skyG${colorSeed})"/>
+  <rect x="0" y="150" width="400" height="50" fill="${p.grass}"/>
+  <rect x="60" y="60" width="90" height="100" fill="${p.wall}"/>
+  <polygon points="60,60 150,60 105,25" fill="${p.roof}"/>
+  <rect x="90" y="100" width="25" height="35" fill="${p.roof}"/>
+  <rect x="72" y="75" width="20" height="18" fill="#BFE6FF" rx="1"/>
+  <rect x="108" y="75" width="20" height="18" fill="#BFE6FF" rx="1"/>
+  <rect x="155" y="55" width="90" height="105" fill="${p.wall}" opacity="0.9"/>
+  <polygon points="155,55 245,55 200,18" fill="${p.roof}" opacity="0.85"/>
+  <rect x="185" y="95" width="25" height="40" fill="${p.roof}"/>
+  <rect x="167" y="70" width="20" height="18" fill="#BFE6FF" rx="1"/>
+  <rect x="203" y="70" width="20" height="18" fill="#BFE6FF" rx="1"/>
+  <rect x="250" y="65" width="90" height="95" fill="${p.wall}" opacity="0.8"/>
+  <polygon points="250,65 340,65 295,30" fill="${p.roof}" opacity="0.75"/>
+  <rect x="280" y="105" width="25" height="35" fill="${p.roof}"/>
+  <rect x="262" y="80" width="20" height="18" fill="#BFE6FF" rx="1"/>
+  <rect x="298" y="80" width="20" height="18" fill="#BFE6FF" rx="1"/>
+</svg>`;
+        }
+
+        // Single Family
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200">
+  <defs>
+    <linearGradient id="skyG${colorSeed}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${p.sky}"/>
+      <stop offset="100%" stop-color="#ffffff40"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="200" fill="url(#skyG${colorSeed})"/>
+  <ellipse cx="320" cy="45" rx="45" ry="30" fill="white" opacity="0.7"/>
+  <ellipse cx="360" cy="35" rx="35" ry="22" fill="white" opacity="0.6"/>
+  <rect x="0" y="148" width="400" height="52" fill="${p.grass}"/>
+  <rect x="80" y="90" width="240" height="70" fill="${p.wall}"/>
+  <polygon points="60,92 340,92 210,38" fill="${p.roof}"/>
+  <polygon points="60,92 130,92 95,68" fill="${p.roof}" opacity="0.85"/>
+  <rect x="168" y="115" width="40" height="45" fill="${p.roof}"/>
+  <rect x="88" y="100" width="35" height="28" fill="#BFE6FF" rx="2"/>
+  <rect x="152" y="98" width="16" height="16" fill="#BFE6FF" rx="1" opacity="0.7"/>
+  <rect x="232" y="100" width="35" height="28" fill="#BFE6FF" rx="2"/>
+  <rect x="270" y="100" width="30" height="28" fill="#BFE6FF" rx="2"/>
+  <line x1="80" y1="148" x2="320" y2="148" stroke="${p.trim}" stroke-width="2"/>
+  <rect x="60" y="140" width="25" height="20" fill="${p.trim}" opacity="0.6" rx="2"/>
+  <rect x="330" y="136" width="20" height="14" fill="${p.trim}" opacity="0.5" rx="2"/>
+  <rect x="185" y="140" width="20" height="5" fill="#996633" opacity="0.8" rx="1"/>
+</svg>`;
+      }
+
+      // ─── Formatting ───────────────────────────────────────────────────────────
+      function formatPrice(p) {
+        if (p >= 1000000) return '$' + (p / 1000000).toFixed(2).replace(/\.?0+$/, '') + 'M';
+        return '$' + (p / 1000).toFixed(0) + 'K';
+      }
+
+      function formatBaths(b) {
+        return b % 1 === 0 ? b.toString() : b.toFixed(1);
+      }
+
+      function starsHTML(rating) {
+        const full = Math.floor(rating);
+        const half = rating % 1 >= 0.5 ? 1 : 0;
+        const empty = 5 - full - half;
+        return (
+          '★'.repeat(full) +
+          (half ? '½' : '') +
+          '☆'.repeat(empty) +
+          ` <span style="font-size:11px; color:var(--muted)">${rating.toFixed(1)}</span>`
+        );
+      }
+
+      // ─── Filtering & sorting ──────────────────────────────────────────────────
+      function getFilteredSorted() {
+        const { maxPrice, minBeds, minBaths, minSqft, minScore } = state.filters;
+        let list = LISTINGS.filter(
+          (l) =>
+            l.price <= maxPrice &&
+            l.beds >= minBeds &&
+            l.baths >= minBaths &&
+            l.sqft >= minSqft &&
+            calcScore(l) >= minScore,
+        );
+
+        const sort = document.getElementById('sortSelect').value;
+        list.sort((a, b) => {
+          if (sort === 'score') return calcScore(b) - calcScore(a);
+          if (sort === 'price-asc') return a.price - b.price;
+          if (sort === 'price-desc') return b.price - a.price;
+          if (sort === 'beds') return b.beds - a.beds;
+          if (sort === 'sqft') return b.sqft - a.sqft;
+          return 0;
+        });
+        return list;
+      }
+
+      // ─── Render homes ─────────────────────────────────────────────────────────
+      function renderHomes() {
+        const list = getFilteredSorted();
+        const grid = document.getElementById('homesGrid');
+        document.getElementById('resultsCount').textContent = list.length;
+
+        if (list.length === 0) {
+          grid.innerHTML = `<div class="no-results" style="grid-column:1/-1">
+            <div class="nr-icon">🏡</div>
+            <p>No homes match your filters. Try adjusting the criteria.</p>
+          </div>`;
+          return;
+        }
+
+        // Determine rank order by score for rank badges
+        const byScore = [...list].sort((a, b) => calcScore(b) - calcScore(a));
+        const rankMap = {};
+        byScore.forEach((l, i) => { rankMap[l.id] = i + 1; });
+
+        grid.innerHTML = list
+          .map((l) => {
+            const score = calcScore(l);
+            const tier = getScoreTier(score);
+            const rank = rankMap[l.id];
+            const rankClass = rank <= 3 ? `rank-${rank}` : 'rank-other';
+
+            return `<div class="home-card" tabindex="0" role="button"
+              aria-label="${l.address}, Score ${score}"
+              onkeydown="if(event.key==='Enter'||event.key===' ')openModal('${l.id}')"
+              onclick="openModal('${l.id}')">
+              <div class="home-rank ${rankClass}" title="Rank #${rank} by neighborhood score">#${rank}</div>
+              <div class="home-photo">${generateHouseSVG(l.colorSeed, l.type)}</div>
+              <div class="home-info">
+                <div class="home-price-row">
+                  <span class="home-price">${formatPrice(l.price)}</span>
+                  <span class="home-score-badge score-${tier}" title="Neighborhood score">⭐ ${score}/100</span>
+                </div>
+                <div class="home-address">${l.address}</div>
+                <div class="home-city">${l.city}</div>
+                <div class="home-specs">
+                  <span class="spec-item"><span class="spec-icon">🛏️</span><strong>${l.beds}</strong> bd</span>
+                  <span class="spec-item"><span class="spec-icon">🚿</span><strong>${formatBaths(l.baths)}</strong> ba</span>
+                  <span class="spec-item"><span class="spec-icon">📐</span><strong>${l.sqft.toLocaleString()}</strong> sqft</span>
+                  <span class="spec-item"><span class="spec-icon">📅</span><strong>${l.yearBuilt}</strong></span>
+                </div>
+                <div class="neighborhood-scores">
+                  ${['restaurants','bars','coffee','grocery','parks','schools'].map(cat => {
+                    const icons = {restaurants:'🍽️',bars:'🍺',coffee:'☕',grocery:'🛒',parks:'🌳',schools:'🏫',health:'💊'};
+                    const v = l.venues[cat];
+                    return `<div class="venue-score">
+                      <span class="v-icon">${icons[cat]}</span>
+                      <span class="v-label">${cat.charAt(0).toUpperCase()+cat.slice(1)}</span>
+                      <span class="v-rating">${v.rating.toFixed(1)}</span>
+                      <span class="v-count">${v.count} nearby</span>
+                    </div>`;
+                  }).join('')}
+                </div>
+                <div class="score-bar-container">
+                  <div class="score-bar-label">
+                    <span>Neighborhood Score</span>
+                    <span>${getScoreLabel(score)}</span>
+                  </div>
+                  <div class="score-bar">
+                    <div class="score-bar-fill fill-${tier}" style="width:${score}%"></div>
+                  </div>
+                </div>
+                ${l.status !== 'Active' ? `<span class="mls-tag">${l.status}</span>` : ''}
+                <span class="mls-tag">MLS</span>
+                <button class="detail-btn" onclick="event.stopPropagation();openModal('${l.id}')">
+                  📊 Full Details &amp; Venue Breakdown
+                </button>
+              </div>
+            </div>`;
+          })
+          .join('');
+      }
+
+      // ─── Modal ────────────────────────────────────────────────────────────────
+      function openModal(id) {
+        const l = LISTINGS.find((x) => x.id === id);
+        if (!l) return;
+        const score = calcScore(l);
+        const tier = getScoreTier(score);
+
+        const catDetails = [
+          { key: 'restaurants', icon: '🍽️', name: 'Restaurants' },
+          { key: 'bars', icon: '🍺', name: 'Bars & Nightlife' },
+          { key: 'coffee', icon: '☕', name: 'Coffee Shops' },
+          { key: 'grocery', icon: '🛒', name: 'Grocery Stores' },
+          { key: 'parks', icon: '🌳', name: 'Parks & Recreation' },
+          { key: 'schools', icon: '🏫', name: 'Schools' },
+          { key: 'health', icon: '💊', name: 'Health Services' },
+        ];
+
+        document.getElementById('modalTitle').textContent = l.address;
+        document.getElementById('modalBody').innerHTML = `
+          <div class="modal-photo">${generateHouseSVG(l.colorSeed, l.type)}</div>
+          <div class="modal-price-row">
+            <span class="modal-price">${formatPrice(l.price)}</span>
+            <span class="home-score-badge score-${tier}">⭐ ${score}/100</span>
+          </div>
+          <div class="modal-address">${l.address}</div>
+          <div class="modal-city">${l.city}</div>
+          <div class="modal-specs">
+            <div class="modal-spec"><span class="s-icon">🛏️</span> ${l.beds} Beds</div>
+            <div class="modal-spec"><span class="s-icon">🚿</span> ${formatBaths(l.baths)} Baths</div>
+            <div class="modal-spec"><span class="s-icon">📐</span> ${l.sqft.toLocaleString()} sqft</div>
+            <div class="modal-spec"><span class="s-icon">📅</span> Built ${l.yearBuilt}</div>
+            <div class="modal-spec"><span class="s-icon">🏠</span> ${l.type}</div>
+            <div class="modal-spec"><span class="s-icon">🚗</span> ${l.parking} Parking</div>
+            <div class="modal-spec"><span class="s-icon">📋</span> ${l.status}</div>
+            <div class="modal-spec"><span class="s-icon">🔖</span> ${l.mlsId}</div>
+          </div>
+
+          <div class="composite-score-display">
+            <div class="cs-label">Composite Neighborhood Score (${state.radius} mi radius)</div>
+            <div class="cs-value" style="color: var(--accent${tier==='excellent'?'2':tier==='good'?'':tier==='fair'?'3':'4'})">${score}</div>
+            <div class="cs-tier">${getScoreLabel(score)}</div>
+          </div>
+
+          <div class="modal-section-title">Venue Breakdown</div>
+          <div class="venue-breakdown">
+            ${catDetails.map(cat => {
+              const v = l.venues[cat.key];
+              const w = state.weights[cat.key];
+              return `<div class="venue-detail-card">
+                <span class="venue-detail-icon">${cat.icon}</span>
+                <div class="venue-detail-info">
+                  <div class="vdi-name">${cat.name} (weight: ${w})</div>
+                  <div class="vdi-stats">${v.count} nearby · ${v.rating.toFixed(1)}★</div>
+                  <div class="vdi-sub">Best: ${v.topName}</div>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+
+          <div class="agent-info">
+            <strong>Real estate agent:</strong> Jane Mitchell, Austin Premier Realty · (512) 555-0182<br/>
+            <strong>Open house:</strong> Sat &amp; Sun 1–4 PM · <strong>Days on market:</strong> ${Math.floor(Math.random()*60)+3}
+          </div>
+        `;
+
+        document.getElementById('modalOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal(e) {
+        if (e.target === document.getElementById('modalOverlay')) closeModalDirect();
+      }
+
+      function closeModalDirect() {
+        document.getElementById('modalOverlay').classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      // ─── Controls ─────────────────────────────────────────────────────────────
+      function toggleControls() {
+        const body = document.getElementById('controlsBody');
+        const toggle = document.getElementById('controlsToggle');
+        const isVisible = body.style.display !== 'none';
+        body.style.display = isVisible ? 'none' : 'grid';
+        toggle.classList.toggle('open', !isVisible);
+      }
+
+      function updateWeight(cat, val) {
+        state.weights[cat] = parseInt(val);
+        document.getElementById('wv' + cat.charAt(0).toUpperCase() + cat.slice(1)).textContent = val;
+      }
+
+      function updateFilter(key, val) {
+        const num = parseFloat(val);
+        state.filters[key] = num;
+        const labels = {
+          maxPrice: () => formatPrice(num),
+          minBeds: () => num + '+',
+          minBaths: () => num + '+',
+          minSqft: () => num.toLocaleString() + '+',
+          minScore: () => num === 0 ? 'Any' : num + '+',
+        };
+        const elIds = {
+          maxPrice: 'fvPrice',
+          minBeds: 'fvBeds',
+          minBaths: 'fvBaths',
+          minSqft: 'fvSqft',
+          minScore: 'fvScore',
+        };
+        document.getElementById(elIds[key]).textContent = labels[key]();
+      }
+
+      function setRadius(r) {
+        state.radius = r;
+        document.querySelectorAll('.radius-btn').forEach((btn) => {
+          btn.classList.toggle(
+            'active',
+            parseFloat(btn.textContent) === r || btn.textContent.trim() === r + ' mi',
+          );
+        });
+        document.getElementById('radiusLabel').textContent = `within ${r} mi of venues`;
+      }
+
+      function recalculate() {
+        renderHomes();
+        // Flash effect on the grid
+        const grid = document.getElementById('homesGrid');
+        grid.style.opacity = '0.5';
+        grid.style.transition = 'opacity 0.15s';
+        setTimeout(() => {
+          grid.style.opacity = '1';
+        }, 150);
+      }
+
+      // ─── Keyboard navigation ──────────────────────────────────────────────────
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModalDirect();
+      });
+
+      // ─── Init ─────────────────────────────────────────────────────────────────
+      renderHomes();
+    </script>
+  </body>
+</html>
