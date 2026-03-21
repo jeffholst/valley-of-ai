@@ -217,6 +217,12 @@ Generate `thumbnail.svg` (viewBox="0 0 800 450") matching the app's UI, colors, 
 - Fill the entire canvas. A sparse or mostly-empty thumbnail is a failure.
 - No `<animate>` tags. The SVG renders statically — animations are ignored and waste space.
 - All `<defs>` (gradients, filters) must be declared at the top, before any use.
+- The background `<rect>` must have explicit `x="0" y="0" width="800" height="450"` attributes.
+
+**SVG/XML validity (required — invalid XML will not render)**
+- Never use `--` inside XML comments. This is illegal XML and will cause a parse error. This commonly occurs when labeling morse code, scores, or other content that uses dashes (e.g. `<!-- O  ---  -->` is invalid). Use plain English descriptions instead: `<!-- O: three dashes -->`.
+- Run `xmllint --noout thumbnail.svg` before saving to confirm the file is valid XML. If xmllint is unavailable, carefully review all comments for double hyphens.
+- Avoid `feDropShadow` — use `feGaussianBlur` + `feMerge` instead for broader renderer support.
 
 **Show a mid-use state, not a start screen**
 - Games: player is mid-action, obstacles present, score > 0, lives/progress visible
