@@ -29,7 +29,7 @@ async function verifyTurnstile(token, ip) {
 }
 
 export async function POST(request) {
-  if (!process.env.GITHUB_SUGGESTIONS_TOKEN) {
+  if (!process.env.GITHUB_SUGGESTIONS_TOKEN || !process.env.GITHUB_REPO) {
     return Response.json({ error: 'Suggestions unavailable' }, { status: 503 });
   }
 
@@ -67,7 +67,7 @@ export async function POST(request) {
   const issueBody = `## App Suggestion\n\n**Category:** ${category}\n${requestorLine}\n\n### Description\n\n${description}`;
 
   const normalizedDesc = description.replace(/\s+/g, ' ').trim();
-  const repo = process.env.GITHUB_REPO || 'jeff/valley-of-ai';
+  const repo = process.env.GITHUB_REPO;
   const res = await fetch(`${GITHUB_API_URL}/repos/${repo}/issues`, {
     method: 'POST',
     headers: {
