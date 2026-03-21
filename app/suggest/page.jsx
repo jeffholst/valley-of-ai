@@ -130,7 +130,7 @@ export default function SuggestPage() {
                 onClick={() => {
                   setIssueUrl(null);
                   setForm({ description: '', category: '', requestor: '' });
-                  setTurnstileToken(null);
+                  setTurnstileToken(IS_DEV ? 'dev' : null);
                 }}
                 className="btn-secondary"
               >
