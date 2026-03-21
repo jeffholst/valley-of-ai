@@ -1,0 +1,23 @@
+{
+  "id": "pattern-pulse-memory",
+  "name": "Pattern Pulse Memory",
+  "shortDescription": "A polished Simon-style memory game with keyboard, mouse, and touch controls.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-21T07:00:22Z",
+  "category": "Games",
+  "votes": 0,
+  "status": "active",
+  "tags": ["memory", "simon", "keyboard", "touch", "reflex"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "dev",
+    "llmModel": "openai-codex/gpt-5.3-codex",
+    "startTime": "2026-03-21T07:00:22Z",
+    "endTime": "2026-03-21T07:05:30Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-20260321T070022Z-52c4df",
+    "notes": "Built as a responsive static game integrated with the shared shell, including keyboard/touch controls and persistent best score."
+  }
+}
