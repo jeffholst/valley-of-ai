@@ -5,9 +5,13 @@
   const SOCIAL_X_URL_PLACEHOLDER = '__SOCIAL_X_URL__';
   const SOCIAL_FACEBOOK_URL_PLACEHOLDER = '__SOCIAL_FACEBOOK_URL__';
   const SOCIAL_INSTAGRAM_URL_PLACEHOLDER = '__SOCIAL_INSTAGRAM_URL__';
+  const SUPABASE_URL_PLACEHOLDER = '__SUPABASE_URL__';
+  const SUPABASE_ANON_KEY_PLACEHOLDER = '__SUPABASE_ANON_KEY__';
   const SHELL_CONFIG_PATH = '/apps/shared/shell-config.json';
   const DEFAULT_MAIN_SITE_URL = 'https://www.valleyofai.com';
   const DEFAULT_MAIN_SITE_NAME = 'Valley of AI';
+  const VOTES_STORAGE_KEY = 'voa_votes_v2';
+  const LEGACY_VOTES_KEY = 'valley_voted_apps';
   let shellConfig = null;
 
   function isResolvedValue(value, placeholder) {
@@ -51,6 +55,66 @@
     const value = shellConfig?.[key]?.trim();
     if (isResolvedValue(value, placeholder)) return value;
     return '';
+  }
+
+  function resolveAppId() {
+    return document.querySelector('meta[name="voa-app-id"]')?.getAttribute('content')?.trim() || null;
+  }
+
+  function resolveSupabaseUrl() {
+    return resolveConfigUrl('supabaseUrl', SUPABASE_URL_PLACEHOLDER);
+  }
+
+  function resolveSupabaseAnonKey() {
+    return resolveConfigUrl('supabaseAnonKey', SUPABASE_ANON_KEY_PLACEHOLDER);
+  }
+
+  function getLocalVoteRecord(appId) {
+    try {
+      const stored = localStorage.getItem(VOTES_STORAGE_KEY);
+      const records = stored ? JSON.parse(stored) : {};
+      if (records[appId]) return records[appId];
+      const legacy = localStorage.getItem(LEGACY_VOTES_KEY);
+      const legacyRecords = legacy ? JSON.parse(legacy) : {};
+      if (legacyRecords[appId]) return { type: 'up', ts: legacyRecords[appId] };
+      return null;
+    } catch { return null; }
+  }
+
+  function saveLocalVoteRecord(appId, type) {
+    try {
+      const stored = localStorage.getItem(VOTES_STORAGE_KEY);
+      const records = stored ? JSON.parse(stored) : {};
+      records[appId] = { type, ts: Date.now() };
+      localStorage.setItem(VOTES_STORAGE_KEY, JSON.stringify(records));
+    } catch { /* ignore */ }
+  }
+
+  async function fetchVoteCounts(appId, supabaseUrl, anonKey) {
+    const res = await fetch(
+      `${supabaseUrl}/rest/v1/votes?app_id=eq.${encodeURIComponent(appId)}&select=vote_type`,
+      { headers: { apikey: anonKey, Authorization: `Bearer ${anonKey}` } }
+    );
+    if (!res.ok) return { up: 0, down: 0 };
+    const data = await res.json();
+    return {
+      up: data.filter((r) => r.vote_type === 'up').length,
+      down: data.filter((r) => r.vote_type === 'down').length,
+    };
+  }
+
+  async function submitVote(appId, type, supabaseUrl, anonKey) {
+    const res = await fetch(`${supabaseUrl}/rest/v1/votes`, {
+      method: 'POST',
+      headers: {
+        apikey: anonKey,
+        Authorization: `Bearer ${anonKey}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify({ app_id: appId, vote_type: type }),
+    });
+    return res.ok || res.status === 201;
   }
 
   function resolveSocialLinks() {
@@ -275,6 +339,50 @@
         display: none !important;
       }
 
+      .voa-vote-group {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .voa-vote-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font: 600 0.82rem/1 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid color-mix(in srgb, var(--muted, #94a3b8) 35%, transparent);
+        background: color-mix(in srgb, var(--surface, #1e293b) 80%, transparent);
+        color: var(--text, #f8fafc);
+        cursor: pointer;
+        transition: background 150ms ease, transform 150ms ease, color 150ms ease;
+        white-space: nowrap;
+      }
+
+      .voa-vote-btn:hover:not(:disabled) {
+        transform: scale(1.05);
+      }
+
+      .voa-vote-btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+
+      .voa-vote-btn.active-up {
+        background: color-mix(in srgb, #22c55e 20%, transparent);
+        border-color: #22c55e;
+        color: #4ade80;
+        opacity: 1;
+      }
+
+      .voa-vote-btn.active-down {
+        background: color-mix(in srgb, #ef4444 20%, transparent);
+        border-color: #ef4444;
+        color: #f87171;
+        opacity: 1;
+      }
+
       .voa-share-btn {
         display: inline-flex;
         align-items: center;
@@ -461,7 +569,12 @@
     toggle.setAttribute('aria-label', 'Toggle theme');
     toggle.addEventListener('click', toggleTheme);
 
+    const voteGroup = document.createElement('div');
+    voteGroup.id = 'voa-vote-group';
+    voteGroup.className = 'voa-vote-group';
+
     header.appendChild(appName);
+    header.appendChild(voteGroup);
     header.appendChild(toggle);
 
     const footer = document.createElement('footer');
@@ -647,10 +760,81 @@
 
   window.toggleTheme = toggleTheme;
 
+  async function bootstrapVoting() {
+    const appId = resolveAppId();
+    const supabaseUrl = resolveSupabaseUrl();
+    const anonKey = resolveSupabaseAnonKey();
+    const container = document.getElementById('voa-vote-group');
+    if (!appId || !supabaseUrl || !anonKey || !container) return;
+
+    const myVoteRecord = getLocalVoteRecord(appId);
+    const myVote = myVoteRecord?.type ?? null;
+    const voted = !!myVote;
+
+    // Fetch initial counts
+    let counts = { up: 0, down: 0 };
+    try { counts = await fetchVoteCounts(appId, supabaseUrl, anonKey); } catch { /* ignore */ }
+
+    const upBtn = document.createElement('button');
+    upBtn.type = 'button';
+    upBtn.className = 'voa-vote-btn' + (myVote === 'up' ? ' active-up' : '');
+    upBtn.setAttribute('aria-label', 'Like this app');
+    upBtn.disabled = voted;
+
+    const downBtn = document.createElement('button');
+    downBtn.type = 'button';
+    downBtn.className = 'voa-vote-btn' + (myVote === 'down' ? ' active-down' : '');
+    downBtn.setAttribute('aria-label', 'Dislike this app');
+    downBtn.disabled = voted;
+
+    function renderCounts(up, down) {
+      upBtn.textContent = `👍 ${up}`;
+      downBtn.textContent = `👎 ${down}`;
+    }
+
+    renderCounts(counts.up, counts.down);
+
+    async function handleVote(type) {
+      upBtn.disabled = true;
+      downBtn.disabled = true;
+      // Optimistic update
+      if (type === 'up') counts.up += 1; else counts.down += 1;
+      renderCounts(counts.up, counts.down);
+      if (type === 'up') upBtn.classList.add('active-up'); else downBtn.classList.add('active-down');
+      try {
+        const ok = await submitVote(appId, type, supabaseUrl, anonKey);
+        if (ok) {
+          saveLocalVoteRecord(appId, type);
+        } else {
+          // Revert
+          if (type === 'up') counts.up -= 1; else counts.down -= 1;
+          renderCounts(counts.up, counts.down);
+          if (type === 'up') upBtn.classList.remove('active-up'); else downBtn.classList.remove('active-down');
+          upBtn.disabled = false;
+          downBtn.disabled = false;
+        }
+      } catch {
+        // Revert
+        if (type === 'up') counts.up -= 1; else counts.down -= 1;
+        renderCounts(counts.up, counts.down);
+        if (type === 'up') upBtn.classList.remove('active-up'); else downBtn.classList.remove('active-down');
+        upBtn.disabled = false;
+        downBtn.disabled = false;
+      }
+    }
+
+    upBtn.addEventListener('click', () => handleVote('up'));
+    downBtn.addEventListener('click', () => handleVote('down'));
+
+    container.appendChild(upBtn);
+    container.appendChild(downBtn);
+  }
+
   async function bootstrapShell() {
     await loadShellConfig();
     injectShellStyles();
     injectShell();
+    void bootstrapVoting();
   }
 
   if (document.readyState === 'loading') {

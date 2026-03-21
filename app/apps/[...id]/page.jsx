@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useVotes } from '@/hooks/useVotes';
+import VoteButtons from '@/components/VoteButtons';
 import { notFound } from 'next/navigation';
 import { use } from 'react';
 import AppLog from '@/components/AppLog';
@@ -23,7 +24,7 @@ export default function AppDetailPage({ params }) {
 }
 
 function AppDetailContent({ app, id }) {
-  const { voteCount, hasVoted, isLoading, isVoting, vote } = useVotes(id);
+  const { upvoteCount, downvoteCount, myVote, isLoading, isVoting, vote } = useVotes(id);
 
   const formattedDate = new Date(app.createdAt).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -91,25 +92,15 @@ function AppDetailContent({ app, id }) {
                 <span className="inline-block px-3 py-1 text-sm font-medium bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 rounded-full">
                   {app.category}
                 </span>
-                <button
-                  onClick={vote}
-                  disabled={hasVoted || isVoting || isLoading}
-                  className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                    hasVoted
-                      ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-yellow-100 dark:hover:bg-yellow-900 hover:text-yellow-700 dark:hover:text-yellow-300'
-                  } ${isVoting ? 'opacity-50' : ''}`}
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill={hasVoted ? 'currentColor' : 'none'}
-                    stroke="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  {isLoading ? '...' : `${voteCount} vote${voteCount !== 1 ? 's' : ''}`}
-                </button>
+                <VoteButtons
+                  upvoteCount={upvoteCount}
+                  downvoteCount={downvoteCount}
+                  myVote={myVote}
+                  isLoading={isLoading}
+                  isVoting={isVoting}
+                  onVote={vote}
+                  size="md"
+                />
                 <span className="text-gray-500 dark:text-gray-400">{formattedDate}</span>
               </div>
             </div>

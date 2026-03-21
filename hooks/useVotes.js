@@ -1,59 +1,60 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 
-const STORAGE_KEY = 'valley_voted_apps';
+const STORAGE_KEY = 'voa_votes_v2';
+const LEGACY_STORAGE_KEY = 'valley_voted_apps';
 
-// Get voted apps from localStorage
-function getVotedApps() {
+function getVoteRecord(appId) {
   try {
-    if (typeof window === 'undefined') {
-      return {};
-    }
+    if (typeof window === 'undefined') {return null;}
     const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : {};
+    const records = stored ? JSON.parse(stored) : {};
+    if (records[appId]) {return records[appId];}
+    // Migrate legacy upvote
+    const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
+    const legacyRecords = legacy ? JSON.parse(legacy) : {};
+    if (legacyRecords[appId]) {return { type: 'up', ts: legacyRecords[appId] };}
+    return null;
   } catch {
-    return {};
+    return null;
   }
 }
 
-// Save voted apps to localStorage
-function saveVotedApps(votedApps) {
+function saveVoteRecord(appId, type) {
   try {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(votedApps));
-    }
+    if (typeof window === 'undefined') {return;}
+    const stored = localStorage.getItem(STORAGE_KEY);
+    const records = stored ? JSON.parse(stored) : {};
+    records[appId] = { type, ts: Date.now() };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
   } catch {
     // Ignore storage errors
   }
 }
 
-// Check if user has voted for an app
-export function hasVotedFor(appId) {
-  const votedApps = getVotedApps();
-  return !!votedApps[appId];
-}
-
 // Hook for managing votes on a single app
 export function useVotes(appId) {
-  const [voteCount, setVoteCount] = useState(0);
-  const [hasVoted, setHasVoted] = useState(false);
+  const [upvoteCount, setUpvoteCount] = useState(0);
+  const [downvoteCount, setDownvoteCount] = useState(0);
+  const [myVote, setMyVote] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isVoting, setIsVoting] = useState(false);
 
-  // Fetch vote count on mount
   useEffect(() => {
     async function fetchVotes() {
       setIsLoading(true);
       try {
-        const { count, error } = await supabase
+        const { data, error } = await supabase
           .from('votes')
-          .select('*', { count: 'exact', head: true })
+          .select('vote_type')
           .eq('app_id', appId);
 
-        if (error) {
-          throw error;
-        }
-        setVoteCount(count || 0);
+        if (error) {throw error;}
+
+        const ups = data?.filter((r) => r.vote_type === 'up').length ?? 0;
+        const downs = data?.filter((r) => r.vote_type === 'down').length ?? 0;
+        setUpvoteCount(ups);
+        setDownvoteCount(downs);
       } catch (error) {
         console.error('Error fetching votes:', error);
       } finally {
@@ -61,57 +62,45 @@ export function useVotes(appId) {
       }
     }
 
-    // Check localStorage for existing vote
-    setHasVoted(hasVotedFor(appId));
+    const record = getVoteRecord(appId);
+    setMyVote(record?.type ?? null);
     fetchVotes();
   }, [appId]);
 
-  // Submit a vote
-  const vote = useCallback(async () => {
-    if (hasVoted || isVoting) {
-      return false;
-    }
+  const vote = useCallback(
+    async (type) => {
+      if (myVote || isVoting) {return false;}
 
-    setIsVoting(true);
+      setIsVoting(true);
 
-    // Optimistic update
-    setVoteCount((prev) => prev + 1);
-    setHasVoted(true);
+      // Optimistic update
+      if (type === 'up') {setUpvoteCount((prev) => prev + 1);}
+      else {setDownvoteCount((prev) => prev + 1);}
+      setMyVote(type);
 
-    try {
-      const { error } = await supabase.from('votes').insert({ app_id: appId });
-
-      if (error) {
-        throw error;
+      try {
+        const { error } = await supabase.from('votes').insert({ app_id: appId, vote_type: type });
+        if (error) {throw error;}
+        saveVoteRecord(appId, type);
+        return true;
+      } catch (error) {
+        console.error('Error voting:', error);
+        // Revert optimistic update
+        if (type === 'up') {setUpvoteCount((prev) => prev - 1);}
+        else {setDownvoteCount((prev) => prev - 1);}
+        setMyVote(null);
+        return false;
+      } finally {
+        setIsVoting(false);
       }
+    },
+    [appId, myVote, isVoting],
+  );
 
-      // Save to localStorage
-      const votedApps = getVotedApps();
-      votedApps[appId] = Date.now();
-      saveVotedApps(votedApps);
-
-      return true;
-    } catch (error) {
-      console.error('Error voting:', error);
-      // Revert optimistic update
-      setVoteCount((prev) => prev - 1);
-      setHasVoted(false);
-      return false;
-    } finally {
-      setIsVoting(false);
-    }
-  }, [appId, hasVoted, isVoting]);
-
-  return {
-    voteCount,
-    hasVoted,
-    isLoading,
-    isVoting,
-    vote,
-  };
+  return { upvoteCount, downvoteCount, myVote, isLoading, isVoting, vote };
 }
 
-// Hook for fetching vote counts for multiple apps
+// Hook for fetching vote counts for multiple apps (used by gallery for "Highest rated" sort)
 export function useAllVoteCounts(appIds) {
   const [voteCounts, setVoteCounts] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -125,19 +114,22 @@ export function useAllVoteCounts(appIds) {
 
       setIsLoading(true);
       try {
-        const { data, error } = await supabase.from('votes').select('app_id').in('app_id', appIds);
+        const { data, error } = await supabase
+          .from('votes')
+          .select('app_id, vote_type')
+          .in('app_id', appIds);
 
-        if (error) {
-          throw error;
-        }
+        if (error) {throw error;}
 
-        // Count votes per app
         const counts = {};
         appIds.forEach((id) => {
-          counts[id] = 0;
+          counts[id] = { up: 0, down: 0, net: 0 };
         });
         data?.forEach((row) => {
-          counts[row.app_id] = (counts[row.app_id] || 0) + 1;
+          if (!counts[row.app_id]) {counts[row.app_id] = { up: 0, down: 0, net: 0 };}
+          if (row.vote_type === 'up') {counts[row.app_id].up += 1;}
+          else {counts[row.app_id].down += 1;}
+          counts[row.app_id].net = counts[row.app_id].up - counts[row.app_id].down;
         });
 
         setVoteCounts(counts);

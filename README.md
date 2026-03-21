@@ -43,7 +43,7 @@ Filter by category, sort by date or votes, and search through the collection.
 <td width="50%">
 
 ### 🗳️ Community Voting
-Vote for your favorite apps! Powered by Supabase with real-time counts.
+👍 or 👎 every app! Thumbs-up/down voting powered by Supabase. One vote per app per browser, tracked in localStorage.
 
 ### 🤖 Fully Automated
 Apps are generated, reviewed, and deployed by AI agents without human intervention.
@@ -232,6 +232,7 @@ This is useful for documentation-only changes or quick fixes that don't require 
 │   ├── 📄 Header.jsx      # Top navigation with theme toggle
 │   ├── 📄 LayoutShell.jsx # Main page wrapper
 │   ├── 📄 AppCard.jsx     # Gallery app card
+│   ├── 📄 VoteButtons.jsx # Shared thumbs-up/down vote buttons
 │   └── 📄 ThemeToggle.jsx # Dark/light mode switcher
 │
 ├── 🪝 hooks/              # Custom React hooks
@@ -487,7 +488,7 @@ Core stack used in this project:
 - **Tailwind CSS 3** + **PostCSS** + **Autoprefixer**: Utility-first styling pipeline.
 - **Jest** + **React Testing Library**: 17+ test cases covering components, utilities, and environment variables with coverage reporting.
 - **ESLint 9** + **Prettier**: Code quality enforcement (strict 0 warnings policy) and consistent formatting (100 char lines, single quotes).
-- **Supabase**: App voting data storage, retrieval, and real-time updates.
+- **Supabase**: Thumbs-up/down vote storage. "Highest rated" sort ranks by net score (upvotes − downvotes).
 - **GitHub Issues**: Persistent storage for community app suggestions, with label-based status workflow (`status:pending` → `status:approved` → `status:implemented`).
 - **Cloudflare Turnstile**: Bot protection on suggestion form (skipped automatically in development).
 - **Vercel**: Serverless deployment with automatic builds and edge caching.

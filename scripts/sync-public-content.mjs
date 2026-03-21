@@ -28,12 +28,14 @@ const PLACEHOLDER_MAP = {
   '__SOCIAL_X_URL__': 'NEXT_PUBLIC_SOCIAL_X_URL',
   '__SOCIAL_FACEBOOK_URL__': 'NEXT_PUBLIC_SOCIAL_FACEBOOK_URL',
   '__SOCIAL_INSTAGRAM_URL__': 'NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL',
+  '__SUPABASE_URL__': 'NEXT_PUBLIC_SUPABASE_URL',
+  '__SUPABASE_ANON_KEY__': 'NEXT_PUBLIC_SUPABASE_ANON_KEY',
 }
 
 /**
- * Recursively process files in a directory, replacing placeholders in HTML files.
- * All non-HTML assets are copied verbatim, including meta.json, thumbnail.svg,
- * and app-local log.jsonl files.
+ * Recursively process files in a directory, replacing placeholders in HTML files
+ * and shell-config.json. All other assets are copied verbatim, including meta.json,
+ * thumbnail.svg, and app-local log.jsonl files.
  */
 function processDirectory(sourceDir, targetDir) {
   const entries = readdirSync(sourceDir, { withFileTypes: true })
@@ -45,8 +47,8 @@ function processDirectory(sourceDir, targetDir) {
     if (entry.isDirectory()) {
       mkdirSync(targetPath, { recursive: true })
       processDirectory(sourcePath, targetPath)
-    } else if (entry.name.endsWith('.html')) {
-      // Read HTML file and replace placeholders
+    } else if (entry.name.endsWith('.html') || entry.name === 'shell-config.json') {
+      // Read HTML and shell-config.json files and replace placeholders
       let content = readFileSync(sourcePath, 'utf-8')
       
       for (const [placeholder, envVar] of Object.entries(PLACEHOLDER_MAP)) {

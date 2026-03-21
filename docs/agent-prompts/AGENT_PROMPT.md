@@ -49,12 +49,13 @@ apps/YYYY/MM/DD/<app-id>/
 <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
 <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
 <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+<meta name="voa-app-id" content="YYYY/MM/DD/<app-id>" />
 <script src="/apps/shared/app-shell.js" defer></script>
 ```
 
 Rules:
-- Keep placeholders **exactly as shown** (do not hardcode real values).
-- `sync-public-content.mjs` automatically replaces placeholders during build from `.env`.
+- Keep `__PLACEHOLDER__` values **exactly as shown** — `sync-public-content.mjs` replaces them from `.env` at build time. Do not hardcode real values for these.
+- **Exception:** `voa-app-id` is app-specific. Replace `YYYY/MM/DD/<app-id>` with the actual app path (e.g. `2026/03/21/tetris-classic`).
 - Do not hand-code global header/footer or app-local theme toggle.
 - Shared shell must control header/footer/theme behavior.
 

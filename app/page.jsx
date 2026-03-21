@@ -187,7 +187,7 @@ export default function HomePage() {
       case 'oldest':
         return apps.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
       case 'highest':
-        return apps.sort((a, b) => (voteCounts[b.id] || 0) - (voteCounts[a.id] || 0));
+        return apps.sort((a, b) => (voteCounts[b.id]?.net ?? 0) - (voteCounts[a.id]?.net ?? 0));
       default:
         return apps;
     }
