@@ -167,9 +167,7 @@ function FeedbackRow({ entry }) {
           </div>
         )}
         {fb.files?.length > 0 && (
-          <div className="mt-1 text-xs text-gray-400 dark:text-gray-500">
-            {fb.files.join(', ')}
-          </div>
+          <div className="mt-1 text-xs text-gray-400 dark:text-gray-500">{fb.files.join(', ')}</div>
         )}
       </div>
       <div className="text-right text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">

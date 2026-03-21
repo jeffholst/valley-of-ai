@@ -333,7 +333,8 @@ export default function AppLog({ appId }) {
           {logs.some((log) => log.category === 'feedback') && (
             <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-xs">
               <div className="font-semibold text-gray-900 dark:text-white mb-1">
-                Post-generation Feedback ({logs.filter((log) => log.category === 'feedback').length})
+                Post-generation Feedback ({logs.filter((log) => log.category === 'feedback').length}
+                )
               </div>
               <div className="space-y-1">
                 {logs
