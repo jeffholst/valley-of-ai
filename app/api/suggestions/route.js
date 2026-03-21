@@ -53,6 +53,7 @@ export async function POST(request) {
   const requestorLine = requestor ? `**Requestor:** ${requestor}` : '**Requestor:** anonymous';
   const issueBody = `## App Suggestion\n\n**Category:** ${category}\n${requestorLine}\n\n### Description\n\n${description}`;
 
+  const normalizedDesc = description.replace(/\s+/g, ' ').trim();
   const repo = process.env.GITHUB_REPO || 'jeff/valley-of-ai';
   const res = await fetch(`${GITHUB_API_URL}/repos/${repo}/issues`, {
     method: 'POST',
@@ -63,7 +64,7 @@ export async function POST(request) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      title: `Suggestion: ${description.slice(0, 72).trim()}${description.length > 72 ? '…' : ''}`,
+      title: `Suggestion: ${normalizedDesc.slice(0, 72)}${normalizedDesc.length > 72 ? '…' : ''}`,
       body: issueBody,
       labels: ['suggestion', 'status:pending'],
     }),
