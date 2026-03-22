@@ -64,8 +64,8 @@ function AppDetailContent({ app, id }) {
           Back to gallery
         </Link>
 
-        {/* Hero Image */}
-        <div className="card overflow-hidden mb-8">
+        {/* Hero Image — click to launch */}
+        <a href={app.appPath} target="_blank" rel="noopener" className="card overflow-hidden mb-8 block group/hero">
           <div className="aspect-video bg-gradient-to-br from-primary-400 to-primary-600 relative">
             {app.thumbnailUrl && (
               <img
@@ -80,8 +80,19 @@ function AppDetailContent({ app, id }) {
             <div className="absolute inset-0 flex items-center justify-center">
               <span className="text-6xl opacity-30">🤖</span>
             </div>
+            {/* Play overlay */}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover/hero:bg-black/30 transition-colors duration-200">
+              <div className="flex flex-col items-center gap-2 opacity-0 group-hover/hero:opacity-100 transition-opacity duration-200">
+                <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
+                  <svg className="w-7 h-7 text-primary-600 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </div>
+                <span className="text-white font-semibold text-sm drop-shadow">Launch App</span>
+              </div>
+            </div>
           </div>
-        </div>
+        </a>
 
         {/* App Info */}
         <div id="app-info" className="mb-8">
@@ -111,16 +122,16 @@ function AppDetailContent({ app, id }) {
               </div>
             </div>
 
-            <a href={app.appPath} target="_blank" rel="noopener" className="btn-primary">
-              Open App
-              <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                />
+            <a
+              href={app.appPath}
+              target="_blank"
+              rel="noopener"
+              className="animate-pulse-ring relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white text-sm bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-600 hover:via-teal-500 hover:to-cyan-600 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
               </svg>
+              Launch App
             </a>
           </div>
 
@@ -138,6 +149,7 @@ function AppDetailContent({ app, id }) {
               ))}
             </div>
           )}
+
         </div>
 
         {/* Generation Info */}
