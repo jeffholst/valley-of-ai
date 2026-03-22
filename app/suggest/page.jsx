@@ -23,6 +23,7 @@ export default function SuggestPage() {
   const [form, setForm] = useState({ description: '', category: '', requestor: '' });
   const [errors, setErrors] = useState({});
   const [issueUrl, setIssueUrl] = useState(null);
+  const [issueNumber, setIssueNumber] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [turnstileToken, setTurnstileToken] = useState(IS_DEV ? 'dev' : null);
@@ -74,6 +75,7 @@ export default function SuggestPage() {
       }
 
       setIssueUrl(data.issueUrl);
+      setIssueNumber(data.issueNumber);
     } catch {
       setSubmitError('Failed to submit suggestion. Please try again.');
     } finally {
@@ -96,7 +98,8 @@ export default function SuggestPage() {
           issueUrl={issueUrl}
           message="Your suggestion has been submitted for review. If approved, our AI agents will build it!"
           issueLabel="View your suggestion on GitHub"
-          onClose={() => { setIssueUrl(null); router.push('/'); }}
+          issueNumber={issueNumber}
+          onClose={() => { setIssueUrl(null); setIssueNumber(null); router.push('/'); }}
         />
       )}
 

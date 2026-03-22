@@ -130,6 +130,7 @@ The following labels must exist in your GitHub repo. Create them via `gh label c
 | `status:approved` | `#10b981` | Approved for agent processing |
 | `status:rejected` | `#ef4444` | Not selected for implementation |
 | `status:implemented` | `#6b7280` | App has been generated or improvement applied |
+| `boosted` | `#f59e0b` | Submission received a tip — prioritized for review |
 
 To create all labels at once:
 
@@ -140,6 +141,7 @@ gh label create "status:pending"     --description "Awaiting maintainer review" 
 gh label create "status:approved"    --description "Approved for agent processing"            --color "10b981"
 gh label create "status:rejected"    --description "Not selected for implementation"          --color "ef4444"
 gh label create "status:implemented" --description "App has been generated or improvement applied" --color "6b7280"
+gh label create "boosted"            --description "Submission received a tip — prioritized for review" --color "f59e0b"
 ```
 
 ### Environment Setup (`.env` and `.env.example`)
@@ -173,8 +175,47 @@ Client-side variables use the `NEXT_PUBLIC_*` prefix (accessible in the browser)
 | `TURNSTILE_SECRET_KEY` | Server | Cloudflare Turnstile secret for server-side bot verification |
 | `GITHUB_SUGGESTIONS_TOKEN` | Server | Fine-grained PAT with Issues read/write for creating suggestion issues |
 | `GITHUB_REPO` | Server | Target repo for suggestions, e.g. `owner/repo-name` |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Client | Stripe publishable key (not currently used client-side, included for future use) |
+| `STRIPE_SECRET_KEY` | Server | Stripe secret key for creating checkout sessions |
+| `STRIPE_WEBHOOK_SECRET` | Server | Stripe webhook signing secret for verifying payment events |
 
 If these values are missing, parts of the app may fail at runtime.
+
+### Stripe Local Testing
+
+To test payments locally, use the [Stripe CLI](https://stripe.com/docs/stripe-cli) to forward webhook events to your dev server:
+
+```bash
+# Install Stripe CLI (macOS)
+brew install stripe/stripe-cli/stripe
+
+# Authenticate
+stripe login
+
+# Forward events to your local server (run this alongside npm run dev)
+stripe listen --forward-to localhost:3000/api/stripe/webhook
+```
+
+The CLI will print a webhook signing secret (starts with `whsec_`). Set this as `STRIPE_WEBHOOK_SECRET` in your `.env` for local testing. Use Stripe's test mode keys (`sk_test_...` / `pk_test_...`) during development.
+
+#### Test Card Numbers
+
+No real charges are made in test mode. On the Stripe Checkout page use:
+
+| Scenario | Card Number | Expiry | CVC | ZIP |
+|---|---|---|---|---|
+| ✅ Successful payment | `4242 4242 4242 4242` | Any future (e.g. `12/34`) | Any 3 digits | Any 5 digits |
+| ❌ Declined payment | `4000 0000 0000 0002` | Any future | Any 3 digits | Any 5 digits |
+
+A successful test payment will fire the `checkout.session.completed` webhook, which adds the `boosted` label and a comment to the GitHub issue.
+
+You can also trigger a synthetic webhook event without going through the browser:
+
+```bash
+stripe trigger checkout.session.completed
+```
+
+> **Note:** The synthetic event won't contain a real `issueNumber` in metadata, so the GitHub label step will no-op. Use the test card flow for full end-to-end testing.
 
 ### Commands
 

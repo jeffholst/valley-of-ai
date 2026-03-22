@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import AppCard from '@/components/AppCard';
 import OptionsDrawer from '@/components/OptionsDrawer';
+import DonateModal from '@/components/DonateModal';
+import PaymentSuccessModal from '@/components/PaymentSuccessModal';
 import { useAllVoteCounts } from '@/hooks/useVotes';
 
 // Import apps data — synced from legacy root
@@ -96,6 +98,9 @@ const INPUT_MODE_OPTIONS = ['Desktop', 'Mobile', 'Responsive'];
 const allAppIds = appsData.map((app) => app.id);
 
 export default function HomePage() {
+  const [showDonateModal, setShowDonateModal] = useState(false);
+  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
+  const [paymentType, setPaymentType] = useState('tip');
   const [sortBy, setSortBy] = useState('newest');
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
@@ -126,6 +131,17 @@ export default function HomePage() {
     inputModeFilter,
     searchQuery,
   ].filter(Boolean).length;
+
+  // Detect ?tipped=tip|donation from Stripe redirect and show modal
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tipped = params.get('tipped');
+    if (tipped === 'tip' || tipped === 'donation') {
+      setPaymentType(tipped);
+      setShowPaymentSuccess(true);
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
 
   // Hydrate client-only state
   useEffect(() => {
@@ -385,9 +401,17 @@ export default function HomePage() {
         {/* Hero Section */}
         <div className="text-center mb-12">
           <p className="text-xl sm:text-2xl text-purple-400 font-medium mb-2">Welcome to the</p>
-          <h1 className="text-4xl sm:text-5xl font-bold animated-gradient-text mb-4">
+          <h1 className="text-4xl sm:text-5xl font-bold animated-gradient-text mb-3">
             Valley of AI
           </h1>
+          <div className="mb-4">
+            <button
+              onClick={() => setShowDonateModal(true)}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wide text-amber-900 bg-gradient-to-r from-amber-300 to-orange-300 hover:from-amber-400 hover:to-orange-400 rounded-full px-3 py-1 transition-all duration-150 hover:scale-105 shadow-sm"
+            >
+              💡 Keep the lights on
+            </button>
+          </div>
           <p className="text-lg text-gray-900 dark:text-gray-300 max-w-2xl mx-auto mb-4">
             A new AI-generated app is published every night. Come back daily to discover what our AI
             agents have built — from games to utilities to creative tools.
@@ -702,6 +726,14 @@ export default function HomePage() {
 
       {/* ── Options drawer (right-side pull-out panel) ── */}
       {mounted && <OptionsDrawer options={options} onToggle={handleOptionToggle} />}
+
+      {/* ── Donate modal ── */}
+      {showDonateModal && <DonateModal onClose={() => setShowDonateModal(false)} />}
+
+      {/* ── Payment success modal ── */}
+      {showPaymentSuccess && (
+        <PaymentSuccessModal type={paymentType} onClose={() => setShowPaymentSuccess(false)} />
+      )}
     </>
   );
 }
