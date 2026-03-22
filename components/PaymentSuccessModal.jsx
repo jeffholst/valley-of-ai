@@ -42,10 +42,10 @@ export default function PaymentSuccessModal({ type = 'tip', onClose }) {
 
         {/* Sparkle confetti dots */}
         <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden">
-          {['top-4 left-8', 'top-6 right-10', 'top-10 left-1/2', 'top-2 left-1/3', 'top-8 right-6'].map((_, i) => (
+          {['top-4 left-8', 'top-6 right-10', 'top-10 left-1/2', 'top-2 left-1/3', 'top-8 right-6'].map((pos, i) => (
             <span
               key={i}
-              className={`absolute text-lg robot-confetti`}
+              className={`absolute text-lg robot-confetti ${pos}`}
               style={{ animationDelay: `${i * 0.15}s` }}
             >
               {['✨', '⭐', '💫', '🌟', '✨'][i]}
