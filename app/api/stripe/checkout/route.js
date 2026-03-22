@@ -32,10 +32,11 @@ export async function POST(request) {
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-  const origin =
-    request.headers.get('origin') ||
-    request.headers.get('x-forwarded-proto')?.split(',')[0] + '://' + request.headers.get('host') ||
-    'https://www.valleyofai.com';
+  const envBaseUrl = process.env.NEXT_PUBLIC_MAIN_SITE_URL || process.env.SITE_URL;
+  const headerProto = request.headers.get('x-forwarded-proto')?.split(',')[0] || null;
+  const headerHost = request.headers.get('host');
+  const headerOrigin = headerProto && headerHost ? `${headerProto}://${headerHost}` : null;
+  const origin = envBaseUrl || headerOrigin || 'https://www.valleyofai.com';
 
   const metadata = { type, amount: String(parsedAmount) };
   if (issueNumber) {
