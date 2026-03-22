@@ -67,10 +67,21 @@ export async function POST(request) {
     if (type === 'tip' && issueNumber) {
       const issueNum = parseInt(issueNumber, 10);
       if (!isNaN(issueNum)) {
-        await Promise.all([
+        const githubTasks = [
           addLabelToIssue(issueNum, 'boosted'),
           addCommentToIssue(issueNum, amount),
-        ]);
+        ];
+
+        // Run GitHub updates asynchronously so we can respond to Stripe quickly.
+        Promise.allSettled(githubTasks).then((results) => {
+          const failures = results.filter((result) => result.status === 'rejected');
+          if (failures.length > 0) {
+            console.error(
+              'GitHub update failures for Stripe checkout.session.completed event:',
+              failures.map((f) => f.reason)
+            );
+          }
+        });
       }
     }
   }
