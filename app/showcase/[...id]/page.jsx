@@ -65,7 +65,7 @@ function AppDetailContent({ app, id }) {
         </Link>
 
         {/* Hero Image — click to launch */}
-        <a href={app.appPath} target="_blank" rel="noopener noreferrer" className="card overflow-hidden mb-8 block group/hero">
+        <a href={app.appPath} target="_blank" rel="noopener noreferrer" className="card overflow-hidden mb-8 block group/hero focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500">
           <div className="aspect-video bg-gradient-to-br from-primary-400 to-primary-600 relative">
             {app.thumbnailUrl && (
               <img
@@ -81,8 +81,8 @@ function AppDetailContent({ app, id }) {
               <span className="text-6xl opacity-30">🤖</span>
             </div>
             {/* Play overlay */}
-            <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover/hero:bg-black/30 transition-colors duration-200">
-              <div className="flex flex-col items-center gap-2 opacity-0 group-hover/hero:opacity-100 transition-opacity duration-200">
+            <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover/hero:bg-black/30 group-focus-visible/hero:bg-black/30 transition-colors duration-200">
+              <div className="flex flex-col items-center gap-2 opacity-0 group-hover/hero:opacity-100 group-focus-visible/hero:opacity-100 transition-opacity duration-200">
                 <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
                   <svg className="w-7 h-7 text-primary-600 ml-1" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z" />
