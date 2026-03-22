@@ -15,7 +15,7 @@ export default function AppCard({ app }) {
 
   return (
     <div className="card overflow-hidden group">
-      <Link href={`/apps/${app.id}`} className="block" tabIndex={-1} aria-hidden="true">
+      <Link href={`/showcase/${app.id}`} className="block" tabIndex={-1} aria-hidden="true">
         <div className="aspect-video bg-gradient-to-br from-primary-400 to-primary-600 relative overflow-hidden">
           {app.thumbnailUrl ? (
             <img
@@ -37,7 +37,7 @@ export default function AppCard({ app }) {
         <div className="flex items-start justify-between gap-2 mb-2">
           <h3 className="font-semibold text-gray-900 dark:text-white transition-colors">
             <Link
-              href={`/apps/${app.id}`}
+              href={`/showcase/${app.id}`}
               className="hover:text-primary-600 dark:hover:text-primary-400"
             >
               {app.name}
