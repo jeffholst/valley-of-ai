@@ -101,6 +101,12 @@ function AppDetailContent({ app, id }) {
                   onVote={vote}
                   size="md"
                 />
+                <Link
+                  href={`/improve?app=${encodeURIComponent(id)}&name=${encodeURIComponent(app.name)}`}
+                  className="inline-flex items-center gap-0.5 text-[0.72rem] font-semibold tracking-wide text-slate-900 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full px-2 py-0.5 whitespace-nowrap transition-transform hover:scale-105"
+                >
+                  💡 Improve
+                </Link>
                 <span className="text-gray-500 dark:text-gray-400">{formattedDate}</span>
               </div>
             </div>

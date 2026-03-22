@@ -383,6 +383,28 @@
         opacity: 1;
       }
 
+      .voa-improve-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        font: 600 0.72rem/1 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        letter-spacing: 0.03em;
+        color: #0f172a;
+        background: linear-gradient(120deg, #fbbf24, #f97316);
+        border-radius: 999px;
+        padding: 2px 8px 2px 5px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform 150ms ease, box-shadow 150ms ease;
+      }
+
+      .voa-improve-link:hover {
+        transform: scale(1.08);
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+      }
+
       .voa-share-btn {
         display: inline-flex;
         align-items: center;
@@ -557,9 +579,12 @@
     appName.appendChild(nameText);
     const aiTag = document.createElement('a');
     aiTag.className = 'voa-shell-ai-tag';
-    aiTag.href = resolveMainSiteUrl();
-    aiTag.textContent = '🤖 Built by AI';
-    aiTag.setAttribute('aria-label', 'Back to Valley of AI');
+    const appDetailId = resolveAppId();
+    const isLocalLearn = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const learnBase = isLocalLearn ? window.location.origin : resolveMainSiteUrl();
+    aiTag.href = appDetailId ? `${learnBase}/apps/${encodeURIComponent(appDetailId)}` : learnBase;
+    aiTag.textContent = '🧠 Learn';
+    aiTag.setAttribute('aria-label', 'View app details');
     appName.appendChild(aiTag);
 
     const toggle = document.createElement('button');
@@ -670,8 +695,6 @@
         item.target = '_blank';
         item.addEventListener('click', () => {
           navigator.clipboard.writeText(window.location.href).catch(() => {});
-          const icon = item.querySelector('.voa-share-icon');
-          const orig = icon ? icon.style.background : null;
           item.style.opacity = '0.7';
           setTimeout(() => { item.style.opacity = ''; }, 600);
           closeShareDrawer();
@@ -762,10 +785,21 @@
 
   async function bootstrapVoting() {
     const appId = resolveAppId();
+    const container = document.getElementById('voa-vote-group');
+    if (!appId || !container) return;
+
+    const improveLink = document.createElement('a');
+    improveLink.className = 'voa-improve-link';
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const mainSiteBase = isLocal ? window.location.origin : resolveMainSiteUrl();
+    improveLink.href = `${mainSiteBase}/improve?app=${encodeURIComponent(appId)}&name=${encodeURIComponent(getAppName())}`;
+    improveLink.textContent = '💡 Improve';
+    improveLink.title = 'Suggest an improvement for this app';
+    container.appendChild(improveLink);
+
     const supabaseUrl = resolveSupabaseUrl();
     const anonKey = resolveSupabaseAnonKey();
-    const container = document.getElementById('voa-vote-group');
-    if (!appId || !supabaseUrl || !anonKey || !container) return;
+    if (!supabaseUrl || !anonKey) return;
 
     const myVoteRecord = getLocalVoteRecord(appId);
     const myVote = myVoteRecord?.type ?? null;

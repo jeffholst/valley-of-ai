@@ -114,9 +114,33 @@ The dev server runs at `http://localhost:3000` with Next.js hot reload enabled.
 | Service | Purpose |
 |---------|---------|
 | [Supabase](https://supabase.com) | Storing and retrieving app votes |
-| [GitHub Issues](https://docs.github.com/en/issues) | Persistent storage for community app suggestions |
+| [GitHub Issues](https://docs.github.com/en/issues) | Persistent storage for community app suggestions and improvement requests |
 | [Google Analytics](https://analytics.google.com) | Analytic tracking |
-| [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) | Bot protection on suggestion form |
+| [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) | Bot protection on suggestion and improvement forms |
+
+### GitHub Labels
+
+The following labels must exist in your GitHub repo. Create them via `gh label create` or the GitHub UI under **Issues → Labels**.
+
+| Label | Color | Description |
+|-------|-------|-------------|
+| `suggestion` | `#8b5cf6` | User-submitted app suggestion |
+| `improvement` | `#3b82f6` | User-submitted app improvement request |
+| `status:pending` | `#f59e0b` | Awaiting maintainer review |
+| `status:approved` | `#10b981` | Approved for agent processing |
+| `status:rejected` | `#ef4444` | Not selected for implementation |
+| `status:implemented` | `#6b7280` | App has been generated or improvement applied |
+
+To create all labels at once:
+
+```bash
+gh label create "suggestion"         --description "User-submitted app suggestion"            --color "8b5cf6"
+gh label create "improvement"        --description "User-submitted app improvement request"   --color "3b82f6"
+gh label create "status:pending"     --description "Awaiting maintainer review"               --color "f59e0b"
+gh label create "status:approved"    --description "Approved for agent processing"            --color "10b981"
+gh label create "status:rejected"    --description "Not selected for implementation"          --color "ef4444"
+gh label create "status:implemented" --description "App has been generated or improvement applied" --color "6b7280"
+```
 
 ### Environment Setup (`.env` and `.env.example`)
 
@@ -489,8 +513,8 @@ Core stack used in this project:
 - **Jest** + **React Testing Library**: 17+ test cases covering components, utilities, and environment variables with coverage reporting.
 - **ESLint 9** + **Prettier**: Code quality enforcement (strict 0 warnings policy) and consistent formatting (100 char lines, single quotes).
 - **Supabase**: Thumbs-up/down vote storage. "Highest rated" sort ranks by net score (upvotes − downvotes).
-- **GitHub Issues**: Persistent storage for community app suggestions, with label-based status workflow (`status:pending` → `status:approved` → `status:implemented`).
-- **Cloudflare Turnstile**: Bot protection on suggestion form (skipped automatically in development).
+- **GitHub Issues**: Persistent storage for community app suggestions and improvement requests, with label-based status workflow (`status:pending` → `status:approved` → `status:implemented`).
+- **Cloudflare Turnstile**: Bot protection on suggestion and improvement forms (skipped automatically in development).
 - **Vercel**: Serverless deployment with automatic builds and edge caching.
 - **Plain HTML/CSS/JS in `apps/`**: Self-contained generated mini-apps (not Next.js-dependent).
 
