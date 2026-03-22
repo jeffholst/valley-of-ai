@@ -582,7 +582,7 @@
     const appDetailId = resolveAppId();
     const isLocalLearn = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const learnBase = isLocalLearn ? window.location.origin : resolveMainSiteUrl();
-    aiTag.href = appDetailId ? `${learnBase}/apps/${appDetailId}` : learnBase;
+    aiTag.href = appDetailId ? `${learnBase}/apps/${encodeURIComponent(appDetailId)}` : learnBase;
     aiTag.textContent = '🧠 Learn';
     aiTag.setAttribute('aria-label', 'View app details');
     appName.appendChild(aiTag);
