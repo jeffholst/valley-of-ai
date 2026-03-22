@@ -1,8 +1,15 @@
 'use client';
 
 import { useEffect } from 'react';
+import TipSection from '@/components/TipSection';
 
-export default function SubmissionSuccessModal({ title, message, issueUrl, issueLabel, onClose }) {
+export default function SubmissionSuccessModal({
+  message,
+  issueUrl,
+  issueLabel,
+  issueNumber,
+  onClose,
+}) {
   // Close on Escape key
   useEffect(() => {
     const handleKey = (e) => {
@@ -27,7 +34,7 @@ export default function SubmissionSuccessModal({ title, message, issueUrl, issue
       />
 
       {/* Modal panel */}
-      <div className="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 text-center">
+      <div className="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 text-center overflow-y-auto max-h-[90vh]">
         {/* X close button */}
         <button
           onClick={onClose}
@@ -56,22 +63,25 @@ export default function SubmissionSuccessModal({ title, message, issueUrl, issue
         </h2>
         <p className="text-gray-600 dark:text-gray-300 mb-4">{message}</p>
 
+        {/* Tip the bots section */}
+        {issueNumber && <TipSection issueNumber={issueNumber} type="tip" />}
+
+        <div className="mt-6">
+          <button onClick={onClose} className="btn-primary w-full">
+            Let the bots starve
+          </button>
+        </div>
+
         {issueUrl && (
           <a
             href={issueUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block text-sm text-purple-600 dark:text-purple-400 underline mb-6"
+            className="inline-block text-sm text-purple-600 dark:text-purple-400 underline mt-4"
           >
             {issueLabel || 'View on GitHub'}
           </a>
         )}
-
-        <div className="mt-2">
-          <button onClick={onClose} className="btn-primary w-full">
-            Close
-          </button>
-        </div>
       </div>
     </div>
   );

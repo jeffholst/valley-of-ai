@@ -17,6 +17,7 @@ function ImprovePage() {
   const [form, setForm] = useState({ description: '', requestor: '' });
   const [errors, setErrors] = useState({});
   const [issueUrl, setIssueUrl] = useState(null);
+  const [issueNumber, setIssueNumber] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [turnstileToken, setTurnstileToken] = useState(IS_DEV ? 'dev' : null);
@@ -72,6 +73,7 @@ function ImprovePage() {
       }
 
       setIssueUrl(data.issueUrl);
+      setIssueNumber(data.issueNumber);
     } catch {
       setSubmitError('Failed to submit improvement. Please try again.');
     } finally {
@@ -94,7 +96,8 @@ function ImprovePage() {
           issueUrl={issueUrl}
           message={`Your improvement idea for ${appName} has been submitted for review.`}
           issueLabel="View your improvement on GitHub"
-          onClose={() => { setIssueUrl(null); router.push('/'); }}
+          issueNumber={issueNumber}
+          onClose={() => { setIssueUrl(null); setIssueNumber(null); router.push('/'); }}
         />
       )}
 

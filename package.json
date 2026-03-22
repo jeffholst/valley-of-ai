@@ -27,7 +27,8 @@
     "next": "^16.1.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-turnstile": "^1.1.5"
+    "react-turnstile": "^1.1.5",
+    "stripe": "^20.4.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
