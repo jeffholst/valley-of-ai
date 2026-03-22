@@ -132,14 +132,29 @@ export default function HomePage() {
     searchQuery,
   ].filter(Boolean).length;
 
-  // Detect ?tipped=tip|donation from Stripe redirect and show modal
+  // Detect Stripe redirect and conditionally show payment success modal
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const tipped = params.get('tipped');
-    if (tipped === 'tip' || tipped === 'donation') {
-      setPaymentType(tipped);
-      setShowPaymentSuccess(true);
-      window.history.replaceState({}, '', window.location.pathname);
+    const sessionId = params.get('session_id');
+
+    // Only attempt to show success after server-side verification of the session
+    if ((tipped === 'tip' || tipped === 'donation') && sessionId) {
+      fetch(`/api/verify-payment?session_id=${encodeURIComponent(sessionId)}`)
+        .then((res) => {
+          if (!res.ok) return null;
+          return res.json().catch(() => null);
+        })
+        .then((data) => {
+          if (data && data.success) {
+            setPaymentType(tipped);
+            setShowPaymentSuccess(true);
+            window.history.replaceState({}, '', window.location.pathname);
+          }
+        })
+        .catch(() => {
+          // Silently ignore verification errors; do not show success modal
+        });
     }
   }, []);
 
