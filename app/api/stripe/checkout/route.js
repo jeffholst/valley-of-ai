@@ -68,7 +68,7 @@ export async function POST(request) {
         },
       ],
       metadata,
-      success_url: `${origin}/?tipped=${type}`,
+      success_url: `${origin}/?tipped=${type}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/`,
     });
 
