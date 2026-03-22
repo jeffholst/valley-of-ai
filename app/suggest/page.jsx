@@ -183,7 +183,7 @@ export default function SuggestPage() {
                 <p className={`text-xs tabular-nums ${
                   form.description.length > 1000
                     ? 'text-red-500'
-                    : form.description.length < 20
+                    : form.description.length < 10
                       ? 'text-gray-400 dark:text-gray-500'
                       : 'text-green-600 dark:text-green-400'
                 }`}>
