@@ -836,16 +836,24 @@
     upBtn.className = 'voa-vote-btn' + (myVote === 'up' ? ' active-up' : '');
     upBtn.setAttribute('aria-label', 'Like this app');
     upBtn.disabled = voted;
+    upBtn.appendChild(document.createTextNode('👍 '));
+    const upCountSpan = document.createElement('span');
+    upCountSpan.className = 'voa-vote-count';
+    upBtn.appendChild(upCountSpan);
 
     const downBtn = document.createElement('button');
     downBtn.type = 'button';
     downBtn.className = 'voa-vote-btn' + (myVote === 'down' ? ' active-down' : '');
     downBtn.setAttribute('aria-label', 'Dislike this app');
     downBtn.disabled = voted;
+    downBtn.appendChild(document.createTextNode('👎 '));
+    const downCountSpan = document.createElement('span');
+    downCountSpan.className = 'voa-vote-count';
+    downBtn.appendChild(downCountSpan);
 
     function renderCounts(up, down) {
-      upBtn.innerHTML = `👍 <span class="voa-vote-count">${up}</span>`;
-      downBtn.innerHTML = `👎 <span class="voa-vote-count">${down}</span>`;
+      upCountSpan.textContent = up;
+      downCountSpan.textContent = down;
     }
 
     renderCounts(counts.up, counts.down);
