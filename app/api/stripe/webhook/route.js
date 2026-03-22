@@ -7,16 +7,37 @@ async function addLabelToIssue(issueNumber, label) {
   const token = process.env.GITHUB_SUGGESTIONS_TOKEN;
   if (!repo || !token) return;
 
-  await fetch(`${GITHUB_API_URL}/repos/${repo}/issues/${issueNumber}/labels`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ labels: [label] }),
-  });
+  try {
+    const res = await fetch(`${GITHUB_API_URL}/repos/${repo}/issues/${issueNumber}/labels`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ labels: [label] }),
+    });
+
+    if (!res.ok) {
+      let errorText;
+      try {
+        errorText = await res.text();
+      } catch {
+        errorText = undefined;
+      }
+      console.error(
+        'Failed to add label to GitHub issue',
+        issueNumber,
+        'status:',
+        res.status,
+        res.statusText,
+        errorText ? `response: ${errorText}` : ''
+      );
+    }
+  } catch (err) {
+    console.error('Error while calling GitHub to add label to issue', issueNumber, err);
+  }
 }
 
 async function addCommentToIssue(issueNumber, amount) {
