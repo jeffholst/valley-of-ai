@@ -94,6 +94,11 @@
     animation: none;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .animate-pulse-ring {
+      animation: none;
+    }
+  }
   @keyframes pterodactyl-fly-right {
     0% { transform: translate3d(-18vw, 0, 0); }
     40% { transform: translate3d(40vw, -10px, 0); }
