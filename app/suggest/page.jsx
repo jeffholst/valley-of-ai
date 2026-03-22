@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Turnstile } from 'react-turnstile';
+import SubmissionSuccessModal from '@/components/SubmissionSuccessModal';
 
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 const IS_DEV = process.env.NODE_ENV === 'development';
@@ -17,6 +19,7 @@ const CATEGORIES = [
 ];
 
 export default function SuggestPage() {
+  const router = useRouter();
   const [form, setForm] = useState({ description: '', category: '', requestor: '' });
   const [errors, setErrors] = useState({});
   const [issueUrl, setIssueUrl] = useState(null);
@@ -86,65 +89,17 @@ export default function SuggestPage() {
     }
   };
 
-  if (issueUrl) {
-    return (
-      <>
-        <div className="valley-cinematic-bg" aria-hidden="true">
-          <div className="valley-mountain-row-back" />
-          <div className="valley-mountain-row-mid" />
-        </div>
-        <div className="valley-light-veil" aria-hidden="true" />
-
-        <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-          <div className="card p-8">
-            <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-8 h-8 text-green-600 dark:text-green-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Thank You!</h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
-              Your suggestion has been submitted for review. If approved, our AI agents will build
-              it!
-            </p>
-            <a
-              href={issueUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block text-sm text-purple-600 dark:text-purple-400 underline mb-6"
-            >
-              View your suggestion on GitHub
-            </a>
-            <div className="mt-2">
-              <button
-                onClick={() => {
-                  setIssueUrl(null);
-                  setForm({ description: '', category: '', requestor: '' });
-                  setTurnstileToken(IS_DEV ? 'dev' : null);
-                }}
-                className="btn-secondary"
-              >
-                Submit Another
-              </button>
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  }
-
   return (
     <>
+      {issueUrl && (
+        <SubmissionSuccessModal
+          issueUrl={issueUrl}
+          message="Your suggestion has been submitted for review. If approved, our AI agents will build it!"
+          issueLabel="View your suggestion on GitHub"
+          onClose={() => { setIssueUrl(null); router.push('/'); }}
+        />
+      )}
+
       <div className="valley-cinematic-bg" aria-hidden="true">
         <div className="valley-mountain-row-back" />
         <div className="valley-mountain-row-mid" />
