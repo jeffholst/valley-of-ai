@@ -629,7 +629,11 @@
     const footerLink = document.createElement('a');
     footerLink.className = 'voa-shell-footer-link';
     footerLink.href = resolveMainSiteUrl();
-    footerLink.innerHTML = `Back to 🏔️<span class="voa-footer-site-name"> ${resolveMainSiteName()}</span>`;
+    footerLink.textContent = 'Back to 🏔️ ';
+    const footerSiteNameSpan = document.createElement('span');
+    footerSiteNameSpan.className = 'voa-footer-site-name';
+    footerSiteNameSpan.textContent = resolveMainSiteName();
+    footerLink.appendChild(footerSiteNameSpan);
     footerInner.appendChild(footerLink);
 
     const socialLinks = resolveSocialLinks();
