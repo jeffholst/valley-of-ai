@@ -84,7 +84,7 @@ function AppDetailContent({ app, id }) {
         </div>
 
         {/* App Info */}
-        <div className="mb-8">
+        <div id="app-info" className="mb-8">
           <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{app.name}</h1>
