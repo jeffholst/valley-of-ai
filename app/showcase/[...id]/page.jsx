@@ -65,7 +65,7 @@ function AppDetailContent({ app, id }) {
         </Link>
 
         {/* Hero Image — click to launch */}
-        <a href={app.appPath} target="_blank" rel="noopener" className="card overflow-hidden mb-8 block group/hero">
+        <a href={app.appPath} target="_blank" rel="noopener noreferrer" className="card overflow-hidden mb-8 block group/hero">
           <div className="aspect-video bg-gradient-to-br from-primary-400 to-primary-600 relative">
             {app.thumbnailUrl && (
               <img
