@@ -65,22 +65,6 @@ export default function AppCard({ app }) {
           <div className="flex items-center gap-2">
             <Link
               href={`/improve?app=${encodeURIComponent(app.id)}&name=${encodeURIComponent(app.name)}`}
-              className="inline-flex items-center gap-0.5 text-[0.72rem] font-semibold tracking-wide text-slate-900 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full px-2 py-0.5 whitespace-nowrap transition-transform hover:scale-105"
-            <span
-              role="button"
-              tabIndex={0}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                router.push(`/improve?app=${encodeURIComponent(app.id)}&name=${encodeURIComponent(app.name)}`);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  router.push(`/improve?app=${encodeURIComponent(app.id)}&name=${encodeURIComponent(app.name)}`);
-                }
-              }}
               className="inline-flex items-center gap-0.5 text-[0.72rem] font-semibold tracking-wide text-slate-900 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full px-2 py-0.5 whitespace-nowrap cursor-pointer transition-transform hover:scale-105"
               title="Suggest an improvement"
             >
