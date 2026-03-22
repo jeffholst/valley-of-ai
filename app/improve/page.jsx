@@ -21,10 +21,13 @@ function ImprovePage() {
 
   const validate = () => {
     const newErrors = {};
-    if (!form.description.trim()) {
+    const trimmedDescription = form.description.trim();
+    if (!trimmedDescription) {
       newErrors.description = 'Description is required';
-    } else if (form.description.trim().length < 10) {
+    } else if (trimmedDescription.length < 10) {
       newErrors.description = 'Description must be at least 10 characters';
+    } else if (trimmedDescription.length > 1000) {
+      newErrors.description = 'Description must be at most 1000 characters';
     }
     return newErrors;
   };
