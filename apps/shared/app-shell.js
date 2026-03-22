@@ -237,6 +237,7 @@
         display: flex;
         align-items: center;
         gap: 7px;
+        min-width: 0;
       }
 
       .voa-shell-ai-tag {
@@ -567,6 +568,7 @@
 
       @media (max-width: 479px) {
         .voa-shell-app-name-text {
+          display: inline-block;
           max-width: 100px;
           overflow: hidden;
           text-overflow: ellipsis;
