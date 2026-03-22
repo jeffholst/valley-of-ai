@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FreeCell Mobile Classic - __MAIN_SITE_NAME__</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="voa-app-id" content="2026/03/22/freecell-mobile-classic" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root { --bg: #0c1224; --text: #eef2ff; --surface: #182647; --surface-soft: #22345f; --accent: #4ade80; --accent-2: #60a5fa; --danger: #f87171; --border: #3b4f84; }
+      [data-theme='light'] { --bg: #eff6ff; --text: #172554; --surface: #ffffff; --surface-soft: #e2e8f0; --accent: #16a34a; --accent-2: #2563eb; --danger: #dc2626; --border: #93c5fd; }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: radial-gradient(circle at top, #172554 0%, var(--bg) 62%); color: var(--text); }
+      .app { max-width: 1080px; margin: 0 auto; padding: 12px; display: grid; gap: 10px; }
+      .panel { background: color-mix(in srgb, var(--surface) 90%, black 10%); border: 1px solid var(--border); border-radius: 14px; padding: 10px; box-shadow: 0 12px 22px rgba(2, 6, 23, 0.28); }
+      .topbar { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+      h1 { margin: 0; font-size: clamp(1.1rem, 2.5vw, 1.5rem); }
+      .stats { display: flex; gap: 10px; flex-wrap: wrap; font-size: .92rem; }
+      .badge { padding: 6px 10px; background: var(--surface-soft); border: 1px solid var(--border); border-radius: 999px; }
+      .controls { display: flex; flex-wrap: wrap; gap: 8px; }
+      button { min-height: 44px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); background: linear-gradient(180deg, color-mix(in srgb, var(--surface-soft) 88%, white 12%), var(--surface-soft)); color: var(--text); font-weight: 700; cursor: pointer; }
+      button:hover { transform: translateY(-1px); }
+      button:active { transform: translateY(0); }
+      .primary { background: linear-gradient(180deg, #16a34a, #15803d); color: #f0fdf4; border-color: #15803d; }
+      .board { display: grid; gap: 10px; }
+      .zones { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; }
+      .tableau { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; }
+      .pile { min-height: 90px; border: 2px dashed color-mix(in srgb, var(--border) 75%, transparent); border-radius: 10px; background: color-mix(in srgb, var(--surface) 86%, black 14%); position: relative; padding: 4px; }
+      .pile-label { position: absolute; top: 5px; left: 6px; font-size: .72rem; opacity: .8; }
+      .pile.tableau { min-height: 230px; }
+      .card { user-select: none; touch-action: none; border-radius: 8px; border: 1px solid #94a3b8; background: linear-gradient(180deg, #fff, #f8fafc); color: #0f172a; font-weight: 800; min-height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0, 0, 0, .2); }
+      .card.red { color: #b91c1c; }
+      .pile.tableau .card { margin-top: -22px; }
+      .pile.tableau .card:first-child { margin-top: 18px; }
+      .card.selected { outline: 3px solid var(--accent-2); transform: translateY(-3px); }
+      .empty-hint { position: absolute; inset: 0; display: grid; place-content: center; font-size: .78rem; opacity: .6; pointer-events: none; }
+      .status { font-size: .94rem; min-height: 1.4em; }
+      .win { color: var(--accent); font-weight: 800; }
+      .error { color: var(--danger); }
+      .help { font-size: .86rem; line-height: 1.4; opacity: .9; }
+      @media (max-width: 840px) { .zones, .tableau { grid-template-columns: repeat(4, minmax(0, 1fr)); } .pile.tableau { min-height: 200px; } }
+      @media (max-width: 460px) { .app { padding: 8px; gap: 8px; } .panel { padding: 8px; border-radius: 12px; } .pile.tableau .card { margin-top: -20px; } }
+    </style>
+  </head>
+  <body>
+    <main class="app" aria-label="FreeCell game">
+      <section class="panel topbar">
+        <div>
+          <h1>FreeCell Mobile Classic</h1>
+          <div class="stats">
+            <span class="badge">Moves: <strong id="moves">0</strong></span>
+            <span class="badge">Score: <strong id="score">0</strong></span>
+            <span class="badge">Foundations: <strong id="foundationCount">0</strong>/52</span>
+          </div>
+        </div>
+        <div class="controls">
+          <button id="newGame" class="primary">New Game</button>
+          <button id="undo">Undo</button>
+          <button id="autoMove">Auto Move</button>
+        </div>
+      </section>
+      <section class="panel board">
+        <div class="zones" id="zones"></div>
+        <div class="tableau" id="tableau"></div>
+      </section>
+      <section class="panel">
+        <p id="status" class="status" aria-live="polite">Start a game and move all cards to foundations.</p>
+        <p class="help">Tap/click a card to select, then tap destination pile. Keyboard: use Tab to focus cards/piles and Enter/Space to select/place. Rules: alternating colors descending in tableau, ascending by suit in foundations. Auto-move sends safe cards to foundation.</p>
+      </section>
+    </main>
+    <script>
+      (() => {
+        const suits = ['♠', '♥', '♦', '♣'];
+        const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        const zonesEl = document.getElementById('zones');
+        const tableauEl = document.getElementById('tableau');
+        const statusEl = document.getElementById('status');
+        const movesEl = document.getElementById('moves');
+        const scoreEl = document.getElementById('score');
+        const foundationCountEl = document.getElementById('foundationCount');
+        const state = { freecells: [[], [], [], []], foundations: [[], [], [], []], tableau: [[], [], [], [], [], [], [], []], selected: null, history: [], moves: 0 };
+        const colorOf = (card) => (card.suit === '♥' || card.suit === '♦' ? 'red' : 'black');
+        const cardText = (card) => `${ranks[card.rank - 1]}${card.suit}`;
+        const cloneBoard = () => JSON.parse(JSON.stringify({ freecells: state.freecells, foundations: state.foundations, tableau: state.tableau, moves: state.moves }));
+        const sourcePile = (ref) => state[ref.group][ref.index];
+        const topCard = (ref) => sourcePile(ref).at(-1) ?? null;
+        const pushHistory = () => state.history.push(cloneBoard());
+        const canMoveToFoundation = (card, pile) => (!pile.length ? card.rank === 1 : pile.at(-1).suit === card.suit && card.rank === pile.at(-1).rank + 1);
+        const canMoveToTableau = (card, pile) => (!pile.length ? true : colorOf(card) !== colorOf(pile.at(-1)) && card.rank === pile.at(-1).rank - 1);
+        const setStatus = (text, err = false, win = false) => {
+          statusEl.textContent = text;
+          statusEl.className = `status${err ? ' error' : ''}${win ? ' win' : ''}`;
+        };
+        const score = () => Math.max(state.foundations.reduce((sum, p) => sum + p.length, 0) * 10 - state.moves, 0);
+        const restore = (snapshot) => { state.freecells = snapshot.freecells; state.foundations = snapshot.foundations; state.tableau = snapshot.tableau; state.moves = snapshot.moves; state.selected = null; render(); };
+        const checkWin = () => { if (state.foundations.reduce((s, p) => s + p.length, 0) === 52) setStatus(`You win in ${state.moves} moves!`, false, true); };
+        function autoMoveSafe() {
+          let moved = false;
+          const locations = [];
+          for (let i = 0; i < 4; i++) if (state.freecells[i].length) locations.push({ group: 'freecells', index: i });
+          for (let i = 0; i < 8; i++) if (state.tableau[i].length) locations.push({ group: 'tableau', index: i });
+          for (const loc of locations) {
+            const card = topCard(loc);
+            if (!card) continue;
+            const foundation = state.foundations[card.suitIndex];
+            if (canMoveToFoundation(card, foundation)) { sourcePile(loc).pop(); foundation.push(card); moved = true; }
+          }
+          return moved;
+        }
+        function moveCard(from, to) {
+          const fromPile = sourcePile(from);
+          const toPile = sourcePile(to);
+          const card = fromPile.at(-1);
+          if (!card) return false;
+          let ok = false;
+          if (to.group === 'freecells') ok = toPile.length === 0;
+          if (to.group === 'foundations') ok = canMoveToFoundation(card, toPile);
+          if (to.group === 'tableau') ok = canMoveToTableau(card, toPile);
+          if (!ok) return setStatus('Invalid move.', true), false;
+          pushHistory();
+          fromPile.pop();
+          toPile.push(card);
+          state.moves += 1;
+          state.selected = null;
+          autoMoveSafe();
+          checkWin();
+          setStatus('Move completed.');
+          render();
+          return true;
+        }
+        function makePile(type, index) {
+          const pile = document.createElement('div');
+          pile.className = `pile ${type}`;
+          pile.tabIndex = 0;
+          pile.dataset.group = type === 'foundation' ? 'foundations' : type === 'freecell' ? 'freecells' : 'tableau';
+          pile.dataset.index = String(index);
+          pile.innerHTML = `<div class="pile-label">${type === 'freecell' ? 'Free' : type === 'foundation' ? 'Home' : `Col ${index + 1}`}</div>`;
+          pile.addEventListener('click', () => state.selected && moveCard(state.selected, { group: pile.dataset.group, index }));
+          pile.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); state.selected && moveCard(state.selected, { group: pile.dataset.group, index }); } });
+          return pile;
+        }
+        function drawCards(pileEl, cards, group, index) {
+          if (!cards.length) return pileEl.insertAdjacentHTML('beforeend', `<div class="empty-hint">${group === 'freecells' ? 'empty' : group === 'foundations' ? 'A→K' : 'drop'}</div>`);
+          cards.forEach((card, i) => {
+            const isTop = i === cards.length - 1;
+            const btn = document.createElement('button');
+            btn.className = `card ${colorOf(card) === 'red' ? 'red' : ''}`;
+            btn.textContent = cardText(card);
+            btn.dataset.group = group;
+            btn.dataset.index = String(index);
+            btn.dataset.card = cardText(card);
+            btn.disabled = !isTop;
+            if (isTop) {
+              if (state.selected && state.selected.group === group && state.selected.index === index) btn.classList.add('selected');
+              btn.addEventListener('click', () => {
+                const ref = { group, index };
+                if (!state.selected) state.selected = ref, setStatus(`Selected ${cardText(card)}.`), render();
+                else if (state.selected.group === ref.group && state.selected.index === ref.index) state.selected = null, setStatus('Selection cleared.'), render();
+                else moveCard(state.selected, ref);
+              });
+            }
+            pileEl.appendChild(btn);
+          });
+        }
+        function render() {
+          zonesEl.innerHTML = '';
+          tableauEl.innerHTML = '';
+          for (let i = 0; i < 4; i++) { const p = makePile('freecell', i); drawCards(p, state.freecells[i], 'freecells', i); zonesEl.appendChild(p); }
+          for (let i = 0; i < 4; i++) { const p = makePile('foundation', i); drawCards(p, state.foundations[i], 'foundations', i); zonesEl.appendChild(p); }
+          for (let i = 0; i < 8; i++) { const p = makePile('tableau', i); drawCards(p, state.tableau[i], 'tableau', i); tableauEl.appendChild(p); }
+          movesEl.textContent = String(state.moves);
+          scoreEl.textContent = String(score());
+          foundationCountEl.textContent = String(state.foundations.reduce((s, p) => s + p.length, 0));
+        }
+        function newGame() {
+          const cards = [];
+          for (let s = 0; s < suits.length; s++) for (let r = 1; r <= 13; r++) cards.push({ suit: suits[s], rank: r, suitIndex: s });
+          for (let i = cards.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [cards[i], cards[j]] = [cards[j], cards[i]]; }
+          state.freecells = [[], [], [], []]; state.foundations = [[], [], [], []]; state.tableau = [[], [], [], [], [], [], [], []]; state.history = []; state.selected = null; state.moves = 0;
+          for (let i = 0; i < cards.length; i++) state.tableau[i % 8].push(cards[i]);
+          setStatus('New game started.');
+          render();
+        }
+        document.getElementById('newGame').addEventListener('click', newGame);
+        document.getElementById('undo').addEventListener('click', () => { const snap = state.history.pop(); if (!snap) return setStatus('Nothing to undo.', true); restore(snap); setStatus('Undid previous move.'); });
+        document.getElementById('autoMove').addEventListener('click', () => { const moved = autoMoveSafe(); setStatus(moved ? 'Auto-move completed.' : 'No safe auto-moves found.'); checkWin(); render(); });
+        newGame();
+      })();
+    </script>
+  </body>
+</html>
