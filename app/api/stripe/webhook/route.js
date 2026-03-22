@@ -15,7 +15,7 @@ async function addLabelToIssue(issueNumber, label) {
       'X-GitHub-Api-Version': '2022-11-28',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ labels: ['boosted'] }),
+    body: JSON.stringify({ labels: [label] }),
   });
 }
 
