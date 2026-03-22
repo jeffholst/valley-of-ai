@@ -1,0 +1,29 @@
+{
+  "id": "freecell-mobile-classic",
+  "name": "FreeCell Mobile Classic",
+  "shortDescription": "A responsive FreeCell clone with touch, keyboard controls, undo, auto-move, and win detection.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-22T07:00:33Z",
+  "category": "Games",
+  "votes": 0,
+  "status": "active",
+  "tags": ["freecell", "solitaire", "cards", "puzzle", "mobile", "keyboard"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "dev",
+    "llmModel": "openai-codex/gpt-5.3-codex",
+    "startTime": "2026-03-22T07:00:33Z",
+    "endTime": "2026-03-22T07:05:00Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-20260322T070033Z-7511ad",
+    "notes": "Implemented a static FreeCell game with 8 tableau columns, 4 free cells, 4 foundations, move validation, undo support, and auto-move assistance."
+  },
+  "suggestion": {
+    "issueNumber": 137,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/137",
+    "prompt": "Create a FreeCell clone that works well on mobile devices. Requirements: fully playable game with standard FreeCell rules, new game, undo, win detection, move counter, and desktop/mobile usability.",
+    "requestor": "Jeff H."
+  }
+}
