@@ -1,10 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useVotes } from '@/hooks/useVotes';
 import VoteButtons from '@/components/VoteButtons';
 
 export default function AppCard({ app }) {
+  const router = useRouter();
   const { upvoteCount, downvoteCount, myVote, isLoading, isVoting, vote } = useVotes(app.id);
 
   const formattedDate = new Date(app.createdAt).toLocaleDateString('en-US', {
@@ -55,7 +57,29 @@ export default function AppCard({ app }) {
           <span className="inline-block px-2 py-1 text-xs font-medium bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 rounded-full">
             {app.category}
           </span>
-          <span className="text-xs text-gray-500 dark:text-gray-400">{formattedDate}</span>
+          <div className="flex items-center gap-2">
+            <span
+              role="button"
+              tabIndex={0}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                router.push(`/improve?app=${app.id}&name=${encodeURIComponent(app.name)}`);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  router.push(`/improve?app=${app.id}&name=${encodeURIComponent(app.name)}`);
+                }
+              }}
+              className="inline-flex items-center gap-0.5 text-[0.72rem] font-semibold tracking-wide text-slate-900 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full px-2 py-0.5 whitespace-nowrap cursor-pointer transition-transform hover:scale-105"
+              title="Suggest an improvement"
+            >
+              💡 Improve
+            </span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">{formattedDate}</span>
+          </div>
         </div>
       </div>
     </Link>

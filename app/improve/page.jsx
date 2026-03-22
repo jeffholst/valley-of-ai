@@ -1,23 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Turnstile } from 'react-turnstile';
 
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 const IS_DEV = process.env.NODE_ENV === 'development';
 
-const CATEGORIES = [
-  'Productivity',
-  'Utilities',
-  'Games',
-  'Education',
-  'Design',
-  'Entertainment',
-  'Other',
-];
+function ImprovePage() {
+  const searchParams = useSearchParams();
+  const appId = searchParams.get('app') || '';
+  const appName = searchParams.get('name') || appId;
 
-export default function SuggestPage() {
-  const [form, setForm] = useState({ description: '', category: '', requestor: '' });
+  const [form, setForm] = useState({ description: '', requestor: '' });
   const [errors, setErrors] = useState({});
   const [issueUrl, setIssueUrl] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,8 +23,8 @@ export default function SuggestPage() {
     const newErrors = {};
     if (!form.description.trim()) {
       newErrors.description = 'Description is required';
-    } else if (form.description.trim().length < 20) {
-      newErrors.description = 'Description must be at least 20 characters';
+    } else if (form.description.trim().length < 10) {
+      newErrors.description = 'Description must be at least 10 characters';
     }
     return newErrors;
   };
@@ -52,12 +47,13 @@ export default function SuggestPage() {
     setSubmitError(null);
 
     try {
-      const res = await fetch('/api/suggestions', {
+      const res = await fetch('/api/improvements', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           turnstileToken,
-          category: form.category || 'Other',
+          appId,
+          appName,
           requestor: form.requestor.trim() || null,
           description: form.description.trim(),
         }),
@@ -66,13 +62,13 @@ export default function SuggestPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setSubmitError(data.error || 'Failed to submit suggestion. Please try again.');
+        setSubmitError(data.error || 'Failed to submit improvement. Please try again.');
         return;
       }
 
       setIssueUrl(data.issueUrl);
     } catch {
-      setSubmitError('Failed to submit suggestion. Please try again.');
+      setSubmitError('Failed to submit improvement. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -114,8 +110,8 @@ export default function SuggestPage() {
             </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Thank You!</h2>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              Your suggestion has been submitted for review. If approved, our AI agents will build
-              it!
+              Your improvement idea for <span className="font-medium">{appName}</span> has been
+              submitted for review.
             </p>
             <a
               href={issueUrl}
@@ -123,13 +119,13 @@ export default function SuggestPage() {
               rel="noopener noreferrer"
               className="inline-block text-sm text-purple-600 dark:text-purple-400 underline mb-6"
             >
-              View your suggestion on GitHub
+              View your improvement on GitHub
             </a>
             <div className="mt-2">
               <button
                 onClick={() => {
                   setIssueUrl(null);
-                  setForm({ description: '', category: '', requestor: '' });
+                  setForm({ description: '', requestor: '' });
                   setTurnstileToken(IS_DEV ? 'dev' : null);
                 }}
                 className="btn-secondary"
@@ -152,18 +148,41 @@ export default function SuggestPage() {
       <div className="valley-light-veil" aria-hidden="true" />
 
       <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {appId && (
+          <div className="card overflow-hidden mb-6">
+            <div className="aspect-video bg-gradient-to-br from-primary-400 to-primary-600 relative">
+              <img
+                src={`/apps/${appId}/thumbnail.svg`}
+                alt={appName}
+                className="w-full h-full object-cover"
+                onError={(e) => { e.target.style.display = 'none'; }}
+              />
+            </div>
+          </div>
+        )}
+
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Suggest an App</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            Suggest an Improvement
+          </h1>
           <p className="text-gray-900 dark:text-gray-300">
-            Have an idea for an AI-generated app? Share it with us and our agents might build it!
+            Have an idea to make this app better? Share it and our AI agents might implement it!
           </p>
         </div>
 
         <div className="card p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* App — read-only */}
+            <div>
+              <label className="label">App</label>
+              <div className="input bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-default">
+                {appName || appId || 'Unknown app'}
+              </div>
+            </div>
+
             <div>
               <label htmlFor="description" className="label">
-                Description <span className="text-red-500">*</span>
+                Improvement idea <span className="text-red-500">*</span>
               </label>
               <textarea
                 id="description"
@@ -171,7 +190,7 @@ export default function SuggestPage() {
                 value={form.description}
                 onChange={handleChange}
                 rows={5}
-                placeholder="Describe your app idea in detail. What should it do? What features would you like?"
+                placeholder="Describe what you'd like to see improved or added. Be as specific as possible."
                 className={`input resize-none ${errors.description ? 'border-red-500 focus:ring-red-500' : ''}`}
               />
               <div className="mt-1 flex items-center justify-between">
@@ -183,33 +202,13 @@ export default function SuggestPage() {
                 <p className={`text-xs tabular-nums ${
                   form.description.length > 1000
                     ? 'text-red-500'
-                    : form.description.length < 20
+                    : form.description.length < 10
                       ? 'text-gray-400 dark:text-gray-500'
                       : 'text-green-600 dark:text-green-400'
                 }`}>
                   {form.description.length} of 1000 characters used
                 </p>
               </div>
-            </div>
-
-            <div>
-              <label htmlFor="category" className="label">
-                Category <span className="text-gray-400">(optional)</span>
-              </label>
-              <select
-                id="category"
-                name="category"
-                value={form.category}
-                onChange={handleChange}
-                className="input"
-              >
-                <option value="">Select a category</option>
-                {CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
             </div>
 
             <div>
@@ -250,11 +249,19 @@ export default function SuggestPage() {
               className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isSubmitting || !turnstileToken}
             >
-              {isSubmitting ? 'Submitting...' : 'Submit Suggestion'}
+              {isSubmitting ? 'Submitting...' : 'Submit Improvement'}
             </button>
           </form>
         </div>
       </div>
     </>
+  );
+}
+
+export default function ImprovePageWrapper() {
+  return (
+    <Suspense>
+      <ImprovePage />
+    </Suspense>
   );
 }
