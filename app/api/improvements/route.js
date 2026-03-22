@@ -1,6 +1,14 @@
 const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 const GITHUB_API_URL = 'https://api.github.com';
 
+// App IDs follow the format YYYY/MM/DD/slug (e.g. "2026/03/21/my-app")
+const APP_ID_RE = /^\d{4}\/\d{2}\/\d{2}\/[a-z0-9-]+$/;
+
+// Escape Markdown metacharacters and strip newlines to prevent injection
+function escapeMd(str) {
+  return str.replace(/[\r\n]/g, ' ').replace(/[\\`*_{}[\]()#+.!|~<>-]/g, '\\$&');
+}
+
 async function verifyTurnstile(token, ip) {
   try {
     const body = new URLSearchParams({
@@ -46,6 +54,10 @@ export async function POST(request) {
     return Response.json({ error: 'Missing required fields' }, { status: 400 });
   }
 
+  if (!APP_ID_RE.test(appId)) {
+    return Response.json({ error: 'Invalid app ID' }, { status: 400 });
+  }
+
   if (description.length < 10 || description.length > 1000) {
     return Response.json({ error: 'Description must be 10–1000 characters' }, { status: 400 });
   }
@@ -73,8 +85,12 @@ export async function POST(request) {
   }
 
   // Build GitHub issue
-  const requestorLine = requestor ? `**Requestor:** ${requestor}` : '**Requestor:** anonymous';
-  const appLine = appName ? `**App:** [${appName}](https://www.valleyofai.com/apps/${appId})` : `**App:** ${appId}`;
+  const safeAppName = appName ? escapeMd(String(appName)) : null;
+  const safeRequestor = requestor ? escapeMd(String(requestor)) : null;
+  const requestorLine = safeRequestor ? `**Requestor:** ${safeRequestor}` : '**Requestor:** anonymous';
+  const appLine = safeAppName
+    ? `**App:** [${safeAppName}](https://www.valleyofai.com/apps/${appId})`
+    : `**App:** ${appId}`;
   const issueBody = `## App Improvement\n\n${appLine}\n${requestorLine}\n\n### Description\n\n${description}`;
 
   const normalizedDesc = description.replace(/\s+/g, ' ').trim();
