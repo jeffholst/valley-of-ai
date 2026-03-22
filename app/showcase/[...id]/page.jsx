@@ -125,7 +125,7 @@ function AppDetailContent({ app, id }) {
             <a
               href={app.appPath}
               target="_blank"
-              rel="noopener"
+              rel="noopener noreferrer"
               className="animate-pulse-ring relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white text-sm bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-600 hover:via-teal-500 hover:to-cyan-600 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
