@@ -80,6 +80,25 @@
     @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1;
   }
 
+  @keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.55), 0 0 0 0 rgba(34, 211, 238, 0.35); }
+    70%  { box-shadow: 0 0 0 8px rgba(139, 92, 246, 0),  0 0 0 14px rgba(34, 211, 238, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0),   0 0 0 0 rgba(34, 211, 238, 0); }
+  }
+
+  .animate-pulse-ring {
+    animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-pulse-ring:hover {
+    animation: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-pulse-ring {
+      animation: none;
+    }
+  }
   @keyframes pterodactyl-fly-right {
     0% { transform: translate3d(-18vw, 0, 0); }
     40% { transform: translate3d(40vw, -10px, 0); }

@@ -216,14 +216,18 @@
         left: 0;
         right: 0;
         z-index: 9999;
-        display: flex;
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
         align-items: center;
         min-height: 56px;
         padding: 10px 16px;
         background: color-mix(in srgb, var(--surface, #ffffff) 92%, transparent);
         border-bottom: 1px solid color-mix(in srgb, var(--muted, #94a3b8) 28%, transparent);
         backdrop-filter: blur(8px);
+      }
+
+      #voa-theme-toggle.theme-toggle {
+        justify-self: end;
       }
 
       .voa-shell-app-name {
@@ -233,6 +237,7 @@
         display: flex;
         align-items: center;
         gap: 7px;
+        min-width: 0;
       }
 
       .voa-shell-ai-tag {
@@ -560,6 +565,19 @@
       }
 
       .voa-copy-btn:hover { opacity: 0.75; }
+
+      @media (max-width: 479px) {
+        .voa-shell-app-name-text {
+          display: inline-block;
+          max-width: 100px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .voa-pill-text { display: none; }
+        .voa-vote-count { display: none; }
+        .voa-footer-site-name { display: none; }
+      }
     `;
     document.head.appendChild(style);
   }
@@ -575,18 +593,10 @@
 
     const appName = document.createElement('div');
     appName.className = 'voa-shell-app-name';
-    const nameText = document.createTextNode(getAppName());
+    const nameText = document.createElement('span');
+    nameText.className = 'voa-shell-app-name-text';
+    nameText.textContent = getAppName();
     appName.appendChild(nameText);
-    const aiTag = document.createElement('a');
-    aiTag.className = 'voa-shell-ai-tag';
-    const appDetailId = resolveAppId();
-    const isLocalLearn = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const learnBase = isLocalLearn ? window.location.origin : resolveMainSiteUrl();
-    aiTag.href = appDetailId ? `${learnBase}/showcase/${appDetailId}#app-info` : learnBase;
-    aiTag.textContent = '🧠 Learn';
-    aiTag.setAttribute('aria-label', 'View app details');
-    appName.appendChild(aiTag);
-
     const toggle = document.createElement('button');
     toggle.id = 'voa-theme-toggle';
     toggle.className = 'theme-toggle';
@@ -597,6 +607,16 @@
     const voteGroup = document.createElement('div');
     voteGroup.id = 'voa-vote-group';
     voteGroup.className = 'voa-vote-group';
+
+    const aiTag = document.createElement('a');
+    aiTag.className = 'voa-shell-ai-tag';
+    const appDetailId = resolveAppId();
+    const isLocalLearn = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const learnBase = isLocalLearn ? window.location.origin : resolveMainSiteUrl();
+    aiTag.href = appDetailId ? `${learnBase}/showcase/${appDetailId}#app-info` : learnBase;
+    aiTag.innerHTML = '🧠 <span class="voa-pill-text">Learn</span>';
+    aiTag.setAttribute('aria-label', 'View app details');
+    voteGroup.appendChild(aiTag);
 
     header.appendChild(appName);
     header.appendChild(voteGroup);
@@ -611,7 +631,11 @@
     const footerLink = document.createElement('a');
     footerLink.className = 'voa-shell-footer-link';
     footerLink.href = resolveMainSiteUrl();
-    footerLink.textContent = `Back to ${resolveMainSiteName()}`;
+    footerLink.textContent = 'Back to 🏔️ ';
+    const footerSiteNameSpan = document.createElement('span');
+    footerSiteNameSpan.className = 'voa-footer-site-name';
+    footerSiteNameSpan.textContent = resolveMainSiteName();
+    footerLink.appendChild(footerSiteNameSpan);
     footerInner.appendChild(footerLink);
 
     const socialLinks = resolveSocialLinks();
@@ -793,7 +817,7 @@
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const mainSiteBase = isLocal ? window.location.origin : resolveMainSiteUrl();
     improveLink.href = `${mainSiteBase}/improve?app=${encodeURIComponent(appId)}&name=${encodeURIComponent(getAppName())}`;
-    improveLink.textContent = '💡 Improve';
+    improveLink.innerHTML = '💡 <span class="voa-pill-text">Improve</span>';
     improveLink.title = 'Suggest an improvement for this app';
     container.appendChild(improveLink);
 
@@ -814,16 +838,24 @@
     upBtn.className = 'voa-vote-btn' + (myVote === 'up' ? ' active-up' : '');
     upBtn.setAttribute('aria-label', 'Like this app');
     upBtn.disabled = voted;
+    upBtn.appendChild(document.createTextNode('👍 '));
+    const upCountSpan = document.createElement('span');
+    upCountSpan.className = 'voa-vote-count';
+    upBtn.appendChild(upCountSpan);
 
     const downBtn = document.createElement('button');
     downBtn.type = 'button';
     downBtn.className = 'voa-vote-btn' + (myVote === 'down' ? ' active-down' : '');
     downBtn.setAttribute('aria-label', 'Dislike this app');
     downBtn.disabled = voted;
+    downBtn.appendChild(document.createTextNode('👎 '));
+    const downCountSpan = document.createElement('span');
+    downCountSpan.className = 'voa-vote-count';
+    downBtn.appendChild(downCountSpan);
 
     function renderCounts(up, down) {
-      upBtn.textContent = `👍 ${up}`;
-      downBtn.textContent = `👎 ${down}`;
+      upCountSpan.textContent = up;
+      downCountSpan.textContent = down;
     }
 
     renderCounts(counts.up, counts.down);
