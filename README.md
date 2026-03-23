@@ -353,7 +353,8 @@ This is useful for documentation-only changes or quick fixes that don't require 
 │   ├── 📄 sync-public-content.mjs   # Copy apps/ & logs/ → public/ (with placeholder replacement)
 │   ├── 📄 validate-apps.js          # Validate app HTML/metadata
 │   ├── 📄 validate-responsive.js    # Test responsive design
-│   ├── 📄 logger.js                 # Logging utility
+│   ├── 📄 logger.js                 # Logging utility (shared logic)
+│   ├── 📄 logger.mjs                # Logging CLI entrypoint (used by `npm run log`)
 │   ├── 📄 select-app-suggestion.js  # Recommend next new app concept (GitHub issues → vote analysis → category gaps)
 │   └── 📄 select-app-improvement.js # Recommend highest-priority improvement to an existing app (GitHub issues only)
 │
