@@ -276,17 +276,28 @@ function RunGroup({ group, improvementIndex }) {
                         <div className="opacity-60">seq {log.pipeline.seq}</div>
                       )}
                       {log.message && (
-                        <div
-                          className={`opacity-75 mt-0.5 ${hasLong ? 'cursor-pointer' : ''} ${hasLong && !isExpMsg ? 'truncate' : ''}`}
-                          onClick={() => hasLong && toggleMessage(idx)}
-                        >
-                          {log.message}
-                          {hasLong && (
-                            <button className="ml-1 text-blue-500 hover:text-blue-700 flex-shrink-0">
+                        hasLong ? (
+                          <button
+                            type="button"
+                            className={`opacity-75 mt-0.5 cursor-pointer ${!isExpMsg ? 'truncate' : ''} flex items-center`}
+                            onClick={() => toggleMessage(idx)}
+                            aria-expanded={isExpMsg}
+                          >
+                            <span className={!isExpMsg ? 'truncate' : ''}>
+                              {log.message}
+                            </span>
+                            <span
+                              className="ml-1 text-blue-500 hover:text-blue-700 flex-shrink-0"
+                              aria-hidden="true"
+                            >
                               {isExpMsg ? '▲' : '▼'}
-                            </button>
-                          )}
-                        </div>
+                            </span>
+                          </button>
+                        ) : (
+                          <div className="opacity-75 mt-0.5">
+                            {log.message}
+                          </div>
+                        )
                       )}
                       {(log.tokensIn ||
                         log.pipeline?.tokensIn ||
