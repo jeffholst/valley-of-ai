@@ -5,8 +5,16 @@
   "fullDescription": "Memory Sequence is a brain-training memory game where you watch the computer highlight colored squares in a sequence, then repeat the pattern by clicking the squares. Each round adds a new color to the sequence, making it progressively harder. Test your memory and beat your high score!",
   "thumbnail": "thumbnail.svg",
   "category": "Games",
-  "tags": ["game", "memory", "puzzle", "sequence", "brain-training", "mobile-friendly"],
+  "tags": [
+    "game",
+    "memory",
+    "puzzle",
+    "sequence",
+    "brain-training",
+    "mobile-friendly"
+  ],
   "status": "active",
+  "visible": true,
   "createdAt": "2026-03-16T00:02:46Z",
   "homepagePath": "index.html",
   "inputMode": "responsive",

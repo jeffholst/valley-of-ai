@@ -1,11 +1,12 @@
 {
   "id": "habit-heatmap",
   "name": "Habit Heatmap",
-  "shortDescription": "A tactile weekly habit board where each day cell cycles from 0\u20134 intensity, turning consistency into an easy visual streak game.",
+  "shortDescription": "A tactile weekly habit board where each day cell cycles from 0–4 intensity, turning consistency into an easy visual streak game.",
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-07T02:10:48Z",
   "category": "Productivity",
   "status": "active",
+  "visible": true,
   "tags": [
     "habits",
     "tracker",

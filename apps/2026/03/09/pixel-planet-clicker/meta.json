@@ -6,7 +6,13 @@
   "createdAt": "2026-03-09T07:02:45Z",
   "category": "Entertainment",
   "status": "active",
-  "tags": ["idle-game", "clicker", "upgrades", "space"],
+  "visible": true,
+  "tags": [
+    "idle-game",
+    "clicker",
+    "upgrades",
+    "space"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

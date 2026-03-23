@@ -7,7 +7,14 @@
   "category": "Games",
   "votes": 0,
   "status": "active",
-  "tags": ["memory", "simon", "keyboard", "touch", "reflex"],
+  "visible": true,
+  "tags": [
+    "memory",
+    "simon",
+    "keyboard",
+    "touch",
+    "reflex"
+  ],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

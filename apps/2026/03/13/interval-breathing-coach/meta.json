@@ -6,7 +6,16 @@
   "createdAt": "2026-03-13T07:01:13Z",
   "category": "Utilities",
   "status": "active",
-  "tags": ["breathing", "wellness", "mindfulness", "timer", "mobile", "focus", "health"],
+  "visible": true,
+  "tags": [
+    "breathing",
+    "wellness",
+    "mindfulness",
+    "timer",
+    "mobile",
+    "focus",
+    "health"
+  ],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

@@ -6,7 +6,13 @@
   "createdAt": "2026-03-08T08:02:51Z",
   "category": "Games",
   "status": "active",
-  "tags": ["puzzle", "logic", "grid", "daily-challenge"],
+  "visible": true,
+  "tags": [
+    "puzzle",
+    "logic",
+    "grid",
+    "daily-challenge"
+  ],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

@@ -7,7 +7,15 @@
   "category": "Games",
   "votes": 0,
   "status": "active",
-  "tags": ["memory", "puzzle", "arcade", "touch", "keyboard", "responsive"],
+  "visible": true,
+  "tags": [
+    "memory",
+    "puzzle",
+    "arcade",
+    "touch",
+    "keyboard",
+    "responsive"
+  ],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

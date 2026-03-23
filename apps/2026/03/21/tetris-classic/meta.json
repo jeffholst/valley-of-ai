@@ -7,7 +7,15 @@
   "category": "Games",
   "votes": 0,
   "status": "active",
-  "tags": ["tetris", "puzzle", "mobile", "touch", "classic", "arcade"],
+  "visible": true,
+  "tags": [
+    "tetris",
+    "puzzle",
+    "mobile",
+    "touch",
+    "classic",
+    "arcade"
+  ],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

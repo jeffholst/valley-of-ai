@@ -7,7 +7,15 @@
   "category": "Education",
   "votes": 0,
   "status": "active",
-  "tags": ["morse-code", "audio", "educational", "translator", "web-audio-api", "radio"],
+  "visible": true,
+  "tags": [
+    "morse-code",
+    "audio",
+    "educational",
+    "translator",
+    "web-audio-api",
+    "radio"
+  ],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

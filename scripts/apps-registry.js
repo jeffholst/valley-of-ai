@@ -90,6 +90,10 @@ export function buildAppsRegistry({ appsDir, basePath = '', onWarning } = {}) {
         continue;
       }
 
+      if (meta.visible === false) {
+        continue;
+      }
+
       apps.push(transformMeta(appsDir, meta, filePath, dateInfo, basePath));
     } catch (error) {
       const warning = `Error processing ${filePath}: ${error.message}`;

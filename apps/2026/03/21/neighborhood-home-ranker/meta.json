@@ -7,7 +7,17 @@
   "category": "Utilities",
   "votes": 0,
   "status": "active",
-  "tags": ["real-estate", "mls", "google-places", "neighborhood", "scoring", "ranking", "tools", "data"],
+  "visible": true,
+  "tags": [
+    "real-estate",
+    "mls",
+    "google-places",
+    "neighborhood",
+    "scoring",
+    "ranking",
+    "tools",
+    "data"
+  ],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {
