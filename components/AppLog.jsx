@@ -7,20 +7,28 @@ import { useState, useEffect } from 'react';
 // ---------------------------------------------------------------------------
 
 function formatDuration(ms) {
-  if (!ms) return '-';
-  if (ms < 1000) return `${ms}ms`;
+  if (!ms) {
+    return '-';
+  }
+  if (ms < 1000) {
+    return `${ms}ms`;
+  }
   return `${(ms / 1000).toFixed(1)}s`;
 }
 
 function getStatusColor(status) {
-  if (status === 'completed' || status === 'success')
+  if (status === 'completed' || status === 'success') {
     return 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20';
-  if (status === 'failed')
+  }
+  if (status === 'failed') {
     return 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20';
-  if (status === 'skipped')
+  }
+  if (status === 'skipped') {
     return 'text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/20';
-  if (status === 'in_progress')
+  }
+  if (status === 'in_progress') {
     return 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20';
+  }
   return 'text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/20';
 }
 
@@ -28,27 +36,43 @@ function StatusIcon({ status }) {
   if (status === 'completed' || status === 'success') {
     return (
       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+        <path
+          fillRule="evenodd"
+          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+          clipRule="evenodd"
+        />
       </svg>
     );
   }
   if (status === 'failed') {
     return (
       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+        <path
+          fillRule="evenodd"
+          d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+          clipRule="evenodd"
+        />
       </svg>
     );
   }
   if (status === 'skipped') {
     return (
       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3-8H7a1 1 0 000 2h6a1 1 0 000-2z" clipRule="evenodd" />
+        <path
+          fillRule="evenodd"
+          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3-8H7a1 1 0 000 2h6a1 1 0 000-2z"
+          clipRule="evenodd"
+        />
       </svg>
     );
   }
   return (
     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+      <path
+        fillRule="evenodd"
+        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+        clipRule="evenodd"
+      />
     </svg>
   );
 }
@@ -65,7 +89,7 @@ function StatusIcon({ status }) {
 // ---------------------------------------------------------------------------
 
 function groupLogs(logs) {
-  const runMap = new Map();    // runId → group
+  const runMap = new Map(); // runId → group
   const legacyEntries = [];
 
   for (const log of logs) {
@@ -80,7 +104,7 @@ function groupLogs(logs) {
     if (!runMap.has(runId)) {
       runMap.set(runId, {
         runId,
-        type: 'new_app',   // default; overridden below
+        type: 'new_app', // default; overridden below
         date: log.timestamp,
         entries: [],
       });
@@ -89,13 +113,20 @@ function groupLogs(logs) {
     group.entries.push(log);
 
     // Detect run type from step name
-    if (log.pipeline?.step === 'SELECT_IMPROVEMENT') group.type = 'improvement';
+    if (log.pipeline?.step === 'SELECT_IMPROVEMENT') {
+      group.type = 'improvement';
+    }
   }
 
   const groups = [];
 
   if (legacyEntries.length) {
-    groups.push({ type: 'legacy', runId: '__legacy__', date: legacyEntries[0].timestamp, entries: legacyEntries });
+    groups.push({
+      type: 'legacy',
+      runId: '__legacy__',
+      date: legacyEntries[0].timestamp,
+      entries: legacyEntries,
+    });
   }
 
   // Runs in chronological order of first entry
@@ -159,12 +190,17 @@ function RunGroup({ group, improvementIndex }) {
   const transactionEnd = pipelineSteps.find((l) => l.pipeline.step === 'TRANSACTION_END');
   const validationEntries = group.entries.filter((l) => l.category === 'validation');
 
-  const label = group.type === 'improvement'
-    ? `${config.icon} Improvement #${improvementIndex}`
-    : `${config.icon} ${config.label}`;
+  const label =
+    group.type === 'improvement'
+      ? `${config.icon} Improvement #${improvementIndex}`
+      : `${config.icon} ${config.label}`;
 
   const runDate = group.date
-    ? new Date(group.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
+    ? new Date(group.date).toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
     : null;
 
   return (
@@ -183,14 +219,21 @@ function RunGroup({ group, improvementIndex }) {
             </span>
           )}
         </span>
-        <svg className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+        <svg
+          className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path
+            fillRule="evenodd"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clipRule="evenodd"
+          />
         </svg>
       </button>
 
       {isExpanded && (
         <div className="p-3 space-y-2 bg-gray-50 dark:bg-gray-900/50">
-
           {/* Run ID */}
           {transactionStart && (
             <div className="text-xs text-gray-500 dark:text-gray-400 font-mono pb-2 border-b border-gray-200 dark:border-gray-700">
@@ -199,12 +242,16 @@ function RunGroup({ group, improvementIndex }) {
           )}
 
           {/* Legacy entries */}
-          {group.type === 'legacy' && group.entries.map((log, idx) => (
-            <div key={idx} className="text-xs p-2 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
-              <div className="font-semibold">{log.actionType}</div>
-              <div className="opacity-75 mt-0.5">{log.description}</div>
-            </div>
-          ))}
+          {group.type === 'legacy' &&
+            group.entries.map((log, idx) => (
+              <div
+                key={idx}
+                className="text-xs p-2 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+              >
+                <div className="font-semibold">{log.actionType}</div>
+                <div className="opacity-75 mt-0.5">{log.description}</div>
+              </div>
+            ))}
 
           {/* Pipeline steps */}
           {pipelineSteps.length > 0 && (
@@ -216,11 +263,18 @@ function RunGroup({ group, improvementIndex }) {
                 const hasLong = log.message && log.message.length > 50;
 
                 return (
-                  <div key={idx} className={`text-xs p-2 rounded flex items-start gap-2 ${getStatusColor(status)}`}>
-                    <div className="flex-shrink-0 mt-0.5"><StatusIcon status={status} /></div>
+                  <div
+                    key={idx}
+                    className={`text-xs p-2 rounded flex items-start gap-2 ${getStatusColor(status)}`}
+                  >
+                    <div className="flex-shrink-0 mt-0.5">
+                      <StatusIcon status={status} />
+                    </div>
                     <div className="flex-grow min-w-0">
                       <div className="font-semibold truncate">{step}</div>
-                      {log.pipeline?.seq && <div className="opacity-60">seq {log.pipeline.seq}</div>}
+                      {log.pipeline?.seq && (
+                        <div className="opacity-60">seq {log.pipeline.seq}</div>
+                      )}
                       {log.message && (
                         <div
                           className={`opacity-75 mt-0.5 ${hasLong ? 'cursor-pointer' : ''} ${hasLong && !isExpMsg ? 'truncate' : ''}`}
@@ -234,19 +288,28 @@ function RunGroup({ group, improvementIndex }) {
                           )}
                         </div>
                       )}
-                      {(log.tokensIn || log.pipeline?.tokensIn || log.tokensOut || log.pipeline?.tokensOut) && (
+                      {(log.tokensIn ||
+                        log.pipeline?.tokensIn ||
+                        log.tokensOut ||
+                        log.pipeline?.tokensOut) && (
                         <div className="opacity-60 mt-1 flex gap-2">
                           {(log.tokensIn || log.pipeline?.tokensIn) && (
-                            <span>🔽 {(log.tokensIn || log.pipeline?.tokensIn)?.toLocaleString()}</span>
+                            <span>
+                              🔽 {(log.tokensIn || log.pipeline?.tokensIn)?.toLocaleString()}
+                            </span>
                           )}
                           {(log.tokensOut || log.pipeline?.tokensOut) && (
-                            <span>🔼 {(log.tokensOut || log.pipeline?.tokensOut)?.toLocaleString()}</span>
+                            <span>
+                              🔼 {(log.tokensOut || log.pipeline?.tokensOut)?.toLocaleString()}
+                            </span>
                           )}
                         </div>
                       )}
                     </div>
                     {log.pipeline?.durationMs && (
-                      <div className="flex-shrink-0 opacity-75 whitespace-nowrap">{formatDuration(log.pipeline.durationMs)}</div>
+                      <div className="flex-shrink-0 opacity-75 whitespace-nowrap">
+                        {formatDuration(log.pipeline.durationMs)}
+                      </div>
                     )}
                   </div>
                 );
@@ -262,15 +325,21 @@ function RunGroup({ group, improvementIndex }) {
               </div>
               <div className="space-y-1">
                 {validationEntries.map((log, idx) => (
-                  <div key={idx} className={`text-xs p-1.5 rounded flex items-center gap-2 ${log.validation?.result === 'PASS' ? 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20' : 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20'}`}>
-                    <StatusIcon status={log.validation?.result === 'PASS' ? 'completed' : 'failed'} />
-                    <span className="truncate">{log.validation?.name || log.validation?.checkType}</span>
+                  <div
+                    key={idx}
+                    className={`text-xs p-1.5 rounded flex items-center gap-2 ${log.validation?.result === 'PASS' ? 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20' : 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20'}`}
+                  >
+                    <StatusIcon
+                      status={log.validation?.result === 'PASS' ? 'completed' : 'failed'}
+                    />
+                    <span className="truncate">
+                      {log.validation?.name || log.validation?.checkType}
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
           )}
-
         </div>
       )}
     </div>
@@ -288,19 +357,25 @@ export default function AppLog({ appId, suggestion }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!appId) return;
+    if (!appId) {
+      return;
+    }
     setLoading(true);
     fetch(`/api/app-log?appId=${appId}`)
       .then((res) => {
         if (!res.ok) {
-          setError(res.status === 404 ? 'No log file found for this app' : 'Failed to load log file');
+          setError(
+            res.status === 404 ? 'No log file found for this app' : 'Failed to load log file'
+          );
           setLogs([]);
           return null;
         }
         return res.json();
       })
       .then((data) => {
-        if (data) setLogs(Array.isArray(data) ? data : []);
+        if (data) {
+          setLogs(Array.isArray(data) ? data : []);
+        }
         setError(null);
       })
       .catch(() => {
@@ -326,7 +401,11 @@ export default function AppLog({ appId, suggestion }) {
       <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-2 text-sm text-amber-600 dark:text-amber-400">
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            <path
+              fillRule="evenodd"
+              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+              clipRule="evenodd"
+            />
           </svg>
           {error || 'No pipeline log available'}
         </div>
@@ -341,18 +420,24 @@ export default function AppLog({ appId, suggestion }) {
 
   return (
     <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-
       {/* Community suggestion banner */}
       {suggestion && (
         <div className="mb-4 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 text-xs text-amber-800 dark:text-amber-300">
           <div className="font-semibold mb-1">
             Built from a community suggestion
             {suggestion.issueNumber && (
-              <a href={suggestion.issueUrl} target="_blank" rel="noopener noreferrer" className="ml-2 underline opacity-75 hover:opacity-100">
+              <a
+                href={suggestion.issueUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-2 underline opacity-75 hover:opacity-100"
+              >
                 #{suggestion.issueNumber}
               </a>
             )}
-            {suggestion.requestor && <span className="ml-2 opacity-75">by {suggestion.requestor}</span>}
+            {suggestion.requestor && (
+              <span className="ml-2 opacity-75">by {suggestion.requestor}</span>
+            )}
           </div>
           <div className="opacity-75 leading-relaxed">{suggestion.prompt}</div>
         </div>
@@ -372,21 +457,27 @@ export default function AppLog({ appId, suggestion }) {
             ({groups.length} {groups.length === 1 ? 'run' : 'runs'})
           </span>
         </span>
-        <svg className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+        <svg
+          className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path
+            fillRule="evenodd"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clipRule="evenodd"
+          />
         </svg>
       </button>
 
       {isExpanded && (
         <div className="space-y-3">
           {groups.map((group) => {
-            if (group.type === 'improvement') improvementCounter += 1;
+            if (group.type === 'improvement') {
+              improvementCounter += 1;
+            }
             return (
-              <RunGroup
-                key={group.runId}
-                group={group}
-                improvementIndex={improvementCounter}
-              />
+              <RunGroup key={group.runId} group={group} improvementIndex={improvementCounter} />
             );
           })}
         </div>

@@ -29,7 +29,7 @@ const rootDir = path.resolve(__dirname, '..');
 const jsonOnly = process.argv.includes('--json');
 
 function log(...args) {
-  if (!jsonOnly) console.error(...args);
+  if (!jsonOnly) {console.error(...args);}
 }
 
 // ---------------------------------------------------------------------------
@@ -39,16 +39,16 @@ function log(...args) {
 // ---------------------------------------------------------------------------
 function loadEnv() {
   function parseFile(filePath, overwrite) {
-    if (!existsSync(filePath)) return;
+    if (!existsSync(filePath)) {return;}
     const lines = readFileSync(filePath, 'utf8').split('\n');
     for (const line of lines) {
       const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith('#')) continue;
+      if (!trimmed || trimmed.startsWith('#')) {continue;}
       const eq = trimmed.indexOf('=');
-      if (eq === -1) continue;
+      if (eq === -1) {continue;}
       const key = trimmed.slice(0, eq).trim();
       const val = trimmed.slice(eq + 1).trim().replace(/^["']|["']$/g, '');
-      if (overwrite || !process.env[key]) process.env[key] = val;
+      if (overwrite || !process.env[key]) {process.env[key] = val;}
     }
   }
 
@@ -72,14 +72,14 @@ function ghJson(cmd) {
 
 function getRepoOwner() {
   try {
-    return execSync(`gh api repos/{owner}/{repo} --jq '.owner.login'`, { encoding: 'utf8' }).trim();
+    return execSync('gh api repos/{owner}/{repo} --jq \'.owner.login\'', { encoding: 'utf8' }).trim();
   } catch {
     return null;
   }
 }
 
 function getTipTotal(issueNumber, repoOwner) {
-  if (!repoOwner) return 0;
+  if (!repoOwner) {return 0;}
   try {
     const raw = execSync(`gh issue view ${issueNumber} --json comments`, {
       encoding: 'utf8',
@@ -88,9 +88,9 @@ function getTipTotal(issueNumber, repoOwner) {
     const data = JSON.parse(raw);
     let total = 0;
     for (const comment of data.comments || []) {
-      if (comment.author?.login !== repoOwner) continue;
+      if (comment.author?.login !== repoOwner) {continue;}
       const matches = [...(comment.body || '').matchAll(/\$([0-9]+)/g)];
-      for (const m of matches) total += parseInt(m[1], 10);
+      for (const m of matches) {total += parseInt(m[1], 10);}
     }
     return total;
   } catch {
@@ -101,9 +101,9 @@ function getTipTotal(issueNumber, repoOwner) {
 function getBoostedIssues() {
   log('  Checking boosted+approved issues...');
   const issues = ghJson(
-    `gh issue list --label "suggestion" --label "status:approved" --label "boosted" --state open --json number,title,body,url --limit 20`
+    'gh issue list --label "suggestion" --label "status:approved" --label "boosted" --state open --json number,title,body,url --limit 20'
   );
-  if (!issues || issues.length === 0) return null;
+  if (!issues || issues.length === 0) {return null;}
 
   const owner = getRepoOwner();
   log(`  Repo owner: ${owner}`);
@@ -120,9 +120,9 @@ function getBoostedIssues() {
 function getApprovedIssues() {
   log('  Checking approved (non-boosted) issues...');
   const issues = ghJson(
-    `gh issue list --label "suggestion" --label "status:approved" --state open --json number,title,body,url --limit 10`
+    'gh issue list --label "suggestion" --label "status:approved" --state open --json number,title,body,url --limit 10'
   );
-  if (!issues || issues.length === 0) return null;
+  if (!issues || issues.length === 0) {return null;}
   // Prefer lower (older) issue numbers
   issues.sort((a, b) => a.number - b.number);
   return issues[0];
@@ -134,7 +134,7 @@ function getApprovedIssues() {
 function buildSupabaseClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) return null;
+  if (!url || !key) {return null;}
   return createClient(url, key);
 }
 
@@ -144,14 +144,14 @@ async function getVoteCounts(supabase, appIds) {
     .select('app_id, vote_type')
     .in('app_id', appIds);
 
-  if (error || !data) return {};
+  if (error || !data) {return {};}
 
   const counts = {};
-  for (const id of appIds) counts[id] = { up: 0, down: 0, net: 0 };
+  for (const id of appIds) {counts[id] = { up: 0, down: 0, net: 0 };}
   for (const row of data) {
-    if (!counts[row.app_id]) counts[row.app_id] = { up: 0, down: 0, net: 0 };
-    if (row.vote_type === 'up') counts[row.app_id].up += 1;
-    else counts[row.app_id].down += 1;
+    if (!counts[row.app_id]) {counts[row.app_id] = { up: 0, down: 0, net: 0 };}
+    if (row.vote_type === 'up') {counts[row.app_id].up += 1;}
+    else {counts[row.app_id].down += 1;}
     counts[row.app_id].net = counts[row.app_id].up - counts[row.app_id].down;
   }
   return counts;
@@ -244,7 +244,7 @@ function analyzeCategoryGaps(apps, voteCounts) {
   const byCategory = {};
   for (const app of apps) {
     const cat = app.category || 'Unknown';
-    if (!byCategory[cat]) byCategory[cat] = { count: 0, totalNet: 0, apps: [] };
+    if (!byCategory[cat]) {byCategory[cat] = { count: 0, totalNet: 0, apps: [] };}
     const vc = voteCounts[app.id] || { net: 0 };
     byCategory[cat].count += 1;
     byCategory[cat].totalNet += vc.net;
