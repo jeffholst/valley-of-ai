@@ -1,0 +1,1379 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dungeon Puzzle Run - __MAIN_SITE_NAME__</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '__GA_MEASUREMENT_ID__');
+  </script>
+
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+  <meta name="voa-github-url" content="__GITHUB_URL__" />
+  <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+  <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+  <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+  <meta name="voa-app-id" content="2026/03/23/dungeon-puzzle-run" />
+  <script src="/apps/shared/app-shell.js" defer></script>
+
+  <style>
+    :root {
+      --bg: #0f0a1a;
+      --bg2: #1a1030;
+      --surface: #1e1535;
+      --surface2: #2a1f4a;
+      --border: #4a3570;
+      --text: #e8d8ff;
+      --text2: #a090c0;
+      --accent: #c084fc;
+      --accent2: #818cf8;
+      --gold: #fbbf24;
+      --red: #f87171;
+      --green: #4ade80;
+      --teal: #22d3ee;
+      --orange: #fb923c;
+    }
+    [data-theme='light'] {
+      --bg: #f5f0ff;
+      --bg2: #ede8ff;
+      --surface: #ffffff;
+      --surface2: #f0ebff;
+      --border: #c4b5fd;
+      --text: #1e1040;
+      --text2: #5b4b8a;
+      --accent: #7c3aed;
+      --accent2: #4f46e5;
+      --gold: #d97706;
+      --red: #dc2626;
+      --green: #16a34a;
+      --teal: #0891b2;
+      --orange: #ea580c;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      touch-action: pan-y;
+    }
+
+    /* ── App wrapper ── */
+    #app {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: calc(100vh - 120px);
+    }
+
+    /* ── HUD ── */
+    #hud {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .hud-badge {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: .78rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .hud-badge .icon { font-size: .9rem; }
+    #seed-badge { margin-left: auto; color: var(--text2); font-size: .7rem; }
+
+    /* ── Map strip ── */
+    #map-strip {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      padding: 8px 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    #map-strip::-webkit-scrollbar { display: none; }
+    .map-room {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .75rem;
+      flex-shrink: 0;
+      transition: transform .15s;
+    }
+    .map-room.done { background: var(--surface2); border-color: var(--green); opacity: .7; }
+    .map-room.current { background: var(--accent); border-color: var(--accent); transform: scale(1.15); color: #fff; }
+    .map-room.locked { opacity: .3; }
+    .map-room.boss { border-color: var(--red); }
+    .map-connector { width: 10px; height: 2px; background: var(--border); flex-shrink: 0; border-radius: 1px; }
+    .map-connector.branch { width: 6px; }
+
+    /* ── Room card ── */
+    #room-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    #room-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at top right, color-mix(in srgb, var(--accent) 8%, transparent), transparent 60%);
+      pointer-events: none;
+    }
+    .room-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .room-icon { font-size: 1.6rem; }
+    .room-meta { flex: 1; }
+    .room-type {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--accent);
+    }
+    .room-title { font-size: 1rem; font-weight: 700; }
+    .room-desc {
+      font-size: .82rem;
+      color: var(--text2);
+      line-height: 1.45;
+    }
+    .room-reward {
+      display: flex;
+      gap: 6px;
+      font-size: .78rem;
+      color: var(--gold);
+      align-items: center;
+    }
+
+    /* ── Puzzle area ── */
+    #puzzle-area {
+      background: var(--bg2);
+      border-radius: 12px;
+      padding: 14px;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* Logic puzzle */
+    .logic-grid {
+      display: grid;
+      gap: 6px;
+      width: 100%;
+    }
+    .logic-row { display: flex; gap: 6px; align-items: center; }
+    .logic-cell {
+      width: 44px; height: 44px;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 700;
+      cursor: pointer;
+      transition: background .15s, border-color .15s, transform .1s;
+      user-select: none;
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .logic-cell:active { transform: scale(.93); }
+    .logic-cell.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .logic-cell.target { border-color: var(--gold); }
+    .logic-label { font-size: .7rem; color: var(--text2); min-width: 20px; text-align: right; }
+    .logic-hint { font-size: .72rem; color: var(--text2); text-align: center; }
+
+    /* Memory puzzle */
+    .memory-grid {
+      display: grid;
+      gap: 8px;
+    }
+    .mem-card {
+      height: 54px;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: transform .2s, background .2s;
+      user-select: none;
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mem-card.face-up { background: var(--surface); border-color: var(--accent2); }
+    .mem-card.matched { background: color-mix(in srgb, var(--green) 20%, var(--surface)); border-color: var(--green); }
+    .mem-card:active:not(.matched) { transform: scale(.95); }
+
+    /* Timing puzzle */
+    #timing-track {
+      width: 100%;
+      height: 54px;
+      background: var(--surface2);
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    #timing-zone {
+      position: absolute;
+      top: 0; bottom: 0;
+      background: color-mix(in srgb, var(--green) 35%, transparent);
+      border-left: 2px solid var(--green);
+      border-right: 2px solid var(--green);
+      transition: background .1s;
+    }
+    #timing-cursor {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 4px;
+      border-radius: 2px;
+      background: var(--accent);
+      transition: left .05s linear;
+      box-shadow: 0 0 8px var(--accent);
+    }
+    #timing-btn {
+      min-height: 52px;
+      width: 100%;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .1s, opacity .1s;
+      touch-action: manipulation;
+    }
+    #timing-btn:active { transform: scale(.97); }
+    .timing-result { font-size: .8rem; font-weight: 600; }
+    .timing-result.hit { color: var(--green); }
+    .timing-result.miss { color: var(--red); }
+
+    /* Tile puzzle */
+    .tile-grid {
+      display: grid;
+      gap: 5px;
+    }
+    .tile {
+      height: 48px;
+      border-radius: 9px;
+      border: 2px solid var(--border);
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: background .15s, border-color .15s, transform .1s;
+      user-select: none;
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tile:active { transform: scale(.94); }
+    .tile.active { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+    .tile.goal { border-color: var(--gold); }
+    .tile.correct { background: color-mix(in srgb, var(--green) 30%, var(--surface2)); border-color: var(--green); }
+
+    /* Pathing puzzle */
+    #path-canvas {
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      touch-action: none;
+      cursor: crosshair;
+      display: block;
+    }
+
+    /* Resource puzzle */
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      width: 100%;
+    }
+    .res-item {
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: .72rem;
+      color: var(--text2);
+    }
+    .res-item .icon { font-size: 1.3rem; }
+    .res-item .val { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .res-btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+    .res-btn {
+      min-height: 44px;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+      touch-action: manipulation;
+    }
+    .res-btn:active { transform: scale(.96); }
+    .res-btn.good { border-color: var(--green); }
+    .res-btn.bad { border-color: var(--red); }
+    .res-target { font-size: .75rem; color: var(--text2); text-align: center; }
+
+    /* ── Action buttons ── */
+    .action-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .action-row.single { grid-template-columns: 1fr; }
+    .btn {
+      min-height: 48px;
+      border-radius: 12px;
+      border: none;
+      font-size: .9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .1s, opacity .1s;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn:disabled { opacity: .4; cursor: default; transform: none; }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+    .btn-secondary { background: var(--surface2); border: 1px solid var(--border); color: var(--text); }
+    .btn-danger { background: linear-gradient(135deg, var(--red), #c43c3c); color: #fff; }
+
+    /* ── Loot / choice overlay ── */
+    #overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
+    }
+    #overlay.visible { display: flex; }
+    .overlay-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+      max-width: 340px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      animation: slideUp .25s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    .overlay-title { font-size: 1.1rem; font-weight: 800; text-align: center; }
+    .overlay-sub { font-size: .82rem; color: var(--text2); text-align: center; }
+    .loot-options { display: grid; gap: 8px; }
+    .loot-opt {
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: border-color .15s, background .15s;
+      touch-action: manipulation;
+    }
+    .loot-opt:hover, .loot-opt:focus { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--surface2)); outline: none; }
+    .loot-opt .loot-icon { font-size: 1.5rem; }
+    .loot-opt .loot-name { font-weight: 700; font-size: .9rem; }
+    .loot-opt .loot-desc { font-size: .75rem; color: var(--text2); }
+
+    /* ── Feedback flash ── */
+    #feedback {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 8px 18px;
+      font-size: .85rem;
+      font-weight: 700;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .2s;
+      z-index: 50;
+      white-space: nowrap;
+    }
+    #feedback.show { opacity: 1; }
+    #feedback.good { color: var(--green); border-color: var(--green); }
+    #feedback.bad  { color: var(--red);   border-color: var(--red); }
+
+    /* ── HP bar ── */
+    #hp-bar-wrap { width: 100%; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+    #hp-bar { height: 100%; background: var(--green); border-radius: 3px; transition: width .4s; }
+
+    /* ── Game over / win ── */
+    #end-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      text-align: center;
+      padding: 20px;
+    }
+    #end-screen.visible { display: flex; }
+    #end-screen .end-icon { font-size: 3.5rem; }
+    #end-screen h2 { font-size: 1.4rem; font-weight: 800; }
+    #end-screen p { font-size: .88rem; color: var(--text2); }
+    .stat-row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .stat-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      min-width: 80px;
+      text-align: center;
+    }
+    .stat-box .sval { font-size: 1.3rem; font-weight: 800; }
+    .stat-box .slabel { font-size: .7rem; color: var(--text2); }
+
+    /* ── Start screen ── */
+    #start-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      text-align: center;
+      padding: 10px 0;
+    }
+    #start-screen .logo { font-size: 2.8rem; }
+    #start-screen h1 { font-size: 1.5rem; font-weight: 800; }
+    #start-screen p { font-size: .85rem; color: var(--text2); max-width: 320px; line-height: 1.5; }
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+      max-width: 280px;
+    }
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .82rem;
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    /* Seed input */
+    #seed-row { display: flex; gap: 8px; align-items: center; width: 100%; max-width: 280px; }
+    #seed-input {
+      flex: 1;
+      height: 40px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      padding: 0 10px;
+      font-size: .85rem;
+    }
+    #seed-input:focus { outline: 2px solid var(--accent); }
+
+    /* Timer bar */
+    #timer-wrap { width: 100%; height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; display: none; }
+    #timer-bar { height: 100%; background: var(--accent); border-radius: 2px; transition: width .1s linear; }
+    #timer-bar.warn { background: var(--orange); }
+    #timer-bar.crit { background: var(--red); }
+  </style>
+</head>
+<body>
+<div id="app">
+  <!-- Start screen -->
+  <div id="start-screen">
+    <div class="logo">🗝️</div>
+    <h1>Dungeon Puzzle Run</h1>
+    <p>A fast roguelike of one-thumb puzzle rooms. Solve logic, memory, timing, tile, pathing, and resource puzzles — or die trying.</p>
+    <div class="feature-list">
+      <div class="feature-item">🧩 6 unique puzzle types</div>
+      <div class="feature-item">⚔️ Branching dungeon paths</div>
+      <div class="feature-item">💎 Loot &amp; meta-progression</div>
+      <div class="feature-item">🎲 Seeded &amp; replayable runs</div>
+    </div>
+    <div id="seed-row">
+      <input id="seed-input" type="text" placeholder="Seed (optional)" maxlength="12" />
+    </div>
+    <button class="btn btn-primary" id="start-btn" style="width:100%;max-width:280px;">Enter the Dungeon</button>
+  </div>
+
+  <!-- HUD (hidden until game starts) -->
+  <div id="hud" style="display:none">
+    <div class="hud-badge"><span class="icon">❤️</span><span id="hp-text">10/10</span></div>
+    <div id="hp-bar-wrap"><div id="hp-bar" style="width:100%"></div></div>
+    <div class="hud-badge"><span class="icon">💎</span><span id="gems-text">0</span></div>
+    <div class="hud-badge"><span class="icon">🏆</span><span id="score-text">0</span></div>
+    <div class="hud-badge" id="seed-badge">Seed: <span id="seed-display">-</span></div>
+  </div>
+
+  <!-- Timer bar -->
+  <div id="timer-wrap"><div id="timer-bar"></div></div>
+
+  <!-- Map -->
+  <div id="map-strip" style="display:none"></div>
+
+  <!-- Room card -->
+  <div id="room-card" style="display:none">
+    <div class="room-header">
+      <div class="room-icon" id="room-icon">🚪</div>
+      <div class="room-meta">
+        <div class="room-type" id="room-type">LOGIC</div>
+        <div class="room-title" id="room-title">Room Name</div>
+      </div>
+    </div>
+    <div class="room-desc" id="room-desc">Description here.</div>
+    <div class="room-reward" id="room-reward"></div>
+    <div id="puzzle-area"></div>
+    <div id="timer-wrap-inline" style="display:none; margin-top:-4px;">
+      <div style="height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;">
+        <div id="timer-bar-inline" style="height:100%;background:var(--accent);border-radius:2px;transition:width .1s linear;"></div>
+      </div>
+    </div>
+    <div class="action-row single" id="action-row">
+      <button class="btn btn-secondary" id="skip-btn" style="display:none">Take Damage &amp; Skip (-2 HP)</button>
+    </div>
+  </div>
+
+  <!-- End screen -->
+  <div id="end-screen">
+    <div class="end-icon" id="end-icon">💀</div>
+    <h2 id="end-title">Run Over</h2>
+    <p id="end-msg"></p>
+    <div class="stat-row" id="stat-row"></div>
+    <button class="btn btn-primary" id="restart-btn" style="min-width:160px;">Play Again</button>
+  </div>
+</div>
+
+<!-- Overlay -->
+<div id="overlay" role="dialog" aria-modal="true">
+  <div class="overlay-card" id="overlay-card">
+    <div class="overlay-title" id="overlay-title">Choose Your Reward</div>
+    <div class="overlay-sub" id="overlay-sub"></div>
+    <div class="loot-options" id="loot-options"></div>
+  </div>
+</div>
+
+<!-- Feedback -->
+<div id="feedback"></div>
+
+<script>
+(() => {
+'use strict';
+
+// ── Seeded RNG ──────────────────────────────────────────────────────────────
+function mulberry32(seed) {
+  return () => {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function strToSeed(s) {
+  let h = 0xdeadbeef;
+  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 2654435761);
+  return (h ^ h >>> 16) >>> 0;
+}
+function makeRng(seed) { return mulberry32(typeof seed === 'string' ? strToSeed(seed) : seed); }
+function pick(arr, rng) { return arr[Math.floor(rng() * arr.length)]; }
+function shuffle(arr, rng) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+// ── Game state ─────────────────────────────────────────────────────────────
+const G = {
+  hp: 10, maxHp: 10,
+  gems: 0, score: 0,
+  relics: [],
+  roomIndex: 0,
+  rooms: [],
+  seed: '',
+  rng: null,
+  puzzleSolved: false,
+  puzzleData: null,
+  timerInterval: null,
+  timingInterval: null,
+  pathState: null,
+  startTime: 0,
+};
+
+// ── Room templates ──────────────────────────────────────────────────────────
+const ROOM_TYPES = ['logic','memory','timing','tile','pathing','resource'];
+const LOOT_POOL = [
+  { id:'shield', icon:'🛡️', name:'Iron Shield', desc:'Max HP +2', effect: g => { g.maxHp += 2; g.hp = Math.min(g.hp + 2, g.maxHp); } },
+  { id:'gem2', icon:'💎', name:'Gem Cache', desc:'Gems +3', effect: g => { g.gems += 3; } },
+  { id:'potion', icon:'🧪', name:'Healing Potion', desc:'HP +4 (up to max)', effect: g => { g.hp = Math.min(g.hp + 4, g.maxHp); } },
+  { id:'boots', icon:'👟', name:'Swiftboots', desc:'Skip penalty halved', effect: g => { g.relics.push('boots'); } },
+  { id:'lens', icon:'🔮', name:'Magic Lens', desc:'Memory cards show longer', effect: g => { g.relics.push('lens'); } },
+  { id:'hourglass', icon:'⏳', name:'Hourglass', desc:'Timing zone widens', effect: g => { g.relics.push('hourglass'); } },
+  { id:'torch', icon:'🔦', name:'Bright Torch', desc:'Pathing grid shows hints', effect: g => { g.relics.push('torch'); } },
+  { id:'coin', icon:'🪙', name:'Lucky Coin', desc:'Gems +5', effect: g => { g.gems += 5; } },
+];
+
+function genDungeon(rng) {
+  const count = 8 + Math.floor(rng() * 3); // 8-10 rooms
+  const rooms = [];
+  const types = shuffle([...ROOM_TYPES, ...ROOM_TYPES], rng).slice(0, count - 1);
+  for (let i = 0; i < count - 1; i++) {
+    rooms.push({ type: types[i], reward: pick(['loot','gems','hp'], rng), branch: rng() > .7 });
+  }
+  rooms.push({ type: 'boss', reward: 'victory' });
+  return rooms;
+}
+
+// ── Puzzle generators ───────────────────────────────────────────────────────
+
+// LOGIC: turn cells on/off so row/col totals match targets
+function genLogic(rng) {
+  const size = 3;
+  const state = Array.from({length:size}, () => Array.from({length:size}, () => rng() > .5 ? 1 : 0));
+  const rowTargets = state.map(r => r.reduce((a,b) => a+b, 0));
+  const colTargets = Array.from({length:size}, (_,c) => state.reduce((s,r) => s + r[c], 0));
+  // Scramble
+  const player = Array.from({length:size}, () => new Array(size).fill(0));
+  return { size, rowTargets, colTargets, player };
+}
+
+// MEMORY: classic pair-matching
+function genMemory(rng) {
+  const icons = ['🍎','🌙','⭐','🔥','💧','🌿','🎯','🔮'];
+  const count = 4; // 4 pairs = 8 cards
+  const chosen = shuffle(icons, rng).slice(0, count);
+  const cards = shuffle([...chosen, ...chosen], rng).map((icon, i) => ({
+    id: i, icon, face: false, matched: false
+  }));
+  return { cards, flipped: [], locked: false, moves: 0 };
+}
+
+// TIMING: stop cursor in green zone
+function genTiming(rng) {
+  const zoneStart = 20 + Math.floor(rng() * 30);
+  const zoneWidth = G.relics.includes('hourglass') ? 28 : 18 + Math.floor(rng() * 12);
+  return { zoneStart, zoneEnd: zoneStart + zoneWidth, cursor: 0, dir: 1, speed: 1.2 + rng() * 0.8, attempts: 3, hits: 0, needed: 2 };
+}
+
+// TILE: slide/toggle tiles to match a pattern
+function genTile(rng) {
+  const size = 4;
+  const goal = Array.from({length:size}, () => rng() > .5 ? 1 : 0);
+  let state = shuffle([...Array(size).keys()], rng).map(() => rng() > .5 ? 1 : 0);
+  while (state.every((v,i) => v === goal[i])) state = state.map(() => rng() > .5 ? 1 : 0);
+  return { size, goal, state };
+}
+
+// PATHING: draw a path from S to E avoiding walls
+function genPathing(rng) {
+  const W = 7, H = 7;
+  const cells = Array.from({length:H}, () => new Array(W).fill(0));
+  // Mark walls
+  for (let r = 0; r < H; r++) for (let c = 0; c < W; c++) {
+    if (r === 0 && c === 0) continue;
+    if (r === H-1 && c === W-1) continue;
+    if (rng() < .28) cells[r][c] = 1; // wall
+  }
+  // BFS to confirm path exists, remove walls if needed
+  const bfs = () => {
+    const q = [[0,0]], vis = new Set(['0,0']);
+    while (q.length) {
+      const [r,c] = q.shift();
+      if (r === H-1 && c === W-1) return true;
+      for (const [dr,dc] of [[-1,0],[1,0],[0,-1],[0,1]]) {
+        const nr=r+dr, nc=c+dc;
+        if (nr>=0&&nr<H&&nc>=0&&nc<W&&!vis.has(`${nr},${nc}`)&&!cells[nr][nc]) { vis.add(`${nr},${nc}`); q.push([nr,nc]); }
+      }
+    }
+    return false;
+  };
+  while (!bfs()) {
+    const r = Math.floor(rng()*(H-2))+1, c = Math.floor(rng()*(W-2))+1;
+    cells[r][c] = 0;
+  }
+  return { W, H, cells, path: new Set(['0,0']), drawing: false, lastCell: [0,0] };
+}
+
+// RESOURCE: allocate budget to meet targets
+function genResource(rng) {
+  const total = 12 + Math.floor(rng() * 6);
+  const targets = {
+    food: 3 + Math.floor(rng() * 3),
+    wood: 3 + Math.floor(rng() * 3),
+    gold: 2 + Math.floor(rng() * 3),
+  };
+  return { total, budget: total, allocated: {food:0, wood:0, gold:0}, targets };
+}
+
+// ── Render puzzles ──────────────────────────────────────────────────────────
+function renderPuzzle(type, data) {
+  const area = document.getElementById('puzzle-area');
+  area.innerHTML = '';
+  if (type === 'boss') { renderBoss(area); return; }
+  ({
+    logic:    () => renderLogic(area, data),
+    memory:   () => renderMemory(area, data),
+    timing:   () => renderTiming(area, data),
+    tile:     () => renderTile(area, data),
+    pathing:  () => renderPathing(area, data),
+    resource: () => renderResource(area, data),
+  })[type]?.();
+}
+
+function renderLogic(area, d) {
+  const hint = document.createElement('div');
+  hint.className = 'logic-hint';
+  hint.textContent = 'Toggle cells so each row and column matches the target count.';
+  area.appendChild(hint);
+  const grid = document.createElement('div');
+  grid.className = 'logic-grid';
+  for (let r = 0; r < d.size; r++) {
+    const row = document.createElement('div');
+    row.className = 'logic-row';
+    for (let c = 0; c < d.size; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'logic-cell' + (d.player[r][c] ? ' on' : '');
+      cell.tabIndex = 0;
+      cell.setAttribute('aria-label', `Row ${r+1} Col ${c+1}`);
+      cell.addEventListener('click', () => {
+        d.player[r][c] = d.player[r][c] ? 0 : 1;
+        renderLogic(area, d);
+        checkLogic(d);
+      });
+      cell.addEventListener('keydown', e => { if (e.key===' '||e.key==='Enter'){e.preventDefault();cell.click();} });
+      row.appendChild(cell);
+    }
+    const lbl = document.createElement('div');
+    lbl.className = 'logic-label';
+    lbl.textContent = d.rowTargets[r];
+    row.appendChild(lbl);
+    grid.appendChild(row);
+  }
+  // Col targets row
+  const colRow = document.createElement('div');
+  colRow.className = 'logic-row';
+  for (let c = 0; c < d.size; c++) {
+    const lbl = document.createElement('div');
+    lbl.className = 'logic-label';
+    lbl.style.width = '44px'; lbl.style.textAlign = 'center';
+    lbl.textContent = d.colTargets[c];
+    colRow.appendChild(lbl);
+  }
+  grid.appendChild(colRow);
+  area.appendChild(grid);
+}
+
+function checkLogic(d) {
+  for (let r = 0; r < d.size; r++) {
+    if (d.player[r].reduce((a,b)=>a+b,0) !== d.rowTargets[r]) return;
+  }
+  for (let c = 0; c < d.size; c++) {
+    if (d.player.reduce((s,row)=>s+row[c],0) !== d.colTargets[c]) return;
+  }
+  solvePuzzle();
+}
+
+function renderMemory(area, d) {
+  const cols = 4;
+  const grid = document.createElement('div');
+  grid.className = 'memory-grid';
+  grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  d.cards.forEach(card => {
+    const el = document.createElement('div');
+    el.className = 'mem-card' + (card.face||card.matched ? ' face-up':'') + (card.matched?' matched':'');
+    el.textContent = (card.face || card.matched) ? card.icon : '?';
+    el.tabIndex = card.matched ? -1 : 0;
+    el.setAttribute('aria-label', card.matched ? card.icon : 'Hidden card');
+    if (!card.matched) {
+      el.addEventListener('click', () => flipMemCard(card, d));
+      el.addEventListener('keydown', e => { if(e.key===' '||e.key==='Enter'){e.preventDefault();el.click();} });
+    }
+    grid.appendChild(el);
+  });
+  area.appendChild(grid);
+}
+
+function flipMemCard(card, d) {
+  if (d.locked || card.face || card.matched) return;
+  card.face = true;
+  renderMemory(document.getElementById('puzzle-area'), d);
+  d.flipped.push(card);
+  if (d.flipped.length === 2) {
+    d.locked = true; d.moves++;
+    const [a, b] = d.flipped;
+    if (a.icon === b.icon) {
+      a.matched = b.matched = true;
+      d.flipped = []; d.locked = false;
+      renderMemory(document.getElementById('puzzle-area'), d);
+      if (d.cards.every(c => c.matched)) solvePuzzle();
+    } else {
+      const delay = G.relics.includes('lens') ? 1400 : 900;
+      setTimeout(() => {
+        a.face = b.face = false; d.flipped = []; d.locked = false;
+        renderMemory(document.getElementById('puzzle-area'), d);
+      }, delay);
+    }
+  }
+}
+
+function renderTiming(area, d) {
+  const track = document.createElement('div'); track.id = 'timing-track';
+  const zone = document.createElement('div'); zone.id = 'timing-zone';
+  zone.style.left = d.zoneStart + '%';
+  zone.style.width = (d.zoneEnd - d.zoneStart) + '%';
+  const cursor = document.createElement('div'); cursor.id = 'timing-cursor';
+  cursor.style.left = d.cursor + '%';
+  track.appendChild(zone); track.appendChild(cursor);
+  area.appendChild(track);
+
+  const info = document.createElement('div');
+  info.style.cssText = 'font-size:.78rem;color:var(--text2);text-align:center;';
+  info.textContent = `Hit the green zone ${d.needed} time${d.needed>1?'s':''}  (${d.hits}/${d.needed}) — ${d.attempts} tap${d.attempts!==1?'s':''} left`;
+  area.appendChild(info);
+
+  const btn = document.createElement('button'); btn.id = 'timing-btn'; btn.textContent = 'TAP!';
+  btn.addEventListener('click', () => tapTiming(d));
+  btn.addEventListener('keydown', e => { if(e.key===' '||e.key==='Enter'){e.preventDefault();btn.click();} });
+  area.appendChild(btn);
+
+  startTimingAnim(d);
+}
+
+function startTimingAnim(d) {
+  if (G.timingInterval) clearInterval(G.timingInterval);
+  G.timingInterval = setInterval(() => {
+    d.cursor += d.dir * d.speed;
+    if (d.cursor >= 100) { d.cursor = 100; d.dir = -1; }
+    if (d.cursor <= 0)   { d.cursor = 0;   d.dir =  1; }
+    const c = document.getElementById('timing-cursor');
+    if (c) c.style.left = d.cursor + '%';
+  }, 20);
+}
+
+function tapTiming(d) {
+  if (G.timingInterval) clearInterval(G.timingInterval);
+  const hit = d.cursor >= d.zoneStart && d.cursor <= d.zoneEnd;
+  if (hit) {
+    d.hits++;
+    flashFeedback('✅ Hit!', 'good');
+    if (d.hits >= d.needed) { solvePuzzle(); return; }
+  } else {
+    d.attempts--;
+    flashFeedback('❌ Missed!', 'bad');
+    if (d.attempts <= 0) { failPuzzle(); return; }
+  }
+  renderPuzzle('timing', d);
+}
+
+function renderTile(area, d) {
+  const hint = document.createElement('div');
+  hint.style.cssText = 'font-size:.75rem;color:var(--text2);text-align:center;';
+  hint.textContent = 'Toggle tiles to match the goal pattern (gold border).';
+  area.appendChild(hint);
+
+  // Goal row
+  const goalRow = document.createElement('div');
+  goalRow.style.cssText = 'display:flex;gap:5px;align-items:center;';
+  const goalLabel = document.createElement('span');
+  goalLabel.style.cssText = 'font-size:.7rem;color:var(--text2);min-width:32px;';
+  goalLabel.textContent = 'Goal:';
+  goalRow.appendChild(goalLabel);
+  d.goal.forEach(v => {
+    const t = document.createElement('div');
+    t.className = 'tile goal' + (v ? ' active' : '');
+    t.style.cssText = 'width:44px;height:44px;flex-shrink:0;';
+    t.textContent = v ? '✓' : '';
+    goalRow.appendChild(t);
+  });
+  area.appendChild(goalRow);
+
+  // Player row
+  const grid = document.createElement('div');
+  grid.style.cssText = 'display:flex;gap:5px;align-items:center;';
+  const yourLabel = document.createElement('span');
+  yourLabel.style.cssText = 'font-size:.7rem;color:var(--text2);min-width:32px;';
+  yourLabel.textContent = 'You:';
+  grid.appendChild(yourLabel);
+  d.state.forEach((v, i) => {
+    const t = document.createElement('div');
+    t.className = 'tile' + (v ? ' active' : '');
+    const isCorrect = v === d.goal[i];
+    if (isCorrect) t.classList.add('correct');
+    t.style.cssText = 'width:44px;height:44px;flex-shrink:0;';
+    t.textContent = v ? '✓' : '✗';
+    t.tabIndex = 0;
+    t.addEventListener('click', () => {
+      d.state[i] = d.state[i] ? 0 : 1;
+      renderTile(area, d);
+      if (d.state.every((v,j) => v === d.goal[j])) solvePuzzle();
+    });
+    t.addEventListener('keydown', e => { if(e.key===' '||e.key==='Enter'){e.preventDefault();t.click();} });
+    grid.appendChild(t);
+  });
+  area.appendChild(grid);
+}
+
+function renderPathing(area, d) {
+  const CELL = 36;
+  const canvas = document.createElement('canvas');
+  canvas.id = 'path-canvas';
+  canvas.width = d.W * CELL;
+  canvas.height = d.H * CELL;
+  canvas.style.width = Math.min(d.W * CELL, 260) + 'px';
+  canvas.style.height = Math.min(d.H * CELL, 260) + 'px';
+  area.appendChild(canvas);
+
+  const hint = document.createElement('div');
+  hint.style.cssText = 'font-size:.73rem;color:var(--text2);text-align:center;';
+  hint.textContent = 'Draw a path from S (top-left) to E (bottom-right). Tap/drag to paint.';
+  area.appendChild(hint);
+
+  drawPath(canvas, d, CELL);
+
+  const drawCell = (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const cx = (e.clientX !== undefined ? e.clientX : e.touches[0].clientX) - rect.left;
+    const cy = (e.clientY !== undefined ? e.clientY : e.touches[0].clientY) - rect.top;
+    const col = Math.floor(cx * scaleX / CELL);
+    const row = Math.floor(cy * scaleY / CELL);
+    if (col < 0 || col >= d.W || row < 0 || row >= d.H) return;
+    if (d.cells[row][col] === 1) return;
+    const key = `${row},${col}`;
+    // Only add if adjacent to last drawn cell
+    const [lr, lc] = d.lastCell;
+    const adj = (Math.abs(row-lr) + Math.abs(col-lc)) <= 1;
+    if (!adj && d.path.size > 1) return;
+    d.path.add(key);
+    d.lastCell = [row, col];
+    drawPath(canvas, d, CELL);
+    if (row === d.H-1 && col === d.W-1 && d.path.has('0,0')) {
+      // Verify connected path
+      if (isValidPath(d)) solvePuzzle();
+    }
+  };
+
+  canvas.addEventListener('mousedown', e => { d.drawing = true; d.path = new Set(['0,0']); d.lastCell=[0,0]; drawCell(e); });
+  canvas.addEventListener('mousemove', e => { if (d.drawing) drawCell(e); });
+  canvas.addEventListener('mouseup', () => { d.drawing = false; });
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); d.drawing = true; d.path = new Set(['0,0']); d.lastCell=[0,0]; drawCell(e); }, {passive:false});
+  canvas.addEventListener('touchmove', e => { e.preventDefault(); if (d.drawing) drawCell(e); }, {passive:false});
+  canvas.addEventListener('touchend', () => { d.drawing = false; });
+}
+
+function drawPath(canvas, d, CELL) {
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let r = 0; r < d.H; r++) for (let c = 0; c < d.W; c++) {
+    const key = `${r},${c}`;
+    const isWall = d.cells[r][c] === 1;
+    const isPath = d.path.has(key);
+    const isStart = r===0&&c===0, isEnd = r===d.H-1&&c===d.W-1;
+    ctx.fillStyle = isWall ? '#3a2a50' : isPath ? '#c084fc' : '#1e1535';
+    ctx.beginPath(); ctx.roundRect(c*CELL+2, r*CELL+2, CELL-4, CELL-4, 5); ctx.fill();
+    if (isStart || isEnd) {
+      ctx.fillStyle = '#fff';
+      ctx.font = `bold ${CELL*.4}px system-ui`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(isStart ? 'S' : 'E', c*CELL+CELL/2, r*CELL+CELL/2);
+    } else if (isWall) {
+      ctx.fillStyle = '#5a3a70'; ctx.font = `${CELL*.45}px system-ui`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('🪨', c*CELL+CELL/2, r*CELL+CELL/2+2);
+    }
+    if (G.relics.includes('torch') && isWall) {
+      // Show hint: walls near valid path glow slightly
+      ctx.strokeStyle = '#5a3a70'; ctx.lineWidth = 1;
+      ctx.strokeRect(c*CELL+2, r*CELL+2, CELL-4, CELL-4);
+    }
+  }
+}
+
+function isValidPath(d) {
+  let prev = null;
+  for (const key of d.path) {
+    const [r,c] = key.split(',').map(Number);
+    if (prev) {
+      const [pr,pc] = prev;
+      if (Math.abs(r-pr)+Math.abs(c-pc) > 1) return false;
+      if (d.cells[r][c]) return false;
+    }
+    prev = [r,c];
+  }
+  return d.path.has(`${d.H-1},${d.W-1}`);
+}
+
+function renderResource(area, d) {
+  const items = [
+    {key:'food',icon:'🍖',label:'Food'},
+    {key:'wood',icon:'🪵',label:'Wood'},
+    {key:'gold',icon:'🥇',label:'Gold'},
+  ];
+  const target = document.createElement('div');
+  target.className = 'res-target';
+  target.innerHTML = `Budget: <strong>${d.budget}</strong> left &nbsp;|&nbsp; Need: 🍖${d.targets.food} 🪵${d.targets.wood} 🥇${d.targets.gold}`;
+  area.appendChild(target);
+
+  const grid = document.createElement('div');
+  grid.className = 'resource-grid';
+  items.forEach(({key, icon, label}) => {
+    const box = document.createElement('div'); box.className = 'res-item';
+    box.innerHTML = `<div class="icon">${icon}</div><div class="val">${d.allocated[key]}/${d.targets[key]}</div><div>${label}</div>`;
+    grid.appendChild(box);
+  });
+  area.appendChild(grid);
+
+  const btnRow = document.createElement('div'); btnRow.className = 'res-btn-row';
+  items.forEach(({key, icon}) => {
+    const btn = document.createElement('button');
+    btn.className = 'res-btn' + (d.budget > 0 ? '' : '');
+    btn.style.gridColumn = 'span 1';
+    btn.textContent = `+${icon}`;
+    btn.disabled = d.budget <= 0;
+    btn.addEventListener('click', () => {
+      if (d.budget <= 0) return;
+      d.allocated[key]++;
+      d.budget--;
+      renderResource(area, d);
+      checkResource(d);
+    });
+    btnRow.appendChild(btn);
+  });
+  // Reset
+  const reset = document.createElement('button');
+  reset.className = 'res-btn';
+  reset.textContent = '↩ Reset';
+  reset.style.gridColumn = 'span 2';
+  reset.addEventListener('click', () => {
+    d.budget = d.total;
+    d.allocated = {food:0,wood:0,gold:0};
+    renderResource(area, d);
+  });
+  btnRow.appendChild(reset);
+  btnRow.style.gridTemplateColumns = 'repeat(3,1fr) 1fr';
+  area.appendChild(btnRow);
+}
+
+function checkResource(d) {
+  const met = Object.keys(d.targets).every(k => d.allocated[k] >= d.targets[k]);
+  if (met) solvePuzzle();
+}
+
+function renderBoss(area) {
+  area.innerHTML = '';
+  area.style.minHeight = '120px';
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;';
+  wrap.innerHTML = `
+    <div style="font-size:3rem;animation:pulse 1s infinite alternate;">👹</div>
+    <div style="font-weight:800;font-size:1.1rem;color:var(--red);">Final Boss</div>
+    <div style="font-size:.82rem;color:var(--text2);">Face the dungeon guardian. Solve one final puzzle to claim victory.</div>
+  `;
+  area.appendChild(wrap);
+  // Boss is a hard logic puzzle
+  const d = genLogic(G.rng);
+  G.puzzleData = d;
+  setTimeout(() => renderLogic(area, d), 600);
+}
+
+// ── Room flow ───────────────────────────────────────────────────────────────
+const ROOM_META = {
+  logic:    { icon:'🔣', label:'LOGIC',    title:'Truth Grid', desc:'Activate cells so every row and column sum matches.' },
+  memory:   { icon:'🃏', label:'MEMORY',   title:'Mirror Vault', desc:'Match all hidden pairs to unlock the door.' },
+  timing:   { icon:'⚡', label:'TIMING',   title:'Arc Relay', desc:'Stop the cursor inside the green zone — twice.' },
+  tile:     { icon:'🔲', label:'TILE',     title:'Pattern Lock', desc:'Toggle tiles until your pattern matches the goal.' },
+  pathing:  { icon:'🗺️', label:'PATHING',  title:'Maze Corridor', desc:'Draw a clear path from S to E through the dungeon.' },
+  resource: { icon:'⚗️', label:'RESOURCE', title:'Supply Cache', desc:'Allocate your budget to meet all resource targets.' },
+  boss:     { icon:'👹', label:'BOSS',     title:'Final Guardian', desc:'Defeat the dungeon boss to complete your run.' },
+};
+
+function loadRoom(idx) {
+  const room = G.rooms[idx];
+  if (!room) { endGame(true); return; }
+  G.roomIndex = idx;
+  G.puzzleSolved = false;
+  if (G.timerInterval) clearInterval(G.timerInterval);
+  if (G.timingInterval) clearInterval(G.timingInterval);
+
+  const meta = ROOM_META[room.type] || ROOM_META.logic;
+  document.getElementById('room-icon').textContent = meta.icon;
+  document.getElementById('room-type').textContent = meta.label;
+  document.getElementById('room-title').textContent = meta.title;
+  document.getElementById('room-desc').textContent = meta.desc;
+
+  const rewardEl = document.getElementById('room-reward');
+  if (room.reward === 'loot') rewardEl.innerHTML = '💎 Reward: Choose a relic';
+  else if (room.reward === 'gems') rewardEl.innerHTML = `💎 Reward: +${2+idx} gems`;
+  else if (room.reward === 'hp') rewardEl.innerHTML = '❤️ Reward: Restore 2 HP';
+  else if (room.reward === 'victory') rewardEl.innerHTML = '🏆 Reward: Victory!';
+  else rewardEl.innerHTML = '';
+
+  // Generate puzzle
+  const gen = { logic:genLogic, memory:genMemory, timing:genTiming, tile:genTile, pathing:genPathing, resource:genResource, boss:()=>null };
+  G.puzzleData = gen[room.type]?.(G.rng) ?? null;
+
+  renderPuzzle(room.type, G.puzzleData);
+  updateMap();
+  updateHud();
+
+  // Skip button
+  document.getElementById('skip-btn').style.display = room.type === 'boss' ? 'none' : '';
+  document.getElementById('action-row').innerHTML = '';
+  const skipBtn = document.createElement('button');
+  skipBtn.className = 'btn btn-secondary';
+  skipBtn.textContent = room.type === 'boss' ? '' : 'Take Damage & Skip (-2 HP)';
+  if (room.type !== 'boss') {
+    skipBtn.addEventListener('click', () => skipRoom());
+    document.getElementById('action-row').appendChild(skipBtn);
+  }
+}
+
+function solvePuzzle() {
+  if (G.puzzleSolved) return;
+  G.puzzleSolved = true;
+  if (G.timingInterval) clearInterval(G.timingInterval);
+  G.score += 10 + G.roomIndex * 2;
+  flashFeedback('🎉 Solved!', 'good');
+  const room = G.rooms[G.roomIndex];
+  setTimeout(() => giveReward(room), 600);
+}
+
+function failPuzzle() {
+  if (G.puzzleSolved) return;
+  G.puzzleSolved = true;
+  if (G.timingInterval) clearInterval(G.timingInterval);
+  flashFeedback('💀 Failed!', 'bad');
+  takeDamage(3);
+  if (G.hp > 0) setTimeout(() => loadRoom(G.roomIndex + 1), 900);
+}
+
+function skipRoom() {
+  if (G.puzzleSolved) return;
+  G.puzzleSolved = true;
+  if (G.timingInterval) clearInterval(G.timingInterval);
+  const dmg = G.relics.includes('boots') ? 1 : 2;
+  takeDamage(dmg);
+  flashFeedback(`Skipped (-${dmg} HP)`, 'bad');
+  if (G.hp > 0) setTimeout(() => loadRoom(G.roomIndex + 1), 700);
+}
+
+function takeDamage(amount) {
+  G.hp = Math.max(0, G.hp - amount);
+  updateHud();
+  if (G.hp <= 0) endGame(false);
+}
+
+function giveReward(room) {
+  if (room.reward === 'victory') { endGame(true); return; }
+  if (room.reward === 'gems') {
+    G.gems += 2 + G.roomIndex;
+    G.score += 5;
+    updateHud();
+    flashFeedback(`+${2+G.roomIndex} 💎`, 'good');
+    setTimeout(() => loadRoom(G.roomIndex + 1), 700);
+    return;
+  }
+  if (room.reward === 'hp') {
+    G.hp = Math.min(G.hp + 2, G.maxHp);
+    updateHud();
+    flashFeedback('+2 ❤️', 'good');
+    setTimeout(() => loadRoom(G.roomIndex + 1), 700);
+    return;
+  }
+  if (room.reward === 'loot') {
+    showLootChoice(() => loadRoom(G.roomIndex + 1));
+  }
+}
+
+function showLootChoice(onPick) {
+  const options = shuffle(LOOT_POOL, G.rng).slice(0, 2);
+  const overlay = document.getElementById('overlay');
+  const optEl = document.getElementById('loot-options');
+  document.getElementById('overlay-title').textContent = 'Choose Your Reward';
+  document.getElementById('overlay-sub').textContent = 'Pick one relic to keep.';
+  optEl.innerHTML = '';
+  options.forEach(opt => {
+    const el = document.createElement('div');
+    el.className = 'loot-opt';
+    el.tabIndex = 0;
+    el.innerHTML = `<div class="loot-icon">${opt.icon}</div><div><div class="loot-name">${opt.name}</div><div class="loot-desc">${opt.desc}</div></div>`;
+    el.addEventListener('click', () => {
+      opt.effect(G);
+      overlay.classList.remove('visible');
+      updateHud();
+      flashFeedback(`Got ${opt.name}!`, 'good');
+      onPick();
+    });
+    el.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click();} });
+    optEl.appendChild(el);
+  });
+  overlay.classList.add('visible');
+}
+
+function endGame(won) {
+  if (G.timingInterval) clearInterval(G.timingInterval);
+  document.getElementById('room-card').style.display = 'none';
+  document.getElementById('map-strip').style.display = 'none';
+  document.getElementById('hud').style.display = 'none';
+  const end = document.getElementById('end-screen');
+  end.classList.add('visible');
+  document.getElementById('end-icon').textContent = won ? '🏆' : '💀';
+  document.getElementById('end-title').textContent = won ? 'Victory!' : 'You Fell';
+  document.getElementById('end-msg').textContent = won
+    ? `You conquered the dungeon with ${G.hp} HP remaining!`
+    : `You reached room ${G.roomIndex + 1} of ${G.rooms.length}.`;
+  document.getElementById('stat-row').innerHTML = `
+    <div class="stat-box"><div class="sval">${G.score}</div><div class="slabel">Score</div></div>
+    <div class="stat-box"><div class="sval">${G.gems}</div><div class="slabel">Gems</div></div>
+    <div class="stat-box"><div class="sval">${G.roomIndex}</div><div class="slabel">Rooms</div></div>
+    <div class="stat-box"><div class="sval">${G.relics.length}</div><div class="slabel">Relics</div></div>
+  `;
+}
+
+// ── HUD & Map ───────────────────────────────────────────────────────────────
+function updateHud() {
+  document.getElementById('hp-text').textContent = `${G.hp}/${G.maxHp}`;
+  document.getElementById('gems-text').textContent = G.gems;
+  document.getElementById('score-text').textContent = G.score;
+  const pct = G.hp / G.maxHp * 100;
+  const bar = document.getElementById('hp-bar');
+  bar.style.width = pct + '%';
+  bar.style.background = pct > 50 ? 'var(--green)' : pct > 25 ? 'var(--orange)' : 'var(--red)';
+}
+
+function updateMap() {
+  const strip = document.getElementById('map-strip');
+  strip.innerHTML = '';
+  G.rooms.forEach((room, i) => {
+    if (i > 0) {
+      const conn = document.createElement('div');
+      conn.className = 'map-connector' + (room.branch ? ' branch' : '');
+      strip.appendChild(conn);
+    }
+    const el = document.createElement('div');
+    const state = i < G.roomIndex ? 'done' : i === G.roomIndex ? 'current' : 'locked';
+    el.className = `map-room ${state}` + (room.type === 'boss' ? ' boss' : '');
+    el.textContent = i < G.roomIndex ? '✓' : (ROOM_META[room.type]?.icon || '?');
+    el.title = ROOM_META[room.type]?.title || '';
+    strip.appendChild(el);
+  });
+  // Scroll current into view
+  const cur = strip.querySelector('.current');
+  if (cur) cur.scrollIntoView({inline:'center', behavior:'smooth'});
+}
+
+// ── Feedback flash ──────────────────────────────────────────────────────────
+let feedbackTimer = null;
+function flashFeedback(msg, cls) {
+  const el = document.getElementById('feedback');
+  if (feedbackTimer) clearTimeout(feedbackTimer);
+  el.textContent = msg;
+  el.className = `show ${cls}`;
+  feedbackTimer = setTimeout(() => { el.className = ''; }, 1400);
+}
+
+// ── Start ───────────────────────────────────────────────────────────────────
+function startGame(seedStr) {
+  G.seed = seedStr || String(Date.now());
+  G.rng = makeRng(G.seed);
+  G.hp = 10; G.maxHp = 10;
+  G.gems = 0; G.score = 0;
+  G.relics = []; G.roomIndex = 0;
+  G.rooms = genDungeon(G.rng);
+  G.puzzleSolved = false;
+
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('end-screen').classList.remove('visible');
+  document.getElementById('hud').style.display = '';
+  document.getElementById('map-strip').style.display = '';
+  document.getElementById('room-card').style.display = '';
+  document.getElementById('seed-display').textContent = G.seed.slice(0, 8);
+
+  updateHud();
+  loadRoom(0);
+}
+
+document.getElementById('start-btn').addEventListener('click', () => {
+  startGame(document.getElementById('seed-input').value.trim() || null);
+});
+document.getElementById('seed-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('start-btn').click();
+});
+document.getElementById('restart-btn').addEventListener('click', () => {
+  document.getElementById('end-screen').classList.remove('visible');
+  document.getElementById('start-screen').style.display = '';
+});
+
+// Keyboard shortcut: Enter/Space to confirm in overlay
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('overlay').classList.contains('visible')) {
+    // can't skip loot choice via Escape
+  }
+});
+
+// Add pulse animation
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.08); } }
+  canvas { image-rendering: pixelated; }
+`;
+document.head.appendChild(style);
+
+// Auto-start with random seed on load
+startGame(null);
+})();
+</script>
+</body>
+</html>
