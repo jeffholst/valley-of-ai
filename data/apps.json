@@ -1,5 +1,39 @@
 [
   {
+    "id": "2026/03/23/tic-tac-toe-strategy-lab",
+    "name": "Tic-Tac-Toe Strategy Lab",
+    "shortDescription": "A polished responsive tic-tac-toe game with unbeatable AI, keyboard controls, and touch gestures.",
+    "thumbnailUrl": "/apps/2026/03/23/tic-tac-toe-strategy-lab/thumbnail.svg",
+    "createdAt": "2026-03-23T07:00:37Z",
+    "year": 2026,
+    "month": 3,
+    "day": 23,
+    "category": "Games",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "tic-tac-toe",
+      "minimax",
+      "strategy",
+      "responsive",
+      "keyboard",
+      "touch"
+    ],
+    "route": "/apps/2026/03/23/tic-tac-toe-strategy-lab",
+    "appPath": "/apps/2026/03/23/tic-tac-toe-strategy-lab/index.html",
+    "generation": {
+      "agentName": "dev",
+      "llmModel": "openai-codex/gpt-5.3-codex",
+      "startTime": "2026-03-23T07:00:37Z",
+      "endTime": "2026-03-23T07:06:00Z",
+      "totalTokensIn": 0,
+      "totalTokensOut": 0,
+      "runId": "run-20260323T070037Z-1a17e4",
+      "notes": "Built a static mobile-first tic-tac-toe app with minimax AI, score tracking, keyboard navigation, and swipe-to-reset gesture support."
+    },
+    "suggestion": null
+  },
+  {
     "id": "2026/03/22/freecell-mobile-classic",
     "name": "FreeCell Mobile Classic",
     "shortDescription": "A responsive FreeCell clone with touch, keyboard controls, undo, auto-move, and win detection.",
