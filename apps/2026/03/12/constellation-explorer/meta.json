@@ -6,7 +6,15 @@
   "createdAt": "2026-03-12T20:47:01Z",
   "category": "Education",
   "status": "active",
-  "tags": ["astronomy", "stars", "constellations", "mythology", "interactive", "educational"],
+  "visible": true,
+  "tags": [
+    "astronomy",
+    "stars",
+    "constellations",
+    "mythology",
+    "interactive",
+    "educational"
+  ],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

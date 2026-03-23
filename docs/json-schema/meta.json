@@ -47,6 +47,11 @@
       "type": "string",
       "enum": ["Games", "Productivity", "Utilities", "Design", "Education", "Entertainment", "Visualizations"]
     },
+    "visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this app appears in the public app listing. Defaults to true. Set to false to hide without deleting."
+    },
     "status": {
       "type": "string",
       "enum": ["active", "experimental", "retired"],

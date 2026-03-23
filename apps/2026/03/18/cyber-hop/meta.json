@@ -7,7 +7,17 @@
   "category": "Games",
   "votes": 0,
   "status": "active",
-  "tags": ["arcade", "frogger", "cyberpunk", "neon", "mobile", "canvas", "time-warp", "touch-controls"],
+  "visible": true,
+  "tags": [
+    "arcade",
+    "frogger",
+    "cyberpunk",
+    "neon",
+    "mobile",
+    "canvas",
+    "time-warp",
+    "touch-controls"
+  ],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

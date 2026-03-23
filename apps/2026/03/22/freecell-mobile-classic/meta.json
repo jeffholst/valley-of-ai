@@ -7,7 +7,15 @@
   "category": "Games",
   "votes": 0,
   "status": "active",
-  "tags": ["freecell", "solitaire", "cards", "puzzle", "mobile", "keyboard"],
+  "visible": false,
+  "tags": [
+    "freecell",
+    "solitaire",
+    "cards",
+    "puzzle",
+    "mobile",
+    "keyboard"
+  ],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

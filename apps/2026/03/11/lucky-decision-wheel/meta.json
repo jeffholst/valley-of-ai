@@ -8,7 +8,14 @@
   "createdAt": "2026-03-11T07:02:30Z",
   "category": "Utilities",
   "status": "active",
-  "tags": ["decision", "randomizer", "wheel", "party", "utility"],
+  "visible": true,
+  "tags": [
+    "decision",
+    "randomizer",
+    "wheel",
+    "party",
+    "utility"
+  ],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

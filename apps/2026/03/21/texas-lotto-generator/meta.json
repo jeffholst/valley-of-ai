@@ -6,7 +6,16 @@
   "createdAt": "2026-03-21T18:14:39Z",
   "category": "Entertainment",
   "status": "active",
-  "tags": ["lottery", "texas", "random", "numbers", "animation", "confetti", "generator"],
+  "visible": true,
+  "tags": [
+    "lottery",
+    "texas",
+    "random",
+    "numbers",
+    "animation",
+    "confetti",
+    "generator"
+  ],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

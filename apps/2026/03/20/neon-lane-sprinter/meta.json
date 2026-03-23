@@ -7,7 +7,14 @@
   "category": "Games",
   "votes": 0,
   "status": "active",
-  "tags": ["arcade", "reaction", "lanes", "touch", "keyboard"],
+  "visible": true,
+  "tags": [
+    "arcade",
+    "reaction",
+    "lanes",
+    "touch",
+    "keyboard"
+  ],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

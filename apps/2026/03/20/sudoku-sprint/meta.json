@@ -7,7 +7,14 @@
   "category": "Games",
   "votes": 0,
   "status": "active",
-  "tags": ["sudoku", "puzzle", "keyboard", "touch", "logic"],
+  "visible": true,
+  "tags": [
+    "sudoku",
+    "puzzle",
+    "keyboard",
+    "touch",
+    "logic"
+  ],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

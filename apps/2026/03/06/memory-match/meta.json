@@ -14,6 +14,7 @@
   "homepagePath": "index.html",
   "createdAt": "2026-03-06T21:30:00Z",
   "status": "active",
+  "visible": true,
   "inputMode": "desktop",
   "generation": {
     "agentName": "claude-opus-4.5",
