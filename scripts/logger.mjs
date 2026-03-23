@@ -17,7 +17,7 @@
  *   --runId <ID>          Unique run identifier
  *   --appId <ID>          Application identifier
  *   --date <YYYY/MM/DD>   Date of the run used to derive app and central log paths
- *   --category <TYPE>     Log category: pipeline|reasoning|validation|feedback
+ *   --category <TYPE>     Log category: pipeline|reasoning|validation
  *   --message <TEXT>      Human-readable description of the log entry
  *   --phase <PHASE>       Pipeline phase (e.g., GENERATE_HTML, VALIDATE_APP)
  *   --status <STATUS>     started|success|in_progress|failed (default: completed; legacy: completed|in-progress)
