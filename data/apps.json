@@ -1,5 +1,45 @@
 [
   {
+    "id": "2026/03/23/dungeon-puzzle-run",
+    "name": "Dungeon Puzzle Run",
+    "shortDescription": "A mobile-first puzzle roguelike where you explore a seeded dungeon of one-thumb puzzle rooms — logic grids, memory pairs, timing arcs, tile patterns, pathing mazes, and resource allocation — with branching paths, loot relics, and a boss room.",
+    "thumbnailUrl": "/apps/2026/03/23/dungeon-puzzle-run/thumbnail.svg",
+    "createdAt": "2026-03-23T17:45:55Z",
+    "year": 2026,
+    "month": 3,
+    "day": 23,
+    "category": "Games",
+    "inputMode": "mobile",
+    "status": "active",
+    "tags": [
+      "roguelike",
+      "puzzle",
+      "mobile",
+      "touch",
+      "dungeon",
+      "strategy",
+      "seeded"
+    ],
+    "route": "/apps/2026/03/23/dungeon-puzzle-run",
+    "appPath": "/apps/2026/03/23/dungeon-puzzle-run/index.html",
+    "generation": {
+      "agentName": "claude-code",
+      "llmModel": "claude-sonnet-4-6",
+      "startTime": "2026-03-23T17:45:55Z",
+      "endTime": "2026-03-23T18:45:00Z",
+      "totalTokensIn": 8200,
+      "totalTokensOut": 9400,
+      "runId": "run-20260323T174555Z-c330b7",
+      "notes": "Built from approved community suggestion #175. All 6 puzzle types implemented: logic (truth grid), memory (pair matching), timing (cursor stop), tile (pattern match), pathing (draw path), resource (budget allocation). Seeded mulberry32 RNG for reproducible runs. Token counts are estimates."
+    },
+    "suggestion": {
+      "issueNumber": 175,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/175",
+      "prompt": "Create a mobile-first puzzle roguelike. The player explores a dungeon made of short, one-thumb puzzle rooms. Each run should be fast, addictive, and replayable, with AI generating the dungeon layout, room order, enemies, rewards, and flavor text. Requirements: Touch-only controls: tap, swipe, drag, long-press. Runs last 3-10 minutes. Every room has one clear puzzle goal. Puzzle types include logic, memory, timing, tile, pathing, and resource puzzles. Use seeded randomness for replayable runs. Include branching paths, risk/reward choices, a boss room, health, loot, and meta-progression. Use clean visuals: strong lighting, smooth transitions, particles, glowing effects, and mobile-friendly UI. Keep the game fair, readable, and easy to restart after failure.",
+      "requestor": "Perplexity"
+    }
+  },
+  {
     "id": "2026/03/23/tic-tac-toe-strategy-lab",
     "name": "Tic-Tac-Toe Strategy Lab",
     "shortDescription": "A polished responsive tic-tac-toe game with unbeatable AI, keyboard controls, and touch gestures.",
