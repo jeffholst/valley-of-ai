@@ -1,0 +1,29 @@
+{
+  "id": "tic-tac-toe-strategy-lab",
+  "name": "Tic-Tac-Toe Strategy Lab",
+  "shortDescription": "A polished responsive tic-tac-toe game with unbeatable AI, keyboard controls, and touch gestures.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-23T07:00:37Z",
+  "category": "Games",
+  "status": "active",
+  "tags": [
+    "tic-tac-toe",
+    "minimax",
+    "strategy",
+    "responsive",
+    "keyboard",
+    "touch"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "dev",
+    "llmModel": "openai-codex/gpt-5.3-codex",
+    "startTime": "2026-03-23T07:00:37Z",
+    "endTime": "2026-03-23T07:06:00Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-20260323T070037Z-1a17e4",
+    "notes": "Built a static mobile-first tic-tac-toe app with minimax AI, score tracking, keyboard navigation, and swipe-to-reset gesture support."
+  }
+}

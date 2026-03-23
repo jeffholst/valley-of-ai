@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic-Tac-Toe Strategy Lab - __MAIN_SITE_NAME__</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="voa-app-id" content="2026/03/23/tic-tac-toe-strategy-lab" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root { --bg: #0b1224; --text: #e2e8f0; --surface: #16213b; --surface-2: #1f2d4d; --accent: #22d3ee; --accent-2: #a78bfa; --ok: #34d399; --border: #32466f; }
+      [data-theme='light'] { --bg: #f8fafc; --text: #1f2937; --surface: #ffffff; --surface-2: #e2e8f0; --accent: #0891b2; --accent-2: #7c3aed; --ok: #059669; --border: #cbd5e1; }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: Inter, 'Segoe UI', Roboto, sans-serif; color: var(--text); background: radial-gradient(circle at top, #172554 0%, var(--bg) 65%); }
+      .app { max-width: 820px; margin: 0 auto; padding: 12px; display: grid; gap: 12px; }
+      .panel { background: color-mix(in srgb, var(--surface) 92%, black 8%); border: 1px solid var(--border); border-radius: 16px; padding: 14px; box-shadow: 0 12px 28px rgb(15 23 42 / 35%); }
+      h1 { margin: 0; font-size: clamp(1.2rem, 4vw, 1.9rem); }
+      .sub { margin: 6px 0 0; opacity: 0.9; font-size: 0.95rem; }
+      .hud { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+      .pill { background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 7px 11px; font-size: 0.9rem; }
+      .controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+      button { min-height: 46px; border: 1px solid var(--border); border-radius: 12px; background: linear-gradient(180deg, color-mix(in srgb, var(--surface-2) 88%, #fff 12%), var(--surface-2)); color: var(--text); font-weight: 700; cursor: pointer; transition: transform 0.15s ease; }
+      button:hover { transform: translateY(-1px); }
+      button:active { transform: translateY(0); }
+      .primary { background: linear-gradient(180deg, #0ea5e9, #0284c7); color: #ecfeff; border-color: #0284c7; }
+      .board-wrap { display: grid; place-items: center; }
+      .board { width: min(92vw, 420px); aspect-ratio: 1 / 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; touch-action: manipulation; }
+      .cell { border: 2px solid var(--border); border-radius: 16px; background: linear-gradient(165deg, color-mix(in srgb, var(--surface) 84%, white 16%), var(--surface)); color: var(--text); font-size: clamp(2rem, 11vw, 4rem); font-weight: 900; display: grid; place-items: center; min-height: 96px; }
+      .cell:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
+      .cell.x { color: var(--accent); text-shadow: 0 0 14px color-mix(in srgb, var(--accent) 65%, transparent); }
+      .cell.o { color: var(--accent-2); text-shadow: 0 0 14px color-mix(in srgb, var(--accent-2) 65%, transparent); }
+      .status { margin-top: 12px; font-size: 1rem; min-height: 1.4em; }
+      .win { color: var(--ok); font-weight: 800; }
+      .help { margin-top: 10px; line-height: 1.45; font-size: 0.9rem; opacity: 0.95; }
+      @media (max-width: 560px) { .app { padding: 8px; gap: 8px; } .panel { padding: 10px; } .controls { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <section class="panel">
+        <h1>Tic-Tac-Toe Strategy Lab</h1>
+        <p class="sub">Play against an unbeatable AI. Mouse, touch, keyboard, and swipe reset supported.</p>
+        <div class="hud">
+          <span class="pill" id="scoreX">You (X): 0</span>
+          <span class="pill" id="scoreO">AI (O): 0</span>
+          <span class="pill" id="scoreD">Draws: 0</span>
+          <span class="pill" id="turn">Turn: You</span>
+        </div>
+        <div class="controls">
+          <button class="primary" id="newRound">New Round</button>
+          <button id="resetAll">Reset Scoreboard</button>
+        </div>
+      </section>
+      <section class="panel board-wrap">
+        <div class="board" id="board" role="grid" aria-label="Tic Tac Toe board"></div>
+        <div class="status" id="status" aria-live="polite"></div>
+        <p class="help">Keyboard: arrow keys move focus, Enter/Space places X. Gesture: swipe right over the board to start a fresh round.</p>
+      </section>
+    </main>
+
+    <script>
+      const boardEl = document.getElementById('board');
+      const turnEl = document.getElementById('turn');
+      const statusEl = document.getElementById('status');
+      const scoreXEl = document.getElementById('scoreX');
+      const scoreOEl = document.getElementById('scoreO');
+      const scoreDEl = document.getElementById('scoreD');
+      const WIN_LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+      let board = Array(9).fill('');
+      let gameOver = false;
+      let scores = { X: 0, O: 0, D: 0 };
+
+      function drawBoard() {
+        boardEl.innerHTML = '';
+        board.forEach((mark, i) => {
+          const btn = document.createElement('button');
+          btn.className = `cell ${mark ? mark.toLowerCase() : ''}`;
+          btn.setAttribute('role', 'gridcell');
+          btn.setAttribute('aria-label', `Cell ${i + 1} ${mark || 'empty'}`);
+          btn.dataset.index = i;
+          btn.textContent = mark;
+          btn.disabled = Boolean(mark) || gameOver;
+          btn.addEventListener('click', () => playerMove(i));
+          btn.addEventListener('keydown', onCellKeydown);
+          boardEl.appendChild(btn);
+        });
+      }
+
+      function onCellKeydown(e) {
+        const idx = Number(e.currentTarget.dataset.index);
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); playerMove(idx); return; }
+        const dirs = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -3, ArrowDown: 3 };
+        if (!(e.key in dirs)) return;
+        e.preventDefault();
+        const next = Math.min(8, Math.max(0, idx + dirs[e.key]));
+        boardEl.querySelector(`[data-index="${next}"]`)?.focus();
+      }
+
+      function getWinner(state) {
+        for (const [a,b,c] of WIN_LINES) if (state[a] && state[a] === state[b] && state[b] === state[c]) return state[a];
+        return null;
+      }
+      function isDraw(state) { return state.every(Boolean) && !getWinner(state); }
+
+      function minimax(state, isMax) {
+        const winner = getWinner(state);
+        if (winner === 'O') return 10;
+        if (winner === 'X') return -10;
+        if (isDraw(state)) return 0;
+        if (isMax) {
+          let best = -Infinity;
+          for (let i = 0; i < 9; i++) if (!state[i]) { state[i] = 'O'; best = Math.max(best, minimax(state, false)); state[i] = ''; }
+          return best;
+        }
+        let best = Infinity;
+        for (let i = 0; i < 9; i++) if (!state[i]) { state[i] = 'X'; best = Math.min(best, minimax(state, true)); state[i] = ''; }
+        return best;
+      }
+
+      function bestMove() {
+        let bestScore = -Infinity;
+        let move = -1;
+        for (let i = 0; i < 9; i++) {
+          if (!board[i]) {
+            board[i] = 'O';
+            const score = minimax(board, false);
+            board[i] = '';
+            if (score > bestScore) { bestScore = score; move = i; }
+          }
+        }
+        return move;
+      }
+
+      function syncHud() {
+        scoreXEl.textContent = `You (X): ${scores.X}`;
+        scoreOEl.textContent = `AI (O): ${scores.O}`;
+        scoreDEl.textContent = `Draws: ${scores.D}`;
+        turnEl.textContent = `Turn: ${gameOver ? 'Round complete' : 'You'}`;
+      }
+
+      function finishRound(winner) {
+        gameOver = true;
+        if (winner === 'X') { scores.X++; statusEl.innerHTML = '<span class="win">You win! Nice setup.</span>'; }
+        else if (winner === 'O') { scores.O++; statusEl.textContent = 'AI wins this round. Try controlling center and corners.'; }
+        else { scores.D++; statusEl.textContent = 'Draw. Strong defense from both sides.'; }
+        syncHud();
+        drawBoard();
+      }
+
+      function playerMove(index) {
+        if (gameOver || board[index]) return;
+        board[index] = 'X';
+        drawBoard();
+        const w1 = getWinner(board);
+        if (w1 || isDraw(board)) return finishRound(w1);
+        turnEl.textContent = 'Turn: AI';
+        setTimeout(() => {
+          const ai = bestMove();
+          if (ai >= 0) board[ai] = 'O';
+          drawBoard();
+          const w2 = getWinner(board);
+          if (w2 || isDraw(board)) finishRound(w2);
+          else { turnEl.textContent = 'Turn: You'; statusEl.textContent = 'Your move.'; }
+        }, 220);
+      }
+
+      function newRound() {
+        board = Array(9).fill('');
+        gameOver = false;
+        statusEl.textContent = 'Round started. You are X.';
+        syncHud();
+        drawBoard();
+        boardEl.querySelector('[data-index="0"]')?.focus();
+      }
+      function resetAll() { scores = { X: 0, O: 0, D: 0 }; newRound(); }
+
+      document.getElementById('newRound').addEventListener('click', newRound);
+      document.getElementById('resetAll').addEventListener('click', resetAll);
+
+      let touchStartX = null;
+      boardEl.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0]?.clientX ?? null; }, { passive: true });
+      boardEl.addEventListener('touchend', (e) => {
+        if (touchStartX === null) return;
+        const endX = e.changedTouches[0]?.clientX ?? touchStartX;
+        if (endX - touchStartX > 80) newRound();
+        touchStartX = null;
+      }, { passive: true });
+
+      newRound();
+    </script>
+  </body>
+</html>
