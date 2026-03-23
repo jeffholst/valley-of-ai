@@ -12,13 +12,12 @@
  *   pipeline    - Pipeline steps (requires: --step)
  *   reasoning   - Agent reasoning/decisions (requires: --message, optionally --decision)
  *   validation  - Checks and validation (requires: --checkType, --result)
- *   feedback    - Post-generation user feedback incorporated into the app (requires: --feedbackType)
  *
  * Common OPTIONS:
  *   --runId <ID>          Unique run identifier
  *   --appId <ID>          Application identifier
  *   --date <YYYY/MM/DD>   Date of the run used to derive app and central log paths
- *   --category <TYPE>     Log category: pipeline|reasoning|validation|feedback
+ *   --category <TYPE>     Log category: pipeline|reasoning|validation
  *   --message <TEXT>      Human-readable description of the log entry
  *   --phase <PHASE>       Pipeline phase (e.g., GENERATE_HTML, VALIDATE_APP)
  *   --status <STATUS>     started|success|in_progress|failed (default: completed; legacy: completed|in-progress)
@@ -42,13 +41,6 @@
  *   --result <RESULT>     PASS|FAIL|WARN
  *   --details <JSON>      Additional metadata about the check
  *
- * Feedback-specific OPTIONS (only for --category feedback):
- *   --feedbackType <TYPE> bug-fix|ui-fix|enhancement|content
- *   --userReport <TEXT>   What the user reported (verbatim or summarized)
- *   --change <TEXT>       What was changed in response
- *   --files <CSV>         Comma-separated list of modified files
- *   --feedbackRunId <ID>  Optional run ID for the feedback session (distinct from original --runId)
- *
  * EXAMPLES:
  *   # Pipeline step with seq for progress tracking
  *   npm run log -- --runId run-20260316-abc123 --appId my-app --date 2026/03/16 --category pipeline \
@@ -66,13 +58,6 @@
  *     --checkType "file-exists" --name "HTML validation" --result PASS \
  *     --message "All 53 HTML files valid"
  *
- *   # Feedback entry (post-generation user feedback)
- *   npm run log -- --runId run-20260316-abc123 --appId my-app --date 2026/03/16 --category feedback \
- *     --feedbackType ui-fix --feedbackRunId run-20260320T120000Z-xyz789 \
- *     --userReport "numbers invisible when cell selected in light mode" \
- *     --change "changed .cell.selected to solid accent-2 background with color:#fff" \
- *     --files "apps/2026/03/16/my-app/index.html" \
- *     --message "Fixed selected cell text visibility in light mode"
  */
 
 import fs from 'fs';
@@ -100,11 +85,6 @@ program
   .option('--decision <text>', 'Decision made')
   .option('--alternatives <csv>', 'Comma-separated alternatives')
   .option('--rationale <text>', 'Decision rationale')
-  .option('--feedbackType <type>', 'Feedback type: bug-fix|ui-fix|enhancement|content')
-  .option('--feedbackRunId <id>', 'Run ID for the feedback session')
-  .option('--userReport <text>', 'What the user reported')
-  .option('--change <text>', 'What was changed in response')
-  .option('--files <csv>', 'Comma-separated list of modified files')
   .option('--dry-run', 'Print entry without appending')
   .parse(process.argv);
 
@@ -132,8 +112,8 @@ if (!datePattern.test(args.date)) {
 }
 
 // Validate category
-if (!['pipeline', 'reasoning', 'validation', 'feedback'].includes(args.category)) {
-  console.error(`ERROR: --category must be one of: pipeline, reasoning, validation, feedback (got: ${args.category})`);
+if (!['pipeline', 'reasoning', 'validation'].includes(args.category)) {
+  console.error(`ERROR: --category must be one of: pipeline, reasoning, validation (got: ${args.category})`);
   process.exit(1);
 }
 
@@ -150,11 +130,6 @@ if (args.category === 'validation' && !args.checkType) {
 
 if (args.category === 'validation' && !args.result) {
   console.error('ERROR: --result is required for validation entries');
-  process.exit(1);
-}
-
-if (args.category === 'feedback' && !args.feedbackType) {
-  console.error('ERROR: --feedbackType is required for feedback entries (bug-fix|ui-fix|enhancement|content)');
   process.exit(1);
 }
 
@@ -238,15 +213,6 @@ if (args.category === 'pipeline') {
     name: args.name || null,
     result: args.result,
     details,
-  };
-} else if (args.category === 'feedback') {
-  entry.type = 'FEEDBACK';
-  entry.feedback = {
-    type: args.feedbackType,
-    feedbackRunId: args.feedbackRunId || null,
-    userReport: args.userReport || null,
-    change: args.change || null,
-    files: args.files ? args.files.split(',').map(f => f.trim()) : [],
   };
 }
 

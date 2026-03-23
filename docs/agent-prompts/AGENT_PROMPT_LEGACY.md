@@ -133,13 +133,28 @@ For reasoning decisions and validation checks, use `--category reasoning` or `--
 > **Note:** Do NOT create the app folder yet — `<app-id>` is not known until Step 1.
 
 ### Step 1: Idea selection
-1. Review `data/apps.json` to check the current app registry and avoid starting a duplicate or near-duplicate app.
-2. Check for approved community suggestions:
+1. Run the app selection script (`scripts/select-app-suggestion.js`):
    ```bash
-   gh issue list --label "status:approved" --state open --json number,title,body,url --limit 5
+   npm run select:app:suggestion
    ```
-   - If one or more approved issues are returned, pick the most suitable one. Note its `number`, `url`, and extract the description from the issue `body` (the text under `### Description`). Also extract the requestor name from the `**Requestor:**` line if present.
-   - If no approved issues exist, proceed with a freely chosen concept.
+   The script checks sources in priority order and outputs a single JSON recommendation:
+
+   | `source` value | What it means | How to act |
+   |---|---|---|
+   | `github-boosted` | Boosted+approved GitHub issue with the highest verified tip total (owner comments only) | Use `issueNumber`, `issueUrl`, and `prompt`. Extract description from `### Description` section; requestor from `**Requestor:**` line. |
+   | `github-approved` | Oldest open approved GitHub suggestion (no boost label) | Same as above. |
+   | `vote-and-category-analysis` | No open issues — derived from Supabase vote data and category gap scoring | Review `voteInspiredConcepts` and `categoryGaps`. Choose the strongest concept that avoids overlap with existing apps. Prefer `recommendation.primary` unless `recommendation.secondary` (category gap) is a clearly better fit. |
+
+   **Duplication guardrails** — every output includes:
+   - `duplicationRisk` (`low`/`medium`/`high`) with `matches` listing existing apps whose keywords overlap the candidate. A `high` risk means you must pick a meaningfully different angle or choose a different issue.
+   - `similarityContext.saturatedTags` — tags present in ≥20% of all apps. Avoid making one of these the core mechanic.
+   - `similarityContext.recentTags` — tags from apps built in the last 14 days. Avoid repeating the same feel back-to-back.
+   - `existingAppsInCategory` — all apps already in the same category (with tags), for reference.
+
+   **If the script fails or cannot run**, fall back to manual selection: check GitHub for approved suggestions, then choose a freely chosen concept if none exist. Apply the same duplication checks manually by reviewing `data/apps.json`.
+
+   > **Improving an existing app instead?** Run `npm run select:app:improvement` (`scripts/select-app-improvement.js`) to find the highest-priority approved improvement request. It follows the same boosted → approved priority order. If it returns `"found": false` — **stop. Do not proceed with an improvement run.** The output includes `targetApp` with the existing app's metadata so you know exactly which app to modify.
+
 3. Choose one app concept and category. Derive `<app-id>` as a kebab-case slug (e.g., `color-match-blitz`).
 4. ⚠️ Create the app folder: `apps/YYYY/MM/DD/<app-id>/`.
 5. Log the transaction start (this creates both log files):
