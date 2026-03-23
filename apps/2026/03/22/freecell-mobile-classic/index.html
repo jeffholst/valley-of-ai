@@ -27,12 +27,15 @@
     <script src="/apps/shared/app-shell.js" defer></script>
 
     <style>
+      /* ── Variables ── */
       :root { --bg: #0c1224; --text: #eef2ff; --surface: #182647; --surface-soft: #22345f; --accent: #4ade80; --accent-2: #60a5fa; --danger: #f87171; --border: #3b4f84; }
       [data-theme='light'] { --bg: #eff6ff; --text: #172554; --surface: #ffffff; --surface-soft: #e2e8f0; --accent: #16a34a; --accent-2: #2563eb; --danger: #dc2626; --border: #93c5fd; }
       * { box-sizing: border-box; }
       body { margin: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: radial-gradient(circle at top, #172554 0%, var(--bg) 62%); color: var(--text); }
+
+      /* ── Layout ── */
       .app { max-width: 1080px; margin: 0 auto; padding: 12px; display: grid; gap: 10px; }
-      .panel { background: color-mix(in srgb, var(--surface) 90%, black 10%); border: 1px solid var(--border); border-radius: 14px; padding: 10px; box-shadow: 0 12px 22px rgba(2, 6, 23, 0.28); }
+      .panel { background: color-mix(in srgb, var(--surface) 90%, black 10%); border: 1px solid var(--border); border-radius: 14px; padding: 10px; box-shadow: 0 12px 22px rgba(2,6,23,.28); }
       .topbar { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
       h1 { margin: 0; font-size: clamp(1.1rem, 2.5vw, 1.5rem); }
       .stats { display: flex; gap: 10px; flex-wrap: wrap; font-size: .92rem; }
@@ -42,24 +45,124 @@
       button:hover { transform: translateY(-1px); }
       button:active { transform: translateY(0); }
       .primary { background: linear-gradient(180deg, #16a34a, #15803d); color: #f0fdf4; border-color: #15803d; }
+
+      /* ── Board ── */
       .board { display: grid; gap: 10px; }
-      .zones { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; }
+      .zones   { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; }
       .tableau { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; }
       .pile { min-height: 90px; border: 2px dashed color-mix(in srgb, var(--border) 75%, transparent); border-radius: 10px; background: color-mix(in srgb, var(--surface) 86%, black 14%); position: relative; padding: 4px; }
-      .pile-label { position: absolute; top: 5px; left: 6px; font-size: .72rem; opacity: .8; }
+      .pile-label { position: absolute; top: 5px; left: 6px; font-size: .72rem; opacity: .75; pointer-events: none; z-index: 1; }
       .pile.tableau { min-height: 230px; }
-      .card { user-select: none; touch-action: none; border-radius: 8px; border: 1px solid #94a3b8; background: linear-gradient(180deg, #fff, #f8fafc); color: #0f172a; font-weight: 800; min-height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0, 0, 0, .2); }
-      .card.red { color: #b91c1c; }
-      .pile.tableau .card { margin-top: -22px; }
-      .pile.tableau .card:first-child { margin-top: 18px; }
-      .card.selected { outline: 3px solid var(--accent-2); transform: translateY(-3px); }
+
+      /* ── Playing card styling ── */
+      .card {
+        user-select: none; touch-action: none;
+        border-radius: 8px;
+        border: 1px solid #bbc8d8;
+        background: linear-gradient(160deg, #ffffff 55%, #dde8f2 100%);
+        color: transparent;          /* text hidden; corners via ::before / ::after */
+        font-weight: 900; font-size: .9rem;
+        min-height: 44px;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 3px 8px rgba(0,0,0,.24), 0 1px 2px rgba(0,0,0,.1), inset 0 1px 0 rgba(255,255,255,.95);
+        position: relative;
+      }
+      /* Top-left rank/suit */
+      .card::before {
+        content: attr(data-card);
+        position: absolute; top: 4px; left: 5px;
+        font-size: .7rem; font-weight: 900; line-height: 1.1;
+        color: #1a2744;
+      }
+      /* Bottom-right rank/suit (rotated) */
+      .card::after {
+        content: attr(data-card);
+        position: absolute; bottom: 4px; right: 5px;
+        font-size: .7rem; font-weight: 900; line-height: 1.1;
+        transform: rotate(180deg);
+        color: #1a2744;
+      }
+      .card.red::before, .card.red::after { color: #c41230; }
+      .card:disabled { opacity: 1; pointer-events: none; }
+
+      /* Desktop vertical column stacking */
+      .pile.tableau .card { margin-top: -24px; }
+      .pile.tableau .card:first-child { margin-top: 20px; }
+
+      .card.selected {
+        outline: 3px solid var(--accent-2);
+        transform: translateY(-4px);
+        box-shadow: 0 6px 18px rgba(96,165,250,.45), 0 3px 8px rgba(0,0,0,.22);
+        z-index: 10;
+      }
       .empty-hint { position: absolute; inset: 0; display: grid; place-content: center; font-size: .78rem; opacity: .6; pointer-events: none; }
       .status { font-size: .94rem; min-height: 1.4em; }
       .win { color: var(--accent); font-weight: 800; }
       .error { color: var(--danger); }
       .help { font-size: .86rem; line-height: 1.4; opacity: .9; }
-      @media (max-width: 840px) { .zones, .tableau { grid-template-columns: repeat(4, minmax(0, 1fr)); } .pile.tableau { min-height: 200px; } }
-      @media (max-width: 460px) { .app { padding: 8px; gap: 8px; } .panel { padding: 8px; border-radius: 12px; } .pile.tableau .card { margin-top: -20px; } }
+
+      /* ── Desktop breakpoint ── */
+      @media (max-width: 840px) {
+        .zones, .tableau { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .pile.tableau { min-height: 200px; }
+      }
+
+      /* ── Mobile: vertical row layout ── */
+      @media (max-width: 540px) {
+        .app { padding: 8px; gap: 7px; }
+        .panel { padding: 8px; border-radius: 12px; overflow: visible; }
+        .board { gap: 7px; overflow: visible; }
+
+        /* Zones: compact 8-column strip */
+        .zones { grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 3px; }
+        .zones .pile { min-height: 52px; padding: 3px 2px; }
+        .zones .pile-label { font-size: .55rem; top: 2px; left: 3px; }
+        .zones .pile .card { min-height: 32px; border-radius: 6px; }
+        .zones .pile .card::before, .zones .pile .card::after { font-size: .55rem; top: 2px; left: 3px; bottom: 2px; right: 3px; }
+
+        /* Tableau: flip to 8 horizontal rows */
+        .tableau {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        .pile.tableau {
+          display: flex;
+          flex-direction: row;
+          align-items: flex-start;
+          min-height: 62px;
+          height: 62px;
+          padding: 5px 5px 5px 28px;
+          overflow: visible;
+          position: relative;
+        }
+        .pile.tableau .pile-label {
+          top: 50%;
+          left: 3px;
+          transform: translateY(-50%);
+          font-size: .58rem;
+          white-space: nowrap;
+        }
+        /* Horizontal card fanning */
+        .pile.tableau .card {
+          margin-top: 0;
+          margin-left: -24px;
+          min-width: 44px;
+          width: 44px;
+          min-height: 56px;
+          height: 56px;
+          flex-shrink: 0;
+          border-radius: 7px;
+        }
+        .pile.tableau .card:first-child { margin-left: 0; }
+        .pile.tableau .card::before { font-size: .66rem; }
+        .pile.tableau .card::after  { font-size: .66rem; }
+
+        /* Selected card lifts up out of the row */
+        .pile.tableau .card.selected { transform: translateY(-6px); }
+
+        .pile.tableau .empty-hint { font-size: .6rem; }
+      }
     </style>
   </head>
   <body>
