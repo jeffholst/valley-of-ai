@@ -81,11 +81,10 @@ function StatusIcon({ status }) {
 // Group logs into runs
 //
 // Returns an array of groups, each with:
-//   { type: 'new_app' | 'improvement' | 'feedback' | 'legacy', runId, date, entries[] }
+//   { type: 'new_app' | 'improvement' | 'legacy', runId, date, entries[] }
 //
-// Ordering: chronological by first entry in each group.
-// Feedback entries are collected as a single group at the end (they're ad-hoc
-// fixes, not full pipeline runs — no meaningful ordering among runs).
+// Ordering: legacy entries (if any) are grouped first, followed by run-based
+// groups in chronological order by the first entry in each group.
 // ---------------------------------------------------------------------------
 
 function groupLogs(logs) {
