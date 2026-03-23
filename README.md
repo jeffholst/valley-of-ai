@@ -90,8 +90,19 @@ See the AI model, token usage, and generation time for each app.
 <tr>
 <td><img src="https://img.shields.io/badge/Node.js-18+-339933?style=flat-square&logo=node.js&logoColor=white" /></td>
 <td><img src="https://img.shields.io/badge/npm-9+-CB3837?style=flat-square&logo=npm&logoColor=white" /></td>
+<td><img src="https://img.shields.io/badge/GitHub_CLI-required-181717?style=flat-square&logo=github&logoColor=white" /></td>
+<td><img src="https://img.shields.io/badge/git-required-F05032?style=flat-square&logo=git&logoColor=white" /></td>
 </tr>
 </table>
+
+| Tool | Required for | Install |
+|------|-------------|---------|
+| **Node.js 18+** | Running the dev server, all scripts | [nodejs.org](https://nodejs.org) |
+| **npm 9+** | Installing dependencies, running scripts | Bundled with Node.js |
+| **git** | All git operations in the agent pipelines | [git-scm.com](https://git-scm.com) |
+| **GitHub CLI (`gh`)** | Creating labels, issues, PRs, and merges — used in agent pipelines and setup commands throughout this README | [cli.github.com](https://cli.github.com) — then run `gh auth login` |
+| **Playwright browsers** | `npm run validate:responsive` and `npm run validate:responsive:sample` (uses Chromium headlessly) | Run once after `npm install`: `npx playwright install chromium` |
+| **`xmllint`** | Optional — used in agent pipelines to validate `thumbnail.svg` before saving | macOS: `brew install libxml2` · Linux: `sudo apt install libxml2-utils` |
 
 ### Installation
 
@@ -102,6 +113,9 @@ cd valley-of-ai
 
 # Install dependencies
 npm install
+
+# Install Playwright browser (required for validate:responsive)
+npx playwright install chromium
 
 # Start development server
 npm run dev
@@ -155,8 +169,11 @@ cp .env.example .env
 
 Then edit `.env` with your real values.
 
-- `.env.example`: Committed template with placeholder values.
-- `.env`: Your local runtime config (should contain real keys/IDs for local/dev/deploy use).
+| File | Committed | Purpose |
+|------|-----------|---------|
+| `.env.example` | ✅ Yes | Template with placeholder values — copy this to `.env` to get started |
+| `.env` | ❌ No (git-ignored) | Your config with real keys — this is all you need |
+| `.env.local` | ❌ No (git-ignored) | Optional — takes precedence over `.env` if you need to layer overrides (most users won't need this) |
 
 Client-side variables use the `NEXT_PUBLIC_*` prefix (accessible in the browser). Server-side variables have no prefix (never exposed to the client).
 
@@ -167,7 +184,7 @@ Client-side variables use the `NEXT_PUBLIC_*` prefix (accessible in the browser)
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Client | Cloudflare Turnstile site key (production only; skipped in development) |
 | `NEXT_PUBLIC_GA_MEASUREMENT_ID` | Client | Google Analytics measurement ID |
 | `NEXT_PUBLIC_MAIN_SITE_URL` | Client | Main site URL used by app footer links |
-| `NEXT_PUBLIC_MAIN_SITE_NAME` | Client | Main site name used by app footer link text |
+| `NEXT_PUBLIC_SITE_NAME` | Client | Main site name used by app footer link text |
 | `NEXT_PUBLIC_SOCIAL_X_URL` | Client | X profile URL used in footer social links |
 | `NEXT_PUBLIC_SOCIAL_FACEBOOK_URL` | Client | Facebook profile/page URL used in footer social links |
 | `NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL` | Client | Instagram profile URL used in footer social links |
@@ -233,7 +250,10 @@ stripe trigger checkout.session.completed
 | `npm run generate:apps` | 🔄 Regenerate the committed `data/apps.json` registry from `apps/*/meta.json` files |
 | `npm run sync` | 📋 Copy `apps/` and `logs/` into `public/` for static access |
 | `npm run validate:apps` | ✅ Validate standalone app HTML structure, metadata, and `data/apps.json` synchronization |
-| `npm run validate:responsive` | 📱 Validate responsive design across breakpoints |
+| `npm run validate:responsive` | 📱 Validate responsive design across all apps |
+| `npm run validate:responsive:sample` | 📱 Same as above but limited to 5 apps — faster for local spot-checks |
+| `npm run select:app:suggestion` | 🤖 Recommend the next **new app** concept to build — checks GitHub for boosted/approved `suggestion` issues first (ranked by verified tip total), then falls back to Supabase vote analysis and category gap scoring when no issues exist. Outputs a JSON recommendation with duplication-risk scoring and saturated/recent tag warnings to avoid repeating existing concepts. |
+| `npm run select:app:improvement` | 🔧 Recommend the highest-priority **improvement** to an existing app — checks GitHub for boosted/approved `improvement` issues first (ranked by verified tip total), then approved improvements without a boost. Outputs a JSON recommendation including the target app's metadata. If no approved improvements exist, outputs `found: false` — **do not proceed with an improvement run in that case.** |
 
 ### Build & Deployment Pipeline
 
@@ -329,11 +349,13 @@ This is useful for documentation-only changes or quick fixes that don't require 
 │   └── 📁 YYYY/MM/*.jsonl
 │
 ├── 🛠️ scripts/            # Build and generation scripts
-│   ├── 📄 generate-apps.js    # Scan apps/ → generate data/apps.json
-│   ├── 📄 sync-public-content.mjs  # Copy apps/ & logs/ → public/ (with placeholder replacement)
-│   ├── 📄 validate-apps.js    # Validate app HTML/metadata
-│   ├── 📄 validate-responsive.js  # Test responsive design
-│   └── 📄 logger.js           # Logging utility
+│   ├── 📄 generate-apps.js          # Scan apps/ → generate data/apps.json
+│   ├── 📄 sync-public-content.mjs   # Copy apps/ & logs/ → public/ (with placeholder replacement)
+│   ├── 📄 validate-apps.js          # Validate app HTML/metadata
+│   ├── 📄 validate-responsive.js    # Test responsive design
+│   ├── 📄 logger.js                 # Logging utility
+│   ├── 📄 select-app-suggestion.js  # Recommend next new app concept (GitHub issues → vote analysis → category gaps)
+│   └── 📄 select-app-improvement.js # Recommend highest-priority improvement to an existing app (GitHub issues only)
 │
 ├── 🧪 Tests
 │   ├── 📄 jest.config.js      # Jest configuration
@@ -349,7 +371,11 @@ This is useful for documentation-only changes or quick fixes that don't require 
 │
 ├── 📖 Documentation
 │   ├── 📄 docs/STYLE_GUIDE.md      # Code style, naming, conventions, best practices
-│   └── 📄 docs/TESTING.md          # Testing guide and examples
+│   ├── 📄 docs/TESTING.md          # Testing guide and examples
+│   └── 📁 docs/agent-prompts/      # AI agent pipeline prompts
+│       ├── 📄 AGENT_PROMPT_SHARED.md      # Shared contracts: logging, HTML rules, thumbnail spec
+│       ├── 📄 AGENT_PROMPT_NEW_APP.md     # Pipeline for building a new app from scratch
+│       └── 📄 AGENT_PROMPT_IMPROVEMENT.md # Pipeline for improving an existing app
 │
 ├── 📋 GitHub Templates
 │   ├── 📁 .github/
@@ -433,8 +459,10 @@ Each app includes rich metadata in `meta.json`:
   "tags": ["game", "memory", "animation"],
   "thumbnail": "thumbnail.svg",
   "homepagePath": "index.html",
+  "inputMode": "mouse",
   "createdAt": "2026-03-06T21:30:00Z",
   "status": "active",
+  "visible": true,
   "suggestion": {
     "issueNumber": 42,
     "issueUrl": "https://github.com/owner/valley-of-ai/issues/42",
@@ -450,13 +478,62 @@ Each app includes rich metadata in `meta.json`:
     "totalTokensOut": 4500,
     "runId": "run-20260306T213000Z-a1b2c3",
     "notes": "Classic memory card game with CSS 3D animations."
-  }
+  },
+  "improvements": [
+    {
+      "issueNumber": 99,
+      "issueUrl": "https://github.com/owner/valley-of-ai/issues/99",
+      "description": "Added hard difficulty mode with shorter flip time",
+      "requestor": "@bob",
+      "implementedAt": "2026-03-20T10:00:00Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
+    }
+  ]
 }
 ```
 
 > 💡 **Notes:**
 > - Votes are stored in Supabase, not in `meta.json`.
-> - The `suggestion` field is optional — only present when the app was built from a community GitHub Issue suggestion.
+> - `suggestion` is optional — only present when built from a community GitHub Issue suggestion.
+> - `improvements` is optional — appended to each time an improvement pipeline runs against this app.
+> - `visible` defaults to `true`. Set to `false` to hide an app from the gallery without deleting it.
+
+---
+
+## 🤖 AI Agent Pipelines
+
+The AI agent that builds and improves apps follows structured prompts in `docs/agent-prompts/`. There are two flows, both reading a shared contract file first:
+
+| File | Purpose |
+|------|---------|
+| [`AGENT_PROMPT_SHARED.md`](docs/agent-prompts/AGENT_PROMPT_SHARED.md) | Required reading for both flows — logging rules, HTML contracts, thumbnail spec |
+| [`AGENT_PROMPT_NEW_APP.md`](docs/agent-prompts/AGENT_PROMPT_NEW_APP.md) | Build a new app from scratch (14-step pipeline) |
+| [`AGENT_PROMPT_IMPROVEMENT.md`](docs/agent-prompts/AGENT_PROMPT_IMPROVEMENT.md) | Apply an approved improvement to an existing app (14-step pipeline) |
+
+### Starting a new app run
+
+Hand `AGENT_PROMPT_SHARED.md` and `AGENT_PROMPT_NEW_APP.md` to the AI agent. The agent runs `npm run select:app:suggestion` internally as its first step and handles the full pipeline from there.
+
+### Starting an improvement run
+
+Hand `AGENT_PROMPT_SHARED.md` and `AGENT_PROMPT_IMPROVEMENT.md` to the AI agent. The agent runs `npm run select:app:improvement` internally and stops automatically if no approved improvements are found.
+
+Both prompts drive the full pipeline: branch → build/modify → validate → PR → merge → log.
+
+### How app selection works
+
+`select:app:suggestion` checks in priority order:
+1. **Boosted GitHub issues** (`suggestion` + `status:approved` + `boosted`) — ranked by verified tip total
+2. **Approved GitHub issues** (`suggestion` + `status:approved`) — oldest first
+3. **Vote + category analysis** — top Supabase-voted apps inspire concepts; category gap scoring surfaces under-represented categories
+
+`select:app:improvement` checks:
+1. **Boosted improvement issues** (`improvement` + `status:approved` + `boosted`) — ranked by verified tip total
+2. **Approved improvement issues** (`improvement` + `status:approved`) — oldest first
+3. **No fallback** — returns `found: false` if nothing is approved; the agent stops
+
+Both scripts include duplication guardrails: `duplicationRisk` scoring, `saturatedTags` (tags in ≥20% of apps), and `recentTags` (tags from the last 14 days) to avoid building the same concept twice.
 
 ---
 
@@ -467,7 +544,11 @@ We love contributions! Here's how you can help:
 <table>
 <tr>
 <td align="center">
-<b>💡 Suggest Apps</b><br/>
+<b>💡 Keep the Lights On</b><br/>
+<a href="https://www.valleyofai.com/?donate=1">Tip or donate</a> — keeps the AI agents running
+</td>
+<td align="center">
+<b>🎯 Suggest Apps</b><br/>
 <a href="https://www.valleyofai.com/#/suggest">Submit ideas</a> for AI to build
 </td>
 <td align="center">

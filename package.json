@@ -13,6 +13,8 @@
     "validate:responsive": "node scripts/validate-responsive.js",
     "validate:responsive:sample": "node scripts/validate-responsive.js --limit 5",
     "log": "node scripts/logger.mjs",
+    "select:app:suggestion": "node scripts/select-app-suggestion.js",
+    "select:app:improvement": "node scripts/select-app-improvement.js",
     "lint": "eslint app components hooks lib scripts __tests__ --max-warnings 0",
     "lint:fix": "eslint app components hooks lib scripts __tests__ --fix",
     "format": "prettier --write \"app/**/*.{js,jsx,ts,tsx}\" \"components/**/*.{js,jsx,ts,tsx}\" \"hooks/**/*.{js,jsx,ts,tsx}\" \"lib/**/*.{js,jsx,ts,tsx}\"",

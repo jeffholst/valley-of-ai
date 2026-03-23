@@ -132,6 +132,15 @@ export default function HomePage() {
     searchQuery,
   ].filter(Boolean).length;
 
+  // Open donate modal if ?donate=1 is in the URL (e.g. from README link)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('donate') === '1') {
+      setShowDonateModal(true);
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
+
   // Detect Stripe redirect and conditionally show payment success modal
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
