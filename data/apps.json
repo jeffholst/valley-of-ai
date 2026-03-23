@@ -34,45 +34,6 @@
     "suggestion": null
   },
   {
-    "id": "2026/03/22/freecell-mobile-classic",
-    "name": "FreeCell Mobile Classic",
-    "shortDescription": "A responsive FreeCell clone with touch, keyboard controls, undo, auto-move, and win detection.",
-    "thumbnailUrl": "/apps/2026/03/22/freecell-mobile-classic/thumbnail.svg",
-    "createdAt": "2026-03-22T07:00:33Z",
-    "year": 2026,
-    "month": 3,
-    "day": 22,
-    "category": "Games",
-    "inputMode": "responsive",
-    "status": "false",
-    "tags": [
-      "freecell",
-      "solitaire",
-      "cards",
-      "puzzle",
-      "mobile",
-      "keyboard"
-    ],
-    "route": "/apps/2026/03/22/freecell-mobile-classic",
-    "appPath": "/apps/2026/03/22/freecell-mobile-classic/index.html",
-    "generation": {
-      "agentName": "dev",
-      "llmModel": "openai-codex/gpt-5.3-codex",
-      "startTime": "2026-03-22T07:00:33Z",
-      "endTime": "2026-03-22T07:05:00Z",
-      "totalTokensIn": 0,
-      "totalTokensOut": 0,
-      "runId": "run-20260322T070033Z-7511ad",
-      "notes": "Implemented a static FreeCell game with 8 tableau columns, 4 free cells, 4 foundations, move validation, undo support, and auto-move assistance."
-    },
-    "suggestion": {
-      "issueNumber": 137,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/137",
-      "prompt": "Create a FreeCell clone that works well on mobile devices. Requirements: fully playable game with standard FreeCell rules, new game, undo, win detection, move counter, and desktop/mobile usability.",
-      "requestor": "Jeff H."
-    }
-  },
-  {
     "id": "2026/03/21/texas-lotto-generator",
     "name": "Texas Lotto Generator",
     "shortDescription": "Simulate Texas Lottery draws with real-time animated ball machine and confetti celebration",
