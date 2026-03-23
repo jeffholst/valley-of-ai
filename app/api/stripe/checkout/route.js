@@ -19,7 +19,10 @@ export async function POST(request) {
 
   const parsedAmount = parseInt(amount, 10);
   if (!parsedAmount || parsedAmount < MIN_AMOUNT || parsedAmount > MAX_AMOUNT) {
-    return Response.json({ error: `Tip amount must be between $${MIN_AMOUNT} and $${MAX_AMOUNT}` }, { status: 400 });
+    return Response.json(
+      { error: `Tip amount must be between $${MIN_AMOUNT} and $${MAX_AMOUNT}` },
+      { status: 400 }
+    );
   }
 
   if (type !== 'tip' && type !== 'donation') {
@@ -44,9 +47,7 @@ export async function POST(request) {
   }
 
   const label =
-    type === 'tip'
-      ? `Tip the Bots — $${parsedAmount}`
-      : `Keep the Lights On — $${parsedAmount}`;
+    type === 'tip' ? `Tip the Bots — $${parsedAmount}` : `Keep the Lights On — $${parsedAmount}`;
 
   try {
     const session = await stripe.checkout.sessions.create({

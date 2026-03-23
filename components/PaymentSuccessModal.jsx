@@ -7,7 +7,9 @@ const ROBOTS = ['🤖', '🤖', '🤖'];
 export default function PaymentSuccessModal({ type = 'tip', onClose }) {
   useEffect(() => {
     const handleKey = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+      }
     };
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
@@ -36,13 +38,24 @@ export default function PaymentSuccessModal({ type = 'tip', onClose }) {
           aria-label="Close"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
 
         {/* Sparkle confetti dots */}
         <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden">
-          {['top-4 left-8', 'top-6 right-10', 'top-10 left-1/2', 'top-2 left-1/3', 'top-8 right-6'].map((pos, i) => (
+          {[
+            'top-4 left-8',
+            'top-6 right-10',
+            'top-10 left-1/2',
+            'top-2 left-1/3',
+            'top-8 right-6',
+          ].map((pos, i) => (
             <span
               key={i}
               className={`absolute text-lg robot-confetti ${pos}`}
@@ -77,7 +90,8 @@ export default function PaymentSuccessModal({ type = 'tip', onClose }) {
         </p>
         {type === 'tip' && (
           <p className="text-gray-500 dark:text-gray-400 text-xs mb-6">
-            Your tip has been received and your request has been boosted to the front of the review queue.
+            Your tip has been received and your request has been boosted to the front of the review
+            queue.
           </p>
         )}
 

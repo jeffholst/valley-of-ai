@@ -1,12 +1,22 @@
 'use client';
 
-export default function VoteButtons({ upvoteCount, downvoteCount, myVote, isLoading, isVoting, onVote, size = 'md' }) {
+export default function VoteButtons({
+  upvoteCount,
+  downvoteCount,
+  myVote,
+  isLoading,
+  isVoting,
+  onVote,
+  size = 'md',
+}) {
   const disabled = !!myVote || isVoting || isLoading;
 
   const handleClick = (e, type) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!disabled) {onVote(type);}
+    if (!disabled) {
+      onVote(type);
+    }
   };
 
   if (size === 'sm') {

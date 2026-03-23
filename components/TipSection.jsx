@@ -65,24 +65,33 @@ export default function TipSection({ issueNumber, type = 'tip' }) {
         {PRESET_AMOUNTS.map((amount) => (
           <button
             key={amount}
-            onClick={() => { setSelected(amount); setError(null); handleTip(amount); }}
+            onClick={() => {
+              setSelected(amount);
+              setError(null);
+              handleTip(amount);
+            }}
             disabled={isLoading}
             className={`flex-1 py-2 rounded-lg text-sm font-semibold border transition-all duration-150
-              ${selected === amount && isLoading
-                ? 'bg-amber-100 dark:bg-amber-900/30 border-amber-400 text-amber-700 dark:text-amber-300 cursor-wait'
-                : 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-700 dark:hover:text-amber-300'
+              ${
+                selected === amount && isLoading
+                  ? 'bg-amber-100 dark:bg-amber-900/30 border-amber-400 text-amber-700 dark:text-amber-300 cursor-wait'
+                  : 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-700 dark:hover:text-amber-300'
               } disabled:opacity-60 disabled:cursor-not-allowed`}
           >
             {selected === amount && isLoading ? '...' : `$${amount}`}
           </button>
         ))}
         <button
-          onClick={() => { setSelected('custom'); setError(null); }}
+          onClick={() => {
+            setSelected('custom');
+            setError(null);
+          }}
           disabled={isLoading}
           className={`flex-1 py-2 rounded-lg text-sm font-semibold border transition-all duration-150
-            ${selected === 'custom'
-              ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-400 text-amber-700 dark:text-amber-300'
-              : 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-700 dark:hover:text-amber-300'
+            ${
+              selected === 'custom'
+                ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-400 text-amber-700 dark:text-amber-300'
+                : 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-700 dark:hover:text-amber-300'
             } disabled:opacity-60 disabled:cursor-not-allowed`}
         >
           Custom
@@ -93,13 +102,18 @@ export default function TipSection({ issueNumber, type = 'tip' }) {
       {selected === 'custom' && (
         <div className="flex gap-2 mt-2">
           <div className="relative flex-1">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400">$</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400">
+              $
+            </span>
             <input
               type="number"
               min="1"
               max="999"
               value={customAmount}
-              onChange={(e) => { setCustomAmount(e.target.value); setError(null); }}
+              onChange={(e) => {
+                setCustomAmount(e.target.value);
+                setError(null);
+              }}
               onKeyDown={(e) => e.key === 'Enter' && handleCustomSubmit()}
               placeholder="0"
               className="input pl-6 py-2 text-sm"
@@ -116,9 +130,7 @@ export default function TipSection({ issueNumber, type = 'tip' }) {
         </div>
       )}
 
-      {error && (
-        <p className="mt-2 text-xs text-red-500 text-center">{error}</p>
-      )}
+      {error && <p className="mt-2 text-xs text-red-500 text-center">{error}</p>}
     </div>
   );
 }

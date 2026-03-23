@@ -6,14 +6,20 @@ const LEGACY_STORAGE_KEY = 'valley_voted_apps';
 
 function getVoteRecord(appId) {
   try {
-    if (typeof window === 'undefined') {return null;}
+    if (typeof window === 'undefined') {
+      return null;
+    }
     const stored = localStorage.getItem(STORAGE_KEY);
     const records = stored ? JSON.parse(stored) : {};
-    if (records[appId]) {return records[appId];}
+    if (records[appId]) {
+      return records[appId];
+    }
     // Migrate legacy upvote
     const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
     const legacyRecords = legacy ? JSON.parse(legacy) : {};
-    if (legacyRecords[appId]) {return { type: 'up', ts: legacyRecords[appId] };}
+    if (legacyRecords[appId]) {
+      return { type: 'up', ts: legacyRecords[appId] };
+    }
     return null;
   } catch {
     return null;
@@ -22,7 +28,9 @@ function getVoteRecord(appId) {
 
 function saveVoteRecord(appId, type) {
   try {
-    if (typeof window === 'undefined') {return;}
+    if (typeof window === 'undefined') {
+      return;
+    }
     const stored = localStorage.getItem(STORAGE_KEY);
     const records = stored ? JSON.parse(stored) : {};
     records[appId] = { type, ts: Date.now() };
@@ -49,7 +57,9 @@ export function useVotes(appId) {
           .select('vote_type')
           .eq('app_id', appId);
 
-        if (error) {throw error;}
+        if (error) {
+          throw error;
+        }
 
         const ups = data?.filter((r) => r.vote_type === 'up').length ?? 0;
         const downs = data?.filter((r) => r.vote_type === 'down').length ?? 0;
@@ -69,32 +79,42 @@ export function useVotes(appId) {
 
   const vote = useCallback(
     async (type) => {
-      if (myVote || isVoting) {return false;}
+      if (myVote || isVoting) {
+        return false;
+      }
 
       setIsVoting(true);
 
       // Optimistic update
-      if (type === 'up') {setUpvoteCount((prev) => prev + 1);}
-      else {setDownvoteCount((prev) => prev + 1);}
+      if (type === 'up') {
+        setUpvoteCount((prev) => prev + 1);
+      } else {
+        setDownvoteCount((prev) => prev + 1);
+      }
       setMyVote(type);
 
       try {
         const { error } = await supabase.from('votes').insert({ app_id: appId, vote_type: type });
-        if (error) {throw error;}
+        if (error) {
+          throw error;
+        }
         saveVoteRecord(appId, type);
         return true;
       } catch (error) {
         console.error('Error voting:', error);
         // Revert optimistic update
-        if (type === 'up') {setUpvoteCount((prev) => prev - 1);}
-        else {setDownvoteCount((prev) => prev - 1);}
+        if (type === 'up') {
+          setUpvoteCount((prev) => prev - 1);
+        } else {
+          setDownvoteCount((prev) => prev - 1);
+        }
         setMyVote(null);
         return false;
       } finally {
         setIsVoting(false);
       }
     },
-    [appId, myVote, isVoting],
+    [appId, myVote, isVoting]
   );
 
   return { upvoteCount, downvoteCount, myVote, isLoading, isVoting, vote };
@@ -119,16 +139,23 @@ export function useAllVoteCounts(appIds) {
           .select('app_id, vote_type')
           .in('app_id', appIds);
 
-        if (error) {throw error;}
+        if (error) {
+          throw error;
+        }
 
         const counts = {};
         appIds.forEach((id) => {
           counts[id] = { up: 0, down: 0, net: 0 };
         });
         data?.forEach((row) => {
-          if (!counts[row.app_id]) {counts[row.app_id] = { up: 0, down: 0, net: 0 };}
-          if (row.vote_type === 'up') {counts[row.app_id].up += 1;}
-          else {counts[row.app_id].down += 1;}
+          if (!counts[row.app_id]) {
+            counts[row.app_id] = { up: 0, down: 0, net: 0 };
+          }
+          if (row.vote_type === 'up') {
+            counts[row.app_id].up += 1;
+          } else {
+            counts[row.app_id].down += 1;
+          }
           counts[row.app_id].net = counts[row.app_id].up - counts[row.app_id].down;
         });
 

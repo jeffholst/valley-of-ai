@@ -97,7 +97,11 @@ function ImprovePage() {
           message={`Your improvement idea for ${appName} has been submitted for review.`}
           issueLabel="View your improvement on GitHub"
           issueNumber={issueNumber}
-          onClose={() => { setIssueUrl(null); setIssueNumber(null); router.push('/'); }}
+          onClose={() => {
+            setIssueUrl(null);
+            setIssueNumber(null);
+            router.push('/');
+          }}
         />
       )}
 
@@ -115,7 +119,9 @@ function ImprovePage() {
                 src={`/apps/${appId}/thumbnail.svg`}
                 alt={appName}
                 className="w-full h-full object-cover"
-                onError={(e) => { e.target.style.display = 'none'; }}
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
               />
             </div>
           </div>
@@ -159,13 +165,15 @@ function ImprovePage() {
                 ) : (
                   <span />
                 )}
-                <p className={`text-xs tabular-nums ${
-                  form.description.length > 1000
-                    ? 'text-red-500'
-                    : form.description.length < 10
-                      ? 'text-gray-400 dark:text-gray-500'
-                      : 'text-green-600 dark:text-green-400'
-                }`}>
+                <p
+                  className={`text-xs tabular-nums ${
+                    form.description.length > 1000
+                      ? 'text-red-500'
+                      : form.description.length < 10
+                        ? 'text-gray-400 dark:text-gray-500'
+                        : 'text-green-600 dark:text-green-400'
+                  }`}
+                >
                   {form.description.length} of 1000 characters used
                 </p>
               </div>

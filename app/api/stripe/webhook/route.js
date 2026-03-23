@@ -5,7 +5,9 @@ const GITHUB_API_URL = 'https://api.github.com';
 async function addLabelToIssue(issueNumber, label) {
   const repo = process.env.GITHUB_REPO;
   const token = process.env.GITHUB_SUGGESTIONS_TOKEN;
-  if (!repo || !token) return;
+  if (!repo || !token) {
+    return;
+  }
 
   try {
     const res = await fetch(`${GITHUB_API_URL}/repos/${repo}/issues/${issueNumber}/labels`, {
@@ -43,7 +45,9 @@ async function addLabelToIssue(issueNumber, label) {
 async function addCommentToIssue(issueNumber, amount) {
   const repo = process.env.GITHUB_REPO;
   const token = process.env.GITHUB_SUGGESTIONS_TOKEN;
-  if (!repo || !token) return;
+  if (!repo || !token) {
+    return;
+  }
 
   try {
     const res = await fetch(`${GITHUB_API_URL}/repos/${repo}/issues/${issueNumber}/comments`, {

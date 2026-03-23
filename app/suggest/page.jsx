@@ -99,7 +99,11 @@ export default function SuggestPage() {
           message="Your suggestion has been submitted for review. If approved, our AI agents will build it!"
           issueLabel="View your suggestion on GitHub"
           issueNumber={issueNumber}
-          onClose={() => { setIssueUrl(null); setIssueNumber(null); router.push('/'); }}
+          onClose={() => {
+            setIssueUrl(null);
+            setIssueNumber(null);
+            router.push('/');
+          }}
         />
       )}
 
@@ -138,13 +142,15 @@ export default function SuggestPage() {
                 ) : (
                   <span />
                 )}
-                <p className={`text-xs tabular-nums ${
-                  form.description.length > 1000
-                    ? 'text-red-500'
-                    : form.description.length < 10
-                      ? 'text-gray-400 dark:text-gray-500'
-                      : 'text-green-600 dark:text-green-400'
-                }`}>
+                <p
+                  className={`text-xs tabular-nums ${
+                    form.description.length > 1000
+                      ? 'text-red-500'
+                      : form.description.length < 10
+                        ? 'text-gray-400 dark:text-gray-500'
+                        : 'text-green-600 dark:text-green-400'
+                  }`}
+                >
                   {form.description.length} of 1000 characters used
                 </p>
               </div>

@@ -87,7 +87,9 @@ export async function POST(request) {
   // Build GitHub issue
   const safeAppName = appName ? escapeMd(String(appName)) : null;
   const safeRequestor = requestor ? escapeMd(String(requestor)) : null;
-  const requestorLine = safeRequestor ? `**Requestor:** ${safeRequestor}` : '**Requestor:** anonymous';
+  const requestorLine = safeRequestor
+    ? `**Requestor:** ${safeRequestor}`
+    : '**Requestor:** anonymous';
   const appLine = safeAppName
     ? `**App:** [${safeAppName}](https://www.valleyofai.com/apps/${appId})`
     : `**App:** ${appId}`;

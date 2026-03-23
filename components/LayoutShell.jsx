@@ -57,7 +57,9 @@ export default function LayoutShell({ children }) {
             from <span className="sparkle-text">Jeff Holst</span>
           </span>
           <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-1">
-            <span suppressHydrationWarning>🏔️<span className="hidden sm:inline"> {siteName}</span> © {new Date().getFullYear()}</span>
+            <span suppressHydrationWarning>
+              🏔️<span className="hidden sm:inline"> {siteName}</span> © {new Date().getFullYear()}
+            </span>
             <a
               href={githubUrl}
               target="_blank"

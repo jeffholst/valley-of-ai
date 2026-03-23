@@ -142,7 +142,9 @@ export default function HomePage() {
     if ((tipped === 'tip' || tipped === 'donation') && sessionId) {
       fetch(`/api/verify-payment?session_id=${encodeURIComponent(sessionId)}`)
         .then((res) => {
-          if (!res.ok) return null;
+          if (!res.ok) {
+            return null;
+          }
           return res.json().catch(() => null);
         })
         .then((data) => {
