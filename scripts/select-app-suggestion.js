@@ -59,9 +59,9 @@ function loadEnv() {
     }
   }
 
-  // Load base values (do not overwrite shell env)
+  // Load base values — never overwrite shell/CI env.
   parseFile(path.join(rootDir, '.env'), false);
-  // Load local overrides (overwrite values set by .env, but not shell env)
+  // Load local overrides — may overwrite keys set by .env, but not shell/CI env.
   parseFile(path.join(rootDir, '.env.local'), true);
 }
 
