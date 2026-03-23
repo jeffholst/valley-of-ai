@@ -137,7 +137,10 @@ export default function HomePage() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('donate') === '1') {
       setShowDonateModal(true);
-      window.history.replaceState({}, '', window.location.pathname);
+      params.delete('donate');
+      const newSearch = params.toString();
+      const newUrl = newSearch ? `${window.location.pathname}?${newSearch}` : window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
     }
   }, []);
 

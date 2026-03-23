@@ -81,11 +81,10 @@ function StatusIcon({ status }) {
 // Group logs into runs
 //
 // Returns an array of groups, each with:
-//   { type: 'new_app' | 'improvement' | 'feedback' | 'legacy', runId, date, entries[] }
+//   { type: 'new_app' | 'improvement' | 'legacy', runId, date, entries[] }
 //
-// Ordering: chronological by first entry in each group.
-// Feedback entries are collected as a single group at the end (they're ad-hoc
-// fixes, not full pipeline runs — no meaningful ordering among runs).
+// Ordering: legacy entries (if any) are grouped first, followed by run-based
+// groups in chronological order by the first entry in each group.
 // ---------------------------------------------------------------------------
 
 function groupLogs(logs) {
@@ -276,17 +275,28 @@ function RunGroup({ group, improvementIndex }) {
                         <div className="opacity-60">seq {log.pipeline.seq}</div>
                       )}
                       {log.message && (
-                        <div
-                          className={`opacity-75 mt-0.5 ${hasLong ? 'cursor-pointer' : ''} ${hasLong && !isExpMsg ? 'truncate' : ''}`}
-                          onClick={() => hasLong && toggleMessage(idx)}
-                        >
-                          {log.message}
-                          {hasLong && (
-                            <button className="ml-1 text-blue-500 hover:text-blue-700 flex-shrink-0">
+                        hasLong ? (
+                          <button
+                            type="button"
+                            className={`opacity-75 mt-0.5 cursor-pointer ${!isExpMsg ? 'truncate' : ''} flex items-center`}
+                            onClick={() => toggleMessage(idx)}
+                            aria-expanded={isExpMsg}
+                          >
+                            <span className={!isExpMsg ? 'truncate' : ''}>
+                              {log.message}
+                            </span>
+                            <span
+                              className="ml-1 text-blue-500 hover:text-blue-700 flex-shrink-0"
+                              aria-hidden="true"
+                            >
                               {isExpMsg ? '▲' : '▼'}
-                            </button>
-                          )}
-                        </div>
+                            </span>
+                          </button>
+                        ) : (
+                          <div className="opacity-75 mt-0.5">
+                            {log.message}
+                          </div>
+                        )
                       )}
                       {(log.tokensIn ||
                         log.pipeline?.tokensIn ||

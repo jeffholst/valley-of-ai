@@ -35,14 +35,15 @@ function log(...args) {
 // ---------------------------------------------------------------------------
 // Load env vars — .env first (base), then .env.local on top (local overrides).
 // Later files win: a key set in .env.local overrides the same key from .env.
-// Already-set process.env values (from the shell / CI) always take precedence.
+// Keys already present in process.env before loadEnv() runs (e.g. shell/CI
+// secrets) are never overwritten, regardless of which file is being parsed.
 // ---------------------------------------------------------------------------
 function loadEnv() {
-  // Track keys populated from env files so .env.local can override them
-  // without touching keys that were already set by the shell or CI.
-  const envFileKeys = new Set();
+  // Snapshot keys that existed before we load anything — these must never
+  // be clobbered by .env or .env.local (e.g. CI secrets, shell exports).
+  const preExistingKeys = new Set(Object.keys(process.env));
 
-  function parseFile(filePath, overwriteFileKeys) {
+  function parseFile(filePath, overwrite) {
     if (!existsSync(filePath)) {return;}
     const lines = readFileSync(filePath, 'utf8').split('\n');
     for (const line of lines) {
@@ -52,13 +53,9 @@ function loadEnv() {
       if (eq === -1) {continue;}
       const key = trimmed.slice(0, eq).trim();
       const val = trimmed.slice(eq + 1).trim().replace(/^["']|["']$/g, '');
-      // Set the key only if it was not already in the environment before we
-      // started loading env files, OR if it was previously set by an env file
-      // and this call is allowed to override file-sourced values.
-      if (!process.env[key] || (overwriteFileKeys && envFileKeys.has(key))) {
-        process.env[key] = val;
-        envFileKeys.add(key);
-      }
+      // Never overwrite a key that was present before loadEnv() ran.
+      if (preExistingKeys.has(key)) {continue;}
+      if (overwrite || !process.env[key]) {process.env[key] = val;}
     }
   }
 
