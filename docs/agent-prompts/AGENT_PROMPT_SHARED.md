@@ -30,6 +30,28 @@ apps/YYYY/MM/DD/<app-id>/
   meta.json
 ```
 
+### meta.json schema
+
+The authoritative schema is at `docs/json-schema/meta.json`. Validate against it when writing or updating `meta.json`.
+
+**Required fields:** `id`, `name`, `shortDescription`, `thumbnail`, `createdAt`, `category`, `status`, `tags`, `homepagePath`, `inputMode`, `generation`
+
+**Key constraints:**
+- `id`: lowercase kebab-case slug only (e.g. `snake-game`)
+- `category`: one of `Games` | `Productivity` | `Utilities` | `Design` | `Education` | `Entertainment` | `Visualizations`
+- `inputMode`: one of `desktop` | `mobile` | `responsive`
+- `status`: one of `active` | `experimental` | `retired`
+- `tags`: 2–8 unique strings, each 2–30 characters
+- `thumbnail`: always `"thumbnail.svg"`
+- `homepagePath`: always `"index.html"`
+- `createdAt`: UTC ISO 8601 timestamp (e.g. `2026-03-23T17:45:55Z`)
+- `generation.runId`: must match format `run-YYYYMMDDTHHMMSSZ-xxxxxx`
+
+**Optional fields:**
+- `visible`: boolean — defaults to `true`; set to `false` to hide without deleting
+- `suggestion`: object — only present if app was built from a community suggestion issue
+- `improvements`: array — appended by the improvement pipeline each time an improvement is applied; **do not set during initial app creation**
+
 ### Required head tags in every app `index.html`
 ```html
 <!-- Google tag (gtag.js) -->

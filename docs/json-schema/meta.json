@@ -106,6 +106,54 @@
       },
       "additionalProperties": false
     },
+    "improvements": {
+      "type": "array",
+      "description": "Records of improvement pipeline runs applied to this app. Appended by the improvement pipeline — do not set during initial creation.",
+      "items": {
+        "type": "object",
+        "required": ["issueNumber", "issueUrl", "description", "implementedAt", "agentName", "llmModel"],
+        "properties": {
+          "issueNumber": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "GitHub Issue number for this improvement."
+          },
+          "issueUrl": {
+            "type": "string",
+            "description": "Full URL to the GitHub Issue."
+          },
+          "description": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 500,
+            "description": "One-sentence summary of what was changed."
+          },
+          "requestor": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "GitHub username or display name of the person who requested the improvement."
+          },
+          "implementedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp when the improvement was applied."
+          },
+          "agentName": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80,
+            "description": "Name of the agent that applied the improvement."
+          },
+          "llmModel": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80,
+            "description": "Model identifier used for the improvement."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
     "generation": {
       "type": "object",
       "required": [
