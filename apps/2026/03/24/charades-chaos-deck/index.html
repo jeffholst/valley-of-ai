@@ -45,9 +45,8 @@
         --ok: #15803d;
         --warn: #e11d48;
       }
-      * { box-sizing: border-box; }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
       body {
-        margin: 0;
         min-height: 100vh;
         font-family: 'Inter', 'Segoe UI', Roboto, system-ui, sans-serif;
         background: radial-gradient(circle at 20% 20%, #302066 0%, var(--bg) 45%, #0e0a1d 100%);
@@ -55,6 +54,8 @@
       }
       main { max-width: 920px; margin: 0 auto; padding: 1rem; }
       .app { display: grid; gap: 1rem; }
+
+      /* HUD */
       .hud { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.65rem; }
       .card {
         background: color-mix(in oklab, var(--surface) 92%, black);
@@ -65,20 +66,57 @@
       }
       .label { font-size: 0.8rem; opacity: 0.85; }
       .value { font-size: clamp(1.1rem, 3vw, 1.5rem); font-weight: 700; }
+
+      /* Stage */
       .stage {
         background: linear-gradient(150deg, var(--surface) 0%, color-mix(in oklab, var(--surface) 88%, #000) 100%);
         border: 1px solid color-mix(in oklab, var(--surface-soft) 70%, #fff);
         border-radius: 18px;
-        padding: 1rem;
-        min-height: 280px;
-        display: grid;
-        align-content: space-between;
-        gap: 0.75rem;
+        padding: 1.5rem 1rem;
+        min-height: 260px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.25rem;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
       }
-      .prompt { text-align: center; display: grid; gap: 0.7rem; }
-      .topic { font-size: clamp(1.4rem, 5vw, 2.4rem); margin: 0; }
-      .taboo { margin: 0; font-size: 0.95rem; opacity: 0.85; }
+      .topic { font-size: clamp(1.8rem, 6vw, 2.8rem); font-weight: 800; line-height: 1.2; }
+      .taboo-section { width: 100%; }
+      .taboo-heading {
+        font-size: 0.82rem;
+        text-decoration: underline;
+        opacity: 0.8;
+        margin-bottom: 0.5rem;
+      }
+      .taboo-word { font-size: 1rem; font-weight: 600; line-height: 1.7; }
+
+      /* Turn/game-over overlay inside stage */
+      .turn-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        background: color-mix(in oklab, var(--surface) 97%, black);
+        border-radius: 18px;
+        padding: 1.5rem;
+        z-index: 2;
+      }
+      .turn-overlay.hidden { display: none; }
+      .overlay-emoji { font-size: 2.5rem; line-height: 1; }
+      .overlay-title { font-size: clamp(1.4rem, 4.5vw, 2.1rem); font-weight: 800; }
+      .overlay-sub { font-size: clamp(0.85rem, 2.5vw, 1.1rem); opacity: 0.8; }
+      .overlay-score { font-size: clamp(1rem, 3vw, 1.35rem); font-weight: 700; margin-top: 0.25rem; }
+
+      /* Controls */
       .controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.65rem; }
+      .buzzer-row { display: grid; }
+
       button {
         border: 0;
         border-radius: 12px;
@@ -87,143 +125,587 @@
         font-weight: 700;
         cursor: pointer;
         transition: transform 120ms ease, filter 150ms ease;
+        font-size: 0.95rem;
       }
-      button:focus-visible { outline: 3px solid color-mix(in oklab, var(--accent-2) 75%, white); outline-offset: 2px; }
-      button:hover { filter: brightness(1.05); }
+      button:focus-visible {
+        outline: 3px solid color-mix(in oklab, var(--accent-2) 75%, white);
+        outline-offset: 2px;
+      }
+      button:hover { filter: brightness(1.08); }
       button:active { transform: translateY(1px) scale(0.99); }
+      button:disabled { opacity: 0.35; cursor: not-allowed; filter: none; transform: none; }
+
       .pass { background: var(--warn); color: #fff; }
       .score { background: var(--ok); color: #fff; }
-      .next { background: linear-gradient(125deg, var(--accent) 0%, var(--accent-2) 100%); color: #fff; }
-      .footer-note { font-size: 0.85rem; opacity: 0.85; text-align: center; }
+      .start-pause {
+        background: linear-gradient(125deg, var(--accent) 0%, var(--accent-2) 100%);
+        color: #fff;
+      }
+      .buzzer { background: #e11d48; color: #fff; font-size: 1rem; min-height: 48px; }
+      .buzzer.buzz-active { filter: brightness(1.7) saturate(1.5) !important; }
+
+      /* Team scores */
       .teams { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.65rem; }
       .team { display: flex; justify-content: space-between; align-items: center; }
-      .active { border-color: color-mix(in oklab, var(--accent) 75%, white); }
+      .active-team-card {
+        border-color: color-mix(in oklab, var(--accent) 75%, white);
+      }
+
+      /* Utility row */
+      .util-row { display: flex; gap: 0.65rem; }
+      .util-btn {
+        flex: 1;
+        background: color-mix(in oklab, var(--surface-soft) 90%, white);
+        color: var(--text);
+        min-height: 40px;
+        font-size: 0.88rem;
+      }
+      [data-theme='light'] .util-btn {
+        background: color-mix(in oklab, var(--surface-soft) 60%, white);
+      }
+
+      .footer-note { font-size: 0.8rem; opacity: 0.65; text-align: center; }
+
+      /* Modals */
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgb(0 0 0 / 0.72);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        padding: 1rem;
+      }
+      .modal.hidden { display: none; }
+      .modal-box {
+        background: var(--surface);
+        border: 1px solid var(--surface-soft);
+        border-radius: 20px;
+        padding: 1.75rem;
+        max-width: 460px;
+        width: 100%;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 20px 60px rgb(0 0 0 / 0.55);
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .modal-box h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+      .modal-box > p { opacity: 0.85; margin-bottom: 0.5rem; }
+      .modal-close {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        background: color-mix(in oklab, var(--surface-soft) 80%, white);
+        color: var(--text);
+        border-radius: 8px;
+        min-height: 32px;
+        padding: 0.3rem 0.7rem;
+        font-size: 1rem;
+      }
+
+      /* Round selection */
+      .round-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.65rem; margin-top: 1.25rem; }
+      .round-btn {
+        background: linear-gradient(125deg, var(--accent) 0%, var(--accent-2) 100%);
+        color: #fff;
+        font-size: 1.05rem;
+        min-height: 56px;
+      }
+      .modal-hint { font-size: 0.83rem; opacity: 0.7; margin-top: 0.25rem !important; }
+
+      /* Help content */
+      .help-content { text-align: left; font-size: 0.9rem; line-height: 1.65; margin-top: 1rem; }
+      .help-content h3 { font-size: 0.95rem; font-weight: 700; margin: 0.9rem 0 0.3rem; }
+      .help-content h3:first-child { margin-top: 0; }
+      .help-content ul { padding-left: 1.25rem; }
+      .help-content li { margin-bottom: 0.25rem; }
+
       @media (max-width: 600px) {
         .hud { grid-template-columns: 1fr; }
         .controls { grid-template-columns: 1fr; }
+        .round-btns { grid-template-columns: 1fr; }
       }
     </style>
   </head>
   <body>
+    <!-- Round Selection Modal -->
+    <div id="setupModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="setupTitle">
+      <div class="modal-box">
+        <h2 id="setupTitle">🎭 Charades Chaos Deck</h2>
+        <p>How many rounds?</p>
+        <p class="modal-hint">Each team gets 60 seconds per round.</p>
+        <div class="round-btns">
+          <button type="button" class="round-btn" onclick="startGame(1)">1 Round</button>
+          <button type="button" class="round-btn" onclick="startGame(2)">2 Rounds</button>
+          <button type="button" class="round-btn" onclick="startGame(3)">3 Rounds</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <div class="modal-box">
+        <button class="modal-close" type="button" id="helpCloseBtn" aria-label="Close help">✕</button>
+        <h2 id="helpTitle">How to Play</h2>
+        <div class="help-content">
+          <h3>Objective</h3>
+          <p>Get your team to guess as many words as possible before time runs out!</p>
+          <h3>Setup</h3>
+          <ul>
+            <li>Choose 1, 2, or 3 rounds at the start of each game.</li>
+            <li>Each team plays a 60-second turn per round.</li>
+            <li>Teams alternate — Team A always goes first each round.</li>
+          </ul>
+          <h3>On your turn</h3>
+          <ul>
+            <li>Press <strong>▶ Start</strong> to begin the 60-second countdown.</li>
+            <li>The actor sees the <strong>Target Word</strong> — act it out or describe it.</li>
+            <li><strong>Taboo words</strong> may not be said, mimed, or spelled out.</li>
+            <li>Press <strong>🚨 Buzzer</strong> if the opposing team thinks a taboo word was used.</li>
+            <li>Press <strong>Score +1</strong> when your team guesses correctly — the next card appears.</li>
+            <li>Press <strong>← Pass</strong> to skip the current card.</li>
+            <li>You can press <strong>⏸ Pause</strong> to pause the timer mid-turn.</li>
+          </ul>
+          <h3>End of turn</h3>
+          <ul>
+            <li>When the 60-second timer reaches zero, the turn ends automatically.</li>
+            <li>Teams switch and the next team presses Start to begin their turn.</li>
+          </ul>
+          <h3>Winning</h3>
+          <ul>
+            <li>After all rounds are complete, the team with the most points wins!</li>
+          </ul>
+          <h3>Keyboard shortcuts</h3>
+          <ul>
+            <li><strong>←</strong> — pass current card</li>
+            <li><strong>→</strong> — score a point</li>
+            <li><strong>Space</strong> — start / pause timer</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
     <main>
       <section class="app" aria-label="Charades Chaos Deck game">
+        <!-- HUD -->
         <div class="hud">
-          <div class="card" aria-live="polite"><div class="label">Round timer</div><div class="value" id="timer">60s</div></div>
-          <div class="card"><div class="label">Cards left</div><div class="value" id="left">0</div></div>
-          <div class="card"><div class="label">Active team</div><div class="value" id="activeTeam">Team A</div></div>
+          <div class="card" aria-live="polite">
+            <div class="label">Round timer</div>
+            <div class="value" id="timer">60s</div>
+          </div>
+          <div class="card">
+            <div class="label">Round</div>
+            <div class="value" id="roundDisplay">— / —</div>
+          </div>
+          <div class="card">
+            <div class="label">Active team</div>
+            <div class="value" id="activeTeam">Team A</div>
+          </div>
         </div>
-        <div class="stage" id="swipeArea" tabindex="0" aria-label="Current charades prompt. Swipe left to pass, right to score, or use keyboard arrows.">
+
+        <!-- Card stage (swipeable) -->
+        <div
+          class="stage"
+          id="swipeArea"
+          tabindex="0"
+          aria-label="Charades card. Swipe left to pass, right to score."
+        >
+          <!-- Turn / game-over overlay -->
+          <div class="turn-overlay hidden" id="turnOverlay">
+            <div class="overlay-emoji" id="overlayEmoji"></div>
+            <div class="overlay-title" id="overlayTitle"></div>
+            <div class="overlay-sub" id="overlaySub"></div>
+            <div class="overlay-score" id="overlayScore"></div>
+          </div>
+
+          <!-- Card content -->
           <div class="prompt">
-            <p class="label">Act this out</p>
-            <h1 class="topic" id="topic">Loading…</h1>
-            <p class="taboo" id="taboo">Taboo words: …</p>
+            <p class="label">Target Word</p>
+            <h1 class="topic" id="topic">—</h1>
           </div>
-          <div class="controls" aria-label="Round controls">
-            <button class="pass" id="passBtn" type="button">⬅ Pass</button>
-            <button class="next" id="nextBtn" type="button">⟳ Next</button>
-            <button class="score" id="scoreBtn" type="button">Score ➜</button>
+          <div class="taboo-section">
+            <p class="taboo-heading">Taboo words</p>
+            <div id="taboo"></div>
           </div>
         </div>
+
+        <!-- Action controls (outside stage so overlay never hides them) -->
+        <div class="controls" aria-label="Round controls">
+          <button class="pass" id="passBtn" type="button" disabled>← Pass</button>
+          <button class="start-pause" id="startPauseBtn" type="button">▶ Start</button>
+          <button class="score" id="scoreBtn" type="button" disabled>Score +1</button>
+        </div>
+
+        <div class="buzzer-row">
+          <button class="buzzer" id="buzzerBtn" type="button" disabled>🚨 Buzzer</button>
+        </div>
+
+        <!-- Team scores -->
         <div class="teams" aria-live="polite">
-          <div class="card team active" id="teamA"><span>Team A</span><strong id="scoreA">0</strong></div>
-          <div class="card team" id="teamB"><span>Team B</span><strong id="scoreB">0</strong></div>
+          <div class="card team active-team-card" id="teamA">
+            <span>Team A</span><strong id="scoreA">0</strong>
+          </div>
+          <div class="card team" id="teamB">
+            <span>Team B</span><strong id="scoreB">0</strong>
+          </div>
         </div>
-        <p class="footer-note">Keyboard: ← pass, → score, N next, Space start/pause, T switch teams.</p>
+
+        <!-- Utility buttons -->
+        <div class="util-row">
+          <button class="util-btn" type="button" id="helpBtn">? Help</button>
+          <button class="util-btn" type="button" id="newGameBtn">↩ New Game</button>
+        </div>
+
+        <p class="footer-note">Keyboard: ← pass &nbsp;·&nbsp; → score &nbsp;·&nbsp; Space start/pause</p>
       </section>
     </main>
+
     <script>
       const deck = [
-        ['Moonwalk', ['dance', 'MJ', 'backward']],
-        ['Juggling Fire', ['circus', 'balls', 'throw']],
-        ['Haunted Elevator', ['ghost', 'lift', 'scream']],
-        ['Invisible Violin Solo', ['music', 'bow', 'strings']],
-        ['Penguin DJ', ['bird', 'music', 'club']],
-        ['Robot Yoga', ['android', 'stretch', 'meditate']],
-        ['Storm Chaser', ['tornado', 'weather', 'run']],
-        ['Secret Agent Escape', ['spy', 'laser', 'crawl']],
-        ['Bubble Tea Disaster', ['drink', 'spill', 'straw']],
-        ['Alien Bake-Off', ['space', 'cake', 'oven']],
+        ['Moonwalk', ['dance', 'Michael', 'backward', 'footwork']],
+        ['Juggling Fire', ['circus', 'balls', 'throw', 'flames']],
+        ['Haunted Elevator', ['ghost', 'lift', 'scream', 'floors']],
+        ['Invisible Violin', ['music', 'bow', 'strings', 'air']],
+        ['Penguin DJ', ['bird', 'turntable', 'club', 'spin']],
+        ['Robot Yoga', ['android', 'stretch', 'pose', 'meditate']],
+        ['Storm Chaser', ['tornado', 'weather', 'run', 'twister']],
+        ['Secret Agent Escape', ['spy', 'laser', 'crawl', 'mission']],
+        ['Bubble Tea Disaster', ['drink', 'spill', 'straw', 'boba']],
+        ['Alien Bake-Off', ['space', 'cake', 'oven', 'extraterrestrial']],
+        ['Surfing on Lava', ['wave', 'volcano', 'board', 'hot']],
+        ['Sleepwalking Chef', ['cook', 'asleep', 'kitchen', 'stumble']],
+        ['T-Rex Playing Piano', ['dinosaur', 'tiny', 'keys', 'arms']],
+        ['Underwater Basketball', ['pool', 'hoop', 'swim', 'ball']],
+        ['Time-Traveling Tourist', ['camera', 'era', 'past', 'machine']],
+        ['Flying Carpet Ride', ['magic', 'soar', 'weave', 'wish']],
+        ['Ninja Librarian', ['silent', 'books', 'kick', 'shelf']],
+        ['Zombie Cheerleader', ['undead', 'pompoms', 'spirit', 'shuffle']],
+        ['Giant on a Skateboard', ['tall', 'wheels', 'balance', 'park']],
+        ['Invisible Tug of War', ['rope', 'pull', 'team', 'nothing']],
+        ['Astronaut Gardening', ['space', 'plant', 'gravity', 'helmet']],
+        ['Pirate Yoga', ['ship', 'stretch', 'sailor', 'pose']],
+        ['Cowboy Breakdance', ['lasso', 'spin', 'western', 'hat']],
+        ['Sumo Ballerina', ['large', 'tutu', 'graceful', 'ring']],
+        ['Mime in a Hurricane', ['silent', 'wind', 'storm', 'invisible']],
+        ['Snorkeling in a Desert', ['sand', 'mask', 'fins', 'dry']],
+        ['Bear Playing Chess', ['grizzly', 'move', 'strategy', 'pawn']],
+        ['Ice Fishing in the Dark', ['hole', 'rod', 'cold', 'blind']],
+        ['Walking a Dog on the Moon', ['gravity', 'leash', 'bounce', 'crater']],
+        ['Chef vs. Tornado', ['cook', 'spin', 'kitchen', 'destroy']],
+        ['Baby Running a Marathon', ['tiny', 'race', 'crawl', 'distance']],
+        ['Ninja Cutting Wedding Cake', ['slice', 'sword', 'ceremony', 'silent']],
+        ['Vampire at the Beach', ['sunburn', 'fangs', 'sand', 'tan']],
+        ['Superhero Changing a Tire', ['cape', 'car', 'jack', 'powers']],
+        ['Snail Racing', ['shell', 'slow', 'track', 'slime']],
+        ['Disco Caveman', ['groove', 'club', 'fur', 'hustle']],
+        ['Firefighter on Ice Skates', ['hose', 'rink', 'rescue', 'blades']],
+        ['Librarian at a Rave', ['books', 'loud', 'dance', 'quiet']],
+        ['Penguin Surfing', ['bird', 'wave', 'waddle', 'beach']],
+        ['Tightrope Walker with Groceries', ['balance', 'bags', 'wire', 'wobbly']],
+        ['Mummy Doing Laundry', ['wrap', 'fold', 'linen', 'shuffle']],
+        ['Gorilla Playing Violin', ['ape', 'music', 'bow', 'jungle']],
+        ['Knight at a Drive-Thru', ['armor', 'order', 'jousting', 'window']],
+        ['Robot at a Dance Party', ['jerky', 'groove', 'beep', 'circuit']],
+        ['Wizard Shopping for Groceries', ['wand', 'cart', 'spell', 'aisle']],
+        ['Clumsy Surgeon', ['operate', 'drop', 'scalpel', 'oops']],
+        ['Grandma Breakdancing', ['elderly', 'spin', 'headstand', 'bingo']],
+        ['Sleeping on a Rollercoaster', ['snore', 'loop', 'park', 'fast']],
+        ['Duck Typing on a Keyboard', ['quack', 'keys', 'computer', 'pond']],
+        ['Ghost Playing Basketball', ['haunted', 'hoop', 'float', 'ball']],
+        ['Caveman Using a Smartphone', ['ancient', 'swipe', 'app', 'grunt']],
+        ['Yoga in Traffic', ['pose', 'cars', 'stretch', 'honk']],
+        ['Pirate Finding Car Keys', ['ship', 'treasure', 'unlock', 'search']],
+        ['Snowman in a Sauna', ['melt', 'heat', 'carrot', 'sweat']],
+        ['Ballerina Playing Football', ['tutu', 'tackle', 'grace', 'field']],
+        ['Beekeeper at a Wedding', ['hive', 'ceremony', 'suit', 'sting']],
+        ['Astronaut Eating Spaghetti', ['orbit', 'noodle', 'space', 'fork']],
+        ['Cowboy Ordering Sushi', ['ranch', 'fish', 'raw', 'lasso']],
+        ['Monkey Driving a Bus', ['ape', 'wheel', 'passengers', 'banana']],
+        ['Cat Herding', ['felines', 'impossible', 'wrangling', 'scatter']],
+        ['Scarecrow at a Dance', ['hay', 'crows', 'stiff', 'field']],
+        ['Turtle at a Swim Meet', ['shell', 'slow', 'race', 'water']],
+        ['Viking at a Spa', ['Norse', 'relax', 'axe', 'massage']],
+        ['Alien Learning to Shake Hands', ['tentacle', 'greet', 'earthling', 'hello']],
+        ['DJ in a Library', ['turntable', 'quiet', 'headphones', 'books']],
+        ['Spy at a Bake Sale', ['covert', 'cookies', 'mission', 'frosting']],
+        ['Astronaut Rock Climbing', ['gravity', 'harness', 'orbit', 'cliff']],
+        ['Chef on a Pogo Stick', ['cook', 'bounce', 'kitchen', 'recipe']],
+        ['Mermaid Playing Tennis', ['tail', 'racket', 'fins', 'court']],
+        ['T-Rex Clapping', ['dinosaur', 'tiny', 'arms', 'applaud']],
+        ['Sumo Jumping Rope', ['ring', 'spin', 'large', 'skip']],
+        ['Kangaroo Knitting', ['pouch', 'needles', 'yarn', 'Australia']],
+        ['Caveman Ordering Pizza', ['ancient', 'delivery', 'toppings', 'wheel']],
+        ['Ninja Baking Cupcakes', ['silent', 'frosting', 'kick', 'oven']],
+        ['Vampire Applying Sunscreen', ['fangs', 'SPF', 'burn', 'lotion']],
+        ['Wizard Riding a Bicycle', ['wand', 'pedal', 'spell', 'wheels']],
+        ['Ghost Gardening', ['haunted', 'plant', 'float', 'shovel']],
+        ['Knight in a Swimming Pool', ['armor', 'sink', 'jousting', 'water']],
+        ['Mummy Playing Guitar', ['wrap', 'strings', 'shuffle', 'solo']],
+        ['Pirate at a Tea Party', ['ship', 'cup', 'treasure', 'crumpet']],
+        ['Robot Making Pancakes', ['circuit', 'batter', 'flip', 'beep']],
+        ['Cowboy at a Ballet', ['hat', 'tutu', 'boots', 'grace']],
+        ['Superhero Grocery Shopping', ['cape', 'cart', 'powers', 'cereal']],
+        ['Clown at a Job Interview', ['makeup', 'suit', 'funny', 'hire']],
+        ['Flamingo Using a Computer', ['pink', 'keyboard', 'balance', 'leg']],
+        ['Gorilla Yoga', ['ape', 'pose', 'stretch', 'jungle']],
+        ['Sloth Racing', ['slow', 'tree', 'hang', 'speed']],
+        ['Witch Driving a School Bus', ['broom', 'kids', 'cauldron', 'route']],
+        ['Panda Weightlifter', ['bamboo', 'lift', 'China', 'heavy']],
+        ['Walrus Playing Ping Pong', ['tusks', 'paddle', 'ball', 'flipper']],
+        ['Yeti at the Grocery Store', ['snow', 'cart', 'aisle', 'bigfoot']],
+        ['Firefighter Making Smoothies', ['hose', 'blend', 'rescue', 'fruit']],
+        ['Dragon at a Birthday Party', ['fire', 'cake', 'wings', 'wish']],
+        ['Octopus Juggler', ['arms', 'balls', 'throw', 'sea']],
+        ['Goldfish on a Treadmill', ['bowl', 'run', 'fins', 'swim']],
+        ['Santa at the Gym', ['sled', 'lift', 'workout', 'Christmas']],
+        ['Werewolf Doing Homework', ['moon', 'study', 'howl', 'fangs']],
+        ['Frankenstein Learning to Tango', ['bolts', 'dance', 'green', 'step']],
+        ['Penguin Stand-Up Comedian', ['bird', 'joke', 'mic', 'waddle']],
+        ['Lion Tamer at a Preschool', ['whip', 'kids', 'chair', 'tame']],
       ];
+
+      // ── State ──
+      let shuffled = [];
+      let totalRounds = 1;
+      let currentRound = 1;
+      let turnsInRound = 0; // 0 = first team's turn, 1 = second team's turn
+      let activeTeam = 'A';
+      let scores = { A: 0, B: 0 };
+      let timeLeft = 60;
+      let ticking = false;
+      let timerInterval = null;
+      // gamePhase: 'setup' | 'turnStart' | 'playing' | 'paused' | 'gameOver'
+      let gamePhase = 'setup';
+
+      // ── DOM refs ──
       const timerEl = document.getElementById('timer');
-      const leftEl = document.getElementById('left');
-      const topicEl = document.getElementById('topic');
-      const tabooEl = document.getElementById('taboo');
+      const roundDisplayEl = document.getElementById('roundDisplay');
       const activeTeamEl = document.getElementById('activeTeam');
       const scoreAEl = document.getElementById('scoreA');
       const scoreBEl = document.getElementById('scoreB');
       const teamAEl = document.getElementById('teamA');
       const teamBEl = document.getElementById('teamB');
+      const topicEl = document.getElementById('topic');
+      const tabooEl = document.getElementById('taboo');
       const passBtn = document.getElementById('passBtn');
       const scoreBtn = document.getElementById('scoreBtn');
-      const nextBtn = document.getElementById('nextBtn');
+      const startPauseBtn = document.getElementById('startPauseBtn');
+      const buzzerBtn = document.getElementById('buzzerBtn');
+      const helpBtn = document.getElementById('helpBtn');
+      const newGameBtn = document.getElementById('newGameBtn');
+      const setupModal = document.getElementById('setupModal');
+      const helpModal = document.getElementById('helpModal');
+      const helpCloseBtn = document.getElementById('helpCloseBtn');
       const swipeArea = document.getElementById('swipeArea');
-      let shuffled = [];
-      let round = 60;
-      let ticking = false;
-      let activeTeam = 'A';
-      let scores = { A: 0, B: 0 };
-      let timer;
+      const turnOverlay = document.getElementById('turnOverlay');
+      const overlayEmoji = document.getElementById('overlayEmoji');
+      const overlayTitle = document.getElementById('overlayTitle');
+      const overlaySub = document.getElementById('overlaySub');
+      const overlayScore = document.getElementById('overlayScore');
+
       let touchStartX = 0;
-      function shuffleDeck() { shuffled = [...deck].sort(() => Math.random() - 0.5); }
+
+      function shuffleDeck() {
+        shuffled = [...deck].sort(() => Math.random() - 0.5);
+      }
+
       function draw() {
         if (!shuffled.length) shuffleDeck();
-        const current = shuffled.pop();
-        topicEl.textContent = current[0];
-        tabooEl.textContent = `Taboo words: ${current[1].join(', ')}`;
-        leftEl.textContent = String(shuffled.length);
+        const [word, taboos] = shuffled.pop();
+        topicEl.textContent = word;
+        tabooEl.innerHTML = taboos.map((t) => `<div class="taboo-word">${t}</div>`).join('');
       }
-      function renderTeams() {
+
+      function renderHud() {
+        timerEl.textContent = `${timeLeft}s`;
+        roundDisplayEl.textContent = `${currentRound} / ${totalRounds}`;
+        activeTeamEl.textContent = `Team ${activeTeam}`;
         scoreAEl.textContent = String(scores.A);
         scoreBEl.textContent = String(scores.B);
-        const isA = activeTeam === 'A';
-        teamAEl.classList.toggle('active', isA);
-        teamBEl.classList.toggle('active', !isA);
-        activeTeamEl.textContent = `Team ${activeTeam}`;
+        teamAEl.classList.toggle('active-team-card', activeTeam === 'A');
+        teamBEl.classList.toggle('active-team-card', activeTeam === 'B');
       }
-      function startPause() {
-        ticking = !ticking;
-        if (ticking) {
-          timer = setInterval(() => {
-            round -= 1;
-            timerEl.textContent = `${round}s`;
-            if (round <= 0) {
-              clearInterval(timer);
-              ticking = false;
-              timerEl.textContent = '0s — round over';
-            }
-          }, 1000);
+
+      function setButtonStates() {
+        const canAct = gamePhase === 'playing';
+        passBtn.disabled = !canAct;
+        scoreBtn.disabled = !canAct;
+        buzzerBtn.disabled = !canAct;
+
+        if (gamePhase === 'playing') {
+          startPauseBtn.textContent = '⏸ Pause';
+          startPauseBtn.disabled = false;
+        } else if (gamePhase === 'paused') {
+          startPauseBtn.textContent = '▶ Resume';
+          startPauseBtn.disabled = false;
+        } else if (gamePhase === 'turnStart') {
+          startPauseBtn.textContent = '▶ Start';
+          startPauseBtn.disabled = false;
         } else {
-          clearInterval(timer);
+          startPauseBtn.textContent = '▶ Start';
+          startPauseBtn.disabled = true;
         }
       }
-      function score() { scores[activeTeam] += 1; renderTeams(); draw(); }
-      function pass() { draw(); }
-      function switchTeam() {
-        activeTeam = activeTeam === 'A' ? 'B' : 'A';
-        round = 60;
-        timerEl.textContent = '60s';
-        if (ticking) startPause();
-        renderTeams();
+
+      function showOverlay(emoji, title, sub, score) {
+        overlayEmoji.textContent = emoji || '';
+        overlayTitle.textContent = title;
+        overlaySub.textContent = sub || '';
+        overlayScore.textContent = score || '';
+        turnOverlay.classList.remove('hidden');
       }
-      passBtn.addEventListener('click', pass);
-      scoreBtn.addEventListener('click', score);
-      nextBtn.addEventListener('click', draw);
-      swipeArea.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') pass();
-        if (e.key === 'ArrowRight') score();
-        if (e.key.toLowerCase() === 'n') draw();
-        if (e.code === 'Space') { e.preventDefault(); startPause(); }
-        if (e.key.toLowerCase() === 't') switchTeam();
+
+      function hideOverlay() {
+        turnOverlay.classList.add('hidden');
+      }
+
+      function stopTimer() {
+        if (timerInterval) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+        }
+        ticking = false;
+      }
+
+      function onTimerExpired() {
+        stopTimer();
+        timerEl.textContent = '0s';
+
+        turnsInRound += 1;
+        if (turnsInRound >= 2) {
+          turnsInRound = 0;
+          currentRound += 1;
+        }
+
+        if (currentRound > totalRounds) {
+          // Game over
+          gamePhase = 'gameOver';
+          const winner =
+            scores.A > scores.B ? 'Team A' : scores.B > scores.A ? 'Team B' : null;
+          showOverlay(
+            winner ? '🏆' : '🤝',
+            winner ? `${winner} Wins!` : "It's a Tie!",
+            `Final score: Team A ${scores.A} — Team B ${scores.B}`,
+            'Press New Game to play again'
+          );
+        } else {
+          activeTeam = activeTeam === 'A' ? 'B' : 'A';
+          timeLeft = 60;
+          gamePhase = 'turnStart';
+          const sub =
+            turnsInRound === 0
+              ? `Round ${currentRound} of ${totalRounds} — press ▶ Start to begin`
+              : 'Press ▶ Start to begin';
+          showOverlay('⏱️', `Team ${activeTeam}'s Turn`, sub, '');
+          renderHud();
+        }
+        setButtonStates();
+      }
+
+      function doStartPause() {
+        if (gamePhase === 'turnStart' || gamePhase === 'paused') {
+          if (gamePhase === 'turnStart') draw();
+          hideOverlay();
+          gamePhase = 'playing';
+          ticking = true;
+          timerInterval = setInterval(() => {
+            timeLeft -= 1;
+            timerEl.textContent = `${timeLeft}s`;
+            if (timeLeft <= 0) onTimerExpired();
+          }, 1000);
+          setButtonStates();
+        } else if (gamePhase === 'playing') {
+          stopTimer();
+          gamePhase = 'paused';
+          setButtonStates();
+        }
+      }
+
+      function doScore() {
+        if (gamePhase !== 'playing') return;
+        scores[activeTeam] += 1;
+        renderHud();
+        draw();
+      }
+
+      function doPass() {
+        if (gamePhase !== 'playing') return;
+        draw();
+      }
+
+      function doBuzzer() {
+        if (gamePhase !== 'playing') return;
+        buzzerBtn.classList.add('buzz-active');
+        setTimeout(() => buzzerBtn.classList.remove('buzz-active'), 400);
+      }
+
+      function startGame(rounds) {
+        totalRounds = rounds;
+        currentRound = 1;
+        turnsInRound = 0;
+        activeTeam = 'A';
+        scores = { A: 0, B: 0 };
+        timeLeft = 60;
+        stopTimer();
+        shuffleDeck();
+        setupModal.classList.add('hidden');
+        hideOverlay();
+        gamePhase = 'turnStart';
+        showOverlay('🎭', "Team A's Turn", `Round 1 of ${rounds} — press ▶ Start to begin`, '');
+        renderHud();
+        setButtonStates();
+        swipeArea.focus();
+      }
+
+      function openNewGame() {
+        stopTimer();
+        gamePhase = 'setup';
+        setupModal.classList.remove('hidden');
+      }
+
+      function openHelp() {
+        helpModal.classList.remove('hidden');
+      }
+
+      function closeHelp() {
+        helpModal.classList.add('hidden');
+      }
+
+      // ── Event listeners ──
+      startPauseBtn.addEventListener('click', doStartPause);
+      passBtn.addEventListener('click', doPass);
+      scoreBtn.addEventListener('click', doScore);
+      buzzerBtn.addEventListener('click', doBuzzer);
+      helpBtn.addEventListener('click', openHelp);
+      newGameBtn.addEventListener('click', openNewGame);
+      helpCloseBtn.addEventListener('click', closeHelp);
+      helpModal.addEventListener('click', (e) => {
+        if (e.target === helpModal) closeHelp();
       });
-      swipeArea.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].clientX; });
+
+      swipeArea.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft' && !passBtn.disabled) doPass();
+        if (e.key === 'ArrowRight' && !scoreBtn.disabled) doScore();
+        if (e.code === 'Space') {
+          e.preventDefault();
+          doStartPause();
+        }
+      });
+      swipeArea.addEventListener(
+        'touchstart',
+        (e) => {
+          touchStartX = e.changedTouches[0].clientX;
+        },
+        { passive: true }
+      );
       swipeArea.addEventListener('touchend', (e) => {
         const deltaX = e.changedTouches[0].clientX - touchStartX;
-        if (deltaX < -40) pass();
-        if (deltaX > 40) score();
+        if (deltaX < -40 && !passBtn.disabled) doPass();
+        if (deltaX > 40 && !scoreBtn.disabled) doScore();
       });
-      shuffleDeck();
-      draw();
-      renderTeams();
+
       swipeArea.focus();
     </script>
   </body>

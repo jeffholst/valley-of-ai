@@ -16,6 +16,17 @@
   ],
   "homepagePath": "index.html",
   "inputMode": "responsive",
+  "improvements": [
+    {
+      "issueNumber": 192,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/192",
+      "description": "Added round selection (1-3 rounds), 100 cards with 4 taboo words each, per-word taboo card layout, buzzer button, auto team-switch on timer expiry, start/pause timer, help modal, and game-over winner screen.",
+      "requestor": "Jeff H",
+      "implementedAt": "2026-03-24T11:49:35Z",
+      "agentName": "claude-code",
+      "llmModel": "claude-sonnet-4-6"
+    }
+  ],
   "generation": {
     "agentName": "dev",
     "llmModel": "openai-codex/gpt-5.3-codex",

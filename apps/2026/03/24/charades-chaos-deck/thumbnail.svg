@@ -1,55 +1,117 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-labelledby="title desc">
-  <title id="title">Charades Chaos Deck</title>
-  <desc id="desc">A party charades app showing a live prompt card, timer, and team scores.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
   <defs>
-    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#302066" />
-      <stop offset="55%" stop-color="#120e27" />
-      <stop offset="100%" stop-color="#0e0a1d" />
+    <radialGradient id="bgGrad" cx="20%" cy="20%" r="80%">
+      <stop offset="0%" stop-color="#302066"/>
+      <stop offset="45%" stop-color="#120e27"/>
+      <stop offset="100%" stop-color="#0e0a1d"/>
+    </radialGradient>
+    <linearGradient id="stageGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#201845"/>
+      <stop offset="100%" stop-color="#160f38"/>
     </linearGradient>
-    <linearGradient id="btnGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#ff8a5b" />
-      <stop offset="100%" stop-color="#a35bff" />
+    <linearGradient id="btnGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff8a5b"/>
+      <stop offset="100%" stop-color="#a35bff"/>
     </linearGradient>
-    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
-      <feMerge>
-        <feMergeNode in="blur" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
+    <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff8a5b"/>
+      <stop offset="100%" stop-color="#a35bff"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softShadow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="titleGlow">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
-  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)" />
-  <rect x="22" y="22" width="756" height="406" rx="18" fill="none" stroke="#a35bff" stroke-opacity="0.45" />
 
-  <rect x="50" y="54" width="220" height="70" rx="12" fill="#201845" stroke="#4f3a92" />
-  <text x="68" y="82" font-size="18" fill="#d7ccff" font-family="Inter,Segoe UI,sans-serif">Round timer</text>
-  <text x="68" y="110" font-size="28" font-weight="700" fill="#f8f5ff" font-family="Inter,Segoe UI,sans-serif">37s</text>
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)"/>
 
-  <rect x="290" y="54" width="220" height="70" rx="12" fill="#201845" stroke="#4f3a92" />
-  <text x="308" y="82" font-size="18" fill="#d7ccff" font-family="Inter,Segoe UI,sans-serif">Cards left</text>
-  <text x="308" y="110" font-size="28" font-weight="700" fill="#f8f5ff" font-family="Inter,Segoe UI,sans-serif">6</text>
+  <!-- Subtle grid texture -->
+  <line x1="0" y1="112" x2="800" y2="112" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+  <line x1="0" y1="225" x2="800" y2="225" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+  <line x1="0" y1="337" x2="800" y2="337" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+  <line x1="200" y1="0" x2="200" y2="450" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+  <line x1="400" y1="0" x2="400" y2="450" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+  <line x1="600" y1="0" x2="600" y2="450" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
 
-  <rect x="530" y="54" width="220" height="70" rx="12" fill="#201845" stroke="#4f3a92" />
-  <text x="548" y="82" font-size="18" fill="#d7ccff" font-family="Inter,Segoe UI,sans-serif">Active team</text>
-  <text x="548" y="110" font-size="28" font-weight="700" fill="#f8f5ff" font-family="Inter,Segoe UI,sans-serif">Team B</text>
+  <!-- Title -->
+  <text x="400" y="40" font-family="Inter, Segoe UI, sans-serif" font-size="26" font-weight="800"
+    fill="url(#titleGrad)" text-anchor="middle" filter="url(#titleGlow)">Charades Chaos Deck</text>
 
-  <rect x="80" y="145" width="640" height="210" rx="20" fill="#201845" stroke="#5f49a7" />
-  <text x="400" y="190" text-anchor="middle" font-size="18" fill="#bfaeff" font-family="Inter,Segoe UI,sans-serif">Act this out</text>
-  <text x="400" y="245" text-anchor="middle" font-size="44" font-weight="700" fill="#f8f5ff" filter="url(#softGlow)" font-family="Inter,Segoe UI,sans-serif">Secret Agent Escape</text>
-  <text x="400" y="282" text-anchor="middle" font-size="20" fill="#d7ccff" font-family="Inter,Segoe UI,sans-serif">Taboo words: spy, laser, crawl</text>
+  <!-- HUD row: 3 cards -->
+  <rect x="30" y="60" width="220" height="60" rx="12" fill="#201845" stroke="rgba(163,91,255,0.3)" stroke-width="1"/>
+  <text x="42" y="80" font-family="Inter, sans-serif" font-size="11" fill="rgba(248,245,255,0.7)">Round timer</text>
+  <text x="42" y="107" font-family="Inter, sans-serif" font-size="22" font-weight="700" fill="#f8f5ff">38s</text>
 
-  <rect x="130" y="305" width="160" height="40" rx="10" fill="#f43f5e" />
-  <text x="210" y="331" text-anchor="middle" font-size="20" font-weight="700" fill="#fff" font-family="Inter,Segoe UI,sans-serif">⬅ Pass</text>
-  <rect x="320" y="305" width="160" height="40" rx="10" fill="url(#btnGrad)" />
-  <text x="400" y="331" text-anchor="middle" font-size="20" font-weight="700" fill="#fff" font-family="Inter,Segoe UI,sans-serif">⟳ Next</text>
-  <rect x="510" y="305" width="160" height="40" rx="10" fill="#22c55e" />
-  <text x="590" y="331" text-anchor="middle" font-size="20" font-weight="700" fill="#fff" font-family="Inter,Segoe UI,sans-serif">Score ➜</text>
+  <rect x="290" y="60" width="220" height="60" rx="12" fill="#201845" stroke="rgba(163,91,255,0.3)" stroke-width="1"/>
+  <text x="302" y="80" font-family="Inter, sans-serif" font-size="11" fill="rgba(248,245,255,0.7)">Round</text>
+  <text x="302" y="107" font-family="Inter, sans-serif" font-size="22" font-weight="700" fill="#f8f5ff">2 / 3</text>
 
-  <rect x="80" y="372" width="300" height="52" rx="12" fill="#201845" stroke="#ff8a5b" />
-  <text x="104" y="404" font-size="24" fill="#f8f5ff" font-family="Inter,Segoe UI,sans-serif">Team A  4</text>
-  <rect x="420" y="372" width="300" height="52" rx="12" fill="#201845" stroke="#a35bff" />
-  <text x="444" y="404" font-size="24" fill="#f8f5ff" font-family="Inter,Segoe UI,sans-serif">Team B  6</text>
+  <rect x="550" y="60" width="220" height="60" rx="12" fill="#201845" stroke="rgba(255,138,91,0.6)" stroke-width="2"/>
+  <text x="562" y="80" font-family="Inter, sans-serif" font-size="11" fill="rgba(248,245,255,0.7)">Active team</text>
+  <text x="562" y="107" font-family="Inter, sans-serif" font-size="22" font-weight="700" fill="#ff8a5b">Team A</text>
 
-  <text x="400" y="42" text-anchor="middle" font-size="30" font-weight="700" fill="#ffd2b9" filter="url(#softGlow)" font-family="Inter,Segoe UI,sans-serif">Charades Chaos Deck</text>
+  <!-- Card stage -->
+  <rect x="30" y="140" width="740" height="155" rx="16" fill="url(#stageGrad)"
+    stroke="rgba(163,91,255,0.25)" stroke-width="1" filter="url(#softShadow)"/>
+
+  <text x="400" y="165" font-family="Inter, sans-serif" font-size="12" fill="rgba(248,245,255,0.75)"
+    text-anchor="middle">Target Word</text>
+
+  <text x="400" y="207" font-family="Inter, sans-serif" font-size="40" font-weight="800"
+    fill="#f8f5ff" text-anchor="middle" filter="url(#glow)">Sumo Ballerina</text>
+
+  <text x="400" y="234" font-family="Inter, sans-serif" font-size="11" fill="rgba(248,245,255,0.7)"
+    text-anchor="middle" text-decoration="underline">Taboo words</text>
+
+  <text x="225" y="258" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#f8f5ff" text-anchor="middle">large</text>
+  <text x="340" y="258" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#f8f5ff" text-anchor="middle">tutu</text>
+  <text x="460" y="258" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#f8f5ff" text-anchor="middle">graceful</text>
+  <text x="575" y="258" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#f8f5ff" text-anchor="middle">ring</text>
+
+  <!-- Controls row -->
+  <rect x="30" y="312" width="220" height="44" rx="10" fill="#f43f5e"/>
+  <text x="140" y="340" font-family="Inter, sans-serif" font-size="15" font-weight="700"
+    fill="white" text-anchor="middle">← Pass</text>
+
+  <rect x="290" y="312" width="220" height="44" rx="10" fill="url(#btnGrad)"/>
+  <text x="400" y="340" font-family="Inter, sans-serif" font-size="15" font-weight="700"
+    fill="white" text-anchor="middle">⏸ Pause</text>
+
+  <rect x="550" y="312" width="220" height="44" rx="10" fill="url(#scoreGrad)"/>
+  <text x="660" y="340" font-family="Inter, sans-serif" font-size="15" font-weight="700"
+    fill="white" text-anchor="middle">Score +1</text>
+
+  <!-- Buzzer button -->
+  <rect x="30" y="366" width="740" height="44" rx="10" fill="#e11d48"/>
+  <text x="400" y="394" font-family="Inter, sans-serif" font-size="15" font-weight="700"
+    fill="white" text-anchor="middle">Buzzer</text>
+
+  <!-- Team scores -->
+  <rect x="30" y="420" width="355" height="22" rx="10" fill="#201845" stroke="rgba(255,138,91,0.5)" stroke-width="1.5"/>
+  <text x="207" y="436" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#ff8a5b" text-anchor="middle">Team A: 4</text>
+  <rect x="415" y="420" width="355" height="22" rx="10" fill="#201845" stroke="rgba(43,34,86,0.8)" stroke-width="1"/>
+  <text x="592" y="436" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#f8f5ff" text-anchor="middle">Team B: 3</text>
+
+  <!-- Corner accents -->
+  <line x1="0" y1="0" x2="60" y2="0" stroke="url(#titleGrad)" stroke-width="3"/>
+  <line x1="0" y1="0" x2="0" y2="60" stroke="url(#titleGrad)" stroke-width="3"/>
+  <line x1="800" y1="0" x2="740" y2="0" stroke="url(#titleGrad)" stroke-width="3"/>
+  <line x1="800" y1="0" x2="800" y2="60" stroke="url(#titleGrad)" stroke-width="3"/>
+  <line x1="0" y1="450" x2="60" y2="450" stroke="url(#titleGrad)" stroke-width="3"/>
+  <line x1="0" y1="450" x2="0" y2="390" stroke="url(#titleGrad)" stroke-width="3"/>
+  <line x1="800" y1="450" x2="740" y2="450" stroke="url(#titleGrad)" stroke-width="3"/>
+  <line x1="800" y1="450" x2="800" y2="390" stroke="url(#titleGrad)" stroke-width="3"/>
 </svg>
