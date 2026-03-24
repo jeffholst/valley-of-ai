@@ -2,7 +2,7 @@
 
 # 🏔️ Valley of AI
 
-### *Where AI Dreams Become Digital Reality*
+### _Where AI Dreams Become Digital Reality_
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-valleyofai.com-blue?style=for-the-badge)](https://www.valleyofai.com)
 [![GitHub Stars](https://img.shields.io/github/stars/jeffholst/valley-of-ai?style=for-the-badge&logo=github&color=gold)](https://github.com/jeffholst/valley-of-ai/stargazers)
@@ -16,7 +16,7 @@
 <br />
 
 **A stunning showcase gallery featuring apps built entirely by AI agents.**  
-*Every app you see was conceived, designed, coded, and deployed by artificial intelligence.*
+_Every app you see was conceived, designed, coded, and deployed by artificial intelligence._
 
 [🚀 Explore Apps](https://www.valleyofai.com) • [💡 Suggest an App](https://www.valleyofai.com/#/suggest) • [📖 Documentation](#-getting-started)
 
@@ -31,27 +31,34 @@
 <td width="50%">
 
 ### 🎨 Beautiful Gallery
+
 Responsive, modern UI showcasing AI-generated apps with thumbnails, descriptions, and metadata.
 
 ### 🌓 Dark/Light Mode
+
 Seamlessly switch themes with persisted preferences for comfortable viewing.
 
 ### 🔍 Smart Filtering
+
 Filter by category, sort by date or votes, and search through the collection.
 
 </td>
 <td width="50%">
 
 ### 🗳️ Community Voting
+
 👍 or 👎 every app! Thumbs-up/down voting powered by Supabase. One vote per app per browser, tracked in localStorage.
 
 ### 🤖 Fully Automated
+
 Apps are generated, reviewed, and deployed by AI agents without human intervention.
 
 ### 💡 Community Suggestions
+
 Submit app ideas and watch AI bring them to life overnight.
 
 ### 📊 Generation Insights
+
 See the AI model, token usage, and generation time for each app.
 
 </td>
@@ -62,19 +69,19 @@ See the AI model, token usage, and generation time for each app.
 
 ## 🎮 Featured Apps
 
-| App | Description | Category |
-|-----|-------------|----------|
-| 🃏 **[Blackjack](https://www.valleyofai.com/apps/2026/03/07/blackjack/index.html)** | Classic blackjack with betting and dealer logic | Games |
-| 🎨 **[Contrast Lab](https://www.valleyofai.com/apps/2026/03/07/contrast-lab/index.html)** | WCAG contrast checker for accessible color pairs | Design |
-| 🎣 **[Fishing Frenzy](https://www.valleyofai.com/apps/2026/03/07/fishing-frenzy/index.html)** | Arcade-style fishing with timing and depth control | Games |
-| 🐦 **[Flappy Bird](https://www.valleyofai.com/apps/2026/03/07/flappy-bird/index.html)** | Classic tap-to-fly game with pipes | Games |
-| 🕯️ **[Lantern of Hollowmere](https://www.valleyofai.com/apps/2026/03/07/zorkish-text-adventure/index.html)** | Parser-style text adventure in a haunted village | Entertainment |
-| 🧠 **[Memory Match](https://www.valleyofai.com/apps/2026/03/06/memory-match/index.html)** | Card matching game with animated flips | Games |
-| 🌌 **[Orbit Harmonics](https://www.valleyofai.com/apps/2026/03/08/orbit-harmonics/index.html)** | Interactive harmonic orbit visualizer with tunable curves | Visualizations |
-| ⏱️ **[Pomodoro Timer](https://www.valleyofai.com/apps/2026/03/05/pomodoro-timer/index.html)** | Elegant focus timer for productivity sessions | Productivity |
-| 🏎️ **[Road Rage](https://www.valleyofai.com/apps/2026/03/07/road-rage/index.html)** | Fast-paced lane-switching driving challenge | Games |
-| 🐍 **[Snake Game](https://www.valleyofai.com/apps/2026/03/05/snake-game/index.html)** | Grow your snake while avoiding collisions | Games |
-| 🔤 **[Word Weaver](https://www.valleyofai.com/apps/2026/03/06/word-weaver/index.html)** | Word transformation puzzle utility with hint support | Utilities |
+| App                                                                                                          | Description                                               | Category       |
+| ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- | -------------- |
+| 🃏 **[Blackjack](https://www.valleyofai.com/apps/2026/03/07/blackjack/index.html)**                          | Classic blackjack with betting and dealer logic           | Games          |
+| 🎨 **[Contrast Lab](https://www.valleyofai.com/apps/2026/03/07/contrast-lab/index.html)**                    | WCAG contrast checker for accessible color pairs          | Design         |
+| 🎣 **[Fishing Frenzy](https://www.valleyofai.com/apps/2026/03/07/fishing-frenzy/index.html)**                | Arcade-style fishing with timing and depth control        | Games          |
+| 🐦 **[Flappy Bird](https://www.valleyofai.com/apps/2026/03/07/flappy-bird/index.html)**                      | Classic tap-to-fly game with pipes                        | Games          |
+| 🕯️ **[Lantern of Hollowmere](https://www.valleyofai.com/apps/2026/03/07/zorkish-text-adventure/index.html)** | Parser-style text adventure in a haunted village          | Entertainment  |
+| 🧠 **[Memory Match](https://www.valleyofai.com/apps/2026/03/06/memory-match/index.html)**                    | Card matching game with animated flips                    | Games          |
+| 🌌 **[Orbit Harmonics](https://www.valleyofai.com/apps/2026/03/08/orbit-harmonics/index.html)**              | Interactive harmonic orbit visualizer with tunable curves | Visualizations |
+| ⏱️ **[Pomodoro Timer](https://www.valleyofai.com/apps/2026/03/05/pomodoro-timer/index.html)**                | Elegant focus timer for productivity sessions             | Productivity   |
+| 🏎️ **[Road Rage](https://www.valleyofai.com/apps/2026/03/07/road-rage/index.html)**                          | Fast-paced lane-switching driving challenge               | Games          |
+| 🐍 **[Snake Game](https://www.valleyofai.com/apps/2026/03/05/snake-game/index.html)**                        | Grow your snake while avoiding collisions                 | Games          |
+| 🔤 **[Word Weaver](https://www.valleyofai.com/apps/2026/03/06/word-weaver/index.html)**                      | Word transformation puzzle utility with hint support      | Utilities      |
 
 <div align="center">
 <i>...and more being added every night by our AI agents!</i>
@@ -95,14 +102,14 @@ See the AI model, token usage, and generation time for each app.
 </tr>
 </table>
 
-| Tool | Required for | Install |
-|------|-------------|---------|
-| **Node.js 18+** | Running the dev server, all scripts | [nodejs.org](https://nodejs.org) |
-| **npm 9+** | Installing dependencies, running scripts | Bundled with Node.js |
-| **git** | All git operations in the agent pipelines | [git-scm.com](https://git-scm.com) |
-| **GitHub CLI (`gh`)** | Creating labels, issues, PRs, and merges — used in agent pipelines and setup commands throughout this README | [cli.github.com](https://cli.github.com) — then run `gh auth login` |
-| **Playwright browsers** | `npm run validate:responsive` and `npm run validate:responsive:sample` (uses Chromium headlessly) | Run once after `npm install`: `npx playwright install chromium` |
-| **`xmllint`** | Optional — used in agent pipelines to validate `thumbnail.svg` before saving | macOS: `brew install libxml2` · Linux: `sudo apt install libxml2-utils` |
+| Tool                    | Required for                                                                                                 | Install                                                                 |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| **Node.js 18+**         | Running the dev server, all scripts                                                                          | [nodejs.org](https://nodejs.org)                                        |
+| **npm 9+**              | Installing dependencies, running scripts                                                                     | Bundled with Node.js                                                    |
+| **git**                 | All git operations in the agent pipelines                                                                    | [git-scm.com](https://git-scm.com)                                      |
+| **GitHub CLI (`gh`)**   | Creating labels, issues, PRs, and merges — used in agent pipelines and setup commands throughout this README | [cli.github.com](https://cli.github.com) — then run `gh auth login`     |
+| **Playwright browsers** | `npm run validate:responsive` and `npm run validate:responsive:sample` (uses Chromium headlessly)            | Run once after `npm install`: `npx playwright install chromium`         |
+| **`xmllint`**           | Optional — used in agent pipelines to validate `thumbnail.svg` before saving                                 | macOS: `brew install libxml2` · Linux: `sudo apt install libxml2-utils` |
 
 ### Installation
 
@@ -114,6 +121,9 @@ cd valley-of-ai
 # Install dependencies
 npm install
 
+# Husky pre-commit hooks are installed automatically by the prepare script
+# Staged JS/JSX files run through eslint --fix + prettier, and CSS/JSON/MD files run through prettier
+
 # Install Playwright browser (required for validate:responsive)
 npx playwright install chromium
 
@@ -123,28 +133,30 @@ npm run dev
 
 The dev server runs at `http://localhost:3000` with Next.js hot reload enabled.
 
+Git commits also run the repo's pre-commit hook via `lint-staged`, so staged files are auto-formatted and linted before the commit completes.
+
 ### 3rd Party Service Requirements
 
-| Service | Purpose |
-|---------|---------|
-| [Supabase](https://supabase.com) | Storing and retrieving app votes |
-| [GitHub Issues](https://docs.github.com/en/issues) | Persistent storage for community app suggestions and improvement requests |
-| [Google Analytics](https://analytics.google.com) | Analytic tracking |
-| [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) | Bot protection on suggestion and improvement forms |
+| Service                                                                | Purpose                                                                   |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| [Supabase](https://supabase.com)                                       | Storing and retrieving app votes                                          |
+| [GitHub Issues](https://docs.github.com/en/issues)                     | Persistent storage for community app suggestions and improvement requests |
+| [Google Analytics](https://analytics.google.com)                       | Analytic tracking                                                         |
+| [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) | Bot protection on suggestion and improvement forms                        |
 
 ### GitHub Labels
 
 The following labels must exist in your GitHub repo. Create them via `gh label create` or the GitHub UI under **Issues → Labels**.
 
-| Label | Color | Description |
-|-------|-------|-------------|
-| `suggestion` | `#8b5cf6` | User-submitted app suggestion |
-| `improvement` | `#3b82f6` | User-submitted app improvement request |
-| `status:pending` | `#f59e0b` | Awaiting maintainer review |
-| `status:approved` | `#10b981` | Approved for agent processing |
-| `status:rejected` | `#ef4444` | Not selected for implementation |
-| `status:implemented` | `#6b7280` | App has been generated or improvement applied |
-| `boosted` | `#f59e0b` | Submission received a tip — prioritized for review |
+| Label                | Color     | Description                                        |
+| -------------------- | --------- | -------------------------------------------------- |
+| `suggestion`         | `#8b5cf6` | User-submitted app suggestion                      |
+| `improvement`        | `#3b82f6` | User-submitted app improvement request             |
+| `status:pending`     | `#f59e0b` | Awaiting maintainer review                         |
+| `status:approved`    | `#10b981` | Approved for agent processing                      |
+| `status:rejected`    | `#ef4444` | Not selected for implementation                    |
+| `status:implemented` | `#6b7280` | App has been generated or improvement applied      |
+| `boosted`            | `#f59e0b` | Submission received a tip — prioritized for review |
 
 To create all labels at once:
 
@@ -169,32 +181,32 @@ cp .env.example .env
 
 Then edit `.env` with your real values.
 
-| File | Committed | Purpose |
-|------|-----------|---------|
-| `.env.example` | ✅ Yes | Template with placeholder values — copy this to `.env` to get started |
-| `.env` | ❌ No (git-ignored) | Your config with real keys — this is all you need |
-| `.env.local` | ❌ No (git-ignored) | Optional — takes precedence over `.env` if you need to layer overrides (most users won't need this) |
+| File           | Committed           | Purpose                                                                                             |
+| -------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
+| `.env.example` | ✅ Yes              | Template with placeholder values — copy this to `.env` to get started                               |
+| `.env`         | ❌ No (git-ignored) | Your config with real keys — this is all you need                                                   |
+| `.env.local`   | ❌ No (git-ignored) | Optional — takes precedence over `.env` if you need to layer overrides (most users won't need this) |
 
 Client-side variables use the `NEXT_PUBLIC_*` prefix (accessible in the browser). Server-side variables have no prefix (never exposed to the client).
 
-| Variable | Side | Used For |
-|----------|------|----------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Client | Supabase project URL for voting data |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Client | Supabase anonymous key for client access |
-| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Client | Cloudflare Turnstile site key (production only; skipped in development) |
-| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | Client | Google Analytics measurement ID |
-| `NEXT_PUBLIC_MAIN_SITE_URL` | Client | Main site URL used by app footer links |
-| `NEXT_PUBLIC_SITE_NAME` | Client | Main site name used by app footer link text |
-| `NEXT_PUBLIC_SOCIAL_X_URL` | Client | X profile URL used in footer social links |
-| `NEXT_PUBLIC_SOCIAL_FACEBOOK_URL` | Client | Facebook profile/page URL used in footer social links |
-| `NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL` | Client | Instagram profile URL used in footer social links |
-| `NEXT_PUBLIC_GITHUB_URL` | Client | GitHub repo URL |
-| `TURNSTILE_SECRET_KEY` | Server | Cloudflare Turnstile secret for server-side bot verification |
-| `GITHUB_SUGGESTIONS_TOKEN` | Server | Fine-grained PAT with Issues read/write for creating suggestion issues |
-| `GITHUB_REPO` | Server | Target repo for suggestions, e.g. `owner/repo-name` |
+| Variable                             | Side   | Used For                                                                         |
+| ------------------------------------ | ------ | -------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`           | Client | Supabase project URL for voting data                                             |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY`      | Client | Supabase anonymous key for client access                                         |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY`     | Client | Cloudflare Turnstile site key (production only; skipped in development)          |
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID`      | Client | Google Analytics measurement ID                                                  |
+| `NEXT_PUBLIC_MAIN_SITE_URL`          | Client | Main site URL used by app footer links                                           |
+| `NEXT_PUBLIC_SITE_NAME`              | Client | Main site name used by app footer link text                                      |
+| `NEXT_PUBLIC_SOCIAL_X_URL`           | Client | X profile URL used in footer social links                                        |
+| `NEXT_PUBLIC_SOCIAL_FACEBOOK_URL`    | Client | Facebook profile/page URL used in footer social links                            |
+| `NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL`   | Client | Instagram profile URL used in footer social links                                |
+| `NEXT_PUBLIC_GITHUB_URL`             | Client | GitHub repo URL                                                                  |
+| `TURNSTILE_SECRET_KEY`               | Server | Cloudflare Turnstile secret for server-side bot verification                     |
+| `GITHUB_SUGGESTIONS_TOKEN`           | Server | Fine-grained PAT with Issues read/write for creating suggestion issues           |
+| `GITHUB_REPO`                        | Server | Target repo for suggestions, e.g. `owner/repo-name`                              |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Client | Stripe publishable key (not currently used client-side, included for future use) |
-| `STRIPE_SECRET_KEY` | Server | Stripe secret key for creating checkout sessions |
-| `STRIPE_WEBHOOK_SECRET` | Server | Stripe webhook signing secret for verifying payment events |
+| `STRIPE_SECRET_KEY`                  | Server | Stripe secret key for creating checkout sessions                                 |
+| `STRIPE_WEBHOOK_SECRET`              | Server | Stripe webhook signing secret for verifying payment events                       |
 
 If these values are missing, parts of the app may fail at runtime.
 
@@ -219,10 +231,10 @@ The CLI will print a webhook signing secret (starts with `whsec_`). Set this as 
 
 No real charges are made in test mode. On the Stripe Checkout page use:
 
-| Scenario | Card Number | Expiry | CVC | ZIP |
-|---|---|---|---|---|
+| Scenario              | Card Number           | Expiry                    | CVC          | ZIP          |
+| --------------------- | --------------------- | ------------------------- | ------------ | ------------ |
 | ✅ Successful payment | `4242 4242 4242 4242` | Any future (e.g. `12/34`) | Any 3 digits | Any 5 digits |
-| ❌ Declined payment | `4000 0000 0000 0002` | Any future | Any 3 digits | Any 5 digits |
+| ❌ Declined payment   | `4000 0000 0000 0002` | Any future                | Any 3 digits | Any 5 digits |
 
 A successful test payment will fire the `checkout.session.completed` webhook, which adds the `boosted` label and a comment to the GitHub issue.
 
@@ -236,24 +248,24 @@ stripe trigger checkout.session.completed
 
 ### Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | 🔥 Start Next.js development server with hot reload |
-| `npm run build` | 📦 Build for production |
-| `npm run start` | 🚀 Start production server (use after `build`) |
-| `npm run lint` | 🔍 Run ESLint to check code quality (0 warnings allowed) |
-| `npm run lint:fix` | 🔧 Auto-fix linting issues (semicolons, quotes, etc.) |
-| `npm run format` | 💅 Format code with Prettier (100 char line width) |
-| `npm test` | ✅ Run Jest test suite |
-| `npm run test:watch` | 👁️ Run tests in watch mode (re-run on file changes) |
-| `npm run test:coverage` | 📊 Generate test coverage report |
-| `npm run generate:apps` | 🔄 Regenerate the committed `data/apps.json` registry from `apps/*/meta.json` files |
-| `npm run sync` | 📋 Copy `apps/` and `logs/` into `public/` for static access |
-| `npm run validate:apps` | ✅ Validate standalone app HTML structure, metadata, and `data/apps.json` synchronization |
-| `npm run validate:responsive` | 📱 Validate responsive design across all apps |
-| `npm run validate:responsive:sample` | 📱 Same as above but limited to 5 apps — faster for local spot-checks |
-| `npm run select:app:suggestion` | 🤖 Recommend the next **new app** concept to build — checks GitHub for boosted/approved `suggestion` issues first (ranked by verified tip total), then falls back to Supabase vote analysis and category gap scoring when no issues exist. Outputs a JSON recommendation with duplication-risk scoring and saturated/recent tag warnings to avoid repeating existing concepts. |
-| `npm run select:app:improvement` | 🔧 Recommend the highest-priority **improvement** to an existing app — checks GitHub for boosted/approved `improvement` issues first (ranked by verified tip total), then approved improvements without a boost. Outputs a JSON recommendation including the target app's metadata. If no approved improvements exist, outputs `found: false` — **do not proceed with an improvement run in that case.** |
+| Command                              | Description                                                                                                                                                                                                                                                                                                                                                                                              |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`                        | 🔥 Start Next.js development server with hot reload                                                                                                                                                                                                                                                                                                                                                      |
+| `npm run build`                      | 📦 Build for production                                                                                                                                                                                                                                                                                                                                                                                  |
+| `npm run start`                      | 🚀 Start production server (use after `build`)                                                                                                                                                                                                                                                                                                                                                           |
+| `npm run lint`                       | 🔍 Run ESLint to check code quality (0 warnings allowed)                                                                                                                                                                                                                                                                                                                                                 |
+| `npm run lint:fix`                   | 🔧 Auto-fix linting issues (semicolons, quotes, etc.)                                                                                                                                                                                                                                                                                                                                                    |
+| `npm run format`                     | 💅 Format code with Prettier (100 char line width)                                                                                                                                                                                                                                                                                                                                                       |
+| `npm test`                           | ✅ Run Jest test suite                                                                                                                                                                                                                                                                                                                                                                                   |
+| `npm run test:watch`                 | 👁️ Run tests in watch mode (re-run on file changes)                                                                                                                                                                                                                                                                                                                                                      |
+| `npm run test:coverage`              | 📊 Generate test coverage report                                                                                                                                                                                                                                                                                                                                                                         |
+| `npm run generate:apps`              | 🔄 Regenerate the committed `data/apps.json` registry from `apps/*/meta.json` files                                                                                                                                                                                                                                                                                                                      |
+| `npm run sync`                       | 📋 Copy `apps/` and `logs/` into `public/` for static access                                                                                                                                                                                                                                                                                                                                             |
+| `npm run validate:apps`              | ✅ Validate standalone app HTML structure, metadata, and `data/apps.json` synchronization                                                                                                                                                                                                                                                                                                                |
+| `npm run validate:responsive`        | 📱 Validate responsive design across all apps                                                                                                                                                                                                                                                                                                                                                            |
+| `npm run validate:responsive:sample` | 📱 Same as above but limited to 5 apps — faster for local spot-checks                                                                                                                                                                                                                                                                                                                                    |
+| `npm run select:app:suggestion`      | 🤖 Recommend the next **new app** concept to build — checks GitHub for boosted/approved `suggestion` issues first (ranked by verified tip total), then falls back to Supabase vote analysis and category gap scoring when no issues exist. Outputs a JSON recommendation with duplication-risk scoring and saturated/recent tag warnings to avoid repeating existing concepts.                           |
+| `npm run select:app:improvement`     | 🔧 Recommend the highest-priority **improvement** to an existing app — checks GitHub for boosted/approved `improvement` issues first (ranked by verified tip total), then approved improvements without a boost. Outputs a JSON recommendation including the target app's metadata. If no approved improvements exist, outputs `found: false` — **do not proceed with an improvement run in that case.** |
 
 ### Build & Deployment Pipeline
 
@@ -394,6 +406,7 @@ This is useful for documentation-only changes or quick fixes that don't require 
 │   ├── 📄 eslint.config.js    # ESLint (flat config format)
 │   ├── 📄 .prettierrc.json    # Prettier formatting
 │   ├── 📄 .prettierignore     # Prettier file exclusions
+│   ├── 📁 .husky/             # Git hooks (pre-commit runs lint-staged)
 │   ├── 📄 .npmrc              # npm config (legacy-peer-deps)
 │   ├── 📄 next.config.mjs     # Next.js configuration
 │   ├── 📄 jsconfig.json       # Path aliases (@/*)
@@ -427,7 +440,7 @@ graph LR
 </div>
 
 1. **💡 Concept** — AI selects a user suggestion or generates an original idea
-2. **🔍 Research** — Searches the web for inspiration and best practices  
+2. **🔍 Research** — Searches the web for inspiration and best practices
 3. **💻 Build** — Creates a self-contained HTML/CSS/JS application
 4. **🎨 Design** — Generates an SVG thumbnail preview
 5. **✅ Review** — Self-reviews code and creates a pull request
@@ -498,6 +511,7 @@ Each app includes rich metadata in `meta.json`:
 ```
 
 > 💡 **Notes:**
+>
 > - Votes are stored in Supabase, not in `meta.json`.
 > - `suggestion` is optional — only present when built from a community GitHub Issue suggestion.
 > - `improvements` is optional — appended to each time an improvement pipeline runs against this app.
@@ -509,11 +523,11 @@ Each app includes rich metadata in `meta.json`:
 
 The AI agent that builds and improves apps follows structured prompts in `docs/agent-prompts/`. There are two flows, both reading a shared contract file first:
 
-| File | Purpose |
-|------|---------|
-| [`AGENT_PROMPT_SHARED.md`](docs/agent-prompts/AGENT_PROMPT_SHARED.md) | Required reading for both flows — logging rules, HTML contracts, thumbnail spec |
-| [`AGENT_PROMPT_NEW_APP.md`](docs/agent-prompts/AGENT_PROMPT_NEW_APP.md) | Build a new app from scratch (14-step pipeline) |
-| [`AGENT_PROMPT_IMPROVEMENT.md`](docs/agent-prompts/AGENT_PROMPT_IMPROVEMENT.md) | Apply an approved improvement to an existing app (14-step pipeline) |
+| File                                                                            | Purpose                                                                         |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| [`AGENT_PROMPT_SHARED.md`](docs/agent-prompts/AGENT_PROMPT_SHARED.md)           | Required reading for both flows — logging rules, HTML contracts, thumbnail spec |
+| [`AGENT_PROMPT_NEW_APP.md`](docs/agent-prompts/AGENT_PROMPT_NEW_APP.md)         | Build a new app from scratch (14-step pipeline)                                 |
+| [`AGENT_PROMPT_IMPROVEMENT.md`](docs/agent-prompts/AGENT_PROMPT_IMPROVEMENT.md) | Apply an approved improvement to an existing app (14-step pipeline)             |
 
 ### Starting a new app run
 
@@ -532,11 +546,13 @@ Both prompts drive the full pipeline: branch → build/modify → validate → P
 ### How app selection works
 
 `select:app:suggestion` checks in priority order:
+
 1. **Boosted GitHub issues** (`suggestion` + `status:approved` + `boosted`) — ranked by verified tip total
 2. **Approved GitHub issues** (`suggestion` + `status:approved`) — oldest first
 3. **Vote + category analysis** — top Supabase-voted apps inspire concepts; category gap scoring surfaces under-represented categories
 
 `select:app:improvement` checks:
+
 1. **Boosted improvement issues** (`improvement` + `status:approved` + `boosted`) — ranked by verified tip total
 2. **Approved improvement issues** (`improvement` + `status:approved`) — oldest first
 3. **No fallback** — returns `found: false` if nothing is approved; the agent stops
@@ -579,12 +595,15 @@ Improve the gallery or scripts
 Before submitting a PR, ensure your code meets our standards:
 
 #### 1️⃣ Style & Format
+
 - Read [📖 STYLE_GUIDE.md](docs/STYLE_GUIDE.md) for code conventions, naming, React patterns, CSS standards
 - Run `npm run lint:fix` to auto-fix linting issues (semicolons, quotes, spacing)
 - Run `npm run format` to apply Prettier formatting (100 char line width, single quotes)
 - Verify with `npm run lint` — must pass with **0 warnings**
+- Expect staged commits to run the Husky pre-commit hook, which applies `lint-staged` checks automatically
 
 #### 2️⃣ Testing
+
 - Write tests for new features using Jest + React Testing Library
 - Test files go in `__tests__/` mirroring the source structure
 - Run `npm test` to verify all 57+ tests pass
@@ -592,6 +611,7 @@ Before submitting a PR, ensure your code meets our standards:
 - See [📖 TESTING.md](docs/TESTING.md) for testing examples and best practices
 
 #### 3️⃣ PR Process
+
 - Use the [Pull Request Template](.github/pull_request_template.md) with:
   - Type of change (bugfix, feature, docs, etc.)
   - Testing steps and evidence
@@ -601,6 +621,7 @@ Before submitting a PR, ensure your code meets our standards:
 - Keep PR focused on a single feature or bugfix
 
 #### 4️⃣ Issue Reporting
+
 - Use the [Bug Report Template](.github/ISSUE_TEMPLATE/bug_report.md) with:
   - Steps to reproduce
   - Expected vs actual behavior
@@ -614,6 +635,7 @@ Before submitting a PR, ensure your code meets our standards:
 ### Code Quality Checks
 
 All changes are validated before merge:
+
 - ✅ **ESLint**: 0 errors, 0 warnings
 - ✅ **Prettier**: Consistent formatting
 - ✅ **Jest Tests**: 57+ tests passing
@@ -649,6 +671,7 @@ Core stack used in this project:
 - **Plain HTML/CSS/JS in `apps/`**: Self-contained generated mini-apps (not Next.js-dependent).
 
 **Build Performance:**
+
 - **Turbopack** (Next.js 16): Ultra-fast incremental builds
 - **Static/Prerendered Routes**: 7 main routes (/, apps/[id], logs, suggest, etc.) fully prerendered at build time
 - **Streaming Response**: App gallery lazy-loads with Next.js Suspense
