@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "prepare": "husky",
     "dev": "npm run sync && next dev",
     "build": "npm run sync && next build",
     "start": "next start",
@@ -21,6 +22,15 @@
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
+  },
+  "lint-staged": {
+    "*.{js,jsx,mjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,json,md}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -43,8 +53,10 @@
     "eslint-config-next": "^16.1.6",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",
+    "husky": "^9.1.7",
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.3.0",
+    "lint-staged": "^15.2.10",
     "playwright": "^1.58.2",
     "postcss": "^8.4.38",
     "prettier": "^3.8.1",

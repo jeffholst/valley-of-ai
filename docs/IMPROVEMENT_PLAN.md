@@ -21,12 +21,14 @@ Each item has enough context to be actioned without re-reading the audit.
 **Problem:** The CI workflow only runs `npm ci`, `npm run generate:apps`, and `npm run build`. Tests, lint, and validation are never run automatically. Code can be merged with failing tests or lint errors.
 
 **What to do:**
+
 - Add a job (or steps) that run before the build: `npm run lint`, `npm test`, `npm run validate:apps`
 - The lint and test jobs should run on every `push` and `pull_request` event, not just pushes to `main`
 - Consider splitting into two jobs: `quality` (lint + test + validate) and `build` (generate + build), with `build` depending on `quality`
 - The `validate:apps` script checks HTML contracts, metadata schema, and registry sync — make it a hard gate
 
 **Acceptance criteria:**
+
 - A PR with a lint error or failing test is blocked from merging
 - The workflow runs on both `push` to `main` and `pull_request` targeting `main`
 
@@ -39,12 +41,14 @@ Each item has enough context to be actioned without re-reading the audit.
 **Problem:** The `appId` query parameter is used directly in `path.join(process.cwd(), 'public', 'apps', appId, 'log.jsonl')` without validation. A crafted `appId` like `../../etc/passwd` could read arbitrary files. The fallback directory traversal at lines 29–75 also uses unvalidated user input.
 
 **What to do:**
+
 - Before using `appId` in any path, validate it matches the pattern `^\d{4}/\d{2}/\d{2}/[a-z0-9-]+$`
 - Return a 400 error immediately if validation fails
 - After constructing the resolved path with `path.resolve()`, assert it starts with the expected base directory (`process.cwd() + '/public/apps/'`) as a defense-in-depth check
 - Apply the same validation to any other path constructed from `appId`
 
 **Acceptance criteria:**
+
 - Requests with `appId=../../etc/passwd` return 400, not file contents
 - Valid `appId` values like `2026/03/24/charades-chaos-deck` still work correctly
 
@@ -68,6 +72,7 @@ Each item has enough context to be actioned without re-reading the audit.
 The remaining `app/page.jsx` should orchestrate these pieces and hold minimal state (just the top-level options and pagination cursor).
 
 **Acceptance criteria:**
+
 - `app/page.jsx` is under 200 lines
 - No behavior change — all features work identically
 - All extracted hooks/components are co-located in their respective directories
@@ -81,6 +86,7 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Problem:** Zero tests exist for any API route, including routes that handle money (Stripe) and external GitHub API calls.
 
 **What to do:**
+
 - Create `__tests__/api/` directory
 - For each route, write tests using `jest` with mocked dependencies:
   - `suggestions/route.test.js` — test Turnstile failure, missing fields, valid submission (mock GitHub API call), length validation
@@ -92,6 +98,7 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 - Use `jest.mock()` for `@octokit/rest`, `stripe`, and `@supabase/supabase-js`
 
 **Acceptance criteria:**
+
 - Each route has at least 3 tests covering: happy path, missing/invalid input, and one external-service-failure case
 - `npm test` passes with new tests included
 
@@ -104,12 +111,14 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Problem:** `useVotes` is called per `AppCard` — each instance fetches all vote rows for that specific app from Supabase. `useAllVoteCounts` already fetches votes for all visible apps in bulk. The per-card queries are redundant, resulting in N+1 queries on page load (one bulk + one per visible card).
 
 **What to do:**
+
 - Refactor so `AppCard` receives its vote counts as props from the parent gallery component
 - The parent uses `useAllVoteCounts` (the single bulk hook) to get counts for all visible apps, then passes `{ upvotes, downvotes, userVote }` down to each `AppCard`
 - The per-card `useVotes` hook should only be used in contexts where a single app is displayed in isolation (e.g., the showcase page)
 - Alternatively: expose a `getCountsForApp(appId)` selector from `useAllVoteCounts` that the gallery parent calls, eliminating per-card network calls entirely
 
 **Acceptance criteria:**
+
 - Opening the homepage makes exactly 1 Supabase query for votes (the bulk query), not 1 + N
 - Voting still works: optimistic updates, persistence, dedup
 
@@ -124,11 +133,13 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Problem:** Both routes define an identical `verifyTurnstile()` function. Any change (e.g., error message, timeout, endpoint URL) must be made in two places.
 
 **What to do:**
+
 - Create `lib/turnstile.js` with a single exported `verifyTurnstile(token)` function
 - Replace both inline definitions with `import { verifyTurnstile } from '@/lib/turnstile'`
 - The function should throw (or return `{ success: false, error }`) on failure so callers can handle it uniformly
 
 **Acceptance criteria:**
+
 - `verifyTurnstile` exists only in `lib/turnstile.js`
 - Both API routes import it from there
 - Behavior is identical to before
@@ -142,11 +153,13 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Problem:** Two slightly different implementations of the same function exist. The `logs/page.jsx` version handles minutes; `AppLog.jsx` does not.
 
 **What to do:**
+
 - Create `lib/formatDuration.js` (or add to an existing `lib/utils.js` if one exists) with a single exported `formatDuration(ms)` that handles both ms and minute ranges
 - Replace both inline definitions with an import
 - Add a unit test in `__tests__/lib/formatDuration.test.js` covering: sub-second, seconds, minutes, null/undefined input
 
 **Acceptance criteria:**
+
 - `formatDuration` defined in exactly one place
 - Unit tests pass
 
@@ -159,6 +172,7 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Problem:** Keyboard users can Tab out of open modals into background content. This is a WCAG 2.1 Level A failure.
 
 **What to do:**
+
 - Install `focus-trap-react` (or implement a lightweight `useFocusTrap` hook using `document.querySelectorAll` for focusable elements)
 - Wrap each modal's content with the focus trap
 - When a modal opens, focus should move to the first interactive element inside it
@@ -166,6 +180,7 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 - Verify Escape key still closes all modals
 
 **Acceptance criteria:**
+
 - Tabbing inside an open modal cycles only through elements within the modal
 - Focus returns to the trigger element on close
 - No regressions in Escape-key-to-close behavior
@@ -179,11 +194,13 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Problem:** `eslint-plugin-jsx-a11y` is installed and registered but zero rules are active. The plugin has no effect.
 
 **What to do:**
+
 - Add `...jsxA11y.configs.recommended.rules` (or the flat-config equivalent) to the `rules` object in `eslint.config.js`
 - Run `npm run lint` and fix any violations surfaced by the newly active rules
 - Common fixes likely needed: `alt` text on `AppCard` thumbnails (see M-6), ARIA role corrections, button vs. anchor misuse
 
 **Acceptance criteria:**
+
 - `jsx-a11y/recommended` rules are active and enforced at the lint level
 - `npm run lint` passes with 0 warnings after fixing violations
 
@@ -196,6 +213,7 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Problem:** Only 3 animations respect `prefers-reduced-motion`. Pterodactyls, weather effects (rain, snow, lightning), shooting stars, gradient text, earthquake effect, and others do not. Users with vestibular disorders can be affected.
 
 **What to do:**
+
 - Add a `@media (prefers-reduced-motion: reduce)` block at the bottom of `globals.css`
 - Inside it, disable or significantly tone down:
   - Pterodactyl flight animations (`.pterodactyl`)
@@ -207,6 +225,7 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 - The simplest safe approach: `*, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }` inside the media query, then selectively re-enable non-motion animations (color changes, opacity fades) as needed
 
 **Acceptance criteria:**
+
 - Enabling "Reduce motion" in macOS Accessibility settings stops all motion animations on the gallery page
 - Non-motion effects (color, opacity) can remain
 
@@ -217,14 +236,17 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Files:** `__tests__/data/apps.test.js`, `__tests__/components/ThemeToggle.test.js`
 
 **Problem:**
+
 1. `apps.test.js:44` checks for `description` and `path` but the registry uses `shortDescription` and `appPath` — tests pass trivially without actually verifying anything meaningful
 2. `ThemeToggle.test.js` "changes theme when clicked" test only asserts `expect(button).toBeInTheDocument()` after clicking — this proves nothing about theme switching
 
 **What to do:**
+
 1. In `apps.test.js`: fix field names to match the actual registry schema (`id`, `name`, `shortDescription`, `appPath`, `category`, `status`, `thumbnail`, `homepagePath`). Also verify `createdAt` is a valid ISO 8601 date string for each app.
 2. In `ThemeToggle.test.js`: after clicking the toggle, assert that `document.documentElement.getAttribute('data-theme')` has changed to the expected value (or that the relevant class/attribute was toggled)
 
 **Acceptance criteria:**
+
 - `apps.test.js` would fail if a required field were removed from an entry in `data/apps.json`
 - `ThemeToggle.test.js` would fail if `data-theme` toggling was broken
 
@@ -237,11 +259,13 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Problem:** The `description` field is interpolated directly into the GitHub issue body without escaping. The improvements route has `escapeMd()` but suggestions does not. A user could inject Markdown formatting into issues.
 
 **What to do:**
+
 - Move the `escapeMd()` function from `app/api/improvements/route.js` to `lib/markdown.js` (or include in the Turnstile utility from M-1)
 - Import and apply it in `app/api/suggestions/route.js` to all user-supplied fields written into the issue body
 - Add a unit test for `escapeMd()` covering backticks, brackets, asterisks, underscores
 
 **Acceptance criteria:**
+
 - `escapeMd` lives in one shared location
 - Both routes import it
 - `app/api/suggestions/route.js` applies it to all user-supplied content in the issue body
@@ -255,12 +279,14 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Problem:** Vote deduplication relies entirely on `localStorage`. Clearing storage or using a different browser allows unlimited voting per user.
 
 **What to do:**
+
 - Add a unique constraint on the `votes` table: `(app_id, voter_fingerprint)` or use IP + user-agent hashing
 - Alternatively, leverage Supabase Row Level Security with a per-session or per-IP policy
 - In the API route or Supabase function, use `upsert` with `onConflict` to prevent duplicate rows rather than relying on the client to check first
 - Keep `localStorage` as the fast-path client-side check (avoids roundtrips for already-voted apps), but make the server the authoritative dedup layer
 
 **Acceptance criteria:**
+
 - A user who clears `localStorage` and revisits cannot vote a second time on the same app
 - The Supabase table enforces uniqueness at the database level
 
@@ -273,11 +299,13 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Problem:** The format script only covers `app/`, `components/`, `hooks/`, `lib/`. It excludes `scripts/` and `__tests__/`, which may have inconsistent formatting.
 
 **What to do:**
+
 - Update the `format` script to include `scripts/` and `__tests__/`
 - Run `npm run format` after the change to reformat any inconsistent files
 - Commit any reformatted files
 
 **Acceptance criteria:**
+
 - `npm run format` and `npm run lint` cover the same set of directories
 - `scripts/` and `__tests__/` are included in both
 
@@ -290,6 +318,7 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Problem:** No type safety across the codebase. The data shapes for apps registry, log entries, pipeline steps, and vote counts are complex and undocumented in code.
 
 **What to do (incremental — do not rewrite everything at once):**
+
 1. Add `tsconfig.json` with `"allowJs": true` and `"checkJs": false` to allow gradual migration
 2. Start with the most value-dense files: `lib/`, `scripts/selection-utils.js`, `hooks/useVotes.js`
 3. Create `types/` directory with:
@@ -299,6 +328,7 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 4. Migrate files to `.ts`/`.tsx` one at a time; Next.js supports mixed JS/TS projects
 
 **Acceptance criteria:**
+
 - `tsconfig.json` exists and `tsc --noEmit` passes
 - At minimum, `lib/` and `types/` are fully typed
 
@@ -311,12 +341,14 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Problem:** Several files with unclear current status: `AGENT_PROMPT_LEGACY.md`, `AGENT_PROMPT_ULTRA_COMPACT.md`, `prompt.md`, `single_prompt.md`, `specs.md`, `notes.md`.
 
 **What to do:**
+
 - Review each file and determine: active, archived, or deletable
 - Move archived files to `docs/agent-prompts/archive/` with a short `README.md` explaining they are historical
 - Delete files that add no value
 - Update any cross-references in `CLAUDE.md` or other docs if files move
 
 **Acceptance criteria:**
+
 - `docs/agent-prompts/` contains only the three active prompt files plus an optional `archive/` folder
 - No dangling references in `CLAUDE.md`
 
@@ -327,6 +359,7 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Problem:** No automated quality gate before commits. Developers must remember to run lint/format manually.
 
 **What to do:**
+
 - Install `husky` and `lint-staged` as devDependencies
 - Configure `lint-staged` in `package.json` to run on staged files:
   - `*.{js,jsx,mjs}`: `eslint --fix` then `prettier --write`
@@ -335,6 +368,7 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 - Ensure the hook does not block the AI pipeline agent commits (the pipeline stages files explicitly)
 
 **Acceptance criteria:**
+
 - `git commit` on a file with a lint error is blocked and the error is shown
 - Auto-fixable issues are fixed and re-staged automatically before the commit completes
 
@@ -347,12 +381,14 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Problem:** Navigation links are displayed in a horizontal row with no responsive menu for narrow viewports. On mobile, links may overflow or wrap unexpectedly.
 
 **What to do:**
+
 - Add a hamburger button (`☰`) that appears on viewports below `sm` breakpoint
 - Toggle a mobile menu that shows nav links stacked vertically
 - Close the menu on outside click, Escape key, and navigation
 - Ensure the toggle button has `aria-label="Open menu"` / `"Close menu"` and `aria-expanded`
 
 **Acceptance criteria:**
+
 - On a 375px viewport, a hamburger icon replaces the inline nav
 - The menu is keyboard-navigable and closable with Escape
 
@@ -365,10 +401,12 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Problem:** Some scripts use `.mjs`, others `.js`. Since `"type": "module"` is set in `package.json`, all `.js` files are already ESM — the `.mjs` extension is redundant and inconsistent.
 
 **What to do:**
+
 - Rename all `.mjs` files in `scripts/` to `.js`
 - Update any references in `package.json` scripts, `CLAUDE.md`, and import statements
 
 **Acceptance criteria:**
+
 - All files in `scripts/` use `.js` extension
 - All `npm run *` commands still work
 
@@ -381,11 +419,13 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Problem:** `getAppName()` in `app-shell.js` falls back to `document.title` (now fixed), but apps where the title pattern is ambiguous or non-standard may still produce wrong names in the improve-page link. Adding an explicit `<meta name="application-name">` is the most reliable signal.
 
 **What to do:**
+
 - Add `<meta name="application-name" content="App Name">` to the required head tags template in `AGENT_PROMPT_SHARED.md` and `CLAUDE.md`
 - Instruct agents to replace `App Name` with the actual app name (same value used in `<title>` before the ` - __MAIN_SITE_NAME__` suffix)
 - This tag is already the first-priority check in `getAppName()`
 
 **Acceptance criteria:**
+
 - Both `AGENT_PROMPT_SHARED.md` and `CLAUDE.md` show `<meta name="application-name">` in the required head tags template
 - New apps built after this change include the tag
 
@@ -398,10 +438,12 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 **Problem:** `alt=""` on thumbnail images. While the surrounding link has the app name as text, a descriptive alt attribute improves screen reader context.
 
 **What to do:**
+
 - Change `alt=""` to `alt={`${app.name} thumbnail`}` (or `alt={`Preview of ${app.name}`}`)
 - This also satisfies the `jsx-a11y/img-redundant-alt` rule (once M-4 is implemented)
 
 **Acceptance criteria:**
+
 - Each thumbnail `<img>` has a non-empty `alt` attribute describing the image
 - `npm run lint` passes (once M-4 is active)
 
@@ -409,8 +451,8 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 
 ## Tracking
 
-| ID  | Title                                          | Status |
-|-----|------------------------------------------------|--------|
+| ID  | Title                                          | Status  |
+| --- | ---------------------------------------------- | ------- |
 | H-1 | Add tests and linting to CI pipeline           | ✅ done |
 | H-2 | Fix path traversal in app-log API              | ✅ done |
 | H-3 | Break up homepage monolith                     | ✅ done |
@@ -427,7 +469,7 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 | M-9 | Fix `npm run format` scope                     | 🔲 todo |
 | L-1 | Add TypeScript (incremental migration)         | 🔲 todo |
 | L-2 | Clean up legacy docs                           | 🔲 todo |
-| L-3 | Add pre-commit hook with lint-staged           | 🔲 todo |
+| L-3 | Add pre-commit hook with lint-staged           | ✅ done |
 | L-4 | Add responsive header nav menu                 | ✅ done |
 | L-5 | Standardize script file extensions             | ✅ done |
 | L-6 | Add `application-name` meta to agent templates | ✅ done |
