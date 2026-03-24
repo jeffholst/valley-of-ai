@@ -18,6 +18,12 @@ Use UTC consistently for:
 - `runId` timestamp portion
 - All logging timestamps (handled automatically by `npm run log`)
 
+⚠️ **Improvement pipeline exception:** The improvement pipeline uses two separate date values — do not conflate them:
+- `--date YYYY/MM/DD` → **today's date** → written to the central log (`logs/YYYY/MM/DD.jsonl`)
+- `--app-date <app-date>` → **the app's original creation date** (from `targetApp.id`) → written to the app-local log (`apps/<app-path>/log.jsonl`)
+
+See Step 1.4 of `AGENT_PROMPT_IMPROVEMENT.md` for how to derive and apply each value.
+
 ### Model Reporting
 ⚠️ Make your best effort to report your agent name correctly AND the LLM being used.
 
