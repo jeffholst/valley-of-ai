@@ -140,7 +140,7 @@ function ImprovePage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* App — read-only */}
             <div>
-              <label className="label">App</label>
+              <p className="label">App</p>
               <div className="input bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-default">
                 {appName || appId || 'Unknown app'}
               </div>

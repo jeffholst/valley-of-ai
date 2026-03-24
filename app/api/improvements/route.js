@@ -1,14 +1,10 @@
 import { verifyTurnstile } from '@/lib/turnstile';
+import { escapeMd } from '@/lib/markdown';
 
 const GITHUB_API_URL = 'https://api.github.com';
 
 // App IDs follow the format YYYY/MM/DD/slug (e.g. "2026/03/21/my-app")
 const APP_ID_RE = /^\d{4}\/\d{2}\/\d{2}\/[a-z0-9-]+$/;
-
-// Escape Markdown metacharacters and strip newlines to prevent injection
-function escapeMd(str) {
-  return str.replace(/[\r\n]/g, ' ').replace(/[\\`*_{}[\]()#+.!|~<>-]/g, '\\$&');
-}
 
 export async function POST(request) {
   if (!process.env.GITHUB_SUGGESTIONS_TOKEN || !process.env.GITHUB_REPO) {

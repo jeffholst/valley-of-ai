@@ -8,13 +8,14 @@ import ThemeToggle from '@/components/ThemeToggle';
 // Mock next/image
 jest.mock('next/image', () => ({
   __esModule: true,
-  default: (props) => <img {...props} />,
+  default: (props) => <img alt={props.alt ?? ''} {...props} />,
 }));
 
 describe('ThemeToggle Component', () => {
   beforeEach(() => {
-    // Clear DOM before each test
+    // Clear DOM and storage before each test
     document.documentElement.className = '';
+    localStorage.clear();
   });
 
   it('renders the toggle button', () => {
@@ -30,16 +31,28 @@ describe('ThemeToggle Component', () => {
     expect(button).toHaveClass('rounded-lg');
   });
 
-  it('changes theme when clicked', () => {
+  it('adds dark class to documentElement when toggled to dark', () => {
     render(<ThemeToggle />);
     const button = screen.getByRole('button');
 
-    // Verify button exists
-    expect(button).toBeInTheDocument();
+    // Initial state: no dark class (matchMedia mock returns false)
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
 
-    // Click and verify (component handles theme change internally)
+    // Click to enable dark mode
     fireEvent.click(button);
-    expect(button).toBeInTheDocument();
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+  });
+
+  it('removes dark class from documentElement when toggled back to light', () => {
+    render(<ThemeToggle />);
+    const button = screen.getByRole('button');
+
+    // Toggle dark on, then off
+    fireEvent.click(button);
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+
+    fireEvent.click(button);
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
   });
 
   it('button is clickable', () => {

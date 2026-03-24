@@ -30,6 +30,9 @@ export default [
       '@next/next': nextPlugin,
     },
     rules: {
+      // jsx-a11y recommended rules
+      ...jsxA11y.flatConfigs.recommended.rules,
+
       // ESLint rules
       'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       'no-console': ['warn', { allow: ['warn', 'error'] }],

@@ -127,15 +127,6 @@
     animation: robot-confetti 1.8s ease-in infinite;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .robot-dance, .robot-confetti { animation: none; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .animate-pulse-ring {
-      animation: none;
-    }
-  }
   @keyframes pterodactyl-fly-right {
     0% { transform: translate3d(-18vw, 0, 0); }
     40% { transform: translate3d(40vw, -10px, 0); }
@@ -970,5 +961,14 @@
   .earthquake-cards .card {
     animation: earthquake-shake 6s linear infinite;
     will-change: transform;
+  }
+
+  /* ─── Reduced motion ──────────────────────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }

@@ -198,11 +198,13 @@ function TransactionCard({ transaction, entries }) {
         isFailed ? 'ring-2 ring-red-500' : isSuccess ? 'ring-1 ring-green-500/30' : ''
       }`}
     >
-      <div
-        className="flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50"
-        onClick={() => setExpanded(!expanded)}
-      >
-        <button className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+      <div className="flex items-center gap-3 p-4">
+        <button
+          className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+          onClick={() => setExpanded(!expanded)}
+          aria-expanded={expanded}
+          aria-label={expanded ? 'Collapse' : 'Expand'}
+        >
           <svg
             className={`w-5 h-5 transition-transform ${expanded ? 'rotate-90' : ''}`}
             fill="none"
@@ -447,10 +449,11 @@ export default function LogsPage() {
 
       <div className="flex flex-wrap gap-4 mb-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label htmlFor="log-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Date
           </label>
           <input
+            id="log-date"
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
@@ -459,10 +462,11 @@ export default function LogsPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label htmlFor="log-status" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Status
           </label>
           <select
+            id="log-status"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"

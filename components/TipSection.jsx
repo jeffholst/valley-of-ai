@@ -117,7 +117,7 @@ export default function TipSection({ issueNumber, type = 'tip' }) {
               onKeyDown={(e) => e.key === 'Enter' && handleCustomSubmit()}
               placeholder="0"
               className="input pl-6 py-2 text-sm"
-              autoFocus
+
             />
           </div>
           <button

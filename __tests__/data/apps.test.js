@@ -41,12 +41,12 @@ describe('Apps Registry', () => {
 
   if (appsData && Array.isArray(appsData) && appsData.length > 0) {
     it('each app should have required fields', () => {
-      const requiredFields = ['id', 'name', 'description', 'path'];
-      const app = appsData[0];
-
-      for (const field of requiredFields) {
-        expect(app).toHaveProperty(field);
-      }
+      const requiredFields = ['id', 'name', 'shortDescription', 'appPath', 'category', 'status', 'thumbnailUrl', 'createdAt', 'route'];
+      appsData.forEach((app) => {
+        for (const field of requiredFields) {
+          expect(app).toHaveProperty(field);
+        }
+      });
     });
 
     it('app IDs should be unique', () => {
@@ -55,10 +55,18 @@ describe('Apps Registry', () => {
       expect(uniqueIds.size).toBe(ids.length);
     });
 
-    it('apps should have valid paths', () => {
+    it('apps should have valid appPath values', () => {
       appsData.forEach((app) => {
-        expect(app.path).toMatch(/^\//);
-        expect(app.path).not.toMatch(/\/$/);
+        expect(app.appPath).toMatch(/^\//);
+        expect(app.appPath).not.toMatch(/\/$/);
+      });
+    });
+
+    it('apps should have valid ISO 8601 createdAt dates', () => {
+      appsData.forEach((app) => {
+        const date = new Date(app.createdAt);
+        expect(date.toString()).not.toBe('Invalid Date');
+        expect(app.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
       });
     });
   }
