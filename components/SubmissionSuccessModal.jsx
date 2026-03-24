@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import TipSection from '@/components/TipSection';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 
 export default function SubmissionSuccessModal({
   message,
@@ -10,6 +11,9 @@ export default function SubmissionSuccessModal({
   issueNumber,
   onClose,
 }) {
+  const panelRef = useRef(null);
+  useFocusTrap(panelRef);
+
   // Close on Escape key
   useEffect(() => {
     const handleKey = (e) => {
@@ -36,7 +40,7 @@ export default function SubmissionSuccessModal({
       />
 
       {/* Modal panel */}
-      <div className="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 text-center overflow-y-auto max-h-[90vh]">
+      <div ref={panelRef} className="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 text-center overflow-y-auto max-h-[90vh]">
         {/* X close button */}
         <button
           onClick={onClose}

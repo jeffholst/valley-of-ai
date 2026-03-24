@@ -1,10 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 
 const ROBOTS = ['🤖', '🤖', '🤖'];
 
 export default function PaymentSuccessModal({ type = 'tip', onClose }) {
+  const panelRef = useRef(null);
+  useFocusTrap(panelRef);
   useEffect(() => {
     const handleKey = (e) => {
       if (e.key === 'Escape') {
@@ -30,7 +33,7 @@ export default function PaymentSuccessModal({ type = 'tip', onClose }) {
       />
 
       {/* Modal panel */}
-      <div className="relative w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 text-center overflow-hidden">
+      <div ref={panelRef} className="relative w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 text-center overflow-hidden">
         {/* X close button */}
         <button
           onClick={onClose}

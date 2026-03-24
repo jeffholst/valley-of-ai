@@ -418,7 +418,7 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 | H-5 | Eliminate redundant per-card Supabase queries  | ✅ done |
 | M-1 | Extract shared `verifyTurnstile()`             | ✅ done |
 | M-2 | Extract shared `formatDuration()`              | ✅ done |
-| M-3 | Add focus trapping to modals                   | 🔲 todo |
+| M-3 | Add focus trapping to modals                   | ✅ done |
 | M-4 | Enable `jsx-a11y` ESLint rules                 | 🔲 todo |
 | M-5 | Add `prefers-reduced-motion` support           | 🔲 todo |
 | M-6 | Fix vacuous test assertions                    | 🔲 todo |
