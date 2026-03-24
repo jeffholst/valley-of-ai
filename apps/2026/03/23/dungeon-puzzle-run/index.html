@@ -772,6 +772,7 @@ function renderPuzzle(type, data) {
 }
 
 function renderLogic(area, d) {
+  area.innerHTML = '';
   const hint = document.createElement('div');
   hint.className = 'logic-hint';
   hint.textContent = 'Toggle cells so each row and column matches the target count.';
@@ -825,6 +826,7 @@ function checkLogic(d) {
 }
 
 function renderMemory(area, d) {
+  area.innerHTML = '';
   const cols = 4;
   const grid = document.createElement('div');
   grid.className = 'memory-grid';
@@ -868,6 +870,7 @@ function flipMemCard(card, d) {
 }
 
 function renderTiming(area, d) {
+  area.innerHTML = '';
   const track = document.createElement('div'); track.id = 'timing-track';
   const zone = document.createElement('div'); zone.id = 'timing-zone';
   zone.style.left = d.zoneStart + '%';
@@ -917,6 +920,7 @@ function tapTiming(d) {
 }
 
 function renderTile(area, d) {
+  area.innerHTML = '';
   const hint = document.createElement('div');
   hint.style.cssText = 'font-size:.75rem;color:var(--text2);text-align:center;';
   hint.textContent = 'Toggle tiles to match the goal pattern (gold border).';
@@ -1056,6 +1060,7 @@ function isValidPath(d) {
 }
 
 function renderResource(area, d) {
+  area.innerHTML = '';
   const items = [
     {key:'food',icon:'🍖',label:'Food'},
     {key:'wood',icon:'🪵',label:'Wood'},

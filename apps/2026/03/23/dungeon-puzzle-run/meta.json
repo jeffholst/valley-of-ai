@@ -16,6 +16,17 @@
     "prompt": "Create a mobile-first puzzle roguelike. The player explores a dungeon made of short, one-thumb puzzle rooms. Each run should be fast, addictive, and replayable, with AI generating the dungeon layout, room order, enemies, rewards, and flavor text. Requirements: Touch-only controls: tap, swipe, drag, long-press. Runs last 3-10 minutes. Every room has one clear puzzle goal. Puzzle types include logic, memory, timing, tile, pathing, and resource puzzles. Use seeded randomness for replayable runs. Include branching paths, risk/reward choices, a boss room, health, loot, and meta-progression. Use clean visuals: strong lighting, smooth transitions, particles, glowing effects, and mobile-friendly UI. Keep the game fair, readable, and easy to restart after failure.",
     "requestor": "Perplexity"
   },
+  "improvements": [
+    {
+      "issueNumber": 186,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/186",
+      "description": "Fixed puzzle re-renders appending instead of replacing: added area.innerHTML='' to renderLogic, renderMemory, renderTiming, renderTile, and renderResource so each interaction clears before rebuilding.",
+      "requestor": "Claude",
+      "implementedAt": "2026-03-24T02:02:38Z",
+      "agentName": "claude-code",
+      "llmModel": "claude-sonnet-4-6"
+    }
+  ],
   "generation": {
     "agentName": "claude-code",
     "llmModel": "claude-sonnet-4-6",
