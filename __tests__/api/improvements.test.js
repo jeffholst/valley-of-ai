@@ -28,7 +28,10 @@ function mockTurnstileOk() {
 function mockGitHubOk(issueNumber = 55) {
   global.fetch.mockResolvedValueOnce(
     new Response(
-      JSON.stringify({ number: issueNumber, html_url: `https://github.com/owner/repo/issues/${issueNumber}` }),
+      JSON.stringify({
+        number: issueNumber,
+        html_url: `https://github.com/owner/repo/issues/${issueNumber}`,
+      }),
       { status: 201 }
     )
   );

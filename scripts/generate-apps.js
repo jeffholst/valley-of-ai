@@ -2,10 +2,10 @@
 
 /**
  * Registry Generator Script
- * 
+ *
  * Scans the apps/ directory for meta.json files and generates
  * a consolidated apps.json registry in data/
- * 
+ *
  * Usage: node scripts/generate-apps.js
  */
 
@@ -41,13 +41,13 @@ function main() {
   for (const app of apps) {
     console.log(`   ✅ ${app.name} (${app.id})`);
   }
-  
+
   // Ensure output directory exists
   const outputDir = path.dirname(OUTPUT_FILE);
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
   }
-  
+
   // Write the registry
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(apps, null, 2));
   console.log(`\n✨ Generated ${OUTPUT_FILE} with ${apps.length} app(s)`);

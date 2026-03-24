@@ -92,9 +92,7 @@ describe('POST /api/stripe/webhook', () => {
     });
 
     it('does not call GitHub for a donation (no issueNumber)', async () => {
-      mockConstructEvent.mockReturnValueOnce(
-        makeCheckoutEvent({ type: 'donation', amount: '5' })
-      );
+      mockConstructEvent.mockReturnValueOnce(makeCheckoutEvent({ type: 'donation', amount: '5' }));
       const res = await POST(makeRequest());
       expect(res.status).toBe(200);
       await new Promise((r) => setTimeout(r, 0));
@@ -114,7 +112,10 @@ describe('POST /api/stripe/webhook', () => {
 
   describe('other event types', () => {
     it('returns 200 and does nothing for unhandled event types', async () => {
-      mockConstructEvent.mockReturnValueOnce({ type: 'payment_intent.created', data: { object: {} } });
+      mockConstructEvent.mockReturnValueOnce({
+        type: 'payment_intent.created',
+        data: { object: {} },
+      });
       const res = await POST(makeRequest());
       expect(res.status).toBe(200);
       await new Promise((r) => setTimeout(r, 0));

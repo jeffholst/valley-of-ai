@@ -159,7 +159,9 @@ function main() {
   console.log(`Unmatched (no appId):  ${unmatchedEntries}`);
   console.log(`Skipped (no app dir):  ${skippedNoAppDir}`);
   console.log(`App log files written: ${filesWritten}`);
-  if (DRY_RUN) {console.log('(dry-run mode — no files were written)');}
+  if (DRY_RUN) {
+    console.log('(dry-run mode — no files were written)');
+  }
 }
 
 main();

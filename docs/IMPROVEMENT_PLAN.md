@@ -466,7 +466,7 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 | M-6 | Fix vacuous test assertions                    | ✅ done |
 | M-7 | Add Markdown escaping to suggestions route     | ✅ done |
 | M-8 | Add server-side vote deduplication             | 🔲 todo |
-| M-9 | Fix `npm run format` scope                     | 🔲 todo |
+| M-9 | Fix `npm run format` scope                     | ✅ done |
 | L-1 | Add TypeScript (incremental migration)         | 🔲 todo |
 | L-2 | Clean up legacy docs                           | ✅ done |
 | L-3 | Add pre-commit hook with lint-staged           | ✅ done |

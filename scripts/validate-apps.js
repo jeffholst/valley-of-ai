@@ -28,7 +28,8 @@ const REQUIRED_CHECKS = [
   },
   {
     id: 'ga-loader',
-    test: (html) => html.includes('https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__'),
+    test: (html) =>
+      html.includes('https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__'),
     message: 'missing GA loader snippet with __GA_MEASUREMENT_ID__',
   },
   {
@@ -58,7 +59,8 @@ const REQUIRED_CHECKS = [
   },
   {
     id: 'meta-social-instagram',
-    test: (html) => /voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__"\s*\/?>/.test(html),
+    test: (html) =>
+      /voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__"\s*\/?>/.test(html),
     message: 'missing voa-social-instagram-url meta placeholder',
   },
   {
@@ -144,7 +146,9 @@ function validateProperty(key, value, schema) {
     if (schema.format === 'date-time') {
       try {
         new Date(value);
-        if (isNaN(Date.parse(value))) {throw new Error();}
+        if (isNaN(Date.parse(value))) {
+          throw new Error();
+        }
       } catch {
         errors.push(`${key}: invalid date-time format`);
       }
@@ -190,7 +194,11 @@ function validateProperty(key, value, schema) {
     if (schema.properties) {
       for (const [propKey, propValue] of Object.entries(value)) {
         if (schema.properties[propKey]) {
-          const propErrors = validateProperty(`${key}.${propKey}`, propValue, schema.properties[propKey]);
+          const propErrors = validateProperty(
+            `${key}.${propKey}`,
+            propValue,
+            schema.properties[propKey]
+          );
           errors.push(...propErrors);
         }
       }
@@ -262,7 +270,9 @@ function validateRegistrySynchronization() {
   const currentRegistry = JSON.stringify(committedRegistry, null, 2);
 
   if (currentRegistry !== expectedRegistry) {
-    errors.push('data/apps.json is out of sync with apps/*/meta.json; run `npm run generate:apps` and commit the updated registry');
+    errors.push(
+      'data/apps.json is out of sync with apps/*/meta.json; run `npm run generate:apps` and commit the updated registry'
+    );
   }
 
   return errors;
@@ -291,7 +301,9 @@ function main() {
     const html = fs.readFileSync(file, 'utf8');
     const rel = path.relative(root, file);
 
-    const errors = REQUIRED_CHECKS.filter((check) => !check.test(html)).map((check) => check.message);
+    const errors = REQUIRED_CHECKS.filter((check) => !check.test(html)).map(
+      (check) => check.message
+    );
     if (errors.length > 0) {
       htmlFailures.push({ file: rel, errors });
     }
@@ -324,7 +336,9 @@ function main() {
 
   if (htmlFailures.length > 0) {
     hasFailures = true;
-    console.error(`HTML validation failed: ${htmlFailures.length} app file(s) do not meet the shell/analytics contract.`);
+    console.error(
+      `HTML validation failed: ${htmlFailures.length} app file(s) do not meet the shell/analytics contract.`
+    );
     for (const failure of htmlFailures) {
       console.error(`- ${failure.file}`);
       for (const error of failure.errors) {
@@ -337,7 +351,9 @@ function main() {
 
   if (metaFailures.length > 0) {
     hasFailures = true;
-    console.error(`\nSchema validation failed: ${metaFailures.length} meta.json file(s) do not conform to the schema.`);
+    console.error(
+      `\nSchema validation failed: ${metaFailures.length} meta.json file(s) do not conform to the schema.`
+    );
     for (const failure of metaFailures) {
       console.error(`- ${failure.file}`);
       for (const error of failure.errors) {

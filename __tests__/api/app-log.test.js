@@ -8,7 +8,10 @@ jest.mock('fs');
 import fs from 'fs';
 
 function makeRequest(appId) {
-  const url = appId !== undefined ? `http://localhost/api/app-log?appId=${encodeURIComponent(appId)}` : 'http://localhost/api/app-log';
+  const url =
+    appId !== undefined
+      ? `http://localhost/api/app-log?appId=${encodeURIComponent(appId)}`
+      : 'http://localhost/api/app-log';
   return new Request(url);
 }
 

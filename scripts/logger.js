@@ -26,7 +26,7 @@
  *   --phase <PHASE>       Pipeline phase (e.g., GENERATE_HTML, VALIDATE_APP)
  *   --status <STATUS>     started|success|in_progress|failed (default: completed; legacy: completed|in-progress)
  *   --dry-run             Print entry without appending*
- * 
+ *
  * Pipeline-specific OPTIONS (only for --category pipeline):
  *   --step <STEP_NAME>    Step name (SELECT_SUGGESTION, GENERATE_HTML, etc.)
  *   --seq <N>             Step sequence number (1-14) — for progress tracking only
@@ -73,7 +73,10 @@ program
   .option('--runId <id>', 'Unique run identifier')
   .option('--appId <id>', 'Application identifier')
   .option('--date <YYYY/MM/DD>', 'Date of the run in YYYY/MM/DD format (used for central log path)')
-  .option('--app-date <YYYY/MM/DD>', 'Original creation date of the app for the app-local log path (defaults to --date)')
+  .option(
+    '--app-date <YYYY/MM/DD>',
+    'Original creation date of the app for the app-local log path (defaults to --date)'
+  )
   .option('--category <type>', 'Log category: pipeline|reasoning|validation')
   .option('--step <name>', 'Pipeline step name')
   .option('--seq <number>', 'Step sequence number')
@@ -98,7 +101,9 @@ const args = program.opts();
 // Validation
 if (!args.runId || !args.appId || !args.date || !args.category) {
   console.error('ERROR: --runId, --appId, --date, and --category are required');
-  console.error('Usage: npm run log -- --runId <ID> --appId <ID> --date <YYYY/MM/DD> --category <TYPE> [OPTIONS]');
+  console.error(
+    'Usage: npm run log -- --runId <ID> --appId <ID> --date <YYYY/MM/DD> --category <TYPE> [OPTIONS]'
+  );
   process.exit(1);
 }
 
@@ -127,7 +132,9 @@ const appLogDate = args.appDate || args.date;
 
 // Validate category
 if (!['pipeline', 'reasoning', 'validation'].includes(args.category)) {
-  console.error(`ERROR: --category must be one of: pipeline, reasoning, validation (got: ${args.category})`);
+  console.error(
+    `ERROR: --category must be one of: pipeline, reasoning, validation (got: ${args.category})`
+  );
   process.exit(1);
 }
 
@@ -181,7 +188,11 @@ if (args.category === 'pipeline') {
   // Derive entry.type from status where possible so transaction boundaries are visible
   const normalizedStatus = String(pipelineStatus).toLowerCase();
   let entryType = 'STEP';
-  if (normalizedStatus === 'started' || normalizedStatus === 'in_progress' || normalizedStatus === 'in-progress') {
+  if (
+    normalizedStatus === 'started' ||
+    normalizedStatus === 'in_progress' ||
+    normalizedStatus === 'in-progress'
+  ) {
     entryType = 'TRANSACTION_START';
   } else if (
     normalizedStatus === 'success' ||
@@ -208,7 +219,7 @@ if (args.category === 'pipeline') {
 } else if (args.category === 'reasoning') {
   entry.reasoning = {
     decision: args.decision || null,
-    alternatives: args.alternatives ? args.alternatives.split(',').map(a => a.trim()) : [],
+    alternatives: args.alternatives ? args.alternatives.split(',').map((a) => a.trim()) : [],
     rationale: args.rationale || null,
   };
 } else if (args.category === 'validation') {
@@ -260,7 +271,9 @@ function appendToLogs(appId, centralDate, appLogDate, entry) {
   const resolvedAppPath = path.resolve(baseAppsDir, appLogDate, appId);
   const relative = path.relative(baseAppsDir, resolvedAppPath);
   if (relative.startsWith('..') || path.isAbsolute(relative)) {
-    throw new Error(`Constructed app path escapes apps directory (appLogDate: ${appLogDate}, appId: ${appId})`);
+    throw new Error(
+      `Constructed app path escapes apps directory (appLogDate: ${appLogDate}, appId: ${appId})`
+    );
   }
 
   // Ensure app-level directory exists

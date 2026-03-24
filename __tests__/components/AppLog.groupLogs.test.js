@@ -100,10 +100,7 @@ describe('groupLogs', () => {
   // ---------------------------------------------------------------------------
 
   it('separates legacy entries from pipeline entries', () => {
-    const logs = [
-      legacyEntry('OLD_BUILD'),
-      pipelineEntry('SELECT_SUGGESTION', 'run-new'),
-    ];
+    const logs = [legacyEntry('OLD_BUILD'), pipelineEntry('SELECT_SUGGESTION', 'run-new')];
     const groups = groupLogs(logs);
     expect(groups).toHaveLength(2);
     const types = groups.map((g) => g.type);
@@ -112,10 +109,7 @@ describe('groupLogs', () => {
   });
 
   it('places legacy group before pipeline groups', () => {
-    const logs = [
-      pipelineEntry('SELECT_SUGGESTION', 'run-001'),
-      legacyEntry('DEPLOY'),
-    ];
+    const logs = [pipelineEntry('SELECT_SUGGESTION', 'run-001'), legacyEntry('DEPLOY')];
     const groups = groupLogs(logs);
     expect(groups[0].type).toBe('legacy');
   });
@@ -142,7 +136,13 @@ describe('groupLogs', () => {
   });
 
   it('uses __unknown__ runId for entries missing runId', () => {
-    const logs = [{ category: 'pipeline', timestamp: new Date().toISOString(), pipeline: { step: 'GENERATE_HTML' } }];
+    const logs = [
+      {
+        category: 'pipeline',
+        timestamp: new Date().toISOString(),
+        pipeline: { step: 'GENERATE_HTML' },
+      },
+    ];
     const groups = groupLogs(logs);
     expect(groups[0].runId).toBe('__unknown__');
   });

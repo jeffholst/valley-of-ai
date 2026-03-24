@@ -14,12 +14,7 @@ let appsData = null;
 try {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  const appsJsonPath = path.join(
-    __dirname,
-    '..',
-    'data',
-    'apps.json'
-  );
+  const appsJsonPath = path.join(__dirname, '..', 'data', 'apps.json');
 
   if (fs.existsSync(appsJsonPath)) {
     const content = fs.readFileSync(appsJsonPath, 'utf-8');
@@ -41,7 +36,17 @@ describe('Apps Registry', () => {
 
   if (appsData && Array.isArray(appsData) && appsData.length > 0) {
     it('each app should have required fields', () => {
-      const requiredFields = ['id', 'name', 'shortDescription', 'appPath', 'category', 'status', 'thumbnailUrl', 'createdAt', 'route'];
+      const requiredFields = [
+        'id',
+        'name',
+        'shortDescription',
+        'appPath',
+        'category',
+        'status',
+        'thumbnailUrl',
+        'createdAt',
+        'route',
+      ];
       appsData.forEach((app) => {
         for (const field of requiredFields) {
           expect(app).toHaveProperty(field);

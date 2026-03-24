@@ -41,9 +41,7 @@ export function computeRecentTags(apps, days = 14) {
     .map(([tag, count]) => ({
       tag,
       count,
-      recentApps: recent
-        .filter((a) => (a.tags || []).includes(tag))
-        .map((a) => a.name),
+      recentApps: recent.filter((a) => (a.tags || []).includes(tag)).map((a) => a.name),
     }));
 }
 
@@ -56,7 +54,10 @@ export function computeDuplicationRisk(candidateText, apps) {
   const text = candidateText.toLowerCase();
 
   const appFingerprints = apps.map((app) => {
-    const nameWords = app.name.toLowerCase().split(/\W+/).filter((w) => w.length > 3);
+    const nameWords = app.name
+      .toLowerCase()
+      .split(/\W+/)
+      .filter((w) => w.length > 3);
     const tags = (app.tags || []).map((t) => t.toLowerCase());
     const category = (app.category || '').toLowerCase();
     return { app, keywords: new Set([...nameWords, ...tags, category]) };
@@ -83,10 +84,14 @@ export function computeDuplicationRisk(candidateText, apps) {
  */
 export function extractAppPath(issue) {
   const titleMatch = issue.title.match(/\[([^\]]+)\]/);
-  if (titleMatch) {return titleMatch[1].replace(/^\/+/, '');}
+  if (titleMatch) {
+    return titleMatch[1].replace(/^\/+/, '');
+  }
 
   const bodyMatch = (issue.body || '').match(/valleyofai\.com\/apps\/([^\s)]+)/i);
-  if (bodyMatch) {return bodyMatch[1].replace(/\/$/, '');}
+  if (bodyMatch) {
+    return bodyMatch[1].replace(/\/$/, '');
+  }
 
   return null;
 }

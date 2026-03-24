@@ -126,9 +126,7 @@ describe('computeRecentTags', () => {
   });
 
   it('excludes apps created exactly at the boundary (older)', () => {
-    const apps = [
-      makeApp({ tags: ['boundary-tag'], createdAt: daysAgo(15) }),
-    ];
+    const apps = [makeApp({ tags: ['boundary-tag'], createdAt: daysAgo(15) })];
     const result = computeRecentTags(apps, 14);
     expect(result.map((r) => r.tag)).not.toContain('boundary-tag');
   });
@@ -162,8 +160,18 @@ describe('computeRecentTags', () => {
 
 describe('computeDuplicationRisk', () => {
   const existingApps = [
-    makeApp({ id: 'chess-game', name: 'Chess Game', category: 'Games', tags: ['chess', 'strategy', 'board'] }),
-    makeApp({ id: 'weather-tool', name: 'Weather Tool', category: 'Utilities', tags: ['weather', 'forecast'] }),
+    makeApp({
+      id: 'chess-game',
+      name: 'Chess Game',
+      category: 'Games',
+      tags: ['chess', 'strategy', 'board'],
+    }),
+    makeApp({
+      id: 'weather-tool',
+      name: 'Weather Tool',
+      category: 'Utilities',
+      tags: ['weather', 'forecast'],
+    }),
   ];
 
   it('returns low risk when candidate shares no keywords', () => {
@@ -183,9 +191,24 @@ describe('computeDuplicationRisk', () => {
 
   it('returns high risk for more than 2 matching apps', () => {
     const manyApps = [
-      makeApp({ id: 'app-1', name: 'Snake Game', category: 'Games', tags: ['snake', 'retro', 'arcade'] }),
-      makeApp({ id: 'app-2', name: 'Tetris Clone', category: 'Games', tags: ['tetris', 'blocks', 'arcade'] }),
-      makeApp({ id: 'app-3', name: 'Space Shooter', category: 'Games', tags: ['space', 'shooter', 'arcade'] }),
+      makeApp({
+        id: 'app-1',
+        name: 'Snake Game',
+        category: 'Games',
+        tags: ['snake', 'retro', 'arcade'],
+      }),
+      makeApp({
+        id: 'app-2',
+        name: 'Tetris Clone',
+        category: 'Games',
+        tags: ['tetris', 'blocks', 'arcade'],
+      }),
+      makeApp({
+        id: 'app-3',
+        name: 'Space Shooter',
+        category: 'Games',
+        tags: ['space', 'shooter', 'arcade'],
+      }),
     ];
     // "arcade retro snake tetris space games" should hit all three
     const result = computeDuplicationRisk(
