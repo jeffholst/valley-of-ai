@@ -739,7 +739,7 @@
      Parent rotation creates the diagonal slant. */
   .weather-rain {
     position: fixed;
-    inset: -10%;
+    inset: -5%;
     pointer-events: none;
     z-index: 25;
     overflow: hidden;
@@ -752,27 +752,27 @@
     position: absolute;
     left: 0;
     right: 0;
-    top: -100%;
+    top: -120px;
     bottom: 0;
     background-image:
-      radial-gradient(1px 8px at 50% 50%, rgba(150, 180, 220, 0.45), transparent),
-      radial-gradient(1px 10px at 50% 50%, rgba(150, 180, 220, 0.35), transparent),
-      radial-gradient(1px 6px at 50% 50%, rgba(150, 180, 220, 0.40), transparent);
-    background-size: 80px 100px, 55px 85px, 95px 120px;
-    background-position: 0 0, 30px 40px, 60px 70px;
-    animation: weather-rain-fall 0.6s linear infinite;
+      radial-gradient(1.5px 12px at 50% 50%, rgba(150, 180, 220, 0.50), transparent),
+      radial-gradient(1px 9px at 50% 50%, rgba(150, 180, 220, 0.35), transparent),
+      radial-gradient(1px 7px at 50% 50%, rgba(150, 180, 220, 0.40), transparent);
+    background-size: 80px 120px, 55px 120px, 95px 120px;
+    background-position: 0 0, 28px 40px, 60px 70px;
+    animation: weather-rain-fall 0.65s linear infinite;
   }
 
   .weather-rain::after {
-    background-size: 65px 110px, 90px 75px, 50px 130px;
+    background-size: 65px 120px, 90px 120px, 50px 120px;
     background-position: 15px 20px, 45px 55px, 70px 10px;
-    animation-duration: 0.45s;
-    animation-delay: -0.18s;
+    animation-duration: 0.5s;
+    animation-delay: -0.2s;
   }
 
   @keyframes weather-rain-fall {
     from { transform: translateY(0); }
-    to { transform: translateY(50%); }
+    to { transform: translateY(120px); }
   }
 
   /* ── Snow: round flakes drifting gently with horizontal sway ──
