@@ -25,6 +25,15 @@
       "implementedAt": "2026-03-24T11:49:35Z",
       "agentName": "claude-code",
       "llmModel": "claude-sonnet-4-6"
+    },
+    {
+      "issueNumber": 194,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/194",
+      "description": "Buzzer button now advances to the next card without scoring; deck updated to 100 single-word targets each with 4 contextually appropriate taboo words.",
+      "requestor": "Jeff H",
+      "implementedAt": "2026-03-24T12:45:13Z",
+      "agentName": "claude-code",
+      "llmModel": "claude-sonnet-4-6"
     }
   ],
   "generation": {
