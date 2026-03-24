@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import { formatDuration } from '@/lib/formatDuration';
 
 const STEP_INFO = {
   SELECT_SUGGESTION: { name: 'Select Suggestion', icon: '💡' },
@@ -33,19 +34,6 @@ const FEEDBACK_TYPE_COLORS = {
   'bug-fix': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
   enhancement: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
 };
-
-function formatDuration(ms) {
-  if (!ms) {
-    return '-';
-  }
-  if (ms < 1000) {
-    return `${ms}ms`;
-  }
-  if (ms < 60000) {
-    return `${(ms / 1000).toFixed(1)}s`;
-  }
-  return `${Math.floor(ms / 60000)}m ${Math.round((ms % 60000) / 1000)}s`;
-}
 
 function formatTimestamp(ts) {
   const date = new Date(ts);

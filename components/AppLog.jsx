@@ -1,20 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function formatDuration(ms) {
-  if (!ms) {
-    return '-';
-  }
-  if (ms < 1000) {
-    return `${ms}ms`;
-  }
-  return `${(ms / 1000).toFixed(1)}s`;
-}
+import { formatDuration } from '@/lib/formatDuration';
 
 function getStatusColor(status) {
   if (status === 'completed' || status === 'success') {
