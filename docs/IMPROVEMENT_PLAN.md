@@ -416,7 +416,7 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 | H-3 | Break up homepage monolith                     | ✅ done |
 | H-4 | Add tests for API routes                       | ✅ done |
 | H-5 | Eliminate redundant per-card Supabase queries  | ✅ done |
-| M-1 | Extract shared `verifyTurnstile()`             | 🔲 todo |
+| M-1 | Extract shared `verifyTurnstile()`             | ✅ done |
 | M-2 | Extract shared `formatDuration()`              | 🔲 todo |
 | M-3 | Add focus trapping to modals                   | 🔲 todo |
 | M-4 | Enable `jsx-a11y` ESLint rules                 | 🔲 todo |

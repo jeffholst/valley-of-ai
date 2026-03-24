@@ -1,4 +1,5 @@
-const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+import { verifyTurnstile } from '@/lib/turnstile';
+
 const GITHUB_API_URL = 'https://api.github.com';
 
 // App IDs follow the format YYYY/MM/DD/slug (e.g. "2026/03/21/my-app")
@@ -7,33 +8,6 @@ const APP_ID_RE = /^\d{4}\/\d{2}\/\d{2}\/[a-z0-9-]+$/;
 // Escape Markdown metacharacters and strip newlines to prevent injection
 function escapeMd(str) {
   return str.replace(/[\r\n]/g, ' ').replace(/[\\`*_{}[\]()#+.!|~<>-]/g, '\\$&');
-}
-
-async function verifyTurnstile(token, ip) {
-  try {
-    const body = new URLSearchParams({
-      secret: process.env.TURNSTILE_SECRET_KEY || '',
-      response: token || '',
-      remoteip: ip || '',
-    });
-
-    const res = await fetch(TURNSTILE_VERIFY_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body,
-    });
-
-    if (!res.ok) {
-      console.error('Turnstile verify HTTP error:', res.status, await res.text());
-      return false;
-    }
-
-    const data = await res.json();
-    return data.success === true;
-  } catch (err) {
-    console.error('Turnstile verify failed:', err);
-    return false;
-  }
 }
 
 export async function POST(request) {

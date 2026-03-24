@@ -1,32 +1,6 @@
-const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+import { verifyTurnstile } from '@/lib/turnstile';
+
 const GITHUB_API_URL = 'https://api.github.com';
-
-async function verifyTurnstile(token, ip) {
-  try {
-    const body = new URLSearchParams({
-      secret: process.env.TURNSTILE_SECRET_KEY || '',
-      response: token || '',
-      remoteip: ip || '',
-    });
-
-    const res = await fetch(TURNSTILE_VERIFY_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body,
-    });
-
-    if (!res.ok) {
-      console.error('Turnstile verify HTTP error:', res.status, await res.text());
-      return false;
-    }
-
-    const data = await res.json();
-    return data.success === true;
-  } catch (err) {
-    console.error('Turnstile verify failed:', err);
-    return false;
-  }
-}
 
 export async function POST(request) {
   if (!process.env.GITHUB_SUGGESTIONS_TOKEN || !process.env.GITHUB_REPO) {
