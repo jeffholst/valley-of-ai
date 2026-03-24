@@ -448,7 +448,6 @@ export default function AppLog({ appId, suggestion, improvements }) {
         </div>
       )}
 
-
       {/* Section toggle */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
