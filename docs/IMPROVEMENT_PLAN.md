@@ -430,5 +430,5 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 | L-3 | Add pre-commit hook with lint-staged           | 🔲 todo |
 | L-4 | Add responsive header nav menu                 | 🔲 todo |
 | L-5 | Standardize script file extensions             | 🔲 todo |
-| L-6 | Add `application-name` meta to agent templates | 🔲 todo |
+| L-6 | Add `application-name` meta to agent templates | ✅ done |
 | L-7 | Improve `AppCard` thumbnail alt text           | ✅ done |

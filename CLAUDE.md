@@ -99,11 +99,12 @@ Categories: `pipeline` | `reasoning` | `validation`
 <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
 <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
 <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+<meta name="application-name" content="App Name" />
 <meta name="voa-app-id" content="YYYY/MM/DD/<app-id>" />   <!-- replace with real path -->
 <script src="/apps/shared/app-shell.js" defer></script>
 ```
 
-`__PLACEHOLDER__` values stay literally as-is — `sync-public-content.mjs` replaces them at build time. Only `voa-app-id` is replaced with the real app path.
+`__PLACEHOLDER__` values stay literally as-is — `sync-public-content.mjs` replaces them at build time. Replace `App Name` in `application-name` with the actual app name, matching the portion of `<title>` before ` - __MAIN_SITE_NAME__`. Only `voa-app-id` is replaced with the real app path.
 
 ### Theme CSS variables (required in every app)
 ```css

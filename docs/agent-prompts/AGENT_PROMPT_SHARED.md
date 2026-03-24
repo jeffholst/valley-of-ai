@@ -75,12 +75,14 @@ The authoritative schema is at `docs/json-schema/meta.json`. Validate against it
 <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
 <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
 <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+<meta name="application-name" content="App Name" />
 <meta name="voa-app-id" content="YYYY/MM/DD/<app-id>" />
 <script src="/apps/shared/app-shell.js" defer></script>
 ```
 
 Rules:
 - Keep `__PLACEHOLDER__` values **exactly as shown** — `sync-public-content.mjs` replaces them from `.env` at build time. Do not hardcode real values for these.
+- Replace `App Name` in `application-name` with the actual app name — use the same value that appears before ` - __MAIN_SITE_NAME__` in `<title>`.
 - **Exception:** `voa-app-id` is app-specific. Replace `YYYY/MM/DD/<app-id>` with the actual app path (e.g. `2026/03/21/tetris-classic`).
 - Do not hand-code global header/footer or app-local theme toggle.
 - Shared shell must control header/footer/theme behavior.
