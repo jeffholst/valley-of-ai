@@ -87,7 +87,7 @@ function StatusIcon({ status }) {
 // groups in chronological order by the first entry in each group.
 // ---------------------------------------------------------------------------
 
-function groupLogs(logs) {
+export function groupLogs(logs) {
   const runMap = new Map(); // runId → group
   const legacyEntries = [];
 
@@ -274,17 +274,15 @@ function RunGroup({ group, improvementIndex }) {
                       {log.pipeline?.seq && (
                         <div className="opacity-60">seq {log.pipeline.seq}</div>
                       )}
-                      {log.message && (
-                        hasLong ? (
+                      {log.message &&
+                        (hasLong ? (
                           <button
                             type="button"
                             className={`opacity-75 mt-0.5 cursor-pointer ${!isExpMsg ? 'truncate' : ''} flex items-center`}
                             onClick={() => toggleMessage(idx)}
                             aria-expanded={isExpMsg}
                           >
-                            <span className={!isExpMsg ? 'truncate' : ''}>
-                              {log.message}
-                            </span>
+                            <span className={!isExpMsg ? 'truncate' : ''}>{log.message}</span>
                             <span
                               className="ml-1 text-blue-500 hover:text-blue-700 flex-shrink-0"
                               aria-hidden="true"
@@ -293,11 +291,8 @@ function RunGroup({ group, improvementIndex }) {
                             </span>
                           </button>
                         ) : (
-                          <div className="opacity-75 mt-0.5">
-                            {log.message}
-                          </div>
-                        )
-                      )}
+                          <div className="opacity-75 mt-0.5">{log.message}</div>
+                        ))}
                       {(log.tokensIn ||
                         log.pipeline?.tokensIn ||
                         log.tokensOut ||

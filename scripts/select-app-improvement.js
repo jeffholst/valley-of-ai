@@ -23,6 +23,7 @@ import { execSync } from 'child_process';
 import { readFileSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import { extractAppPath } from './selection-utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -141,24 +142,6 @@ function getApprovedImprovements() {
 // ---------------------------------------------------------------------------
 // App lookup helpers
 // ---------------------------------------------------------------------------
-
-/**
- * Extract the app path (e.g. "2026/03/22/freecell-mobile-classic") from an
- * improvement issue. Tries two sources:
- *   1. Title pattern: "Improvement [<app-path>]: ..."
- *   2. Body URL:      **App:** [Name](https://...valleyofai.com/apps/<app-path>)
- */
-function extractAppPath(issue) {
-  // Try title first: Improvement [2026/03/22/freecell-mobile-classic]: ...
-  const titleMatch = issue.title.match(/\[([^\]]+)\]/);
-  if (titleMatch) {return titleMatch[1].replace(/^\/+/, '');}
-
-  // Fallback: body URL
-  const bodyMatch = (issue.body || '').match(/valleyofai\.com\/apps\/([^\s)]+)/i);
-  if (bodyMatch) {return bodyMatch[1].replace(/\/$/, '');}
-
-  return null;
-}
 
 /**
  * Find the app by path id — checks data/apps.json first, then falls back to
