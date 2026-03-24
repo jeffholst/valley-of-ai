@@ -28,6 +28,12 @@ const STATUS_COLORS = {
   success: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
 };
 
+const FEEDBACK_TYPE_COLORS = {
+  'ui-fix': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+  'bug-fix': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+  enhancement: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
+};
+
 function formatDuration(ms) {
   if (!ms) {
     return '-';
@@ -119,6 +125,59 @@ function StepRow({ entry }) {
   );
 }
 
+function FeedbackRow({ entry }) {
+  const feedbackType = entry.feedback?.type;
+  const typeColorClass =
+    FEEDBACK_TYPE_COLORS[feedbackType] ||
+    'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+
+  return (
+    <div className="flex items-start gap-3 py-2 px-3 border-l-2 ml-4 border-purple-400 bg-purple-50 dark:bg-purple-900/10">
+      <span className="text-lg mt-0.5">💬</span>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="font-medium text-sm text-gray-900 dark:text-white">
+            {entry.message || 'Feedback'}
+          </span>
+          {feedbackType && (
+            <span
+              className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${typeColorClass}`}
+            >
+              {feedbackType}
+            </span>
+          )}
+        </div>
+        {entry.feedback?.userReport && (
+          <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <span className="font-medium">Report:</span> {entry.feedback.userReport}
+          </div>
+        )}
+        {entry.feedback?.change && (
+          <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <span className="font-medium">Change:</span> {entry.feedback.change}
+          </div>
+        )}
+        {entry.feedback?.files?.length > 0 && (
+          <div className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+            <span className="font-medium">Files:</span>{' '}
+            <ul className="inline" aria-label="Modified files">
+              {entry.feedback.files.map((file, i) => (
+                <li key={file} className="inline">
+                  {file}
+                  {i < entry.feedback.files.length - 1 ? ', ' : ''}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+      <div className="text-right text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
+        <div>{formatTimestamp(entry.timestamp)}</div>
+      </div>
+    </div>
+  );
+}
+
 function TransactionCard({ transaction, entries }) {
   const [expanded, setExpanded] = useState(true);
 
@@ -139,6 +198,9 @@ function TransactionCard({ transaction, entries }) {
     }
     return e.type === 'STEP';
   });
+  const feedbackEntries = entries.filter(
+    (e) => e.type === 'FEEDBACK' || e.category === 'feedback',
+  );
 
   const status = endEntry?.status || startEntry?.status || 'started';
   const isSuccess = status === 'success';
@@ -206,6 +268,14 @@ function TransactionCard({ transaction, entries }) {
         <div className="border-t border-gray-200 dark:border-gray-700 py-2">
           {stepEntries.map((entry, idx) => (
             <StepRow key={`${entry.step}-${entry.timestamp}-${idx}`} entry={entry} />
+          ))}
+        </div>
+      )}
+
+      {expanded && feedbackEntries.length > 0 && (
+        <div className="border-t border-gray-200 dark:border-gray-700 py-2">
+          {feedbackEntries.map((entry, idx) => (
+            <FeedbackRow key={`feedback-${entry.timestamp}-${idx}`} entry={entry} />
           ))}
         </div>
       )}
