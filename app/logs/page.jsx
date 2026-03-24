@@ -122,9 +122,23 @@ function StepRow({ entry }) {
 function TransactionCard({ transaction, entries }) {
   const [expanded, setExpanded] = useState(true);
 
-  const startEntry = entries.find((e) => e.type === 'TRANSACTION_START');
-  const endEntry = entries.find((e) => e.type === 'TRANSACTION_END');
-  const stepEntries = entries.filter((e) => e.type === 'STEP');
+  const startEntry = entries.find(
+    (e) =>
+      e.type === 'TRANSACTION_START' ||
+      (e.category === 'pipeline' && e.pipeline?.step === 'TRANSACTION_START'),
+  );
+  const endEntry = entries.find(
+    (e) =>
+      e.type === 'TRANSACTION_END' ||
+      (e.category === 'pipeline' && e.pipeline?.step === 'TRANSACTION_END'),
+  );
+  const stepEntries = entries.filter((e) => {
+    if (e.category === 'pipeline' && e.pipeline?.step) {
+      const step = e.pipeline.step;
+      return step !== 'TRANSACTION_START' && step !== 'TRANSACTION_END';
+    }
+    return e.type === 'STEP';
+  });
 
   const status = endEntry?.status || startEntry?.status || 'started';
   const isSuccess = status === 'success';
