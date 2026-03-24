@@ -25,8 +25,7 @@ export function useFocusTrap(ref) {
     const previouslyFocused = document.activeElement;
 
     // Move focus into the trap on open
-    const focusable = () =>
-      Array.from(ref.current?.querySelectorAll(FOCUSABLE_SELECTOR) ?? []);
+    const focusable = () => Array.from(ref.current?.querySelectorAll(FOCUSABLE_SELECTOR) ?? []);
 
     const initial = focusable()[0];
     if (initial) {
@@ -34,9 +33,13 @@ export function useFocusTrap(ref) {
     }
 
     const handleKeyDown = (e) => {
-      if (e.key !== 'Tab') {return;}
+      if (e.key !== 'Tab') {
+        return;
+      }
       const elements = focusable();
-      if (elements.length === 0) {return;}
+      if (elements.length === 0) {
+        return;
+      }
 
       const first = elements[0];
       const last = elements[elements.length - 1];

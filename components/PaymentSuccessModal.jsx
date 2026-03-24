@@ -33,7 +33,10 @@ export default function PaymentSuccessModal({ type = 'tip', onClose }) {
       />
 
       {/* Modal panel */}
-      <div ref={panelRef} className="relative w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 text-center overflow-hidden">
+      <div
+        ref={panelRef}
+        className="relative w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 text-center overflow-hidden"
+      >
         {/* X close button */}
         <button
           onClick={onClose}

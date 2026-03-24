@@ -102,7 +102,9 @@ export default function HomePage() {
 
   // Persist options to localStorage
   useEffect(() => {
-    if (mounted) {localStorage.setItem(OPTIONS_STORAGE_KEY, JSON.stringify(options));}
+    if (mounted) {
+      localStorage.setItem(OPTIONS_STORAGE_KEY, JSON.stringify(options));
+    }
   }, [options, mounted]);
 
   const filteredApps = useMemo(() => {
@@ -117,19 +119,33 @@ export default function HomePage() {
           return false;
         }
       }
-      if (categoryFilter && app.category !== categoryFilter) {return false;}
-      if (agentFilter && app.generation?.agentName !== agentFilter) {return false;}
-      if (modelFilter && app.generation?.llmModel !== modelFilter) {return false;}
-      if (inputModeFilter && (app.inputMode || '').toLowerCase() !== inputModeFilter.toLowerCase())
-        {return false;}
+      if (categoryFilter && app.category !== categoryFilter) {
+        return false;
+      }
+      if (agentFilter && app.generation?.agentName !== agentFilter) {
+        return false;
+      }
+      if (modelFilter && app.generation?.llmModel !== modelFilter) {
+        return false;
+      }
+      if (
+        inputModeFilter &&
+        (app.inputMode || '').toLowerCase() !== inputModeFilter.toLowerCase()
+      ) {
+        return false;
+      }
       return true;
     });
   }, [searchQuery, categoryFilter, agentFilter, modelFilter, inputModeFilter]);
 
   const sortedApps = useMemo(() => {
     const apps = [...filteredApps];
-    if (sortBy === 'oldest') {return apps.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));}
-    if (sortBy === 'highest') {return apps.sort((a, b) => (voteCounts[b.id]?.net ?? 0) - (voteCounts[a.id]?.net ?? 0));}
+    if (sortBy === 'oldest') {
+      return apps.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    }
+    if (sortBy === 'highest') {
+      return apps.sort((a, b) => (voteCounts[b.id]?.net ?? 0) - (voteCounts[a.id]?.net ?? 0));
+    }
     return apps.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }, [filteredApps, sortBy, voteCounts]);
 
@@ -140,7 +156,13 @@ export default function HomePage() {
     return sortedApps.slice(start, start + perPage);
   }, [sortedApps, currentPage, perPage]);
 
-  const activeFilterCount = [categoryFilter, agentFilter, modelFilter, inputModeFilter, searchQuery].filter(Boolean).length;
+  const activeFilterCount = [
+    categoryFilter,
+    agentFilter,
+    modelFilter,
+    inputModeFilter,
+    searchQuery,
+  ].filter(Boolean).length;
 
   const resetFilters = () => {
     setSearchQuery('');
@@ -237,8 +259,14 @@ export default function HomePage() {
           perPage={perPage}
           sortBy={sortBy}
           onPageChange={goToPage}
-          onPerPageChange={(val) => { setPerPage(val); setCurrentPage(1); }}
-          onSortChange={(val) => { setSortBy(val); setCurrentPage(1); }}
+          onPerPageChange={(val) => {
+            setPerPage(val);
+            setCurrentPage(1);
+          }}
+          onSortChange={(val) => {
+            setSortBy(val);
+            setCurrentPage(1);
+          }}
         />
 
         <GalleryGrid
@@ -257,8 +285,14 @@ export default function HomePage() {
           perPage={perPage}
           sortBy={sortBy}
           onPageChange={goToPage}
-          onPerPageChange={(val) => { setPerPage(val); setCurrentPage(1); }}
-          onSortChange={(val) => { setSortBy(val); setCurrentPage(1); }}
+          onPerPageChange={(val) => {
+            setPerPage(val);
+            setCurrentPage(1);
+          }}
+          onSortChange={(val) => {
+            setSortBy(val);
+            setCurrentPage(1);
+          }}
         />
       </div>
 

@@ -4,7 +4,9 @@ import { useState } from 'react';
 import appsData from '@/data/apps.json';
 
 const categories = [...new Set(appsData.map((app) => app.category).filter(Boolean))].sort();
-const agents = [...new Set(appsData.map((app) => app.generation?.agentName).filter(Boolean))].sort();
+const agents = [
+  ...new Set(appsData.map((app) => app.generation?.agentName).filter(Boolean)),
+].sort();
 const models = [...new Set(appsData.map((app) => app.generation?.llmModel).filter(Boolean))].sort();
 const INPUT_MODE_OPTIONS = ['Desktop', 'Mobile', 'Responsive'];
 

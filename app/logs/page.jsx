@@ -449,7 +449,10 @@ export default function LogsPage() {
 
       <div className="flex flex-wrap gap-4 mb-6">
         <div>
-          <label htmlFor="log-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label
+            htmlFor="log-date"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+          >
             Date
           </label>
           <input
@@ -462,7 +465,10 @@ export default function LogsPage() {
         </div>
 
         <div>
-          <label htmlFor="log-status" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label
+            htmlFor="log-status"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+          >
             Status
           </label>
           <select

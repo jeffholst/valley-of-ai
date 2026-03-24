@@ -22,50 +22,52 @@ export default function GalleryPagination({
   return (
     <>
       {/* Controls row — hidden when rendering as bottom-only page navigation */}
-      {!navigationOnly && <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-        <p className="text-gray-600 dark:text-gray-400">
-          <span className="font-semibold text-gray-900 dark:text-white">{sortedAppsCount}</span>{' '}
-          apps available
-        </p>
+      {!navigationOnly && (
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+          <p className="text-gray-600 dark:text-gray-400">
+            <span className="font-semibold text-gray-900 dark:text-white">{sortedAppsCount}</span>{' '}
+            apps available
+          </p>
 
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2">
-            <label htmlFor="perPage" className="text-sm text-gray-600 dark:text-gray-400">
-              Show:
-            </label>
-            <select
-              id="perPage"
-              value={perPage}
-              onChange={(e) => onPerPageChange(Number(e.target.value))}
-              className="input py-1.5 w-auto"
-            >
-              {PER_PAGE_OPTIONS.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </div>
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2">
+              <label htmlFor="perPage" className="text-sm text-gray-600 dark:text-gray-400">
+                Show:
+              </label>
+              <select
+                id="perPage"
+                value={perPage}
+                onChange={(e) => onPerPageChange(Number(e.target.value))}
+                className="input py-1.5 w-auto"
+              >
+                {PER_PAGE_OPTIONS.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <div className="flex items-center gap-2">
-            <label htmlFor="sort" className="text-sm text-gray-600 dark:text-gray-400">
-              Sort by:
-            </label>
-            <select
-              id="sort"
-              value={sortBy}
-              onChange={(e) => onSortChange(e.target.value)}
-              className="input py-1.5 w-auto"
-            >
-              {SORT_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+            <div className="flex items-center gap-2">
+              <label htmlFor="sort" className="text-sm text-gray-600 dark:text-gray-400">
+                Sort by:
+              </label>
+              <select
+                id="sort"
+                value={sortBy}
+                onChange={(e) => onSortChange(e.target.value)}
+                className="input py-1.5 w-auto"
+              >
+                {SORT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
-      </div>}
+      )}
 
       {/* Page navigation */}
       {totalPages > 1 && (
@@ -94,9 +96,13 @@ export default function GalleryPagination({
 
             <div className="flex items-center gap-1">
               {Array.from({ length: totalPages }, (_, i) => i + 1)
-                .filter((page) => page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1)
+                .filter(
+                  (page) => page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1
+                )
                 .reduce((acc, page, idx, arr) => {
-                  if (idx > 0 && page - arr[idx - 1] > 1) {acc.push('...');}
+                  if (idx > 0 && page - arr[idx - 1] > 1) {
+                    acc.push('...');
+                  }
                   acc.push(page);
                   return acc;
                 }, [])

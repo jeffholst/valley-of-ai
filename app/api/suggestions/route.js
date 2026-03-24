@@ -42,7 +42,9 @@ export async function POST(request) {
   const safeCategory = escapeMd(String(category));
   const safeRequestor = requestor ? escapeMd(String(requestor)) : null;
   const safeDescription = escapeMd(String(description));
-  const requestorLine = safeRequestor ? `**Requestor:** ${safeRequestor}` : '**Requestor:** anonymous';
+  const requestorLine = safeRequestor
+    ? `**Requestor:** ${safeRequestor}`
+    : '**Requestor:** anonymous';
   const issueBody = `## App Suggestion\n\n**Category:** ${safeCategory}\n${requestorLine}\n\n### Description\n\n${safeDescription}`;
 
   const normalizedDesc = description.replace(/\s+/g, ' ').trim();

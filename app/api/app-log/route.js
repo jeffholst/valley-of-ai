@@ -70,7 +70,14 @@ export async function GET(request) {
 
               // Extract just the app name from appId
               const appName = appId.includes('/') ? appId.split('/').pop() : appId;
-              const potentialLogPath = safeResolvePath(publicAppsDir, year, month, day, appName, 'log.jsonl');
+              const potentialLogPath = safeResolvePath(
+                publicAppsDir,
+                year,
+                month,
+                day,
+                appName,
+                'log.jsonl'
+              );
               if (potentialLogPath && fs.existsSync(potentialLogPath)) {
                 logFilePath = potentialLogPath;
                 break;
@@ -116,7 +123,14 @@ export async function GET(request) {
 
                 // Extract just the app name from appId
                 const appName = appId.includes('/') ? appId.split('/').pop() : appId;
-                const potentialLogPath = safeResolvePath(appsDir, year, month, day, appName, 'log.jsonl');
+                const potentialLogPath = safeResolvePath(
+                  appsDir,
+                  year,
+                  month,
+                  day,
+                  appName,
+                  'log.jsonl'
+                );
                 if (potentialLogPath && fs.existsSync(potentialLogPath)) {
                   logFilePath = potentialLogPath;
                   break;

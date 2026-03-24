@@ -39,7 +39,9 @@ const createPterodactyl = (id, isMobile = false) => {
 };
 
 const isLikelyMobileDevice = () => {
-  if (typeof window === 'undefined') {return false;}
+  if (typeof window === 'undefined') {
+    return false;
+  }
   const hasTouchInput = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   const smallViewport = window.matchMedia('(max-width: 768px)').matches;
   return hasTouchInput || smallViewport;
@@ -60,7 +62,9 @@ export function usePterodactyls() {
     isMobileRef.current = mobile;
     setIsMobile(mobile);
     const count = mobile ? PTERODACTYL_CONFIG.total_mobile : PTERODACTYL_CONFIG.total_desktop;
-    setPterodactyls(Array.from({ length: count }, (_, i) => createPterodactyl(`ptero-${i + 1}`, mobile)));
+    setPterodactyls(
+      Array.from({ length: count }, (_, i) => createPterodactyl(`ptero-${i + 1}`, mobile))
+    );
   }, []);
 
   useEffect(() => {
@@ -74,7 +78,9 @@ export function usePterodactyls() {
     setPterodactyls((prev) => {
       let shouldScheduleRespawn = false;
       const next = prev.map((p) => {
-        if (p.id !== pterodactylId || p.dead) {return p;}
+        if (p.id !== pterodactylId || p.dead) {
+          return p;
+        }
         shouldScheduleRespawn = true;
         return { ...p, dead: true };
       });
