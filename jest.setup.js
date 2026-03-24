@@ -7,8 +7,8 @@
 
 import '@testing-library/jest-dom';
 
-// Mock window.matchMedia for theme toggle tests
-Object.defineProperty(window, 'matchMedia', {
+// Mock window.matchMedia for theme toggle tests (only in browser-like environments)
+if (typeof window !== 'undefined') Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: jest.fn().mockImplementation((query) => ({
     matches: false,

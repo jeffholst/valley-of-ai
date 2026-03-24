@@ -1,6 +1,17 @@
 import fs from 'fs';
 import path from 'path';
 
+// Valid appId must be exactly YYYY/MM/DD/slug (slug: lowercase letters, digits, hyphens)
+const APP_ID_PATTERN = /^\d{4}\/\d{2}\/\d{2}\/[a-z0-9-]+$/;
+
+function safeResolvePath(base, ...segments) {
+  const resolved = path.resolve(base, ...segments);
+  if (!resolved.startsWith(base + path.sep) && resolved !== base) {
+    return null;
+  }
+  return resolved;
+}
+
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -10,17 +21,24 @@ export async function GET(request) {
       return Response.json({ error: 'appId is required' }, { status: 400 });
     }
 
+    if (!APP_ID_PATTERN.test(appId)) {
+      return Response.json({ error: 'Invalid appId format' }, { status: 400 });
+    }
+
+    const publicBase = path.resolve(process.cwd(), 'public', 'apps');
+    const sourceBase = path.resolve(process.cwd(), 'apps');
+
     let logFilePath = null;
 
     // appId format: YYYY/MM/DD/app-name
     // First, try direct path lookup if appId contains date structure
     if (appId.includes('/')) {
-      const publicAppPath = path.join(process.cwd(), 'public', 'apps', appId, 'log.jsonl');
-      const sourceAppPath = path.join(process.cwd(), 'apps', appId, 'log.jsonl');
+      const publicAppPath = safeResolvePath(publicBase, appId, 'log.jsonl');
+      const sourceAppPath = safeResolvePath(sourceBase, appId, 'log.jsonl');
 
-      if (fs.existsSync(publicAppPath)) {
+      if (publicAppPath && fs.existsSync(publicAppPath)) {
         logFilePath = publicAppPath;
-      } else if (fs.existsSync(sourceAppPath)) {
+      } else if (sourceAppPath && fs.existsSync(sourceAppPath)) {
         logFilePath = sourceAppPath;
       }
     }
@@ -28,7 +46,7 @@ export async function GET(request) {
     // Fallback: search through directory structure if direct lookup failed
     if (!logFilePath) {
       try {
-        const publicAppsDir = path.join(process.cwd(), 'public', 'apps');
+        const publicAppsDir = publicBase;
         const dirs = fs.readdirSync(publicAppsDir);
         for (const year of dirs) {
           const yearPath = path.join(publicAppsDir, year);
@@ -52,13 +70,10 @@ export async function GET(request) {
 
               // Extract just the app name from appId
               const appName = appId.includes('/') ? appId.split('/').pop() : appId;
-              const appPath = path.join(dayPath, appName);
-              if (fs.existsSync(appPath)) {
-                const potentialLogPath = path.join(appPath, 'log.jsonl');
-                if (fs.existsSync(potentialLogPath)) {
-                  logFilePath = potentialLogPath;
-                  break;
-                }
+              const potentialLogPath = safeResolvePath(publicAppsDir, year, month, day, appName, 'log.jsonl');
+              if (potentialLogPath && fs.existsSync(potentialLogPath)) {
+                logFilePath = potentialLogPath;
+                break;
               }
             }
             if (logFilePath) {
@@ -77,7 +92,7 @@ export async function GET(request) {
       // If not found in public, check source apps directory
       if (!logFilePath) {
         try {
-          const appsDir = path.join(process.cwd(), 'apps');
+          const appsDir = sourceBase;
           const dirs = fs.readdirSync(appsDir);
           for (const year of dirs) {
             const yearPath = path.join(appsDir, year);
@@ -101,13 +116,10 @@ export async function GET(request) {
 
                 // Extract just the app name from appId
                 const appName = appId.includes('/') ? appId.split('/').pop() : appId;
-                const appPath = path.join(dayPath, appName);
-                if (fs.existsSync(appPath)) {
-                  const potentialLogPath = path.join(appPath, 'log.jsonl');
-                  if (fs.existsSync(potentialLogPath)) {
-                    logFilePath = potentialLogPath;
-                    break;
-                  }
+                const potentialLogPath = safeResolvePath(appsDir, year, month, day, appName, 'log.jsonl');
+                if (potentialLogPath && fs.existsSync(potentialLogPath)) {
+                  logFilePath = potentialLogPath;
+                  break;
                 }
               }
               if (logFilePath) {
