@@ -160,12 +160,16 @@
     const explicitName = document.querySelector('meta[name="application-name"]')?.getAttribute('content')?.trim();
     if (explicitName) return explicitName;
 
+    // Use <title> before h1 — h1 may be in-app content (e.g. a card topic) not the app name
+    const titleText = (document.title || '').trim();
+    const fromTitle = titleText.replace(/\s*[-|]\s*[^-|]*$/, '').trim();
+    if (fromTitle) return fromTitle;
+
     const firstHeading = document.querySelector('h1, .title, [data-app-title]');
     const headingText = firstHeading?.textContent?.trim();
     if (headingText) return headingText.replace(/^\s*[\u2190-\u27A1]+\s*/g, '').trim();
 
-    const titleText = (document.title || 'Valley of AI App').trim();
-    return titleText.replace(/\s*[|-]\s*Valley of AI.*$/i, '').trim();
+    return 'Valley of AI App';
   }
 
   function setToggleIcons(theme) {
