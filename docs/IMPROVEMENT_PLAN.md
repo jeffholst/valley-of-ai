@@ -419,10 +419,10 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 | M-1 | Extract shared `verifyTurnstile()`             | ✅ done |
 | M-2 | Extract shared `formatDuration()`              | ✅ done |
 | M-3 | Add focus trapping to modals                   | ✅ done |
-| M-4 | Enable `jsx-a11y` ESLint rules                 | 🔲 todo |
-| M-5 | Add `prefers-reduced-motion` support           | 🔲 todo |
-| M-6 | Fix vacuous test assertions                    | 🔲 todo |
-| M-7 | Add Markdown escaping to suggestions route     | 🔲 todo |
+| M-4 | Enable `jsx-a11y` ESLint rules                 | ✅ done |
+| M-5 | Add `prefers-reduced-motion` support           | ✅ done |
+| M-6 | Fix vacuous test assertions                    | ✅ done |
+| M-7 | Add Markdown escaping to suggestions route     | ✅ done |
 | M-8 | Add server-side vote deduplication             | 🔲 todo |
 | M-9 | Fix `npm run format` scope                     | 🔲 todo |
 | L-1 | Add TypeScript (incremental migration)         | 🔲 todo |
@@ -431,4 +431,4 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 | L-4 | Add responsive header nav menu                 | 🔲 todo |
 | L-5 | Standardize script file extensions             | 🔲 todo |
 | L-6 | Add `application-name` meta to agent templates | 🔲 todo |
-| L-7 | Improve `AppCard` thumbnail alt text           | 🔲 todo |
+| L-7 | Improve `AppCard` thumbnail alt text           | ✅ done |

@@ -23,7 +23,7 @@ export default function AppCard({ app, initialCounts }) {
           {app.thumbnailUrl ? (
             <img
               src={app.thumbnailUrl}
-              alt=""
+              alt={`Preview of ${app.name}`}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               onError={(e) => {
                 e.target.style.display = 'none';
