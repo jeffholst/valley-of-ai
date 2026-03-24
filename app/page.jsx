@@ -243,6 +243,7 @@ export default function HomePage() {
 
         <GalleryGrid
           apps={paginatedApps}
+          voteCounts={voteCounts}
           earthquake={options.earthquake}
           hasFilters={activeFilterCount > 0 || !!searchQuery}
           onResetFilters={resetFilters}

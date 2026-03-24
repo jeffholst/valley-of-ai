@@ -2,7 +2,7 @@
 
 import AppCard from '@/components/AppCard';
 
-export default function GalleryGrid({ apps, earthquake, hasFilters, onResetFilters }) {
+export default function GalleryGrid({ apps, voteCounts, earthquake, hasFilters, onResetFilters }) {
   if (apps.length === 0) {
     return (
       <div className="text-center py-16">
@@ -25,7 +25,7 @@ export default function GalleryGrid({ apps, earthquake, hasFilters, onResetFilte
       className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6${earthquake ? ' earthquake-cards' : ''}`}
     >
       {apps.map((app) => (
-        <AppCard key={app.id} app={app} />
+        <AppCard key={app.id} app={app} initialCounts={voteCounts?.[app.id]} />
       ))}
     </div>
   );

@@ -1,11 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { useVotes } from '@/hooks/useVotes';
+import { useVotesMutation } from '@/hooks/useVotes';
 import VoteButtons from '@/components/VoteButtons';
 
-export default function AppCard({ app }) {
-  const { upvoteCount, downvoteCount, myVote, isLoading, isVoting, vote } = useVotes(app.id);
+export default function AppCard({ app, initialCounts }) {
+  const { upvoteCount, downvoteCount, myVote, isLoading, isVoting, vote } = useVotesMutation(
+    app.id,
+    initialCounts
+  );
 
   const formattedDate = new Date(app.createdAt).toLocaleDateString('en-US', {
     year: 'numeric',

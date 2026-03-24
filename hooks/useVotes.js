@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 
 const STORAGE_KEY = 'voa_votes_v2';
@@ -118,6 +118,71 @@ export function useVotes(appId) {
   );
 
   return { upvoteCount, downvoteCount, myVote, isLoading, isVoting, vote };
+}
+
+// Hook for gallery cards — initializes counts from bulk data (no per-card Supabase SELECT).
+// The voting mutation (INSERT) still runs per-card when a user votes.
+export function useVotesMutation(appId, initialCounts) {
+  const [upvoteCount, setUpvoteCount] = useState(0);
+  const [downvoteCount, setDownvoteCount] = useState(0);
+  const [myVote, setMyVote] = useState(null);
+  const [isVoting, setIsVoting] = useState(false);
+  // Track whether we've applied the first valid initialCounts so we don't
+  // overwrite an in-flight optimistic update when the parent re-renders.
+  const initializedRef = useRef(false);
+
+  // Apply bulk counts once — the first time valid counts arrive.
+  useEffect(() => {
+    if (!initializedRef.current && initialCounts) {
+      setUpvoteCount(initialCounts.up ?? 0);
+      setDownvoteCount(initialCounts.down ?? 0);
+      initializedRef.current = true;
+    }
+  }, [initialCounts]);
+
+  // Read user's prior vote from localStorage (client-only, instant).
+  useEffect(() => {
+    setMyVote(getVoteRecord(appId)?.type ?? null);
+  }, [appId]);
+
+  const vote = useCallback(
+    async (type) => {
+      if (myVote || isVoting) {
+        return false;
+      }
+      setIsVoting(true);
+      // Optimistic update
+      if (type === 'up') {
+        setUpvoteCount((prev) => prev + 1);
+      } else {
+        setDownvoteCount((prev) => prev + 1);
+      }
+      setMyVote(type);
+      try {
+        const { error } = await supabase.from('votes').insert({ app_id: appId, vote_type: type });
+        if (error) {
+          throw error;
+        }
+        saveVoteRecord(appId, type);
+        return true;
+      } catch (error) {
+        console.error('Error voting:', error);
+        // Revert optimistic update
+        if (type === 'up') {
+          setUpvoteCount((prev) => prev - 1);
+        } else {
+          setDownvoteCount((prev) => prev - 1);
+        }
+        setMyVote(null);
+        return false;
+      } finally {
+        setIsVoting(false);
+      }
+    },
+    [appId, myVote, isVoting]
+  );
+
+  return { upvoteCount, downvoteCount, myVote, isLoading: false, isVoting, vote };
 }
 
 // Hook for fetching vote counts for multiple apps (used by gallery for "Highest rated" sort)
