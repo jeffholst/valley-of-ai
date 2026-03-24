@@ -355,14 +355,18 @@ This is useful for documentation-only changes or quick fixes that don't require 
 │   ├── 📄 validate-responsive.js    # Test responsive design
 │   ├── 📄 logger.mjs                # Logging CLI (used by `npm run log`)
 │   ├── 📄 select-app-suggestion.js  # Recommend next new app concept (GitHub issues → vote analysis → category gaps)
-│   └── 📄 select-app-improvement.js # Recommend highest-priority improvement to an existing app (GitHub issues only)
+│   ├── 📄 select-app-improvement.js # Recommend highest-priority improvement to an existing app (GitHub issues only)
+│   └── 📄 selection-utils.js        # Pure utility functions shared by both selection scripts (testable, no external deps)
 │
 ├── 🧪 Tests
 │   ├── 📄 jest.config.js      # Jest configuration
 │   ├── 📄 jest.setup.js       # Test environment setup (mocks window.matchMedia)
 │   └── 📁 __tests__/
 │       ├── 📁 components/
-│       │   └── ThemeToggle.test.js       # Component tests
+│       │   ├── ThemeToggle.test.js       # Component tests
+│       │   └── AppLog.groupLogs.test.js  # Log grouping logic tests
+│       ├── 📁 scripts/
+│       │   └── selection-utils.test.js   # App selection utility tests
 │       ├── 📁 lib/
 │       │   └── siteConfig.test.js        # Utility function tests
 │       ├── 📁 data/
@@ -579,7 +583,7 @@ Before submitting a PR, ensure your code meets our standards:
 #### 2️⃣ Testing
 - Write tests for new features using Jest + React Testing Library
 - Test files go in `__tests__/` mirroring the source structure
-- Run `npm test` to verify all 17+ tests pass
+- Run `npm test` to verify all 57+ tests pass
 - Check coverage with `npm run test:coverage`
 - See [📖 TESTING.md](docs/TESTING.md) for testing examples and best practices
 
@@ -608,7 +612,7 @@ Before submitting a PR, ensure your code meets our standards:
 All changes are validated before merge:
 - ✅ **ESLint**: 0 errors, 0 warnings
 - ✅ **Prettier**: Consistent formatting
-- ✅ **Jest Tests**: 17+ tests passing
+- ✅ **Jest Tests**: 57+ tests passing
 - ✅ **Build**: `npm run build` succeeds
 
 ---
@@ -632,7 +636,7 @@ Core stack used in this project:
 
 - **Next.js 16** + **React 19**: Modern framework with App Router for file-based routing, server/client components, and static generation.
 - **Tailwind CSS 3** + **PostCSS** + **Autoprefixer**: Utility-first styling pipeline.
-- **Jest** + **React Testing Library**: 17+ test cases covering components, utilities, and environment variables with coverage reporting.
+- **Jest** + **React Testing Library**: 57+ test cases covering components, utilities, scripts, and environment variables with coverage reporting.
 - **ESLint 9** + **Prettier**: Code quality enforcement (strict 0 warnings policy) and consistent formatting (100 char lines, single quotes).
 - **Supabase**: Thumbs-up/down vote storage. "Highest rated" sort ranks by net score (upvotes − downvotes).
 - **GitHub Issues**: Persistent storage for community app suggestions and improvement requests, with label-based status workflow (`status:pending` → `status:approved` → `status:implemented`).

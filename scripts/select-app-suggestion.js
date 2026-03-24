@@ -21,6 +21,11 @@ import { readFileSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { createClient } from '@supabase/supabase-js';
+import {
+  computeSaturatedTags,
+  computeRecentTags,
+  computeDuplicationRisk,
+} from './selection-utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -162,75 +167,6 @@ async function getVoteCounts(supabase, appIds) {
     counts[row.app_id].net = counts[row.app_id].up - counts[row.app_id].down;
   }
   return counts;
-}
-
-// ---------------------------------------------------------------------------
-// Similarity / duplication helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Returns tags that appear in >= thresholdPct % of apps.
- * These are "saturated" — new apps shouldn't lean on them as their core concept.
- */
-function computeSaturatedTags(apps, thresholdPct = 20) {
-  const counts = {};
-  for (const app of apps) {
-    for (const tag of app.tags || []) {
-      counts[tag] = (counts[tag] || 0) + 1;
-    }
-  }
-  const threshold = Math.ceil(apps.length * (thresholdPct / 100));
-  return Object.entries(counts)
-    .filter(([, n]) => n >= threshold)
-    .sort((a, b) => b[1] - a[1])
-    .map(([tag, count]) => ({ tag, count, pct: Math.round((count / apps.length) * 100) }));
-}
-
-/**
- * Returns tags that appeared in apps created within the last `days` days.
- * Avoids repeating very recent concepts.
- */
-function computeRecentTags(apps, days = 14) {
-  const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
-  const recent = apps.filter((a) => new Date(a.createdAt).getTime() >= cutoff);
-  const counts = {};
-  for (const app of recent) {
-    for (const tag of app.tags || []) {
-      counts[tag] = (counts[tag] || 0) + 1;
-    }
-  }
-  return Object.entries(counts)
-    .sort((a, b) => b[1] - a[1])
-    .map(([tag, count]) => ({ tag, count, recentApps: recent.filter((a) => (a.tags || []).includes(tag)).map((a) => a.name) }));
-}
-
-/**
- * Scores how much a candidate text (issue title + body) overlaps with existing apps.
- * Returns { risk: 'low'|'medium'|'high', score, matches }
- * where matches = existing app names whose keywords appear in the candidate text.
- */
-function computeDuplicationRisk(candidateText, apps) {
-  const text = candidateText.toLowerCase();
-
-  // Build keyword sets for each app: name words + tags + category
-  const appFingerprints = apps.map((app) => {
-    const nameWords = app.name.toLowerCase().split(/\W+/).filter((w) => w.length > 3);
-    const tags = (app.tags || []).map((t) => t.toLowerCase());
-    const category = (app.category || '').toLowerCase();
-    return { app, keywords: new Set([...nameWords, ...tags, category]) };
-  });
-
-  const matches = [];
-  for (const { app, keywords } of appFingerprints) {
-    const hits = [...keywords].filter((kw) => text.includes(kw));
-    if (hits.length >= 2) {
-      matches.push({ name: app.name, id: app.id, matchedKeywords: hits });
-    }
-  }
-
-  const score = matches.length;
-  const risk = score === 0 ? 'low' : score <= 2 ? 'medium' : 'high';
-  return { risk, score, matches };
 }
 
 // ---------------------------------------------------------------------------

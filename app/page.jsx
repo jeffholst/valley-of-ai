@@ -139,7 +139,9 @@ export default function HomePage() {
       setShowDonateModal(true);
       params.delete('donate');
       const newSearch = params.toString();
-      const newUrl = newSearch ? `${window.location.pathname}?${newSearch}` : window.location.pathname;
+      const newUrl = newSearch
+        ? `${window.location.pathname}?${newSearch}`
+        : window.location.pathname;
       window.history.replaceState({}, '', newUrl);
     }
   }, []);
