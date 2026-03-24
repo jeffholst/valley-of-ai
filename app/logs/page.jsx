@@ -184,12 +184,12 @@ function TransactionCard({ transaction, entries }) {
   const startEntry = entries.find(
     (e) =>
       e.type === 'TRANSACTION_START' ||
-      (e.category === 'pipeline' && e.pipeline?.step === 'TRANSACTION_START'),
+      (e.category === 'pipeline' && e.pipeline?.step === 'TRANSACTION_START')
   );
   const endEntry = entries.find(
     (e) =>
       e.type === 'TRANSACTION_END' ||
-      (e.category === 'pipeline' && e.pipeline?.step === 'TRANSACTION_END'),
+      (e.category === 'pipeline' && e.pipeline?.step === 'TRANSACTION_END')
   );
   const stepEntries = entries.filter((e) => {
     if (e.category === 'pipeline' && e.pipeline?.step) {
@@ -198,9 +198,7 @@ function TransactionCard({ transaction, entries }) {
     }
     return e.type === 'STEP';
   });
-  const feedbackEntries = entries.filter(
-    (e) => e.type === 'FEEDBACK' || e.category === 'feedback',
-  );
+  const feedbackEntries = entries.filter((e) => e.type === 'FEEDBACK' || e.category === 'feedback');
 
   const status = endEntry?.status || startEntry?.status || 'started';
   const isSuccess = status === 'success';
