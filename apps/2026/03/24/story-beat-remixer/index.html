@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="voa-app-id" content="2026/03/24/story-beat-remixer" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+    <link rel="icon" href="thumbnail.svg" type="image/svg+xml" />
+    <title>Story Beat Remixer - __MAIN_SITE_NAME__</title>
+    <style>
+      :root { --bg:#080f1f; --text:#f8fafc; --surface:#131e36; --surface-2:#1a2b4f; --border:#395189; --accent:#58ffd8; --accent-2:#ff7dd0; --ok:#86f9a8; }
+      [data-theme='light'] { --bg:#eef3ff; --text:#111827; --surface:#ffffff; --surface-2:#dce8ff; --border:#a8bbe8; --accent:#007a88; --accent-2:#be2b87; --ok:#0f9f65; }
+      * { box-sizing: border-box; }
+      body { margin:0; font-family:'Inter','Segoe UI',system-ui,sans-serif; background:radial-gradient(circle at 20% 0%, #192f62 0%, var(--bg) 46%); color:var(--text); }
+      .app { max-width:980px; margin:0 auto; padding:.9rem; display:grid; gap:.8rem; }
+      .card { background:color-mix(in srgb, var(--surface) 88%, transparent); border:1px solid var(--border); border-radius:16px; padding:.85rem; }
+      h1 { margin:0; font-size:clamp(1.35rem,4.5vw,2rem); }
+      .subtitle { margin:.45rem 0 0; opacity:.9; line-height:1.35; }
+      .grid { display:grid; gap:.7rem; }
+      .label { font-size:.84rem; letter-spacing:.02em; opacity:.8; }
+      .value { margin-top:.4rem; min-height:2.4rem; font-size:1.05rem; font-weight:650; }
+      .controls,.actions { display:flex; flex-wrap:wrap; gap:.45rem; margin-top:.55rem; }
+      button { min-height:44px; border-radius:11px; border:1px solid var(--border); background:var(--surface-2); color:var(--text); padding:.5rem .75rem; font-weight:650; cursor:pointer; transition:transform .12s ease, filter .2s ease; }
+      button:hover,button:focus-visible { transform:translateY(-1px); filter:brightness(1.1); outline:none; }
+      button.locked { color:var(--accent-2); border-color:var(--accent-2); }
+      .primary { border:none; color:#0b1222; background:linear-gradient(135deg, var(--accent), var(--accent-2)); }
+      .output { background:linear-gradient(165deg, color-mix(in srgb, var(--surface-2) 85%, transparent), color-mix(in srgb, var(--surface) 95%, transparent)); }
+      .story-title { margin:0; font-size:clamp(1.25rem,4.1vw,2rem); }
+      .story-line { margin:.5rem 0 0; line-height:1.45; font-size:clamp(.98rem,2.8vw,1.2rem); }
+      .meta { margin-top:.7rem; display:flex; justify-content:space-between; gap:.5rem; flex-wrap:wrap; font-size:.95rem; }
+      .count { color:var(--ok); font-weight:700; }
+      @media (min-width:760px){ .app{padding:1.2rem;} .grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
+    </style>
+  </head>
+  <body>
+    <main class="app" aria-live="polite">
+      <section class="card">
+        <h1>Story Beat Remixer</h1>
+        <p class="subtitle">Shuffle setup, conflict, and twist cards to spark an instant movie plot.</p>
+      </section>
+      <section class="grid" aria-label="Beat controls">
+        <article class="card"><div class="label">Setup</div><div class="value" id="setupOut"></div><div class="controls"><button data-roll="setup">Shuffle</button><button data-lock="setup" aria-pressed="false">Lock</button></div></article>
+        <article class="card"><div class="label">Conflict</div><div class="value" id="conflictOut"></div><div class="controls"><button data-roll="conflict">Shuffle</button><button data-lock="conflict" aria-pressed="false">Lock</button></div></article>
+        <article class="card"><div class="label">Twist</div><div class="value" id="twistOut"></div><div class="controls"><button data-roll="twist">Shuffle</button><button data-lock="twist" aria-pressed="false">Lock</button></div></article>
+      </section>
+      <section class="card output" id="pitch" tabindex="0" aria-label="Generated pitch">
+        <h2 class="story-title" id="titleOut"></h2>
+        <p class="story-line" id="lineOut"></p>
+        <div class="meta"><div class="count">Drafts created: <span id="count">0</span></div><div id="hotkeyHint">Shortcuts: Space remix · 1/2/3 shuffle columns</div></div>
+      </section>
+      <section class="card actions"><button class="primary" id="remixBtn">Remix Full Story (Space)</button><button id="copyBtn">Copy Pitch</button></section>
+    </main>
+    <script>
+      const decks={setup:['A washed-up stunt pilot gets one last comeback gig.','Three estranged siblings inherit a haunted motel.','An overworked nurse finds a map to a hidden island city.','A shy street magician accidentally goes viral overnight.','A small-town mayor fakes confidence during a meteor warning.','A retired thief opens a bakery to stay out of trouble.'],conflict:['A ruthless studio mogul wants the truth buried forever.','A countdown clock resets reality every 24 hours.','An AI narrator keeps rewriting everyone\'s motives.','The team must choose between fame and loyalty under pressure.','A storm locks the city while secrets leak in public.','Their only witness speaks in riddles and old song lyrics.'],twist:['The villain is their future self trying to prevent disaster.','The curse is actually a test built by their missing parent.','Every win erases one cherished memory from the hero.','The final clue is hidden inside a live TV finale.','The sidekick has secretly been protecting the antagonist.','The city itself is a giant film set with no way out.']};
+      const locks={setup:false,conflict:false,twist:false}; const state={setup:'',conflict:'',twist:'',count:0}; const $=(id)=>document.getElementById(id);
+      const pick=(list)=>list[Math.floor(Math.random()*list.length)];
+      function maybeRoll(key){ if(!locks[key]) state[key]=pick(decks[key]); }
+      function updateUI(){ $('setupOut').textContent=state.setup; $('conflictOut').textContent=state.conflict; $('twistOut').textContent=state.twist; $('titleOut').textContent=`${state.setup.split(' ')[1]||'Untitled'} Protocol`; $('lineOut').textContent=`${state.setup} ${state.conflict} Then, ${state.twist}`; $('count').textContent=String(state.count); }
+      function remixAll(){ maybeRoll('setup'); maybeRoll('conflict'); maybeRoll('twist'); state.count+=1; updateUI(); }
+      document.querySelectorAll('[data-roll]').forEach((button)=>button.addEventListener('click',()=>{ const key=button.dataset.roll; maybeRoll(key); state.count+=1; updateUI(); }));
+      document.querySelectorAll('[data-lock]').forEach((button)=>button.addEventListener('click',()=>{ const key=button.dataset.lock; locks[key]=!locks[key]; button.classList.toggle('locked',locks[key]); button.textContent=locks[key]?'Locked':'Lock'; button.setAttribute('aria-pressed',String(locks[key])); }));
+      $('remixBtn').addEventListener('click',remixAll);
+      $('copyBtn').addEventListener('click',async()=>{ const text=`${$('titleOut').textContent} — ${$('lineOut').textContent}`; try{ await navigator.clipboard.writeText(text); $('copyBtn').textContent='Copied!'; setTimeout(()=>{$('copyBtn').textContent='Copy Pitch';},1100);}catch{ $('copyBtn').textContent='Copy failed'; setTimeout(()=>{$('copyBtn').textContent='Copy Pitch';},1100);} });
+      document.addEventListener('keydown',(event)=>{ const key=event.key.toLowerCase(); if(event.code==='Space'){ event.preventDefault(); remixAll(); return; } if(key==='1'){ maybeRoll('setup'); state.count+=1; updateUI(); } if(key==='2'){ maybeRoll('conflict'); state.count+=1; updateUI(); } if(key==='3'){ maybeRoll('twist'); state.count+=1; updateUI(); } });
+      remixAll();
+    </script>
+  </body>
+</html>

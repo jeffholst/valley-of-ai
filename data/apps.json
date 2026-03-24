@@ -1,5 +1,77 @@
 [
   {
+    "id": "2026/03/24/story-beat-remixer",
+    "name": "Story Beat Remixer",
+    "shortDescription": "Remix setup, conflict, and twist cards into instant movie plot pitches.",
+    "thumbnailUrl": "/apps/2026/03/24/story-beat-remixer/thumbnail.svg",
+    "createdAt": "2026-03-24T03:03:43Z",
+    "year": 2026,
+    "month": 3,
+    "day": 24,
+    "category": "Entertainment",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "storytelling",
+      "creative",
+      "generator",
+      "cinema",
+      "keyboard",
+      "touch",
+      "responsive"
+    ],
+    "route": "/apps/2026/03/24/story-beat-remixer",
+    "appPath": "/apps/2026/03/24/story-beat-remixer/index.html",
+    "generation": {
+      "agentName": "dev",
+      "llmModel": "openai-codex/gpt-5.3-codex",
+      "startTime": "2026-03-24T03:03:43Z",
+      "endTime": "2026-03-24T03:08:30Z",
+      "totalTokensIn": 0,
+      "totalTokensOut": 0,
+      "runId": "run-20260324T030343Z-a1b2c3",
+      "notes": "Built from vote-and-category-analysis recommendation with a non-arcade entertainment concept focused on remixable story beats."
+    },
+    "suggestion": null,
+    "improvements": null
+  },
+  {
+    "id": "2026/03/24/trailer-tagline-lab",
+    "name": "Trailer Tagline Lab",
+    "shortDescription": "Generate punchy fake movie trailers by remixing genre, tone, and story hook cards.",
+    "thumbnailUrl": "/apps/2026/03/24/trailer-tagline-lab/thumbnail.svg",
+    "createdAt": "2026-03-24T02:53:20Z",
+    "year": 2026,
+    "month": 3,
+    "day": 24,
+    "category": "Entertainment",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "trailer",
+      "generator",
+      "creative",
+      "cinema",
+      "keyboard",
+      "touch",
+      "responsive"
+    ],
+    "route": "/apps/2026/03/24/trailer-tagline-lab",
+    "appPath": "/apps/2026/03/24/trailer-tagline-lab/index.html",
+    "generation": {
+      "agentName": "dev",
+      "llmModel": "openai-codex/gpt-5.3-codex",
+      "startTime": "2026-03-24T02:53:20Z",
+      "endTime": "2026-03-24T02:56:00Z",
+      "totalTokensIn": 0,
+      "totalTokensOut": 0,
+      "runId": "run-20260324T025320Z-bbee61",
+      "notes": "Built from vote-and-category-analysis recommendation with focus on non-saturated entertainment concept."
+    },
+    "suggestion": null,
+    "improvements": null
+  },
+  {
     "id": "2026/03/23/dungeon-puzzle-run",
     "name": "Dungeon Puzzle Run",
     "shortDescription": "A mobile-first puzzle roguelike where you explore a seeded dungeon of one-thumb puzzle rooms — logic grids, memory pairs, timing arcs, tile patterns, pathing mazes, and resource allocation — with branching paths, loot relics, and a boss room.",
