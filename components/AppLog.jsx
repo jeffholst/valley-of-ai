@@ -188,10 +188,7 @@ function RunGroup({ group, improvementIndex }) {
   const transactionStart = pipelineSteps.find((l) => l.pipeline.step === 'TRANSACTION_START');
   const transactionEnd = pipelineSteps.find((l) => l.pipeline.step === 'TRANSACTION_END');
   const validationEntries = group.entries.filter(
-    (l) =>
-      l.category === 'validation' ||
-      l.category === 'feedback' ||
-      l.type === 'FEEDBACK',
+    (l) => l.category === 'validation',
   );
 
   const label =
