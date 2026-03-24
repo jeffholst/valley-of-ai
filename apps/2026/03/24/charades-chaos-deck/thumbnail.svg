@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-labelledby="title desc">
+  <title id="title">Charades Chaos Deck</title>
+  <desc id="desc">A party charades app showing a live prompt card, timer, and team scores.</desc>
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#302066" />
+      <stop offset="55%" stop-color="#120e27" />
+      <stop offset="100%" stop-color="#0e0a1d" />
+    </linearGradient>
+    <linearGradient id="btnGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff8a5b" />
+      <stop offset="100%" stop-color="#a35bff" />
+    </linearGradient>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)" />
+  <rect x="22" y="22" width="756" height="406" rx="18" fill="none" stroke="#a35bff" stroke-opacity="0.45" />
+
+  <rect x="50" y="54" width="220" height="70" rx="12" fill="#201845" stroke="#4f3a92" />
+  <text x="68" y="82" font-size="18" fill="#d7ccff" font-family="Inter,Segoe UI,sans-serif">Round timer</text>
+  <text x="68" y="110" font-size="28" font-weight="700" fill="#f8f5ff" font-family="Inter,Segoe UI,sans-serif">37s</text>
+
+  <rect x="290" y="54" width="220" height="70" rx="12" fill="#201845" stroke="#4f3a92" />
+  <text x="308" y="82" font-size="18" fill="#d7ccff" font-family="Inter,Segoe UI,sans-serif">Cards left</text>
+  <text x="308" y="110" font-size="28" font-weight="700" fill="#f8f5ff" font-family="Inter,Segoe UI,sans-serif">6</text>
+
+  <rect x="530" y="54" width="220" height="70" rx="12" fill="#201845" stroke="#4f3a92" />
+  <text x="548" y="82" font-size="18" fill="#d7ccff" font-family="Inter,Segoe UI,sans-serif">Active team</text>
+  <text x="548" y="110" font-size="28" font-weight="700" fill="#f8f5ff" font-family="Inter,Segoe UI,sans-serif">Team B</text>
+
+  <rect x="80" y="145" width="640" height="210" rx="20" fill="#201845" stroke="#5f49a7" />
+  <text x="400" y="190" text-anchor="middle" font-size="18" fill="#bfaeff" font-family="Inter,Segoe UI,sans-serif">Act this out</text>
+  <text x="400" y="245" text-anchor="middle" font-size="44" font-weight="700" fill="#f8f5ff" filter="url(#softGlow)" font-family="Inter,Segoe UI,sans-serif">Secret Agent Escape</text>
+  <text x="400" y="282" text-anchor="middle" font-size="20" fill="#d7ccff" font-family="Inter,Segoe UI,sans-serif">Taboo words: spy, laser, crawl</text>
+
+  <rect x="130" y="305" width="160" height="40" rx="10" fill="#f43f5e" />
+  <text x="210" y="331" text-anchor="middle" font-size="20" font-weight="700" fill="#fff" font-family="Inter,Segoe UI,sans-serif">⬅ Pass</text>
+  <rect x="320" y="305" width="160" height="40" rx="10" fill="url(#btnGrad)" />
+  <text x="400" y="331" text-anchor="middle" font-size="20" font-weight="700" fill="#fff" font-family="Inter,Segoe UI,sans-serif">⟳ Next</text>
+  <rect x="510" y="305" width="160" height="40" rx="10" fill="#22c55e" />
+  <text x="590" y="331" text-anchor="middle" font-size="20" font-weight="700" fill="#fff" font-family="Inter,Segoe UI,sans-serif">Score ➜</text>
+
+  <rect x="80" y="372" width="300" height="52" rx="12" fill="#201845" stroke="#ff8a5b" />
+  <text x="104" y="404" font-size="24" fill="#f8f5ff" font-family="Inter,Segoe UI,sans-serif">Team A  4</text>
+  <rect x="420" y="372" width="300" height="52" rx="12" fill="#201845" stroke="#a35bff" />
+  <text x="444" y="404" font-size="24" fill="#f8f5ff" font-family="Inter,Segoe UI,sans-serif">Team B  6</text>
+
+  <text x="400" y="42" text-anchor="middle" font-size="30" font-weight="700" fill="#ffd2b9" filter="url(#softGlow)" font-family="Inter,Segoe UI,sans-serif">Charades Chaos Deck</text>
+</svg>

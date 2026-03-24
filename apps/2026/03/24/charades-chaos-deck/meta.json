@@ -1,0 +1,29 @@
+{
+  "id": "charades-chaos-deck",
+  "name": "Charades Chaos Deck",
+  "shortDescription": "Fast party charades with taboo hints, swipe controls, and team score tracking.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-24T07:00:31Z",
+  "category": "Entertainment",
+  "status": "active",
+  "tags": [
+    "charades",
+    "party",
+    "social",
+    "timer",
+    "team-play",
+    "responsive"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "dev",
+    "llmModel": "openai-codex/gpt-5.3-codex",
+    "startTime": "2026-03-24T07:00:31Z",
+    "endTime": "2026-03-24T07:05:30Z",
+    "totalTokensIn": 1900,
+    "totalTokensOut": 1400,
+    "runId": "run-20260324T070031Z-fa2a04",
+    "notes": "Selected from vote-and-category-analysis recommendation (Entertainment) and built as a social charades experience with keyboard/touch support."
+  }
+}

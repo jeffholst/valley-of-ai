@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Charades Chaos Deck - __MAIN_SITE_NAME__</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="voa-app-id" content="2026/03/24/charades-chaos-deck" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+    <link rel="icon" type="image/svg+xml" href="thumbnail.svg" />
+    <style>
+      :root {
+        --bg: #120e27;
+        --text: #f8f5ff;
+        --surface: #201845;
+        --surface-soft: #2b2256;
+        --accent: #ff8a5b;
+        --accent-2: #a35bff;
+        --ok: #22c55e;
+        --warn: #f43f5e;
+      }
+      [data-theme='light'] {
+        --bg: #f7f4ff;
+        --text: #251f3d;
+        --surface: #ffffff;
+        --surface-soft: #ece5ff;
+        --accent: #d9561f;
+        --accent-2: #7a3dee;
+        --ok: #15803d;
+        --warn: #e11d48;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: 'Inter', 'Segoe UI', Roboto, system-ui, sans-serif;
+        background: radial-gradient(circle at 20% 20%, #302066 0%, var(--bg) 45%, #0e0a1d 100%);
+        color: var(--text);
+      }
+      main { max-width: 920px; margin: 0 auto; padding: 1rem; }
+      .app { display: grid; gap: 1rem; }
+      .hud { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.65rem; }
+      .card {
+        background: color-mix(in oklab, var(--surface) 92%, black);
+        border: 1px solid color-mix(in oklab, var(--surface-soft) 70%, white);
+        border-radius: 14px;
+        padding: 0.75rem;
+        box-shadow: 0 8px 24px rgb(0 0 0 / 0.22);
+      }
+      .label { font-size: 0.8rem; opacity: 0.85; }
+      .value { font-size: clamp(1.1rem, 3vw, 1.5rem); font-weight: 700; }
+      .stage {
+        background: linear-gradient(150deg, var(--surface) 0%, color-mix(in oklab, var(--surface) 88%, #000) 100%);
+        border: 1px solid color-mix(in oklab, var(--surface-soft) 70%, #fff);
+        border-radius: 18px;
+        padding: 1rem;
+        min-height: 280px;
+        display: grid;
+        align-content: space-between;
+        gap: 0.75rem;
+      }
+      .prompt { text-align: center; display: grid; gap: 0.7rem; }
+      .topic { font-size: clamp(1.4rem, 5vw, 2.4rem); margin: 0; }
+      .taboo { margin: 0; font-size: 0.95rem; opacity: 0.85; }
+      .controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.65rem; }
+      button {
+        border: 0;
+        border-radius: 12px;
+        min-height: 46px;
+        padding: 0.7rem 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 120ms ease, filter 150ms ease;
+      }
+      button:focus-visible { outline: 3px solid color-mix(in oklab, var(--accent-2) 75%, white); outline-offset: 2px; }
+      button:hover { filter: brightness(1.05); }
+      button:active { transform: translateY(1px) scale(0.99); }
+      .pass { background: var(--warn); color: #fff; }
+      .score { background: var(--ok); color: #fff; }
+      .next { background: linear-gradient(125deg, var(--accent) 0%, var(--accent-2) 100%); color: #fff; }
+      .footer-note { font-size: 0.85rem; opacity: 0.85; text-align: center; }
+      .teams { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.65rem; }
+      .team { display: flex; justify-content: space-between; align-items: center; }
+      .active { border-color: color-mix(in oklab, var(--accent) 75%, white); }
+      @media (max-width: 600px) {
+        .hud { grid-template-columns: 1fr; }
+        .controls { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="app" aria-label="Charades Chaos Deck game">
+        <div class="hud">
+          <div class="card" aria-live="polite"><div class="label">Round timer</div><div class="value" id="timer">60s</div></div>
+          <div class="card"><div class="label">Cards left</div><div class="value" id="left">0</div></div>
+          <div class="card"><div class="label">Active team</div><div class="value" id="activeTeam">Team A</div></div>
+        </div>
+        <div class="stage" id="swipeArea" tabindex="0" aria-label="Current charades prompt. Swipe left to pass, right to score, or use keyboard arrows.">
+          <div class="prompt">
+            <p class="label">Act this out</p>
+            <h1 class="topic" id="topic">Loading…</h1>
+            <p class="taboo" id="taboo">Taboo words: …</p>
+          </div>
+          <div class="controls" aria-label="Round controls">
+            <button class="pass" id="passBtn" type="button">⬅ Pass</button>
+            <button class="next" id="nextBtn" type="button">⟳ Next</button>
+            <button class="score" id="scoreBtn" type="button">Score ➜</button>
+          </div>
+        </div>
+        <div class="teams" aria-live="polite">
+          <div class="card team active" id="teamA"><span>Team A</span><strong id="scoreA">0</strong></div>
+          <div class="card team" id="teamB"><span>Team B</span><strong id="scoreB">0</strong></div>
+        </div>
+        <p class="footer-note">Keyboard: ← pass, → score, N next, Space start/pause, T switch teams.</p>
+      </section>
+    </main>
+    <script>
+      const deck = [
+        ['Moonwalk', ['dance', 'MJ', 'backward']],
+        ['Juggling Fire', ['circus', 'balls', 'throw']],
+        ['Haunted Elevator', ['ghost', 'lift', 'scream']],
+        ['Invisible Violin Solo', ['music', 'bow', 'strings']],
+        ['Penguin DJ', ['bird', 'music', 'club']],
+        ['Robot Yoga', ['android', 'stretch', 'meditate']],
+        ['Storm Chaser', ['tornado', 'weather', 'run']],
+        ['Secret Agent Escape', ['spy', 'laser', 'crawl']],
+        ['Bubble Tea Disaster', ['drink', 'spill', 'straw']],
+        ['Alien Bake-Off', ['space', 'cake', 'oven']],
+      ];
+      const timerEl = document.getElementById('timer');
+      const leftEl = document.getElementById('left');
+      const topicEl = document.getElementById('topic');
+      const tabooEl = document.getElementById('taboo');
+      const activeTeamEl = document.getElementById('activeTeam');
+      const scoreAEl = document.getElementById('scoreA');
+      const scoreBEl = document.getElementById('scoreB');
+      const teamAEl = document.getElementById('teamA');
+      const teamBEl = document.getElementById('teamB');
+      const passBtn = document.getElementById('passBtn');
+      const scoreBtn = document.getElementById('scoreBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const swipeArea = document.getElementById('swipeArea');
+      let shuffled = [];
+      let round = 60;
+      let ticking = false;
+      let activeTeam = 'A';
+      let scores = { A: 0, B: 0 };
+      let timer;
+      let touchStartX = 0;
+      function shuffleDeck() { shuffled = [...deck].sort(() => Math.random() - 0.5); }
+      function draw() {
+        if (!shuffled.length) shuffleDeck();
+        const current = shuffled.pop();
+        topicEl.textContent = current[0];
+        tabooEl.textContent = `Taboo words: ${current[1].join(', ')}`;
+        leftEl.textContent = String(shuffled.length);
+      }
+      function renderTeams() {
+        scoreAEl.textContent = String(scores.A);
+        scoreBEl.textContent = String(scores.B);
+        const isA = activeTeam === 'A';
+        teamAEl.classList.toggle('active', isA);
+        teamBEl.classList.toggle('active', !isA);
+        activeTeamEl.textContent = `Team ${activeTeam}`;
+      }
+      function startPause() {
+        ticking = !ticking;
+        if (ticking) {
+          timer = setInterval(() => {
+            round -= 1;
+            timerEl.textContent = `${round}s`;
+            if (round <= 0) {
+              clearInterval(timer);
+              ticking = false;
+              timerEl.textContent = '0s — round over';
+            }
+          }, 1000);
+        } else {
+          clearInterval(timer);
+        }
+      }
+      function score() { scores[activeTeam] += 1; renderTeams(); draw(); }
+      function pass() { draw(); }
+      function switchTeam() {
+        activeTeam = activeTeam === 'A' ? 'B' : 'A';
+        round = 60;
+        timerEl.textContent = '60s';
+        if (ticking) startPause();
+        renderTeams();
+      }
+      passBtn.addEventListener('click', pass);
+      scoreBtn.addEventListener('click', score);
+      nextBtn.addEventListener('click', draw);
+      swipeArea.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') pass();
+        if (e.key === 'ArrowRight') score();
+        if (e.key.toLowerCase() === 'n') draw();
+        if (e.code === 'Space') { e.preventDefault(); startPause(); }
+        if (e.key.toLowerCase() === 't') switchTeam();
+      });
+      swipeArea.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].clientX; });
+      swipeArea.addEventListener('touchend', (e) => {
+        const deltaX = e.changedTouches[0].clientX - touchStartX;
+        if (deltaX < -40) pass();
+        if (deltaX > 40) score();
+      });
+      shuffleDeck();
+      draw();
+      renderTeams();
+      swipeArea.focus();
+    </script>
+  </body>
+</html>
