@@ -355,7 +355,7 @@ function RunGroup({ group, improvementIndex }) {
 // Main component
 // ---------------------------------------------------------------------------
 
-export default function AppLog({ appId, suggestion }) {
+export default function AppLog({ appId, suggestion, improvements }) {
   const [logs, setLogs] = useState([]);
   const [isExpanded, setIsExpanded] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -448,6 +448,7 @@ export default function AppLog({ appId, suggestion }) {
         </div>
       )}
 
+
       {/* Section toggle */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
@@ -477,13 +478,42 @@ export default function AppLog({ appId, suggestion }) {
 
       {isExpanded && (
         <div className="space-y-3">
-          {groups.map((group) => {
+          {groups.flatMap((group) => {
+            const items = [];
             if (group.type === 'improvement') {
               improvementCounter += 1;
+              const improvement = improvements?.[improvementCounter - 1];
+              if (improvement) {
+                items.push(
+                  <div
+                    key={`improvement-banner-${improvementCounter}`}
+                    className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700 text-xs text-emerald-800 dark:text-emerald-300"
+                  >
+                    <div className="font-semibold mb-1">
+                      🔧 Improvement #{improvementCounter}
+                      {improvement.issueNumber && (
+                        <a
+                          href={improvement.issueUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="ml-2 underline opacity-75 hover:opacity-100"
+                        >
+                          #{improvement.issueNumber}
+                        </a>
+                      )}
+                      {improvement.requestor && (
+                        <span className="ml-2 opacity-75">by {improvement.requestor}</span>
+                      )}
+                    </div>
+                    <div className="opacity-75 leading-relaxed">{improvement.description}</div>
+                  </div>
+                );
+              }
             }
-            return (
+            items.push(
               <RunGroup key={group.runId} group={group} improvementIndex={improvementCounter} />
             );
+            return items;
           })}
         </div>
       )}
