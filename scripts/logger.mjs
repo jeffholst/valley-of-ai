@@ -6,7 +6,10 @@
  * USAGE:
  * npm run log -- --runId <RUN_ID> --appId <APP_ID> --date <YYYY/MM/DD> --category <CATEGORY> [OPTIONS]
  *
- * The app path is constructed internally as apps/YYYY/MM/DD/<appId>/log.jsonl.
+ * The app-local log path is constructed as apps/<app-date>/<appId>/log.jsonl,
+ * where <app-date> defaults to --date but can be overridden with --app-date.
+ * This is useful in improvement pipelines where the app was created on a
+ * different date than today's run.
  *
  * Categories:
  *   pipeline    - Pipeline steps (requires: --step)
@@ -16,7 +19,8 @@
  * Common OPTIONS:
  *   --runId <ID>          Unique run identifier
  *   --appId <ID>          Application identifier
- *   --date <YYYY/MM/DD>   Date of the run used to derive app and central log paths
+ *   --date <YYYY/MM/DD>   Date of the run used to derive the central log path (logs/YYYY/MM/DD.jsonl)
+ *   --app-date <YYYY/MM/DD> Original creation date of the app for the app-local log path (defaults to --date)
  *   --category <TYPE>     Log category: pipeline|reasoning|validation
  *   --message <TEXT>      Human-readable description of the log entry
  *   --phase <PHASE>       Pipeline phase (e.g., GENERATE_HTML, VALIDATE_APP)
@@ -68,7 +72,8 @@ import { program } from 'commander';
 program
   .option('--runId <id>', 'Unique run identifier')
   .option('--appId <id>', 'Application identifier')
-  .option('--date <YYYY/MM/DD>', 'Date of the run in YYYY/MM/DD format')
+  .option('--date <YYYY/MM/DD>', 'Date of the run in YYYY/MM/DD format (used for central log path)')
+  .option('--app-date <YYYY/MM/DD>', 'Original creation date of the app for the app-local log path (defaults to --date)')
   .option('--category <type>', 'Log category: pipeline|reasoning|validation')
   .option('--step <name>', 'Pipeline step name')
   .option('--seq <number>', 'Step sequence number')
@@ -110,6 +115,15 @@ if (!datePattern.test(args.date)) {
   console.error(`ERROR: --date must be in the format YYYY/MM/DD (got: ${args.date})`);
   process.exit(1);
 }
+
+// Validate --app-date if provided
+if (args.appDate && !datePattern.test(args.appDate)) {
+  console.error(`ERROR: --app-date must be in the format YYYY/MM/DD (got: ${args.appDate})`);
+  process.exit(1);
+}
+
+// Resolve the app-local log date: use --app-date if provided, otherwise fall back to --date
+const appLogDate = args.appDate || args.date;
 
 // Validate category
 if (!['pipeline', 'reasoning', 'validation'].includes(args.category)) {
@@ -222,7 +236,7 @@ console.log(JSON.stringify(entry, null, 2));
 // Append to logs (unless dry-run)
 if (!args.dryRun) {
   try {
-    appendToLogs(args.appId, args.date, entry);
+    appendToLogs(args.appId, args.date, appLogDate, entry);
   } catch (err) {
     console.error(`ERROR appending to logs: ${err.message}`);
     process.exit(1);
@@ -231,21 +245,22 @@ if (!args.dryRun) {
 
 /**
  * Append entry to both central and app-level logs.
- * App path is constructed as apps/<date>/<appId>/log.jsonl.
- * Central log path is constructed as logs/<YYYY>/<MM>/<DD>.jsonl.
+ * App path is constructed as apps/<appLogDate>/<appId>/log.jsonl.
+ * Central log path is constructed as logs/<YYYY>/<MM>/<DD>.jsonl using centralDate.
  * @param {string} appId - App ID slug
- * @param {string} date - Date in YYYY/MM/DD format
+ * @param {string} centralDate - Date in YYYY/MM/DD format for the central log
+ * @param {string} appLogDate - Date in YYYY/MM/DD format for the app-local log (may differ from centralDate)
  * @param {object} entry - Log entry
  */
-function appendToLogs(appId, date, entry) {
-  const [year, month, day] = date.split('/');
+function appendToLogs(appId, centralDate, appLogDate, entry) {
+  const [year, month, day] = centralDate.split('/');
 
   // Construct and validate the app log path
   const baseAppsDir = path.resolve('apps');
-  const resolvedAppPath = path.resolve(baseAppsDir, date, appId);
+  const resolvedAppPath = path.resolve(baseAppsDir, appLogDate, appId);
   const relative = path.relative(baseAppsDir, resolvedAppPath);
   if (relative.startsWith('..') || path.isAbsolute(relative)) {
-    throw new Error(`Constructed app path escapes apps directory (date: ${date}, appId: ${appId})`);
+    throw new Error(`Constructed app path escapes apps directory (appLogDate: ${appLogDate}, appId: ${appId})`);
   }
 
   // Ensure app-level directory exists
