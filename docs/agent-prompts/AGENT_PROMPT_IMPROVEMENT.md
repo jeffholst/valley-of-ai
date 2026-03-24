@@ -35,10 +35,8 @@ Apply one approved improvement to an existing app. The app already exists — do
 ### Step 0: Prep
 1. Pull latest main.
 2. Get current UTC time: `date -u +"%Y-%m-%dT%H:%M:%SZ"`
-3. Derive `YYYY/MM/DD` from the timestamp (used for log paths — NOT the app's original folder date).
+3. Derive `YYYY/MM/DD` (today's date) from the timestamp — used for the central log path (`logs/YYYY/MM/DD.jsonl`).
 4. Generate `runId` in format: `run-YYYYMMDDTHHMMSSZ-<6-char-hex>`.
-
-> **Note:** The app folder already exists from when it was originally built. You will log under the existing `<app-id>` but the `YYYY/MM/DD` date in log paths is today's date.
 
 ---
 
@@ -61,20 +59,21 @@ Apply one approved improvement to an existing app. The app already exists — do
 
 4. Set `<app-id>` to the slug portion of `targetApp.id` (e.g. `freecell-mobile-classic`).
    Set `<app-path>` to the full `targetApp.id` (e.g. `2026/03/22/freecell-mobile-classic`).
+   Set `<app-date>` to the `YYYY/MM/DD` portion of `targetApp.id` (e.g. `2026/03/22`) — this is the app's **original creation date**, used for the app-local log path.
 
 5. ⚠️ The app folder already exists. Do NOT create a new one. Logging will write to:
-   - `apps/<app-path>/log.jsonl` (appended to, not created fresh)
-   - `logs/YYYY/MM/DD.jsonl` (today's central log)
+   - `apps/<app-path>/log.jsonl` (appended to existing file using `--app-date <app-date>`)
+   - `logs/YYYY/MM/DD.jsonl` (today's central log using `--date YYYY/MM/DD`)
 
 6. Log the transaction start:
    ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
+   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step TRANSACTION_START --status completed --message "Starting improvement pipeline"
    ```
 
 7. Log `SELECT_IMPROVEMENT`:
    ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
+   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step SELECT_IMPROVEMENT --seq 1 --status completed --durationMs <duration> \
      --tokensIn <in> --tokensOut <out> \
      --message "Selected improvement #<issueNumber> for <app-id>"
@@ -82,7 +81,7 @@ Apply one approved improvement to an existing app. The app already exists — do
 
 8. Optionally log reasoning:
    ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category reasoning \
+   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category reasoning \
      --phase SELECT_IMPROVEMENT --message "Why this improvement was chosen" \
      --decision "<brief description of change>" \
      --rationale "Boosted/approved request, clear scope, high user value"
@@ -96,14 +95,14 @@ Apply one approved improvement to an existing app. The app already exists — do
 3. Identify exactly what needs to change to satisfy the improvement description. Scope the change conservatively: **touch only what the issue asks for.** Do not refactor unrelated code.
 4. Log `ANALYZE_APP`:
    ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
+   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step ANALYZE_APP --seq 2 --status completed --durationMs <duration> \
      --tokensIn <in> --tokensOut <out> \
      --message "Analyzed existing app — identified scope of change"
    ```
 5. Optionally log your analysis as a reasoning entry:
    ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category reasoning \
+   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category reasoning \
      --phase ANALYZE_APP --message "Improvement scope analysis" \
      --decision "<what will change>" --alternatives "<other approaches considered>" \
      --rationale "<why this approach minimizes risk to existing functionality>"
@@ -124,7 +123,7 @@ Edit `apps/<app-path>/index.html` to implement the improvement.
 
 Log immediately:
 ```bash
-npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
   --step MODIFY_HTML --seq 3 --status completed --durationMs <duration> \
   --tokensIn <in> --tokensOut <out> \
   --message "Applied improvement: <one-line summary of change>"
@@ -140,13 +139,13 @@ Regenerate `thumbnail.svg` **only if the visual appearance of the app changed** 
 Log immediately (update or skip):
 ```bash
 # If updated:
-npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
   --step UPDATE_THUMBNAIL --seq 4 --status completed --durationMs <duration> \
   --tokensIn <in> --tokensOut <out> \
   --message "Regenerated thumbnail.svg to reflect UI changes"
 
 # If skipped:
-npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
   --step UPDATE_THUMBNAIL --seq 4 --status skipped \
   --message "Thumbnail unchanged — improvement was non-visual"
 ```
@@ -173,7 +172,7 @@ Append an entry to the `improvements` array (create the array if it does not exi
 
 Log immediately:
 ```bash
-npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
   --step UPDATE_META_JSON --seq 5 --status completed --durationMs <duration> \
   --tokensIn <in> --tokensOut <out> \
   --message "Updated meta.json with improvement record"
@@ -210,7 +209,7 @@ If validation fails:
 
 When passed:
 ```bash
-npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
   --step VALIDATE_APP --seq 6 --status completed --durationMs <duration> \
   --message "All validation checks passed"
 ```
@@ -223,7 +222,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 1. Execute: `git checkout -b improve/<app-id>`
    - **Log immediately:**
    ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
+   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step GIT_CHECKOUT_BRANCH --seq 7 --status completed --durationMs <duration> \
      --message "Created improvement branch improve/<app-id>"
    ```
@@ -244,7 +243,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
    - Capture the commit SHA.
    - **Log immediately:**
    ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
+   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step GIT_COMMIT --seq 8 --status completed --durationMs <duration> \
      --message "Committed improvement files (sha: <COMMIT_SHA>)"
    ```
@@ -258,7 +257,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 1. Execute: Push branch: `git push -u origin improve/<app-id>`
    - **Log immediately:**
    ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
+   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step GIT_PUSH --seq 9 --status completed --durationMs <duration> \
      --message "Pushed improvement branch to origin"
    ```
@@ -270,7 +269,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
    PR body should reference the issue (`Closes #<issueNumber>`), describe what changed, and confirm what was preserved.
    - **Log immediately:**
    ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
+   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step CREATE_PR --seq 10 --status completed --durationMs <duration> \
      --message "Created PR #<NUMBER> for improve/<app-id>"
    ```
@@ -278,7 +277,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 3. Execute: Self-review PR — verify only intended files changed, no regressions.
    - **Log immediately:**
    ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
+   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step PR_REVIEW --seq 11 --status completed --durationMs <duration> \
      --message "PR review complete — improvement scoped correctly, no regressions"
    ```
@@ -286,7 +285,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 4. Confirm `data/apps.json` in the PR reflects any meta.json changes correctly.
    - **Log immediately:**
    ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
+   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step UPDATE_REGISTRY --seq 12 --status completed --durationMs <duration> \
      --message "data/apps.json reflects updated meta.json"
    ```
@@ -299,7 +298,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
    If `state` is not `MERGED` after 2–3 minutes, check for failing checks or branch protection rules.
    - **Log immediately after confirmed merge:**
    ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
+   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step MERGE_PR_DEPLOY --seq 13 --status completed --durationMs <duration> \
      --message "PR merged to main and Vercel deployment triggered"
    ```
@@ -314,7 +313,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
    ```
    - **Log immediately:**
    ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
+   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step DELETE_BRANCH --seq 14 --status completed --durationMs <duration> \
      --message "Deleted improvement branch improve/<app-id>"
    ```
@@ -331,7 +330,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 
 2. Log `TRANSACTION_END`:
    ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
+   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step TRANSACTION_END --status success --durationMs <total_duration> \
      --message "Improvement pipeline complete"
    ```
