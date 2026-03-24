@@ -521,7 +521,11 @@ Hand `AGENT_PROMPT_SHARED.md` and `AGENT_PROMPT_NEW_APP.md` to the AI agent. The
 
 ### Starting an improvement run
 
-Hand `AGENT_PROMPT_SHARED.md` and `AGENT_PROMPT_IMPROVEMENT.md` to the AI agent. The agent runs `npm run select:app:improvement` internally and stops automatically if no approved improvements are found.
+Hand `AGENT_PROMPT_SHARED.md` and `AGENT_PROMPT_IMPROVEMENT.md` to the AI agent along with one of:
+
+- **No directive** — agent runs `npm run select:app:improvement` and picks the highest-priority approved issue. Stops automatically if none are found.
+- **An issue number** — agent verifies the issue exists, is labeled `improvement`, and is `status:approved`, then proceeds with it.
+- **A description** — agent creates a new `improvement` + `status:approved` issue from the description, then proceeds with it.
 
 Both prompts drive the full pipeline: branch → build/modify → validate → PR → merge → log.
 
