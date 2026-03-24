@@ -94,7 +94,7 @@ Frontend: Filter by category & display reasoning + checks
 
 ---
 
-## Implementation: npm Script (`scripts/logger.mjs`)
+## Implementation: npm Script (`scripts/logger.js`)
 
 ### Usage Pattern for Agents
 
@@ -147,7 +147,7 @@ npm run log -- \
 ### Logger Script Features
 
 ```javascript
-// scripts/logger.mjs
+// scripts/logger.js
 
 /**
  * USAGE:
@@ -356,7 +356,7 @@ function LogEntry({ entry }) {
 ## Action Items
 
 ### Phase 1: Create Logger Utility (Priority: HIGH)
-- [ ] Create `scripts/logger.mjs` with step/thought/check support
+- [ ] Create `scripts/logger.js` with step/thought/check support
 - [ ] Add `npm run log` script to package.json
 - [ ] Add minimist dependency: `npm install minimist`
 - [ ] Test logger with both app-level and central logs
@@ -487,7 +487,7 @@ npm run log -- --runId run-20260316T000246Z-b6352c --appId memory-sequence \
 
 1. **Review this recommendation** — Does the architecture align with your vision?
 2. **Decide on scope** — Do you want Phase 1+2 first, or add Phase 3 immediately?
-3. **Create `scripts/logger.mjs`** — I can implement this
+3. **Create `scripts/logger.js`** — I can implement this
 4. **Update agent instructions** — Rewrite AGENT_PROMPT.md to use the logger
 5. **Update frontend** — Add thought display components
 

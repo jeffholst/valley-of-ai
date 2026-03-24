@@ -350,10 +350,10 @@ This is useful for documentation-only changes or quick fixes that don't require 
 │
 ├── 🛠️ scripts/            # Build and generation scripts
 │   ├── 📄 generate-apps.js          # Scan apps/ → generate data/apps.json
-│   ├── 📄 sync-public-content.mjs   # Copy apps/ & logs/ → public/ (with placeholder replacement)
+│   ├── 📄 sync-public-content.js    # Copy apps/ & logs/ → public/ (with placeholder replacement)
 │   ├── 📄 validate-apps.js          # Validate app HTML/metadata
 │   ├── 📄 validate-responsive.js    # Test responsive design
-│   ├── 📄 logger.mjs                # Logging CLI (used by `npm run log`)
+│   ├── 📄 logger.js                 # Logging CLI (used by `npm run log`)
 │   ├── 📄 select-app-suggestion.js  # Recommend next new app concept (GitHub issues → vote analysis → category gaps)
 │   ├── 📄 select-app-improvement.js # Recommend highest-priority improvement to an existing app (GitHub issues only)
 │   └── 📄 selection-utils.js        # Pure utility functions shared by both selection scripts (testable, no external deps)

@@ -54,7 +54,7 @@ apps/YYYY/MM/DD/<app-id>/
 ```
 
 Rules:
-- Keep `__PLACEHOLDER__` values **exactly as shown** — `sync-public-content.mjs` replaces them from `.env` at build time. Do not hardcode real values for these.
+- Keep `__PLACEHOLDER__` values **exactly as shown** — `sync-public-content.js` replaces them from `.env` at build time. Do not hardcode real values for these.
 - **Exception:** `voa-app-id` is app-specific. Replace `YYYY/MM/DD/<app-id>` with the actual app path (e.g. `2026/03/21/tetris-classic`).
 - Do not hand-code global header/footer or app-local theme toggle.
 - Shared shell must control header/footer/theme behavior.

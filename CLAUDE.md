@@ -44,7 +44,7 @@ docs/agent-prompts/
   AGENT_PROMPT_IMPROVEMENT.md # 14-step pipeline for applying an improvement to an existing app
 
 scripts/
-  logger.mjs              # CLI logging tool (npm run log)
+  logger.js               # CLI logging tool (npm run log)
   select-app-suggestion.js  # Picks next new app concept
   select-app-improvement.js # Picks next improvement request
   selection-utils.js        # Pure utility functions shared by both selection scripts
@@ -104,7 +104,7 @@ Categories: `pipeline` | `reasoning` | `validation`
 <script src="/apps/shared/app-shell.js" defer></script>
 ```
 
-`__PLACEHOLDER__` values stay literally as-is — `sync-public-content.mjs` replaces them at build time. Replace `App Name` in `application-name` with the actual app name, matching the portion of `<title>` before ` - __MAIN_SITE_NAME__`. Only `voa-app-id` is replaced with the real app path.
+`__PLACEHOLDER__` values stay literally as-is — `sync-public-content.js` replaces them at build time. Replace `App Name` in `application-name` with the actual app name, matching the portion of `<title>` before ` - __MAIN_SITE_NAME__`. Only `voa-app-id` is replaced with the real app path.
 
 ### Theme CSS variables (required in every app)
 ```css

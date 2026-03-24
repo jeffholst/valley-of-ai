@@ -5,7 +5,7 @@ Goal: generate one polished web app with strict step-by-step execution and immed
 ## Hard Rules
 - Build static app only (HTML/CSS/JS), mobile + desktop.
 - Use UTC OS time: `date -u +"%Y-%m-%dT%H:%M:%SZ"`.
-- Keep placeholders unchanged: `__GA_MEASUREMENT_ID__`, `__MAIN_SITE_URL__`, `__MAIN_SITE_NAME__`, `__GITHUB_URL__`, `__SOCIAL_X_URL__`, `__SOCIAL_FACEBOOK_URL__`, `__SOCIAL_INSTAGRAM_URL__`. (Auto-replaced by `sync-public-content.mjs` during build).
+- Keep placeholders unchanged: `__GA_MEASUREMENT_ID__`, `__MAIN_SITE_URL__`, `__MAIN_SITE_NAME__`, `__GITHUB_URL__`, `__SOCIAL_X_URL__`, `__SOCIAL_FACEBOOK_URL__`, `__SOCIAL_INSTAGRAM_URL__`. (Auto-replaced by `sync-public-content.js` during build).
 - Use shared shell. Do not custom global header/footer/theme toggle.
 - Log each step immediately after completion (never batch logs).
 - Do not continue past validation failure.
