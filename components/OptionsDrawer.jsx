@@ -30,6 +30,7 @@ const TOGGLES = [
   { key: 'clouds', label: 'Clouds', icon: '☁️' },
   { key: 'lightning', label: 'Lightning', icon: '⚡' },
   { key: 'sound', label: 'Sound', icon: '🔊' },
+  { key: 'earthquake', label: 'Earthquake', icon: '🌍' },
 ];
 
 /** Range/slider definitions — order here = order in drawer UI (rendered after toggles) */

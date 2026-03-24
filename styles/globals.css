@@ -940,4 +940,35 @@
     86.5% { opacity: 0.4; }
     87%  { opacity: 0; }
   }
+
+  /* ── Earthquake: periodic shake bursts on app cards ──
+     Applied via .earthquake-cards wrapper class on the grid div.
+     Each 6s cycle: all cards shake together for ~2s (0–33%),
+     then rest together for ~4s (33–100%). */
+  @keyframes earthquake-shake {
+    /* Shake burst: 0–33% of cycle (~2s) — intense, high-frequency motion */
+    0%   { transform: translate(0, 0) rotate(0deg); }
+    2%   { transform: translate(-12px, 5px) rotate(-2deg); }
+    4%   { transform: translate(14px, -6px) rotate(2.2deg); }
+    6%   { transform: translate(-10px, 9px) rotate(-1.8deg); }
+    8%   { transform: translate(13px, 4px) rotate(2deg); }
+    10%  { transform: translate(-14px, -6px) rotate(-2.3deg); }
+    12%  { transform: translate(11px, 8px) rotate(1.9deg); }
+    14%  { transform: translate(-13px, -4px) rotate(-2.1deg); }
+    16%  { transform: translate(15px, 6px) rotate(2.4deg); }
+    18%  { transform: translate(-9px, 10px) rotate(-1.8deg); }
+    20%  { transform: translate(12px, -6px) rotate(2deg); }
+    22%  { transform: translate(-14px, 4px) rotate(-2.2deg); }
+    24%  { transform: translate(10px, -8px) rotate(1.9deg); }
+    26%  { transform: translate(-10px, 6px) rotate(-1.6deg); }
+    28%  { transform: translate(7px, -4px) rotate(1.3deg); }
+    30%  { transform: translate(-5px, 3px) rotate(-0.9deg); }
+    /* Settle back and rest for the remaining 67% */
+    33%, 100% { transform: translate(0, 0) rotate(0deg); }
+  }
+
+  .earthquake-cards .card {
+    animation: earthquake-shake 6s linear infinite;
+    will-change: transform;
+  }
 }

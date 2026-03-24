@@ -34,6 +34,7 @@ const DEFAULT_OPTIONS = {
   clouds: false,
   lightning: false,
   sound: false,
+  earthquake: false,
 };
 
 const PTERODACTYL_CONFIG = {
@@ -651,7 +652,7 @@ export default function HomePage() {
 
         {/* Apps Grid */}
         {paginatedApps.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6${options.earthquake ? ' earthquake-cards' : ''}`}>
             {paginatedApps.map((app) => (
               <AppCard key={app.id} app={app} />
             ))}
