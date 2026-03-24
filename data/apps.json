@@ -1,5 +1,41 @@
 [
   {
+    "id": "2026/03/24/foley-scene-mixer",
+    "name": "Foley Scene Mixer",
+    "shortDescription": "Create cinematic soundscapes with tap pads, live mix sliders, and a looping timeline.",
+    "thumbnailUrl": "/apps/2026/03/24/foley-scene-mixer/thumbnail.svg",
+    "createdAt": "2026-03-24T03:17:08Z",
+    "year": 2026,
+    "month": 3,
+    "day": 24,
+    "category": "Entertainment",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "audio",
+      "foley",
+      "cinema",
+      "soundboard",
+      "keyboard",
+      "touch",
+      "responsive"
+    ],
+    "route": "/apps/2026/03/24/foley-scene-mixer",
+    "appPath": "/apps/2026/03/24/foley-scene-mixer/index.html",
+    "generation": {
+      "agentName": "dev",
+      "llmModel": "openai-codex/gpt-5.3-codex",
+      "startTime": "2026-03-24T03:17:08Z",
+      "endTime": "2026-03-24T03:21:00Z",
+      "totalTokensIn": 10000,
+      "totalTokensOut": 5500,
+      "runId": "run-20260324T031708Z-a1b2c3",
+      "notes": "Built from vote-and-category-analysis recommendation with unique audio-pad mechanic in Entertainment category."
+    },
+    "suggestion": null,
+    "improvements": null
+  },
+  {
     "id": "2026/03/24/story-beat-remixer",
     "name": "Story Beat Remixer",
     "shortDescription": "Remix setup, conflict, and twist cards into instant movie plot pitches.",
@@ -31,42 +67,6 @@
       "totalTokensOut": 0,
       "runId": "run-20260324T030343Z-a1b2c3",
       "notes": "Built from vote-and-category-analysis recommendation with a non-arcade entertainment concept focused on remixable story beats."
-    },
-    "suggestion": null,
-    "improvements": null
-  },
-  {
-    "id": "2026/03/24/trailer-tagline-lab",
-    "name": "Trailer Tagline Lab",
-    "shortDescription": "Generate punchy fake movie trailers by remixing genre, tone, and story hook cards.",
-    "thumbnailUrl": "/apps/2026/03/24/trailer-tagline-lab/thumbnail.svg",
-    "createdAt": "2026-03-24T02:53:20Z",
-    "year": 2026,
-    "month": 3,
-    "day": 24,
-    "category": "Entertainment",
-    "inputMode": "responsive",
-    "status": "active",
-    "tags": [
-      "trailer",
-      "generator",
-      "creative",
-      "cinema",
-      "keyboard",
-      "touch",
-      "responsive"
-    ],
-    "route": "/apps/2026/03/24/trailer-tagline-lab",
-    "appPath": "/apps/2026/03/24/trailer-tagline-lab/index.html",
-    "generation": {
-      "agentName": "dev",
-      "llmModel": "openai-codex/gpt-5.3-codex",
-      "startTime": "2026-03-24T02:53:20Z",
-      "endTime": "2026-03-24T02:56:00Z",
-      "totalTokensIn": 0,
-      "totalTokensOut": 0,
-      "runId": "run-20260324T025320Z-bbee61",
-      "notes": "Built from vote-and-category-analysis recommendation with focus on non-saturated entertainment concept."
     },
     "suggestion": null,
     "improvements": null

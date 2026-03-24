@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Foley Scene Mixer - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="voa-app-id" content="2026/03/24/foley-scene-mixer" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #061019;
+        --text: #e5f7ff;
+        --surface: #0f2230;
+        --surface-2: #173447;
+        --accent: #2fd7ff;
+        --accent-2: #ffd166;
+        --ok: #7cf2a0;
+        --warn: #ff6b6b;
+      }
+      [data-theme='light'] {
+        --bg: #f4fbff;
+        --text: #10202e;
+        --surface: #dceffc;
+        --surface-2: #c7e5fa;
+        --accent: #006da5;
+        --accent-2: #b27700;
+        --ok: #167f44;
+        --warn: #b42318;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: radial-gradient(circle at top, #163a52, var(--bg)); color: var(--text); font-family: 'Inter', system-ui, sans-serif; }
+      .app { max-width: 980px; margin: 0 auto; padding: 1rem; display: grid; gap: 1rem; }
+      .panel { background: linear-gradient(170deg, color-mix(in srgb, var(--surface) 85%, black), var(--surface-2)); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); border-radius: 16px; padding: 0.9rem; box-shadow: 0 10px 24px rgb(0 0 0 / 25%); }
+      h1 { margin: 0; font-size: 1.2rem; }
+      .sub { opacity: 0.88; font-size: 0.9rem; margin-top: 0.3rem; }
+      .hud { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; justify-content: space-between; }
+      .meters { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+      .badge { background: color-mix(in srgb, var(--accent) 16%, transparent); border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 999px; padding: 0.35rem 0.6rem; font-weight: 600; font-size: 0.84rem; }
+      .controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55rem; }
+      button, input[type='range'] { min-height: 44px; border-radius: 12px; border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent); background: color-mix(in srgb, var(--surface-2) 70%, black); color: var(--text); }
+      button { font-weight: 700; cursor: pointer; transition: transform 120ms ease, filter 120ms ease; }
+      button:hover { filter: brightness(1.05); }
+      button:active, .pad.active { transform: translateY(1px) scale(0.98); }
+      .pad-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55rem; }
+      .pad { padding: 0.8rem; text-align: left; position: relative; overflow: hidden; }
+      .pad .key { position: absolute; top: 0.4rem; right: 0.5rem; opacity: 0.65; font-size: 0.8rem; }
+      .pad .name { font-size: 0.95rem; font-weight: 700; }
+      .pad .desc { font-size: 0.78rem; opacity: 0.85; }
+      .timeline { height: 70px; border-radius: 12px; background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--accent) 20%, transparent), color-mix(in srgb, var(--accent) 20%, transparent) 1px, transparent 1px, transparent calc(100% / 16)); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); position: relative; overflow: hidden; }
+      .playhead { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--accent-2); box-shadow: 0 0 8px color-mix(in srgb, var(--accent-2) 70%, transparent); }
+      .hit { position: absolute; bottom: 8px; width: 10px; border-radius: 10px; background: var(--ok); box-shadow: 0 0 8px color-mix(in srgb, var(--ok) 70%, transparent); }
+      .mixers { display: grid; gap: 0.5rem; }
+      .row { display: grid; grid-template-columns: 1fr 120px; gap: 0.6rem; align-items: center; }
+      @media (min-width: 760px) { .app { grid-template-columns: 1.2fr 1fr; } .wide { grid-column: 1 / -1; } }
+    </style>
+  </head>
+  <body>
+    <main class="app" id="app">
+      <section class="panel wide">
+        <h1>Foley Scene Mixer</h1>
+        <p class="sub">Tap/click pads or press 1-9. Swipe left/right on pads to cycle scenes.</p>
+        <div class="hud">
+          <div class="meters">
+            <span class="badge" id="sceneLabel">Scene: Rainy Alley</span>
+            <span class="badge" id="loopLabel">Loop: Off</span>
+            <span class="badge" id="pulseLabel">Hits: 0</span>
+          </div>
+          <div class="controls" style="max-width: 360px; width: 100%">
+            <button id="scenePrev" type="button">◀ Scene</button>
+            <button id="loopToggle" type="button">Start Loop</button>
+            <button id="sceneNext" type="button">Scene ▶</button>
+          </div>
+        </div>
+      </section>
+      <section class="panel">
+        <h2 style="margin-top: 0">Sound Pads</h2>
+        <div class="pad-grid" id="padGrid"></div>
+      </section>
+      <section class="panel">
+        <h2 style="margin-top: 0">Mix Controls</h2>
+        <div class="mixers" id="mixerList"></div>
+      </section>
+      <section class="panel wide">
+        <h2 style="margin-top: 0">Loop Timeline</h2>
+        <div class="timeline" id="timeline" aria-label="Loop timeline"></div>
+      </section>
+    </main>
+    <script>
+      const scenes = [
+        { name: 'Rainy Alley', pads: ['Rain', 'Thunder', 'Footsteps', 'Door Creak', 'Neon Buzz', 'Distant Siren', 'Trash Rustle', 'Drip Echo', 'Cat Meow'] },
+        { name: 'Space Bay', pads: ['Airlock', 'Comms Beep', 'Thruster', 'Hologram Ping', 'Metal Clank', 'Drone Flyby', 'Alarm Pulse', 'Control Tap', 'Suit Breath'] },
+        { name: 'Castle Hall', pads: ['Torch Crackle', 'Armor Step', 'Bell Toll', 'Crowd Murmur', 'Drawbridge', 'Goblet Clink', 'Wind Draft', 'Owl Hoot', 'Sword Ring'] }
+      ];
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const sceneLabel = document.getElementById('sceneLabel');
+      const loopLabel = document.getElementById('loopLabel');
+      const pulseLabel = document.getElementById('pulseLabel');
+      const padGrid = document.getElementById('padGrid');
+      const mixerList = document.getElementById('mixerList');
+      const timeline = document.getElementById('timeline');
+      let currentScene = 0;
+      let hitCount = 0;
+      let looping = false;
+      let step = 0;
+      let loopTimer;
+      let loopHits = [];
+      const trackGains = Array.from({ length: 9 }, () => 0.55);
+      let swipeStart = null;
+      function foleyTone(index, velocity = 0.6) {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        const n = audioCtx.createBiquadFilter();
+        const t = audioCtx.currentTime;
+        const base = [90, 120, 150, 180, 220, 260, 300, 340, 380][index];
+        o.frequency.value = base + Math.random() * 25;
+        o.type = ['triangle', 'sawtooth', 'square'][index % 3];
+        n.type = 'bandpass';
+        n.frequency.value = 400 + index * 120;
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(velocity * trackGains[index], t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.22 + index * 0.01);
+        o.connect(n); n.connect(g); g.connect(audioCtx.destination);
+        o.start(t); o.stop(t + 0.28);
+      }
+      function triggerPad(index) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        foleyTone(index, 0.8);
+        hitCount += 1;
+        pulseLabel.textContent = `Hits: ${hitCount}`;
+        const btn = padGrid.children[index];
+        btn.classList.add('active');
+        setTimeout(() => btn.classList.remove('active'), 110);
+        loopHits.push({ track: index, step });
+        drawTimeline();
+      }
+      function buildPads() {
+        padGrid.innerHTML = '';
+        const scene = scenes[currentScene];
+        sceneLabel.textContent = `Scene: ${scene.name}`;
+        scene.pads.forEach((name, i) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'pad';
+          btn.innerHTML = `<span class="key">${i + 1}</span><div class="name">${name}</div><div class="desc">Track ${i + 1}</div>`;
+          btn.addEventListener('pointerdown', () => triggerPad(i));
+          padGrid.appendChild(btn);
+        });
+      }
+      function buildMixers() {
+        mixerList.innerHTML = '';
+        scenes[currentScene].pads.forEach((name, i) => {
+          const row = document.createElement('div');
+          row.className = 'row';
+          row.innerHTML = `<label for="gain-${i}">${name}</label><input id="gain-${i}" type="range" min="0" max="1" step="0.01" value="${trackGains[i]}" />`;
+          row.querySelector('input').addEventListener('input', (e) => { trackGains[i] = Number(e.target.value); });
+          mixerList.appendChild(row);
+        });
+      }
+      function drawTimeline() {
+        timeline.innerHTML = `<div class="playhead" style="left:${(step / 16) * 100}%"></div>`;
+        loopHits.slice(-42).forEach((h) => {
+          const dot = document.createElement('div');
+          dot.className = 'hit';
+          dot.style.left = `${(h.step / 16) * 100}%`;
+          dot.style.height = `${10 + h.track * 4}px`;
+          dot.style.opacity = `${0.4 + h.track / 12}`;
+          timeline.appendChild(dot);
+        });
+      }
+      function toggleLoop() {
+        looping = !looping;
+        loopLabel.textContent = `Loop: ${looping ? 'On' : 'Off'}`;
+        document.getElementById('loopToggle').textContent = looping ? 'Stop Loop' : 'Start Loop';
+        clearInterval(loopTimer);
+        if (!looping) return;
+        loopTimer = setInterval(() => {
+          const hitsOnStep = loopHits.filter((h) => h.step === step).slice(-4);
+          hitsOnStep.forEach((h) => foleyTone(h.track, 0.45));
+          step = (step + 1) % 16;
+          drawTimeline();
+        }, 220);
+      }
+      function moveScene(dir) {
+        currentScene = (currentScene + dir + scenes.length) % scenes.length;
+        loopHits = [];
+        step = 0;
+        buildPads(); buildMixers(); drawTimeline();
+      }
+      document.getElementById('loopToggle').addEventListener('click', toggleLoop);
+      document.getElementById('scenePrev').addEventListener('click', () => moveScene(-1));
+      document.getElementById('sceneNext').addEventListener('click', () => moveScene(1));
+      document.addEventListener('keydown', (e) => {
+        if (e.key >= '1' && e.key <= '9') triggerPad(Number(e.key) - 1);
+        if (e.key === 'ArrowLeft') moveScene(-1);
+        if (e.key === 'ArrowRight') moveScene(1);
+        if (e.key.toLowerCase() === ' ') { e.preventDefault(); toggleLoop(); }
+      });
+      padGrid.addEventListener('pointerdown', (e) => { swipeStart = e.clientX; });
+      padGrid.addEventListener('pointerup', (e) => {
+        if (swipeStart == null) return;
+        const delta = e.clientX - swipeStart;
+        if (Math.abs(delta) > 40) moveScene(delta > 0 ? -1 : 1);
+        swipeStart = null;
+      });
+      buildPads();
+      buildMixers();
+      drawTimeline();
+    </script>
+  </body>
+</html>
