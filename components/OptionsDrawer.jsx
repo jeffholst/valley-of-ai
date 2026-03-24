@@ -8,12 +8,12 @@ import { useEffect, useState } from 'react';
  *
  * Props:
  *   options  — Object with boolean flags for each effect
- *              { pterodactyl, wind, rain, snow, clouds, lightning, sound }
+ *              { pterodactyl, wind, rain, snow, clouds, lightning }
  *   onToggle — Callback: (key: string, value: boolean) => void
  *
  * Each toggle key maps to either:
  *   - A CSS weather layer class in globals.css (rain, snow, wind, clouds, lightning)
- *   - A JS-driven feature in page.jsx (pterodactyl, sound)
+ *   - A JS-driven feature (pterodactyl)
  *
  * To add a new toggle:
  *   1. Add an entry to the TOGGLES array below
@@ -29,7 +29,6 @@ const TOGGLES = [
   { key: 'snow', label: 'Snow', icon: '❄️' },
   { key: 'clouds', label: 'Clouds', icon: '☁️' },
   { key: 'lightning', label: 'Lightning', icon: '⚡' },
-  { key: 'sound', label: 'Sound', icon: '🔊' },
   { key: 'earthquake', label: 'Earthquake', icon: '🌍' },
 ];
 
