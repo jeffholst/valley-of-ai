@@ -41,51 +41,77 @@ Apply one approved improvement to an existing app. The app already exists — do
 ---
 
 ### Step 1: Select improvement
-1. Run the improvement selection script (`scripts/select-app-improvement.js`):
-   ```bash
-   npm run select:app:improvement
-   ```
 
-2. **Check `found` in the output immediately.**
-   - If `"found": false` — **stop. Do not proceed.** There are no approved improvement requests. Exit gracefully. 
-   - If `"found": true` — continue.
+**Determine your entry point — exactly one of the three cases below applies:**
 
-3. From the output, record:
-   - `issueNumber` and `issueUrl` — needed to close the issue in Step 9
-   - `description` — what needs to be changed
-   - `requestor` — who requested it
-   - `targetApp.id` — e.g. `2026/03/22/freecell-mobile-classic`
-   - `targetApp.appPath` — path to `index.html`
+#### Case A — No directive given
+Run the improvement selection script:
+```bash
+npm run select:app:improvement
+```
+- If `"found": false` — **stop. Do not proceed.** State "No approved improvements found" and exit gracefully.
+- If `"found": true` — continue to **Step 1.4**.
 
-4. Set `<app-id>` to the slug portion of `targetApp.id` (e.g. `freecell-mobile-classic`).
-   Set `<app-path>` to the full `targetApp.id` (e.g. `2026/03/22/freecell-mobile-classic`).
-   Set `<app-date>` to the `YYYY/MM/DD` portion of `targetApp.id` (e.g. `2026/03/22`) — this is the app's **original creation date**, used for the app-local log path.
+#### Case B — Issue number given
+Verify the issue exists and is approved:
+```bash
+gh issue view <number> --json number,title,body,labels,state
+```
+Check all three:
+1. `state` is `OPEN`
+2. Labels include `improvement`
+3. Labels include `status:approved`
 
-5. ⚠️ The app folder already exists. Do NOT create a new one. Logging will write to:
-   - `apps/<app-path>/log.jsonl` (appended to existing file using `--app-date <app-date>`)
-   - `logs/YYYY/MM/DD.jsonl` (today's central log using `--date YYYY/MM/DD`)
+If all pass — continue to **Step 1.4**.
+If any fail — **stop.** State why: issue not found, not labeled `improvement`, or not `status:approved`.
 
-6. Log the transaction start:
-   ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
-     --step TRANSACTION_START --status completed --message "Starting improvement pipeline"
-   ```
+#### Case C — Improvement description given directly
+Create a GitHub issue:
+```bash
+gh issue create \
+  --title "Improvement [<app-path>]: <one-line description>" \
+  --body "**App:** [<App Name>](https://www.valleyofai.com/apps/<app-path>)\n\n<full description>" \
+  --label "improvement" --label "status:approved"
+```
+Record the issue number. Then run `npm run select:app:improvement` to confirm it is picked up and extract `targetApp`.
 
-7. Log `SELECT_IMPROVEMENT`:
-   ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
-     --step SELECT_IMPROVEMENT --seq 1 --status completed --durationMs <duration> \
-     --tokensIn <in> --tokensOut <out> \
-     --message "Selected improvement #<issueNumber> for <app-id>"
-   ```
+#### Step 1.4 — Common continuation (all cases)
+From the selected issue, record:
+- `issueNumber` and `issueUrl` — needed to close the issue in Step 9
+- `description` — what needs to be changed
+- `requestor` — who requested it
+- `targetApp.id` — e.g. `2026/03/22/freecell-mobile-classic`
+- `targetApp.appPath` — path to `index.html`
 
-8. Optionally log reasoning:
-   ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category reasoning \
-     --phase SELECT_IMPROVEMENT --message "Why this improvement was chosen" \
-     --decision "<brief description of change>" \
-     --rationale "Boosted/approved request, clear scope, high user value"
-   ```
+Set `<app-id>` to the slug portion of `targetApp.id` (e.g. `freecell-mobile-classic`).
+Set `<app-path>` to the full `targetApp.id` (e.g. `2026/03/22/freecell-mobile-classic`).
+Set `<app-date>` to the `YYYY/MM/DD` portion of `targetApp.id` (e.g. `2026/03/22`) — this is the app's **original creation date**, used for the app-local log path.
+
+⚠️ The app folder already exists. Do NOT create a new one. Logging will write to:
+- `apps/<app-path>/log.jsonl` (appended to existing file using `--app-date <app-date>`)
+- `logs/YYYY/MM/DD.jsonl` (today's central log using `--date YYYY/MM/DD`)
+
+Log the transaction start:
+```bash
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
+  --step TRANSACTION_START --status started --message "Starting improvement pipeline"
+```
+
+Log `SELECT_IMPROVEMENT`:
+```bash
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
+  --step SELECT_IMPROVEMENT --seq 1 --status completed --durationMs <duration> \
+  --tokensIn <in> --tokensOut <out> \
+  --message "Selected improvement #<issueNumber> for <app-id>"
+```
+
+Optionally log reasoning:
+```bash
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category reasoning \
+  --phase SELECT_IMPROVEMENT --message "Why this improvement was chosen" \
+  --decision "<brief description of change>" \
+  --rationale "Boosted/approved request, clear scope, high user value"
+```
 
 ---
 
@@ -231,11 +257,13 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
    ```bash
    # Always include:
    git add apps/<app-path>/index.html \
-           apps/<app-path>/meta.json \
-           data/apps.json
+           apps/<app-path>/meta.json
 
-   # Only if thumbnail was updated:
+   # Only if thumbnail was updated in Step 4:
    git add apps/<app-path>/thumbnail.svg
+
+   # Only if data/apps.json changed (generate:apps doesn't always update it):
+   git diff --quiet data/apps.json || git add data/apps.json
 
    git commit -m "improve: <app-id> — <one-line description of change> [skip deploy]"
    ```
@@ -291,6 +319,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
    ```
 
 5. Execute: Merge PR with squash: `gh pr merge <pr-number> --squash --auto`
+   - ⚠️ `--auto` produces no output on success. The status check below is **mandatory** — do not skip it.
    - Confirm merge:
    ```bash
    gh pr view <pr-number> --json state,mergeStateStatus
