@@ -11,6 +11,8 @@ let mockConstructEvent;
 beforeEach(() => {
   process.env.STRIPE_SECRET_KEY = 'sk_test_fake';
   process.env.STRIPE_WEBHOOK_SECRET = 'whsec_fake';
+  process.env.GITHUB_REPO = 'owner/repo';
+  process.env.GITHUB_SUGGESTIONS_TOKEN = 'github-token';
   global.fetch = jest.fn();
   mockConstructEvent = jest.fn();
   Stripe.mockImplementation(() => ({
@@ -21,6 +23,8 @@ beforeEach(() => {
 afterEach(() => {
   delete process.env.STRIPE_SECRET_KEY;
   delete process.env.STRIPE_WEBHOOK_SECRET;
+  delete process.env.GITHUB_REPO;
+  delete process.env.GITHUB_SUGGESTIONS_TOKEN;
   jest.clearAllMocks();
 });
 
