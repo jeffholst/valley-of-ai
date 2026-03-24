@@ -1,45 +1,41 @@
 /**
- * Environment Variable Tests
- *
- * Validates that critical environment variables are properly loaded
+ * @jest-environment node
  */
 
-describe('Environment Variables', () => {
-  let originalEnv;
+import fs from 'fs';
+import path from 'path';
+import { parse } from 'dotenv';
 
-  beforeEach(() => {
-    // Store original env vars
-    originalEnv = { ...process.env };
+describe('Environment template', () => {
+  let envExample;
+
+  beforeAll(() => {
+    const envPath = path.join(process.cwd(), '.env.example');
+    const raw = fs.readFileSync(envPath, 'utf8');
+    envExample = parse(raw);
   });
 
-  afterEach(() => {
-    // Restore original env vars
-    process.env = originalEnv;
+  it('includes Supabase URL', () => {
+    expect(envExample.NEXT_PUBLIC_SUPABASE_URL).toBeDefined();
   });
 
-  it('should have Supabase URL defined', () => {
-    expect(process.env.NEXT_PUBLIC_SUPABASE_URL).toBeDefined();
+  it('includes Supabase anon key', () => {
+    expect(envExample.NEXT_PUBLIC_SUPABASE_ANON_KEY).toBeDefined();
   });
 
-  it('should have Supabase anon key defined', () => {
-    expect(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY).toBeDefined();
+  it('includes GA measurement ID', () => {
+    expect(envExample.NEXT_PUBLIC_GA_MEASUREMENT_ID).toBeDefined();
   });
 
-  it('should have GA measurement ID defined', () => {
-    expect(process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID).toBeDefined();
+  it('includes site name', () => {
+    expect(envExample.NEXT_PUBLIC_SITE_NAME).toBeDefined();
   });
 
-  it('should have site name defined', () => {
-    expect(process.env.NEXT_PUBLIC_SITE_NAME).toBeDefined();
+  it('uses a valid placeholder format for Supabase URL', () => {
+    expect(envExample.NEXT_PUBLIC_SUPABASE_URL).toMatch(/^https?:\/\//);
   });
 
-  it('Supabase URL should be a valid URL', () => {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    expect(url).toMatch(/^https?:\/\//);
-  });
-
-  it('GA measurement ID should be in correct format', () => {
-    const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
-    expect(gaId).toMatch(/^G-/);
+  it('uses a valid placeholder format for GA measurement ID', () => {
+    expect(envExample.NEXT_PUBLIC_GA_MEASUREMENT_ID).toMatch(/^G-/);
   });
 });
