@@ -468,7 +468,7 @@ The remaining `app/page.jsx` should orchestrate these pieces and hold minimal st
 | M-8 | Add server-side vote deduplication             | 🔲 todo |
 | M-9 | Fix `npm run format` scope                     | 🔲 todo |
 | L-1 | Add TypeScript (incremental migration)         | 🔲 todo |
-| L-2 | Clean up legacy docs                           | 🔲 todo |
+| L-2 | Clean up legacy docs                           | ✅ done |
 | L-3 | Add pre-commit hook with lint-staged           | ✅ done |
 | L-4 | Add responsive header nav menu                 | ✅ done |
 | L-5 | Standardize script file extensions             | ✅ done |

@@ -1,6 +1,7 @@
 ## Theme Implementation Requirements
 
 ### 1. **App Shell Integration**
+
 - **Mandatory**: Include the shared app shell script in the HTML head:
   ```html
   <script src="/apps/shared/app-shell.js" defer></script>
@@ -8,24 +9,25 @@
 - This provides automatic theme toggling, header injection, and consistent navigation.
 
 ### 2. **CSS Custom Properties (Variables)**
+
 Define theme variables using CSS custom properties with the following structure:
 
 ```css
 :root {
   /* Dark theme defaults */
-  --bg: #0b1324;           /* Main background */
-  --surface: #17233b;      /* Card/surface backgrounds */
+  --bg: #0b1324; /* Main background */
+  --surface: #17233b; /* Card/surface backgrounds */
   --surface-soft: #203251; /* Secondary surfaces */
-  --text: #e6f4ea;         /* Primary text color */
-  --text-dim: #97b3a1;     /* Muted/secondary text */
-  --accent: #4ade80;       /* Primary accent color */
-  --accent-2: #22c55e;     /* Secondary accent */
-  --danger: #fb7185;       /* Error/danger color */
-  --ring-bg: #2a3b5f;      /* Input ring backgrounds */
+  --text: #e6f4ea; /* Primary text color */
+  --text-dim: #97b3a1; /* Muted/secondary text */
+  --accent: #4ade80; /* Primary accent color */
+  --accent-2: #22c55e; /* Secondary accent */
+  --danger: #fb7185; /* Error/danger color */
+  --ring-bg: #2a3b5f; /* Input ring backgrounds */
   --shadow: rgba(0, 0, 0, 0.35); /* Shadow color with alpha */
 }
 
-[data-theme="light"] {
+[data-theme='light'] {
   /* Light theme overrides */
   --bg: #f3faf6;
   --surface: #ffffff;
@@ -41,6 +43,7 @@ Define theme variables using CSS custom properties with the following structure:
 ```
 
 ### 3. **Variable Usage Guidelines**
+
 - **Always use CSS variables** instead of hardcoded colors
 - **Use semantic variable names** that describe purpose, not appearance
 - **Leverage color-mix()** for transparency effects:
@@ -56,26 +59,30 @@ Define theme variables using CSS custom properties with the following structure:
   - `--shadow`
 
 ### 4. **HTML Structure Requirements**
+
 - **Include required meta tags**:
   ```html
-  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
-  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
-  <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
-  <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">
-  <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+  <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+  <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+  <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
   ```
 - **Include Google Analytics** (if applicable):
   ```html
   <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() {
+      dataLayer.push(arguments);
+    }
     gtag('js', new Date());
     gtag('config', '__GA_MEASUREMENT_ID__');
   </script>
   ```
 
 ### 5. **Layout and Styling Standards**
+
 - **Body styling**: Use grid centering with theme variables:
   ```css
   body {
@@ -84,7 +91,11 @@ Define theme variables using CSS custom properties with the following structure:
     display: grid;
     place-items: center;
     padding: 16px;
-    font-family: Inter, system-ui, -apple-system, sans-serif;
+    font-family:
+      Inter,
+      system-ui,
+      -apple-system,
+      sans-serif;
     background: radial-gradient(1000px 700px at 20% 20%, var(--bg2), var(--bg));
     color: var(--text);
   }
@@ -102,12 +113,14 @@ Define theme variables using CSS custom properties with the following structure:
 - **Button styling**: Gradient backgrounds with theme integration
 
 ### 6. **Theme Toggle Behavior**
+
 - The app shell automatically injects a theme toggle button in the header
 - Users can switch between light/dark modes
 - Preference is saved in localStorage
 - No manual theme toggle implementation needed in individual apps
 
 ### 7. **User theme preference**
+
 The light/dark theme preference is stored in localStorage using the following mechanism:
 
 ## Storage Details
@@ -119,14 +132,16 @@ The light/dark theme preference is stored in localStorage using the following me
 ## Implementation Logic
 
 #### 1. **Storage**: When a user toggles the theme, the preference is immediately saved:
-   ```javascript
-   localStorage.setItem('theme', 'light'); // or 'dark'
-   ```
+
+```javascript
+localStorage.setItem('theme', 'light'); // or 'dark'
+```
 
 #### 2. **Retrieval Priority**: On page load, the theme is determined in this order:
-   - First: Check existing `data-theme` attribute on `<html>` element
-   - Second: Check localStorage for the `'theme'` key
-   - Fallback: Default to `'light'` if neither exists
+
+- First: Check existing `data-theme` attribute on `<html>` element
+- Second: Check localStorage for the `'theme'` key
+- Fallback: Default to `'light'` if neither exists
 
 #### 3. **Persistence**: The preference persists across browser sessions and site visits, allowing users to maintain their chosen theme across all Valley of AI apps.
 
@@ -135,13 +150,16 @@ The light/dark theme preference is stored in localStorage using the following me
 This ensures a consistent, user-controlled theming experience across the entire Valley of AI application ecosystem.
 
 ### 8. **Accessibility and Performance**
+
 - Ensure sufficient contrast ratios between `--text` and `--bg`
 - Use semantic color variables that adapt appropriately
 - Avoid hardcoded colors that don't respect theme changes
 - Test both light and dark modes during development
 
 ### 9. **Validation Checklist**
+
 Before submitting an app, verify:
+
 - [ ] App shell script is included and loading
 - [ ] All colors use CSS variables
 - [ ] Light and dark themes look appropriate

@@ -3,6 +3,7 @@
 ## Current State Assessment
 
 ### What's Working Well ✅
+
 1. **Centralized Log Storage** — All transactions logged to `/logs/YYYY/MM/DD.jsonl`
 2. **App-Level Tracking** — Logs copied to each app's folder (`apps/YYYY/MM/DD/<app-id>/log.jsonl`)
 3. **Frontend Dashboard** — `/logs` page displays transactions with filtering, status tracking, token counts
@@ -10,6 +11,7 @@
 5. **Transaction Grouping** — Logs grouped by `runId` for cohesive agent runs
 
 ### Current Limitations ❌
+
 1. **No Thought Process Capture** — Agent reasoning/decisions not logged, only structured STEPs
 2. **Manual Logging** — Agent must remember to log via echo commands (error-prone, already missing logs in memory-sequence)
 3. **No Logging Abstraction** — Agents figure out timestamps, runId, JSON formatting themselves
@@ -47,7 +49,7 @@ Frontend: Filter by category & display reasoning + checks
   "category": "pipeline|reasoning|validation",
   "message": "Human-readable description",
   "phase": "GENERATE_HTML",
-  
+
   "pipeline": {
     "step": "GENERATE_HTML",
     "seq": 3,
@@ -56,13 +58,13 @@ Frontend: Filter by category & display reasoning + checks
     "tokensIn": 3000,
     "tokensOut": 2500
   },
-  
+
   "reasoning": {
     "decision": "2x2-grid",
     "alternatives": ["3x3-grid", "responsive-grid"],
     "rationale": "Better thumb reach on mobile, adequate difficulty"
   },
-  
+
   "validation": {
     "checkType": "file-exists|schema-valid|test-pass",
     "name": "index.html structure",
@@ -73,6 +75,7 @@ Frontend: Filter by category & display reasoning + checks
 ```
 
 **Field Rules:**
+
 - `timestamp`, `runId`, `appId`, `category`, `message` — always present
 - `phase` — present for pipeline steps and reasoning entries (optional for validation)
 - `pipeline` object — populated only when `category === "pipeline"` (includes step, seq, status, durationMs, tokens)
@@ -81,11 +84,13 @@ Frontend: Filter by category & display reasoning + checks
 - `seq` (sequence number) — **pipeline entries only** (helps with progress tracking: "step 3 of 13")
 
 **Rationale for optional/category-specific fields:**
+
 - Timestamps provide ordering for all entries
 - Only pipeline steps benefit from seq numbering for progress visualization
 - Reasoning and validation entries don't fit sequential numbering scheme
 
 **Benefits:**
+
 - Single schema to parse, store, and validate
 - All fields optional depending on `category`
 - Future-proof — add new categories without schema migration
@@ -99,6 +104,7 @@ Frontend: Filter by category & display reasoning + checks
 ### Usage Pattern for Agents
 
 **Before (current — error-prone):**
+
 ```bash
 echo '{"timestamp":"...","runId":"...","type":"STEP",...}' >> apps/YYYY/MM/DD/<app-id>/log.jsonl
 ```
@@ -106,6 +112,7 @@ echo '{"timestamp":"...","runId":"...","type":"STEP",...}' >> apps/YYYY/MM/DD/<a
 **After (unified single pattern):**
 
 **Log a pipeline step (seq for progress tracking):**
+
 ```bash
 npm run log -- \
   --runId run-20260316T000246Z-b6352c \
@@ -120,6 +127,7 @@ npm run log -- \
 ```
 
 **Log a reasoning decision (no seq needed):**
+
 ```bash
 npm run log -- \
   --runId run-20260316T000246Z-b6352c \
@@ -133,6 +141,7 @@ npm run log -- \
 ```
 
 **Log a validation check (no seq needed):**
+
 ```bash
 npm run log -- \
   --runId run-20260316T000246Z-b6352c \
@@ -242,7 +251,7 @@ if (args.category === 'pipeline') {
 } else if (args.category === 'reasoning') {
   entry.reasoning = {
     decision: args.decision || null,
-    alternatives: args.alternatives ? args.alternatives.split(',').map(a => a.trim()) : [],
+    alternatives: args.alternatives ? args.alternatives.split(',').map((a) => a.trim()) : [],
     rationale: args.rationale || null,
   };
 } else if (args.category === 'validation') {
@@ -271,12 +280,14 @@ console.log(JSON.stringify(entry));
 ### New Components
 
 **LogDetailModal** — Expanded view showing:
+
 - **Timeline** of pipeline entries with durations
 - **Reasoning Sidebar** — Decisions & rationale grouped by phase
 - **Validation Results** — Check status indicators (green/red/yellow)
 - **Error Recovery** — If step failed, shows reasoning recovery path
 
 **Example UI:**
+
 ```
 📊 Generate HTML (Step 3)
 ├─ Duration: 15.0s | ↓3k tokens | ↑2.5k tokens
@@ -299,6 +310,7 @@ console.log(JSON.stringify(entry));
 ### Updated `/app/logs/page.jsx`
 
 Add unified entry-type filter:
+
 ```jsx
 // Show different log categories in same timeline
 <select value={categoryFilter}>
@@ -310,6 +322,7 @@ Add unified entry-type filter:
 ```
 
 Add collapsible "Reasoning" section in StepRow:
+
 ```jsx
 function LogEntry({ entry }) {
   return (
@@ -342,7 +355,9 @@ function LogEntry({ entry }) {
       )}
 
       {entry.category === 'validation' && (
-        <div className={`text-xs mt-1 ${entry.validation.result === 'PASS' ? 'text-green-600' : 'text-red-600'}`}>
+        <div
+          className={`text-xs mt-1 ${entry.validation.result === 'PASS' ? 'text-green-600' : 'text-red-600'}`}
+        >
           {entry.validation.result} • {entry.validation.checkType}
         </div>
       )}
@@ -356,6 +371,7 @@ function LogEntry({ entry }) {
 ## Action Items
 
 ### Phase 1: Create Logger Utility (Priority: HIGH)
+
 - [ ] Create `scripts/logger.js` with step/thought/check support
 - [ ] Add `npm run log` script to package.json
 - [ ] Add minimist dependency: `npm install minimist`
@@ -363,7 +379,8 @@ function LogEntry({ entry }) {
 - [ ] Update AGENT_PROMPT.md to use `npm run log` instead of echo
 
 ### Phase 2: Enhance Agent Instructions (Priority: HIGH)
-- [ ] Update both AGENT_PROMPT.md and AGENT_PROMPT_ULTRA_COMPACT.md
+
+- [ ] Update the active prompt docs and, if needed, the archived `docs/agent-prompts/archive/AGENT_PROMPT_ULTRA_COMPACT.md`
 - [ ] Replace manual echo commands with `npm run log` calls
 - [ ] Add THOUGHT logging at key decision points:
   - After research (why this app concept over alternatives?)
@@ -372,6 +389,7 @@ function LogEntry({ entry }) {
 - [ ] Add CHECK logging for all validation steps
 
 ### Phase 3: Frontend Display (Priority: MEDIUM)
+
 - [ ] Update `/app/logs/page.jsx` to parse and display THOUGHT entries
 - [ ] Add "Reasoning" collapsible section to TransactionCard
 - [ ] Create ThoughtEntry component with category badges
@@ -379,6 +397,7 @@ function LogEntry({ entry }) {
 - [ ] Update StepRow to link to related thoughts
 
 ### Phase 4: Documentation (Priority: MEDIUM)
+
 - [ ] Create `docs/LOGGING_GUIDE.md` for agent developers
 - [ ] Show examples of good thought process logging
 - [ ] Document best practices (when to log thoughts, what level of detail)
@@ -389,18 +408,21 @@ function LogEntry({ entry }) {
 ## Benefits
 
 ### For Agents
+
 ✅ **Simplicity** — Single `npm run log` call instead of building JSON manually
 ✅ **Consistency** — Timestamps, formatting, file paths auto-handled
 ✅ **Auditability** — Thoughts captured alongside transactions
 ✅ **Debugging** — Reason chains help identify where decisions went wrong
 
 ### For Visitors
+
 ✅ **Transparency** — See not just what happened, but why
 ✅ **Learning** — Understand agent decision-making process
 ✅ **Trust** — See alternative paths considered & why rejected
 ✅ **Debugging** — Pinpoint where reasoning diverged from intention
 
 ### For Project
+
 ✅ **Featured Logging** — Makes logs a showcase, not a footnote
 ✅ **Better Audit Trail** — Complete transaction + reasoning history
 ✅ **Pattern Recognition** — See recurring patterns in successful/failed runs

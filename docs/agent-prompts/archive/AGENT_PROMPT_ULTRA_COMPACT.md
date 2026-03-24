@@ -3,6 +3,7 @@
 Goal: generate one polished web app with strict step-by-step execution and immediate logging.
 
 ## Hard Rules
+
 - Build static app only (HTML/CSS/JS), mobile + desktop.
 - Use UTC OS time: `date -u +"%Y-%m-%dT%H:%M:%SZ"`.
 - Keep placeholders unchanged: `__GA_MEASUREMENT_ID__`, `__MAIN_SITE_URL__`, `__MAIN_SITE_NAME__`, `__GITHUB_URL__`, `__SOCIAL_X_URL__`, `__SOCIAL_FACEBOOK_URL__`, `__SOCIAL_INSTAGRAM_URL__`. (Auto-replaced by `sync-public-content.js` during build).
@@ -11,6 +12,7 @@ Goal: generate one polished web app with strict step-by-step execution and immed
 - Do not continue past validation failure.
 
 ## Required Output Paths
+
 - App dir: `apps/YYYY/MM/DD/<app-id>/`
 - App log file: `apps/YYYY/MM/DD/<app-id>/log.jsonl`
 - Central daily log file: `logs/YYYY/MM/DD.jsonl`
@@ -21,28 +23,34 @@ Goal: generate one polished web app with strict step-by-step execution and immed
   - `meta.json`
 
 ## Required `index.html` Contracts
+
 - Title format:
   - `<title>App Name - __MAIN_SITE_NAME__</title>`
 - Include GA snippet with `__GA_MEASUREMENT_ID__`.
 - Include shared shell tags:
+
 ```html
-<meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
-<meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
-<meta name="voa-github-url" content="__GITHUB_URL__">
-<meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
-<meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">
-<meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
+<meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+<meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+<meta name="voa-github-url" content="__GITHUB_URL__" />
+<meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+<meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+<meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
 <script src="/apps/shared/app-shell.js" defer></script>
 ```
+
 - Use theme variables with light/dark support via shared theme key.
 
 ## Required `meta.json` Fields
+
 - `id`, `name`, `shortDescription`, `thumbnail`, `createdAt`, `category`, `status`, `tags`, `homepagePath`, `inputMode`, `generation`
 - `generation` must include:
   - `agentName`, `llmModel`, `startTime`, `endTime`, `totalTokensIn`, `totalTokensOut`, `runId`, `notes`
 
 ## Logging Contract
+
 **⚠️ CRITICAL: REAL-TIME LOGGING (DO NOT SKIP)**
+
 - Every `npm run log` call automatically writes to BOTH:
   - `apps/YYYY/MM/DD/<app-id>/log.jsonl`
   - `logs/YYYY/MM/DD.jsonl`
@@ -55,14 +63,17 @@ Goal: generate one polished web app with strict step-by-step execution and immed
 - Failure consequence: Missing logs = broken pipeline audit trail
 
 Transaction format:
+
 1. `TRANSACTION_START`
 2. `STEP` entries (must log all 14)
 3. `TRANSACTION_END`
 
 Run id format:
+
 - `run-YYYYMMDDTHHMMSSZ-xxxxxx`
 
 Step order and sequence numbers:
+
 1. `SELECT_SUGGESTION`
 2. `RESEARCH_IDEAS`
 3. `GENERATE_HTML`
@@ -79,20 +90,25 @@ Step order and sequence numbers:
 14. `DELETE_BRANCH`
 
 Status values:
+
 - `started`, `in_progress`, `completed`, `failed`, `retrying`, `skipped`, `cancelled`
 
 If failure occurs:
+
 - log `failed` with error object `{code,message,retryable}`
 - fix, log `retrying`, then log completion
 
 ## Execute Exactly in Order
+
 0. Prep
+
 - Pull latest main.
 - Fetch UTC time: `date -u +"%Y-%m-%dT%H:%M:%SZ"`
 - Derive `YYYY/MM/DD` and generate `runId`.
 - **Do NOT create the app folder yet** — `<app-id>` is unknown until step 1.
 
 1. Select concept
+
 - Review `data/apps.json` to check the current app registry and avoid starting a duplicate or near-duplicate app.
 - Check existing apps in `/apps` and review suggestions files if present.
 - Pick non-duplicate app. Derive `<app-id>` as a kebab-case slug (e.g., `color-match-blitz`).
@@ -102,6 +118,7 @@ If failure occurs:
   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
     --step TRANSACTION_START --status completed --message "Starting app generation pipeline"
   ```
+
   - These files are committed in step 9 after the pipeline completes.
 - Log `SELECT_SUGGESTION`:
   ```bash
@@ -118,6 +135,7 @@ If failure occurs:
   ```
 
 2. Research
+
 - Capture 2-3 inspirations + one unique angle.
 - Log with:
   ```bash
@@ -134,7 +152,8 @@ If failure occurs:
   ```
 
 3. Build app
-Generate `index.html` with required contracts, touch/keyboard support, and favicon.
+   Generate `index.html` with required contracts, touch/keyboard support, and favicon.
+
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
   --step GENERATE_HTML --seq 3 --status completed --durationMs <duration> \
@@ -143,7 +162,8 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 ```
 
 4. Thumbnail
-Generate `thumbnail.svg` (viewBox="0 0 800 450") matching the app's UI, colors, and state.
+   Generate `thumbnail.svg` (viewBox="0 0 800 450") matching the app's UI, colors, and state.
+
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
   --step GENERATE_THUMBNAIL --seq 4 --status completed --durationMs <duration> \
@@ -152,7 +172,8 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 ```
 
 5. Metadata
-Generate `meta.json` with all required fields and accurate generation timing/token counts.
+   Generate `meta.json` with all required fields and accurate generation timing/token counts.
+
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
   --step CREATE_META_JSON --seq 5 --status completed --durationMs <duration> \
@@ -163,7 +184,9 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 6. Validate (blocking)
 
 ### Functional Testing
+
 Before continuing confirm:
+
 - App runs without errors.
 - Shared shell header/footer visible.
 - Dark/light theme works.
@@ -173,6 +196,7 @@ Before continuing confirm:
 - Thumbnail matches app UI.
 
 Run (in order):
+
 - `npm run validate:apps` — confirms all required app files exist, metadata is valid, and committed `data/apps.json` is synchronized
 - `npm run lint:fix` — auto-fix any lint issues first
 - `npm run format` — apply Prettier formatting (100-char, single quotes, 2-space indentation)
@@ -185,24 +209,27 @@ Run (in order):
 > **Git requirement:** Do not stage or commit `data/apps.json` during step 6. Update it in step 8 by running `npm run generate:apps`, then commit `data/apps.json` explicitly.
 
 If validation fails:
+
 - fix issues,
 - log failed/retrying/completed statuses accordingly,
 - do not continue until passing.
 
 When passed, log validation checks and pipeline step:
+
 ```bash
 # Example validation check
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category validation \
   --checkType "test-pass" --name "npm test" --result PASS \
   --message "All test suites passing"
 
-# Pipeline step completion  
+# Pipeline step completion
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
   --step VALIDATE_APP --seq 6 --status completed --durationMs <duration> \
   --message "All validation checks passed"
 ```
 
 7. Git branch + commit (app files only)
+
 - Execute: `git checkout -b feat/<app-id>`
   - **LOG IMMEDIATELY:**
   ```bash
@@ -217,6 +244,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
           apps/YYYY/MM/DD/<app-id>/meta.json
   git commit -m "feat: add <app-id>"
   ```
+
   - Capture the commit SHA from the output.
   - **LOG IMMEDIATELY:**
   ```bash
@@ -224,9 +252,11 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
     --step GIT_COMMIT --seq 8 --status completed --durationMs <duration> \
     --message "Committed app files (sha: <COMMIT_SHA>)"
   ```
+
   - **Do NOT commit `apps/YYYY/MM/DD/<app-id>/log.jsonl` or `logs/YYYY/MM/DD.jsonl` yet** — both will be finalized and committed in step 9 after all pipeline transactions complete.
 
 8. PR flow + Merge (seq 9-14)
+
 - Execute: `git push origin feat/<app-id>`
   - **LOG IMMEDIATELY:**
   ```bash
@@ -255,6 +285,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
   git commit -m "chore: update app registry for <app-id> [skip deploy]"
   git push
   ```
+
   - Use `git add data/apps.json` explicitly — NOT `git add -A`. `log.jsonl` is still being written and must not be staged until step 9.
   - **LOG IMMEDIATELY:**
   ```bash
@@ -288,6 +319,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
   ```
 
 9. Finalize transaction log and commit (finalization)
+
 - Log TRANSACTION_END:
   ```bash
   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
@@ -300,6 +332,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
   git commit -m "chore: finalize transaction logs for <app-id> [skip deploy]"
   git push origin main
   ```
+
   - **MUST include `[skip deploy]` in commit message** — prevents unnecessary Vercel redeploy (log files are metadata only, app is already deployed as part of Step 13 MERGE_PR_DEPLOY).
   - **CRITICAL:** Both files MUST be committed together:
     - `apps/YYYY/MM/DD/<app-id>/log.jsonl` — app-local transaction record

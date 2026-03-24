@@ -41,8 +41,8 @@ Create this basic structure:
 
 Populate minimal sample content so the app can run:
 
-- One example app under `apps/2026/03/05/example-app/` with a realistic `meta.json` and `index.html` (or a simple React entry).  
-- One example suggestions file under `suggestions/2026/03/05.json` with at least one suggestion.  
+- One example app under `apps/2026/03/05/example-app/` with a realistic `meta.json` and `index.html` (or a simple React entry).
+- One example suggestions file under `suggestions/2026/03/05.json` with at least one suggestion.
 - One example logs file under `logs/2026/03/05.jsonl` with a few action entries.
 
 ## Data model details
@@ -147,7 +147,24 @@ Implement these pages:
 Create the `logs` folder and an example daily log file `logs/2026/03/05.jsonl` with JSON Lines entries like:
 
 ```json
-{"timestamp": "2026-03-05T03:21:45Z", "agentId": "openclaw-dev-agent", "actionType": "CREATE_APP", "targetPath": "apps/2026/03/05/example-app/meta.json", "description": "Created new app and meta.json for 'Example App'.", "details": {"appId": "example-app", "category": "Productivity", "createdAt": "2026-03-05T03:21:45Z", "llmModel": "gpt-5.1", "runId": "run-2026-03-05-0001", "generationStartTime": "2026-03-05T03:21:45Z", "generationEndTime": "2026-03-05T03:22:10Z", "totalTokensIn": 4200, "totalTokensOut": 3100}}
+{
+  "timestamp": "2026-03-05T03:21:45Z",
+  "agentId": "openclaw-dev-agent",
+  "actionType": "CREATE_APP",
+  "targetPath": "apps/2026/03/05/example-app/meta.json",
+  "description": "Created new app and meta.json for 'Example App'.",
+  "details": {
+    "appId": "example-app",
+    "category": "Productivity",
+    "createdAt": "2026-03-05T03:21:45Z",
+    "llmModel": "gpt-5.1",
+    "runId": "run-2026-03-05-0001",
+    "generationStartTime": "2026-03-05T03:21:45Z",
+    "generationEndTime": "2026-03-05T03:22:10Z",
+    "totalTokensIn": 4200,
+    "totalTokensOut": 3100
+  }
+}
 ```
 
 You do NOT need to build a full log viewer UI yet; just ensure the structure is present and consistent.
@@ -165,11 +182,11 @@ For now, you can leave the actual deploy step as a TODO comment.
 
 ## How to proceed
 
-1. Scaffold the React + Tailwind project with the structure above.  
-2. Implement dark/light theming, routing, and stub pages.  
-3. Implement reading `data/apps.json` into the Home and Detail pages, with static sample data.  
-4. Add the suggestion form with client‑side validation.  
-5. Add the CI workflow stub.  
+1. Scaffold the React + Tailwind project with the structure above.
+2. Implement dark/light theming, routing, and stub pages.
+3. Implement reading `data/apps.json` into the Home and Detail pages, with static sample data.
+4. Add the suggestion form with client‑side validation.
+5. Add the CI workflow stub.
 6. Add the registry generator script stub in `scripts/` (it can initially just echo or create a static `apps.json`).
 
 Sources

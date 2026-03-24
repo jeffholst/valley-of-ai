@@ -1,19 +1,20 @@
 OpenClaw already gives you most of what you need to run a multi‑agent “Valley of AI app factory”: you define agents in a workspace, give them tools (git, shell, browser, etc.), and route tasks to them via the Gateway or CLI.[1][2][3]
 
-Below is how to:  
-1) set up OpenClaw with agents,  
-2) map your Coordinator/Build/QA/Marketing roles onto OpenClaw agents, and  
-3) configure them so they can actually run your app pipeline.
+Below is how to:
 
-***
+1. set up OpenClaw with agents,
+2. map your Coordinator/Build/QA/Marketing roles onto OpenClaw agents, and
+3. configure them so they can actually run your app pipeline.
+
+---
 
 ## OpenClaw agents in a nutshell
 
 - OpenClaw is a **self‑hosted gateway**: it sits between chat channels (Telegram, Discord, Slack, etc.) and one or more AI agents running on your machine.[2][4][1]
 - Each **agent** has:
-  - a workspace directory (files, repos, skills, logs),  
-  - an identity (name, avatar, persona),  
-  - configured tools (shell, web, git, browser, etc.),  
+  - a workspace directory (files, repos, skills, logs),
+  - an identity (name, avatar, persona),
+  - configured tools (shell, web, git, browser, etc.),
   - and is run through OpenClaw’s agent loop (model calls + tool execution).[3][5][2]
 
 The CLI exposes two important commands here:
@@ -21,7 +22,7 @@ The CLI exposes two important commands here:
 - `openclaw agents ...` – manage agents (list, add, bind to channels, set identity).[6]
 - `openclaw agent ...` – run one turn for a specific agent (from CLI), optionally delivering responses to a channel.[7]
 
-***
+---
 
 ## 1. Base OpenClaw setup
 
@@ -45,17 +46,17 @@ Typical setup (Mac/Linux/WSL):[4][8][9]
    This creates `~/.openclaw/` with config, default agent, and logs.[9][8]
 
 4. Configure model provider & API key (via TUI or config file):[4][9]
-   - Choose provider (OpenRouter, Anthropic, OpenAI, etc.).  
-   - Paste API key.  
+   - Choose provider (OpenRouter, Anthropic, OpenAI, etc.).
+   - Paste API key.
    - Save.
 
 5. (Optional) Connect a chat channel (Telegram is common):[9][4]
-   - Create a Telegram bot, get its token.  
+   - Create a Telegram bot, get its token.
    - Pair it via the OpenClaw TUI or CLI so messages are routed to your agent.
 
 You now have a running gateway and at least one agent (“main”) you can talk to from CLI or chat.[1][2][9]
 
-***
+---
 
 ## 2. Defining multiple agents for your pipeline
 
@@ -63,12 +64,12 @@ OpenClaw supports **multiple named agents**, each with its own workspace and ide
 
 Example structure:
 
-- `coord` – Coordinator agent  
-- `concept` – Concept & Research agent  
-- `design` – Design & Spec agent  
-- `build` – Build agent  
-- `review` – Review & Deploy agent  
-- `marketing` – Marketing & Launch agent  
+- `coord` – Coordinator agent
+- `concept` – Concept & Research agent
+- `design` – Design & Spec agent
+- `build` – Build agent
+- `review` – Review & Deploy agent
+- `marketing` – Marketing & Launch agent
 
 ### Create and configure agents
 
@@ -98,7 +99,7 @@ openclaw agents set-identity --agent review   --avatar avatars/review.png
 
 You’ll keep your Valley‑of‑AI repo checked out inside one or more of these workspaces (typically the **build** + **review** workspaces, and optionally **coord** if you want it to edit pipeline config).
 
-***
+---
 
 ## 3. Giving agents the right tools
 
@@ -106,7 +107,7 @@ OpenClaw’s “agent loop” can call tools to do real work: shell, git, browse
 
 For your pipeline you’ll want at least:
 
-- **Shell / filesystem** – to run `npm run generate:apps`, `npm run deploy`, edit files.  
+- **Shell / filesystem** – to run `npm run generate:apps`, `npm run deploy`, edit files.
 - **Git / GitHub integration** – to branch, commit, push, open PRs.[11]
 - **Web search / browser** – for Concept & Research and Marketing.[8][4]
 
@@ -115,15 +116,15 @@ You configure these either via the TUI or agent config files (e.g. tools list in
 High‑level:
 
 - For `build` and `review` agents, enable:
-  - shell tool with access scoped to the Valley‑of‑AI repo directory,  
+  - shell tool with access scoped to the Valley‑of‑AI repo directory,
   - git tool configured with a dedicated GitHub token/account.[11]
 - For `concept`, `design`, `marketing`, enable:
-  - web search / browser tools,  
+  - web search / browser tools,
   - read‑only shell/filesystem where needed.
 
 Because OpenClaw runs on your machine/VM, these tools really execute commands, so follow its security guidance (separate user account, limited permissions).[5][2][9]
 
-***
+---
 
 ## 4. Running the agents via CLI
 
@@ -141,7 +142,7 @@ openclaw agent --agent build --message "Using runId=run-20260309T231500Z-a1b2c3 
 
 You can also route via channels, e.g., send a message in Telegram which is bound to the `coord` agent, and openclaw routes that message to the agent loop and returns responses there.[1][4][6]
 
-***
+---
 
 ## 5. Mapping your pipeline into OpenClaw agents
 
@@ -151,38 +152,38 @@ Here’s how your previously‑designed flow fits into OpenClaw.
 
 **Workspace**
 
-- Clone your Valley‑of‑AI repo (or a “control” repo) into `~/.openclaw/workspace-coord`.  
+- Clone your Valley‑of‑AI repo (or a “control” repo) into `~/.openclaw/workspace-coord`.
 - Include:
-  - the unified process docs,  
-  - JSON Schemas (`concept.json`, `design.json`, `meta.json`, `qa-report.json`, `marketing.json`),  
+  - the unified process docs,
+  - JSON Schemas (`concept.json`, `design.json`, `meta.json`, `qa-report.json`, `marketing.json`),
   - any helper scripts (e.g., logging helpers).
 
 **Prompt**
 
-- System/identity instructions: use the Coordinator prompt you authored (“You own runId, call these other agents in order, log TRANSACTION_START/END, etc.”).  
+- System/identity instructions: use the Coordinator prompt you authored (“You own runId, call these other agents in order, log TRANSACTION_START/END, etc.”).
 - Tools: allow it to:
-  - read/write files in the workspace,  
+  - read/write files in the workspace,
   - optionally call the OpenClaw CLI (via shell) to invoke other agents programmatically, or you can keep orchestration manual and just talk to it.
 
 **Usage**
 
 You can either:
 
-- Manually call the other agents from outside (you drive the pipeline, Coordinator is just “brains”), or  
+- Manually call the other agents from outside (you drive the pipeline, Coordinator is just “brains”), or
 - Give Coordinator a tool that shells out to `openclaw agent --agent build ...` to programmatically trigger the other agents—this is more advanced and closer to a fully autonomous multi‑agent system.[3][5]
 
 ### 5.2 Concept & Design agents
 
 These can be relatively lightweight:
 
-- Workspaces point at the same repo (or read‑only clones).  
-- Tools: web search/browser, read‑only fs.  
+- Workspaces point at the same repo (or read‑only clones).
+- Tools: web search/browser, read‑only fs.
 - System prompts: use your Concept & Research and Design & Spec prompts.
 
 Flow:
 
-1. Coordinator sends them a task message including `runId`, `appId`, and where to write `concept.json` / `design.json`.  
-2. They generate the JSON artifacts in the workspace repo.  
+1. Coordinator sends them a task message including `runId`, `appId`, and where to write `concept.json` / `design.json`.
+2. They generate the JSON artifacts in the workspace repo.
 3. They log their `STEP` entries (e.g., via a logging script you expose as a tool or via instructions to append to `logs/YYYY/MM/DD.jsonl`).
 
 ### 5.3 Build agent
@@ -192,21 +193,21 @@ This is the most “dangerous” and powerful agent.
 **Workspace**
 
 - `~/.openclaw/workspace-build` should contain:
-  - the Valley‑of‑AI repo, with npm scripts (`generate:apps`, `deploy`),  
-  - your JSON Schemas and `validateMeta` helper,  
+  - the Valley‑of‑AI repo, with npm scripts (`generate:apps`, `deploy`),
+  - your JSON Schemas and `validateMeta` helper,
   - any other build tooling (e.g., git hooks).
 
 **Tools**
 
-- Shell, with working directory set to repo root.  
+- Shell, with working directory set to repo root.
 - Git, configured with a dedicated GitHub account + PAT (per OpenClaw’s GitHub integration patterns).[11]
 - Filesystem read/write.
 
 **Agent prompt**
 
 - Use the Build Agent prompt we wrote; emphasize:
-  - must validate `meta.json` with Ajv + schema before committing,  
-  - must use OS UTC time via shell (`date -u +"%Y-%m-%dT%H:%M:%SZ"`) for timestamps,  
+  - must validate `meta.json` with Ajv + schema before committing,
+  - must use OS UTC time via shell (`date -u +"%Y-%m-%dT%H:%M:%SZ"`) for timestamps,
   - must log each step into `logs/YYYY/MM/DD.jsonl` with `runId`.
 
 **Typical turn**
@@ -229,9 +230,9 @@ OpenClaw’s loop then lets the model call shell tools (to run npm, git) and fil
 
 **Tools**
 
-- Shell (to run tests, open dev server if needed, `npm run deploy`).  
-- Browser (optional) to open `localhost` or the live site for visual QA.  
-- Git (for PR review/merge if you wire it that way).  
+- Shell (to run tests, open dev server if needed, `npm run deploy`).
+- Browser (optional) to open `localhost` or the live site for visual QA.
+- Git (for PR review/merge if you wire it that way).
 
 **Usage**
 
@@ -251,7 +252,7 @@ This one mainly reads `meta.json` + URL and returns text.
 
 **Tools**
 
-- Optional web search for trend‑aware copy.  
+- Optional web search for trend‑aware copy.
 - No shell/git needed unless you want it to commit `marketing.json`.
 
 **Usage**
@@ -260,7 +261,7 @@ Coordinator asks:
 
 > Using runId=..., appId=..., URL=..., and meta.json, create marketing/YYYY/MM/<app-id>.json with launch posts for X, LinkedIn, and Mastodon, plus hashtags and a basic postingPlan. Log GENERATE_MARKETING_ASSETS.
 
-***
+---
 
 ## 6. Putting it together: example end‑to‑end
 
@@ -273,14 +274,14 @@ From your terminal (or via chat):
    ```
 
 2. Coordinator:
-   - Generates `runId`.  
-   - Logs `TRANSACTION_START`.  
-   - Messages `concept` agent (internally or via your guidance).  
-   - Waits for `concept.json`.  
-   - Then `design` agent → `design.json`.  
-   - Then `build` agent → app files + registry.  
-   - Then `review` agent → QA + deploy.  
-   - Then `marketing` agent → `marketing.json`.  
+   - Generates `runId`.
+   - Logs `TRANSACTION_START`.
+   - Messages `concept` agent (internally or via your guidance).
+   - Waits for `concept.json`.
+   - Then `design` agent → `design.json`.
+   - Then `build` agent → app files + registry.
+   - Then `review` agent → QA + deploy.
+   - Then `marketing` agent → `marketing.json`.
    - Finally logs `TRANSACTION_END`.
 
 You can iterate gradually: first wire just `build` and `review` agents under OpenClaw, then add `concept/design/marketing` once you’re happy with the core loop.
