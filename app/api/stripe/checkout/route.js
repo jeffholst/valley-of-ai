@@ -44,7 +44,10 @@ export async function POST(request) {
     try {
       origin = new URL(request.url).origin;
     } catch {
-      return Response.json({ error: 'Unable to determine site origin for payment redirect' }, { status: 500 });
+      return Response.json(
+        { error: 'Unable to determine site origin for payment redirect' },
+        { status: 500 }
+      );
     }
   }
 

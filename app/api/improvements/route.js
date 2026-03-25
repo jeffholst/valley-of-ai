@@ -62,9 +62,9 @@ export async function POST(request) {
     : '**Requestor:** anonymous';
   const siteBaseUrl = process.env.NEXT_PUBLIC_MAIN_SITE_URL || '';
   const appLine = safeAppName
-    ? (siteBaseUrl
-        ? `**App:** [${safeAppName}](${siteBaseUrl}/apps/${appId})`
-        : `**App:** ${safeAppName} (${appId})`)
+    ? siteBaseUrl
+      ? `**App:** [${safeAppName}](${siteBaseUrl}/apps/${appId})`
+      : `**App:** ${safeAppName} (${appId})`
     : `**App:** ${appId}`;
   const issueBody = `## App Improvement\n\n${appLine}\n${requestorLine}\n\n### Description\n\n${description}`;
 
