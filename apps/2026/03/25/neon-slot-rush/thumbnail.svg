@@ -8,48 +8,112 @@
       <stop offset="0%" stop-color="#1d2350"/>
       <stop offset="100%" stop-color="#151933"/>
     </linearGradient>
+    <linearGradient id="winBtn" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2a1f00"/>
+      <stop offset="100%" stop-color="#3a2a00"/>
+    </linearGradient>
     <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
       <feGaussianBlur stdDeviation="4" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
+    <filter id="glowSm" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
   </defs>
-  <rect x="0" y="0" width="800" height="450" fill="url(#bg)"/>
-  <rect x="30" y="24" width="740" height="76" rx="14" fill="url(#panel)" stroke="#2a3d8d"/>
-  <text x="56" y="70" fill="#f4f8ff" font-size="34" font-family="Inter,Segoe UI,sans-serif" font-weight="700" filter="url(#glow)">Neon Slot Rush</text>
-  <text x="610" y="57" fill="#11f5ff" font-size="18" font-family="Inter,Segoe UI,sans-serif">Balance $1240</text>
-  <text x="610" y="80" fill="#ff2bd6" font-size="18" font-family="Inter,Segoe UI,sans-serif">Bet $20  Win $180</text>
 
-  <rect x="70" y="120" width="500" height="290" rx="18" fill="#0f1534" stroke="#31439f"/>
-  <g font-size="52" text-anchor="middle" dominant-baseline="middle" font-family="Segoe UI Emoji,Apple Color Emoji,sans-serif">
-    <g>
-      <rect x="90" y="138" width="88" height="82" rx="12" fill="#151f53" stroke="#31439f"/><text x="134" y="179">🍒</text>
-      <rect x="186" y="138" width="88" height="82" rx="12" fill="#151f53" stroke="#31439f"/><text x="230" y="179">⭐</text>
-      <rect x="282" y="138" width="88" height="82" rx="12" fill="#151f53" stroke="#ffd63b"/><text x="326" y="179">7️⃣</text>
-      <rect x="378" y="138" width="88" height="82" rx="12" fill="#151f53" stroke="#ffd63b"/><text x="422" y="179">7️⃣</text>
-      <rect x="474" y="138" width="88" height="82" rx="12" fill="#151f53" stroke="#ffd63b"/><text x="518" y="179">7️⃣</text>
-    </g>
-    <g>
-      <rect x="90" y="226" width="88" height="82" rx="12" fill="#151f53" stroke="#31439f"/><text x="134" y="267">💎</text>
-      <rect x="186" y="226" width="88" height="82" rx="12" fill="#151f53" stroke="#31439f"/><text x="230" y="267">🔔</text>
-      <rect x="282" y="226" width="88" height="82" rx="12" fill="#151f53" stroke="#31439f"/><text x="326" y="267">🍋</text>
-      <rect x="378" y="226" width="88" height="82" rx="12" fill="#151f53" stroke="#31439f"/><text x="422" y="267">⭐</text>
-      <rect x="474" y="226" width="88" height="82" rx="12" fill="#151f53" stroke="#31439f"/><text x="518" y="267">🔔</text>
-    </g>
-    <g>
-      <rect x="90" y="314" width="88" height="82" rx="12" fill="#151f53" stroke="#31439f"/><text x="134" y="355">🍋</text>
-      <rect x="186" y="314" width="88" height="82" rx="12" fill="#151f53" stroke="#31439f"/><text x="230" y="355">💎</text>
-      <rect x="282" y="314" width="88" height="82" rx="12" fill="#151f53" stroke="#31439f"/><text x="326" y="355">⭐</text>
-      <rect x="378" y="314" width="88" height="82" rx="12" fill="#151f53" stroke="#31439f"/><text x="422" y="355">🍒</text>
-      <rect x="474" y="314" width="88" height="82" rx="12" fill="#151f53" stroke="#31439f"/><text x="518" y="355">💎</text>
-    </g>
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bg)"/>
+
+  <!-- HUD bar -->
+  <rect x="20" y="14" width="760" height="60" rx="13" fill="url(#panel)" stroke="#2a3d8d"/>
+  <text x="44" y="52" fill="#f4f8ff" font-size="28" font-family="Inter,Segoe UI,sans-serif" font-weight="700" filter="url(#glow)">Neon Slot Rush</text>
+  <text x="430" y="40" fill="#94a3c8" font-size="13" font-family="Inter,Segoe UI,sans-serif">Balance</text>
+  <text x="430" y="58" fill="#f4f8ff" font-size="17" font-family="Inter,Segoe UI,sans-serif" font-weight="700">$1 240</text>
+  <text x="560" y="40" fill="#94a3c8" font-size="13" font-family="Inter,Segoe UI,sans-serif">Bet</text>
+  <text x="560" y="58" fill="#f4f8ff" font-size="17" font-family="Inter,Segoe UI,sans-serif" font-weight="700">$20</text>
+  <text x="660" y="40" fill="#94a3c8" font-size="13" font-family="Inter,Segoe UI,sans-serif">Last Win</text>
+  <text x="660" y="58" fill="#ffd63b" font-size="17" font-family="Inter,Segoe UI,sans-serif" font-weight="700" filter="url(#glowSm)">$180</text>
+
+  <!-- Reels panel -->
+  <rect x="20" y="88" width="490" height="270" rx="16" fill="#0f1534" stroke="#31439f"/>
+
+  <!-- Row 1: 7s win (highlighted) -->
+  <rect x="38" y="104" width="86" height="76" rx="10" fill="#151f53" stroke="#31439f"/>
+  <rect x="136" y="104" width="86" height="76" rx="10" fill="#151f53" stroke="#31439f"/>
+  <rect x="234" y="104" width="86" height="76" rx="10" fill="#151f53" stroke="#ffd63b"/><rect x="234" y="104" width="86" height="76" rx="10" fill="rgba(255,214,59,0.08)"/>
+  <rect x="332" y="104" width="86" height="76" rx="10" fill="#151f53" stroke="#ffd63b"/><rect x="332" y="104" width="86" height="76" rx="10" fill="rgba(255,214,59,0.08)"/>
+  <rect x="430" y="104" width="86" height="76" rx="10" fill="#151f53" stroke="#ffd63b"/><rect x="430" y="104" width="86" height="76" rx="10" fill="rgba(255,214,59,0.08)"/>
+
+  <!-- Row 2: middle -->
+  <rect x="38" y="192" width="86" height="76" rx="10" fill="#151f53" stroke="#ffd63b"/><rect x="38" y="192" width="86" height="76" rx="10" fill="rgba(255,214,59,0.08)"/>
+  <rect x="136" y="192" width="86" height="76" rx="10" fill="#151f53" stroke="#ffd63b"/><rect x="136" y="192" width="86" height="76" rx="10" fill="rgba(255,214,59,0.08)"/>
+  <rect x="234" y="192" width="86" height="76" rx="10" fill="#151f53" stroke="#31439f"/>
+  <rect x="332" y="192" width="86" height="76" rx="10" fill="#151f53" stroke="#31439f"/>
+  <rect x="430" y="192" width="86" height="76" rx="10" fill="#151f53" stroke="#31439f"/>
+
+  <!-- Row 3 -->
+  <rect x="38" y="280" width="86" height="76" rx="10" fill="#151f53" stroke="#31439f"/>
+  <rect x="136" y="280" width="86" height="76" rx="10" fill="#151f53" stroke="#31439f"/>
+  <rect x="234" y="280" width="86" height="76" rx="10" fill="#151f53" stroke="#31439f"/>
+  <rect x="332" y="280" width="86" height="76" rx="10" fill="#151f53" stroke="#31439f"/>
+  <rect x="430" y="280" width="86" height="76" rx="10" fill="#151f53" stroke="#31439f"/>
+
+  <!-- Symbols -->
+  <g font-family="Segoe UI Emoji,Apple Color Emoji,sans-serif" text-anchor="middle" dominant-baseline="middle">
+    <text x="81" y="142" font-size="38">🍒</text>
+    <text x="179" y="142" font-size="38">⭐</text>
+    <text x="277" y="142" font-size="38">7️⃣</text>
+    <text x="375" y="142" font-size="38">7️⃣</text>
+    <text x="473" y="142" font-size="38">7️⃣</text>
+    <text x="81" y="230" font-size="38">🍒</text>
+    <text x="179" y="230" font-size="38">🍒</text>
+    <text x="277" y="230" font-size="38">🍋</text>
+    <text x="375" y="230" font-size="38">⭐</text>
+    <text x="473" y="230" font-size="38">🔔</text>
+    <text x="81" y="318" font-size="38">🍋</text>
+    <text x="179" y="318" font-size="38">💎</text>
+    <text x="277" y="318" font-size="38">⭐</text>
+    <text x="375" y="318" font-size="38">🍒</text>
+    <text x="473" y="318" font-size="38">💎</text>
   </g>
 
-  <rect x="590" y="122" width="180" height="288" rx="16" fill="url(#panel)" stroke="#2a3d8d"/>
-  <text x="610" y="160" fill="#f4f8ff" font-size="20" font-family="Inter,Segoe UI,sans-serif" font-weight="700">SPIN</text>
-  <rect x="610" y="172" width="140" height="58" rx="12" fill="#11f5ff"/>
-  <text x="680" y="210" fill="#02030f" font-size="30" text-anchor="middle" font-family="Inter,Segoe UI,sans-serif" font-weight="800">GO</text>
-  <text x="610" y="256" fill="#3cff78" font-size="18" font-family="Inter,Segoe UI,sans-serif">Turbo: ON</text>
-  <text x="610" y="284" fill="#f4f8ff" font-size="18" font-family="Inter,Segoe UI,sans-serif">Auto: 6</text>
-  <text x="610" y="312" fill="#f4f8ff" font-size="18" font-family="Inter,Segoe UI,sans-serif">10 Paylines</text>
-  <text x="610" y="352" fill="#ffd63b" font-size="26" font-family="Inter,Segoe UI,sans-serif" font-weight="700" filter="url(#glow)">WIN +$180</text>
+  <!-- Win status -->
+  <rect x="20" y="370" width="490" height="66" rx="13" fill="url(#panel)" stroke="#2a3d8d"/>
+  <text x="44" y="410" fill="#3cff78" font-size="22" font-family="Inter,Segoe UI,sans-serif" font-weight="700" filter="url(#glowSm)">WIN +$180!</text>
+  <text x="260" y="398" fill="#94a3c8" font-size="12" font-family="Inter,Segoe UI,sans-serif">Click a payline below to highlight it</text>
+  <text x="260" y="416" fill="#94a3c8" font-size="12" font-family="Inter,Segoe UI,sans-serif">on the reels</text>
+
+  <!-- Payline breakdown panel -->
+  <rect x="524" y="88" width="256" height="348" rx="16" fill="url(#panel)" stroke="#2a3d8d"/>
+  <text x="544" y="118" fill="#f4f8ff" font-size="15" font-family="Inter,Segoe UI,sans-serif" font-weight="700">Winning Paylines</text>
+
+  <!-- All lines button (active/selected) -->
+  <rect x="536" y="128" width="232" height="44" rx="9" fill="url(#winBtn)" stroke="#ffd63b"/>
+  <text x="552" y="148" font-family="Segoe UI Emoji,Apple Color Emoji,sans-serif" font-size="18" dominant-baseline="middle">🏆</text>
+  <text x="578" y="149" fill="#f4f8ff" font-size="13" font-family="Inter,Segoe UI,sans-serif" dominant-baseline="middle">All winning lines</text>
+  <text x="746" y="149" fill="#ffd63b" font-size="14" font-family="Inter,Segoe UI,sans-serif" font-weight="700" text-anchor="end" dominant-baseline="middle" filter="url(#glowSm)">+$180</text>
+
+  <!-- Payline 3 item -->
+  <rect x="536" y="180" width="232" height="44" rx="9" fill="rgba(0,0,0,0.2)" stroke="rgba(255,214,59,0.3)"/>
+  <text x="552" y="200" font-family="Segoe UI Emoji,Apple Color Emoji,sans-serif" font-size="18" dominant-baseline="middle">7️⃣</text>
+  <text x="578" y="201" fill="#d4d8f0" font-size="13" font-family="Inter,Segoe UI,sans-serif" dominant-baseline="middle">Payline 3 ×3</text>
+  <text x="746" y="201" fill="#ffd63b" font-size="13" font-family="Inter,Segoe UI,sans-serif" font-weight="700" text-anchor="end" dominant-baseline="middle">+$120</text>
+
+  <!-- Payline 2 item -->
+  <rect x="536" y="232" width="232" height="44" rx="9" fill="rgba(0,0,0,0.2)" stroke="rgba(255,214,59,0.3)"/>
+  <text x="552" y="252" font-family="Segoe UI Emoji,Apple Color Emoji,sans-serif" font-size="18" dominant-baseline="middle">🍒</text>
+  <text x="578" y="253" fill="#d4d8f0" font-size="13" font-family="Inter,Segoe UI,sans-serif" dominant-baseline="middle">Payline 2 ×3</text>
+  <text x="746" y="253" fill="#ffd63b" font-size="13" font-family="Inter,Segoe UI,sans-serif" font-weight="700" text-anchor="end" dominant-baseline="middle">+$60</text>
+
+  <!-- Divider -->
+  <line x1="536" y1="290" x2="768" y2="290" stroke="#2a3d8d" stroke-width="1"/>
+
+  <text x="544" y="316" fill="#94a3c8" font-size="12" font-family="Inter,Segoe UI,sans-serif">10 paylines · 5×3 reels · RNG</text>
+  <text x="544" y="336" fill="#94a3c8" font-size="12" font-family="Inter,Segoe UI,sans-serif">Turbo: ON  ·  Auto: 6</text>
+
+  <!-- Spin button -->
+  <rect x="536" y="352" width="232" height="70" rx="12" fill="url(#glow)"/>
+  <rect x="536" y="352" width="232" height="70" rx="12" fill="#11f5ff"/>
+  <text x="652" y="392" fill="#02030f" font-size="28" font-family="Inter,Segoe UI,sans-serif" font-weight="800" text-anchor="middle" dominant-baseline="middle">SPIN</text>
 </svg>

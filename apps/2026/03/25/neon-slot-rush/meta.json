@@ -15,6 +15,17 @@
     "prompt": "Design a modern, highly addictive, mobile-first slot machine with 5x3 reels, paylines, configurable symbols, RNG outcomes, balance/bet/win display, turbo and auto-spin, dark neon theme, and concise paytable/help.",
     "requestor": "Perplexity"
   },
+  "improvements": [
+    {
+      "issueNumber": 202,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/202",
+      "description": "Added per-payline win breakdown list with click-to-highlight: after each spin, each winning payline appears as a clickable row showing symbol, payline number, match count, and payout amount; clicking a row highlights only that payline's cells on the reels.",
+      "requestor": "Jeff Holst",
+      "implementedAt": "2026-03-25T19:21:37Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
+    }
+  ],
   "generation": {
     "agentName": "dev",
     "llmModel": "openai-codex/gpt-5.3-codex",
