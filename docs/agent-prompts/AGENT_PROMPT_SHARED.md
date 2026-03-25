@@ -8,26 +8,41 @@
 
 ## Non-Negotiable Contracts
 
+### Issue review gate
+
+Pending GitHub issues labeled `status:pending` must go through the issue-review workflow before they enter either build pipeline.
+
+- `AGENT_PROMPT_ISSUE_REVIEW.md` is the only prompt that may review pending `suggestion` or `improvement` issues.
+- `scripts/issues/select-app-suggestion.js` only consumes approved `suggestion` issues.
+- `scripts/issues/select-app-improvement.js` only consumes approved `improvement` issues.
+- If an issue needs escalation, use the `needs-human-review` decision, keep `status:pending` in place, and add the `status:needs-human-review` label.
+
 ### Time source (required)
+
 Always use OS UTC time before creating paths or timestamps:
+
 - `date -u +"%Y-%m-%dT%H:%M:%SZ"`
 
 Use UTC consistently for:
+
 - File paths: `apps/YYYY/MM/DD/<app-id>/` (for index.html, thumbnail.svg, meta.json)
 - `meta.json`: `createdAt`, `generation.startTime`, `generation.endTime`
 - `runId` timestamp portion
 - All logging timestamps (handled automatically by `npm run log`)
 
 ⚠️ **Improvement pipeline exception:** The improvement pipeline uses two separate date values — do not conflate them:
+
 - `--date YYYY/MM/DD` → **today's date** → written to the central log (`logs/YYYY/MM/DD.jsonl`)
 - `--app-date <app-date>` → **the app's original creation date** (from `targetApp.id`) → written to the app-local log (`apps/<app-path>/log.jsonl`)
 
 See Step 1.4 of `AGENT_PROMPT_IMPROVEMENT.md` for how to derive and apply each value.
 
 ### Model Reporting
+
 ⚠️ Make your best effort to report your agent name correctly AND the LLM being used.
 
 ### Required app files
+
 ```
 apps/YYYY/MM/DD/<app-id>/
   index.html
@@ -43,6 +58,7 @@ The authoritative schema is at `docs/json-schema/meta.json`. Validate against it
 **Required fields:** `id`, `name`, `shortDescription`, `thumbnail`, `createdAt`, `category`, `status`, `tags`, `homepagePath`, `inputMode`, `generation`
 
 **Key constraints:**
+
 - `id`: lowercase kebab-case slug only (e.g. `snake-game`)
 - `category`: one of `Games` | `Productivity` | `Utilities` | `Design` | `Education` | `Entertainment` | `Visualizations`
 - `inputMode`: one of `desktop` | `mobile` | `responsive`
@@ -54,17 +70,21 @@ The authoritative schema is at `docs/json-schema/meta.json`. Validate against it
 - `generation.runId`: must match format `run-YYYYMMDDTHHMMSSZ-xxxxxx`
 
 **Optional fields:**
+
 - `visible`: boolean — defaults to `true`; set to `false` to hide without deleting
 - `suggestion`: object — only present if app was built from a community suggestion issue
 - `improvements`: array — appended by the improvement pipeline each time an improvement is applied; **do not set during initial app creation**
 
 ### Required head tags in every app `index.html`
+
 ```html
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
+  function gtag() {
+    dataLayer.push(arguments);
+  }
   gtag('js', new Date());
   gtag('config', '__GA_MEASUREMENT_ID__');
 </script>
@@ -81,6 +101,7 @@ The authoritative schema is at `docs/json-schema/meta.json`. Validate against it
 ```
 
 Rules:
+
 - Keep `__PLACEHOLDER__` values **exactly as shown** — `sync-public-content.js` replaces them from `.env` at build time. Do not hardcode real values for these.
 - Replace `App Name` in `application-name` with the actual app name — use the same value that appears before ` - __MAIN_SITE_NAME__` in `<title>`.
 - **Exception:** `voa-app-id` is app-specific. Replace `YYYY/MM/DD/<app-id>` with the actual app path (e.g. `2026/03/21/tetris-classic`).
@@ -88,15 +109,26 @@ Rules:
 - Shared shell must control header/footer/theme behavior.
 
 ### Required title format
+
 ```html
 <title>App Name - __MAIN_SITE_NAME__</title>
 ```
 
 ### Theme support
+
 Use CSS variables and support shared theme switching:
+
 ```css
-:root { --bg:#0f172a; --text:#f9fafb; --surface:#1e293b; }
-[data-theme="light"] { --bg:#ffffff; --text:#1f2937; --surface:#f3f4f6; }
+:root {
+  --bg: #0f172a;
+  --text: #f9fafb;
+  --surface: #1e293b;
+}
+[data-theme='light'] {
+  --bg: #ffffff;
+  --text: #1f2937;
+  --surface: #f3f4f6;
+}
 ```
 
 ---
@@ -106,17 +138,20 @@ Use CSS variables and support shared theme switching:
 All logging is handled by `npm run log`. Each app run is one transaction (TRANSACTION_START → STEP entries → TRANSACTION_END).
 
 **⚠️ CRITICAL: npm run log automatically creates TWO log files:**
+
 - `apps/YYYY/MM/DD/<app-id>/log.jsonl` — app-local transaction log
 - `logs/YYYY/MM/DD.jsonl` — central consolidated log for all apps created that day
 
 **BOTH files are automatically created by every `npm run log` call and MUST be committed to git and included in the PR and main branch merge.**
 
 **To keep `YYYY/MM/DD` in sync across generated files and logs:**
+
 - Derive `YYYY/MM/DD` once in Step 0 from the initial UTC timestamp.
 - Reuse that exact value for the app folder path and for every `npm run log` call via `--date YYYY/MM/DD`.
 - Do not recompute the date later in the run.
 
 ### ⚠️ CRITICAL: REAL-TIME LOGGING (DO NOT SKIP)
+
 **This rule is non-negotiable and must be followed exactly:**
 
 1. Create the app folder `apps/YYYY/MM/DD/<app-id>` **before any logging begins** so `log.jsonl` can be created by `npm run log`.
@@ -134,10 +169,13 @@ All logging is handled by `npm run log`. Each app run is one transaction (TRANSA
 For reasoning decisions and validation checks, use `--category reasoning` or `--category validation` as shown in each flow.
 
 ### `runId` format
+
 `run-YYYYMMDDTHHMMSSZ-xxxxxx`
+
 - `xxxxxx` = 6-char hex suffix
 
 ### Step sequence numbers
+
 Both flows use 14 steps. The step names differ but the sequence numbers (seq 1–14) and
 the surrounding infrastructure (TRANSACTION_START, TRANSACTION_END) are identical.
 
@@ -150,6 +188,7 @@ See the step order table at the top of whichever flow prompt you are running.
 Any time a `thumbnail.svg` is created or updated, it must meet all of the following requirements.
 
 **Canvas**
+
 - `viewBox="0 0 800 450"` — exactly this, no other size. Verify it before saving.
 - Fill the entire canvas. A sparse or mostly-empty thumbnail is a failure.
 - No `<animate>` tags. The SVG renders statically — animations are ignored and waste space.
@@ -157,16 +196,19 @@ Any time a `thumbnail.svg` is created or updated, it must meet all of the follow
 - The background `<rect>` must have explicit `x="0" y="0" width="800" height="450"` attributes.
 
 **SVG/XML validity (required — invalid XML will not render)**
+
 - Never use `--` inside XML comments. This is illegal XML and will cause a parse error. This commonly occurs when labeling morse code, scores, or other content that uses dashes (e.g. `<!-- O  ---  -->` is invalid). Use plain English descriptions instead: `<!-- O: three dashes -->`.
 - Run `xmllint --noout thumbnail.svg` before saving to confirm the file is valid XML. If xmllint is unavailable, carefully review all comments for double hyphens.
 - Avoid `feDropShadow` — use `feGaussianBlur` + `feMerge` instead for broader renderer support.
 
 **Show a mid-use state, not a start screen**
+
 - Games: player is mid-action, obstacles present, score > 0, lives/progress visible
 - Tools: populated with realistic data/content, not blank defaults
 - The user should instantly understand what the app does just by looking at the thumbnail
 
 **Must include all of these:**
+
 - Background matching the app's background color/gradient (never plain white or default gray)
 - The app's primary interactive element(s) drawn accurately (game board, cards, canvas, etc.)
 - HUD or UI chrome that mirrors the real app: score, level, lives, timer, toolbar buttons, etc.
@@ -175,11 +217,13 @@ Any time a `thumbnail.svg` is created or updated, it must meet all of the follow
 - At least one `<filter>` effect (glow, drop shadow, blur) for visual polish
 
 **Match the app exactly**
+
 - Use the same CSS color values as defined in `index.html` — no generic blues or purples
 - Font family should match (monospace for retro/tech, serif for card games, etc.)
 - Layout zones (where the game area is, where the HUD is) must match the real app layout
 
 **Polish checklist**
+
 - Corner accents or edge glow to frame the composition
 - Background depth: use a gradient or subtle grid/texture, not a flat fill
 - Title text uses a glow or shadow filter, not plain flat text

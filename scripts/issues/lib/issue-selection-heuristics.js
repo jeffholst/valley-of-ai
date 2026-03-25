@@ -1,6 +1,4 @@
 /**
- * selection-utils.js
- *
  * Pure utility functions shared by select-app-suggestion.js and
  * select-app-improvement.js. No external dependencies — safe to unit-test.
  */

@@ -148,15 +148,16 @@ Git commits also run the repo's pre-commit hook via `lint-staged`, so staged fil
 
 The following labels must exist in your GitHub repo. Create them via `gh label create` or the GitHub UI under **Issues → Labels**.
 
-| Label                | Color     | Description                                        |
-| -------------------- | --------- | -------------------------------------------------- |
-| `suggestion`         | `#8b5cf6` | User-submitted app suggestion                      |
-| `improvement`        | `#3b82f6` | User-submitted app improvement request             |
-| `status:pending`     | `#f59e0b` | Awaiting maintainer review                         |
-| `status:approved`    | `#10b981` | Approved for agent processing                      |
-| `status:rejected`    | `#ef4444` | Not selected for implementation                    |
-| `status:implemented` | `#6b7280` | App has been generated or improvement applied      |
-| `boosted`            | `#f59e0b` | Submission received a tip — prioritized for review |
+| Label                       | Color     | Description                                        |
+| --------------------------- | --------- | -------------------------------------------------- |
+| `suggestion`                | `#8b5cf6` | User-submitted app suggestion                      |
+| `improvement`               | `#3b82f6` | User-submitted app improvement request             |
+| `status:pending`            | `#f59e0b` | Awaiting maintainer review                         |
+| `status:approved`           | `#10b981` | Approved for agent processing                      |
+| `status:rejected`           | `#ef4444` | Not selected for implementation                    |
+| `status:needs-human-review` | `#f97316` | Requires human review before any final decision    |
+| `status:implemented`        | `#6b7280` | App has been generated or improvement applied      |
+| `boosted`                   | `#f59e0b` | Submission received a tip — prioritized for review |
 
 To create all labels at once:
 
@@ -166,6 +167,7 @@ gh label create "improvement"        --description "User-submitted app improveme
 gh label create "status:pending"     --description "Awaiting maintainer review"               --color "f59e0b"
 gh label create "status:approved"    --description "Approved for agent processing"            --color "10b981"
 gh label create "status:rejected"    --description "Not selected for implementation"          --color "ef4444"
+gh label create "status:needs-human-review" --description "Requires human review before any final decision" --color "f97316"
 gh label create "status:implemented" --description "App has been generated or improvement applied" --color "6b7280"
 gh label create "boosted"            --description "Submission received a tip — prioritized for review" --color "f59e0b"
 ```
@@ -181,11 +183,13 @@ cp .env.example .env
 
 Then edit `.env` with your real values.
 
-| File           | Committed           | Purpose                                                                                             |
-| -------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
-| `.env.example` | ✅ Yes              | Template with placeholder values — copy this to `.env` to get started                               |
-| `.env`         | ❌ No (git-ignored) | Your config with real keys — this is all you need                                                   |
-| `.env.local`   | ❌ No (git-ignored) | Optional — takes precedence over `.env` if you need to layer overrides (most users won't need this) |
+| File                    | Committed           | Purpose                                                                                             |
+| ----------------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
+| `.env.example`          | ✅ Yes              | Template with placeholder values — copy this to `.env` to get started                               |
+| `.env`                  | ❌ No (git-ignored) | Your config with real keys — this is all you need                                                   |
+| `.env.local`            | ❌ No (git-ignored) | Optional — takes precedence over `.env` if you need to layer overrides (most users won't need this) |
+| `guardrails.example`    | ✅ Yes              | Template for optional repo-specific review guardrails used by the issue-review workflow             |
+| `guardrails.production` | ❌ No (git-ignored) | Optional private overlay for tightening issue-review policy in your environment                     |
 
 Client-side variables use the `NEXT_PUBLIC_*` prefix (accessible in the browser). Server-side variables have no prefix (never exposed to the client).
 
@@ -264,8 +268,23 @@ stripe trigger checkout.session.completed
 | `npm run validate:apps`              | ✅ Validate standalone app HTML structure, metadata, and `data/apps.json` synchronization                                                                                                                                                                                                                                                                                                                |
 | `npm run validate:responsive`        | 📱 Validate responsive design across all apps                                                                                                                                                                                                                                                                                                                                                            |
 | `npm run validate:responsive:sample` | 📱 Same as above but limited to 5 apps — faster for local spot-checks                                                                                                                                                                                                                                                                                                                                    |
+| `npm run issues:pending`             | 📨 List open pending GitHub issues labeled `status:pending` plus `suggestion` or `improvement`. By default this excludes items already tagged `status:needs-human-review`; pass `--needs-human-review` to retrieve that queue instead. Outputs machine-readable JSON for the issue-review workflow.                                                                                                      |
+| `npm run issues:decide`              | 🏷️ Apply an issue review decision. Removes `status:pending` and adds `status:approved` or `status:rejected`, or for `needs-human-review` keeps pending in place, adds `status:needs-human-review`, and comments the reason.                                                                                                                                                                              |
 | `npm run select:app:suggestion`      | 🤖 Recommend the next **new app** concept to build — checks GitHub for boosted/approved `suggestion` issues first (ranked by verified tip total), then falls back to Supabase vote analysis and category gap scoring when no issues exist. Outputs a JSON recommendation with duplication-risk scoring and saturated/recent tag warnings to avoid repeating existing concepts.                           |
 | `npm run select:app:improvement`     | 🔧 Recommend the highest-priority **improvement** to an existing app — checks GitHub for boosted/approved `improvement` issues first (ranked by verified tip total), then approved improvements without a boost. Outputs a JSON recommendation including the target app's metadata. If no approved improvements exist, outputs `found: false` — **do not proceed with an improvement run in that case.** |
+
+Examples:
+
+```bash
+# Fresh pending items only (excludes status:needs-human-review)
+npm run issues:pending
+
+# Only pending improvement issues
+npm run issues:pending -- --type improvement
+
+# Only the human-review queue
+npm run issues:pending -- --needs-human-review
+```
 
 ### Build & Deployment Pipeline
 
@@ -366,9 +385,14 @@ This is useful for documentation-only changes or quick fixes that don't require 
 │   ├── 📄 validate-apps.js          # Validate app HTML/metadata
 │   ├── 📄 validate-responsive.js    # Test responsive design
 │   ├── 📄 logger.js                 # Logging CLI (used by `npm run log`)
-│   ├── 📄 select-app-suggestion.js  # Recommend next new app concept (GitHub issues → vote analysis → category gaps)
-│   ├── 📄 select-app-improvement.js # Recommend highest-priority improvement to an existing app (GitHub issues only)
-│   └── 📄 selection-utils.js        # Pure utility functions shared by both selection scripts (testable, no external deps)
+│   └── 📁 issues/
+│       ├── 📄 retrieve-pending-issues.js # List pending suggestion/improvement issues for review
+│       ├── 📄 decide-issue.js           # Apply approved/rejected/human-review decisions
+│       ├── 📄 select-app-suggestion.js  # Recommend next new app concept (GitHub issues → vote analysis → category gaps)
+│       ├── 📄 select-app-improvement.js # Recommend highest-priority improvement to an existing app (GitHub issues only)
+│       └── 📁 lib/
+│           ├── 📄 issue-github-client.js       # Shared GitHub issue/env helpers
+│           └── 📄 issue-selection-heuristics.js # Pure scoring/parsing helpers for issue selection
 │
 ├── 🧪 Tests
 │   ├── 📄 jest.config.js      # Jest configuration
@@ -378,7 +402,9 @@ This is useful for documentation-only changes or quick fixes that don't require 
 │       │   ├── ThemeToggle.test.js       # Component tests
 │       │   └── AppLog.groupLogs.test.js  # Log grouping logic tests
 │       ├── 📁 scripts/
-│       │   └── selection-utils.test.js   # App selection utility tests
+│       │   └── 📁 issues/
+│       │       └── 📁 lib/
+│       │           └── issue-selection-heuristics.test.js # App selection utility tests
 │       ├── 📁 lib/
 │       │   └── siteConfig.test.js        # Utility function tests
 │       ├── 📁 data/
@@ -390,6 +416,7 @@ This is useful for documentation-only changes or quick fixes that don't require 
 │   ├── 📄 docs/TESTING.md          # Testing guide and examples
 │   └── 📁 docs/agent-prompts/      # AI agent pipeline prompts
 │       ├── 📄 AGENT_PROMPT_SHARED.md      # Shared contracts: logging, HTML rules, thumbnail spec
+│       ├── 📄 AGENT_PROMPT_ISSUE_REVIEW.md # Review pending suggestion/improvement issues safely
 │       ├── 📄 AGENT_PROMPT_NEW_APP.md     # Pipeline for building a new app from scratch
 │       └── 📄 AGENT_PROMPT_IMPROVEMENT.md # Pipeline for improving an existing app
 │
@@ -413,7 +440,8 @@ This is useful for documentation-only changes or quick fixes that don't require 
 │   ├── 📄 postcss.config.cjs  # PostCSS + Tailwind pipeline
 │   ├── 📄 tailwind.config.js  # Tailwind CSS theme
 │   ├── 📄 package.json        # Dependencies + scripts
-│   └── 📄 .env.example        # Environment template
+│   ├── 📄 .env.example        # Environment template
+│   └── 📄 guardrails.example  # Optional issue-review guardrails template
 │
 └── 📄 Other Files
     ├── 📝 README.md
@@ -521,17 +549,50 @@ Each app includes rich metadata in `meta.json`:
 
 ## 🤖 AI Agent Pipelines
 
-The AI agent that builds and improves apps follows structured prompts in `docs/agent-prompts/`. There are two flows, both reading a shared contract file first:
+The AI agents that review, build, and improve apps follow structured prompts in `docs/agent-prompts/`.
 
-| File                                                                            | Purpose                                                                         |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| [`AGENT_PROMPT_SHARED.md`](docs/agent-prompts/AGENT_PROMPT_SHARED.md)           | Required reading for both flows — logging rules, HTML contracts, thumbnail spec |
-| [`AGENT_PROMPT_NEW_APP.md`](docs/agent-prompts/AGENT_PROMPT_NEW_APP.md)         | Build a new app from scratch (14-step pipeline)                                 |
-| [`AGENT_PROMPT_IMPROVEMENT.md`](docs/agent-prompts/AGENT_PROMPT_IMPROVEMENT.md) | Apply an approved improvement to an existing app (14-step pipeline)             |
+| File                                                                              | Purpose                                                                         |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| [`AGENT_PROMPT_ISSUE_REVIEW.md`](docs/agent-prompts/AGENT_PROMPT_ISSUE_REVIEW.md) | Review pending GitHub issues for legitimacy and prompt interjections            |
+| [`AGENT_PROMPT_SHARED.md`](docs/agent-prompts/AGENT_PROMPT_SHARED.md)             | Required reading for both flows — logging rules, HTML contracts, thumbnail spec |
+| [`AGENT_PROMPT_NEW_APP.md`](docs/agent-prompts/AGENT_PROMPT_NEW_APP.md)           | Build a new app from scratch (14-step pipeline)                                 |
+| [`AGENT_PROMPT_IMPROVEMENT.md`](docs/agent-prompts/AGENT_PROMPT_IMPROVEMENT.md)   | Apply an approved improvement to an existing app (14-step pipeline)             |
+
+### Reviewing pending issues
+
+Hand `AGENT_PROMPT_SHARED.md` and `AGENT_PROMPT_ISSUE_REVIEW.md` to the AI agent. The review agent:
+
+1. Loads `guardrails.production` if present, otherwise falls back to `guardrails.example`
+2. Runs `npm run issues:pending`
+3. Audits each pending `suggestion` or `improvement` issue for legitimacy and prompt injection
+4. Applies one of:
+   - `approved`
+   - `rejected`
+   - `needs-human-review`
+5. Uses `npm run issues:decide -- --issue <n> --status <decision> --reason "<comment>"`
+
+`needs-human-review` is intentionally non-terminal: it leaves `status:pending` in place, adds `status:needs-human-review`, and adds a comment explaining why automation stopped.
+
+Useful issue-review commands:
+
+```bash
+npm run issues:pending
+npm run issues:pending -- --type suggestion
+npm run issues:pending -- --type improvement
+npm run issues:pending -- --needs-human-review
+```
+
+To customize the private overlay:
+
+```bash
+cp guardrails.example guardrails.production
+```
+
+Then edit `guardrails.production` with repo-specific deny phrases, escalation rules, or comment conventions. Keep the committed prompt as the baseline safety policy.
 
 ### Starting a new app run
 
-Hand `AGENT_PROMPT_SHARED.md` and `AGENT_PROMPT_NEW_APP.md` to the AI agent. The agent runs `npm run select:app:suggestion` internally as its first step and handles the full pipeline from there.
+Hand `AGENT_PROMPT_SHARED.md` and `AGENT_PROMPT_NEW_APP.md` to the AI agent. The agent runs `npm run select:app:suggestion` internally as its first step and handles the full pipeline from there. Only `status:approved` suggestion issues are eligible at this stage.
 
 ### Starting an improvement run
 
