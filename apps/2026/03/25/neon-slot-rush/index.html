@@ -59,6 +59,12 @@
       .paytable { display: grid; gap: 0.4rem; margin: 0.5rem 0; }
       .paytable div { display: flex; justify-content: space-between; background: rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 0.4rem 0.55rem; }
       .muted { opacity: 0.74; }
+      .win-lines { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.5rem; }
+      .win-line-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.38rem 0.6rem; background: rgba(0,0,0,0.2); border: 1px solid color-mix(in oklab, var(--warn) 35%, transparent); border-radius: 8px; cursor: pointer; text-align: left; font-size: 0.82rem; transition: background 0.15s ease, border-color 0.15s ease; width: 100%; }
+      .win-line-item:hover, .win-line-item.active { background: color-mix(in oklab, var(--warn) 14%, transparent); border-color: var(--warn); }
+      .wl-sym { font-size: 1rem; flex-shrink: 0; }
+      .wl-label { flex: 1; opacity: 0.85; }
+      .wl-amt { font-weight: 700; color: var(--warn); flex-shrink: 0; }
       @media (min-width: 740px) { main { grid-template-columns: 2fr 1fr; align-items: start; } .hud { grid-column: 1 / -1; } }
     </style>
   </head>
@@ -79,6 +85,7 @@
       </section>
       <section class="panel" aria-label="Info panel">
         <p class="status" id="status">Ready. Press SPIN!</p>
+        <div id="winLines" class="win-lines" aria-label="Winning paylines breakdown" aria-live="polite"></div>
         <p class="muted">10 paylines, 5x3 reels, RNG-driven each spin.</p>
         <p class="muted" id="volatility">Volatility: Medium</p>
         <p class="muted">Keyboard: Space spin, ↑/↓ adjust bet, A toggle auto, T turbo, M mute.</p>
@@ -92,7 +99,7 @@
       const WEIGHTS = [26, 24, 20, 14, 10, 6];
       const PAYOUT = { '🍒': 2, '🍋': 3, '🔔': 5, '💎': 8, '7️⃣': 12, '⭐': 18 };
       const PAYLINES = [[0,0,0,0,0],[1,1,1,1,1],[2,2,2,2,2],[0,1,2,1,0],[2,1,0,1,2],[0,0,1,0,0],[2,2,1,2,2],[1,0,1,2,1],[1,2,1,0,1],[0,1,1,1,2]];
-      const state = { balance: 1000, betLevels: [5, 10, 20, 40, 80], betIndex: 1, autoSpins: 0, turbo: false, muted: true, spinning: false, lastWin: 0, grid: Array.from({ length: 3 }, () => Array(5).fill('🍒')) };
+      const state = { balance: 1000, betLevels: [5, 10, 20, 40, 80], betIndex: 1, autoSpins: 0, turbo: false, muted: true, spinning: false, lastWin: 0, winLines: [], grid: Array.from({ length: 3 }, () => Array(5).fill('🍒')) };
       const reelsEl = document.getElementById('reels');
       const spinBtn = document.getElementById('spin');
       const autoBtn = document.getElementById('auto');
@@ -106,13 +113,14 @@
       function renderGrid(winCells = []) { reelsEl.innerHTML = ''; for (let r = 0; r < 3; r++) { const row = document.createElement('div'); row.className = 'row'; for (let c = 0; c < 5; c++) { const cell = document.createElement('div'); cell.className = 'cell'; if (winCells.includes(`${r}-${c}`)) cell.classList.add('win'); cell.textContent = state.grid[r][c]; row.append(cell); } reelsEl.append(row); } }
       function renderHud() { const bet = state.betLevels[state.betIndex]; document.getElementById('balance').textContent = `$${state.balance}`; document.getElementById('bet').textContent = `$${bet}`; document.getElementById('lastWin').textContent = `$${state.lastWin}`; betSelect.value = String(state.betIndex); autoBtn.textContent = state.autoSpins > 0 ? `Auto ${state.autoSpins}` : 'Auto x10'; }
       function updateStatus(msg, good = true) { statusEl.textContent = msg; statusEl.style.color = good ? 'var(--good)' : 'var(--warn)'; }
-      function evaluateWin(bet) { let total = 0; const winCells = new Set(); for (const line of PAYLINES) { let base = state.grid[line[0]][0]; if (base === '⭐') base = state.grid[line[1]][1] || '🍒'; let count = 1; for (let c = 1; c < 5; c++) { const s = state.grid[line[c]][c]; if (s === base || s === '⭐' || base === '⭐') count += 1; else break; } if (count >= 3) { const mult = PAYOUT[base] || 2; total += mult * count * (bet / 5); for (let c = 0; c < count; c++) winCells.add(`${line[c]}-${c}`); } } return { total: Math.floor(total), winCells: [...winCells] }; }
+      function evaluateWin(bet) { let total = 0; const winCells = new Set(); const lines = []; for (let li = 0; li < PAYLINES.length; li++) { const line = PAYLINES[li]; let base = state.grid[line[0]][0]; if (base === '⭐') base = state.grid[line[1]][1] || '🍒'; let count = 1; for (let c = 1; c < 5; c++) { const s = state.grid[line[c]][c]; if (s === base || s === '⭐' || base === '⭐') count += 1; else break; } if (count >= 3) { const mult = PAYOUT[base] || 2; const amt = Math.floor(mult * count * (bet / 5)); total += amt; const cells = []; for (let c = 0; c < count; c++) { const key = `${line[c]}-${c}`; winCells.add(key); cells.push(key); } lines.push({ lineIndex: li, symbol: base, count, amount: amt, cells }); } } return { total, winCells: [...winCells], lines }; }
+      function renderWinLines(allWinCells) { const el = document.getElementById('winLines'); el.innerHTML = ''; state.winLines.forEach((line) => { const btn = document.createElement('button'); btn.className = 'win-line-item'; btn.type = 'button'; btn.title = `Click to highlight payline ${line.lineIndex + 1}`; btn.innerHTML = `<span class="wl-sym">${line.symbol}</span><span class="wl-label">Payline ${line.lineIndex + 1} &times;${line.count}</span><span class="wl-amt">+$${line.amount}</span>`; btn.addEventListener('click', () => { el.querySelectorAll('.win-line-item').forEach((b) => b.classList.remove('active')); btn.classList.add('active'); renderGrid(line.cells); }); el.append(btn); }); if (state.winLines.length > 1) { const allBtn = document.createElement('button'); allBtn.className = 'win-line-item active'; allBtn.type = 'button'; allBtn.innerHTML = `<span class="wl-sym">🏆</span><span class="wl-label">All winning lines</span><span class="wl-amt">+$${state.lastWin}</span>`; allBtn.addEventListener('click', () => { el.querySelectorAll('.win-line-item').forEach((b) => b.classList.remove('active')); allBtn.classList.add('active'); renderGrid(allWinCells); }); el.prepend(allBtn); } }
       async function spin() { if (state.spinning) return; const bet = state.betLevels[state.betIndex]; if (state.balance < bet) { updateStatus('Insufficient balance. Reset to continue.', false); return; }
-        state.spinning = true; spinBtn.disabled = true; state.balance -= bet; state.lastWin = 0; renderHud();
+        state.spinning = true; spinBtn.disabled = true; state.balance -= bet; state.lastWin = 0; state.winLines = []; document.getElementById('winLines').innerHTML = ''; renderHud();
         document.querySelectorAll('.cell').forEach((cell) => cell.classList.add('spinning'));
         const loops = state.turbo ? 8 : 16; const pace = state.turbo ? 30 : 55;
         for (let i = 0; i < loops; i++) { state.grid = Array.from({ length: 3 }, () => Array.from({ length: 5 }, weightedPick)); renderGrid(); await new Promise((r) => setTimeout(r, pace)); }
-        const outcome = evaluateWin(bet); state.lastWin = outcome.total; state.balance += outcome.total; renderGrid(outcome.winCells); renderHud(); updateStatus(outcome.total > 0 ? `WIN +$${outcome.total}!` : 'No win this spin.');
+        const outcome = evaluateWin(bet); state.lastWin = outcome.total; state.winLines = outcome.lines; state.balance += outcome.total; renderGrid(outcome.winCells); renderHud(); renderWinLines(outcome.winCells); updateStatus(outcome.total > 0 ? `WIN +$${outcome.total}!` : 'No win this spin.');
         state.spinning = false; spinBtn.disabled = false;
         if (state.autoSpins > 0) { state.autoSpins -= 1; setTimeout(spin, state.turbo ? 120 : 280); }
       }
