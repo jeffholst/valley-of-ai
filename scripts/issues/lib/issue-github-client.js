@@ -99,7 +99,11 @@ export function removeLabels(issueNumber, labels) {
 }
 
 export function commentOnIssue(issueNumber, body) {
-  gh(`gh issue comment ${issueNumber} --body ${JSON.stringify(body)}`);
+  execSync(`gh issue comment ${issueNumber} --body-file -`, {
+    input: body,
+    encoding: 'utf8',
+    stdio: ['pipe', 'pipe', 'pipe'],
+  });
 }
 
 export function getRepoOwner() {
