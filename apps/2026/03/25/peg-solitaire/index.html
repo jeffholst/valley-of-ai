@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Peg Solitaire - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Peg Solitaire" />
+    <meta name="voa-app-id" content="2026/03/25/peg-solitaire" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --accent: #6366f1;
+        --accent-hover: #818cf8;
+        --peg: #f59e0b;
+        --peg-selected: #fbbf24;
+        --peg-highlight: #34d399;
+        --hole: #0f172a;
+        --hole-border: #334155;
+        --cell-invalid: transparent;
+        --board-bg: #1e293b;
+        --board-border: #334155;
+        --win-color: #34d399;
+        --lose-color: #ef4444;
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+        --accent: #4f46e5;
+        --accent-hover: #6366f1;
+        --peg: #d97706;
+        --peg-selected: #f59e0b;
+        --peg-highlight: #059669;
+        --hole: #e2e8f0;
+        --hole-border: #94a3b8;
+        --board-bg: #f3f4f6;
+        --board-border: #cbd5e1;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 16px;
+      }
+
+      h1 {
+        font-size: clamp(1.25rem, 4vw, 1.75rem);
+        font-weight: 700;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #6366f1, #f59e0b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+      }
+
+      .subtitle {
+        font-size: 0.85rem;
+        color: var(--text);
+        opacity: 0.6;
+        text-align: center;
+        margin-bottom: 16px;
+      }
+
+      .stats {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: var(--surface);
+        border-radius: 12px;
+        padding: 10px 20px;
+        min-width: 80px;
+      }
+
+      .stat-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        opacity: 0.6;
+        margin-bottom: 2px;
+      }
+
+      .stat-value {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--accent-hover);
+      }
+
+      .board-wrapper {
+        background: var(--board-bg);
+        border: 2px solid var(--board-border);
+        border-radius: 16px;
+        padding: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      }
+
+      .board {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+      }
+
+      .cell {
+        width: clamp(38px, 11vw, 52px);
+        height: clamp(38px, 11vw, 52px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        cursor: default;
+        position: relative;
+        transition: transform 0.1s ease;
+      }
+
+      /* Valid board positions (holes) */
+      .cell.hole {
+        background: var(--hole);
+        border: 2px solid var(--hole-border);
+        cursor: pointer;
+      }
+
+      .cell.hole:focus {
+        outline: 3px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      /* Peg in hole */
+      .cell.peg {
+        background: var(--hole);
+        border: 2px solid var(--hole-border);
+        cursor: pointer;
+      }
+
+      .cell.peg::after {
+        content: '';
+        display: block;
+        width: 60%;
+        height: 60%;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 35%, var(--peg-selected), var(--peg));
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        transition:
+          background 0.15s ease,
+          transform 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+
+      .cell.peg:hover::after {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      }
+
+      .cell.peg:focus {
+        outline: 3px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      /* Selected peg */
+      .cell.selected {
+        background: var(--hole);
+        border: 2px solid var(--peg-selected);
+      }
+
+      .cell.selected::after {
+        background: radial-gradient(circle at 35% 35%, #fff, var(--peg-selected));
+        transform: scale(1.15);
+        box-shadow:
+          0 0 16px var(--peg-selected),
+          0 4px 12px rgba(0, 0, 0, 0.5);
+      }
+
+      /* Valid destination */
+      .cell.valid-dest {
+        background: var(--hole);
+        border: 2px solid var(--peg-highlight);
+        cursor: pointer;
+      }
+
+      .cell.valid-dest::before {
+        content: '';
+        display: block;
+        width: 30%;
+        height: 30%;
+        border-radius: 50%;
+        background: var(--peg-highlight);
+        opacity: 0.7;
+      }
+
+      .cell.valid-dest:hover {
+        background: rgba(52, 211, 153, 0.1);
+      }
+
+      /* Invalid / corner cell */
+      .cell.invalid {
+        background: transparent;
+        border: none;
+        cursor: default;
+        pointer-events: none;
+      }
+
+      .controls {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 12px;
+      }
+
+      button {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          background 0.2s ease,
+          transform 0.1s ease;
+        min-height: 44px;
+      }
+
+      button:active {
+        transform: scale(0.97);
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+      }
+
+      .btn-secondary {
+        background: var(--surface);
+        color: var(--text);
+        border: 2px solid var(--board-border);
+      }
+
+      .btn-secondary:hover {
+        border-color: var(--accent);
+        color: var(--accent-hover);
+      }
+
+      .message {
+        text-align: center;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 12px 20px;
+        border-radius: 10px;
+        margin-bottom: 12px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .message.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .message.win {
+        background: rgba(52, 211, 153, 0.15);
+        border: 2px solid var(--win-color);
+        color: var(--win-color);
+      }
+
+      .message.lose {
+        background: rgba(239, 68, 68, 0.15);
+        border: 2px solid var(--lose-color);
+        color: var(--lose-color);
+      }
+
+      .message.info {
+        background: var(--surface);
+        border: 2px solid var(--board-border);
+        color: var(--text);
+        opacity: 0.8;
+      }
+
+      .instructions {
+        font-size: 0.8rem;
+        opacity: 0.55;
+        text-align: center;
+        max-width: 340px;
+        line-height: 1.5;
+      }
+
+      @media (max-width: 360px) {
+        .cell {
+          width: 36px;
+          height: 36px;
+        }
+        .board {
+          gap: 3px;
+        }
+        .board-wrapper {
+          padding: 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Peg Solitaire</h1>
+    <p class="subtitle">Classic English board puzzle</p>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-label">Pegs</span>
+        <span class="stat-value" id="peg-count">32</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Moves</span>
+        <span class="stat-value" id="move-count">0</span>
+      </div>
+    </div>
+
+    <div class="board-wrapper">
+      <div class="board" id="board" role="grid" aria-label="Peg Solitaire Board"></div>
+    </div>
+
+    <div id="message" class="message hidden" role="status" aria-live="polite"></div>
+
+    <div class="controls">
+      <button class="btn-primary" id="new-game-btn" onclick="newGame()">New Game</button>
+      <button class="btn-secondary" id="undo-btn" onclick="undoMove()">Undo</button>
+    </div>
+
+    <p class="instructions">
+      Click a peg to select it, then click a valid destination (green dot) to jump over an adjacent
+      peg. Goal: leave exactly one peg in the center!
+    </p>
+
+    <script>
+      // English board: 7x7, corners (2x2 blocks) invalid
+      // Row/col indices 0-6; valid cells exclude corners
+      const BOARD_SIZE = 7;
+      const CENTER = 3;
+
+      // Determine if a cell is a valid board position
+      function isValidCell(r, c) {
+        if (r >= 0 && r <= 1 && c >= 0 && c <= 1) return false;
+        if (r >= 0 && r <= 1 && c >= 5 && c <= 6) return false;
+        if (r >= 5 && r <= 6 && c >= 0 && c <= 1) return false;
+        if (r >= 5 && r <= 6 && c >= 5 && c <= 6) return false;
+        return true;
+      }
+
+      // Game state
+      let board = [];
+      let selectedCell = null;
+      let validDestinations = [];
+      let moveCount = 0;
+      let history = []; // for undo
+
+      function initBoard() {
+        board = [];
+        for (let r = 0; r < BOARD_SIZE; r++) {
+          board[r] = [];
+          for (let c = 0; c < BOARD_SIZE; c++) {
+            if (!isValidCell(r, c)) {
+              board[r][c] = null; // invalid
+            } else if (r === CENTER && c === CENTER) {
+              board[r][c] = false; // center empty
+            } else {
+              board[r][c] = true; // peg present
+            }
+          }
+        }
+      }
+
+      function countPegs() {
+        let count = 0;
+        for (let r = 0; r < BOARD_SIZE; r++) {
+          for (let c = 0; c < BOARD_SIZE; c++) {
+            if (board[r][c] === true) count++;
+          }
+        }
+        return count;
+      }
+
+      // Returns list of valid moves as {fromR, fromC, midR, midC, toR, toC}
+      function getValidMoves() {
+        const moves = [];
+        const dirs = [
+          [-1, 0],
+          [1, 0],
+          [0, -1],
+          [0, 1],
+        ];
+        for (let r = 0; r < BOARD_SIZE; r++) {
+          for (let c = 0; c < BOARD_SIZE; c++) {
+            if (board[r][c] !== true) continue;
+            for (const [dr, dc] of dirs) {
+              const mr = r + dr;
+              const mc = c + dc;
+              const tr = r + 2 * dr;
+              const tc = c + 2 * dc;
+              if (
+                tr >= 0 &&
+                tr < BOARD_SIZE &&
+                tc >= 0 &&
+                tc < BOARD_SIZE &&
+                board[mr][mc] === true &&
+                board[tr][tc] === false
+              ) {
+                moves.push({ fromR: r, fromC: c, midR: mr, midC: mc, toR: tr, toC: tc });
+              }
+            }
+          }
+        }
+        return moves;
+      }
+
+      function getValidDestinationsFor(r, c) {
+        const dests = [];
+        const dirs = [
+          [-1, 0],
+          [1, 0],
+          [0, -1],
+          [0, 1],
+        ];
+        for (const [dr, dc] of dirs) {
+          const mr = r + dr;
+          const mc = c + dc;
+          const tr = r + 2 * dr;
+          const tc = c + 2 * dc;
+          if (
+            tr >= 0 &&
+            tr < BOARD_SIZE &&
+            tc >= 0 &&
+            tc < BOARD_SIZE &&
+            board[mr][mc] === true &&
+            board[tr][tc] === false
+          ) {
+            dests.push([tr, tc]);
+          }
+        }
+        return dests;
+      }
+
+      function checkGameOver() {
+        const moves = getValidMoves();
+        const pegs = countPegs();
+        if (pegs === 1 && board[CENTER][CENTER] === true) {
+          return 'win';
+        }
+        if (moves.length === 0) {
+          return 'lose';
+        }
+        return null;
+      }
+
+      function renderBoard() {
+        const boardEl = document.getElementById('board');
+        boardEl.innerHTML = '';
+
+        for (let r = 0; r < BOARD_SIZE; r++) {
+          for (let c = 0; c < BOARD_SIZE; c++) {
+            const cell = document.createElement('div');
+            cell.dataset.r = r;
+            cell.dataset.c = c;
+            cell.setAttribute('role', 'gridcell');
+
+            if (board[r][c] === null) {
+              // Invalid corner cell
+              cell.className = 'cell invalid';
+              cell.setAttribute('aria-hidden', 'true');
+            } else if (
+              selectedCell &&
+              selectedCell[0] === r &&
+              selectedCell[1] === c
+            ) {
+              cell.className = 'cell peg selected';
+              cell.setAttribute('tabindex', '0');
+              cell.setAttribute('aria-label', `Row ${r + 1}, Column ${c + 1}, selected peg`);
+              cell.setAttribute('aria-pressed', 'true');
+              cell.addEventListener('click', () => handleCellClick(r, c));
+              cell.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleCellClick(r, c);
+                }
+              });
+            } else if (validDestinations.some(([dr, dc]) => dr === r && dc === c)) {
+              cell.className = 'cell valid-dest';
+              cell.setAttribute('tabindex', '0');
+              cell.setAttribute('aria-label', `Row ${r + 1}, Column ${c + 1}, valid destination`);
+              cell.addEventListener('click', () => handleCellClick(r, c));
+              cell.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleCellClick(r, c);
+                }
+              });
+            } else if (board[r][c] === true) {
+              cell.className = 'cell peg';
+              cell.setAttribute('tabindex', '0');
+              cell.setAttribute('aria-label', `Row ${r + 1}, Column ${c + 1}, peg`);
+              cell.addEventListener('click', () => handleCellClick(r, c));
+              cell.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleCellClick(r, c);
+                }
+              });
+            } else {
+              // Empty hole
+              cell.className = 'cell hole';
+              cell.setAttribute('tabindex', '-1');
+              cell.setAttribute('aria-label', `Row ${r + 1}, Column ${c + 1}, empty`);
+              cell.addEventListener('click', () => handleCellClick(r, c));
+            }
+
+            boardEl.appendChild(cell);
+          }
+        }
+
+        document.getElementById('peg-count').textContent = countPegs();
+        document.getElementById('move-count').textContent = moveCount;
+      }
+
+      function handleCellClick(r, c) {
+        const state = checkGameOver();
+        if (state) return;
+
+        // If clicking on selected peg — deselect
+        if (selectedCell && selectedCell[0] === r && selectedCell[1] === c) {
+          selectedCell = null;
+          validDestinations = [];
+          renderBoard();
+          return;
+        }
+
+        // If clicking on a valid destination
+        if (selectedCell && validDestinations.some(([dr, dc]) => dr === r && dc === c)) {
+          executeMove(selectedCell[0], selectedCell[1], r, c);
+          return;
+        }
+
+        // If clicking on a peg — select it
+        if (board[r][c] === true) {
+          selectedCell = [r, c];
+          validDestinations = getValidDestinationsFor(r, c);
+          const msgEl = document.getElementById('message');
+          if (validDestinations.length === 0) {
+            showMessage('No valid moves for this peg. Choose another.', 'info');
+          } else {
+            hideMessage();
+          }
+          renderBoard();
+          return;
+        }
+
+        // Clicking empty hole with no selection — ignore
+        selectedCell = null;
+        validDestinations = [];
+        renderBoard();
+      }
+
+      function executeMove(fromR, fromC, toR, toC) {
+        const midR = (fromR + toR) / 2;
+        const midC = (fromC + toC) / 2;
+
+        // Save history for undo
+        history.push({
+          board: board.map(row => [...row]),
+          moveCount,
+          selectedCell,
+          validDestinations: [...validDestinations],
+        });
+
+        board[fromR][fromC] = false;
+        board[midR][midC] = false;
+        board[toR][toC] = true;
+        moveCount++;
+        selectedCell = null;
+        validDestinations = [];
+
+        renderBoard();
+
+        const gameState = checkGameOver();
+        if (gameState === 'win') {
+          showMessage('You win! One peg in the center — perfect!', 'win');
+        } else if (gameState === 'lose') {
+          showMessage('No more moves! ' + countPegs() + ' pegs remaining.', 'lose');
+        } else {
+          hideMessage();
+        }
+      }
+
+      function undoMove() {
+        if (history.length === 0) return;
+        const prev = history.pop();
+        board = prev.board;
+        moveCount = prev.moveCount;
+        selectedCell = null;
+        validDestinations = [];
+        hideMessage();
+        renderBoard();
+      }
+
+      function newGame() {
+        initBoard();
+        selectedCell = null;
+        validDestinations = [];
+        moveCount = 0;
+        history = [];
+        hideMessage();
+        renderBoard();
+      }
+
+      function showMessage(text, type) {
+        const el = document.getElementById('message');
+        el.textContent = text;
+        el.className = 'message ' + type;
+      }
+
+      function hideMessage() {
+        const el = document.getElementById('message');
+        el.className = 'message hidden';
+        el.textContent = '';
+      }
+
+      // Init
+      newGame();
+    </script>
+  </body>
+</html>
