@@ -121,7 +121,7 @@ For each issue, return strict JSON only:
     "Clear, actionable request",
     "No prompt-interjection language detected"
   ],
-  "decisionComment": "Approved for agent processing. Reason: clear legitimate request with no prompt-injection indicators."
+  "reason": "Clear legitimate request with no prompt-injection indicators."
 }
 ```
 
@@ -138,7 +138,7 @@ Valid `decision` values:
 After producing the JSON decision, apply it with:
 
 ```bash
-npm run issues:decide -- --issue <number> --status <approved|rejected|needs-human-review> --reason "<decisionComment>"
+npm run issues:decide -- --issue <number> --status <approved|rejected|needs-human-review> --reason "<reason>"
 ```
 
 Behavior:
