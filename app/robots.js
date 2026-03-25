@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://valleyofai.com';
+const BASE_URL = process.env.NEXT_PUBLIC_MAIN_SITE_URL || '';
 
 export default function robots() {
   return {

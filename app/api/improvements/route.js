@@ -60,8 +60,9 @@ export async function POST(request) {
   const requestorLine = safeRequestor
     ? `**Requestor:** ${safeRequestor}`
     : '**Requestor:** anonymous';
+  const siteBaseUrl = process.env.NEXT_PUBLIC_MAIN_SITE_URL || '';
   const appLine = safeAppName
-    ? `**App:** [${safeAppName}](https://www.valleyofai.com/apps/${appId})`
+    ? `**App:** [${safeAppName}](${siteBaseUrl}/apps/${appId})`
     : `**App:** ${appId}`;
   const issueBody = `## App Improvement\n\n${appLine}\n${requestorLine}\n\n### Description\n\n${description}`;
 

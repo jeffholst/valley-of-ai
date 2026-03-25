@@ -1,12 +1,13 @@
 import '@/styles/globals.css';
 import { Inter } from 'next/font/google';
 import LayoutShell from '@/components/LayoutShell';
+import { siteName, siteDescription } from '@/lib/siteConfig';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'Valley of AI',
-  description: 'An experiment in AI, powered by curiosity and love.',
+  title: siteName || 'AI Gallery',
+  description: siteDescription || 'A gallery of apps built by AI agents.',
 };
 
 export default function RootLayout({ children }) {

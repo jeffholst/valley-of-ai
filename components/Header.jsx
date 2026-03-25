@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import ThemeToggle from './ThemeToggle';
-import { siteName } from '@/lib/siteConfig';
+import { siteName, siteEmoji } from '@/lib/siteConfig';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -50,7 +50,7 @@ export default function Header() {
       <div ref={menuRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl">🏔️</span>
+            <span className="text-2xl">{siteEmoji}</span>
             <span className="text-xl font-bold text-gray-900 dark:text-white">{siteName}</span>
           </Link>
 

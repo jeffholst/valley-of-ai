@@ -5,5 +5,6 @@
   "socialFacebookUrl": "__SOCIAL_FACEBOOK_URL__",
   "socialInstagramUrl": "__SOCIAL_INSTAGRAM_URL__",
   "supabaseUrl": "__SUPABASE_URL__",
-  "supabaseAnonKey": "__SUPABASE_ANON_KEY__"
+  "supabaseAnonKey": "__SUPABASE_ANON_KEY__",
+  "storagePrefix": "__STORAGE_PREFIX__"
 }
