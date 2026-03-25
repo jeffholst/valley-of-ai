@@ -1,0 +1,196 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a2744;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="pegGrad" cx="35%" cy="35%" r="60%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
+    </radialGradient>
+    <radialGradient id="pegSelectedGrad" cx="35%" cy="35%" r="60%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fbbf24;stop-opacity:1" />
+    </radialGradient>
+    <radialGradient id="boardGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0" />
+    </radialGradient>
+    <filter id="pegGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur" />
+      <feFlood flood-color="#f59e0b" flood-opacity="0.6" result="color" />
+      <feComposite in="color" in2="blur" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="selectedGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur" />
+      <feFlood flood-color="#fbbf24" flood-opacity="0.9" result="color" />
+      <feComposite in="color" in2="blur" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="boardShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#000000" flood-opacity="0.5" />
+    </filter>
+    <filter id="titleGlow" x="-10%" y="-30%" width="120%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur" />
+      <feFlood flood-color="#6366f1" flood-opacity="0.8" result="color" />
+      <feComposite in="color" in2="blur" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="450" fill="url(#bgGrad)" />
+
+  <!-- Subtle radial overlay -->
+  <ellipse cx="400" cy="225" rx="380" ry="220" fill="url(#boardGlow)" />
+
+  <!-- Board panel -->
+  <rect x="60" y="40" width="380" height="370" rx="20" ry="20" fill="#1e293b" stroke="#334155" stroke-width="2" filter="url(#boardShadow)" />
+
+  <!-- Board grid: 7x7, cell size ~44px, starting at x=80, y=58 -->
+  <!-- Valid cells: skip corners (rows 0-1 cols 0-1, rows 0-1 cols 5-6, rows 5-6 cols 0-1, rows 5-6 cols 5-6) -->
+  <!-- Mid-game state: ~18 pegs remaining, some removed -->
+
+  <!-- Row 0: cols 2,3,4 only -->
+  <rect x="148" y="66" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- peg at (0,2) -->
+  <circle cx="170" cy="88" r="14" fill="url(#pegGrad)" filter="url(#pegGlow)" />
+  <rect x="196" y="66" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- empty at (0,3) -->
+  <rect x="244" y="66" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- peg at (0,4) -->
+  <circle cx="266" cy="88" r="14" fill="url(#pegGrad)" filter="url(#pegGlow)" />
+
+  <!-- Row 1: cols 2,3,4 only -->
+  <rect x="148" y="114" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- empty at (1,2) -->
+  <rect x="196" y="114" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- peg at (1,3) -->
+  <circle cx="218" cy="136" r="14" fill="url(#pegGrad)" filter="url(#pegGlow)" />
+  <rect x="244" y="114" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- empty at (1,4) -->
+
+  <!-- Row 2: all 7 cols -->
+  <rect x="100" y="162" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- empty at (2,0) -->
+  <rect x="148" y="162" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- peg at (2,1) -->
+  <circle cx="170" cy="184" r="14" fill="url(#pegGrad)" filter="url(#pegGlow)" />
+  <rect x="196" y="162" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- peg at (2,2) -->
+  <circle cx="218" cy="184" r="14" fill="url(#pegGrad)" filter="url(#pegGlow)" />
+  <rect x="244" y="162" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- empty at (2,3) center -->
+  <rect x="292" y="162" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- peg at (2,4) -->
+  <circle cx="314" cy="184" r="14" fill="url(#pegGrad)" filter="url(#pegGlow)" />
+  <rect x="340" y="162" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- empty at (2,5) -->
+  <rect x="388" y="162" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- peg at (2,6) -->
+  <circle cx="410" cy="184" r="14" fill="url(#pegGrad)" filter="url(#pegGlow)" />
+
+  <!-- Row 3: all 7 cols (center row) -->
+  <rect x="100" y="210" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- peg at (3,0) -->
+  <circle cx="122" cy="232" r="14" fill="url(#pegGrad)" filter="url(#pegGlow)" />
+  <rect x="148" y="210" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- empty at (3,1) -->
+  <rect x="196" y="210" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- empty at (3,2) -->
+  <!-- Center hole: SELECTED PEG (glowing) -->
+  <rect x="244" y="210" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5" />
+  <circle cx="266" cy="232" r="14" fill="url(#pegSelectedGrad)" filter="url(#selectedGlow)" />
+  <rect x="292" y="210" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- empty at (3,4) -->
+  <rect x="340" y="210" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- peg at (3,5) -->
+  <circle cx="362" cy="232" r="14" fill="url(#pegGrad)" filter="url(#pegGlow)" />
+  <rect x="388" y="210" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- empty at (3,6) -->
+
+  <!-- Row 4: all 7 cols -->
+  <rect x="100" y="258" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- empty at (4,0) -->
+  <rect x="148" y="258" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- peg at (4,1) -->
+  <circle cx="170" cy="280" r="14" fill="url(#pegGrad)" filter="url(#pegGlow)" />
+  <rect x="196" y="258" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- empty at (4,2) -->
+  <!-- Valid destination indicator -->
+  <rect x="244" y="258" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#34d399" stroke-width="2.5" />
+  <circle cx="266" cy="280" r="7" fill="#34d399" opacity="0.8" />
+  <rect x="292" y="258" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- peg at (4,4) -->
+  <circle cx="314" cy="280" r="14" fill="url(#pegGrad)" filter="url(#pegGlow)" />
+  <rect x="340" y="258" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- empty at (4,5) -->
+  <rect x="388" y="258" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- peg at (4,6) -->
+  <circle cx="410" cy="280" r="14" fill="url(#pegGrad)" filter="url(#pegGlow)" />
+
+  <!-- Row 5: cols 2,3,4 only -->
+  <rect x="148" y="306" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- peg at (5,2) -->
+  <circle cx="170" cy="328" r="14" fill="url(#pegGrad)" filter="url(#pegGlow)" />
+  <rect x="196" y="306" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- empty at (5,3) -->
+  <rect x="244" y="306" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- peg at (5,4) -->
+  <circle cx="266" cy="328" r="14" fill="url(#pegGrad)" filter="url(#pegGlow)" />
+
+  <!-- Row 6: cols 2,3,4 only -->
+  <rect x="148" y="354" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- empty at (6,2) -->
+  <rect x="196" y="354" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- peg at (6,3) -->
+  <circle cx="218" cy="376" r="14" fill="url(#pegGrad)" filter="url(#pegGlow)" />
+  <rect x="244" y="354" width="44" height="44" rx="22" ry="22" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+  <!-- empty at (6,4) -->
+
+  <!-- Right panel: stats and info -->
+  <rect x="480" y="80" width="280" height="290" rx="16" ry="16" fill="#1e293b" stroke="#334155" stroke-width="1.5" />
+
+  <!-- Stats boxes -->
+  <rect x="500" y="100" width="110" height="70" rx="10" ry="10" fill="#0f172a" stroke="#334155" stroke-width="1" />
+  <text x="555" y="122" font-family="system-ui, sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle" letter-spacing="1">PEGS</text>
+  <text x="555" y="155" font-family="system-ui, sans-serif" font-size="30" font-weight="700" fill="#818cf8" text-anchor="middle">18</text>
+
+  <rect x="630" y="100" width="110" height="70" rx="10" ry="10" fill="#0f172a" stroke="#334155" stroke-width="1" />
+  <text x="685" y="122" font-family="system-ui, sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle" letter-spacing="1">MOVES</text>
+  <text x="685" y="155" font-family="system-ui, sans-serif" font-size="30" font-weight="700" fill="#818cf8" text-anchor="middle">14</text>
+
+  <!-- Divider -->
+  <line x1="500" y1="192" x2="740" y2="192" stroke="#334155" stroke-width="1" />
+
+  <!-- Instructions -->
+  <text x="620" y="220" font-family="system-ui, sans-serif" font-size="13" fill="#94a3b8" text-anchor="middle">Select a peg, then tap</text>
+  <text x="620" y="240" font-family="system-ui, sans-serif" font-size="13" fill="#94a3b8" text-anchor="middle">a green dot to jump</text>
+
+  <!-- Legend -->
+  <circle cx="510" cy="270" r="10" fill="url(#pegGrad)" />
+  <text x="527" y="274" font-family="system-ui, sans-serif" font-size="12" fill="#d1d5db">Peg</text>
+
+  <circle cx="510" cy="300" r="10" fill="url(#pegSelectedGrad)" filter="url(#selectedGlow)" />
+  <text x="527" y="304" font-family="system-ui, sans-serif" font-size="12" fill="#d1d5db">Selected</text>
+
+  <circle cx="510" cy="330" r="6" fill="#34d399" opacity="0.8" />
+  <text x="527" y="334" font-family="system-ui, sans-serif" font-size="12" fill="#d1d5db">Valid move</text>
+
+  <!-- New Game button -->
+  <rect x="500" y="352" width="230" height="40" rx="10" ry="10" fill="#6366f1" />
+  <text x="615" y="377" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">New Game</text>
+
+  <!-- Title -->
+  <text x="400" y="430" font-family="system-ui, sans-serif" font-size="22" font-weight="700" fill="#f9fafb" text-anchor="middle" filter="url(#titleGlow)">Peg Solitaire</text>
+</svg>

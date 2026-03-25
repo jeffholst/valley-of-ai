@@ -1,5 +1,38 @@
 [
   {
+    "id": "2026/03/25/peg-solitaire",
+    "name": "Peg Solitaire",
+    "shortDescription": "Classic English board peg solitaire — jump pegs to clear the board, aiming to leave just one peg in the center.",
+    "thumbnailUrl": "/apps/2026/03/25/peg-solitaire/thumbnail.svg",
+    "createdAt": "2026-03-25T00:03:18Z",
+    "year": 2026,
+    "month": 3,
+    "day": 25,
+    "category": "Entertainment",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": ["puzzle", "solitaire", "strategy", "board-game", "classic", "mobile-first"],
+    "route": "/apps/2026/03/25/peg-solitaire",
+    "appPath": "/apps/2026/03/25/peg-solitaire/index.html",
+    "generation": {
+      "agentName": "claude-code",
+      "llmModel": "claude-sonnet-4-6",
+      "startTime": "2026-03-25T00:03:18Z",
+      "endTime": "2026-03-25T00:06:08Z",
+      "totalTokensIn": 0,
+      "totalTokensOut": 0,
+      "runId": "run-20260325T000318Z-adea94",
+      "notes": "Built from GitHub issue #196 suggestion by Perplexity"
+    },
+    "suggestion": {
+      "issueNumber": 196,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/196",
+      "prompt": "Build a classic Peg Solitaire (English board) mobile first web game",
+      "requestor": "Perplexity"
+    },
+    "improvements": null
+  },
+  {
     "id": "2026/03/24/charades-chaos-deck",
     "name": "Charades Chaos Deck",
     "shortDescription": "Fast party charades with taboo hints, swipe controls, and team score tracking.",
@@ -11,14 +44,7 @@
     "category": "Entertainment",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "charades",
-      "party",
-      "social",
-      "timer",
-      "team-play",
-      "responsive"
-    ],
+    "tags": ["charades", "party", "social", "timer", "team-play", "responsive"],
     "route": "/apps/2026/03/24/charades-chaos-deck",
     "appPath": "/apps/2026/03/24/charades-chaos-deck/index.html",
     "generation": {
@@ -65,15 +91,7 @@
     "category": "Entertainment",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "audio",
-      "foley",
-      "cinema",
-      "soundboard",
-      "keyboard",
-      "touch",
-      "responsive"
-    ],
+    "tags": ["audio", "foley", "cinema", "soundboard", "keyboard", "touch", "responsive"],
     "route": "/apps/2026/03/24/foley-scene-mixer",
     "appPath": "/apps/2026/03/24/foley-scene-mixer/index.html",
     "generation": {
@@ -101,15 +119,7 @@
     "category": "Entertainment",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "storytelling",
-      "creative",
-      "generator",
-      "cinema",
-      "keyboard",
-      "touch",
-      "responsive"
-    ],
+    "tags": ["storytelling", "creative", "generator", "cinema", "keyboard", "touch", "responsive"],
     "route": "/apps/2026/03/24/story-beat-remixer",
     "appPath": "/apps/2026/03/24/story-beat-remixer/index.html",
     "generation": {
@@ -137,15 +147,7 @@
     "category": "Games",
     "inputMode": "mobile",
     "status": "active",
-    "tags": [
-      "roguelike",
-      "puzzle",
-      "mobile",
-      "touch",
-      "dungeon",
-      "strategy",
-      "seeded"
-    ],
+    "tags": ["roguelike", "puzzle", "mobile", "touch", "dungeon", "strategy", "seeded"],
     "route": "/apps/2026/03/23/dungeon-puzzle-run",
     "appPath": "/apps/2026/03/23/dungeon-puzzle-run/index.html",
     "generation": {
@@ -188,14 +190,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "tic-tac-toe",
-      "minimax",
-      "strategy",
-      "responsive",
-      "keyboard",
-      "touch"
-    ],
+    "tags": ["tic-tac-toe", "minimax", "strategy", "responsive", "keyboard", "touch"],
     "route": "/apps/2026/03/23/tic-tac-toe-strategy-lab",
     "appPath": "/apps/2026/03/23/tic-tac-toe-strategy-lab/index.html",
     "generation": {
@@ -223,15 +218,7 @@
     "category": "Entertainment",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "lottery",
-      "texas",
-      "random",
-      "numbers",
-      "animation",
-      "confetti",
-      "generator"
-    ],
+    "tags": ["lottery", "texas", "random", "numbers", "animation", "confetti", "generator"],
     "route": "/apps/2026/03/21/texas-lotto-generator",
     "appPath": "/apps/2026/03/21/texas-lotto-generator/index.html",
     "generation": {
@@ -306,14 +293,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "tetris",
-      "puzzle",
-      "mobile",
-      "touch",
-      "classic",
-      "arcade"
-    ],
+    "tags": ["tetris", "puzzle", "mobile", "touch", "classic", "arcade"],
     "route": "/apps/2026/03/21/tetris-classic",
     "appPath": "/apps/2026/03/21/tetris-classic/index.html",
     "generation": {
@@ -346,14 +326,7 @@
     "category": "Education",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "morse-code",
-      "audio",
-      "educational",
-      "translator",
-      "web-audio-api",
-      "radio"
-    ],
+    "tags": ["morse-code", "audio", "educational", "translator", "web-audio-api", "radio"],
     "route": "/apps/2026/03/21/morse-code-radio",
     "appPath": "/apps/2026/03/21/morse-code-radio/index.html",
     "generation": {
@@ -381,13 +354,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "memory",
-      "simon",
-      "keyboard",
-      "touch",
-      "reflex"
-    ],
+    "tags": ["memory", "simon", "keyboard", "touch", "reflex"],
     "route": "/apps/2026/03/21/pattern-pulse-memory",
     "appPath": "/apps/2026/03/21/pattern-pulse-memory/index.html",
     "generation": {
@@ -415,13 +382,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "sudoku",
-      "puzzle",
-      "keyboard",
-      "touch",
-      "logic"
-    ],
+    "tags": ["sudoku", "puzzle", "keyboard", "touch", "logic"],
     "route": "/apps/2026/03/20/sudoku-sprint",
     "appPath": "/apps/2026/03/20/sudoku-sprint/index.html",
     "generation": {
@@ -449,13 +410,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "arcade",
-      "reaction",
-      "lanes",
-      "touch",
-      "keyboard"
-    ],
+    "tags": ["arcade", "reaction", "lanes", "touch", "keyboard"],
     "route": "/apps/2026/03/20/neon-lane-sprinter",
     "appPath": "/apps/2026/03/20/neon-lane-sprinter/index.html",
     "generation": {
@@ -483,14 +438,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "puzzle",
-      "numbers",
-      "strategy",
-      "casual",
-      "swipe",
-      "neon"
-    ],
+    "tags": ["puzzle", "numbers", "strategy", "casual", "swipe", "neon"],
     "route": "/apps/2026/03/19/slide-2048",
     "appPath": "/apps/2026/03/19/slide-2048/index.html",
     "generation": {
@@ -518,14 +466,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "memory",
-      "puzzle",
-      "arcade",
-      "touch",
-      "keyboard",
-      "responsive"
-    ],
+    "tags": ["memory", "puzzle", "arcade", "touch", "keyboard", "responsive"],
     "route": "/apps/2026/03/19/orbit-memory-match",
     "appPath": "/apps/2026/03/19/orbit-memory-match/index.html",
     "generation": {
@@ -590,14 +531,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "hangman",
-      "word-game",
-      "puzzle",
-      "animation",
-      "keyboard",
-      "touch"
-    ],
+    "tags": ["hangman", "word-game", "puzzle", "animation", "keyboard", "touch"],
     "route": "/apps/2026/03/17/hangman-word-game",
     "appPath": "/apps/2026/03/17/hangman-word-game/index.html",
     "generation": {
@@ -625,14 +559,7 @@
     "category": "Productivity",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "timer",
-      "productivity",
-      "focus",
-      "utility",
-      "pomodoro",
-      "time-management"
-    ],
+    "tags": ["timer", "productivity", "focus", "utility", "pomodoro", "time-management"],
     "route": "/apps/2026/03/17/focus-timer",
     "appPath": "/apps/2026/03/17/focus-timer/index.html",
     "generation": {
@@ -660,13 +587,7 @@
     "category": "Utilities",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "breathing",
-      "meditation",
-      "stress-relief",
-      "habit-tracking",
-      "4-7-8"
-    ],
+    "tags": ["breathing", "meditation", "stress-relief", "habit-tracking", "4-7-8"],
     "route": "/apps/2026/03/16/mindful-breathing-tracker",
     "appPath": "/apps/2026/03/16/mindful-breathing-tracker/index.html",
     "generation": {
@@ -694,14 +615,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "game",
-      "memory",
-      "puzzle",
-      "sequence",
-      "brain-training",
-      "mobile-friendly"
-    ],
+    "tags": ["game", "memory", "puzzle", "sequence", "brain-training", "mobile-friendly"],
     "route": "/apps/2026/03/16/memory-sequence",
     "appPath": "/apps/2026/03/16/memory-sequence/index.html",
     "generation": {
@@ -729,13 +643,7 @@
     "category": "Productivity",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "productivity",
-      "pomodoro",
-      "task-planning",
-      "priority-scoring",
-      "mobile-friendly"
-    ],
+    "tags": ["productivity", "pomodoro", "task-planning", "priority-scoring", "mobile-friendly"],
     "route": "/apps/2026/03/15/focus-sprint-planner",
     "appPath": "/apps/2026/03/15/focus-sprint-planner/index.html",
     "generation": {
@@ -763,12 +671,7 @@
     "category": "Utilities",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "hydration",
-      "wellness",
-      "tracker",
-      "mobile-friendly"
-    ],
+    "tags": ["hydration", "wellness", "tracker", "mobile-friendly"],
     "route": "/apps/2026/03/15/hydration-nudge-tracker",
     "appPath": "/apps/2026/03/15/hydration-nudge-tracker/index.html",
     "generation": {
@@ -796,13 +699,7 @@
     "category": "Productivity",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "decision",
-      "spinner",
-      "utility",
-      "random",
-      "mobile-friendly"
-    ],
+    "tags": ["decision", "spinner", "utility", "random", "mobile-friendly"],
     "route": "/apps/2026/03/14/decision-spinner",
     "appPath": "/apps/2026/03/14/decision-spinner/index.html",
     "generation": {
@@ -830,13 +727,7 @@
     "category": "Utilities",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "password",
-      "security",
-      "entropy",
-      "utility",
-      "mobile-friendly"
-    ],
+    "tags": ["password", "security", "entropy", "utility", "mobile-friendly"],
     "route": "/apps/2026/03/14/password-entropy-lab",
     "appPath": "/apps/2026/03/14/password-entropy-lab/index.html",
     "generation": {
@@ -864,12 +755,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "memory",
-      "cards",
-      "game",
-      "mobile-friendly"
-    ],
+    "tags": ["memory", "cards", "game", "mobile-friendly"],
     "route": "/apps/2026/03/14/focus-flip-cards",
     "appPath": "/apps/2026/03/14/focus-flip-cards/index.html",
     "generation": {
@@ -897,15 +783,7 @@
     "category": "Utilities",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "breathing",
-      "wellness",
-      "mindfulness",
-      "timer",
-      "mobile",
-      "focus",
-      "health"
-    ],
+    "tags": ["breathing", "wellness", "mindfulness", "timer", "mobile", "focus", "health"],
     "route": "/apps/2026/03/13/interval-breathing-coach",
     "appPath": "/apps/2026/03/13/interval-breathing-coach/index.html",
     "generation": {
@@ -933,16 +811,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "game",
-      "tap",
-      "mobile",
-      "responsive",
-      "arcade",
-      "high-score",
-      "touch",
-      "reaction"
-    ],
+    "tags": ["game", "tap", "mobile", "responsive", "arcade", "high-score", "touch", "reaction"],
     "route": "/apps/2026/03/13/bubble-tap",
     "appPath": "/apps/2026/03/13/bubble-tap/index.html",
     "generation": {
@@ -970,13 +839,7 @@
     "category": "Productivity",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "meeting",
-      "calculator",
-      "productivity",
-      "finance",
-      "timer"
-    ],
+    "tags": ["meeting", "calculator", "productivity", "finance", "timer"],
     "route": "/apps/2026/03/12/meeting-cost-calculator",
     "appPath": "/apps/2026/03/12/meeting-cost-calculator/index.html",
     "generation": {
@@ -1004,13 +867,7 @@
     "category": "Utilities",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "timezone",
-      "scheduling",
-      "meeting-planner",
-      "global-teams",
-      "productivity"
-    ],
+    "tags": ["timezone", "scheduling", "meeting-planner", "global-teams", "productivity"],
     "route": "/apps/2026/03/12/timezone-overlap-finder",
     "appPath": "/apps/2026/03/12/timezone-overlap-finder/index.html",
     "generation": {
@@ -1038,14 +895,7 @@
     "category": "Education",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "astronomy",
-      "stars",
-      "constellations",
-      "mythology",
-      "interactive",
-      "educational"
-    ],
+    "tags": ["astronomy", "stars", "constellations", "mythology", "interactive", "educational"],
     "route": "/apps/2026/03/12/constellation-explorer",
     "appPath": "/apps/2026/03/12/constellation-explorer/index.html",
     "generation": {
@@ -1073,13 +923,7 @@
     "category": "Visualizations",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "sorting",
-      "algorithms",
-      "visualizer",
-      "education",
-      "race"
-    ],
+    "tags": ["sorting", "algorithms", "visualizer", "education", "race"],
     "route": "/apps/2026/03/12/sorting-race-visualizer",
     "appPath": "/apps/2026/03/12/sorting-race-visualizer/index.html",
     "generation": {
@@ -1107,13 +951,7 @@
     "category": "Utilities",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "decision",
-      "randomizer",
-      "wheel",
-      "party",
-      "utility"
-    ],
+    "tags": ["decision", "randomizer", "wheel", "party", "utility"],
     "route": "/apps/2026/03/11/lucky-decision-wheel",
     "appPath": "/apps/2026/03/11/lucky-decision-wheel/index.html",
     "generation": {
@@ -1141,12 +979,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "maze",
-      "puzzle",
-      "speedrun",
-      "keyboard-controls"
-    ],
+    "tags": ["maze", "puzzle", "speedrun", "keyboard-controls"],
     "route": "/apps/2026/03/10/maze-runner",
     "appPath": "/apps/2026/03/10/maze-runner/index.html",
     "generation": {
@@ -1174,12 +1007,7 @@
     "category": "Productivity",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "habits",
-      "streaks",
-      "tracker",
-      "localstorage"
-    ],
+    "tags": ["habits", "streaks", "tracker", "localstorage"],
     "route": "/apps/2026/03/10/habit-streak-garden",
     "appPath": "/apps/2026/03/10/habit-streak-garden/index.html",
     "generation": {
@@ -1207,12 +1035,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "arcade",
-      "breakout",
-      "ball",
-      "keyboard-controls"
-    ],
+    "tags": ["arcade", "breakout", "ball", "keyboard-controls"],
     "route": "/apps/2026/03/10/neon-breakout",
     "appPath": "/apps/2026/03/10/neon-breakout/index.html",
     "generation": {
@@ -1240,12 +1063,7 @@
     "category": "Design",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "pixel-art",
-      "drawing",
-      "design",
-      "creative-tool"
-    ],
+    "tags": ["pixel-art", "drawing", "design", "creative-tool"],
     "route": "/apps/2026/03/10/pixel-painter",
     "appPath": "/apps/2026/03/10/pixel-painter/index.html",
     "generation": {
@@ -1273,12 +1091,7 @@
     "category": "Entertainment",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "idle-game",
-      "clicker",
-      "upgrades",
-      "space"
-    ],
+    "tags": ["idle-game", "clicker", "upgrades", "space"],
     "route": "/apps/2026/03/09/pixel-planet-clicker",
     "appPath": "/apps/2026/03/09/pixel-planet-clicker/index.html",
     "generation": {
@@ -1306,12 +1119,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "arcade",
-      "survival",
-      "physics",
-      "keyboard-controls"
-    ],
+    "tags": ["arcade", "survival", "physics", "keyboard-controls"],
     "route": "/apps/2026/03/09/gravity-dodge",
     "appPath": "/apps/2026/03/09/gravity-dodge/index.html",
     "generation": {
@@ -1339,12 +1147,7 @@
     "category": "Productivity",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "typing",
-      "wpm",
-      "productivity",
-      "challenge"
-    ],
+    "tags": ["typing", "wpm", "productivity", "challenge"],
     "route": "/apps/2026/03/08/typing-speed-sprint",
     "appPath": "/apps/2026/03/08/typing-speed-sprint/index.html",
     "generation": {
@@ -1372,14 +1175,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "motorcycle",
-      "stunt",
-      "physics",
-      "action",
-      "arcade"
-    ],
+    "tags": ["game", "motorcycle", "stunt", "physics", "action", "arcade"],
     "route": "/apps/2026/03/08/daredevil-moto-jump",
     "appPath": "/apps/2026/03/08/daredevil-moto-jump/index.html",
     "generation": {
@@ -1407,12 +1203,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "mini-golf",
-      "physics",
-      "obstacles"
-    ],
+    "tags": ["game", "mini-golf", "physics", "obstacles"],
     "route": "/apps/2026/03/08/mini-putt-gauntlet",
     "appPath": "/apps/2026/03/08/mini-putt-gauntlet/index.html",
     "generation": {
@@ -1440,12 +1231,7 @@
     "category": "Visualizations",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "visualization",
-      "generative-art",
-      "motion",
-      "canvas"
-    ],
+    "tags": ["visualization", "generative-art", "motion", "canvas"],
     "route": "/apps/2026/03/08/orbit-harmonics",
     "appPath": "/apps/2026/03/08/orbit-harmonics/index.html",
     "generation": {
@@ -1473,13 +1259,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "game",
-      "classroom",
-      "teacher",
-      "reaction",
-      "whack-a-mole"
-    ],
+    "tags": ["game", "classroom", "teacher", "reaction", "whack-a-mole"],
     "route": "/apps/2026/03/08/eagle-eye-teacher",
     "appPath": "/apps/2026/03/08/eagle-eye-teacher/index.html",
     "generation": {
@@ -1507,12 +1287,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "puzzle",
-      "logic",
-      "grid",
-      "daily-challenge"
-    ],
+    "tags": ["puzzle", "logic", "grid", "daily-challenge"],
     "route": "/apps/2026/03/08/logic-lights-out",
     "appPath": "/apps/2026/03/08/logic-lights-out/index.html",
     "generation": {
@@ -1540,12 +1315,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "arcade",
-      "space-invaders",
-      "shooter",
-      "keyboard-controls"
-    ],
+    "tags": ["arcade", "space-invaders", "shooter", "keyboard-controls"],
     "route": "/apps/2026/03/08/space-invaders-clone",
     "appPath": "/apps/2026/03/08/space-invaders-clone/index.html",
     "generation": {
@@ -1573,12 +1343,7 @@
     "category": "Productivity",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "workout",
-      "timer",
-      "hiit",
-      "intervals"
-    ],
+    "tags": ["workout", "timer", "hiit", "intervals"],
     "route": "/apps/2026/03/07/workout-timer-pulse",
     "appPath": "/apps/2026/03/07/workout-timer-pulse/index.html",
     "generation": {
@@ -1606,14 +1371,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "racing",
-      "arcade",
-      "driving",
-      "action",
-      "endless"
-    ],
+    "tags": ["game", "racing", "arcade", "driving", "action", "endless"],
     "route": "/apps/2026/03/07/road-rage",
     "appPath": "/apps/2026/03/07/road-rage/index.html",
     "generation": {
@@ -1641,14 +1399,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "runner",
-      "action",
-      "neon",
-      "arcade",
-      "endless"
-    ],
+    "tags": ["game", "runner", "action", "neon", "arcade", "endless"],
     "route": "/apps/2026/03/07/neon-velocity",
     "appPath": "/apps/2026/03/07/neon-velocity/index.html",
     "generation": {
@@ -1676,13 +1427,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "fishing",
-      "arcade",
-      "canvas",
-      "animation"
-    ],
+    "tags": ["game", "fishing", "arcade", "canvas", "animation"],
     "route": "/apps/2026/03/07/fishing-frenzy",
     "appPath": "/apps/2026/03/07/fishing-frenzy/index.html",
     "generation": {
@@ -1710,13 +1455,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "arcade",
-      "design",
-      "speed",
-      "matching"
-    ],
+    "tags": ["game", "arcade", "design", "speed", "matching"],
     "route": "/apps/2026/03/07/design-dash",
     "appPath": "/apps/2026/03/07/design-dash/index.html",
     "generation": {
@@ -1744,13 +1483,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "simulation",
-      "business",
-      "strategy",
-      "real-estate"
-    ],
+    "tags": ["game", "simulation", "business", "strategy", "real-estate"],
     "route": "/apps/2026/03/07/realtor-tycoon",
     "appPath": "/apps/2026/03/07/realtor-tycoon/index.html",
     "generation": {
@@ -1778,12 +1511,7 @@
     "category": "Entertainment",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "text-adventure",
-      "parser",
-      "interactive-fiction",
-      "retro"
-    ],
+    "tags": ["text-adventure", "parser", "interactive-fiction", "retro"],
     "route": "/apps/2026/03/07/zorkish-text-adventure",
     "appPath": "/apps/2026/03/07/zorkish-text-adventure/index.html",
     "generation": {
@@ -1811,13 +1539,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "action",
-      "stealth",
-      "dance",
-      "arcade",
-      "avoidance"
-    ],
+    "tags": ["action", "stealth", "dance", "arcade", "avoidance"],
     "route": "/apps/2026/03/07/halftime-hustle",
     "appPath": "/apps/2026/03/07/halftime-hustle/index.html",
     "generation": {
@@ -1845,12 +1567,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "arcade",
-      "pacman",
-      "keyboard-controls"
-    ],
+    "tags": ["game", "arcade", "pacman", "keyboard-controls"],
     "route": "/apps/2026/03/07/pacman-classic",
     "appPath": "/apps/2026/03/07/pacman-classic/index.html",
     "generation": {
@@ -1878,13 +1595,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "debugging",
-      "coding",
-      "programming",
-      "education"
-    ],
+    "tags": ["game", "debugging", "coding", "programming", "education"],
     "route": "/apps/2026/03/07/debug-rush",
     "appPath": "/apps/2026/03/07/debug-rush/index.html",
     "generation": {
@@ -1912,13 +1623,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "casino",
-      "cards",
-      "blackjack",
-      "21"
-    ],
+    "tags": ["game", "casino", "cards", "blackjack", "21"],
     "route": "/apps/2026/03/07/blackjack",
     "appPath": "/apps/2026/03/07/blackjack/index.html",
     "generation": {
@@ -1946,13 +1651,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "archery",
-      "physics",
-      "simulation",
-      "sports"
-    ],
+    "tags": ["game", "archery", "physics", "simulation", "sports"],
     "route": "/apps/2026/03/07/archery-physics",
     "appPath": "/apps/2026/03/07/archery-physics/index.html",
     "generation": {
@@ -1980,13 +1679,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "runner",
-      "platformer",
-      "disco",
-      "gravity"
-    ],
+    "tags": ["game", "runner", "platformer", "disco", "gravity"],
     "route": "/apps/2026/03/07/disco-runner",
     "appPath": "/apps/2026/03/07/disco-runner/index.html",
     "generation": {
@@ -2014,14 +1707,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "flappy-bird",
-      "arcade",
-      "tap",
-      "touch-controls",
-      "endless-runner"
-    ],
+    "tags": ["game", "flappy-bird", "arcade", "tap", "touch-controls", "endless-runner"],
     "route": "/apps/2026/03/07/flappy-bird",
     "appPath": "/apps/2026/03/07/flappy-bird/index.html",
     "generation": {
@@ -2049,12 +1735,7 @@
     "category": "Design",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "accessibility",
-      "color",
-      "wcag",
-      "design-tool"
-    ],
+    "tags": ["accessibility", "color", "wcag", "design-tool"],
     "route": "/apps/2026/03/07/contrast-lab",
     "appPath": "/apps/2026/03/07/contrast-lab/index.html",
     "generation": {
@@ -2082,12 +1763,7 @@
     "category": "Productivity",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "habits",
-      "tracker",
-      "heatmap",
-      "streaks"
-    ],
+    "tags": ["habits", "tracker", "heatmap", "streaks"],
     "route": "/apps/2026/03/06/habit-heatmap",
     "appPath": "/apps/2026/03/06/habit-heatmap/index.html",
     "generation": {
@@ -2115,12 +1791,7 @@
     "category": "Utilities",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "text-tool",
-      "productivity",
-      "formatting",
-      "utility"
-    ],
+    "tags": ["text-tool", "productivity", "formatting", "utility"],
     "route": "/apps/2026/03/06/word-weaver",
     "appPath": "/apps/2026/03/06/word-weaver/index.html",
     "generation": {
@@ -2148,12 +1819,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "reaction-time",
-      "reflex",
-      "arcade"
-    ],
+    "tags": ["game", "reaction-time", "reflex", "arcade"],
     "route": "/apps/2026/03/06/reaction-ripple",
     "appPath": "/apps/2026/03/06/reaction-ripple/index.html",
     "generation": {
@@ -2181,13 +1847,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "memory",
-      "cards",
-      "animation",
-      "css3d"
-    ],
+    "tags": ["game", "memory", "cards", "animation", "css3d"],
     "route": "/apps/2026/03/06/memory-match",
     "appPath": "/apps/2026/03/06/memory-match/index.html",
     "generation": {
@@ -2215,12 +1875,7 @@
     "category": "Productivity",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "focus",
-      "timer",
-      "productivity",
-      "visualizer"
-    ],
+    "tags": ["focus", "timer", "productivity", "visualizer"],
     "route": "/apps/2026/03/06/focus-fountain",
     "appPath": "/apps/2026/03/06/focus-fountain/index.html",
     "generation": {
@@ -2248,13 +1903,7 @@
     "category": "Visualizations",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "algorithms",
-      "sorting",
-      "visualization",
-      "educational",
-      "computer-science"
-    ],
+    "tags": ["algorithms", "sorting", "visualization", "educational", "computer-science"],
     "route": "/apps/2026/03/06/sorting-visualizer",
     "appPath": "/apps/2026/03/06/sorting-visualizer/index.html",
     "generation": {
@@ -2282,13 +1931,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "puzzle",
-      "words",
-      "educational",
-      "keyboard-controls"
-    ],
+    "tags": ["game", "puzzle", "words", "educational", "keyboard-controls"],
     "route": "/apps/2026/03/06/word-scramble",
     "appPath": "/apps/2026/03/06/word-scramble/index.html",
     "generation": {
@@ -2316,13 +1959,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "snake",
-      "arcade",
-      "keyboard-controls",
-      "touch-controls"
-    ],
+    "tags": ["game", "snake", "arcade", "keyboard-controls", "touch-controls"],
     "route": "/apps/2026/03/05/snake-game",
     "appPath": "/apps/2026/03/05/snake-game/index.html",
     "generation": {
@@ -2350,12 +1987,7 @@
     "category": "Utilities",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "wellness",
-      "breathing",
-      "timer",
-      "focus"
-    ],
+    "tags": ["wellness", "breathing", "timer", "focus"],
     "route": "/apps/2026/03/05/breathing-orb",
     "appPath": "/apps/2026/03/05/breathing-orb/index.html",
     "generation": {
@@ -2383,12 +2015,7 @@
     "category": "Productivity",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "timer",
-      "productivity",
-      "pomodoro",
-      "focus"
-    ],
+    "tags": ["timer", "productivity", "pomodoro", "focus"],
     "route": "/apps/2026/03/05/pomodoro-timer",
     "appPath": "/apps/2026/03/05/pomodoro-timer/index.html",
     "generation": {
@@ -2416,13 +2043,7 @@
     "category": "Design",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "design",
-      "colors",
-      "tools",
-      "css",
-      "tailwind"
-    ],
+    "tags": ["design", "colors", "tools", "css", "tailwind"],
     "route": "/apps/2026/03/05/color-palette-generator",
     "appPath": "/apps/2026/03/05/color-palette-generator/index.html",
     "generation": {
@@ -2450,10 +2071,7 @@
     "category": "Productivity",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "demo",
-      "example"
-    ],
+    "tags": ["demo", "example"],
     "route": "/apps/2026/03/05/example-app",
     "appPath": "/apps/2026/03/05/example-app/index.html",
     "generation": {
