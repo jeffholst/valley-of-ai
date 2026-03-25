@@ -42,6 +42,15 @@
       "implementedAt": "2026-03-25T21:07:49Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
+    },
+    {
+      "issueNumber": 211,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/211",
+      "description": "Win result clicks now sync the payline display mode (clicking Payline N sets Line N; clicking All winning lines sets All Lines). Added a quick-off button (✕ Off) that appears whenever a payline is active, letting the user turn off the overlay without cycling through all modes.",
+      "requestor": "Jeff Holst",
+      "implementedAt": "2026-03-25T21:34:46Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
     }
   ],
   "generation": {
