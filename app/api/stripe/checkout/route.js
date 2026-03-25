@@ -39,7 +39,14 @@ export async function POST(request) {
   const headerProto = request.headers.get('x-forwarded-proto')?.split(',')[0] || null;
   const headerHost = request.headers.get('host');
   const headerOrigin = headerProto && headerHost ? `${headerProto}://${headerHost}` : null;
-  const origin = envBaseUrl || headerOrigin || '';
+  let origin = envBaseUrl || headerOrigin;
+  if (!origin) {
+    try {
+      origin = new URL(request.url).origin;
+    } catch {
+      return Response.json({ error: 'Unable to determine site origin for payment redirect' }, { status: 500 });
+    }
+  }
 
   const metadata = { type, amount: String(parsedAmount) };
   if (issueNumber) {
