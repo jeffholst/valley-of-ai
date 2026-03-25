@@ -66,6 +66,12 @@
       .wl-label { flex: 1; opacity: 0.85; }
       .wl-amt { font-weight: 700; color: var(--warn); flex-shrink: 0; }
       @media (min-width: 740px) { main { grid-template-columns: 2fr 1fr; align-items: start; } .hud { grid-column: 1 / -1; } }
+      .reels-wrap { position: relative; }
+      .paylines-overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+      .paytable-formula { text-align: center; padding: 0.4rem 0.55rem; background: rgba(0,0,0,0.25); border-radius: 8px; margin-bottom: 0.3rem; font-size: 0.82rem; }
+      .pt-hdr { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 0.3rem; padding: 0.3rem 0.55rem; opacity: 0.7; font-size: 0.78rem; }
+      .pt-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 0.3rem; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 0.4rem 0.55rem; align-items: center; }
+      .pt-amt { color: var(--warn); font-weight: 700; }
     </style>
   </head>
   <body>
@@ -76,8 +82,11 @@
         <div class="metric"><small>Last Win</small><strong id="lastWin">$0</strong></div>
       </section>
       <section class="machine panel" aria-label="Slot machine">
-        <div class="title-row"><h1>Neon Slot Rush</h1><button id="helpBtn" type="button" aria-haspopup="dialog">Paytable</button></div>
-        <div class="reels" id="reels" tabindex="0" aria-label="Slot reels. Swipe down or press space to spin."></div>
+        <div class="title-row"><h1>Neon Slot Rush</h1><button id="linesBtn" type="button" aria-pressed="false">Lines Off</button><button id="helpBtn" type="button" aria-haspopup="dialog">Paytable</button></div>
+        <div class="reels-wrap">
+          <div class="reels" id="reels" tabindex="0" aria-label="Slot reels. Swipe down or press space to spin."></div>
+          <svg id="paylinesOverlay" class="paylines-overlay" aria-hidden="true"></svg>
+        </div>
         <div class="controls">
           <div class="control-row"><button id="betDown" type="button">Bet -</button><select id="betSelect" aria-label="Select bet size"></select><button id="betUp" type="button">Bet +</button><button id="turbo" type="button" aria-pressed="false">Turbo Off</button></div>
           <div class="control-row"><button id="auto" type="button" aria-pressed="false">Auto x10</button><button id="mute" type="button" aria-pressed="true">Muted</button><button id="reset" type="button">Reset</button><button id="spin" class="spin" type="button">SPIN</button></div>
@@ -99,7 +108,8 @@
       const WEIGHTS = [26, 24, 20, 14, 10, 6];
       const PAYOUT = { '🍒': 2, '🍋': 3, '🔔': 5, '💎': 8, '7️⃣': 12, '⭐': 18 };
       const PAYLINES = [[0,0,0,0,0],[1,1,1,1,1],[2,2,2,2,2],[0,1,2,1,0],[2,1,0,1,2],[0,0,1,0,0],[2,2,1,2,2],[1,0,1,2,1],[1,2,1,0,1],[0,1,1,1,2]];
-      const state = { balance: 1000, betLevels: [5, 10, 20, 40, 80], betIndex: 1, autoSpins: 0, turbo: false, muted: true, spinning: false, lastWin: 0, winLines: [], grid: Array.from({ length: 3 }, () => Array(5).fill('🍒')) };
+      const PAYLINE_COLORS = ['#ff2bd6','#11f5ff','#ffd63b','#3cff78','#ff6b35','#a78bfa','#f87171','#34d399','#60a5fa','#fb923c'];
+      const state = { balance: 1000, betLevels: [5, 10, 20, 40, 80], betIndex: 1, autoSpins: 0, turbo: false, muted: true, spinning: false, lastWin: 0, winLines: [], showLines: false, grid: Array.from({ length: 3 }, () => Array(5).fill('🍒')) };
       const reelsEl = document.getElementById('reels');
       const spinBtn = document.getElementById('spin');
       const autoBtn = document.getElementById('auto');
@@ -110,7 +120,8 @@
       const paytable = document.getElementById('paytable');
       let touchStartY = 0;
       function weightedPick() { const total = WEIGHTS.reduce((a, b) => a + b, 0); let roll = Math.random() * total; for (let i = 0; i < SYMBOLS.length; i++) { roll -= WEIGHTS[i]; if (roll <= 0) return SYMBOLS[i]; } return SYMBOLS[0]; }
-      function renderGrid(winCells = []) { reelsEl.innerHTML = ''; for (let r = 0; r < 3; r++) { const row = document.createElement('div'); row.className = 'row'; for (let c = 0; c < 5; c++) { const cell = document.createElement('div'); cell.className = 'cell'; if (winCells.includes(`${r}-${c}`)) cell.classList.add('win'); cell.textContent = state.grid[r][c]; row.append(cell); } reelsEl.append(row); } }
+      function renderGrid(winCells = []) { reelsEl.innerHTML = ''; for (let r = 0; r < 3; r++) { const row = document.createElement('div'); row.className = 'row'; for (let c = 0; c < 5; c++) { const cell = document.createElement('div'); cell.className = 'cell'; if (winCells.includes(`${r}-${c}`)) cell.classList.add('win'); cell.textContent = state.grid[r][c]; row.append(cell); } reelsEl.append(row); } renderPaylineOverlay(); }
+      function renderPaylineOverlay() { const svg = document.getElementById('paylinesOverlay'); svg.innerHTML = ''; if (!state.showLines) return; const wrapEl = reelsEl.parentElement; const wrapRect = wrapEl.getBoundingClientRect(); const cells = reelsEl.querySelectorAll('.cell'); if (!cells.length) return; const pos = []; for (let r = 0; r < 3; r++) { pos[r] = []; for (let c = 0; c < 5; c++) { const rect = cells[r * 5 + c].getBoundingClientRect(); pos[r][c] = { x: rect.left - wrapRect.left + rect.width / 2, y: rect.top - wrapRect.top + rect.height / 2 }; } } PAYLINES.forEach((line, li) => { const pts = line.map((row, col) => `${pos[row][col].x},${pos[row][col].y}`).join(' '); const pl = document.createElementNS('http://www.w3.org/2000/svg', 'polyline'); pl.setAttribute('points', pts); pl.setAttribute('stroke', PAYLINE_COLORS[li]); pl.setAttribute('stroke-width', '3'); pl.setAttribute('fill', 'none'); pl.setAttribute('opacity', '0.85'); pl.setAttribute('stroke-linecap', 'round'); pl.setAttribute('stroke-linejoin', 'round'); svg.appendChild(pl); const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text'); lbl.setAttribute('x', pos[line[0]][0].x - 16); lbl.setAttribute('y', pos[line[0]][0].y + 4); lbl.setAttribute('fill', PAYLINE_COLORS[li]); lbl.setAttribute('font-size', '11'); lbl.setAttribute('font-weight', '700'); lbl.setAttribute('font-family', 'Inter,sans-serif'); lbl.textContent = String(li + 1); svg.appendChild(lbl); }); }
       function renderHud() { const bet = state.betLevels[state.betIndex]; document.getElementById('balance').textContent = `$${state.balance}`; document.getElementById('bet').textContent = `$${bet}`; document.getElementById('lastWin').textContent = `$${state.lastWin}`; betSelect.value = String(state.betIndex); autoBtn.textContent = state.autoSpins > 0 ? `Auto ${state.autoSpins}` : 'Auto x10'; }
       function updateStatus(msg, good = true) { statusEl.textContent = msg; statusEl.style.color = good ? 'var(--good)' : 'var(--warn)'; }
       function evaluateWin(bet) { let total = 0; const winCells = new Set(); const lines = []; for (let li = 0; li < PAYLINES.length; li++) { const line = PAYLINES[li]; let base = state.grid[line[0]][0]; if (base === '⭐') base = state.grid[line[1]][1] || '🍒'; let count = 1; for (let c = 1; c < 5; c++) { const s = state.grid[line[c]][c]; if (s === base || s === '⭐' || base === '⭐') count += 1; else break; } if (count >= 3) { const mult = PAYOUT[base] || 2; const amt = Math.floor(mult * count * (bet / 5)); total += amt; const cells = []; for (let c = 0; c < count; c++) { const key = `${line[c]}-${c}`; winCells.add(key); cells.push(key); } lines.push({ lineIndex: li, symbol: base, count, amount: amt, cells }); } } return { total, winCells: [...winCells], lines }; }
@@ -126,7 +137,8 @@
       }
       function initUi() {
         state.betLevels.forEach((b, i) => { const o = document.createElement('option'); o.value = String(i); o.textContent = `$${b}`; betSelect.append(o); });
-        for (const [sym, val] of Object.entries(PAYOUT)) { const row = document.createElement('div'); row.innerHTML = `<span>${sym} x3+</span><strong>${val}x base</strong>`; paytable.append(row); }
+        const fml = document.createElement('div'); fml.className = 'paytable-formula'; fml.innerHTML = 'Win = Multiplier &times; Matches &times; (Bet &divide; $5)'; paytable.append(fml); const hdr = document.createElement('div'); hdr.className = 'pt-hdr'; hdr.innerHTML = '<span>Symbol</span><span>&times;3</span><span>&times;4</span><span>&times;5</span>'; paytable.append(hdr); for (const [sym, mult] of Object.entries(PAYOUT)) { const row = document.createElement('div'); row.className = 'pt-row'; row.innerHTML = `<span>${sym}</span><span class="pt-amt">$${mult * 3}</span><span class="pt-amt">$${mult * 4}</span><span class="pt-amt">$${mult * 5}</span>`; paytable.append(row); }
+        const linesBtn = document.getElementById('linesBtn'); linesBtn.addEventListener('click', () => { state.showLines = !state.showLines; linesBtn.textContent = state.showLines ? 'Lines On' : 'Lines Off'; linesBtn.setAttribute('aria-pressed', String(state.showLines)); renderPaylineOverlay(); });
         document.getElementById('betDown').addEventListener('click', () => { state.betIndex = Math.max(0, state.betIndex - 1); renderHud(); });
         document.getElementById('betUp').addEventListener('click', () => { state.betIndex = Math.min(state.betLevels.length - 1, state.betIndex + 1); renderHud(); });
         betSelect.addEventListener('change', (e) => { state.betIndex = Number(e.target.value); renderHud(); });
