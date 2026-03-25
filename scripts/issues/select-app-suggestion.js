@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 /**
- * select-app-suggestion.js
- *
  * Determines the best app concept to build next.
  * Priority order:
  *   1. GitHub boosted+approved suggestions (ranked by verified tip total)
@@ -10,26 +8,31 @@
  *   4. Category gap (popular category with few apps)
  *
  * Usage:
- *   node scripts/select-app-suggestion.js
- *   node scripts/select-app-suggestion.js --json   (machine-readable output only)
+ *   node scripts/issues/select-app-suggestion.js
+ *   node scripts/issues/select-app-suggestion.js --json   (machine-readable output only)
  *
  * Output: JSON recommendation object printed to stdout.
  */
 
-import { execSync } from 'child_process';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { createClient } from '@supabase/supabase-js';
 import {
+  getIssueComments,
+  getRepoOwner,
+  listIssuesByLabels,
+  loadEnv,
+} from './lib/issue-github-client.js';
+import {
   computeSaturatedTags,
   computeRecentTags,
   computeDuplicationRisk,
-} from './selection-utils.js';
+} from './lib/issue-selection-heuristics.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const rootDir = path.resolve(__dirname, '..');
+const rootDir = path.resolve(__dirname, '../..');
 
 const jsonOnly = process.argv.includes('--json');
 
@@ -39,103 +42,35 @@ function log(...args) {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Load env vars — .env first (base), then .env.local on top (local overrides).
-// Later files win: a key set in .env.local overrides the same key from .env.
-// Keys already present in process.env before loadEnv() runs (e.g. shell/CI
-// secrets) are never overwritten, regardless of which file is being parsed.
-// ---------------------------------------------------------------------------
-function loadEnv() {
-  // Snapshot keys that existed before we load anything — these must never
-  // be clobbered by .env or .env.local (e.g. CI secrets, shell exports).
-  const preExistingKeys = new Set(Object.keys(process.env));
-
-  function parseFile(filePath, overwrite) {
-    if (!existsSync(filePath)) {
-      return;
-    }
-    const lines = readFileSync(filePath, 'utf8').split('\n');
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith('#')) {
-        continue;
-      }
-      const eq = trimmed.indexOf('=');
-      if (eq === -1) {
-        continue;
-      }
-      const key = trimmed.slice(0, eq).trim();
-      const val = trimmed
-        .slice(eq + 1)
-        .trim()
-        .replace(/^["']|["']$/g, '');
-      // Never overwrite a key that was present before loadEnv() ran.
-      if (preExistingKeys.has(key)) {
-        continue;
-      }
-      if (overwrite || !process.env[key]) {
-        process.env[key] = val;
-      }
-    }
-  }
-
-  // Load base values — never overwrite shell/CI env.
-  parseFile(path.join(rootDir, '.env'), false);
-  // Load local overrides — may overwrite keys set by .env, but not shell/CI env.
-  parseFile(path.join(rootDir, '.env.local'), true);
-}
-
-// ---------------------------------------------------------------------------
-// GitHub helpers
-// ---------------------------------------------------------------------------
-function ghJson(cmd) {
-  try {
-    const out = execSync(cmd, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
-    return JSON.parse(out);
-  } catch {
-    return null;
-  }
-}
-
-function getRepoOwner() {
-  try {
-    return execSync("gh api repos/{owner}/{repo} --jq '.owner.login'", { encoding: 'utf8' }).trim();
-  } catch {
-    return null;
-  }
-}
-
 function getTipTotal(issueNumber, repoOwner) {
   if (!repoOwner) {
     return 0;
   }
-  try {
-    const raw = execSync(`gh issue view ${issueNumber} --json comments`, {
-      encoding: 'utf8',
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
-    const data = JSON.parse(raw);
-    let total = 0;
-    for (const comment of data.comments || []) {
-      if (comment.author?.login !== repoOwner) {
-        continue;
-      }
-      const matches = [...(comment.body || '').matchAll(/\$([0-9]+)/g)];
-      for (const m of matches) {
-        total += parseInt(m[1], 10);
-      }
+
+  const comments = getIssueComments(issueNumber);
+  let total = 0;
+
+  for (const comment of comments) {
+    if (comment.author?.login !== repoOwner) {
+      continue;
     }
-    return total;
-  } catch {
-    return 0;
+    const matches = [...(comment.body || '').matchAll(/\$([0-9]+)/g)];
+    for (const m of matches) {
+      total += parseInt(m[1], 10);
+    }
   }
+
+  return total;
 }
 
 function getBoostedIssues() {
   log('  Checking boosted+approved issues...');
-  const issues = ghJson(
-    'gh issue list --label "suggestion" --label "status:approved" --label "boosted" --state open --json number,title,body,url --limit 20'
-  );
+  const issues = listIssuesByLabels({
+    labels: ['suggestion', 'status:approved', 'boosted'],
+    state: 'open',
+    limit: 20,
+    fields: ['number', 'title', 'body', 'url'],
+  });
   if (!issues || issues.length === 0) {
     return null;
   }
@@ -154,9 +89,12 @@ function getBoostedIssues() {
 
 function getApprovedIssues() {
   log('  Checking approved (non-boosted) issues...');
-  const issues = ghJson(
-    'gh issue list --label "suggestion" --label "status:approved" --state open --json number,title,body,url --limit 10'
-  );
+  const issues = listIssuesByLabels({
+    labels: ['suggestion', 'status:approved'],
+    state: 'open',
+    limit: 10,
+    fields: ['number', 'title', 'body', 'url'],
+  });
   if (!issues || issues.length === 0) {
     return null;
   }

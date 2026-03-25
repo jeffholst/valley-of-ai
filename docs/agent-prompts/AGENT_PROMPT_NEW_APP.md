@@ -5,6 +5,7 @@
 ---
 
 ## Mission
+
 Build one production-ready web app with the following requirements:
 
 - Static only: HTML/CSS/JS (no backend).
@@ -18,28 +19,29 @@ Build one production-ready web app with the following requirements:
 
 ## Step order and sequence numbers
 
-| Seq | Step name |
-|-----|-----------|
-| 1 | `SELECT_SUGGESTION` |
-| 2 | `RESEARCH_IDEAS` |
-| 3 | `GENERATE_HTML` |
-| 4 | `GENERATE_THUMBNAIL` |
-| 5 | `CREATE_META_JSON` |
-| 6 | `VALIDATE_APP` |
-| 7 | `GIT_CHECKOUT_BRANCH` |
-| 8 | `GIT_COMMIT` |
-| 9 | `GIT_PUSH` |
-| 10 | `CREATE_PR` |
-| 11 | `PR_REVIEW` |
-| 12 | `UPDATE_REGISTRY` |
-| 13 | `MERGE_PR_DEPLOY` |
-| 14 | `DELETE_BRANCH` |
+| Seq | Step name             |
+| --- | --------------------- |
+| 1   | `SELECT_SUGGESTION`   |
+| 2   | `RESEARCH_IDEAS`      |
+| 3   | `GENERATE_HTML`       |
+| 4   | `GENERATE_THUMBNAIL`  |
+| 5   | `CREATE_META_JSON`    |
+| 6   | `VALIDATE_APP`        |
+| 7   | `GIT_CHECKOUT_BRANCH` |
+| 8   | `GIT_COMMIT`          |
+| 9   | `GIT_PUSH`            |
+| 10  | `CREATE_PR`           |
+| 11  | `PR_REVIEW`           |
+| 12  | `UPDATE_REGISTRY`     |
+| 13  | `MERGE_PR_DEPLOY`     |
+| 14  | `DELETE_BRANCH`       |
 
 ---
 
 ## Pipeline (Do Exactly In Order)
 
 ### Step 0: Prep
+
 1. Pull latest main.
 2. Get current UTC time: `date -u +"%Y-%m-%dT%H:%M:%SZ"`
 3. Derive `YYYY/MM/DD` from the timestamp.
@@ -50,17 +52,21 @@ Build one production-ready web app with the following requirements:
 ---
 
 ### Step 1: Idea selection
-1. Run the app selection script (`scripts/select-app-suggestion.js`):
+
+1. Run the app selection script (`scripts/issues/select-app-suggestion.js`):
+
    ```bash
    npm run select:app:suggestion
    ```
+
+   This script only considers issues that have already passed the pending issue review workflow and now carry `status:approved`.
    The script checks sources in priority order and outputs a single JSON recommendation:
 
-   | `source` value | What it means | How to act |
-   |---|---|---|
-   | `github-boosted` | Boosted+approved GitHub issue with the highest verified tip total (owner comments only) | Use `issueNumber`, `issueUrl`, and `prompt`. Extract description from `### Description` section; requestor from `**Requestor:**` line. |
-   | `github-approved` | Oldest open approved GitHub suggestion (no boost label) | Same as above. |
-   | `vote-and-category-analysis` | No open issues — derived from Supabase vote data and category gap scoring | Review `voteInspiredConcepts` and `categoryGaps`. Choose the strongest concept that avoids overlap with existing apps. Prefer `recommendation.primary` unless `recommendation.secondary` (category gap) is a clearly better fit. |
+   | `source` value               | What it means                                                                           | How to act                                                                                                                                                                                                                       |
+   | ---------------------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | `github-boosted`             | Boosted+approved GitHub issue with the highest verified tip total (owner comments only) | Use `issueNumber`, `issueUrl`, and `prompt`. Extract description from `### Description` section; requestor from `**Requestor:**` line.                                                                                           |
+   | `github-approved`            | Oldest open approved GitHub suggestion (no boost label)                                 | Same as above.                                                                                                                                                                                                                   |
+   | `vote-and-category-analysis` | No open issues — derived from Supabase vote data and category gap scoring               | Review `voteInspiredConcepts` and `categoryGaps`. Choose the strongest concept that avoids overlap with existing apps. Prefer `recommendation.primary` unless `recommendation.secondary` (category gap) is a clearly better fit. |
 
    **Duplication guardrails** — every output includes:
    - `duplicationRisk` (`low`/`medium`/`high`) with `matches` listing existing apps whose keywords overlap the candidate. A `high` risk means you must pick a meaningfully different angle or choose a different issue.
@@ -95,6 +101,7 @@ Build one production-ready web app with the following requirements:
 ---
 
 ### Step 2: Research
+
 1. Do brief targeted research for mechanics + UX.
 2. Capture 2-3 inspirations and one unique angle.
 3. Log `RESEARCH_IDEAS`:
@@ -115,17 +122,20 @@ Build one production-ready web app with the following requirements:
 ---
 
 ### Step 3: Generate app
+
 Generate `index.html` with shell config tags, mobile-first responsive design, and favicon reference.
 
 **⚠️ Important: Shared Shell Runtime Environment**
 
 The app shell automatically injects a header and footer at runtime. Account for this in your layout:
+
 - **Header**: Added at the top (contains theme toggle, back link, navigation)
 - **Footer**: Added at the bottom (contains site info, version, social links)
 - **Container**: Your app content is placed in the middle
 - **Layout consideration**: Ensure your app content is scrollable or that key interactive controls are visible without scrolling, especially on small screens (320px width). If the screen height is constrained and your content + header + footer exceeds the viewport, controls must not be hidden below the fold in a non-scrollable container.
 
 Quality standards (non-negotiable):
+
 - **Visually polished**: smooth CSS transitions/animations, consistent spacing, cohesive color palette
 - **Mobile-first**: layout works at 320px wide, touch targets ≥ 44px, no horizontal scroll
 - **Scrollable or contained**: ensure primary controls and game/tool interaction area are accessible without scrolling on small screens, OR make content properly scrollable
@@ -135,6 +145,7 @@ Quality standards (non-negotiable):
 - **If a game**: clear score display, win/loss/restart states all implemented and functional
 
 Log immediately:
+
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
   --step GENERATE_HTML --seq 3 --status completed --durationMs <duration> \
@@ -145,11 +156,13 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 ---
 
 ### Step 4: Generate thumbnail
+
 Generate `thumbnail.svg` matching the app's UI, colors, and state.
 
 > **All thumbnail requirements are defined in `AGENT_PROMPT_SHARED.md` → "Thumbnail Requirements".** Follow them exactly.
 
 Log immediately:
+
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
   --step GENERATE_THUMBNAIL --seq 4 --status completed --durationMs <duration> \
@@ -160,9 +173,11 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 ---
 
 ### Step 5: Metadata
+
 Generate `meta.json` with all required fields: `id`, `name`, `shortDescription`, `thumbnail`, `createdAt`, `category`, `status`, `tags`, `homepagePath`, `inputMode`, `generation` (include agentName, llmModel, startTime, endTime, totalTokensIn/Out, runId, notes).
 
 If this app was built from an approved GitHub Issue (Step 1), also include a `suggestion` object:
+
 ```json
 "suggestion": {
   "issueNumber": <number>,
@@ -175,6 +190,7 @@ If this app was built from an approved GitHub Issue (Step 1), also include a `su
 > **Note on `generation.endTime`:** Set it to your best estimate at this step. It will not be exact since the pipeline hasn't completed yet — that is acceptable. Do not leave it blank.
 
 Log immediately:
+
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
   --step CREATE_META_JSON --seq 5 --status completed --durationMs <duration> \
@@ -187,7 +203,9 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 ### Step 6: Validate (blocking gate)
 
 #### Functional Testing
+
 Before continuing confirm:
+
 - App runs without errors.
 - Shared shell header/footer visible.
 - Dark/light theme works.
@@ -197,6 +215,7 @@ Before continuing confirm:
 - Thumbnail matches app UI.
 
 Run (in order): ⚠️ do not write any output files that would corrupt repo
+
 - `npm run generate:apps` — regenerates `data/apps.json` to include the new app
 - `npm run validate:apps` — confirms all required app files exist, metadata is valid, and committed `data/apps.json` is synchronized
 - `npm run lint:fix` — auto-fix any lint issues first
@@ -207,11 +226,13 @@ Run (in order): ⚠️ do not write any output files that would corrupt repo
 - `npm run build` — must complete successfully
 
 If validation fails:
+
 - fix issues,
 - log failed/retrying/completed statuses accordingly,
 - do not continue until passing.
 
 When passed, log validation checks and pipeline step:
+
 ```bash
 # Example 1: Validation check - file exists
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category validation \
@@ -232,10 +253,12 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 ---
 
 ### Step 7: Git branch and commit (seq 7-8)
+
 **Pattern: Execute → Log immediately → Move to next**
 
 1. Execute: `git checkout -b feat/<app-id>`
    - **Log immediately:**
+
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
      --step GIT_CHECKOUT_BRANCH --seq 7 --status completed --durationMs <duration> \
@@ -244,6 +267,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 
 2. **Stage and commit app files ONLY** (index.html, meta.json, thumbnail.svg, data/apps.json). Use explicit paths — do NOT use `git add .` or `git add -A` here, as `log.jsonl` is intentionally deferred to Step 9.
    - Execute:
+
    ```bash
    git add apps/YYYY/MM/DD/<app-id>/index.html \
            apps/YYYY/MM/DD/<app-id>/thumbnail.svg \
@@ -252,24 +276,29 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 
    git commit -m "feat: add <app-id> [skip deploy]"
    ```
+
    - **MUST include `[skip deploy]` in commit message** — tells Vercel not to redeploy
 
    - Capture the commit SHA from the output.
    - **Log immediately:**
+
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
      --step GIT_COMMIT --seq 8 --status completed --durationMs <duration> \
      --message "Committed app files (sha: <COMMIT_SHA>)"
    ```
+
    - **Do NOT commit `apps/YYYY/MM/DD/<app-id>/log.jsonl` or `logs/YYYY/MM/DD.jsonl` yet** — both will be finalized and committed in Step 9 after all pipeline transactions complete.
 
 ---
 
 ### Step 8: PR flow (seq 9-13)
+
 **Pattern: Execute → Log immediately → Move to next**
 
 1. Execute: Push branch: `git push -u origin feat/<app-id>`
    - **Log immediately:**
+
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
      --step GIT_PUSH --seq 9 --status completed --durationMs <duration> \
@@ -278,6 +307,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 
 2. Execute: Create PR: `gh pr create --title "feat: add <app-id>" --body "..."`
    - **Log immediately:**
+
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
      --step CREATE_PR --seq 10 --status completed --durationMs <duration> \
@@ -286,6 +316,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 
 3. Execute: Self-review PR (check code quality, tests, etc.)
    - **Log immediately:**
+
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
      --step PR_REVIEW --seq 11 --status completed --durationMs <duration> \
@@ -294,6 +325,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 
 4. Execute: Update registry — confirm `data/apps.json` in the PR includes the new app entry.
    - **Log immediately:**
+
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
      --step UPDATE_REGISTRY --seq 12 --status completed --durationMs <duration> \
@@ -302,16 +334,20 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 
 5. Execute: Merge PR with squash: `gh pr merge <pr-number> --squash --auto`
    - `--auto` queues the merge once all required checks pass. Confirm it actually merged:
+
    ```bash
    gh pr view <pr-number> --json state,mergeStateStatus
    ```
+
    If `state` is not `MERGED` after 2–3 minutes, check for failing checks or branch protection rules before continuing.
    - **Log immediately after confirmed merge:**
+
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
      --step MERGE_PR_DEPLOY --seq 13 --status completed --durationMs <duration> \
      --message "PR merged to main and Vercel deployment triggered"
    ```
+
    - Wait ~2–3 minutes for Vercel auto-deployment to complete.
 
 6. Verify merge on main: `git checkout main && git pull origin main`
@@ -321,6 +357,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
    git branch -d feat/<app-id>
    git push origin --delete feat/<app-id>
    ```
+
    - **Log immediately:**
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
@@ -333,12 +370,15 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 ### Step 9: Finalize transaction log and commit
 
 1. **Confirm you are on the main branch:**
+
    ```bash
    git branch --show-current  # must output: main
    ```
+
    If not on main: `git checkout main && git pull origin main`
 
 2. Log `TRANSACTION_END`:
+
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pipeline \
      --step TRANSACTION_END --status success --durationMs <total_duration> \
@@ -346,6 +386,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
    ```
 
 3. **If this app was built from a GitHub Issue suggestion**, close the issue:
+
    ```bash
    gh issue edit <issue-number> --add-label "status:implemented" --remove-label "status:approved" --remove-label "status:pending"
    gh issue close <issue-number> --comment "Built as [<app-name>](/apps/YYYY/MM/DD/<app-id>). Thanks for the suggestion!"
@@ -357,4 +398,5 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
    git commit -m "chore: finalize transaction logs for <app-id>"
    git push origin main
    ```
+
    - **CRITICAL:** Both files MUST be committed together.

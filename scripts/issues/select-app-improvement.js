@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 /**
- * select-app-improvement.js
- *
  * Finds the highest-priority approved improvement request for an existing app.
  * Priority order:
  *   1. GitHub boosted+approved improvement issues (ranked by verified tip total)
@@ -13,21 +11,26 @@
  * if no approved requests exist, the agent should stop.
  *
  * Usage:
- *   node scripts/select-app-improvement.js
- *   node scripts/select-app-improvement.js --json   (suppress progress output)
+ *   node scripts/issues/select-app-improvement.js
+ *   node scripts/issues/select-app-improvement.js --json   (suppress progress output)
  *
  * Output: JSON object printed to stdout.
  */
 
-import { execSync } from 'child_process';
 import { readFileSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import { extractAppPath } from './selection-utils.js';
+import {
+  getIssueComments,
+  getRepoOwner,
+  listIssuesByLabels,
+  loadEnv,
+} from './lib/issue-github-client.js';
+import { extractAppPath } from './lib/issue-selection-heuristics.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const rootDir = path.resolve(__dirname, '..');
+const rootDir = path.resolve(__dirname, '../..');
 
 const jsonOnly = process.argv.includes('--json');
 
@@ -37,101 +40,35 @@ function log(...args) {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Load env vars — .env first (base), then .env.local on top (local overrides).
-// Already-set process.env values (from the shell / CI) always take precedence.
-// ---------------------------------------------------------------------------
-function loadEnv() {
-  // Track keys populated from env files so .env.local can override them
-  // without touching keys that were already set by the shell or CI.
-  const envFileKeys = new Set();
-
-  function parseFile(filePath, overwriteFileKeys) {
-    if (!existsSync(filePath)) {
-      return;
-    }
-    const lines = readFileSync(filePath, 'utf8').split('\n');
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith('#')) {
-        continue;
-      }
-      const eq = trimmed.indexOf('=');
-      if (eq === -1) {
-        continue;
-      }
-      const key = trimmed.slice(0, eq).trim();
-      const val = trimmed
-        .slice(eq + 1)
-        .trim()
-        .replace(/^["']|["']$/g, '');
-      // Set the key only if it was not already in the environment before we
-      // started loading env files, OR if it was previously set by an env file
-      // and this call is allowed to override file-sourced values.
-      if (!process.env[key] || (overwriteFileKeys && envFileKeys.has(key))) {
-        process.env[key] = val;
-        envFileKeys.add(key);
-      }
-    }
-  }
-
-  // Load base values — never overwrite shell/CI env.
-  parseFile(path.join(rootDir, '.env'), false);
-  // Load local overrides — may overwrite keys set by .env, but not shell/CI env.
-  parseFile(path.join(rootDir, '.env.local'), true);
-}
-
-// ---------------------------------------------------------------------------
-// GitHub helpers
-// ---------------------------------------------------------------------------
-function ghJson(cmd) {
-  try {
-    const out = execSync(cmd, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
-    return JSON.parse(out);
-  } catch {
-    return null;
-  }
-}
-
-function getRepoOwner() {
-  try {
-    return execSync("gh api repos/{owner}/{repo} --jq '.owner.login'", { encoding: 'utf8' }).trim();
-  } catch {
-    return null;
-  }
-}
-
 function getTipTotal(issueNumber, repoOwner) {
   if (!repoOwner) {
     return 0;
   }
-  try {
-    const raw = execSync(`gh issue view ${issueNumber} --json comments`, {
-      encoding: 'utf8',
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
-    const data = JSON.parse(raw);
-    let total = 0;
-    for (const comment of data.comments || []) {
-      if (comment.author?.login !== repoOwner) {
-        continue;
-      }
-      const matches = [...(comment.body || '').matchAll(/\$([0-9]+)/g)];
-      for (const m of matches) {
-        total += parseInt(m[1], 10);
-      }
+
+  const comments = getIssueComments(issueNumber);
+  let total = 0;
+
+  for (const comment of comments) {
+    if (comment.author?.login !== repoOwner) {
+      continue;
     }
-    return total;
-  } catch {
-    return 0;
+    const matches = [...(comment.body || '').matchAll(/\$([0-9]+)/g)];
+    for (const m of matches) {
+      total += parseInt(m[1], 10);
+    }
   }
+
+  return total;
 }
 
 function getBoostedImprovements() {
   log('  Checking boosted+approved improvement issues...');
-  const issues = ghJson(
-    'gh issue list --label "improvement" --label "status:approved" --label "boosted" --state open --json number,title,body,url --limit 20'
-  );
+  const issues = listIssuesByLabels({
+    labels: ['improvement', 'status:approved', 'boosted'],
+    state: 'open',
+    limit: 20,
+    fields: ['number', 'title', 'body', 'url'],
+  });
   if (!issues || issues.length === 0) {
     return null;
   }
@@ -150,9 +87,12 @@ function getBoostedImprovements() {
 
 function getApprovedImprovements() {
   log('  Checking approved (non-boosted) improvement issues...');
-  const issues = ghJson(
-    'gh issue list --label "improvement" --label "status:approved" --state open --json number,title,body,url --limit 10'
-  );
+  const issues = listIssuesByLabels({
+    labels: ['improvement', 'status:approved'],
+    state: 'open',
+    limit: 10,
+    fields: ['number', 'title', 'body', 'url'],
+  });
   if (!issues || issues.length === 0) {
     return null;
   }
@@ -286,7 +226,7 @@ async function main() {
     found: false,
     message:
       'No approved improvement requests found. Do not proceed with an improvement run. ' +
-      'Use select-app-suggestion.js (npm run select:app:suggestion) if you want to build a new app instead.',
+      'Use scripts/issues/select-app-suggestion.js (npm run select:app:suggestion) if you want to build a new app instead.',
   };
   console.log(JSON.stringify(result, null, 2));
 }

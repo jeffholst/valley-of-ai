@@ -5,34 +5,36 @@
 ---
 
 ## Mission
+
 Apply one approved improvement to an existing app. The app already exists — do not rebuild it from scratch. Make the targeted change described in the issue, keep everything else working, and leave the codebase in a better state than you found it.
 
 ---
 
 ## Step order and sequence numbers
 
-| Seq | Step name |
-|-----|-----------|
-| 1 | `SELECT_IMPROVEMENT` |
-| 2 | `ANALYZE_APP` |
-| 3 | `MODIFY_HTML` |
-| 4 | `UPDATE_THUMBNAIL` |
-| 5 | `UPDATE_META_JSON` |
-| 6 | `VALIDATE_APP` |
-| 7 | `GIT_CHECKOUT_BRANCH` |
-| 8 | `GIT_COMMIT` |
-| 9 | `GIT_PUSH` |
-| 10 | `CREATE_PR` |
-| 11 | `PR_REVIEW` |
-| 12 | `UPDATE_REGISTRY` |
-| 13 | `MERGE_PR_DEPLOY` |
-| 14 | `DELETE_BRANCH` |
+| Seq | Step name             |
+| --- | --------------------- |
+| 1   | `SELECT_IMPROVEMENT`  |
+| 2   | `ANALYZE_APP`         |
+| 3   | `MODIFY_HTML`         |
+| 4   | `UPDATE_THUMBNAIL`    |
+| 5   | `UPDATE_META_JSON`    |
+| 6   | `VALIDATE_APP`        |
+| 7   | `GIT_CHECKOUT_BRANCH` |
+| 8   | `GIT_COMMIT`          |
+| 9   | `GIT_PUSH`            |
+| 10  | `CREATE_PR`           |
+| 11  | `PR_REVIEW`           |
+| 12  | `UPDATE_REGISTRY`     |
+| 13  | `MERGE_PR_DEPLOY`     |
+| 14  | `DELETE_BRANCH`       |
 
 ---
 
 ## Pipeline (Do Exactly In Order)
 
 ### Step 0: Prep
+
 1. Pull latest main.
 2. Get current UTC time: `date -u +"%Y-%m-%dT%H:%M:%SZ"`
 3. Derive `YYYY/MM/DD` (today's date) from the timestamp — used for the central log path (`logs/YYYY/MM/DD.jsonl`).
@@ -45,19 +47,27 @@ Apply one approved improvement to an existing app. The app already exists — do
 **Determine your entry point — exactly one of the three cases below applies:**
 
 #### Case A — No directive given
-Run the improvement selection script:
+
+Run the improvement selection script (`scripts/issues/select-app-improvement.js`):
+
 ```bash
 npm run select:app:improvement
 ```
+
+- This script only considers issues that have already passed the pending issue review workflow and now carry `status:approved`.
 - If `"found": false` — **stop. Do not proceed.** State "No approved improvements found" and exit gracefully.
 - If `"found": true` — continue to **Step 1.4**.
 
 #### Case B — Issue number given
+
 Verify the issue exists and is approved:
+
 ```bash
 gh issue view <number> --json number,title,body,labels,state
 ```
+
 Check all three:
+
 1. `state` is `OPEN`
 2. Labels include `improvement`
 3. Labels include `status:approved`
@@ -66,17 +76,22 @@ If all pass — continue to **Step 1.4**.
 If any fail — **stop.** State why: issue not found, not labeled `improvement`, or not `status:approved`.
 
 #### Case C — Improvement description given directly
+
 Create a GitHub issue:
+
 ```bash
 gh issue create \
   --title "Improvement [<app-path>]: <one-line description>" \
   --body "**App:** [<App Name>](https://www.valleyofai.com/apps/<app-path>)\n\n<full description>" \
   --label "improvement" --label "status:approved"
 ```
+
 Record the issue number. Then run `npm run select:app:improvement` to confirm it is picked up and extract `targetApp`.
 
 #### Step 1.4 — Common continuation (all cases)
+
 From the selected issue, record:
+
 - `issueNumber` and `issueUrl` — needed to close the issue in Step 9
 - `description` — what needs to be changed
 - `requestor` — who requested it
@@ -88,16 +103,19 @@ Set `<app-path>` to the full `targetApp.id` (e.g. `2026/03/22/freecell-mobile-cl
 Set `<app-date>` to the `YYYY/MM/DD` portion of `targetApp.id` (e.g. `2026/03/22`) — this is the app's **original creation date**, used for the app-local log path.
 
 ⚠️ The app folder already exists. Do NOT create a new one. Logging will write to:
+
 - `apps/<app-path>/log.jsonl` (appended to existing file using `--app-date <app-date>`)
 - `logs/YYYY/MM/DD.jsonl` (today's central log using `--date YYYY/MM/DD`)
 
 Log the transaction start:
+
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
   --step TRANSACTION_START --status started --message "Starting improvement pipeline"
 ```
 
 Log `SELECT_IMPROVEMENT`:
+
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
   --step SELECT_IMPROVEMENT --seq 1 --status completed --durationMs <duration> \
@@ -106,6 +124,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 ```
 
 Optionally log reasoning:
+
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category reasoning \
   --phase SELECT_IMPROVEMENT --message "Why this improvement was chosen" \
@@ -116,6 +135,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 ---
 
 ### Step 2: Analyze existing app
+
 1. Read the existing `apps/<app-path>/index.html` in full — understand the current structure, styles, and logic before making any changes.
 2. Read `apps/<app-path>/meta.json` — note existing fields to preserve them when updating.
 3. Identify exactly what needs to change to satisfy the improvement description. Scope the change conservatively: **touch only what the issue asks for.** Do not refactor unrelated code.
@@ -137,9 +157,11 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 ---
 
 ### Step 3: Modify app
+
 Edit `apps/<app-path>/index.html` to implement the improvement.
 
 **Constraints:**
+
 - **Surgical changes only** — change the minimum necessary to address the issue. Do not rewrite sections that are not involved.
 - **Preserve all existing functionality** — the improvement must not break any currently working features.
 - **Maintain all required head tags** — verify shell config tags, GA tag, and `voa-app-id` are still present and correct after editing (see `AGENT_PROMPT_SHARED.md`).
@@ -148,6 +170,7 @@ Edit `apps/<app-path>/index.html` to implement the improvement.
 - If the improvement changes visible UI, verify it still works at 320px width with the shared shell header/footer present.
 
 Log immediately:
+
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
   --step MODIFY_HTML --seq 3 --status completed --durationMs <duration> \
@@ -158,11 +181,13 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 ---
 
 ### Step 4: Update thumbnail (conditional)
+
 Regenerate `thumbnail.svg` **only if the visual appearance of the app changed** as a result of the improvement (e.g. new layout, new UI elements, changed color scheme). If the improvement was purely functional (bug fix, logic change, performance) with no visible UI change, skip this step and log it as skipped.
 
 **If updating:** follow the thumbnail requirements defined in `AGENT_PROMPT_SHARED.md` → "Thumbnail Requirements" exactly.
 
 Log immediately (update or skip):
+
 ```bash
 # If updated:
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
@@ -179,9 +204,11 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 ---
 
 ### Step 5: Update metadata
+
 Update `apps/<app-path>/meta.json`. **Do not change `id`, `createdAt`, or the original `generation` block** — those belong to the original build.
 
 Append an entry to the `improvements` array (create the array if it does not exist):
+
 ```json
 "improvements": [
   {
@@ -197,6 +224,7 @@ Append an entry to the `improvements` array (create the array if it does not exi
 ```
 
 Log immediately:
+
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
   --step UPDATE_META_JSON --seq 5 --status completed --durationMs <duration> \
@@ -209,7 +237,9 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 ### Step 6: Validate (blocking gate)
 
 #### Functional Testing
+
 Before continuing confirm:
+
 - App runs without errors.
 - The improvement works as described in the issue.
 - All previously working functionality still works.
@@ -219,6 +249,7 @@ Before continuing confirm:
 - If thumbnail was updated: thumbnail matches updated UI.
 
 Run (in order): ⚠️ do not write any output files that would corrupt repo
+
 - `npm run generate:apps` — regenerates `data/apps.json` to reflect any meta.json changes
 - `npm run validate:apps` — confirms app files are valid and registry is synchronized
 - `npm run lint:fix` — auto-fix any lint issues
@@ -229,11 +260,13 @@ Run (in order): ⚠️ do not write any output files that would corrupt repo
 - `npm run build` — must complete successfully
 
 If validation fails:
+
 - fix issues,
 - log failed/retrying/completed statuses accordingly,
 - do not continue until passing.
 
 When passed:
+
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
   --step VALIDATE_APP --seq 6 --status completed --durationMs <duration> \
@@ -243,10 +276,12 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 ---
 
 ### Step 7: Git branch and commit (seq 7-8)
+
 **Pattern: Execute → Log immediately → Move to next**
 
 1. Execute: `git checkout -b improve/<app-id>`
    - **Log immediately:**
+
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step GIT_CHECKOUT_BRANCH --seq 7 --status completed --durationMs <duration> \
@@ -254,6 +289,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
    ```
 
 2. **Stage modified files explicitly.** Only include files that actually changed. Do NOT use `git add .` or `git add -A`.
+
    ```bash
    # Always include:
    git add apps/<app-path>/index.html \
@@ -267,23 +303,28 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
    git commit -m "improve: <app-id> — <one-line description of change> [skip deploy]"
    ```
+
    - **MUST include `[skip deploy]` in commit message.**
    - Capture the commit SHA.
    - **Log immediately:**
+
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step GIT_COMMIT --seq 8 --status completed --durationMs <duration> \
      --message "Committed improvement files (sha: <COMMIT_SHA>)"
    ```
+
    - **Do NOT commit log files yet** — finalized and committed in Step 9.
 
 ---
 
 ### Step 8: PR flow (seq 9-13)
+
 **Pattern: Execute → Log immediately → Move to next**
 
 1. Execute: Push branch: `git push -u origin improve/<app-id>`
    - **Log immediately:**
+
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step GIT_PUSH --seq 9 --status completed --durationMs <duration> \
@@ -291,11 +332,14 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
    ```
 
 2. Execute: Create PR:
+
    ```bash
    gh pr create --title "improve: <app-id> — <one-line description>" --body "..."
    ```
+
    PR body should reference the issue (`Closes #<issueNumber>`), describe what changed, and confirm what was preserved.
    - **Log immediately:**
+
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step CREATE_PR --seq 10 --status completed --durationMs <duration> \
@@ -304,6 +348,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
 3. Execute: Self-review PR — verify only intended files changed, no regressions.
    - **Log immediately:**
+
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step PR_REVIEW --seq 11 --status completed --durationMs <duration> \
@@ -312,6 +357,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
 4. Confirm `data/apps.json` in the PR reflects any meta.json changes correctly.
    - **Log immediately:**
+
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step UPDATE_REGISTRY --seq 12 --status completed --durationMs <duration> \
@@ -321,16 +367,20 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 5. Execute: Merge PR with squash: `gh pr merge <pr-number> --squash --auto`
    - ⚠️ `--auto` produces no output on success. The status check below is **mandatory** — do not skip it.
    - Confirm merge:
+
    ```bash
    gh pr view <pr-number> --json state,mergeStateStatus
    ```
+
    If `state` is not `MERGED` after 2–3 minutes, check for failing checks or branch protection rules.
    - **Log immediately after confirmed merge:**
+
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step MERGE_PR_DEPLOY --seq 13 --status completed --durationMs <duration> \
      --message "PR merged to main and Vercel deployment triggered"
    ```
+
    - Wait ~2–3 minutes for Vercel auto-deployment to complete.
 
 6. Verify merge on main: `git checkout main && git pull origin main`
@@ -340,6 +390,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
    git branch -d improve/<app-id>
    git push origin --delete improve/<app-id>
    ```
+
    - **Log immediately:**
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
@@ -352,12 +403,15 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 ### Step 9: Finalize transaction log and commit
 
 1. **Confirm you are on the main branch:**
+
    ```bash
    git branch --show-current  # must output: main
    ```
+
    If not on main: `git checkout main && git pull origin main`
 
 2. Log `TRANSACTION_END`:
+
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
      --step TRANSACTION_END --status success --durationMs <total_duration> \
@@ -365,6 +419,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
    ```
 
 3. **Close the improvement issue:**
+
    ```bash
    gh issue edit <issue-number> --add-label "status:implemented" --remove-label "status:approved" --remove-label "status:pending"
    gh issue close <issue-number> --comment "Improvement applied to [<app-name>](/apps/<app-path>). Thanks for the feedback!"
@@ -376,6 +431,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
    git commit -m "chore: finalize transaction logs for <app-id> improvement"
    git push origin main
    ```
+
    - **CRITICAL:** Both files MUST be committed together:
      - `apps/<app-path>/log.jsonl` — app-local improvement record (appended to existing file)
      - `logs/YYYY/MM/DD.jsonl` — today's central log entry

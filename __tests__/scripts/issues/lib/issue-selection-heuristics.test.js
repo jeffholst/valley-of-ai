@@ -1,5 +1,5 @@
 /**
- * Tests for scripts/selection-utils.js
+ * Tests for scripts/issues/lib/issue-selection-heuristics.js
  *
  * Covers the four pure functions with no external dependencies:
  *   - computeSaturatedTags
@@ -13,7 +13,7 @@ import {
   computeRecentTags,
   computeDuplicationRisk,
   extractAppPath,
-} from '../../scripts/selection-utils.js';
+} from '../../../../scripts/issues/lib/issue-selection-heuristics.js';
 
 // ---------------------------------------------------------------------------
 // Helpers
