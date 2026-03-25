@@ -24,6 +24,15 @@
       "implementedAt": "2026-03-25T19:21:37Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
+    },
+    {
+      "issueNumber": 205,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/205",
+      "description": "Added toggleable visual payline overlay: a Lines On/Off button draws all 10 paylines as colored SVG polylines over the reels using getBoundingClientRect positioning; each payline has a distinct neon color and numbered label. Also enhanced the paytable with a formula header (Win = Multiplier x Matches x (Bet / $5)) and a per-symbol grid showing dollar payouts at x3, x4, and x5 matches.",
+      "requestor": "Jeff Holst",
+      "implementedAt": "2026-03-25T20:49:00Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
     }
   ],
   "generation": {
