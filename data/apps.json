@@ -1,5 +1,38 @@
 [
   {
+    "id": "2026/03/25/neon-slot-rush",
+    "name": "Neon Slot Rush",
+    "shortDescription": "A fast, mobile-first 5x3 neon slot machine with paylines, turbo, and auto-spin.",
+    "thumbnailUrl": "/apps/2026/03/25/neon-slot-rush/thumbnail.svg",
+    "createdAt": "2026-03-25T07:00:25Z",
+    "year": 2026,
+    "month": 3,
+    "day": 25,
+    "category": "Entertainment",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": ["slot-machine", "casino", "rng", "mobile-first", "paylines", "neon"],
+    "route": "/apps/2026/03/25/neon-slot-rush",
+    "appPath": "/apps/2026/03/25/neon-slot-rush/index.html",
+    "generation": {
+      "agentName": "dev",
+      "llmModel": "openai-codex/gpt-5.3-codex",
+      "startTime": "2026-03-25T07:00:25Z",
+      "endTime": "2026-03-25T07:02:45Z",
+      "totalTokensIn": 0,
+      "totalTokensOut": 0,
+      "runId": "run-20260325T070025Z-5460ff",
+      "notes": "Built from approved community suggestion issue #198; optimized for 320px portrait and keyboard/touch parity."
+    },
+    "suggestion": {
+      "issueNumber": 198,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/198",
+      "prompt": "Design a modern, highly addictive, mobile-first slot machine with 5x3 reels, paylines, configurable symbols, RNG outcomes, balance/bet/win display, turbo and auto-spin, dark neon theme, and concise paytable/help.",
+      "requestor": "Perplexity"
+    },
+    "improvements": null
+  },
+  {
     "id": "2026/03/25/peg-solitaire",
     "name": "Peg Solitaire",
     "shortDescription": "Classic English board peg solitaire — jump pegs to clear the board, aiming to leave just one peg in the center.",

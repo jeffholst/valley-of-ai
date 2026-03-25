@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Neon Slot Rush" />
+    <meta name="voa-app-id" content="2026/03/25/neon-slot-rush" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+    <title>Neon Slot Rush - __MAIN_SITE_NAME__</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E🎰%3C/text%3E%3C/svg%3E" />
+    <style>
+      :root { --bg: #080a1b; --text: #f4f8ff; --surface: #151933; --surface-2: #1d2350; --accent: #11f5ff; --accent-2: #ff2bd6; --good: #3cff78; --warn: #ffd63b; }
+      [data-theme='light'] { --bg: #eef3ff; --text: #111a3a; --surface: #f9fbff; --surface-2: #dde8ff; --accent: #0f78c7; --accent-2: #a42184; --good: #1f8f45; --warn: #a46b00; }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: radial-gradient(circle at top, #191f4c 0%, var(--bg) 45%); color: var(--text); }
+      main { max-width: 980px; margin: 0 auto; padding: 0.75rem; display: grid; gap: 0.75rem; }
+      .hud,.panel,.help-modal .card { background: linear-gradient(155deg, color-mix(in oklab, var(--surface) 92%, #fff 8%), var(--surface-2)); border: 1px solid color-mix(in oklab, var(--accent) 40%, transparent); border-radius: 14px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35); }
+      .hud { padding: 0.7rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem; }
+      .metric { background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 0.55rem; }
+      .metric small { display: block; opacity: 0.75; font-size: 0.76rem; }
+      .metric strong { display: block; margin-top: 0.2rem; font-size: clamp(1rem, 3.5vw, 1.25rem); }
+      .machine { padding: 0.7rem; }
+      .title-row { display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+      h1 { margin: 0; font-size: clamp(1.2rem, 4.8vw, 1.8rem); letter-spacing: 0.03em; text-shadow: 0 0 16px color-mix(in oklab, var(--accent) 70%, transparent); }
+      .reels { margin-top: 0.7rem; border-radius: 12px; background: linear-gradient(180deg, #0f1534, #060915); padding: 0.5rem; display: grid; gap: 0.32rem; touch-action: pan-y; }
+      .row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.32rem; }
+      .cell { aspect-ratio: 1; min-height: 52px; border-radius: 10px; display: grid; place-items: center; font-size: clamp(1.35rem, 6vw, 2rem); background: linear-gradient(160deg, #151f53, #0f1333); border: 1px solid #31439f; transition: transform 0.25s ease, box-shadow 0.25s ease; }
+      .cell.spinning { transform: translateY(-4px) scale(1.04); box-shadow: 0 0 14px rgba(17, 245, 255, 0.55); }
+      .cell.win { border-color: var(--warn); box-shadow: 0 0 14px rgba(255, 214, 59, 0.7); }
+      .controls { margin-top: 0.7rem; display: grid; gap: 0.55rem; }
+      .control-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; }
+      button,select { min-height: 44px; border-radius: 10px; border: 1px solid color-mix(in oklab, var(--accent) 60%, transparent); background: color-mix(in oklab, var(--surface-2) 85%, #fff 15%); color: var(--text); font-weight: 600; }
+      button { cursor: pointer; transition: transform 0.15s ease, box-shadow 0.2s ease; }
+      button:hover,button:focus-visible { transform: translateY(-1px); box-shadow: 0 0 12px color-mix(in oklab, var(--accent) 60%, transparent); }
+      button:disabled { opacity: 0.5; cursor: wait; }
+      .spin { background: linear-gradient(120deg, var(--accent), var(--accent-2)); color: #02030f; }
+      .panel { padding: 0.7rem; }
+      .status { margin: 0; min-height: 1.2rem; color: var(--good); font-weight: 700; }
+      .help-modal { position: fixed; inset: 0; background: rgba(2, 4, 18, 0.76); display: none; place-items: center; padding: 0.75rem; }
+      .help-modal.open { display: grid; }
+      .help-modal .card { width: min(100%, 520px); padding: 0.9rem; }
+      .paytable { display: grid; gap: 0.4rem; margin: 0.5rem 0; }
+      .paytable div { display: flex; justify-content: space-between; background: rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 0.4rem 0.55rem; }
+      .muted { opacity: 0.74; }
+      @media (min-width: 740px) { main { grid-template-columns: 2fr 1fr; align-items: start; } .hud { grid-column: 1 / -1; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hud" aria-label="Game stats">
+        <div class="metric"><small>Balance</small><strong id="balance">$1000</strong></div>
+        <div class="metric"><small>Bet</small><strong id="bet">$10</strong></div>
+        <div class="metric"><small>Last Win</small><strong id="lastWin">$0</strong></div>
+      </section>
+      <section class="machine panel" aria-label="Slot machine">
+        <div class="title-row"><h1>Neon Slot Rush</h1><button id="helpBtn" type="button" aria-haspopup="dialog">Paytable</button></div>
+        <div class="reels" id="reels" tabindex="0" aria-label="Slot reels. Swipe down or press space to spin."></div>
+        <div class="controls">
+          <div class="control-row"><button id="betDown" type="button">Bet -</button><select id="betSelect" aria-label="Select bet size"></select><button id="betUp" type="button">Bet +</button><button id="turbo" type="button" aria-pressed="false">Turbo Off</button></div>
+          <div class="control-row"><button id="auto" type="button" aria-pressed="false">Auto x10</button><button id="mute" type="button" aria-pressed="true">Muted</button><button id="reset" type="button">Reset</button><button id="spin" class="spin" type="button">SPIN</button></div>
+        </div>
+      </section>
+      <section class="panel" aria-label="Info panel">
+        <p class="status" id="status">Ready. Press SPIN!</p>
+        <p class="muted">10 paylines, 5x3 reels, RNG-driven each spin.</p>
+        <p class="muted" id="volatility">Volatility: Medium</p>
+        <p class="muted">Keyboard: Space spin, ↑/↓ adjust bet, A toggle auto, T turbo, M mute.</p>
+      </section>
+    </main>
+    <div class="help-modal" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <div class="card"><h2 id="helpTitle">Paytable</h2><div class="paytable" id="paytable"></div><p class="muted">3+ matching symbols on a payline win. Wild (⭐) substitutes everything except bonus.</p><button id="closeHelp" type="button">Close</button></div>
+    </div>
+    <script>
+      const SYMBOLS = ['🍒', '🍋', '🔔', '💎', '7️⃣', '⭐'];
+      const WEIGHTS = [26, 24, 20, 14, 10, 6];
+      const PAYOUT = { '🍒': 2, '🍋': 3, '🔔': 5, '💎': 8, '7️⃣': 12, '⭐': 18 };
+      const PAYLINES = [[0,0,0,0,0],[1,1,1,1,1],[2,2,2,2,2],[0,1,2,1,0],[2,1,0,1,2],[0,0,1,0,0],[2,2,1,2,2],[1,0,1,2,1],[1,2,1,0,1],[0,1,1,1,2]];
+      const state = { balance: 1000, betLevels: [5, 10, 20, 40, 80], betIndex: 1, autoSpins: 0, turbo: false, muted: true, spinning: false, lastWin: 0, grid: Array.from({ length: 3 }, () => Array(5).fill('🍒')) };
+      const reelsEl = document.getElementById('reels');
+      const spinBtn = document.getElementById('spin');
+      const autoBtn = document.getElementById('auto');
+      const turboBtn = document.getElementById('turbo');
+      const muteBtn = document.getElementById('mute');
+      const statusEl = document.getElementById('status');
+      const betSelect = document.getElementById('betSelect');
+      const paytable = document.getElementById('paytable');
+      let touchStartY = 0;
+      function weightedPick() { const total = WEIGHTS.reduce((a, b) => a + b, 0); let roll = Math.random() * total; for (let i = 0; i < SYMBOLS.length; i++) { roll -= WEIGHTS[i]; if (roll <= 0) return SYMBOLS[i]; } return SYMBOLS[0]; }
+      function renderGrid(winCells = []) { reelsEl.innerHTML = ''; for (let r = 0; r < 3; r++) { const row = document.createElement('div'); row.className = 'row'; for (let c = 0; c < 5; c++) { const cell = document.createElement('div'); cell.className = 'cell'; if (winCells.includes(`${r}-${c}`)) cell.classList.add('win'); cell.textContent = state.grid[r][c]; row.append(cell); } reelsEl.append(row); } }
+      function renderHud() { const bet = state.betLevels[state.betIndex]; document.getElementById('balance').textContent = `$${state.balance}`; document.getElementById('bet').textContent = `$${bet}`; document.getElementById('lastWin').textContent = `$${state.lastWin}`; betSelect.value = String(state.betIndex); autoBtn.textContent = state.autoSpins > 0 ? `Auto ${state.autoSpins}` : 'Auto x10'; }
+      function updateStatus(msg, good = true) { statusEl.textContent = msg; statusEl.style.color = good ? 'var(--good)' : 'var(--warn)'; }
+      function evaluateWin(bet) { let total = 0; const winCells = new Set(); for (const line of PAYLINES) { let base = state.grid[line[0]][0]; if (base === '⭐') base = state.grid[line[1]][1] || '🍒'; let count = 1; for (let c = 1; c < 5; c++) { const s = state.grid[line[c]][c]; if (s === base || s === '⭐' || base === '⭐') count += 1; else break; } if (count >= 3) { const mult = PAYOUT[base] || 2; total += mult * count * (bet / 5); for (let c = 0; c < count; c++) winCells.add(`${line[c]}-${c}`); } } return { total: Math.floor(total), winCells: [...winCells] }; }
+      async function spin() { if (state.spinning) return; const bet = state.betLevels[state.betIndex]; if (state.balance < bet) { updateStatus('Insufficient balance. Reset to continue.', false); return; }
+        state.spinning = true; spinBtn.disabled = true; state.balance -= bet; state.lastWin = 0; renderHud();
+        document.querySelectorAll('.cell').forEach((cell) => cell.classList.add('spinning'));
+        const loops = state.turbo ? 8 : 16; const pace = state.turbo ? 30 : 55;
+        for (let i = 0; i < loops; i++) { state.grid = Array.from({ length: 3 }, () => Array.from({ length: 5 }, weightedPick)); renderGrid(); await new Promise((r) => setTimeout(r, pace)); }
+        const outcome = evaluateWin(bet); state.lastWin = outcome.total; state.balance += outcome.total; renderGrid(outcome.winCells); renderHud(); updateStatus(outcome.total > 0 ? `WIN +$${outcome.total}!` : 'No win this spin.');
+        state.spinning = false; spinBtn.disabled = false;
+        if (state.autoSpins > 0) { state.autoSpins -= 1; setTimeout(spin, state.turbo ? 120 : 280); }
+      }
+      function initUi() {
+        state.betLevels.forEach((b, i) => { const o = document.createElement('option'); o.value = String(i); o.textContent = `$${b}`; betSelect.append(o); });
+        for (const [sym, val] of Object.entries(PAYOUT)) { const row = document.createElement('div'); row.innerHTML = `<span>${sym} x3+</span><strong>${val}x base</strong>`; paytable.append(row); }
+        document.getElementById('betDown').addEventListener('click', () => { state.betIndex = Math.max(0, state.betIndex - 1); renderHud(); });
+        document.getElementById('betUp').addEventListener('click', () => { state.betIndex = Math.min(state.betLevels.length - 1, state.betIndex + 1); renderHud(); });
+        betSelect.addEventListener('change', (e) => { state.betIndex = Number(e.target.value); renderHud(); });
+        autoBtn.addEventListener('click', () => { state.autoSpins = state.autoSpins > 0 ? 0 : 10; autoBtn.setAttribute('aria-pressed', String(state.autoSpins > 0)); renderHud(); if (state.autoSpins > 0) spin(); });
+        turboBtn.addEventListener('click', () => { state.turbo = !state.turbo; turboBtn.textContent = state.turbo ? 'Turbo On' : 'Turbo Off'; turboBtn.setAttribute('aria-pressed', String(state.turbo)); document.getElementById('volatility').textContent = state.turbo ? 'Volatility: High' : 'Volatility: Medium'; });
+        muteBtn.addEventListener('click', () => { state.muted = !state.muted; muteBtn.textContent = state.muted ? 'Muted' : 'Sound On'; muteBtn.setAttribute('aria-pressed', String(!state.muted)); });
+        spinBtn.addEventListener('click', spin);
+        document.getElementById('reset').addEventListener('click', () => { state.balance = 1000; state.autoSpins = 0; state.lastWin = 0; renderHud(); updateStatus('Bankroll reset to $1000.'); });
+        const helpModal = document.getElementById('helpModal');
+        document.getElementById('helpBtn').addEventListener('click', () => helpModal.classList.add('open'));
+        document.getElementById('closeHelp').addEventListener('click', () => helpModal.classList.remove('open'));
+        reelsEl.addEventListener('touchstart', (e) => { touchStartY = e.changedTouches[0].clientY; });
+        reelsEl.addEventListener('touchend', (e) => { const delta = e.changedTouches[0].clientY - touchStartY; if (Math.abs(delta) > 26) spin(); });
+        document.addEventListener('keydown', (e) => { if (e.key === ' ') { e.preventDefault(); spin(); } if (e.key === 'ArrowUp') { state.betIndex = Math.min(state.betLevels.length - 1, state.betIndex + 1); renderHud(); } if (e.key === 'ArrowDown') { state.betIndex = Math.max(0, state.betIndex - 1); renderHud(); } if (e.key.toLowerCase() === 'a') autoBtn.click(); if (e.key.toLowerCase() === 't') turboBtn.click(); if (e.key.toLowerCase() === 'm') muteBtn.click(); });
+      }
+      initUi(); renderGrid(); renderHud();
+    </script>
+  </body>
+</html>
