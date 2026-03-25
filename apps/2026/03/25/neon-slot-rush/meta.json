@@ -33,6 +33,15 @@
       "implementedAt": "2026-03-25T20:49:00Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
+    },
+    {
+      "issueNumber": 207,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/207",
+      "description": "Changed the Lines toggle to cycle through individual paylines (Line 1–Line 10), All Lines, and Off, so each payline can be viewed in isolation to follow a winning line.",
+      "requestor": "Jeff Holst",
+      "implementedAt": "2026-03-25T21:07:49Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
     }
   ],
   "generation": {
