@@ -39,7 +39,14 @@ export async function POST(request) {
   const headerProto = request.headers.get('x-forwarded-proto')?.split(',')[0] || null;
   const headerHost = request.headers.get('host');
   const headerOrigin = headerProto && headerHost ? `${headerProto}://${headerHost}` : null;
-  const origin = envBaseUrl || headerOrigin || 'https://www.valleyofai.com';
+  let origin = envBaseUrl || headerOrigin;
+  if (!origin) {
+    try {
+      origin = new URL(request.url).origin;
+    } catch {
+      return Response.json({ error: 'Unable to determine site origin for payment redirect' }, { status: 500 });
+    }
+  }
 
   const metadata = { type, amount: String(parsedAmount) };
   if (issueNumber) {
@@ -62,7 +69,7 @@ export async function POST(request) {
               description:
                 type === 'tip'
                   ? 'Tips help prioritize this request and keep the AI bots running!'
-                  : 'Help keep the Valley of AI bots running!',
+                  : `Help keep the ${process.env.NEXT_PUBLIC_SITE_NAME || 'AI'} bots running!`,
             },
           },
           quantity: 1,

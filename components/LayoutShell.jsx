@@ -3,6 +3,8 @@
 import Header from './Header';
 import {
   siteName,
+  siteEmoji,
+  siteAuthor,
   socialXUrl,
   socialFacebookUrl,
   socialInstagramUrl,
@@ -52,13 +54,17 @@ export default function LayoutShell({ children }) {
       <main className="flex-1">{children}</main>
       <footer className="relative z-20 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-4 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-2 text-sm text-gray-500 dark:text-gray-400 text-center">
-          <span className="hidden sm:inline">
-            ✨ An experiment in AI, powered by curiosity and <span className="heart-pulse">❤️</span>{' '}
-            from <span className="sparkle-text">Jeff Holst</span>
-          </span>
+          {siteAuthor && (
+            <span className="hidden sm:inline">
+              ✨ An experiment in AI, powered by curiosity and{' '}
+              <span className="heart-pulse">❤️</span> from{' '}
+              <span className="sparkle-text">{siteAuthor}</span>
+            </span>
+          )}
           <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-1">
             <span suppressHydrationWarning>
-              🏔️<span className="hidden sm:inline"> {siteName}</span> © {new Date().getFullYear()}
+              {siteEmoji}
+              <span className="hidden sm:inline"> {siteName}</span> © {new Date().getFullYear()}
             </span>
             <a
               href={githubUrl}

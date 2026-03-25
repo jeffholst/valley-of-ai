@@ -1,6 +1,6 @@
 import appsData from '@/data/apps.json';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://valleyofai.com';
+const BASE_URL = process.env.NEXT_PUBLIC_MAIN_SITE_URL || '';
 
 export default function sitemap() {
   const appEntries = appsData.map((app) => ({

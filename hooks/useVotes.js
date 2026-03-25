@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
+import { storagePrefix } from '@/lib/siteConfig';
 
-const STORAGE_KEY = 'voa_votes_v2';
-const LEGACY_STORAGE_KEY = 'valley_voted_apps';
+const STORAGE_KEY = `${storagePrefix}_votes_v2`;
+const LEGACY_STORAGE_KEY = `${storagePrefix}_voted_apps`;
 
 function getVoteRecord(appId) {
   try {
