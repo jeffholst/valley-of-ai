@@ -5,17 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-19T07:00:47Z",
   "category": "Games",
-  "votes": 0,
-  "status": "active",
   "visible": true,
-  "tags": [
-    "memory",
-    "puzzle",
-    "arcade",
-    "touch",
-    "keyboard",
-    "responsive"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["memory", "puzzle", "arcade", "touch", "keyboard", "responsive"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {
@@ -27,5 +20,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260319T070047Z-d71684",
     "notes": "Spatial-memory game with 8 orbit nodes, progressive rounds, lives, local best score, keyboard 1-8 support, tap/click controls, and swipe-down replay gesture."
-  }
+  },
+  "votes": 0
 }

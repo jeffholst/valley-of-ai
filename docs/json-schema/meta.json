@@ -45,12 +45,25 @@
     },
     "category": {
       "type": "string",
-      "enum": ["Games", "Productivity", "Utilities", "Design", "Education", "Entertainment", "Visualizations"]
+      "enum": [
+        "Games",
+        "Productivity",
+        "Utilities",
+        "Design",
+        "Education",
+        "Entertainment",
+        "Visualizations"
+      ]
     },
     "visible": {
       "type": "boolean",
       "default": true,
       "description": "Whether this app appears in the public app listing. Defaults to true. Set to false to hide without deleting."
+    },
+    "allowImprovements": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether community improvement submissions are accepted for this app. Defaults to true. Set to false to prevent new improvements."
     },
     "status": {
       "type": "string",
@@ -111,7 +124,14 @@
       "description": "Records of improvement pipeline runs applied to this app. Appended by the improvement pipeline — do not set during initial creation.",
       "items": {
         "type": "object",
-        "required": ["issueNumber", "issueUrl", "description", "implementedAt", "agentName", "llmModel"],
+        "required": [
+          "issueNumber",
+          "issueUrl",
+          "description",
+          "implementedAt",
+          "agentName",
+          "llmModel"
+        ],
         "properties": {
           "issueNumber": {
             "type": "integer",

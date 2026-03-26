@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-07T20:15:00Z",
   "category": "Games",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "action",
-    "stealth",
-    "dance",
-    "arcade",
-    "avoidance"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["action", "stealth", "dance", "arcade", "avoidance"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

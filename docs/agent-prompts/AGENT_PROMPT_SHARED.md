@@ -72,6 +72,7 @@ The authoritative schema is at `docs/json-schema/meta.json`. Validate against it
 **Optional fields:**
 
 - `visible`: boolean — defaults to `true`; set to `false` to hide without deleting
+- `allowImprovements`: boolean — defaults to `true`; set to `false` to prevent community improvement submissions for this app
 - `suggestion`: object — only present if app was built from a community suggestion issue
 - `improvements`: array — appended by the improvement pipeline each time an improvement is applied; **do not set during initial app creation**
 

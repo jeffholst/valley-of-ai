@@ -63,7 +63,8 @@
         "agentName": "Claude Code",
         "llmModel": "claude-sonnet-4-6"
       }
-    ]
+    ],
+    "allowImprovements": false
   },
   {
     "id": "2026/03/26/raffle-night-caller",
@@ -91,7 +92,8 @@
       "notes": "Built from vote-and-category-analysis recommendation inspired by high-vote entertainment concepts while avoiding duplication."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/25/neon-slot-rush",
@@ -161,7 +163,8 @@
         "agentName": "Claude Code",
         "llmModel": "claude-sonnet-4-6"
       }
-    ]
+    ],
+    "allowImprovements": true
   },
   {
     "id": "2026/03/25/peg-solitaire",
@@ -194,7 +197,8 @@
       "prompt": "Build a classic Peg Solitaire (English board) mobile first web game",
       "requestor": "Perplexity"
     },
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/24/charades-chaos-deck",
@@ -241,7 +245,8 @@
         "agentName": "claude-code",
         "llmModel": "claude-sonnet-4-6"
       }
-    ]
+    ],
+    "allowImprovements": true
   },
   {
     "id": "2026/03/24/foley-scene-mixer",
@@ -269,7 +274,8 @@
       "notes": "Built from vote-and-category-analysis recommendation with unique audio-pad mechanic in Entertainment category."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/24/story-beat-remixer",
@@ -297,7 +303,8 @@
       "notes": "Built from vote-and-category-analysis recommendation with a non-arcade entertainment concept focused on remixable story beats."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/23/dungeon-puzzle-run",
@@ -340,7 +347,8 @@
         "agentName": "claude-code",
         "llmModel": "claude-sonnet-4-6"
       }
-    ]
+    ],
+    "allowImprovements": true
   },
   {
     "id": "2026/03/23/tic-tac-toe-strategy-lab",
@@ -368,7 +376,8 @@
       "notes": "Built a static mobile-first tic-tac-toe app with minimax AI, score tracking, keyboard navigation, and swipe-to-reset gesture support."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/21/texas-lotto-generator",
@@ -401,7 +410,8 @@
       "prompt": "Create a lotto number generator. Have a pulldown of all the Texas lotto drawing configurations. Display the numbers real-time as if they are being drawn at that moment. Have a confetti celebration after the numbers are displayed as if those were the actual winning numbers.",
       "requestor": "Gary S."
     },
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/21/neighborhood-home-ranker",
@@ -443,7 +453,8 @@
       "prompt": "Take all the MLS listings and merge it with Google reviews within a radius of your choosing so you can rank all the homes available in your area by the quality of restaurants, bars, coffee shops, etc surrounding each individual house.",
       "requestor": "Alexander M."
     },
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/21/tetris-classic",
@@ -476,7 +487,8 @@
       "prompt": "Create a Tetris clone. Requirements: Make it work very well on phones in portrait orientation. Use touch-first controls with large buttons that are easy to tap. Also support keyboard controls for desktop testing. Gameplay: Classic Tetris rules: 10-column board, tetromino spawning, left/right/down movement, rotation with reasonable wall kicks or simple fallback logic, hard drop, line clearing, scoring/level progression/line count, game over detection. Include: next piece preview, score display, level display, lines cleared display, restart button, pause button.",
       "requestor": "Jeff Holst"
     },
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/21/morse-code-radio",
@@ -504,7 +516,8 @@
       "notes": "Static HTML/CSS/JS app with Web Audio API oscillator for morse code audio, canvas oscilloscope visualization, animated dot/dash symbols, manual key button, speed/frequency sliders, and collapsible reference chart. Mobile-first responsive design with touch support."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/21/pattern-pulse-memory",
@@ -532,7 +545,8 @@
       "notes": "Built as a responsive static game integrated with the shared shell, including keyboard/touch controls and persistent best score."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/20/sudoku-sprint",
@@ -560,7 +574,8 @@
       "notes": "Built as a responsive single-file static Sudoku app with full shell integration and accessibility-focused controls."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/20/neon-lane-sprinter",
@@ -588,7 +603,8 @@
       "notes": "Nightly generation; token counters unavailable in runtime."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/19/slide-2048",
@@ -616,7 +632,8 @@
       "notes": "Neon-themed 2048 sliding tile puzzle. Features: 4x4 grid, keyboard/WASD/swipe controls, merge animations, localStorage best score, win/lose/continue overlays, responsive mobile-first layout, full light/dark theme support."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/19/orbit-memory-match",
@@ -644,7 +661,8 @@
       "notes": "Spatial-memory game with 8 orbit nodes, progressive rounds, lives, local best score, keyboard 1-8 support, tap/click controls, and swipe-down replay gesture."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/18/cyber-hop",
@@ -681,7 +699,8 @@
       "notes": "Cyberpunk Frogger with canvas rendering, requestAnimationFrame smooth tween movement (110ms easing), neon hover vehicles, glowing data-stream platforms, time-warp power-up (slows obstacles 72%), particle death effects, mobile D-pad + swipe controls, keyboard WASD/arrow support, level progression with speed scaling, lives system, local high score."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/17/hangman-word-game",
@@ -709,7 +728,8 @@
       "notes": "Built a non-violent animated Hangman app with responsive UI, keyboard/touch support, and shared shell compliance."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/17/focus-timer",
@@ -737,7 +757,8 @@
       "notes": "Focus timer with customizable durations, preset buttons, pause/resume, audio cues, responsive design, theme support, keyboard/touch accessibility. Standard template followed with real-time logging throughout pipeline."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/16/mindful-breathing-tracker",
@@ -765,7 +786,8 @@
       "notes": "Built responsive breathing app with 4-7-8 technique, dark/light theme support, progress tracking, and streak gamification"
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/16/memory-sequence",
@@ -793,7 +815,8 @@
       "notes": "Memory sequence game with 2x2 grid, progressively difficult rounds, high score persistence via localStorage, full mobile support, and smooth animations"
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/15/focus-sprint-planner",
@@ -821,7 +844,8 @@
       "notes": "Created mobile-first static app with shared shell, analytics placeholders, keyboard shortcuts, and priority suggestion logic."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/15/hydration-nudge-tracker",
@@ -849,7 +873,8 @@
       "notes": "Nightly cron generation; token counters unavailable in runtime."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/14/decision-spinner",
@@ -877,7 +902,8 @@
       "notes": "Inspired by wheel-based picker UX with weighted entries; added fairness penalty to reduce repetitive winners."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/14/password-entropy-lab",
@@ -905,7 +931,8 @@
       "notes": "Inspired by zxcvbn-style strength meters; added attack-rate controls and entropy/keyspace visibility for educational use."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/14/focus-flip-cards",
@@ -933,7 +960,8 @@
       "notes": "Nightly run app. Token counters unavailable in runtime."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/13/interval-breathing-coach",
@@ -961,7 +989,8 @@
       "notes": "Built a mobile-first interval breathing coach with presets, keyboard shortcuts, animated radial guide, progress timeline, and shared shell/theme compatibility."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/13/bubble-tap",
@@ -989,7 +1018,8 @@
       "notes": "Mobile-first responsive bubble popping game with 3 difficulty levels (Easy/Normal/Hard), touch and click controls, real-time score/combo tracking, particle effects, and local storage for persistent best scores. Fully themed with dark/light mode support and responsive design for all screen sizes."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/12/meeting-cost-calculator",
@@ -1017,7 +1047,8 @@
       "notes": "Built a mobile-first meeting burn-rate tool with attendee management, timer controls, planned-vs-live cost, and keyboard shortcuts."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/12/timezone-overlap-finder",
@@ -1045,7 +1076,8 @@
       "notes": "Built a utility app to compare three timezone schedules with work-hour sliders, real-time local clocks, and a UTC overlap timeline. Token counts are estimated from generation phases."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/12/constellation-explorer",
@@ -1073,7 +1105,8 @@
       "notes": "Original concept: Educational constellation explorer filling the gap in the gallery (no Education apps existed). Features a full-canvas starfield with 10 major constellations (Orion, Ursa Major, Ursa Minor, Cassiopeia, Leo, Scorpius, Cygnus, Canis Major, Gemini, Lyra). Click/tap hit detection selects nearest constellation; animated glow, info panel with mythology and star data, show/hide lines and labels controls, shooting star animation, twinkling background stars. Token counts are estimates."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/12/sorting-race-visualizer",
@@ -1101,7 +1134,8 @@
       "notes": "Agent-generated concept (no pending suggestion). Added shared shell, GA placeholder snippet, responsive UI, and side-by-side sorting race with comparison/swap counters. Token values are best-effort estimates from model-side interaction logs."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/11/lucky-decision-wheel",
@@ -1129,7 +1163,8 @@
       "notes": "Concept generated autonomously; token counts are estimated from generation steps and may vary slightly from provider accounting. Runtime smoke test passed for spin controls, winner state updates, and repeated restart via consecutive spins."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/10/maze-runner",
@@ -1157,7 +1192,8 @@
       "notes": "Nightly app run. Token counters unavailable in runtime."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/10/habit-streak-garden",
@@ -1185,7 +1221,8 @@
       "notes": "Created an original productivity app with persistent streak tracking, responsive UI, shared shell support, and a garden metaphor for completion progress."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/10/neon-breakout",
@@ -1213,7 +1250,8 @@
       "notes": "Nightly app run. Token counters unavailable in runtime."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/10/pixel-painter",
@@ -1241,7 +1279,8 @@
       "notes": "Nightly task run. Token counters unavailable in runtime."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/09/pixel-planet-clicker",
@@ -1269,7 +1308,8 @@
       "notes": "Built an original space-themed idle clicker with shared theme integration, touch support, and a UI-matching SVG thumbnail."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/09/gravity-dodge",
@@ -1297,7 +1337,8 @@
       "notes": "Nightly run app. Token counters unavailable in runtime."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/08/typing-speed-sprint",
@@ -1325,7 +1366,8 @@
       "notes": "Nightly app run. Token counters unavailable in runtime."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/08/daredevil-moto-jump",
@@ -1353,7 +1395,8 @@
       "notes": "Evel Knievel-inspired motorcycle stunt game with ramp launching, mid-air flips, star collection, bus obstacles, and progressive difficulty. Canvas-based rendering with fire trail particles."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/08/mini-putt-gauntlet",
@@ -1381,7 +1424,8 @@
       "notes": "Built a responsive 3-hole mini putt experience with obstacle-specific mechanics per hole and fixed par 3 scoring. Token counts are estimated for this autonomous run."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/08/orbit-harmonics",
@@ -1409,7 +1453,8 @@
       "notes": "Built a responsive harmonic orbit visualizer with preset studies, theme persistence, live canvas rendering, and PNG export. Token counts are estimated for this autonomous run."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/08/eagle-eye-teacher",
@@ -1437,7 +1482,8 @@
       "notes": "Middle school classroom themed reaction game. Teacher must spot misbehavior while avoiding penalizing good students."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/08/logic-lights-out",
@@ -1465,7 +1511,8 @@
       "notes": "Built a mobile-friendly Lights Out game with dark/light theming, keyboard-accessible controls, and deterministic daily mode. Token counts are estimated for this autonomous run."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/08/space-invaders-clone",
@@ -1493,7 +1540,8 @@
       "notes": "Nightly build: Space Invaders clone. Token counters unavailable in runtime."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/07/workout-timer-pulse",
@@ -1521,7 +1569,8 @@
       "notes": "Feature set prioritized from common interval timer app patterns: presets, prep, rounds, cues, pause/skip. Token counters unavailable in runtime."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/07/road-rage",
@@ -1549,7 +1598,8 @@
       "notes": "Vertical scrolling racing game with 4-lane highway, enemy traffic, wet spots causing spin-outs, score/distance/speed tracking, and responsive touch controls."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/07/neon-velocity",
@@ -1577,7 +1627,8 @@
       "notes": "Action-packed endless runner with cyberpunk aesthetic, 4 power-up types, combo multiplier system, particle effects, and responsive touch/keyboard controls."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/07/fishing-frenzy",
@@ -1605,7 +1656,8 @@
       "notes": "Fishing arcade game with casting mechanics and time challenge."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/07/design-dash",
@@ -1633,7 +1685,8 @@
       "notes": "Speed-based arcade game themed around graphic design. Players match design elements (colors, fonts, icons) to client briefs under time pressure with combo system."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/07/realtor-tycoon",
@@ -1661,7 +1714,8 @@
       "notes": "Lemonade Stand-style business simulation game themed around real estate. Features market conditions, pricing strategies, marketing budgets, and reputation system."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/07/zorkish-text-adventure",
@@ -1689,7 +1743,8 @@
       "notes": "Token counters unavailable in runtime; set to 0."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/07/halftime-hustle",
@@ -1717,7 +1772,8 @@
       "notes": "Stealth action game where you play as a dancer avoiding a tyrannical instructor's spotlight while collecting dance marks. Features patrol AI, spotlight cone detection, progressive difficulty, and touch controls."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/07/pacman-classic",
@@ -1745,7 +1801,8 @@
       "notes": "Token counters are not exposed by this runtime; set to 0."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/07/debug-rush",
@@ -1773,7 +1830,8 @@
       "notes": "Inspired by computer programmers debugging code as quickly as possible. Features 20 real-world coding bugs across JavaScript and Python with syntax highlighting and time pressure."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/07/blackjack",
@@ -1801,7 +1859,8 @@
       "notes": "Classic blackjack game with spectacular blackjack celebration animations including fireworks, sparks, falling coins, and rotating light rays. Features proper casino rules with 3:2 blackjack payout."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/07/archery-physics",
@@ -1829,7 +1888,8 @@
       "notes": "Realistic archery game with projectile motion physics including gravity, air resistance, and wind effects. Features power-based bow draw, trajectory preview, and target scoring zones."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/07/disco-runner",
@@ -1857,7 +1917,8 @@
       "notes": "Side-scrolling runner with a funky twist: collecting disco balls flips gravity. Features neon colors, disco dancer character with afro, and pulsing background effects."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/07/flappy-bird",
@@ -1885,7 +1946,8 @@
       "notes": "Classic Flappy Bird game with gravity physics, pipe obstacles, scoring system, best score tracking, dark/light mode, touch and keyboard controls."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/07/contrast-lab",
@@ -1913,7 +1975,8 @@
       "notes": "Built a responsive no-dependency accessibility tool with live contrast metrics, dark/light theme toggle, and one-click AA/AAA correction nudges."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/06/habit-heatmap",
@@ -1941,7 +2004,8 @@
       "notes": "Created a responsive weekly habit heatmap with keyboard support, local persistence, and light/dark/auto theme toggle."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/06/word-weaver",
@@ -1969,7 +2033,8 @@
       "notes": "Token counters unavailable in runtime; set to 0."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/06/reaction-ripple",
@@ -1997,7 +2062,8 @@
       "notes": "Token counters are not available from this runtime, so fields are set to 0."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/06/memory-match",
@@ -2025,7 +2091,8 @@
       "notes": "Classic memory card matching game with CSS 3D flip animations and multiple difficulty levels."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/06/focus-fountain",
@@ -2053,7 +2120,8 @@
       "notes": "Token accounting is not exposed in this runtime; set to 0 for this run."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/06/sorting-visualizer",
@@ -2081,7 +2149,8 @@
       "notes": "Original creation - interactive sorting algorithm visualizer with 5 algorithms, speed controls, and multiple initial conditions."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/06/word-scramble",
@@ -2109,7 +2178,8 @@
       "notes": "Generated as a test of the full agent workflow including git operations and transactional logging."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/05/snake-game",
@@ -2137,7 +2207,8 @@
       "notes": "Original creation - classic Snake game with modern polish, touch support, and progressive difficulty."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/05/breathing-orb",
@@ -2165,7 +2236,8 @@
       "notes": "Original concept built as a lightweight static app; token counters unavailable in this runtime so set to 0 for this run."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/05/pomodoro-timer",
@@ -2193,7 +2265,8 @@
       "notes": "Implemented from user suggestion 2026-03-05-003. Added circular progress indicator, settings panel, and Web Audio API notifications."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/05/color-palette-generator",
@@ -2221,7 +2294,8 @@
       "notes": "Implemented user suggestion for Color Palette Generator with comprehensive color theory harmonies and multiple export formats."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   },
   {
     "id": "2026/03/05/example-app",
@@ -2249,6 +2323,7 @@
       "notes": "Generated from suggestion 2026-03-05-001."
     },
     "suggestion": null,
-    "improvements": null
+    "improvements": null,
+    "allowImprovements": true
   }
 ]

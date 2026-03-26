@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-14T04:01:12Z",
   "category": "Games",
-  "votes": 0,
-  "status": "active",
   "visible": true,
-  "tags": [
-    "memory",
-    "cards",
-    "game",
-    "mobile-friendly"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["memory", "cards", "game", "mobile-friendly"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {
@@ -25,5 +20,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260314T000000Z-a1b2c3",
     "notes": "Nightly run app. Token counters unavailable in runtime."
-  }
+  },
+  "votes": 0
 }

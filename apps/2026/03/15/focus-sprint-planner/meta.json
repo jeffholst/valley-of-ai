@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-15T14:21:35Z",
   "category": "Productivity",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "productivity",
-    "pomodoro",
-    "task-planning",
-    "priority-scoring",
-    "mobile-friendly"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["productivity", "pomodoro", "task-planning", "priority-scoring", "mobile-friendly"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

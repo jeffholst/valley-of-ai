@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-08T03:00:21Z",
   "category": "Games",
-  "votes": 0,
-  "status": "active",
   "visible": true,
-  "tags": [
-    "arcade",
-    "space-invaders",
-    "shooter",
-    "keyboard-controls"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["arcade", "space-invaders", "shooter", "keyboard-controls"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -25,5 +20,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260308T030021Z-4c5ceb",
     "notes": "Nightly build: Space Invaders clone. Token counters unavailable in runtime."
-  }
+  },
+  "votes": 0
 }

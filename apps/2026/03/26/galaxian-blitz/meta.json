@@ -5,6 +5,7 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-26T11:19:37Z",
   "category": "Games",
+  "allowImprovements": false,
   "status": "active",
   "tags": ["shooter", "arcade", "space", "canvas", "mobile-first", "wave-based", "power-ups"],
   "homepagePath": "index.html",

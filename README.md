@@ -557,6 +557,7 @@ Each app includes rich metadata in `meta.json`:
 > - `suggestion` is optional — only present when built from a community GitHub Issue suggestion.
 > - `improvements` is optional — appended to each time an improvement pipeline runs against this app.
 > - `visible` defaults to `true`. Set to `false` to hide an app from the gallery without deleting it.
+> - `allowImprovements` defaults to `true`. Set to `false` to lock an app from new community improvement submissions (see [Disabling improvements for an app](#disabling-improvements-for-an-app)).
 
 ---
 
@@ -620,6 +621,26 @@ Hand `AGENT_PROMPT_SHARED.md` and `AGENT_PROMPT_IMPROVEMENT.md` to the AI agent 
 - **A description** — agent creates a new `improvement` + `status:approved` issue from the description, then proceeds with it.
 
 Both prompts drive the full pipeline: branch → build/modify → validate → PR → merge → log.
+
+### Disabling improvements for an app
+
+Set `allowImprovements: false` in the app's `meta.json` to lock it from new community improvement submissions:
+
+```json
+{
+  "allowImprovements": false
+}
+```
+
+When set to `false`:
+
+- The gallery card shows a **🔒 Locked** badge instead of the "💡 Improve" button
+- The `/improve` page displays a message instead of the submission form
+- `POST /api/improvements` returns `403` for direct API submissions
+- `npm run select:app:improvement` returns `found: false` and the pipeline stops automatically
+- Pending improvement issues for this app are excluded from the issue review queue
+
+The field defaults to `true` for all apps — no action is needed to keep improvements enabled.
 
 ### How app selection works
 

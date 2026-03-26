@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-05T21:51:58Z",
   "category": "Design",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "design",
-    "colors",
-    "tools",
-    "css",
-    "tailwind"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["design", "colors", "tools", "css", "tailwind"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

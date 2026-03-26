@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-10T01:04:45Z",
   "category": "Design",
-  "votes": 0,
-  "status": "active",
   "visible": true,
-  "tags": [
-    "pixel-art",
-    "drawing",
-    "design",
-    "creative-tool"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["pixel-art", "drawing", "design", "creative-tool"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -25,5 +20,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260310T010445Z-0a7ac4",
     "notes": "Nightly task run. Token counters unavailable in runtime."
-  }
+  },
+  "votes": 0
 }

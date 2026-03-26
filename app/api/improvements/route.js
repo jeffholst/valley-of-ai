@@ -1,5 +1,6 @@
 import { verifyTurnstile } from '@/lib/turnstile';
 import { escapeMd } from '@/lib/markdown';
+import appsData from '@/data/apps.json';
 
 const GITHUB_API_URL = 'https://api.github.com';
 
@@ -26,6 +27,11 @@ export async function POST(request) {
 
   if (!APP_ID_RE.test(appId)) {
     return Response.json({ error: 'Invalid app ID' }, { status: 400 });
+  }
+
+  const appEntry = appsData.find((a) => a.id === appId);
+  if (appEntry && appEntry.allowImprovements === false) {
+    return Response.json({ error: 'This app is not accepting improvements.' }, { status: 403 });
   }
 
   if (description.length < 10 || description.length > 1000) {

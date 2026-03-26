@@ -5,14 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-10T07:03:11Z",
   "category": "Productivity",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "habits",
-    "streaks",
-    "tracker",
-    "localstorage"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["habits", "streaks", "tracker", "localstorage"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

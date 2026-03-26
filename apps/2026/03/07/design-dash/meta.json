@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-07T22:15:00Z",
   "category": "Games",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "game",
-    "arcade",
-    "design",
-    "speed",
-    "matching"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["game", "arcade", "design", "speed", "matching"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

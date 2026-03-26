@@ -5,6 +5,7 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-26T07:00:29Z",
   "category": "Entertainment",
+  "allowImprovements": true,
   "status": "active",
   "tags": ["raffle", "drawing", "party", "randomizer", "tickets", "responsive"],
   "homepagePath": "index.html",

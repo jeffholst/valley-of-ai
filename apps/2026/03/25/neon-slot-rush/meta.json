@@ -5,6 +5,7 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-25T07:00:25Z",
   "category": "Entertainment",
+  "allowImprovements": true,
   "status": "active",
   "tags": ["slot-machine", "casino", "rng", "mobile-first", "paylines", "neon"],
   "homepagePath": "index.html",

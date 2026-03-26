@@ -5,12 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-05T02:30:00Z",
   "category": "Productivity",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "demo",
-    "example"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["demo", "example"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

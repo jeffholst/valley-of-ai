@@ -5,16 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-08T02:09:40Z",
   "category": "Games",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "game",
-    "racing",
-    "arcade",
-    "driving",
-    "action",
-    "endless"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["game", "racing", "arcade", "driving", "action", "endless"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

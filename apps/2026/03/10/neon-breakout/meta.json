@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-10T05:01:33Z",
   "category": "Games",
-  "votes": 0,
-  "status": "active",
   "visible": true,
-  "tags": [
-    "arcade",
-    "breakout",
-    "ball",
-    "keyboard-controls"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["arcade", "breakout", "ball", "keyboard-controls"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {
@@ -25,5 +20,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260310T050133Z-fda811",
     "notes": "Nightly app run. Token counters unavailable in runtime."
-  }
+  },
+  "votes": 0
 }

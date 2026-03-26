@@ -133,6 +133,7 @@ function lookupApp(apps, appPath) {
         route: `/apps/${appPath}`,
         shortDescription: meta.shortDescription,
         visible: meta.visible ?? true,
+        allowImprovements: meta.allowImprovements ?? true,
       };
     } catch {
       return null;
@@ -148,6 +149,14 @@ function lookupApp(apps, appPath) {
 function buildResult(source, issue, apps) {
   const appPath = extractAppPath(issue);
   const appEntry = lookupApp(apps, appPath);
+
+  if (appEntry && appEntry.allowImprovements === false) {
+    return {
+      source: 'none',
+      found: false,
+      message: `App '${appPath}' has allowImprovements: false — skipping. Set allowImprovements: true in meta.json to re-enable improvements.`,
+    };
+  }
 
   const requestor = (issue.body || '').match(/\*\*Requestor:\*\*\s*(.+)/i)?.[1]?.trim() ?? null;
   const description =

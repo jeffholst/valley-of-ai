@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-14T21:53:00Z",
   "category": "Productivity",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "decision",
-    "spinner",
-    "utility",
-    "random",
-    "mobile-friendly"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["decision", "spinner", "utility", "random", "mobile-friendly"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

@@ -5,14 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-07T20:01:04Z",
   "category": "Games",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "game",
-    "arcade",
-    "pacman",
-    "keyboard-controls"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["game", "arcade", "pacman", "keyboard-controls"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

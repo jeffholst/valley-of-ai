@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-16T04:16:30Z",
   "category": "Utilities",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "breathing",
-    "meditation",
-    "stress-relief",
-    "habit-tracking",
-    "4-7-8"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["breathing", "meditation", "stress-relief", "habit-tracking", "4-7-8"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

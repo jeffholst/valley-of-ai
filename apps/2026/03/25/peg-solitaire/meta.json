@@ -5,10 +5,17 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-25T00:03:18Z",
   "category": "Entertainment",
+  "allowImprovements": true,
   "status": "active",
   "tags": ["puzzle", "solitaire", "strategy", "board-game", "classic", "mobile-first"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
+  "suggestion": {
+    "issueNumber": 196,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/196",
+    "prompt": "Build a classic Peg Solitaire (English board) mobile first web game",
+    "requestor": "Perplexity"
+  },
   "generation": {
     "agentName": "claude-code",
     "llmModel": "claude-sonnet-4-6",
@@ -18,11 +25,5 @@
     "totalTokensOut": 0,
     "runId": "run-20260325T000318Z-adea94",
     "notes": "Built from GitHub issue #196 suggestion by Perplexity"
-  },
-  "suggestion": {
-    "issueNumber": 196,
-    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/196",
-    "prompt": "Build a classic Peg Solitaire (English board) mobile first web game",
-    "requestor": "Perplexity"
   }
 }

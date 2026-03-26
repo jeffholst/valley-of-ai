@@ -5,19 +5,18 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-21T18:14:39Z",
   "category": "Entertainment",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "lottery",
-    "texas",
-    "random",
-    "numbers",
-    "animation",
-    "confetti",
-    "generator"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["lottery", "texas", "random", "numbers", "animation", "confetti", "generator"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
+  "suggestion": {
+    "issueNumber": 127,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/127",
+    "prompt": "Create a lotto number generator. Have a pulldown of all the Texas lotto drawing configurations. Display the numbers real-time as if they are being drawn at that moment. Have a confetti celebration after the numbers are displayed as if those were the actual winning numbers.",
+    "requestor": "Gary S."
+  },
   "generation": {
     "agentName": "Claude Code",
     "llmModel": "claude-sonnet-4-6",
@@ -27,11 +26,5 @@
     "totalTokensOut": 8700,
     "runId": "run-20260321T181439Z-a7f3c2",
     "notes": "All 8 major Texas Lottery games included. Animated ball machine with bouncing balls. One-at-a-time draw reveal with pop animation. Full confetti celebration on draw complete. Mobile-first responsive design."
-  },
-  "suggestion": {
-    "issueNumber": 127,
-    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/127",
-    "prompt": "Create a lotto number generator. Have a pulldown of all the Texas lotto drawing configurations. Display the numbers real-time as if they are being drawn at that moment. Have a confetti celebration after the numbers are displayed as if those were the actual winning numbers.",
-    "requestor": "Gary S."
   }
 }

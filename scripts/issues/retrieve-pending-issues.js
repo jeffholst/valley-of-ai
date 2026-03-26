@@ -5,7 +5,9 @@
  * optionally target the human-review queue instead.
  */
 
-import { pathToFileURL } from 'url';
+import { readFileSync } from 'fs';
+import { pathToFileURL, fileURLToPath } from 'url';
+import path from 'path';
 import {
   getIssue,
   inferIssueType,
@@ -13,6 +15,16 @@ import {
   listIssuesByLabels,
   loadEnv,
 } from './lib/issue-github-client.js';
+import { extractAppPath } from './lib/issue-selection-heuristics.js';
+
+const _retrieveFilename = fileURLToPath(import.meta.url);
+const _retrieveDir = path.dirname(_retrieveFilename);
+const rootDir = path.resolve(_retrieveDir, '../..');
+
+function loadAppsData() {
+  const appsPath = path.join(rootDir, 'data', 'apps.json');
+  return JSON.parse(readFileSync(appsPath, 'utf8'));
+}
 
 const VALID_TYPES = new Set(['suggestion', 'improvement']);
 const HUMAN_REVIEW_LABEL = 'status:needs-human-review';
@@ -157,6 +169,18 @@ export function buildRetrieveResult(issues) {
   };
 }
 
+function isImprovementsAllowed(issue, apps) {
+  if (inferIssueType(issue) !== 'improvement') {
+    return true;
+  }
+  const appPath = extractAppPath(issue);
+  if (!appPath) {
+    return true;
+  }
+  const app = apps.find((a) => a.id === appPath || a.id.endsWith(appPath));
+  return !app || app.allowImprovements !== false;
+}
+
 export function retrievePendingIssues(
   options,
   deps = {
@@ -165,6 +189,7 @@ export function retrievePendingIssues(
   }
 ) {
   const { issueNumber, limit, type, includeNeedsHumanReview } = options;
+  const apps = deps.loadApps ? deps.loadApps() : loadAppsData();
 
   if (issueNumber) {
     const issue = deps.getIssue(issueNumber, [
@@ -181,7 +206,8 @@ export function retrievePendingIssues(
     if (
       !issue ||
       String(issue.state).toLowerCase() !== 'open' ||
-      !isPendingCandidate(issue, type, includeNeedsHumanReview)
+      !isPendingCandidate(issue, type, includeNeedsHumanReview) ||
+      !isImprovementsAllowed(issue, apps)
     ) {
       return buildRetrieveResult([]);
     }
@@ -201,6 +227,7 @@ export function retrievePendingIssues(
     rawIssues
       .filter((issue) => String(issue.state).toLowerCase() === 'open')
       .filter((issue) => isPendingCandidate(issue, type, includeNeedsHumanReview))
+      .filter((issue) => isImprovementsAllowed(issue, apps))
       .map(normalizeIssue)
   );
 

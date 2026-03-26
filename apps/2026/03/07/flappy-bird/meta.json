@@ -5,16 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-07T15:10:00Z",
   "category": "Games",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "game",
-    "flappy-bird",
-    "arcade",
-    "tap",
-    "touch-controls",
-    "endless-runner"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["game", "flappy-bird", "arcade", "tap", "touch-controls", "endless-runner"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

@@ -3,6 +3,11 @@
  */
 import { POST } from '@/app/api/improvements/route';
 
+jest.mock('@/data/apps.json', () => [
+  { id: '2026/03/24/my-app', allowImprovements: true },
+  { id: '2026/03/24/locked-app', allowImprovements: false },
+]);
+
 const VALID_BODY = {
   turnstileToken: 'tok',
   appId: '2026/03/24/my-app',
@@ -177,6 +182,22 @@ describe('POST /api/improvements', () => {
       const payload = JSON.parse(githubCall[1].body);
       expect(payload.labels).toContain('improvement');
       expect(payload.title).toContain(VALID_BODY.appId);
+    });
+  });
+
+  describe('allowImprovements guard', () => {
+    it('returns 403 when app has allowImprovements: false', async () => {
+      const res = await POST(makeRequest({ ...VALID_BODY, appId: '2026/03/24/locked-app' }));
+      expect(res.status).toBe(403);
+      const body = await res.json();
+      expect(body.error).toMatch(/not accepting improvements/i);
+    });
+
+    it('allows submission when appId is not in the registry', async () => {
+      mockTurnstileOk();
+      mockGitHubOk(77);
+      const res = await POST(makeRequest({ ...VALID_BODY, appId: '2026/03/24/unknown-app' }));
+      expect(res.status).toBe(201);
     });
   });
 });

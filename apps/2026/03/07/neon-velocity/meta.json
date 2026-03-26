@@ -5,16 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-08T01:50:08Z",
   "category": "Games",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "game",
-    "runner",
-    "action",
-    "neon",
-    "arcade",
-    "endless"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["game", "runner", "action", "neon", "arcade", "endless"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

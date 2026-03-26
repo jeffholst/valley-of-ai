@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-12T23:37:33Z",
   "category": "Utilities",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "timezone",
-    "scheduling",
-    "meeting-planner",
-    "global-teams",
-    "productivity"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["timezone", "scheduling", "meeting-planner", "global-teams", "productivity"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

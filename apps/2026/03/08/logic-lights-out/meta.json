@@ -5,14 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-08T08:02:51Z",
   "category": "Games",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "puzzle",
-    "logic",
-    "grid",
-    "daily-challenge"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["puzzle", "logic", "grid", "daily-challenge"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

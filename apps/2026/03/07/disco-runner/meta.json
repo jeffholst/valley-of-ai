@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-07T18:10:00Z",
   "category": "Games",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "game",
-    "runner",
-    "platformer",
-    "disco",
-    "gravity"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["game", "runner", "platformer", "disco", "gravity"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

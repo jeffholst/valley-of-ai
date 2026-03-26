@@ -5,17 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-21T12:21:50Z",
   "category": "Education",
-  "votes": 0,
-  "status": "active",
   "visible": true,
-  "tags": [
-    "morse-code",
-    "audio",
-    "educational",
-    "translator",
-    "web-audio-api",
-    "radio"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["morse-code", "audio", "educational", "translator", "web-audio-api", "radio"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {
@@ -27,5 +20,6 @@
     "totalTokensOut": 12300,
     "runId": "run-20260321T122150Z-46a700",
     "notes": "Static HTML/CSS/JS app with Web Audio API oscillator for morse code audio, canvas oscilloscope visualization, animated dot/dash symbols, manual key button, speed/frequency sliders, and collapsible reference chart. Mobile-first responsive design with touch support."
-  }
+  },
+  "votes": 0
 }

@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-07T19:00:00Z",
   "category": "Games",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "game",
-    "casino",
-    "cards",
-    "blackjack",
-    "21"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["game", "casino", "cards", "blackjack", "21"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

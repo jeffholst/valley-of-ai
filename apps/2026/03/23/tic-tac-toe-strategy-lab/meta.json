@@ -5,15 +5,9 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-23T07:00:37Z",
   "category": "Games",
+  "allowImprovements": true,
   "status": "active",
-  "tags": [
-    "tic-tac-toe",
-    "minimax",
-    "strategy",
-    "responsive",
-    "keyboard",
-    "touch"
-  ],
+  "tags": ["tic-tac-toe", "minimax", "strategy", "responsive", "keyboard", "touch"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

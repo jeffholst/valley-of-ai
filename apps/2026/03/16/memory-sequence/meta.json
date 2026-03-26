@@ -2,20 +2,13 @@
   "id": "memory-sequence",
   "name": "Memory Sequence",
   "shortDescription": "A classic memory game. Watch the sequence, then click the squares in the same order. How many rounds can you complete?",
-  "fullDescription": "Memory Sequence is a brain-training memory game where you watch the computer highlight colored squares in a sequence, then repeat the pattern by clicking the squares. Each round adds a new color to the sequence, making it progressively harder. Test your memory and beat your high score!",
   "thumbnail": "thumbnail.svg",
-  "category": "Games",
-  "tags": [
-    "game",
-    "memory",
-    "puzzle",
-    "sequence",
-    "brain-training",
-    "mobile-friendly"
-  ],
-  "status": "active",
-  "visible": true,
   "createdAt": "2026-03-16T00:02:46Z",
+  "category": "Games",
+  "visible": true,
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["game", "memory", "puzzle", "sequence", "brain-training", "mobile-friendly"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {
@@ -27,5 +20,6 @@
     "totalTokensOut": 8500,
     "runId": "run-20260316T000246Z-b6352c",
     "notes": "Memory sequence game with 2x2 grid, progressively difficult rounds, high score persistence via localStorage, full mobile support, and smooth animations"
-  }
+  },
+  "fullDescription": "Memory Sequence is a brain-training memory game where you watch the computer highlight colored squares in a sequence, then repeat the pattern by clicking the squares. Each round adds a new color to the sequence, making it progressively harder. Test your memory and beat your high score!"
 }
