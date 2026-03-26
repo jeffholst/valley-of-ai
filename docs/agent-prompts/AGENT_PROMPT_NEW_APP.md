@@ -49,6 +49,19 @@ Build one production-ready web app with the following requirements:
 
 > **Note:** Do NOT create the app folder yet — `<app-id>` is not known until Step 1.
 
+### Shell layout constants (memorize before writing any CSS)
+
+`app-shell.js` injects two **fixed, always-visible** elements at runtime. These values come directly from the shell source and must be treated as authoritative:
+
+| Zone   | Fixed element                                                 | Body offset applied by shell |
+| ------ | ------------------------------------------------------------- | ---------------------------- |
+| Header | `position: fixed; top: 0; min-height: 56px; z-index: 9999`    | `padding-top: 64px`          |
+| Footer | `position: fixed; bottom: 0; min-height: 46px; z-index: 9998` | `padding-bottom: 56px`       |
+
+Both elements use `backdrop-filter: blur(8px)` — content behind them **renders but is not interactive**.
+
+The shell adds `box-sizing: border-box` to the body alongside those paddings, so scrollable apps benefit automatically. Full-viewport (non-scrolling) apps must account for both offsets explicitly in their own CSS — the body padding alone is not enough when `height: 100dvh` is used on a child element.
+
 ---
 
 ### Step 1: Idea selection
@@ -150,14 +163,70 @@ Build one production-ready web app with the following requirements:
 
 Generate `index.html` with shell config tags, mobile-first responsive design, and favicon reference.
 
-**⚠️ Important: Shared Shell Runtime Environment**
+**⚠️ Shell-safe layout (non-negotiable)**
 
-The app shell automatically injects a header and footer at runtime. Account for this in your layout:
+`app-shell.js` injects a fixed header (top, ~64px) and a fixed footer (bottom, ~56px body reserve) at runtime. Both are always visible and sit above your content in z-order. You must design around them from the first line of CSS.
 
-- **Header**: Added at the top (contains theme toggle, back link, navigation)
-- **Footer**: Added at the bottom (contains site info, version, social links)
-- **Container**: Your app content is placed in the middle
-- **Layout consideration**: Ensure your app content is scrollable or that key interactive controls are visible without scrolling, especially on small screens (320px width). If the screen height is constrained and your content + header + footer exceeds the viewport, controls must not be hidden below the fold in a non-scrollable container.
+**Safe zones:**
+
+```
+┌─────────────────────────────────┐  ← viewport top
+│   SHELL HEADER  (fixed, 64px)   │  ← z-index 9999, non-interactive overlap zone
+├─────────────────────────────────┤
+│                                 │
+│       YOUR APP CONTENT          │  ← safe zone: all controls, UI, game elements here
+│                                 │
+├─────────────────────────────────┤
+│   SHELL FOOTER  (fixed, 56px)   │  ← z-index 9998, non-interactive overlap zone
+└─────────────────────────────────┘  ← viewport bottom
+```
+
+**Full-viewport apps (games, canvas, full-height tools) — required pattern:**
+
+```css
+/* ✅ Correct: wrapper sits exactly between header and footer */
+#appWrapper {
+  height: calc(100dvh - 64px - 56px);
+  margin-top: 64px;
+  /* or: padding-top: 64px with box-sizing: border-box and height: 100dvh */
+}
+
+/* ✅ Also correct: explicit padding on both sides within 100dvh */
+#appWrapper {
+  height: 100dvh;
+  padding-top: 64px;
+  padding-bottom: 56px;
+  box-sizing: border-box; /* or ensure * { box-sizing: border-box } is set */
+}
+```
+
+```css
+/* ❌ Wrong: canvas extends behind the footer — bottom controls hidden */
+#appWrapper {
+  height: 100dvh;
+}
+
+/* ❌ Wrong: only accounts for header, footer still clips content */
+#appWrapper {
+  height: 100dvh;
+  padding-top: 64px;
+}
+
+/* ❌ Wrong: incorrect header height — shell header is 64px, not 56px */
+#appWrapper {
+  height: 100dvh;
+  padding-top: 56px;
+  padding-bottom: 56px;
+}
+```
+
+**Scrollable apps** (document-style tools, lists, forms): the shell's body padding handles offset automatically — no special height CSS needed. Just ensure content is not `overflow: hidden` at the body or wrapper level.
+
+**Interactive control placement rules:**
+
+- No tap targets, buttons, score displays, or HUD in the top **64px** of the viewport
+- No tap targets, mobile controls, or game actions in the bottom **56px** of the viewport
+- Touch targets must be ≥ 44px and must not overlap either shell zone
 
 Quality standards (non-negotiable):
 
@@ -238,6 +307,7 @@ Before continuing confirm:
 - Interactive controls work (touch + keyboard where applicable).
 - If game: gameplay objects visible, score/state updates, win/loss/restart all work.
 - Thumbnail matches app UI.
+- **Shell clearance**: no interactive controls, game elements, or HUD are hidden behind the 64px header or 56px footer at 320px viewport width. The player ship, fire button, score display, and all primary controls are fully visible and tappable with both shell elements present.
 
 Run (in order): ⚠️ do not write any output files that would corrupt repo
 
