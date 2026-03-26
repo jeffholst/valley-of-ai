@@ -14,6 +14,16 @@
     "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/230",
     "prompt": "Build a mobile-first version of the classic puzzle game Sokoban with multiple levels. The game should run in a single web page, no frameworks. Requirements: Grid-based warehouse layout with walls, floor tiles, movable boxes/crates, storage targets, and a player. Use simple 2D graphics or colored tiles; ensure everything is readable on phones. Touch controls for mobile (swipe or on-screen arrows) and arrow keys for desktop. Rules: the player can move up/down/left/right; pushing exactly one adjacent box into an empty floor tile is allowed, but pulling is not. Level is solved when all boxes are on target tiles. Include at least 10 built-in levels of increasing difficulty, selectable from a simple level menu. Track moves and pushes; show level complete message and option to restart or go to the next level. Provide a clean, responsive layout that works well on small screens first, then scales to desktop."
   },
+  "improvements": [
+    {
+      "issueNumber": 232,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/232",
+      "description": "Reworked upper-level Sokoban layouts to ensure the reported levels are solvable.",
+      "implementedAt": "2026-03-26T20:21:31Z",
+      "agentName": "GitHub Copilot",
+      "llmModel": "GPT-5.3-Codex"
+    }
+  ],
   "generation": {
     "agentName": "claude-code",
     "llmModel": "claude-sonnet-4-6",
