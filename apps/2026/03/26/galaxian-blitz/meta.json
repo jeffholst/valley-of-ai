@@ -23,6 +23,14 @@
       "implementedAt": "2026-03-26T11:37:33Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
+    },
+    {
+      "issueNumber": 221,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/221",
+      "description": "Replaced broken height:100dvh+padding layout on #gameWrapper with position:fixed top:64px bottom:56px — ensures mobile controls are never obscured by the shell footer at any viewport size.",
+      "implementedAt": "2026-03-26T14:39:01Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
     }
   ],
   "generation": {
