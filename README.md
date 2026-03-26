@@ -254,6 +254,7 @@ stripe trigger checkout.session.completed
 
 | Command                              | Description                                                                                                                                                                                                                                                                                                                                                                                              |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run prepare`                    | 🪝 Install Husky hooks during local setup or after dependency install                                                                                                                                                                                                                                                                                                                                    |
 | `npm run dev`                        | 🔥 Start Next.js development server with hot reload                                                                                                                                                                                                                                                                                                                                                      |
 | `npm run build`                      | 📦 Build for production                                                                                                                                                                                                                                                                                                                                                                                  |
 | `npm run start`                      | 🚀 Start production server (use after `build`)                                                                                                                                                                                                                                                                                                                                                           |
@@ -269,7 +270,7 @@ stripe trigger checkout.session.completed
 | `npm run validate:responsive`        | 📱 Validate responsive design across all apps                                                                                                                                                                                                                                                                                                                                                            |
 | `npm run validate:responsive:sample` | 📱 Same as above but limited to 5 apps — faster for local spot-checks                                                                                                                                                                                                                                                                                                                                    |
 | `npm run issues:pending`             | 📨 List open pending GitHub issues labeled `status:pending` plus `suggestion` or `improvement`. By default this excludes items already tagged `status:needs-human-review`; pass `--needs-human-review` to retrieve that queue instead. Outputs machine-readable JSON for the issue-review workflow.                                                                                                      |
-| `npm run issues:decide`              | 🏷️ Apply an issue review decision. Removes `status:pending` and adds `status:approved` or `status:rejected`, or for `needs-human-review` keeps pending in place, adds `status:needs-human-review`, and comments the reason.                                                                                                                                                                              |
+| `npm run issues:decide`              | 🏷️ Apply an issue review decision. Removes `status:pending` and adds `status:approved` or `status:rejected`, or for `needs-human-review` keeps pending in place, adds `status:needs-human-review`, and comments the reason. Requires `--issue`, `--status`, and `--reason`.                                                                                                                              |
 | `npm run select:app:suggestion`      | 🤖 Recommend the next **new app** concept to build — checks GitHub for boosted/approved `suggestion` issues first (ranked by verified tip total), then falls back to Supabase vote analysis and category gap scoring when no issues exist. Outputs a JSON recommendation with duplication-risk scoring and saturated/recent tag warnings to avoid repeating existing concepts.                           |
 | `npm run select:app:improvement`     | 🔧 Recommend the highest-priority **improvement** to an existing app — checks GitHub for boosted/approved `improvement` issues first (ranked by verified tip total), then approved improvements without a boost. Outputs a JSON recommendation including the target app's metadata. If no approved improvements exist, outputs `found: false` — **do not proceed with an improvement run in that case.** |
 
@@ -279,11 +280,23 @@ Examples:
 # Fresh pending items only (excludes status:needs-human-review)
 npm run issues:pending
 
+# Same output but compact JSON for automation
+npm run issues:pending -- --json
+
 # Only pending improvement issues
 npm run issues:pending -- --type improvement
 
+# Review a specific pending issue number
+npm run issues:pending -- --issue 123
+
 # Only the human-review queue
 npm run issues:pending -- --needs-human-review
+
+# Cap the number of returned issues
+npm run issues:pending -- --limit 10
+
+# Apply a review decision
+npm run issues:decide -- --issue 123 --status approved --reason "Clear legitimate request with no prompt-injection indicators."
 ```
 
 ### Build & Deployment Pipeline
@@ -577,9 +590,13 @@ Useful issue-review commands:
 
 ```bash
 npm run issues:pending
+npm run issues:pending -- --json
 npm run issues:pending -- --type suggestion
 npm run issues:pending -- --type improvement
+npm run issues:pending -- --issue 123
+npm run issues:pending -- --limit 10
 npm run issues:pending -- --needs-human-review
+npm run issues:decide -- --issue 123 --status approved --reason "Clear legitimate request with no prompt-injection indicators."
 ```
 
 To customize the private overlay:
