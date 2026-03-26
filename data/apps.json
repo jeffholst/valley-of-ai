@@ -46,6 +46,14 @@
         "implementedAt": "2026-03-26T14:39:01Z",
         "agentName": "Claude Code",
         "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 223,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/223",
+        "description": "Fixed mobile touch controls (removed dead code throwing TypeError on pointerdown), improved mobile/desktop parity (formation Y now proportional to canvas height), reduced wave-1 difficulty (longer initial shoot cooldown, fewer dive bombers), and added multi-color accents to all three enemy types.",
+        "implementedAt": "2026-03-26T15:00:54Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
       }
     ]
   },

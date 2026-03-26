@@ -448,7 +448,7 @@
           player.y = H - 50;
         }
         player.y = H - 50;
-        formationBaseY = Math.min(80, H * 0.12);
+        formationBaseY = H * 0.13;
         initStars();
       }
 
@@ -484,11 +484,9 @@
           if (e.key === ' ' || e.key === 'Enter') keys.fire = false;
         });
 
-        function ctrlPress(btn, flag, value) {
+        function ctrlPress(btn) {
           btn.addEventListener('pointerdown', (e) => {
             e.preventDefault();
-            flag[flag === touchLeft ? 'val' : ''] = value;
-            // Use direct assignment via closure
             btn._active = true;
             btn.classList.add('pressed');
             if (btn.id.startsWith('left')) {
@@ -583,7 +581,7 @@
               diveSpeed: 0,
               diveReturnX: 0,
               diveReturnY: 0,
-              shootCooldown: Math.random() * 3000 + 1000,
+              shootCooldown: Math.random() * 4000 + 2500,
             });
           }
         }
@@ -691,8 +689,8 @@
       // =====================================================================
       function tryLaunchDiver() {
         if (enemies.length === 0) return;
-        if (diveBombers.length >= Math.min(2 + Math.floor(wave / 2), 5)) return;
-        if (Math.random() > 0.004 * (1 + wave * 0.3)) return;
+        if (diveBombers.length >= Math.min(1 + Math.floor(wave / 2), 5)) return;
+        if (Math.random() > 0.003 * (1 + wave * 0.35)) return;
 
         // Pick a non-diving enemy from front rows preferred
         const candidates = enemies.filter((e) => !e.diving);
@@ -876,8 +874,17 @@
           ctx.lineTo(x - s * 0.7, y);
           ctx.closePath();
           ctx.fill();
-          // Antenna
-          ctx.strokeStyle = c;
+          // Cyan inner diamond accent
+          ctx.fillStyle = '#67e8f9';
+          ctx.beginPath();
+          ctx.moveTo(x, y - s * 0.45);
+          ctx.lineTo(x + s * 0.3, y);
+          ctx.lineTo(x, y + s * 0.25);
+          ctx.lineTo(x - s * 0.3, y);
+          ctx.closePath();
+          ctx.fill();
+          // Yellow antenna tips
+          ctx.strokeStyle = '#fbbf24';
           ctx.lineWidth = 2;
           ctx.beginPath();
           ctx.moveTo(x - 5, y - s);
@@ -897,6 +904,20 @@
           }
           ctx.closePath();
           ctx.fill();
+          // Green inner hexagon accent
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = '#4ade80';
+          ctx.strokeStyle = '#4ade80';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          for (let i = 0; i < 6; i++) {
+            const a = (Math.PI / 3) * i - Math.PI / 6;
+            const px2 = x + Math.cos(a) * s * 0.62;
+            const py2 = y + Math.sin(a) * s * 0.62;
+            i === 0 ? ctx.moveTo(px2, py2) : ctx.lineTo(px2, py2);
+          }
+          ctx.closePath();
+          ctx.stroke();
           // Core glow
           ctx.shadowBlur = 14;
           ctx.shadowColor = '#fff';
@@ -916,6 +937,21 @@
             i === 0 ? ctx.moveTo(px2, py2) : ctx.lineTo(px2, py2);
           }
           ctx.closePath();
+          ctx.fill();
+          // Purple inner ring accent
+          ctx.shadowBlur = 12;
+          ctx.shadowColor = '#c084fc';
+          ctx.strokeStyle = '#c084fc';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(x, y, s * 0.48, 0, Math.PI * 2);
+          ctx.stroke();
+          // Bright yellow center dot
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = '#fbbf24';
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.arc(x, y, s * 0.22, 0, Math.PI * 2);
           ctx.fill();
         }
 
