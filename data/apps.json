@@ -1,5 +1,33 @@
 [
   {
+    "id": "2026/03/26/raffle-night-caller",
+    "name": "Raffle Night Caller",
+    "shortDescription": "Run a polished live raffle with animated draws, keyboard shortcuts, swipe gestures, and winner history.",
+    "thumbnailUrl": "/apps/2026/03/26/raffle-night-caller/thumbnail.svg",
+    "createdAt": "2026-03-26T07:00:29Z",
+    "year": 2026,
+    "month": 3,
+    "day": 26,
+    "category": "Entertainment",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": ["raffle", "drawing", "party", "randomizer", "tickets", "responsive"],
+    "route": "/apps/2026/03/26/raffle-night-caller",
+    "appPath": "/apps/2026/03/26/raffle-night-caller/index.html",
+    "generation": {
+      "agentName": "dev",
+      "llmModel": "openai-codex/gpt-5.3-codex",
+      "startTime": "2026-03-26T07:00:29Z",
+      "endTime": "2026-03-26T07:02:40Z",
+      "totalTokensIn": 0,
+      "totalTokensOut": 0,
+      "runId": "run-20260326T070029Z-ecdd9e",
+      "notes": "Built from vote-and-category-analysis recommendation inspired by high-vote entertainment concepts while avoiding duplication."
+    },
+    "suggestion": null,
+    "improvements": null
+  },
+  {
     "id": "2026/03/25/neon-slot-rush",
     "name": "Neon Slot Rush",
     "shortDescription": "A fast, mobile-first 5x3 neon slot machine with paylines, turbo, and auto-spin.",
