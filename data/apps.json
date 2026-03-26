@@ -54,6 +54,14 @@
         "implementedAt": "2026-03-26T15:00:54Z",
         "agentName": "Claude Code",
         "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 225,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/225",
+        "description": "Added mobile auto-fire toggle button (⚡AUTO) to the touch controls bar — single tap enables continuous firing at the normal cooldown rate (380ms), glows green when active; persists across rounds as a user preference.",
+        "implementedAt": "2026-03-26T15:38:32Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
       }
     ]
   },
