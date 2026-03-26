@@ -169,7 +169,7 @@ export function buildRetrieveResult(issues) {
   };
 }
 
-function isImprovementsAllowed(issue, apps) {
+function isImprovementsAllowed(issue, getApps) {
   if (inferIssueType(issue) !== 'improvement') {
     return true;
   }
@@ -177,6 +177,7 @@ function isImprovementsAllowed(issue, apps) {
   if (!appPath) {
     return true;
   }
+  const apps = getApps();
   const app = apps.find((a) => a.id === appPath || a.id.endsWith(appPath));
   return !app || app.allowImprovements !== false;
 }
@@ -189,7 +190,16 @@ export function retrievePendingIssues(
   }
 ) {
   const { issueNumber, limit, type, includeNeedsHumanReview } = options;
-  const apps = deps.loadApps ? deps.loadApps() : loadAppsData();
+
+  // Lazy-load apps data: only read and parse data/apps.json on first access,
+  // and only when actually needed (i.e., when an improvement issue is encountered).
+  let appsCache = null;
+  const getApps = () => {
+    if (appsCache === null) {
+      appsCache = deps.loadApps ? deps.loadApps() : loadAppsData();
+    }
+    return appsCache;
+  };
 
   if (issueNumber) {
     const issue = deps.getIssue(issueNumber, [
@@ -207,7 +217,7 @@ export function retrievePendingIssues(
       !issue ||
       String(issue.state).toLowerCase() !== 'open' ||
       !isPendingCandidate(issue, type, includeNeedsHumanReview) ||
-      !isImprovementsAllowed(issue, apps)
+      !isImprovementsAllowed(issue, getApps)
     ) {
       return buildRetrieveResult([]);
     }
@@ -227,7 +237,7 @@ export function retrievePendingIssues(
     rawIssues
       .filter((issue) => String(issue.state).toLowerCase() === 'open')
       .filter((issue) => isPendingCandidate(issue, type, includeNeedsHumanReview))
-      .filter((issue) => isImprovementsAllowed(issue, apps))
+      .filter((issue) => isImprovementsAllowed(issue, getApps))
       .map(normalizeIssue)
   );
 

@@ -391,4 +391,46 @@ describe('retrievePendingIssues — allowImprovements filtering', () => {
     expect(result.found).toBe(true);
     expect(result.count).toBe(1);
   });
+
+  it('does not load apps data when all issues are suggestions', () => {
+    const loadApps = jest.fn(() => mockLoadApps());
+    retrievePendingIssues(
+      { limit: 50, issueNumber: null, type: 'suggestion' },
+      {
+        listIssuesByLabels: jest.fn(() => [
+          makeIssue({ number: 204, labels: [{ name: 'status:pending' }, { name: 'suggestion' }] }),
+          makeIssue({ number: 205, labels: [{ name: 'status:pending' }, { name: 'suggestion' }] }),
+        ]),
+        getIssue: jest.fn(),
+        loadApps,
+      }
+    );
+
+    expect(loadApps).not.toHaveBeenCalled();
+  });
+
+  it('loads apps data at most once even when multiple improvement issues are present', () => {
+    const loadApps = jest.fn(() => mockLoadApps());
+    retrievePendingIssues(
+      { limit: 50, issueNumber: null, type: null },
+      {
+        listIssuesByLabels: jest.fn(() => [
+          makeIssue({
+            number: 206,
+            title: 'Improvement [2026/03/24/my-app]: add dark mode',
+            labels: [{ name: 'status:pending' }, { name: 'improvement' }],
+          }),
+          makeIssue({
+            number: 207,
+            title: 'Improvement [2026/03/24/locked-app]: fix touch controls',
+            labels: [{ name: 'status:pending' }, { name: 'improvement' }],
+          }),
+        ]),
+        getIssue: jest.fn(),
+        loadApps,
+      }
+    );
+
+    expect(loadApps).toHaveBeenCalledTimes(1);
+  });
 });
