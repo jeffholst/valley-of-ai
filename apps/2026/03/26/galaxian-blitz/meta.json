@@ -1,0 +1,28 @@
+{
+  "id": "galaxian-blitz",
+  "name": "Galaxian Blitz",
+  "shortDescription": "A mobile-first Galaxian-style space shooter with dive-bombing alien formations, 3 enemy types, power-ups, and animated particle explosions.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-26T11:19:37Z",
+  "category": "Games",
+  "status": "active",
+  "tags": ["shooter", "arcade", "space", "canvas", "mobile-first", "wave-based", "power-ups"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "suggestion": {
+    "issueNumber": 216,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/216",
+    "prompt": "Create a mobile-first HTML/CSS/JavaScript \"Galaxian\" style shooter. Be sure the have smooth game play, detailed looking graphics, and animated explosions. Requirements: Fullscreen canvas, optimized for phones first, then scale up for desktop. Player ship at bottom; move horizontally and shoot upward. Controls: arrow keys + space on desktop, touch buttons or left/right swipe + tap to shoot on mobile. Waves of alien ships appear in formations at the top, then break formation and dive-bomb the player. Enemies should have different types (speed, health, behavior). Implement player lives, score, and increasing difficulty per wave. Add simple power-ups (faster fire, spread shot, shield). Include basic sound effects and retro pixel/\"space\" visuals with starfield background. Keep code organized (separate game loop, input handling, rendering, collision).",
+    "requestor": "anonymous"
+  },
+  "generation": {
+    "agentName": "Claude Code",
+    "llmModel": "claude-sonnet-4-6",
+    "startTime": "2026-03-26T11:19:37Z",
+    "endTime": "2026-03-26T11:30:00Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-20260326T111937Z-a4f8c2",
+    "notes": "Built from approved community suggestion issue #216. Galaxian-style shooter with formation-breaking dive-bomb AI, 3 distinct enemy types (scout/bomber/elite), 3 power-up types (rapid fire/spread shot/shield), particle explosion system, and wave-based difficulty scaling. Differentiated from existing Space Invaders Clone via dynamic dive-bomb behavior and power-up system."
+  }
+}

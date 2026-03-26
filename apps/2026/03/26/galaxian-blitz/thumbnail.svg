@@ -1,0 +1,273 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#020617"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <!-- Player ship glow -->
+    <filter id="playerGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- Enemy glow -->
+    <filter id="enemyGlow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- Explosion glow -->
+    <filter id="explodeGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- Text glow -->
+    <filter id="textGlow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- HUD gradient -->
+    <linearGradient id="hudGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <!-- Scout color -->
+    <radialGradient id="scoutGrad" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#93c5fd"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </radialGradient>
+    <!-- Bomber color -->
+    <radialGradient id="bomberGrad" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#fdba74"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </radialGradient>
+    <!-- Elite color -->
+    <radialGradient id="eliteGrad" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#fda4af"/>
+      <stop offset="100%" stop-color="#e11d48"/>
+    </radialGradient>
+    <!-- Bullet gradient -->
+    <linearGradient id="bulletGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <!-- Power-up gradient -->
+    <radialGradient id="powerGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </radialGradient>
+    <!-- Edge frame gradient -->
+    <linearGradient id="edgeGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.5"/>
+      <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)"/>
+
+  <!-- Stars -->
+  <circle cx="48" cy="32" r="1.2" fill="#fff" opacity="0.8"/>
+  <circle cx="130" cy="78" r="0.8" fill="#fff" opacity="0.5"/>
+  <circle cx="210" cy="22" r="1.5" fill="#fff" opacity="0.9"/>
+  <circle cx="310" cy="55" r="0.8" fill="#fff" opacity="0.6"/>
+  <circle cx="400" cy="18" r="1.2" fill="#fff" opacity="0.7"/>
+  <circle cx="490" cy="42" r="0.6" fill="#fff" opacity="0.5"/>
+  <circle cx="580" cy="30" r="1.4" fill="#fff" opacity="0.8"/>
+  <circle cx="660" cy="65" r="0.9" fill="#fff" opacity="0.6"/>
+  <circle cx="740" cy="20" r="1.1" fill="#fff" opacity="0.7"/>
+  <circle cx="760" cy="110" r="0.7" fill="#fff" opacity="0.5"/>
+  <circle cx="70" cy="150" r="0.8" fill="#fff" opacity="0.4"/>
+  <circle cx="155" cy="200" r="1.0" fill="#fff" opacity="0.6"/>
+  <circle cx="680" cy="180" r="0.7" fill="#fff" opacity="0.5"/>
+  <circle cx="720" cy="250" r="1.3" fill="#fff" opacity="0.7"/>
+  <circle cx="35" cy="300" r="0.9" fill="#fff" opacity="0.4"/>
+  <circle cx="790" cy="330" r="0.8" fill="#fff" opacity="0.5"/>
+  <circle cx="250" cy="380" r="1.1" fill="#fff" opacity="0.6"/>
+  <circle cx="540" cy="400" r="0.7" fill="#fff" opacity="0.4"/>
+  <circle cx="620" cy="420" r="1.2" fill="#fff" opacity="0.5"/>
+
+  <!-- HUD bar -->
+  <rect x="0" y="0" width="800" height="54" fill="url(#hudGrad)" opacity="0.95"/>
+  <rect x="0" y="53" width="800" height="1" fill="url(#edgeGrad)"/>
+
+  <!-- Score -->
+  <text x="24" y="18" font-family="Courier New, monospace" font-size="10" fill="#64748b" letter-spacing="2" text-anchor="start">SCORE</text>
+  <text x="24" y="42" font-family="Courier New, monospace" font-size="24" font-weight="bold" fill="#38bdf8" filter="url(#textGlow)" text-anchor="start">24,600</text>
+
+  <!-- Wave -->
+  <text x="400" y="18" font-family="Courier New, monospace" font-size="10" fill="#64748b" letter-spacing="2" text-anchor="middle">WAVE</text>
+  <text x="400" y="42" font-family="Courier New, monospace" font-size="24" font-weight="bold" fill="#38bdf8" filter="url(#textGlow)" text-anchor="middle">4</text>
+
+  <!-- Lives -->
+  <text x="776" y="18" font-family="Courier New, monospace" font-size="10" fill="#64748b" letter-spacing="2" text-anchor="end">LIVES</text>
+  <text x="776" y="42" font-family="Courier New, monospace" font-size="20" font-weight="bold" fill="#f43f5e" filter="url(#textGlow)" text-anchor="end">♥ ♥ ♥</text>
+
+  <!-- Power-up badge (SPREAD active) -->
+  <rect x="24" y="48" width="90" height="16" rx="3" fill="#8b5cf622" stroke="#8b5cf666" stroke-width="1"/>
+  <text x="69" y="59" font-family="Courier New, monospace" font-size="9" font-weight="bold" fill="#a78bfa" text-anchor="middle" letter-spacing="1">SPREAD SHOT</text>
+
+  <!-- Title text -->
+  <text x="400" y="92" font-family="Courier New, monospace" font-size="28" font-weight="bold" fill="#38bdf8" filter="url(#textGlow)" text-anchor="middle" letter-spacing="4" opacity="0.35">GALAXIAN BLITZ</text>
+
+  <!-- ENEMY FORMATION: Row 0 — Scouts (blue) -->
+  <!-- 8 scouts across -->
+  <g filter="url(#enemyGlow)">
+    <!-- Scout shape: diamond with antennae -->
+    <!-- col 0 -->
+    <polygon points="76,108 64,118 76,126 88,118" fill="url(#scoutGrad)"/>
+    <line x1="71" y1="108" x2="71" y2="102" stroke="#60a5fa" stroke-width="1.5"/>
+    <line x1="81" y1="108" x2="81" y2="102" stroke="#60a5fa" stroke-width="1.5"/>
+    <!-- col 1 -->
+    <polygon points="178,108 166,118 178,126 190,118" fill="url(#scoutGrad)"/>
+    <line x1="173" y1="108" x2="173" y2="102" stroke="#60a5fa" stroke-width="1.5"/>
+    <line x1="183" y1="108" x2="183" y2="102" stroke="#60a5fa" stroke-width="1.5"/>
+    <!-- col 2 -->
+    <polygon points="280,108 268,118 280,126 292,118" fill="url(#scoutGrad)"/>
+    <line x1="275" y1="108" x2="275" y2="102" stroke="#60a5fa" stroke-width="1.5"/>
+    <line x1="285" y1="108" x2="285" y2="102" stroke="#60a5fa" stroke-width="1.5"/>
+    <!-- col 3 -->
+    <polygon points="382,108 370,118 382,126 394,118" fill="url(#scoutGrad)"/>
+    <line x1="377" y1="108" x2="377" y2="102" stroke="#60a5fa" stroke-width="1.5"/>
+    <line x1="387" y1="108" x2="387" y2="102" stroke="#60a5fa" stroke-width="1.5"/>
+    <!-- col 4 -->
+    <polygon points="484,108 472,118 484,126 496,118" fill="url(#scoutGrad)"/>
+    <line x1="479" y1="108" x2="479" y2="102" stroke="#60a5fa" stroke-width="1.5"/>
+    <line x1="489" y1="108" x2="489" y2="102" stroke="#60a5fa" stroke-width="1.5"/>
+    <!-- col 5 -->
+    <polygon points="586,108 574,118 586,126 598,118" fill="url(#scoutGrad)"/>
+    <line x1="581" y1="108" x2="581" y2="102" stroke="#60a5fa" stroke-width="1.5"/>
+    <line x1="591" y1="108" x2="591" y2="102" stroke="#60a5fa" stroke-width="1.5"/>
+    <!-- col 6 -->
+    <polygon points="664,108 652,118 664,126 676,118" fill="url(#scoutGrad)"/>
+    <line x1="659" y1="108" x2="659" y2="102" stroke="#60a5fa" stroke-width="1.5"/>
+    <line x1="669" y1="108" x2="669" y2="102" stroke="#60a5fa" stroke-width="1.5"/>
+    <!-- col 7 -->
+    <polygon points="740,108 728,118 740,126 752,118" fill="url(#scoutGrad)"/>
+    <line x1="735" y1="108" x2="735" y2="102" stroke="#60a5fa" stroke-width="1.5"/>
+    <line x1="745" y1="108" x2="745" y2="102" stroke="#60a5fa" stroke-width="1.5"/>
+  </g>
+
+  <!-- Row 1 — Scouts -->
+  <g filter="url(#enemyGlow)">
+    <polygon points="76,152 64,162 76,170 88,162" fill="url(#scoutGrad)"/>
+    <line x1="71" y1="152" x2="71" y2="146" stroke="#60a5fa" stroke-width="1.5"/>
+    <line x1="81" y1="152" x2="81" y2="146" stroke="#60a5fa" stroke-width="1.5"/>
+    <polygon points="178,152 166,162 178,170 190,162" fill="url(#scoutGrad)"/>
+    <line x1="173" y1="152" x2="173" y2="146" stroke="#60a5fa" stroke-width="1.5"/>
+    <line x1="183" y1="152" x2="183" y2="146" stroke="#60a5fa" stroke-width="1.5"/>
+    <polygon points="280,152 268,162 280,170 292,162" fill="url(#scoutGrad)"/>
+    <line x1="275" y1="152" x2="275" y2="146" stroke="#60a5fa" stroke-width="1.5"/>
+    <line x1="285" y1="152" x2="285" y2="146" stroke="#60a5fa" stroke-width="1.5"/>
+    <polygon points="382,152 370,162 382,170 394,162" fill="url(#scoutGrad)"/>
+    <line x1="377" y1="152" x2="377" y2="146" stroke="#60a5fa" stroke-width="1.5"/>
+    <line x1="387" y1="152" x2="387" y2="146" stroke="#60a5fa" stroke-width="1.5"/>
+    <polygon points="484,152 472,162 484,170 496,162" fill="url(#scoutGrad)"/>
+    <line x1="479" y1="152" x2="479" y2="146" stroke="#60a5fa" stroke-width="1.5"/>
+    <line x1="489" y1="152" x2="489" y2="146" stroke="#60a5fa" stroke-width="1.5"/>
+    <polygon points="586,152 574,162 586,170 598,162" fill="url(#scoutGrad)"/>
+    <line x1="581" y1="152" x2="581" y2="146" stroke="#60a5fa" stroke-width="1.5"/>
+    <line x1="591" y1="152" x2="591" y2="146" stroke="#60a5fa" stroke-width="1.5"/>
+    <polygon points="664,152 652,162 664,170 676,162" fill="url(#scoutGrad)"/>
+    <line x1="659" y1="152" x2="659" y2="146" stroke="#60a5fa" stroke-width="1.5"/>
+    <line x1="669" y1="152" x2="669" y2="146" stroke="#60a5fa" stroke-width="1.5"/>
+    <polygon points="740,152 728,162 740,170 752,162" fill="url(#scoutGrad)"/>
+    <line x1="735" y1="152" x2="735" y2="146" stroke="#60a5fa" stroke-width="1.5"/>
+    <line x1="745" y1="152" x2="745" y2="146" stroke="#60a5fa" stroke-width="1.5"/>
+  </g>
+
+  <!-- Row 2 — Bombers (hexagons) -->
+  <g filter="url(#enemyGlow)">
+    <polygon points="76,192 64.6,199 64.6,213 76,220 87.4,213 87.4,199" fill="url(#bomberGrad)"/>
+    <circle cx="76" cy="206" r="4" fill="#fff3" />
+    <polygon points="178,192 166.6,199 166.6,213 178,220 189.4,213 189.4,199" fill="url(#bomberGrad)"/>
+    <circle cx="178" cy="206" r="4" fill="#fff3" />
+    <polygon points="280,192 268.6,199 268.6,213 280,220 291.4,213 291.4,199" fill="url(#bomberGrad)"/>
+    <circle cx="280" cy="206" r="4" fill="#fff3" />
+    <polygon points="382,192 370.6,199 370.6,213 382,220 393.4,213 393.4,199" fill="url(#bomberGrad)"/>
+    <circle cx="382" cy="206" r="4" fill="#fff3" />
+    <polygon points="484,192 472.6,199 472.6,213 484,220 495.4,213 495.4,199" fill="url(#bomberGrad)"/>
+    <circle cx="484" cy="206" r="4" fill="#fff3" />
+    <polygon points="586,192 574.6,199 574.6,213 586,220 597.4,213 597.4,199" fill="url(#bomberGrad)"/>
+    <circle cx="586" cy="206" r="4" fill="#fff3" />
+    <polygon points="664,192 652.6,199 652.6,213 664,220 675.4,213 675.4,199" fill="url(#bomberGrad)"/>
+    <circle cx="664" cy="206" r="4" fill="#fff3" />
+    <polygon points="740,192 728.6,199 728.6,213 740,220 751.4,213 751.4,199" fill="url(#bomberGrad)"/>
+    <circle cx="740" cy="206" r="4" fill="#fff3" />
+  </g>
+
+  <!-- Row 3 — Elites (stars) — 6 remain, 2 killed -->
+  <g filter="url(#enemyGlow)">
+    <!-- 6 elites visible, 2 spots empty -->
+    <polygon points="76,248 79,256 88,256 81,261 84,270 76,265 68,270 71,261 64,256 73,256" fill="url(#eliteGrad)"/>
+    <polygon points="178,248 181,256 190,256 183,261 186,270 178,265 170,270 173,261 166,256 175,256" fill="url(#eliteGrad)"/>
+    <polygon points="280,248 283,256 292,256 285,261 288,270 280,265 272,270 275,261 268,256 277,256" fill="url(#eliteGrad)"/>
+    <polygon points="382,248 385,256 394,256 387,261 390,270 382,265 374,270 377,261 370,256 379,256" fill="url(#eliteGrad)"/>
+    <polygon points="484,248 487,256 496,256 489,261 492,270 484,265 476,270 479,261 472,256 481,256" fill="url(#eliteGrad)"/>
+    <polygon points="586,248 589,256 598,256 591,261 594,270 586,265 578,270 581,261 574,256 583,256" fill="url(#eliteGrad)"/>
+  </g>
+
+  <!-- Dive-bombing Elite: diving toward player -->
+  <g filter="url(#enemyGlow)">
+    <polygon points="520,310 523,318 532,318 525,323 528,332 520,327 512,332 515,323 508,318 517,318" fill="url(#eliteGrad)"/>
+  </g>
+
+  <!-- Dive bomber trail -->
+  <line x1="520" y1="248" x2="520" y2="310" stroke="#f43f5e" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.4"/>
+
+  <!-- Player ship -->
+  <g filter="url(#playerGlow)" transform="translate(400,390)">
+    <!-- Engine flame -->
+    <ellipse cx="0" cy="14" rx="5" ry="8" fill="#f59e0b" opacity="0.9"/>
+    <ellipse cx="0" cy="14" rx="2" ry="5" fill="#fbbf24"/>
+    <!-- Wings -->
+    <polygon points="-16,10 -28,14 -10,2" fill="#7dd3fc"/>
+    <polygon points="16,10 28,14 10,2" fill="#7dd3fc"/>
+    <!-- Body -->
+    <polygon points="0,-20 -16,10 16,10" fill="#38bdf8"/>
+    <!-- Cockpit -->
+    <ellipse cx="0" cy="-4" rx="5" ry="7" fill="#0ea5e9" opacity="0.6"/>
+  </g>
+
+  <!-- Player bullet -->
+  <rect x="398" y="350" width="4" height="22" rx="2" fill="url(#bulletGrad)" filter="url(#playerGlow)" opacity="0.9"/>
+  <!-- Spread bullets -->
+  <rect x="375" y="355" width="3" height="18" rx="1.5" fill="#a78bfa" opacity="0.8" filter="url(#enemyGlow)" transform="rotate(-8,375,355)"/>
+  <rect x="425" y="355" width="3" height="18" rx="1.5" fill="#a78bfa" opacity="0.8" filter="url(#enemyGlow)" transform="rotate(8,425,355)"/>
+
+  <!-- Enemy bullet from diver -->
+  <rect x="519" y="338" width="3" height="14" rx="1.5" fill="#f43f5e" opacity="0.9" filter="url(#enemyGlow)"/>
+
+  <!-- Explosion: elite recently destroyed -->
+  <g filter="url(#explodeGlow)" transform="translate(664,259)">
+    <circle cx="0" cy="0" r="18" fill="#f43f5e" opacity="0.25"/>
+    <circle cx="0" cy="0" r="10" fill="#fda4af" opacity="0.5"/>
+    <circle cx="0" cy="0" r="5" fill="#fff" opacity="0.8"/>
+    <!-- Debris particles -->
+    <circle cx="24" cy="-12" r="3" fill="#f43f5e" opacity="0.7"/>
+    <circle cx="-20" cy="-16" r="2.5" fill="#f43f5e" opacity="0.6"/>
+    <circle cx="16" cy="20" r="2" fill="#fda4af" opacity="0.8"/>
+    <circle cx="-14" cy="18" r="3" fill="#f43f5e" opacity="0.6"/>
+    <circle cx="28" cy="8" r="2" fill="#fda4af" opacity="0.5"/>
+    <circle cx="-26" cy="6" r="2.5" fill="#f43f5e" opacity="0.7"/>
+    <circle cx="5" cy="-26" r="2" fill="#fda4af" opacity="0.6"/>
+    <circle cx="-8" cy="28" r="2.5" fill="#f43f5e" opacity="0.5"/>
+  </g>
+
+  <!-- Power-up (spread) floating down -->
+  <circle cx="310" cy="310" r="14" fill="url(#powerGrad)" stroke="#a78bfa" stroke-width="1.5" filter="url(#enemyGlow)" opacity="0.9"/>
+  <text x="310" y="314" font-family="Courier New, monospace" font-size="10" font-weight="bold" fill="#f8fafc" text-anchor="middle">S</text>
+
+  <!-- Bottom edge glow line -->
+  <rect x="0" y="448" width="800" height="2" fill="url(#edgeGrad)"/>
+
+  <!-- Title overlay at bottom -->
+  <text x="400" y="438" font-family="Courier New, monospace" font-size="18" font-weight="bold" fill="#38bdf8" filter="url(#textGlow)" text-anchor="middle" letter-spacing="5">GALAXIAN BLITZ</text>
+
+  <!-- Corner accents -->
+  <polyline points="0,0 30,0 30,4" fill="none" stroke="#38bdf8" stroke-width="2" opacity="0.6"/>
+  <polyline points="800,0 770,0 770,4" fill="none" stroke="#38bdf8" stroke-width="2" opacity="0.6"/>
+  <polyline points="0,450 30,450 30,446" fill="none" stroke="#38bdf8" stroke-width="2" opacity="0.6"/>
+  <polyline points="800,450 770,450 770,446" fill="none" stroke="#38bdf8" stroke-width="2" opacity="0.6"/>
+</svg>
