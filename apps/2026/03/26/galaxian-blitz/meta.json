@@ -15,6 +15,16 @@
     "prompt": "Create a mobile-first HTML/CSS/JavaScript \"Galaxian\" style shooter. Be sure the have smooth game play, detailed looking graphics, and animated explosions. Requirements: Fullscreen canvas, optimized for phones first, then scale up for desktop. Player ship at bottom; move horizontally and shoot upward. Controls: arrow keys + space on desktop, touch buttons or left/right swipe + tap to shoot on mobile. Waves of alien ships appear in formations at the top, then break formation and dive-bomb the player. Enemies should have different types (speed, health, behavior). Implement player lives, score, and increasing difficulty per wave. Add simple power-ups (faster fire, spread shot, shield). Include basic sound effects and retro pixel/\"space\" visuals with starfield background. Keep code organized (separate game loop, input handling, rendering, collision).",
     "requestor": "anonymous"
   },
+  "improvements": [
+    {
+      "issueNumber": 218,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/218",
+      "description": "Fixed game layout to account for the shared shell header and footer: corrected padding-top from 56px to 64px (actual shell header height) and added padding-bottom: 56px so the player ship is no longer hidden behind the footer.",
+      "implementedAt": "2026-03-26T11:37:33Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
+    }
+  ],
   "generation": {
     "agentName": "Claude Code",
     "llmModel": "claude-sonnet-4-6",
