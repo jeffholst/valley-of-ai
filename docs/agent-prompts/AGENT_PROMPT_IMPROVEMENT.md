@@ -140,6 +140,30 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
 If clean, continue.
 
+**Sanity check** — read `improvementSanity` from the selection output and act on the `overallRisk` value before doing any further work.
+
+- **`overallRisk: 'low'`** — no concerns detected. Continue silently.
+
+- **`overallRisk: 'medium'`** — one or more soft signals detected (e.g. elevated frequency, near-duplicate request). Log `SANITY_WARN` and continue. The warning is preserved in the audit trail for human review.
+
+  ```bash
+  npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> \
+    --category pipeline --step SANITY_WARN --status warning \
+    --message "Sanity warning — <improvementSanity.reasons joined by '; '>. Proceeding with caution."
+  ```
+
+- **`overallRisk: 'high'`** — strong signal of problematic pattern (e.g. high change frequency, oscillating add/remove behavior). Log `SANITY_ABORT` and **stop — do not proceed**:
+
+  ```bash
+  npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> \
+    --category pipeline --step SANITY_ABORT --status aborted \
+    --message "Sanity check halted pipeline — <improvementSanity.reasons joined by '; '>."
+  ```
+
+> **Boost note:** If `improvementSanity.isBoosted` is `true`, the sanity check has already applied reduced scrutiny. A `medium` risk on a boosted issue is still safe to proceed — the boost cap ensures boosted requests are never blocked at `high`.
+
+See `docs/improvement-sanity-check.md` for full signal documentation and threshold configuration.
+
 Log `SELECT_IMPROVEMENT`:
 
 ```bash
