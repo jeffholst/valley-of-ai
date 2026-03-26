@@ -1,5 +1,38 @@
 [
   {
+    "id": "2026/03/26/sokoban-warehouse",
+    "name": "Sokoban Warehouse",
+    "shortDescription": "Classic box-pushing puzzle game with 12 levels of increasing difficulty. Push crates onto targets using swipe, on-screen D-pad, or arrow keys — with unlimited undo and a level select menu.",
+    "thumbnailUrl": "/apps/2026/03/26/sokoban-warehouse/thumbnail.svg",
+    "createdAt": "2026-03-26T18:53:45Z",
+    "year": 2026,
+    "month": 3,
+    "day": 26,
+    "category": "Games",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": ["puzzle", "sokoban", "mobile", "touch", "classic", "grid", "levels"],
+    "route": "/apps/2026/03/26/sokoban-warehouse",
+    "appPath": "/apps/2026/03/26/sokoban-warehouse/index.html",
+    "generation": {
+      "agentName": "claude-code",
+      "llmModel": "claude-sonnet-4-6",
+      "startTime": "2026-03-26T18:53:45Z",
+      "endTime": "2026-03-26T19:05:00Z",
+      "totalTokensIn": 15000,
+      "totalTokensOut": 20000,
+      "runId": "run-20260326T185345Z-a3f7c2",
+      "notes": "Built from approved community suggestion issue #230. 12 hand-crafted levels of increasing difficulty. Canvas-based rendering with brick walls, wooden crate aesthetic, amber color palette. Token counts are estimates."
+    },
+    "suggestion": {
+      "issueNumber": 230,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/230",
+      "prompt": "Build a mobile-first version of the classic puzzle game Sokoban with multiple levels. The game should run in a single web page, no frameworks. Requirements: Grid-based warehouse layout with walls, floor tiles, movable boxes/crates, storage targets, and a player. Use simple 2D graphics or colored tiles; ensure everything is readable on phones. Touch controls for mobile (swipe or on-screen arrows) and arrow keys for desktop. Rules: the player can move up/down/left/right; pushing exactly one adjacent box into an empty floor tile is allowed, but pulling is not. Level is solved when all boxes are on target tiles. Include at least 10 built-in levels of increasing difficulty, selectable from a simple level menu. Track moves and pushes; show level complete message and option to restart or go to the next level. Provide a clean, responsive layout that works well on small screens first, then scales to desktop."
+    },
+    "improvements": null,
+    "allowImprovements": true
+  },
+  {
     "id": "2026/03/26/galaxian-blitz",
     "name": "Galaxian Blitz",
     "shortDescription": "A mobile-first Galaxian-style space shooter with dive-bombing alien formations, 3 enemy types, power-ups, and animated particle explosions.",

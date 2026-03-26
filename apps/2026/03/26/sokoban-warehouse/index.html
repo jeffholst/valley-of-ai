@@ -1,0 +1,1012 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sokoban Warehouse - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Sokoban Warehouse" />
+    <meta name="voa-app-id" content="2026/03/26/sokoban-warehouse" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --accent: #f59e0b;
+        --accent2: #d97706;
+        --wall: #78350f;
+        --wall-face: #92400e;
+        --floor: #1e293b;
+        --floor-target: #164e63;
+        --crate: #b45309;
+        --crate-face: #d97706;
+        --crate-on-target: #065f46;
+        --crate-on-target-face: #047857;
+        --player: #3b82f6;
+        --player-face: #60a5fa;
+        --target: #0e7490;
+        --target-mark: #22d3ee;
+        --btn-bg: #334155;
+        --btn-hover: #475569;
+        --success: #10b981;
+        --border: #334155;
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+        --accent: #d97706;
+        --accent2: #b45309;
+        --wall: #92400e;
+        --wall-face: #b45309;
+        --floor: #e2e8f0;
+        --floor-target: #bae6fd;
+        --crate: #d97706;
+        --crate-face: #f59e0b;
+        --crate-on-target: #059669;
+        --crate-on-target-face: #10b981;
+        --player: #2563eb;
+        --player-face: #3b82f6;
+        --target: #0284c7;
+        --target-mark: #0ea5e9;
+        --btn-bg: #e2e8f0;
+        --btn-hover: #cbd5e1;
+        --border: #cbd5e1;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        overflow: hidden;
+      }
+
+      #appWrapper {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      /* ── HUD ── */
+      #hud {
+        width: 100%;
+        max-width: 540px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 12px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .hud-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 52px;
+      }
+
+      .hud-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        opacity: 0.6;
+        line-height: 1;
+      }
+
+      .hud-value {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--accent);
+        line-height: 1.2;
+      }
+
+      .hud-center {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+        text-align: center;
+      }
+
+      .hud-btn {
+        background: var(--btn-bg);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s;
+        white-space: nowrap;
+      }
+
+      .hud-btn:hover,
+      .hud-btn:focus-visible {
+        background: var(--btn-hover);
+        outline: none;
+      }
+
+      .hud-btn:active {
+        transform: scale(0.95);
+      }
+
+      /* ── Canvas area ── */
+      #gameArea {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 540px;
+        overflow: hidden;
+        padding: 6px;
+      }
+
+      #gameCanvas {
+        display: block;
+        border-radius: 8px;
+        box-shadow: 0 0 24px rgba(245, 158, 11, 0.15);
+        touch-action: none;
+        user-select: none;
+      }
+
+      /* ── Mobile D-pad ── */
+      #dpad {
+        flex-shrink: 0;
+        display: grid;
+        grid-template-columns: repeat(3, 52px);
+        grid-template-rows: repeat(3, 52px);
+        gap: 4px;
+        padding: 6px 0 4px;
+      }
+
+      .dpad-btn {
+        width: 52px;
+        height: 52px;
+        background: var(--btn-bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 22px;
+        transition: background 0.12s, transform 0.08s;
+        touch-action: manipulation;
+      }
+
+      .dpad-btn:active {
+        background: var(--btn-hover);
+        transform: scale(0.92);
+      }
+
+      .dpad-empty {
+        background: transparent;
+        border: none;
+        pointer-events: none;
+      }
+
+      /* ── Level select overlay ── */
+      #levelOverlay {
+        position: fixed;
+        inset: 64px 0 56px 0;
+        background: var(--bg);
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 16px;
+        overflow-y: auto;
+        gap: 16px;
+      }
+
+      #levelOverlay h2 {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--accent);
+      }
+
+      .level-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 10px;
+        width: 100%;
+        max-width: 480px;
+      }
+
+      .level-btn {
+        background: var(--surface);
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 8px;
+        cursor: pointer;
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 600;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        transition: border-color 0.15s, background 0.15s;
+      }
+
+      .level-btn:hover,
+      .level-btn:focus-visible {
+        border-color: var(--accent);
+        background: var(--btn-hover);
+        outline: none;
+      }
+
+      .level-btn.completed {
+        border-color: var(--success);
+      }
+
+      .level-btn .lvl-num {
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--accent);
+      }
+
+      .level-btn .lvl-check {
+        color: var(--success);
+        font-size: 16px;
+      }
+
+      /* ── Win overlay ── */
+      #winOverlay {
+        position: fixed;
+        inset: 64px 0 56px 0;
+        background: rgba(15, 23, 42, 0.92);
+        z-index: 200;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        padding: 24px;
+      }
+
+      [data-theme='light'] #winOverlay {
+        background: rgba(255, 255, 255, 0.92);
+      }
+
+      #winOverlay h2 {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--accent);
+        text-align: center;
+      }
+
+      #winOverlay p {
+        font-size: 16px;
+        opacity: 0.8;
+        text-align: center;
+      }
+
+      .win-btns {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .win-btn {
+        background: var(--accent);
+        color: #0f172a;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.15s, transform 0.1s;
+        min-width: 120px;
+        min-height: 44px;
+      }
+
+      .win-btn:hover {
+        background: var(--accent2);
+      }
+
+      .win-btn:active {
+        transform: scale(0.96);
+      }
+
+      .win-btn.secondary {
+        background: var(--btn-bg);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      @media (min-width: 400px) {
+        .dpad-btn {
+          width: 60px;
+          height: 60px;
+        }
+        #dpad {
+          grid-template-columns: repeat(3, 60px);
+          grid-template-rows: repeat(3, 60px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="appWrapper">
+      <div id="hud">
+        <div class="hud-group">
+          <span class="hud-label">Level</span>
+          <span class="hud-value" id="hudLevel">1</span>
+        </div>
+        <div class="hud-group">
+          <span class="hud-label">Moves</span>
+          <span class="hud-value" id="hudMoves">0</span>
+        </div>
+        <div class="hud-group">
+          <span class="hud-label">Pushes</span>
+          <span class="hud-value" id="hudPushes">0</span>
+        </div>
+        <button class="hud-btn" id="btnUndo" aria-label="Undo last move">↩ Undo</button>
+        <button class="hud-btn" id="btnRestart" aria-label="Restart level">↺ Reset</button>
+        <button class="hud-btn" id="btnLevels" aria-label="Select level">☰ Levels</button>
+      </div>
+
+      <div id="gameArea">
+        <canvas id="gameCanvas" aria-label="Sokoban game board"></canvas>
+      </div>
+
+      <div id="dpad" role="group" aria-label="Direction controls">
+        <div class="dpad-btn dpad-empty"></div>
+        <button class="dpad-btn" id="btnUp" aria-label="Move up">▲</button>
+        <div class="dpad-btn dpad-empty"></div>
+        <button class="dpad-btn" id="btnLeft" aria-label="Move left">◀</button>
+        <div class="dpad-btn dpad-empty" style="font-size:14px; display:flex; align-items:center; justify-content:center; background:transparent; border:none;"></div>
+        <button class="dpad-btn" id="btnRight" aria-label="Move right">▶</button>
+        <div class="dpad-btn dpad-empty"></div>
+        <button class="dpad-btn" id="btnDown" aria-label="Move down">▼</button>
+        <div class="dpad-btn dpad-empty"></div>
+      </div>
+    </div>
+
+    <!-- Level Select Overlay -->
+    <div id="levelOverlay" class="hidden" role="dialog" aria-label="Level Select">
+      <h2>Select Level</h2>
+      <div class="level-grid" id="levelGrid"></div>
+      <button class="hud-btn" id="btnCloseLevels" style="margin-top:8px; padding: 10px 24px; font-size:14px;">✕ Close</button>
+    </div>
+
+    <!-- Win Overlay -->
+    <div id="winOverlay" class="hidden" role="dialog" aria-label="Level complete">
+      <h2>🎉 Level Complete!</h2>
+      <p id="winStats">Moves: 0 · Pushes: 0</p>
+      <div class="win-btns">
+        <button class="win-btn" id="btnNextLevel">Next Level →</button>
+        <button class="win-btn secondary" id="btnPlayAgain">↺ Replay</button>
+        <button class="win-btn secondary" id="btnWinLevels">☰ Levels</button>
+      </div>
+    </div>
+
+    <script>
+      // ─────────────────────────────────────────────
+      //  LEVELS  (W=wall, ' '=floor, .=target, @=player, $=crate, *=crate-on-target, +=player-on-target)
+      // ─────────────────────────────────────────────
+      const LEVELS = [
+        // 1 — Intro
+        [
+          '  #####',
+          '  #   #',
+          '  # $ #',
+          '### . ###',
+          '#  .@.  #',
+          '### $ ###',
+          '  #   #',
+          '  #####',
+        ],
+        // 2
+        [
+          '########',
+          '#  . $ #',
+          '# $  . #',
+          '#  @   #',
+          '#      #',
+          '########',
+        ],
+        // 3
+        [
+          '  #######',
+          '  # .   #',
+          '### # $ #',
+          '# . #   #',
+          '# $ # . #',
+          '#  @$   #',
+          '#########',
+        ],
+        // 4
+        [
+          '#######',
+          '#  .  #',
+          '# $   #',
+          '#. @.$#',
+          '# $   #',
+          '#  .  #',
+          '#######',
+        ],
+        // 5
+        [
+          '#########',
+          '#   #   #',
+          '# $   $ #',
+          '## # # ##',
+          ' # . . #',
+          ' #  @  #',
+          ' #######',
+        ],
+        // 6
+        [
+          '#######',
+          '#.    #',
+          '#. $$ #',
+          '#. $  #',
+          '#  @  #',
+          '#  ## #',
+          '#######',
+        ],
+        // 7
+        [
+          '########',
+          '#  @   #',
+          '# $$$  #',
+          '#  . . #',
+          '## . . #',
+          ' #######',
+        ],
+        // 8
+        [
+          ' ########',
+          ' #   #  #',
+          '## $    #',
+          '#  $ .# #',
+          '# @ $.  #',
+          '#  . ## #',
+          '#########',
+        ],
+        // 9
+        [
+          '#########',
+          '#   #   #',
+          '# $ # $ #',
+          '# .   . #',
+          '# $ # $ #',
+          '#   @   #',
+          '#########',
+        ],
+        // 10
+        [
+          '##########',
+          '#   #    #',
+          '# $ $ $  #',
+          '# . . .  #',
+          '#   @  # #',
+          '#      # #',
+          '##########',
+        ],
+        // 11
+        [
+          ' ########',
+          ' #  @   #',
+          '## $ $  #',
+          '# . # . #',
+          '#   # $ #',
+          '#  . .  #',
+          '#########',
+        ],
+        // 12 — harder
+        [
+          '#########',
+          '#   .   #',
+          '# $ # $ #',
+          '#   @   #',
+          '# $ # $ #',
+          '#   .   #',
+          '#########',
+        ],
+      ];
+
+      // ─────────────────────────────────────────────
+      //  TILE TYPES
+      // ─────────────────────────────────────────────
+      const T = { EMPTY: 0, WALL: 1, FLOOR: 2, TARGET: 3, CRATE: 4, CRATE_ON_TARGET: 5, PLAYER: 6, PLAYER_ON_TARGET: 7 };
+
+      // ─────────────────────────────────────────────
+      //  GAME STATE
+      // ─────────────────────────────────────────────
+      let state = {
+        levelIndex: 0,
+        grid: [],
+        playerRow: 0,
+        playerCol: 0,
+        moves: 0,
+        pushes: 0,
+        history: [],
+        completed: new Set(),
+      };
+
+      function parseLevel(lines) {
+        const maxLen = Math.max(...lines.map((l) => l.length));
+        const grid = [];
+        let pr = 0,
+          pc = 0;
+        for (let r = 0; r < lines.length; r++) {
+          const row = [];
+          for (let c = 0; c < maxLen; c++) {
+            const ch = lines[r][c] || ' ';
+            switch (ch) {
+              case '#':
+                row.push(T.WALL);
+                break;
+              case '.':
+                row.push(T.TARGET);
+                break;
+              case '$':
+                row.push(T.CRATE);
+                break;
+              case '*':
+                row.push(T.CRATE_ON_TARGET);
+                break;
+              case '@':
+                pr = r;
+                pc = c;
+                row.push(T.FLOOR);
+                break;
+              case '+':
+                pr = r;
+                pc = c;
+                row.push(T.TARGET);
+                break;
+              default:
+                row.push(ch === ' ' ? T.EMPTY : T.FLOOR);
+            }
+          }
+          grid.push(row);
+        }
+        return { grid, pr, pc };
+      }
+
+      function loadLevel(idx) {
+        const { grid, pr, pc } = parseLevel(LEVELS[idx]);
+        state.levelIndex = idx;
+        state.grid = grid;
+        state.playerRow = pr;
+        state.playerCol = pc;
+        state.moves = 0;
+        state.pushes = 0;
+        state.history = [];
+        updateHUD();
+        resizeCanvas();
+        render();
+        document.getElementById('winOverlay').classList.add('hidden');
+      }
+
+      function cloneGrid(g) {
+        return g.map((r) => [...r]);
+      }
+
+      function move(dr, dc) {
+        if (!document.getElementById('winOverlay').classList.contains('hidden')) return;
+        const { grid, playerRow: pr, playerCol: pc } = state;
+        const nr = pr + dr;
+        const nc = pc + dc;
+        if (nr < 0 || nr >= grid.length || nc < 0 || nc >= grid[0].length) return;
+        const dest = grid[nr][nc];
+        if (dest === T.WALL || dest === T.EMPTY) return;
+
+        let pushed = false;
+
+        if (dest === T.CRATE || dest === T.CRATE_ON_TARGET) {
+          const br = nr + dr;
+          const bc = nc + dc;
+          if (br < 0 || br >= grid.length || bc < 0 || bc >= grid[0].length) return;
+          const beyond = grid[br][bc];
+          if (beyond === T.WALL || beyond === T.EMPTY || beyond === T.CRATE || beyond === T.CRATE_ON_TARGET) return;
+          // Save history
+          state.history.push({ grid: cloneGrid(grid), pr, pc, moves: state.moves, pushes: state.pushes });
+          // Move crate
+          grid[br][bc] = beyond === T.TARGET ? T.CRATE_ON_TARGET : T.CRATE;
+          grid[nr][nc] = dest === T.CRATE_ON_TARGET ? T.TARGET : T.FLOOR;
+          pushed = true;
+          state.pushes++;
+        } else {
+          state.history.push({ grid: cloneGrid(grid), pr, pc, moves: state.moves, pushes: state.pushes });
+        }
+
+        state.playerRow = nr;
+        state.playerCol = nc;
+        state.moves++;
+        updateHUD();
+        render();
+        if (pushed) checkWin();
+      }
+
+      function undo() {
+        if (state.history.length === 0) return;
+        const prev = state.history.pop();
+        state.grid = prev.grid;
+        state.playerRow = prev.pr;
+        state.playerCol = prev.pc;
+        state.moves = prev.moves;
+        state.pushes = prev.pushes;
+        updateHUD();
+        render();
+      }
+
+      function checkWin() {
+        const g = state.grid;
+        for (let r = 0; r < g.length; r++) {
+          for (let c = 0; c < g[r].length; c++) {
+            if (g[r][c] === T.CRATE) return; // unsatisfied crate
+          }
+        }
+        state.completed.add(state.levelIndex);
+        document.getElementById('winStats').textContent = `Moves: ${state.moves} · Pushes: ${state.pushes}`;
+        const btnNext = document.getElementById('btnNextLevel');
+        if (state.levelIndex + 1 < LEVELS.length) {
+          btnNext.classList.remove('hidden');
+        } else {
+          btnNext.classList.add('hidden');
+        }
+        document.getElementById('winOverlay').classList.remove('hidden');
+        buildLevelGrid();
+      }
+
+      function updateHUD() {
+        document.getElementById('hudLevel').textContent = state.levelIndex + 1;
+        document.getElementById('hudMoves').textContent = state.moves;
+        document.getElementById('hudPushes').textContent = state.pushes;
+      }
+
+      // ─────────────────────────────────────────────
+      //  RENDERING
+      // ─────────────────────────────────────────────
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+      let tileSize = 40;
+
+      function resizeCanvas() {
+        const area = document.getElementById('gameArea');
+        const areaW = area.clientWidth - 12;
+        const areaH = area.clientHeight - 12;
+        const rows = state.grid.length;
+        const cols = state.grid[0]?.length || 1;
+        tileSize = Math.max(20, Math.min(56, Math.floor(Math.min(areaW / cols, areaH / rows))));
+        canvas.width = cols * tileSize;
+        canvas.height = rows * tileSize;
+        render();
+      }
+
+      function render() {
+        const g = state.grid;
+        const rows = g.length;
+        const cols = g[0]?.length || 0;
+        const ts = tileSize;
+        const cs = getComputedStyle(document.documentElement);
+        const C = {
+          empty: 'transparent',
+          wall: cs.getPropertyValue('--wall').trim(),
+          wallFace: cs.getPropertyValue('--wall-face').trim(),
+          floor: cs.getPropertyValue('--floor').trim(),
+          floorTarget: cs.getPropertyValue('--floor-target').trim(),
+          crate: cs.getPropertyValue('--crate').trim(),
+          crateFace: cs.getPropertyValue('--crate-face').trim(),
+          crateOnTarget: cs.getPropertyValue('--crate-on-target').trim(),
+          crateOnTargetFace: cs.getPropertyValue('--crate-on-target-face').trim(),
+          player: cs.getPropertyValue('--player').trim(),
+          playerFace: cs.getPropertyValue('--player-face').trim(),
+          targetMark: cs.getPropertyValue('--target-mark').trim(),
+          bg: cs.getPropertyValue('--bg').trim(),
+        };
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const x = c * ts;
+            const y = r * ts;
+            const cell = g[r][c];
+
+            if (cell === T.EMPTY) continue;
+
+            // Floor base
+            if (cell !== T.WALL) {
+              ctx.fillStyle = cell === T.TARGET || cell === T.CRATE_ON_TARGET ? C.floorTarget : C.floor;
+              ctx.fillRect(x, y, ts, ts);
+            }
+
+            switch (cell) {
+              case T.WALL:
+                drawWall(x, y, ts, C);
+                break;
+              case T.TARGET:
+                drawTarget(x, y, ts, C);
+                break;
+              case T.CRATE:
+                drawCrate(x, y, ts, C.crate, C.crateFace, false);
+                break;
+              case T.CRATE_ON_TARGET:
+                drawCrate(x, y, ts, C.crateOnTarget, C.crateOnTargetFace, true);
+                break;
+            }
+          }
+        }
+
+        // Player
+        const px = state.playerCol * ts;
+        const py = state.playerRow * ts;
+        drawPlayer(px, py, ts, C);
+      }
+
+      function drawWall(x, y, ts, C) {
+        ctx.fillStyle = C.wall;
+        ctx.fillRect(x, y, ts, ts);
+        // Brick pattern
+        ctx.fillStyle = C.wallFace;
+        const bh = ts / 3;
+        for (let row = 0; row < 3; row++) {
+          const by = y + row * bh;
+          const offset = row % 2 === 0 ? 0 : ts / 2;
+          ctx.fillRect(x + offset + 1, by + 1, ts / 2 - 2, bh - 2);
+        }
+        // Edge shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.25)';
+        ctx.fillRect(x, y + ts - 3, ts, 3);
+        ctx.fillRect(x + ts - 3, y, 3, ts);
+      }
+
+      function drawTarget(x, y, ts, C) {
+        const cx = x + ts / 2;
+        const cy = y + ts / 2;
+        ctx.strokeStyle = C.targetMark;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, ts * 0.3, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(cx, cy, ts * 0.1, 0, Math.PI * 2);
+        ctx.fillStyle = C.targetMark;
+        ctx.fill();
+        // crosshairs
+        ctx.strokeStyle = C.targetMark;
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([2, 2]);
+        ctx.beginPath();
+        ctx.moveTo(cx - ts * 0.38, cy);
+        ctx.lineTo(cx + ts * 0.38, cy);
+        ctx.moveTo(cx, cy - ts * 0.38);
+        ctx.lineTo(cx, cy + ts * 0.38);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      function drawCrate(x, y, ts, bgColor, faceColor, onTarget) {
+        const margin = 2;
+        const r = 4;
+        // Main body
+        roundRect(ctx, x + margin, y + margin, ts - margin * 2, ts - margin * 2, r);
+        ctx.fillStyle = bgColor;
+        ctx.fill();
+        // Face highlight
+        roundRect(ctx, x + margin + 3, y + margin + 3, ts - margin * 2 - 6, ts - margin * 2 - 6, r - 1);
+        ctx.fillStyle = faceColor;
+        ctx.fill();
+        // Cross straps
+        const inner = margin + 5;
+        ctx.strokeStyle = bgColor;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x + inner, y + ts / 2);
+        ctx.lineTo(x + ts - inner, y + ts / 2);
+        ctx.moveTo(x + ts / 2, y + inner);
+        ctx.lineTo(x + ts / 2, y + ts - inner);
+        ctx.stroke();
+        // Shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.2)';
+        ctx.fillRect(x + margin, y + ts - margin - 3, ts - margin * 2, 3);
+        ctx.fillRect(x + ts - margin - 3, y + margin, 3, ts - margin * 2);
+        if (onTarget) {
+          // Checkmark
+          ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+          ctx.lineWidth = 2;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.beginPath();
+          ctx.moveTo(x + ts * 0.3, y + ts * 0.52);
+          ctx.lineTo(x + ts * 0.45, y + ts * 0.65);
+          ctx.lineTo(x + ts * 0.7, y + ts * 0.38);
+          ctx.stroke();
+          ctx.lineCap = 'butt';
+        }
+      }
+
+      function drawPlayer(x, y, ts, C) {
+        const cx = x + ts / 2;
+        const cy = y + ts / 2;
+        const headR = ts * 0.18;
+        const bodyH = ts * 0.28;
+
+        // Body
+        ctx.fillStyle = C.player;
+        roundRect(ctx, cx - ts * 0.18, cy - ts * 0.05, ts * 0.36, bodyH, 4);
+        ctx.fill();
+
+        // Head
+        ctx.beginPath();
+        ctx.arc(cx, cy - ts * 0.22, headR, 0, Math.PI * 2);
+        ctx.fillStyle = C.playerFace;
+        ctx.fill();
+
+        // Legs
+        ctx.fillStyle = C.player;
+        ctx.fillRect(cx - ts * 0.17, cy + ts * 0.22, ts * 0.13, ts * 0.2);
+        ctx.fillRect(cx + ts * 0.04, cy + ts * 0.22, ts * 0.13, ts * 0.2);
+
+        // Glow
+        ctx.shadowColor = C.playerFace;
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
+        ctx.arc(cx, cy - ts * 0.22, headR, 0, Math.PI * 2);
+        ctx.fillStyle = 'transparent';
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      function roundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.arcTo(x + w, y, x + w, y + r, r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+        ctx.lineTo(x + r, y + h);
+        ctx.arcTo(x, y + h, x, y + h - r, r);
+        ctx.lineTo(x, y + r);
+        ctx.arcTo(x, y, x + r, y, r);
+        ctx.closePath();
+      }
+
+      // ─────────────────────────────────────────────
+      //  LEVEL SELECT
+      // ─────────────────────────────────────────────
+      function buildLevelGrid() {
+        const grid = document.getElementById('levelGrid');
+        grid.innerHTML = '';
+        LEVELS.forEach((_, i) => {
+          const btn = document.createElement('button');
+          btn.className = 'level-btn' + (state.completed.has(i) ? ' completed' : '');
+          btn.setAttribute('aria-label', `Level ${i + 1}${state.completed.has(i) ? ' (completed)' : ''}`);
+          btn.innerHTML = `<span class="lvl-num">${i + 1}</span>${state.completed.has(i) ? '<span class="lvl-check">✓</span>' : ''}`;
+          btn.addEventListener('click', () => {
+            loadLevel(i);
+            document.getElementById('levelOverlay').classList.add('hidden');
+          });
+          grid.appendChild(btn);
+        });
+      }
+
+      // ─────────────────────────────────────────────
+      //  TOUCH / SWIPE
+      // ─────────────────────────────────────────────
+      let touchStart = null;
+      canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }, { passive: false });
+
+      canvas.addEventListener('touchend', (e) => {
+        if (!touchStart) return;
+        e.preventDefault();
+        const dx = e.changedTouches[0].clientX - touchStart.x;
+        const dy = e.changedTouches[0].clientY - touchStart.y;
+        touchStart = null;
+        if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+        if (Math.abs(dx) > Math.abs(dy)) {
+          move(0, dx > 0 ? 1 : -1);
+        } else {
+          move(dy > 0 ? 1 : -1, 0);
+        }
+      }, { passive: false });
+
+      // ─────────────────────────────────────────────
+      //  KEYBOARD
+      // ─────────────────────────────────────────────
+      document.addEventListener('keydown', (e) => {
+        if (document.getElementById('levelOverlay').classList.contains('hidden') === false) return;
+        switch (e.key) {
+          case 'ArrowUp': case 'w': case 'W': e.preventDefault(); move(-1, 0); break;
+          case 'ArrowDown': case 's': case 'S': e.preventDefault(); move(1, 0); break;
+          case 'ArrowLeft': case 'a': case 'A': e.preventDefault(); move(0, -1); break;
+          case 'ArrowRight': case 'd': case 'D': e.preventDefault(); move(0, 1); break;
+          case 'z': case 'Z': undo(); break;
+          case 'r': case 'R': loadLevel(state.levelIndex); break;
+        }
+      });
+
+      // ─────────────────────────────────────────────
+      //  BUTTONS
+      // ─────────────────────────────────────────────
+      document.getElementById('btnUp').addEventListener('click', () => move(-1, 0));
+      document.getElementById('btnDown').addEventListener('click', () => move(1, 0));
+      document.getElementById('btnLeft').addEventListener('click', () => move(0, -1));
+      document.getElementById('btnRight').addEventListener('click', () => move(0, 1));
+      document.getElementById('btnUndo').addEventListener('click', undo);
+      document.getElementById('btnRestart').addEventListener('click', () => loadLevel(state.levelIndex));
+      document.getElementById('btnLevels').addEventListener('click', () => {
+        buildLevelGrid();
+        document.getElementById('levelOverlay').classList.remove('hidden');
+      });
+      document.getElementById('btnCloseLevels').addEventListener('click', () => {
+        document.getElementById('levelOverlay').classList.add('hidden');
+      });
+      document.getElementById('btnNextLevel').addEventListener('click', () => {
+        document.getElementById('winOverlay').classList.add('hidden');
+        loadLevel(state.levelIndex + 1);
+      });
+      document.getElementById('btnPlayAgain').addEventListener('click', () => {
+        document.getElementById('winOverlay').classList.add('hidden');
+        loadLevel(state.levelIndex);
+      });
+      document.getElementById('btnWinLevels').addEventListener('click', () => {
+        document.getElementById('winOverlay').classList.add('hidden');
+        buildLevelGrid();
+        document.getElementById('levelOverlay').classList.remove('hidden');
+      });
+
+      // ─────────────────────────────────────────────
+      //  RESIZE
+      // ─────────────────────────────────────────────
+      window.addEventListener('resize', resizeCanvas);
+
+      // ─────────────────────────────────────────────
+      //  INIT
+      // ─────────────────────────────────────────────
+      loadLevel(0);
+    </script>
+  </body>
+</html>
