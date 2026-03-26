@@ -8,6 +8,7 @@ describe('siteConfig', () => {
   beforeEach(async () => {
     jest.resetModules();
     process.env.NEXT_PUBLIC_SITE_NAME = 'Valley of AI';
+    process.env.NEXT_PUBLIC_MAIN_SITE_URL = 'https://www.valleyofai.com';
     process.env.NEXT_PUBLIC_SOCIAL_X_URL = 'https://x.com/valleyofai';
     process.env.NEXT_PUBLIC_SOCIAL_FACEBOOK_URL = 'https://facebook.com/valleyofai';
     process.env.NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL = 'https://instagram.com/valleyofai';
@@ -17,6 +18,7 @@ describe('siteConfig', () => {
 
   afterEach(() => {
     delete process.env.NEXT_PUBLIC_SITE_NAME;
+    delete process.env.NEXT_PUBLIC_MAIN_SITE_URL;
     delete process.env.NEXT_PUBLIC_SOCIAL_X_URL;
     delete process.env.NEXT_PUBLIC_SOCIAL_FACEBOOK_URL;
     delete process.env.NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL;
@@ -35,6 +37,11 @@ describe('siteConfig', () => {
     expect(socialXUrl).toBeDefined();
     expect(socialFacebookUrl).toBeDefined();
     expect(socialInstagramUrl).toBeDefined();
+  });
+
+  it('exports site URL', () => {
+    const { siteUrl } = siteConfig;
+    expect(siteUrl).toBe('https://www.valleyofai.com');
   });
 
   it('social URLs are valid URLs', () => {
