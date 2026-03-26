@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-08T02:42:43Z",
   "category": "Productivity",
-  "votes": 0,
-  "status": "active",
   "visible": true,
-  "tags": [
-    "workout",
-    "timer",
-    "hiit",
-    "intervals"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["workout", "timer", "hiit", "intervals"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -25,5 +20,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260308T024243Z-e7e6e0",
     "notes": "Feature set prioritized from common interval timer app patterns: presets, prep, rounds, cues, pause/skip. Token counters unavailable in runtime."
-  }
+  },
+  "votes": 0
 }

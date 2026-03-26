@@ -68,6 +68,7 @@ export function transformMeta(appsDir, meta, filePath, dateInfo, basePath = '') 
     generation: meta.generation || null,
     suggestion: meta.suggestion || null,
     improvements: meta.improvements || null,
+    allowImprovements: meta.allowImprovements ?? true,
   };
 }
 

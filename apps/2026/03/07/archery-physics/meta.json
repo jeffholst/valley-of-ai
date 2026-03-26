@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-07T18:30:00Z",
   "category": "Games",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "game",
-    "archery",
-    "physics",
-    "simulation",
-    "sports"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["game", "archery", "physics", "simulation", "sports"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

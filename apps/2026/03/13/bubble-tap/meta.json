@@ -5,18 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-13T00:17:21Z",
   "category": "Games",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "game",
-    "tap",
-    "mobile",
-    "responsive",
-    "arcade",
-    "high-score",
-    "touch",
-    "reaction"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["game", "tap", "mobile", "responsive", "arcade", "high-score", "touch", "reaction"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-07T19:45:00Z",
   "category": "Games",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "game",
-    "debugging",
-    "coding",
-    "programming",
-    "education"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["game", "debugging", "coding", "programming", "education"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

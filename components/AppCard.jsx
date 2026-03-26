@@ -66,13 +66,22 @@ export default function AppCard({ app, initialCounts }) {
             {app.category}
           </span>
           <div className="flex items-center gap-2">
-            <Link
-              href={`/improve?app=${encodeURIComponent(app.id)}&name=${encodeURIComponent(app.name)}`}
-              className="inline-flex items-center gap-0.5 text-[0.72rem] font-semibold tracking-wide text-slate-900 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full px-2 py-0.5 whitespace-nowrap cursor-pointer transition-transform hover:scale-105"
-              title="Suggest an improvement"
-            >
-              💡 Improve
-            </Link>
+            {app.allowImprovements !== false ? (
+              <Link
+                href={`/improve?app=${encodeURIComponent(app.id)}&name=${encodeURIComponent(app.name)}`}
+                className="inline-flex items-center gap-0.5 text-[0.72rem] font-semibold tracking-wide text-slate-900 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full px-2 py-0.5 whitespace-nowrap cursor-pointer transition-transform hover:scale-105"
+                title="Suggest an improvement"
+              >
+                💡 Improve
+              </Link>
+            ) : (
+              <span
+                className="inline-flex items-center gap-0.5 text-[0.72rem] font-semibold tracking-wide text-slate-500 bg-slate-200 dark:bg-slate-700 dark:text-slate-400 rounded-full px-2 py-0.5 whitespace-nowrap"
+                title="Improvements are disabled for this app"
+              >
+                🔒 Locked
+              </span>
+            )}
             <span className="text-xs text-gray-500 dark:text-gray-400">{formattedDate}</span>
           </div>
         </div>

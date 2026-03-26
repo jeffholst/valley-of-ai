@@ -160,6 +160,11 @@ Categories: `pipeline` | `reasoning` | `validation`
 
 Always run `npm run generate:apps` before committing when `meta.json` files change. This file is a committed registry, not a build artifact. Commit it in the same PR as the meta.json changes.
 
+### meta.json optional fields
+
+- `visible`: boolean — defaults to `true`; set to `false` to hide an app from the gallery without deleting it
+- `allowImprovements`: boolean — defaults to `true`; set to `false` to prevent community improvement submissions for this app. The gallery card shows a 🔒 badge, the improve page blocks the form, and the pipeline skips the app during improvement selection.
+
 ---
 
 ## What NOT to Do
@@ -171,7 +176,7 @@ Always run `npm run generate:apps` before committing when `meta.json` files chan
 - Do not bypass the pending issue review workflow for `status:pending` suggestion/improvement issues
 - Do not skip `[skip deploy]` in app/improvement commit messages
 - Do not use `git add .` or `git add -A`
-- Do not proceed with the improvement pipeline if `scripts/issues/select-app-improvement.js` returns `found: false`
+- Do not proceed with the improvement pipeline if `scripts/issues/select-app-improvement.js` returns `found: false` — this includes apps where `allowImprovements: false` in `meta.json` (the script returns `found: false` automatically)
 
 ---
 

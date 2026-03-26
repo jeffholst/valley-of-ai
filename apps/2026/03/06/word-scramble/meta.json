@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-06T14:30:00Z",
   "category": "Games",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "game",
-    "puzzle",
-    "words",
-    "educational",
-    "keyboard-controls"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["game", "puzzle", "words", "educational", "keyboard-controls"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

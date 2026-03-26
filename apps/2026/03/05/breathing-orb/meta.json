@@ -5,14 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-05T22:53:48Z",
   "category": "Utilities",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "wellness",
-    "breathing",
-    "timer",
-    "focus"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["wellness", "breathing", "timer", "focus"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

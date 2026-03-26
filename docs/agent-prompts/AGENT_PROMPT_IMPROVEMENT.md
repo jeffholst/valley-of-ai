@@ -56,6 +56,7 @@ npm run select:app:improvement
 
 - This script only considers issues that have already passed the pending issue review workflow and now carry `status:approved`.
 - If `"found": false` — **stop. Do not proceed.** State "No approved improvements found" and exit gracefully.
+- If `"found": true` but `targetApp.allowImprovements === false` — treat as `found: false`. **Stop.** The selection script handles this automatically (it returns `found: false` with an explanatory message), but verify if the output is ambiguous.
 - If `"found": true` — continue to **Step 1.4**.
 
 #### Case B — Issue number given

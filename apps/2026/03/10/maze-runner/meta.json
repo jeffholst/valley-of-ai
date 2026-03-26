@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-10T22:14:53Z",
   "category": "Games",
-  "votes": 0,
-  "status": "active",
   "visible": true,
-  "tags": [
-    "maze",
-    "puzzle",
-    "speedrun",
-    "keyboard-controls"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["maze", "puzzle", "speedrun", "keyboard-controls"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -25,5 +20,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260310T221453Z-76dfc5",
     "notes": "Nightly app run. Token counters unavailable in runtime."
-  }
+  },
+  "votes": 0
 }

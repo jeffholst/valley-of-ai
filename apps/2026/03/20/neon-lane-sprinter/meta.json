@@ -5,16 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-20T02:56:26Z",
   "category": "Games",
-  "votes": 0,
-  "status": "active",
   "visible": true,
-  "tags": [
-    "arcade",
-    "reaction",
-    "lanes",
-    "touch",
-    "keyboard"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["arcade", "reaction", "lanes", "touch", "keyboard"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {
@@ -26,5 +20,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260320T025626Z-d3398e",
     "notes": "Nightly generation; token counters unavailable in runtime."
-  }
+  },
+  "votes": 0
 }

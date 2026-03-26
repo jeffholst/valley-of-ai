@@ -5,14 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-07T08:02:24Z",
   "category": "Design",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "accessibility",
-    "color",
-    "wcag",
-    "design-tool"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["accessibility", "color", "wcag", "design-tool"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

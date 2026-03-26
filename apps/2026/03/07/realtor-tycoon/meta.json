@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-07T21:57:00Z",
   "category": "Games",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "game",
-    "simulation",
-    "business",
-    "strategy",
-    "real-estate"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["game", "simulation", "business", "strategy", "real-estate"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

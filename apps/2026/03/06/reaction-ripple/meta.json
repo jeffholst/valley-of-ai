@@ -5,14 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-07T01:47:28Z",
   "category": "Games",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "game",
-    "reaction-time",
-    "reflex",
-    "arcade"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["game", "reaction-time", "reflex", "arcade"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-12T23:49:48Z",
   "category": "Productivity",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "meeting",
-    "calculator",
-    "productivity",
-    "finance",
-    "timer"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["meeting", "calculator", "productivity", "finance", "timer"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {

@@ -2,20 +2,13 @@
   "id": "focus-timer",
   "name": "Focus Timer",
   "shortDescription": "A minimalist focus timer with customizable durations, preset intervals, and audio completion cues.",
-  "description": "A productivity timer app designed for focused work sessions. Features customizable durations from 1-120 minutes, quick preset buttons (5, 15, 25, 45, 60, 90 minutes), pause/resume functionality, and audio alerts on completion. Built with a minimalist interface and full theme support.",
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-17T00:48:16Z",
   "category": "Productivity",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "timer",
-    "productivity",
-    "focus",
-    "utility",
-    "pomodoro",
-    "time-management"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["timer", "productivity", "focus", "utility", "pomodoro", "time-management"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {
@@ -28,6 +21,7 @@
     "runId": "run-20260317T004816Z-8759e2",
     "notes": "Focus timer with customizable durations, preset buttons, pause/resume, audio cues, responsive design, theme support, keyboard/touch accessibility. Standard template followed with real-time logging throughout pipeline."
   },
+  "description": "A productivity timer app designed for focused work sessions. Features customizable durations from 1-120 minutes, quick preset buttons (5, 15, 25, 45, 60, 90 minutes), pause/resume functionality, and audio alerts on completion. Built with a minimalist interface and full theme support.",
   "accessibility": {
     "ariaLabels": true,
     "keyboardNavigation": true,

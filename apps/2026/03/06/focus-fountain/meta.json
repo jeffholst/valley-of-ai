@@ -5,14 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-06T21:24:53Z",
   "category": "Productivity",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "focus",
-    "timer",
-    "productivity",
-    "visualizer"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["focus", "timer", "productivity", "visualizer"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

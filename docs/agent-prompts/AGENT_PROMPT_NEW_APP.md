@@ -207,6 +207,8 @@ If this app was built from an approved GitHub Issue (Step 1), also include a `su
 }
 ```
 
+> **Do not set `allowImprovements` during initial app creation.** It defaults to `true` for all apps. Only set it to `false` if you have an explicit reason to lock the app from community improvements at creation time.
+
 > **Note on `generation.endTime`:** Set it to your best estimate at this step. It will not be exact since the pipeline hasn't completed yet — that is acceptable. Do not leave it blank.
 
 Log immediately:

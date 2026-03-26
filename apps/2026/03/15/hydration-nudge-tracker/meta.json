@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-15T07:02:54Z",
   "category": "Utilities",
-  "votes": 0,
-  "status": "active",
   "visible": true,
-  "tags": [
-    "hydration",
-    "wellness",
-    "tracker",
-    "mobile-friendly"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["hydration", "wellness", "tracker", "mobile-friendly"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "generation": {
@@ -25,5 +20,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260315T070254Z-dea346",
     "notes": "Nightly cron generation; token counters unavailable in runtime."
-  }
+  },
+  "votes": 0
 }

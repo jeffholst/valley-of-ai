@@ -5,14 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-07T20:16:57Z",
   "category": "Entertainment",
-  "status": "active",
   "visible": true,
-  "tags": [
-    "text-adventure",
-    "parser",
-    "interactive-fiction",
-    "retro"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["text-adventure", "parser", "interactive-fiction", "retro"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {

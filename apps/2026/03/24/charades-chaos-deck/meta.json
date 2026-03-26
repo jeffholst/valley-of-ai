@@ -5,15 +5,9 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-24T07:00:31Z",
   "category": "Entertainment",
+  "allowImprovements": true,
   "status": "active",
-  "tags": [
-    "charades",
-    "party",
-    "social",
-    "timer",
-    "team-play",
-    "responsive"
-  ],
+  "tags": ["charades", "party", "social", "timer", "team-play", "responsive"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "improvements": [

@@ -5,15 +5,10 @@
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-09T02:58:38Z",
   "category": "Games",
-  "votes": 0,
-  "status": "active",
   "visible": true,
-  "tags": [
-    "arcade",
-    "survival",
-    "physics",
-    "keyboard-controls"
-  ],
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["arcade", "survival", "physics", "keyboard-controls"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
   "generation": {
@@ -25,5 +20,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260309T025838Z-f8372e",
     "notes": "Nightly run app. Token counters unavailable in runtime."
-  }
+  },
+  "votes": 0
 }
