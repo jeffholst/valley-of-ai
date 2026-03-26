@@ -194,6 +194,7 @@ Edit `apps/<app-path>/index.html` to implement the improvement.
 - **Keep theme support** — CSS variable structure must remain intact.
 - **No JS errors** — console must be clean before and after the change.
 - If the improvement changes visible UI, verify it still works at 320px width with the shared shell header/footer present.
+- **If the improvement touches CSS layout or adds/moves UI controls** — see `AGENT_PROMPT_SHARED.md` → "Shell Layout" for the authoritative header/footer pixel values, safe-zone diagram, ✅/❌ CSS patterns, and interactive control placement rules. Apply them before writing any layout CSS.
 
 Log immediately:
 

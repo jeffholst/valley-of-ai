@@ -49,18 +49,7 @@ Build one production-ready web app with the following requirements:
 
 > **Note:** Do NOT create the app folder yet — `<app-id>` is not known until Step 1.
 
-### Shell layout constants (memorize before writing any CSS)
-
-`app-shell.js` injects two **fixed, always-visible** elements at runtime. These values come directly from the shell source and must be treated as authoritative:
-
-| Zone   | Fixed element                                                 | Body offset applied by shell |
-| ------ | ------------------------------------------------------------- | ---------------------------- |
-| Header | `position: fixed; top: 0; min-height: 56px; z-index: 9999`    | `padding-top: 64px`          |
-| Footer | `position: fixed; bottom: 0; min-height: 46px; z-index: 9998` | `padding-bottom: 56px`       |
-
-Both elements use `backdrop-filter: blur(8px)` — content behind them **renders but is not interactive**.
-
-The shell adds `box-sizing: border-box` to the body alongside those paddings, so scrollable apps benefit automatically. Full-viewport (non-scrolling) apps must account for both offsets explicitly in their own CSS — the body padding alone is not enough when `height: 100dvh` is used on a child element.
+> **Shell layout constants:** See `AGENT_PROMPT_SHARED.md` → "Shell Layout" for the authoritative header/footer pixel values, safe-zone diagram, and ✅/❌ CSS patterns. Memorize them before writing any CSS in Step 3.
 
 ---
 
@@ -163,70 +152,7 @@ The shell adds `box-sizing: border-box` to the body alongside those paddings, so
 
 Generate `index.html` with shell config tags, mobile-first responsive design, and favicon reference.
 
-**⚠️ Shell-safe layout (non-negotiable)**
-
-`app-shell.js` injects a fixed header (top, ~64px) and a fixed footer (bottom, ~56px body reserve) at runtime. Both are always visible and sit above your content in z-order. You must design around them from the first line of CSS.
-
-**Safe zones:**
-
-```
-┌─────────────────────────────────┐  ← viewport top
-│   SHELL HEADER  (fixed, 64px)   │  ← z-index 9999, non-interactive overlap zone
-├─────────────────────────────────┤
-│                                 │
-│       YOUR APP CONTENT          │  ← safe zone: all controls, UI, game elements here
-│                                 │
-├─────────────────────────────────┤
-│   SHELL FOOTER  (fixed, 56px)   │  ← z-index 9998, non-interactive overlap zone
-└─────────────────────────────────┘  ← viewport bottom
-```
-
-**Full-viewport apps (games, canvas, full-height tools) — required pattern:**
-
-```css
-/* ✅ Correct: wrapper sits exactly between header and footer */
-#appWrapper {
-  height: calc(100dvh - 64px - 56px);
-  margin-top: 64px;
-  /* or: padding-top: 64px with box-sizing: border-box and height: 100dvh */
-}
-
-/* ✅ Also correct: explicit padding on both sides within 100dvh */
-#appWrapper {
-  height: 100dvh;
-  padding-top: 64px;
-  padding-bottom: 56px;
-  box-sizing: border-box; /* or ensure * { box-sizing: border-box } is set */
-}
-```
-
-```css
-/* ❌ Wrong: canvas extends behind the footer — bottom controls hidden */
-#appWrapper {
-  height: 100dvh;
-}
-
-/* ❌ Wrong: only accounts for header, footer still clips content */
-#appWrapper {
-  height: 100dvh;
-  padding-top: 64px;
-}
-
-/* ❌ Wrong: incorrect header height — shell header is 64px, not 56px */
-#appWrapper {
-  height: 100dvh;
-  padding-top: 56px;
-  padding-bottom: 56px;
-}
-```
-
-**Scrollable apps** (document-style tools, lists, forms): the shell's body padding handles offset automatically — no special height CSS needed. Just ensure content is not `overflow: hidden` at the body or wrapper level.
-
-**Interactive control placement rules:**
-
-- No tap targets, buttons, score displays, or HUD in the top **64px** of the viewport
-- No tap targets, mobile controls, or game actions in the bottom **56px** of the viewport
-- Touch targets must be ≥ 44px and must not overlap either shell zone
+**⚠️ Shell-safe layout (non-negotiable)** — See `AGENT_PROMPT_SHARED.md` → "Shell Layout" for the authoritative pixel values, safe-zone diagram, correct/incorrect CSS patterns, and interactive control placement rules. Apply them from the first line of CSS.
 
 Quality standards (non-negotiable):
 

@@ -133,6 +133,101 @@ Use CSS variables and support shared theme switching:
 
 ---
 
+## Shell Layout
+
+`app-shell.js` injects two **fixed, always-visible** elements at runtime. These values come directly from the shell source and must be treated as authoritative:
+
+| Zone   | Fixed element                                                 | Body offset applied by shell |
+| ------ | ------------------------------------------------------------- | ---------------------------- |
+| Header | `position: fixed; top: 0; min-height: 56px; z-index: 9999`    | `padding-top: 64px`          |
+| Footer | `position: fixed; bottom: 0; min-height: 46px; z-index: 9998` | `padding-bottom: 56px`       |
+
+Both elements use `backdrop-filter: blur(8px)` — content behind them **renders but is not interactive**.
+
+The shell adds `box-sizing: border-box` to the body alongside those paddings, so scrollable apps benefit automatically. Full-viewport (non-scrolling) apps must account for both offsets explicitly in their own CSS — the body padding alone is not enough when `height: 100dvh` is used on a child element.
+
+### Safe zones
+
+```
+┌─────────────────────────────────┐  ← viewport top
+│   SHELL HEADER  (fixed, 64px)   │  ← z-index 9999, non-interactive overlap zone
+├─────────────────────────────────┤
+│                                 │
+│       YOUR APP CONTENT          │  ← safe zone: all controls, UI, game elements here
+│                                 │
+├─────────────────────────────────┤
+│   SHELL FOOTER  (fixed, 56px)   │  ← z-index 9998, non-interactive overlap zone
+└─────────────────────────────────┘  ← viewport bottom
+```
+
+### Full-viewport apps (games, canvas, full-height tools)
+
+Use `position: fixed` to anchor the wrapper exactly between header and footer:
+
+```css
+/* ✅ Correct: wrapper sits exactly between header and footer */
+#appWrapper {
+  position: fixed;
+  top: 64px;
+  bottom: 56px;
+  left: 0;
+  right: 0;
+}
+
+/* ✅ Also correct: calc-based height */
+#appWrapper {
+  height: calc(100dvh - 64px - 56px);
+  margin-top: 64px;
+}
+```
+
+```css
+/* ❌ Wrong: wrapper extends behind the footer — bottom controls hidden */
+#appWrapper {
+  height: 100dvh;
+}
+
+/* ❌ Wrong: only accounts for header, footer still clips content */
+#appWrapper {
+  height: 100dvh;
+  padding-top: 64px;
+}
+
+/* ❌ Wrong: height:100dvh starts at y=64 (body padding-top), so the wrapper
+   extends 64px past the viewport bottom — padding-bottom falls off-screen */
+#appWrapper {
+  height: 100dvh;
+  padding-top: 64px;
+  padding-bottom: 56px;
+}
+
+/* ❌ Wrong: incorrect header height — shell header is 64px body offset, not 56px */
+#appWrapper {
+  height: 100dvh;
+  padding-top: 56px;
+}
+```
+
+### Scrollable apps
+
+Document-style tools, lists, and forms: the shell's body padding handles offset automatically. No special height CSS needed — just ensure content is not `overflow: hidden` at the body or wrapper level.
+
+### Interactive control placement rules
+
+- No tap targets, buttons, score displays, or HUD in the top **64px** of the viewport
+- No tap targets, mobile controls, or game actions in the bottom **56px** of the viewport
+- Touch targets must be ≥ 44px and must not overlap either shell zone
+
+### Shell clearance validation
+
+Before committing any layout changes, confirm at 320px viewport width:
+
+- No interactive controls, game elements, or HUD are hidden behind the 64px header zone
+- No tap targets, mobile controls, or primary actions are hidden behind the 56px footer zone
+- All primary controls are fully visible and tappable with both shell elements present
+
+---
+
 ## Logging Model (Most Important)
 
 All logging is handled by `npm run log`. Each app run is one transaction (TRANSACTION_START → STEP entries → TRANSACTION_END).
