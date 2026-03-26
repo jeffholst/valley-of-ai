@@ -93,3 +93,235 @@ export function extractAppPath(issue) {
 
   return null;
 }
+
+/**
+ * Default thresholds and settings for computeImprovementSanity.
+ * Export these so callers can inspect defaults and override specific values.
+ *
+ * FREQUENCY — how many improvements in a rolling window trigger a risk flag
+ * freqHighCount7d    number  Improvements in last 7 days that trigger HIGH risk (default 3)
+ * freqMediumCount7d  number  Improvements in last 7 days that trigger MEDIUM risk (default 2)
+ * freqMediumCount30d number  Improvements in last 30 days that trigger MEDIUM risk (default 5)
+ *
+ * VOLUME — total lifetime improvement count thresholds
+ * volumeHighTotal    number  All-time improvement count triggering HIGH risk (default 8)
+ * volumeMediumTotal  number  All-time improvement count triggering MEDIUM risk (default 5)
+ *
+ * OSCILLATION — detect recent improvements that suggest undoing prior work
+ * oscillationWindow   number    How many recent improvements to scan for reversal language (default 4)
+ * oscillationKeywords string[]  Words in improvement descriptions that suggest undoing work
+ *
+ * RECENCY OVERLAP — detect near-duplicate candidates
+ * recencyOverlapWindow     number  How many of the most recent improvements to compare against (default 2)
+ * recencyOverlapThreshold  number  Fraction [0–1] of candidate's significant words (length >= 4)
+ *                                  that must appear in a recent improvement description to flag overlap (default 0.5)
+ * recencyOverlapMinWords   number  Minimum significant words the candidate must have before
+ *                                  the overlap check runs at all (default 3)
+ *
+ * BOOST — boosted (paid) issues get reduced scrutiny and should almost always proceed
+ * boostMaxRisk             string  Boosted issues are capped at this risk level, never higher (default 'medium')
+ * boostOverridesHighFreq   boolean When true, high frequency risk is reduced to low for boosted issues (default true)
+ * boostOverridesOscillation boolean When true, oscillation risk is reduced to low for boosted issues (default true)
+ */
+export const SANITY_DEFAULTS = {
+  freqHighCount7d: 3,
+  freqMediumCount7d: 2,
+  freqMediumCount30d: 5,
+  volumeHighTotal: 8,
+  volumeMediumTotal: 5,
+  oscillationWindow: 4,
+  oscillationKeywords: [
+    'revert',
+    'restore',
+    'removed',
+    're-add',
+    'add back',
+    'undo',
+    'roll back',
+    'put back',
+    'previous behavior',
+    'as it was',
+  ],
+  recencyOverlapWindow: 2,
+  recencyOverlapThreshold: 0.5,
+  recencyOverlapMinWords: 3,
+  boostMaxRisk: 'medium',
+  boostOverridesHighFreq: true,
+  boostOverridesOscillation: true,
+};
+
+/** Internal risk level ordering. */
+const RISK_LEVELS = ['low', 'medium', 'high'];
+
+function higherRisk(a, b) {
+  return RISK_LEVELS.indexOf(a) >= RISK_LEVELS.indexOf(b) ? a : b;
+}
+
+function capRisk(risk, cap) {
+  const riskIdx = RISK_LEVELS.indexOf(risk);
+  const capIdx = RISK_LEVELS.indexOf(cap);
+  return riskIdx > capIdx ? cap : risk;
+}
+
+/**
+ * Checks an improvement candidate against the target app's history for
+ * problematic patterns: high frequency, excessive volume, oscillating changes,
+ * and near-duplicate requests.
+ *
+ * @param {object|null} appMeta  Full meta.json object for the target app.
+ *                               Must have an `improvements` array (may be null/undefined).
+ * @param {string}      candidateDescription  Description text from the candidate issue.
+ * @param {boolean}     isBoosted  True when the issue carries the `boosted` label.
+ *                                 Boosted issues get reduced scrutiny — they should
+ *                                 almost always be allowed through.
+ * @param {object}      options    Partial overrides for SANITY_DEFAULTS.
+ * @param {Date}        now        Current date (injectable for testing).
+ *
+ * @returns {{
+ *   overallRisk: 'low'|'medium'|'high',
+ *   isBoosted: boolean,
+ *   totalImprovements: number,
+ *   recentCount7d: number,
+ *   recentCount30d: number,
+ *   oscillationSignals: Array<{issueNumber: number, description: string}>,
+ *   recencyOverlapHits: Array<{issueNumber: number, description: string, sharedWords: string[]}>,
+ *   signals: { frequencyRisk: string, volumeRisk: string, oscillationRisk: string, overlapRisk: string },
+ *   reasons: string[],
+ * }}
+ */
+export function computeImprovementSanity(
+  appMeta,
+  candidateDescription,
+  isBoosted = false,
+  options = {},
+  now = new Date()
+) {
+  const cfg = { ...SANITY_DEFAULTS, ...options };
+  const improvements = Array.isArray(appMeta?.improvements) ? appMeta.improvements : [];
+  const candidate = (candidateDescription || '').toLowerCase();
+
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const cutoff7d = new Date(now.getTime() - 7 * msPerDay);
+  const cutoff30d = new Date(now.getTime() - 30 * msPerDay);
+
+  // --- Frequency ---
+  const recentCount7d = improvements.filter((i) => new Date(i.implementedAt) > cutoff7d).length;
+  const recentCount30d = improvements.filter((i) => new Date(i.implementedAt) > cutoff30d).length;
+  const totalImprovements = improvements.length;
+
+  // --- Oscillation ---
+  const oscillationWindow = improvements.slice(-cfg.oscillationWindow);
+  const oscillationSignals = oscillationWindow
+    .filter((i) =>
+      cfg.oscillationKeywords.some((kw) => (i.description || '').toLowerCase().includes(kw))
+    )
+    .map((i) => ({ issueNumber: i.issueNumber ?? null, description: i.description ?? '' }));
+
+  // --- Recency overlap ---
+  const sigWords = (text) =>
+    text
+      .toLowerCase()
+      .split(/\W+/)
+      .filter((w) => w.length >= 4);
+  const candidateWords = new Set(sigWords(candidate));
+  const recencyOverlapHits = [];
+
+  if (candidateWords.size >= cfg.recencyOverlapMinWords) {
+    const recentSlice = improvements.slice(-cfg.recencyOverlapWindow);
+    for (const imp of recentSlice) {
+      const impWords = new Set(sigWords(imp.description || ''));
+      const shared = [...candidateWords].filter((w) => impWords.has(w));
+      if (shared.length / candidateWords.size >= cfg.recencyOverlapThreshold) {
+        recencyOverlapHits.push({
+          issueNumber: imp.issueNumber ?? null,
+          description: imp.description ?? '',
+          sharedWords: shared,
+        });
+      }
+    }
+  }
+
+  // --- Individual signal risk levels ---
+  let frequencyRisk = 'low';
+  if (recentCount7d >= cfg.freqHighCount7d) {
+    frequencyRisk = 'high';
+  } else if (recentCount7d >= cfg.freqMediumCount7d || recentCount30d >= cfg.freqMediumCount30d) {
+    frequencyRisk = 'medium';
+  }
+
+  let volumeRisk = 'low';
+  if (totalImprovements >= cfg.volumeHighTotal) {
+    volumeRisk = 'high';
+  } else if (totalImprovements >= cfg.volumeMediumTotal) {
+    volumeRisk = 'medium';
+  }
+
+  const oscillationRisk = oscillationSignals.length > 0 ? 'high' : 'low';
+  const overlapRisk = recencyOverlapHits.length > 0 ? 'medium' : 'low';
+
+  // --- Apply boost overrides to individual signals ---
+  const effectiveFreqRisk =
+    isBoosted && cfg.boostOverridesHighFreq && frequencyRisk === 'high' ? 'low' : frequencyRisk;
+  const effectiveOscillationRisk =
+    isBoosted && cfg.boostOverridesOscillation ? 'low' : oscillationRisk;
+
+  // --- Combine to overall risk ---
+  let overallRisk = [effectiveFreqRisk, volumeRisk, effectiveOscillationRisk, overlapRisk].reduce(
+    higherRisk,
+    'low'
+  );
+
+  // --- Apply boost cap ---
+  if (isBoosted) {
+    overallRisk = capRisk(overallRisk, cfg.boostMaxRisk);
+  }
+
+  // --- Build human-readable reasons ---
+  const reasons = [];
+  if (recentCount7d >= cfg.freqHighCount7d) {
+    reasons.push(
+      `${recentCount7d} improvements in the last 7 days (high threshold: ${cfg.freqHighCount7d})`
+    );
+  } else if (recentCount7d >= cfg.freqMediumCount7d) {
+    reasons.push(
+      `${recentCount7d} improvements in the last 7 days (medium threshold: ${cfg.freqMediumCount7d})`
+    );
+  }
+  if (recentCount30d >= cfg.freqMediumCount30d) {
+    reasons.push(
+      `${recentCount30d} improvements in the last 30 days (threshold: ${cfg.freqMediumCount30d})`
+    );
+  }
+  if (totalImprovements >= cfg.volumeHighTotal) {
+    reasons.push(
+      `${totalImprovements} total improvements on this app (high threshold: ${cfg.volumeHighTotal})`
+    );
+  } else if (totalImprovements >= cfg.volumeMediumTotal) {
+    reasons.push(
+      `${totalImprovements} total improvements on this app (medium threshold: ${cfg.volumeMediumTotal})`
+    );
+  }
+  for (const sig of oscillationSignals) {
+    reasons.push(`Recent improvement contains reversal language: "${sig.description}"`);
+  }
+  for (const hit of recencyOverlapHits) {
+    reasons.push(
+      `Candidate closely overlaps recent improvement "${hit.description}" (shared: ${hit.sharedWords.join(', ')})`
+    );
+  }
+  if (isBoosted && reasons.length > 0) {
+    reasons.push('Boost override applied — risk reduced for paid/boosted request');
+  }
+
+  return {
+    overallRisk,
+    isBoosted,
+    totalImprovements,
+    recentCount7d,
+    recentCount30d,
+    oscillationSignals,
+    recencyOverlapHits,
+    signals: { frequencyRisk, volumeRisk, oscillationRisk, overlapRisk },
+    reasons,
+  };
+}

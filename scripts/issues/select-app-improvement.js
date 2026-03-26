@@ -26,7 +26,7 @@ import {
   listIssuesByLabels,
   loadEnv,
 } from './lib/issue-github-client.js';
-import { extractAppPath } from './lib/issue-selection-heuristics.js';
+import { computeImprovementSanity, extractAppPath } from './lib/issue-selection-heuristics.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -142,6 +142,26 @@ function lookupApp(apps, appPath) {
   return null;
 }
 
+/**
+ * Read the full meta.json for an app from disk.
+ * Returns the parsed object, or null if the file doesn't exist or can't be parsed.
+ * Used to access fields (like `improvements`) not projected into data/apps.json lookups.
+ */
+function readAppMeta(appPath) {
+  if (!appPath) {
+    return null;
+  }
+  const metaPath = path.join(rootDir, 'apps', ...appPath.split('/'), 'meta.json');
+  if (!existsSync(metaPath)) {
+    return null;
+  }
+  try {
+    return JSON.parse(readFileSync(metaPath, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Build the enriched result for a found issue
 // ---------------------------------------------------------------------------
@@ -152,6 +172,12 @@ function buildResult(source, issue, apps) {
   const requestor = (issue.body || '').match(/\*\*Requestor:\*\*\s*(.+)/i)?.[1]?.trim() ?? null;
   const description =
     (issue.body || '').match(/###\s*Description\s*\n+([\s\S]+?)(?:\n###|$)/i)?.[1]?.trim() ?? null;
+
+  const isBoosted = source === 'github-boosted';
+
+  // Read full meta.json to access improvements array (not projected into apps.json lookups).
+  const appMeta = appEntry ? readAppMeta(appEntry.id) : readAppMeta(appPath);
+  const improvementSanity = computeImprovementSanity(appMeta, description, isBoosted);
 
   return {
     source,
@@ -177,6 +203,7 @@ function buildResult(source, issue, apps) {
           name: null,
           note: 'App not found in data/apps.json — verify the app path in the issue.',
         },
+    improvementSanity,
     reasoning:
       source === 'github-boosted'
         ? `Boosted improvement issue #${issue.number} with $${issue.tipTotal ?? 0} in verified tips — highest priority.`

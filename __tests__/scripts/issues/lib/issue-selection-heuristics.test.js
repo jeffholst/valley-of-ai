@@ -13,6 +13,8 @@ import {
   computeRecentTags,
   computeDuplicationRisk,
   extractAppPath,
+  computeImprovementSanity,
+  SANITY_DEFAULTS,
 } from '../../../../scripts/issues/lib/issue-selection-heuristics.js';
 
 // ---------------------------------------------------------------------------
@@ -291,5 +293,279 @@ describe('extractAppPath', () => {
       body: 'https://www.VALLEYOFAI.COM/APPS/2026/03/10/my-app',
     };
     expect(extractAppPath(issue)).toBe('2026/03/10/my-app');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// computeImprovementSanity
+// ---------------------------------------------------------------------------
+
+describe('computeImprovementSanity', () => {
+  const NOW = new Date('2026-03-25T12:00:00Z');
+
+  const daysAgoFrom = (base, n) => new Date(base.getTime() - n * 24 * 60 * 60 * 1000).toISOString();
+
+  function makeImprovement(overrides = {}) {
+    return {
+      issueNumber: 100,
+      description: 'Added a new feature to the app',
+      implementedAt: daysAgoFrom(NOW, 30),
+      ...overrides,
+    };
+  }
+
+  // --- low risk ---
+
+  it('returns low risk when app has no improvements', () => {
+    const result = computeImprovementSanity({ improvements: [] }, 'add a button', false, {}, NOW);
+    expect(result.overallRisk).toBe('low');
+    expect(result.totalImprovements).toBe(0);
+    expect(result.reasons).toHaveLength(0);
+  });
+
+  it('returns low risk when app has null improvements', () => {
+    const result = computeImprovementSanity({ improvements: null }, 'add a button', false, {}, NOW);
+    expect(result.overallRisk).toBe('low');
+  });
+
+  it('returns low risk when app has no meta at all', () => {
+    const result = computeImprovementSanity(null, 'add a button', false, {}, NOW);
+    expect(result.overallRisk).toBe('low');
+  });
+
+  it('returns low risk for a single recent improvement', () => {
+    const meta = { improvements: [makeImprovement({ implementedAt: daysAgoFrom(NOW, 3) })] };
+    const result = computeImprovementSanity(meta, 'add something new', false, {}, NOW);
+    expect(result.overallRisk).toBe('low');
+  });
+
+  // --- frequency: medium risk ---
+
+  it('returns medium risk when freqMediumCount7d threshold is met', () => {
+    const meta = {
+      improvements: [
+        makeImprovement({ implementedAt: daysAgoFrom(NOW, 1) }),
+        makeImprovement({ implementedAt: daysAgoFrom(NOW, 2) }),
+      ],
+    };
+    const result = computeImprovementSanity(meta, 'add something', false, {}, NOW);
+    expect(result.overallRisk).toBe('medium');
+    expect(result.recentCount7d).toBe(2);
+    expect(result.signals.frequencyRisk).toBe('medium');
+  });
+
+  it('returns medium risk when freqMediumCount30d threshold is met', () => {
+    const meta = {
+      improvements: Array.from({ length: 5 }, (_, i) =>
+        makeImprovement({ implementedAt: daysAgoFrom(NOW, 10 + i) })
+      ),
+    };
+    const result = computeImprovementSanity(meta, 'add something', false, {}, NOW);
+    expect(result.recentCount30d).toBe(5);
+    expect(result.signals.frequencyRisk).toBe('medium');
+  });
+
+  // --- frequency: high risk ---
+
+  it('returns high risk when freqHighCount7d threshold is met', () => {
+    const meta = {
+      improvements: [
+        makeImprovement({ implementedAt: daysAgoFrom(NOW, 1) }),
+        makeImprovement({ implementedAt: daysAgoFrom(NOW, 2) }),
+        makeImprovement({ implementedAt: daysAgoFrom(NOW, 3) }),
+      ],
+    };
+    const result = computeImprovementSanity(meta, 'add something', false, {}, NOW);
+    expect(result.overallRisk).toBe('high');
+    expect(result.signals.frequencyRisk).toBe('high');
+  });
+
+  // --- volume ---
+
+  it('returns medium risk when volumeMediumTotal threshold is met', () => {
+    const meta = {
+      improvements: Array.from({ length: 5 }, () =>
+        makeImprovement({ implementedAt: daysAgoFrom(NOW, 60) })
+      ),
+    };
+    const result = computeImprovementSanity(meta, 'add something', false, {}, NOW);
+    expect(result.totalImprovements).toBe(5);
+    expect(result.signals.volumeRisk).toBe('medium');
+  });
+
+  it('returns high risk when volumeHighTotal threshold is met', () => {
+    const meta = {
+      improvements: Array.from({ length: 8 }, () =>
+        makeImprovement({ implementedAt: daysAgoFrom(NOW, 60) })
+      ),
+    };
+    const result = computeImprovementSanity(meta, 'add something', false, {}, NOW);
+    expect(result.signals.volumeRisk).toBe('high');
+    expect(result.overallRisk).toBe('high');
+  });
+
+  // --- oscillation ---
+
+  it('returns high oscillation risk when recent improvement contains a reversal keyword', () => {
+    const meta = {
+      improvements: [
+        makeImprovement({ description: 'reverted the payline toggle to simple on/off' }),
+      ],
+    };
+    const result = computeImprovementSanity(meta, 'add paylines back', false, {}, NOW);
+    expect(result.signals.oscillationRisk).toBe('high');
+    expect(result.oscillationSignals).toHaveLength(1);
+    expect(result.overallRisk).toBe('high');
+  });
+
+  it('does not flag oscillation for improvements outside the oscillation window', () => {
+    const old = Array.from({ length: 4 }, () =>
+      makeImprovement({ description: 'reverted something old' })
+    );
+    const recent = makeImprovement({ description: 'added a new unrelated feature' });
+    const meta = { improvements: [...old, recent] };
+    const result = computeImprovementSanity(
+      meta,
+      'add something new',
+      false,
+      { oscillationWindow: 1 },
+      NOW
+    );
+    expect(result.signals.oscillationRisk).toBe('low');
+  });
+
+  // --- recency overlap ---
+
+  it('returns medium overlap risk when candidate shares many words with a recent improvement', () => {
+    const meta = {
+      improvements: [
+        makeImprovement({ description: 'added payline toggle button to show lines individually' }),
+      ],
+    };
+    const result = computeImprovementSanity(
+      meta,
+      'show payline toggle lines individually button',
+      false,
+      {},
+      NOW
+    );
+    expect(result.signals.overlapRisk).toBe('medium');
+    expect(result.recencyOverlapHits).toHaveLength(1);
+  });
+
+  it('does not flag overlap when candidate has too few significant words', () => {
+    const meta = {
+      improvements: [makeImprovement({ description: 'add button' })],
+    };
+    // candidate has fewer than recencyOverlapMinWords (3) significant words
+    const result = computeImprovementSanity(meta, 'add button', false, {}, NOW);
+    expect(result.signals.overlapRisk).toBe('low');
+  });
+
+  it('does not flag overlap below the threshold fraction', () => {
+    const meta = {
+      improvements: [
+        makeImprovement({ description: 'completely different feature with other words here' }),
+      ],
+    };
+    const result = computeImprovementSanity(
+      meta,
+      'payline toggle spin wheel display',
+      false,
+      {},
+      NOW
+    );
+    expect(result.signals.overlapRisk).toBe('low');
+  });
+
+  // --- boost behavior ---
+
+  it('caps high frequency risk to low when boosted and boostOverridesHighFreq is true', () => {
+    const meta = {
+      improvements: [
+        makeImprovement({ implementedAt: daysAgoFrom(NOW, 1) }),
+        makeImprovement({ implementedAt: daysAgoFrom(NOW, 2) }),
+        makeImprovement({ implementedAt: daysAgoFrom(NOW, 3) }),
+      ],
+    };
+    const result = computeImprovementSanity(meta, 'add something', true, {}, NOW);
+    // frequency was high, but boost reduces it to low
+    expect(result.signals.frequencyRisk).toBe('high'); // raw signal unchanged
+    expect(result.overallRisk).not.toBe('high');
+  });
+
+  it('caps oscillation risk to low when boosted and boostOverridesOscillation is true', () => {
+    const meta = {
+      improvements: [makeImprovement({ description: 'reverted the previous change' })],
+    };
+    const result = computeImprovementSanity(meta, 'add the feature back', true, {}, NOW);
+    expect(result.signals.oscillationRisk).toBe('high'); // raw signal unchanged
+    expect(result.overallRisk).not.toBe('high');
+  });
+
+  it('never exceeds boostMaxRisk for boosted issues', () => {
+    // volume alone can hit high, but boost caps at medium
+    const meta = {
+      improvements: Array.from({ length: 8 }, () =>
+        makeImprovement({ implementedAt: daysAgoFrom(NOW, 60) })
+      ),
+    };
+    const result = computeImprovementSanity(meta, 'add something', true, {}, NOW);
+    const capIdx = ['low', 'medium', 'high'].indexOf(SANITY_DEFAULTS.boostMaxRisk);
+    const resultIdx = ['low', 'medium', 'high'].indexOf(result.overallRisk);
+    expect(resultIdx).toBeLessThanOrEqual(capIdx);
+  });
+
+  it('includes boost reason in reasons array when boost was applied and there were signals', () => {
+    const meta = {
+      improvements: [
+        makeImprovement({ implementedAt: daysAgoFrom(NOW, 1) }),
+        makeImprovement({ implementedAt: daysAgoFrom(NOW, 2) }),
+      ],
+    };
+    const result = computeImprovementSanity(meta, 'add something', true, {}, NOW);
+    expect(result.isBoosted).toBe(true);
+    expect(result.reasons.some((r) => r.includes('Boost override'))).toBe(true);
+  });
+
+  it('does not include boost reason when there are no risk signals', () => {
+    const result = computeImprovementSanity({ improvements: [] }, 'add something', true, {}, NOW);
+    expect(result.reasons).toHaveLength(0);
+  });
+
+  // --- custom options ---
+
+  it('respects custom threshold overrides', () => {
+    const meta = {
+      improvements: [makeImprovement({ implementedAt: daysAgoFrom(NOW, 1) })],
+    };
+    // Lower threshold: 1 improvement in 7d = high
+    const result = computeImprovementSanity(
+      meta,
+      'add something',
+      false,
+      { freqHighCount7d: 1 },
+      NOW
+    );
+    expect(result.overallRisk).toBe('high');
+  });
+
+  // --- output shape ---
+
+  it('always returns all expected fields', () => {
+    const result = computeImprovementSanity(null, 'test', false, {}, NOW);
+    expect(result).toHaveProperty('overallRisk');
+    expect(result).toHaveProperty('isBoosted');
+    expect(result).toHaveProperty('totalImprovements');
+    expect(result).toHaveProperty('recentCount7d');
+    expect(result).toHaveProperty('recentCount30d');
+    expect(result).toHaveProperty('oscillationSignals');
+    expect(result).toHaveProperty('recencyOverlapHits');
+    expect(result).toHaveProperty('signals');
+    expect(result).toHaveProperty('reasons');
+    expect(result.signals).toHaveProperty('frequencyRisk');
+    expect(result.signals).toHaveProperty('volumeRisk');
+    expect(result.signals).toHaveProperty('oscillationRisk');
+    expect(result.signals).toHaveProperty('overlapRisk');
   });
 });
