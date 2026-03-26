@@ -53,14 +53,15 @@
       }
 
       #gameWrapper {
+        position: fixed;
+        top: 64px; /* shell header height */
+        bottom: 56px; /* shell footer height */
+        left: 0;
+        right: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        width: 100%;
-        height: 100dvh;
-        padding-top: 64px; /* shell header */
-        padding-bottom: 56px; /* shell footer */
       }
 
       #hud {
