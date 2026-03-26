@@ -70,7 +70,7 @@ function getBoostedImprovements() {
     fields: ['number', 'title', 'body', 'url'],
   });
   if (!issues || issues.length === 0) {
-    return null;
+    return [];
   }
 
   const owner = getRepoOwner();
@@ -82,7 +82,7 @@ function getBoostedImprovements() {
   }));
   ranked.sort((a, b) => b.tipTotal - a.tipTotal || a.number - b.number);
 
-  return ranked[0];
+  return ranked;
 }
 
 function getApprovedImprovements() {
@@ -94,10 +94,10 @@ function getApprovedImprovements() {
     fields: ['number', 'title', 'body', 'url'],
   });
   if (!issues || issues.length === 0) {
-    return null;
+    return [];
   }
   issues.sort((a, b) => a.number - b.number);
-  return issues[0];
+  return issues;
 }
 
 // ---------------------------------------------------------------------------
@@ -209,10 +209,14 @@ async function main() {
   // Pass 1: Boosted improvement issues
   // ---------------------------------------------------------------------------
   log('Pass 1: GitHub boosted improvement issues');
-  const boosted = getBoostedImprovements();
-  if (boosted) {
-    console.log(JSON.stringify(buildResult('github-boosted', boosted, apps), null, 2));
-    return;
+  const boostedList = getBoostedImprovements();
+  for (const issue of boostedList) {
+    const result = buildResult('github-boosted', issue, apps);
+    if (result.found) {
+      console.log(JSON.stringify(result, null, 2));
+      return;
+    }
+    log(`  Skipping issue #${issue.number}: ${result.message}`);
   }
   log('  None found.\n');
 
@@ -220,10 +224,14 @@ async function main() {
   // Pass 2: Approved improvement issues
   // ---------------------------------------------------------------------------
   log('Pass 2: GitHub approved improvement issues');
-  const approved = getApprovedImprovements();
-  if (approved) {
-    console.log(JSON.stringify(buildResult('github-approved', approved, apps), null, 2));
-    return;
+  const approvedList = getApprovedImprovements();
+  for (const issue of approvedList) {
+    const result = buildResult('github-approved', issue, apps);
+    if (result.found) {
+      console.log(JSON.stringify(result, null, 2));
+      return;
+    }
+    log(`  Skipping issue #${issue.number}: ${result.message}`);
   }
   log('  None found.\n');
 
