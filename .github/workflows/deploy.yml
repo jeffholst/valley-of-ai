@@ -11,6 +11,9 @@ on:
 permissions:
   contents: read
 
+env:
+  NEXT_PUBLIC_MAIN_SITE_URL: https://www.valleyofai.com
+
 jobs:
   quality:
     name: Lint, Test & Validate
