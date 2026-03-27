@@ -224,7 +224,7 @@ Log immediately:
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
   --step BACKUP_APP --seq 3 --status completed --durationMs <duration> \
-  --message "Backed up pre-improvement files to backups/<runId>/"
+  --message "Backed up pre-improvement files to apps/<app-path>/backups/<runId>/"
 ```
 
 ---
