@@ -16,18 +16,19 @@ Apply one approved improvement to an existing app. The app already exists — do
 | --- | --------------------- |
 | 1   | `SELECT_IMPROVEMENT`  |
 | 2   | `ANALYZE_APP`         |
-| 3   | `MODIFY_HTML`         |
-| 4   | `UPDATE_THUMBNAIL`    |
-| 5   | `UPDATE_META_JSON`    |
-| 6   | `VALIDATE_APP`        |
-| 7   | `GIT_CHECKOUT_BRANCH` |
-| 8   | `GIT_COMMIT`          |
-| 9   | `GIT_PUSH`            |
-| 10  | `CREATE_PR`           |
-| 11  | `PR_REVIEW`           |
-| 12  | `UPDATE_REGISTRY`     |
-| 13  | `MERGE_PR_DEPLOY`     |
-| 14  | `DELETE_BRANCH`       |
+| 3   | `BACKUP_APP`          |
+| 4   | `MODIFY_HTML`         |
+| 5   | `UPDATE_THUMBNAIL`    |
+| 6   | `UPDATE_META_JSON`    |
+| 7   | `VALIDATE_APP`        |
+| 8   | `GIT_CHECKOUT_BRANCH` |
+| 9   | `GIT_COMMIT`          |
+| 10  | `GIT_PUSH`            |
+| 11  | `CREATE_PR`           |
+| 12  | `PR_REVIEW`           |
+| 13  | `UPDATE_REGISTRY`     |
+| 14  | `MERGE_PR_DEPLOY`     |
+| 15  | `DELETE_BRANCH`       |
 
 ---
 
@@ -93,7 +94,7 @@ Record the issue number. Then run `npm run select:app:improvement` to confirm it
 
 From the selected issue, record:
 
-- `issueNumber` and `issueUrl` — needed to close the issue in Step 9
+- `issueNumber` and `issueUrl` — needed to close the issue in Step 10
 - `description` — what needs to be changed
 - `requestor` — who requested it
 - `targetApp.id` — e.g. `2026/03/22/freecell-mobile-classic`
@@ -207,7 +208,28 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
 ---
 
-### Step 3: Modify app
+### Step 3: Backup existing app files
+
+Before modifying anything, copy the current app files to a versioned backup folder:
+
+```bash
+mkdir -p apps/<app-path>/backups/<runId>
+cp apps/<app-path>/index.html    apps/<app-path>/backups/<runId>/index.html
+cp apps/<app-path>/meta.json     apps/<app-path>/backups/<runId>/meta.json
+cp apps/<app-path>/thumbnail.svg apps/<app-path>/backups/<runId>/thumbnail.svg
+```
+
+Log immediately:
+
+```bash
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
+  --step BACKUP_APP --seq 3 --status completed --durationMs <duration> \
+  --message "Backed up pre-improvement files to backups/<runId>/"
+```
+
+---
+
+### Step 4: Modify app
 
 Edit `apps/<app-path>/index.html` to implement the improvement.
 
@@ -225,14 +247,14 @@ Log immediately:
 
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
-  --step MODIFY_HTML --seq 3 --status completed --durationMs <duration> \
+  --step MODIFY_HTML --seq 4 --status completed --durationMs <duration> \
   --tokensIn <in> --tokensOut <out> \
   --message "Applied improvement: <one-line summary of change>"
 ```
 
 ---
 
-### Step 4: Update thumbnail (conditional)
+### Step 5: Update thumbnail (conditional)
 
 Regenerate `thumbnail.svg` **only if the visual appearance of the app changed** as a result of the improvement (e.g. new layout, new UI elements, changed color scheme). If the improvement was purely functional (bug fix, logic change, performance) with no visible UI change, skip this step and log it as skipped.
 
@@ -243,19 +265,19 @@ Log immediately (update or skip):
 ```bash
 # If updated:
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
-  --step UPDATE_THUMBNAIL --seq 4 --status completed --durationMs <duration> \
+  --step UPDATE_THUMBNAIL --seq 5 --status completed --durationMs <duration> \
   --tokensIn <in> --tokensOut <out> \
   --message "Regenerated thumbnail.svg to reflect UI changes"
 
 # If skipped:
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
-  --step UPDATE_THUMBNAIL --seq 4 --status skipped \
+  --step UPDATE_THUMBNAIL --seq 5 --status skipped \
   --message "Thumbnail unchanged — improvement was non-visual"
 ```
 
 ---
 
-### Step 5: Update metadata
+### Step 6: Update metadata
 
 Update `apps/<app-path>/meta.json`. **Do not change `id`, `createdAt`, or the original `generation` block** — those belong to the original build.
 
@@ -279,14 +301,14 @@ Log immediately:
 
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
-  --step UPDATE_META_JSON --seq 5 --status completed --durationMs <duration> \
+  --step UPDATE_META_JSON --seq 6 --status completed --durationMs <duration> \
   --tokensIn <in> --tokensOut <out> \
   --message "Updated meta.json with improvement record"
 ```
 
 ---
 
-### Step 6: Validate (blocking gate)
+### Step 7: Validate (blocking gate)
 
 #### Functional Testing
 
@@ -321,13 +343,13 @@ When passed:
 
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
-  --step VALIDATE_APP --seq 6 --status completed --durationMs <duration> \
+  --step VALIDATE_APP --seq 7 --status completed --durationMs <duration> \
   --message "All validation checks passed"
 ```
 
 ---
 
-### Step 7: Git branch and commit (seq 7-8)
+### Step 8: Git branch and commit (seq 8-9)
 
 **Pattern: Execute → Log immediately → Move to next**
 
@@ -336,7 +358,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
-     --step GIT_CHECKOUT_BRANCH --seq 7 --status completed --durationMs <duration> \
+     --step GIT_CHECKOUT_BRANCH --seq 8 --status completed --durationMs <duration> \
      --message "Created improvement branch improve/<app-id>"
    ```
 
@@ -345,9 +367,10 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
    ```bash
    # Always include:
    git add apps/<app-path>/index.html \
-           apps/<app-path>/meta.json
+           apps/<app-path>/meta.json \
+           apps/<app-path>/backups/<runId>/
 
-   # Only if thumbnail was updated in Step 4:
+   # Only if thumbnail was updated in Step 5:
    git add apps/<app-path>/thumbnail.svg
 
    # Only if data/apps.json changed (generate:apps doesn't always update it):
@@ -362,15 +385,15 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
-     --step GIT_COMMIT --seq 8 --status completed --durationMs <duration> \
+     --step GIT_COMMIT --seq 9 --status completed --durationMs <duration> \
      --message "Committed improvement files (sha: <COMMIT_SHA>)"
    ```
 
-   - **Do NOT commit log files yet** — finalized and committed in Step 9.
+   - **Do NOT commit log files yet** — finalized and committed in Step 10.
 
 ---
 
-### Step 8: PR flow (seq 9-13)
+### Step 9: PR flow (seq 10-14)
 
 **Pattern: Execute → Log immediately → Move to next**
 
@@ -379,7 +402,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
-     --step GIT_PUSH --seq 9 --status completed --durationMs <duration> \
+     --step GIT_PUSH --seq 10 --status completed --durationMs <duration> \
      --message "Pushed improvement branch to origin"
    ```
 
@@ -394,7 +417,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
-     --step CREATE_PR --seq 10 --status completed --durationMs <duration> \
+     --step CREATE_PR --seq 11 --status completed --durationMs <duration> \
      --message "Created PR #<NUMBER> for improve/<app-id>"
    ```
 
@@ -403,7 +426,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
-     --step PR_REVIEW --seq 11 --status completed --durationMs <duration> \
+     --step PR_REVIEW --seq 12 --status completed --durationMs <duration> \
      --message "PR review complete — improvement scoped correctly, no regressions"
    ```
 
@@ -412,7 +435,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
-     --step UPDATE_REGISTRY --seq 12 --status completed --durationMs <duration> \
+     --step UPDATE_REGISTRY --seq 13 --status completed --durationMs <duration> \
      --message "data/apps.json reflects updated meta.json"
    ```
 
@@ -429,7 +452,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
-     --step MERGE_PR_DEPLOY --seq 13 --status completed --durationMs <duration> \
+     --step MERGE_PR_DEPLOY --seq 14 --status completed --durationMs <duration> \
      --message "PR merged to main and Vercel deployment triggered"
    ```
 
@@ -448,13 +471,13 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
    ```bash
    npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
-     --step DELETE_BRANCH --seq 14 --status completed --durationMs <duration> \
+     --step DELETE_BRANCH --seq 15 --status completed --durationMs <duration> \
      --message "Deleted improvement branch improve/<app-id>"
    ```
 
 ---
 
-### Step 9: Finalize transaction log and commit
+### Step 10: Finalize transaction log and commit
 
 1. **Confirm you are on the main branch:**
 
@@ -479,7 +502,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
    gh issue close <issue-number> --comment "Improvement applied to [<app-name>](/apps/<app-path>). Thanks for the feedback!"
    ```
 
-4. **Final commit** — verify all 16 log entries are present (TRANSACTION_START + seq 1–14 + TRANSACTION_END) in BOTH log files, then commit:
+4. **Final commit** — verify all 17 log entries are present (TRANSACTION_START + seq 1–15 + TRANSACTION_END) in BOTH log files, then commit:
 
    ```bash
    git add apps/<app-path>/log.jsonl logs/YYYY/MM/DD.jsonl
