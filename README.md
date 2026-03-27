@@ -570,7 +570,7 @@ The AI agents that review, build, and improve apps follow structured prompts in 
 | [`AGENT_PROMPT_ISSUE_REVIEW.md`](docs/agent-prompts/AGENT_PROMPT_ISSUE_REVIEW.md) | Review pending GitHub issues for legitimacy and prompt interjections            |
 | [`AGENT_PROMPT_SHARED.md`](docs/agent-prompts/AGENT_PROMPT_SHARED.md)             | Required reading for both flows — logging rules, HTML contracts, thumbnail spec |
 | [`AGENT_PROMPT_NEW_APP.md`](docs/agent-prompts/AGENT_PROMPT_NEW_APP.md)           | Build a new app from scratch (14-step pipeline)                                 |
-| [`AGENT_PROMPT_IMPROVEMENT.md`](docs/agent-prompts/AGENT_PROMPT_IMPROVEMENT.md)   | Apply an approved improvement to an existing app (14-step pipeline)             |
+| [`AGENT_PROMPT_IMPROVEMENT.md`](docs/agent-prompts/AGENT_PROMPT_IMPROVEMENT.md)   | Apply an approved improvement to an existing app                                |
 
 ### Reviewing pending issues
 
