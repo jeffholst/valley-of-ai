@@ -358,25 +358,6 @@
         display: none !important;
       }
 
-      /* ── Validation warning ── */
-      #validationWarning {
-        width: 100%;
-        max-width: 540px;
-        background: #7c2d12;
-        color: #fef3c7;
-        font-size: 11px;
-        padding: 4px 10px;
-        display: flex;
-        align-items: center;
-        flex-shrink: 0;
-        line-height: 1.4;
-      }
-      [data-theme='light'] #validationWarning {
-        background: #fef3c7;
-        color: #92400e;
-        border-bottom: 1px solid #fbbf24;
-      }
-
       @media (min-width: 400px) {
         .dpad-btn {
           width: 60px;
@@ -408,8 +389,6 @@
         <button class="hud-btn" id="btnRestart" aria-label="Restart level">↺ Reset</button>
         <button class="hud-btn" id="btnLevels" aria-label="Select level">☰ Levels</button>
       </div>
-
-      <div id="validationWarning" class="hidden" role="alert" aria-live="polite"></div>
 
       <div id="gameArea">
         <canvas id="gameCanvas" aria-label="Sokoban game board"></canvas>
@@ -671,83 +650,6 @@
         return { grid, pr, pc };
       }
 
-      // ─────────────────────────────────────────────
-      //  LEVEL VALIDATOR
-      //  Checks structural validity before play begins.
-      //  Returns an array of issue strings (empty = valid).
-      // ─────────────────────────────────────────────
-      function validateLevel(grid, pr, pc) {
-        const rows = grid.length;
-        const cols = grid[0]?.length || 0;
-        const issues = [];
-
-        // 1. Count crates and targets
-        let crates = 0, targets = 0;
-        for (let r = 0; r < rows; r++) {
-          for (let c = 0; c < cols; c++) {
-            const cell = grid[r][c];
-            if (cell === T.CRATE || cell === T.CRATE_ON_TARGET) crates++;
-            if (cell === T.TARGET || cell === T.CRATE_ON_TARGET) targets++;
-          }
-        }
-        if (crates === 0) issues.push('no crates found');
-        if (targets === 0) issues.push('no targets found');
-        if (crates > 0 && targets > 0 && crates !== targets) {
-          issues.push(`crate/target mismatch (${crates} crates, ${targets} targets)`);
-        }
-
-        // 2. BFS reachability: all crates and targets must be reachable from the player
-        const visited = new Uint8Array(rows * cols);
-        const queue = [pr * cols + pc];
-        visited[pr * cols + pc] = 1;
-        for (let i = 0; i < queue.length; i++) {
-          const idx = queue[i];
-          const r = Math.floor(idx / cols);
-          const c = idx % cols;
-          for (const [dr, dc] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
-            const nr = r + dr, nc = c + dc;
-            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
-              const ni = nr * cols + nc;
-              const cell = grid[nr][nc];
-              if (!visited[ni] && cell !== T.WALL && cell !== T.EMPTY) {
-                visited[ni] = 1;
-                queue.push(ni);
-              }
-            }
-          }
-        }
-        let unreachable = false;
-        outer: for (let r = 0; r < rows; r++) {
-          for (let c = 0; c < cols; c++) {
-            const cell = grid[r][c];
-            if ((cell === T.CRATE || cell === T.CRATE_ON_TARGET || cell === T.TARGET) && !visited[r * cols + c]) {
-              unreachable = true;
-              break outer;
-            }
-          }
-        }
-        if (unreachable) issues.push('unreachable crate or target (sealed off by walls)');
-
-        // 3. Dead-corner check: crate NOT on a target is adjacent to two perpendicular walls
-        function isWallOrBound(r, c) {
-          if (r < 0 || r >= rows || c < 0 || c >= cols) return true;
-          return grid[r][c] === T.WALL || grid[r][c] === T.EMPTY;
-        }
-        let deadCorner = false;
-        for (let r = 0; r < rows && !deadCorner; r++) {
-          for (let c = 0; c < cols && !deadCorner; c++) {
-            if (grid[r][c] === T.CRATE) {
-              const wallN = isWallOrBound(r - 1, c), wallS = isWallOrBound(r + 1, c);
-              const wallW = isWallOrBound(r, c - 1), wallE = isWallOrBound(r, c + 1);
-              if ((wallN || wallS) && (wallW || wallE)) deadCorner = true;
-            }
-          }
-        }
-        if (deadCorner) issues.push('crate in dead corner (two perpendicular walls — cannot be freed)');
-
-        return issues;
-      }
-
       function loadLevel(idx) {
         const { grid, pr, pc } = parseLevel(LEVELS[idx]);
         state.levelIndex = idx;
@@ -761,16 +663,6 @@
         resizeCanvas();
         render();
         document.getElementById('winOverlay').classList.add('hidden');
-
-        // Show validation warning if structural issues are detected
-        const valIssues = validateLevel(state.grid, state.playerRow, state.playerCol);
-        const warnEl = document.getElementById('validationWarning');
-        if (valIssues.length > 0) {
-          warnEl.textContent = '⚠ ' + valIssues.join(' · ');
-          warnEl.classList.remove('hidden');
-        } else {
-          warnEl.classList.add('hidden');
-        }
       }
 
       function cloneGrid(g) {

@@ -22,15 +22,6 @@
       "implementedAt": "2026-03-26T20:21:31Z",
       "agentName": "GitHub Copilot",
       "llmModel": "GPT-5.3-Codex"
-    },
-    {
-      "issueNumber": 235,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/235",
-      "description": "Added solvability validator: checks crate/target counts, BFS reachability from player, and dead-corner detection; shows a warning banner when structural issues are detected on level load.",
-      "requestor": "Perplexity",
-      "implementedAt": "2026-03-27T15:00:00Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6"
     }
   ],
   "generation": {
