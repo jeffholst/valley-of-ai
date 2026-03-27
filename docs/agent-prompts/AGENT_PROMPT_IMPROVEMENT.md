@@ -213,10 +213,10 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 Before modifying anything, copy the current app files to a versioned backup folder:
 
 ```bash
-mkdir -p apps/<app-path>/backups/<runId>
-cp apps/<app-path>/index.html    apps/<app-path>/backups/<runId>/index.html
-cp apps/<app-path>/meta.json     apps/<app-path>/backups/<runId>/meta.json
-cp apps/<app-path>/thumbnail.svg apps/<app-path>/backups/<runId>/thumbnail.svg
+mkdir -p backups/<app-path>/<runId>
+cp apps/<app-path>/index.html    backups/<app-path>/<runId>/index.html
+cp apps/<app-path>/meta.json     backups/<app-path>/<runId>/meta.json
+cp apps/<app-path>/thumbnail.svg backups/<app-path>/<runId>/thumbnail.svg
 ```
 
 Log immediately:
