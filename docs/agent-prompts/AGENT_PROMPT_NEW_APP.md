@@ -6,14 +6,7 @@
 
 ## Mission
 
-Build one production-ready web app with the following requirements:
-
-- Static only: HTML/CSS/JS (no backend).
-- Must work on mobile and desktop and be fully responsive.
-- Must support keyboard, mouse and gesture touch.
-- Must be visually polished and usable immediately.
-- Must include accurate metadata and logs.
-- Must complete full git workflow: branch → commit → PR → merge.
+Build one production-ready mobile-first web app.
 
 ---
 
@@ -45,9 +38,9 @@ Build one production-ready web app with the following requirements:
 ### Step 0: Prep
 
 1. Pull latest main.
-2. Get current UTC time: `date -u +"%Y-%m-%dT%H:%M:%SZ"`
-3. Derive `YYYY/MM/DD` from the timestamp.
-4. Generate `runId` in format: `run-YYYYMMDDTHHMMSSZ-<6-char-hex>`.
+2. Get current UTC time: `date -u +"%Y-%m-%dT%H:%M:%SZ"` — use this as the source for all timestamps in this run.
+3. Derive `YYYY/MM/DD` from the timestamp — used for the app folder path (`apps/YYYY/MM/DD/<app-id>/`) and for `meta.json` fields (`createdAt`, `generation.startTime`, `generation.endTime`). Reuse this exact value throughout; do not recompute the date later in the run.
+4. Generate a unique `runId` in format: `run-YYYYMMDDTHHMMSSZ-<6-char-hex>` using the current execution time. This is the grouping key in AppLog.jsx — each pipeline run must have a distinct value.
 
 > **Note:** Do NOT create the app folder yet — `<app-id>` is not known until Step 1.
 
