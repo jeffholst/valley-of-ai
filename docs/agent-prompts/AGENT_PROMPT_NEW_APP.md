@@ -191,7 +191,7 @@ If this app was built from an approved GitHub issue (Step 1 sources `github-boos
 "suggestion": {
   "issueNumber": <number>,
   "issueUrl": "<full GitHub issue URL>",
-  "prompt": "<the `prompt` value from the select-app-suggestion.js output — this is the description text only, not the raw issue body>",
+  "prompt": "<the `prompt` value from the select-app-suggestion.js output — this is the full raw GitHub issue body text>",
   "requestor": "<requestor name, or omit field if anonymous>"
 }
 ```
