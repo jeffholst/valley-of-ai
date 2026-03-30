@@ -1,47 +1,5 @@
 [
   {
-    "id": "2026/03/26/sokoban-warehouse/backups/run-20260327T145952Z-b90288",
-    "name": "Sokoban Warehouse",
-    "shortDescription": "Classic box-pushing puzzle game with 12 levels of increasing difficulty. Push crates onto targets using swipe, on-screen D-pad, or arrow keys — with unlimited undo and a level select menu.",
-    "thumbnailUrl": "/apps/2026/03/26/sokoban-warehouse/backups/run-20260327T145952Z-b90288/thumbnail.svg",
-    "createdAt": "2026-03-26T18:53:45Z",
-    "year": 2026,
-    "month": 3,
-    "day": 26,
-    "category": "Games",
-    "inputMode": "responsive",
-    "status": "active",
-    "tags": ["puzzle", "sokoban", "mobile", "touch", "classic", "grid", "levels"],
-    "route": "/apps/2026/03/26/sokoban-warehouse/backups/run-20260327T145952Z-b90288",
-    "appPath": "/apps/2026/03/26/sokoban-warehouse/backups/run-20260327T145952Z-b90288/index.html",
-    "generation": {
-      "agentName": "claude-code",
-      "llmModel": "claude-sonnet-4-6",
-      "startTime": "2026-03-26T18:53:45Z",
-      "endTime": "2026-03-26T19:05:00Z",
-      "totalTokensIn": 15000,
-      "totalTokensOut": 20000,
-      "runId": "run-20260326T185345Z-a3f7c2",
-      "notes": "Built from approved community suggestion issue #230. 12 hand-crafted levels of increasing difficulty. Canvas-based rendering with brick walls, wooden crate aesthetic, amber color palette. Token counts are estimates."
-    },
-    "suggestion": {
-      "issueNumber": 230,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/230",
-      "prompt": "Build a mobile-first version of the classic puzzle game Sokoban with multiple levels. The game should run in a single web page, no frameworks. Requirements: Grid-based warehouse layout with walls, floor tiles, movable boxes/crates, storage targets, and a player. Use simple 2D graphics or colored tiles; ensure everything is readable on phones. Touch controls for mobile (swipe or on-screen arrows) and arrow keys for desktop. Rules: the player can move up/down/left/right; pushing exactly one adjacent box into an empty floor tile is allowed, but pulling is not. Level is solved when all boxes are on target tiles. Include at least 10 built-in levels of increasing difficulty, selectable from a simple level menu. Track moves and pushes; show level complete message and option to restart or go to the next level. Provide a clean, responsive layout that works well on small screens first, then scales to desktop."
-    },
-    "improvements": [
-      {
-        "issueNumber": 232,
-        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/232",
-        "description": "Reworked upper-level Sokoban layouts to ensure the reported levels are solvable.",
-        "implementedAt": "2026-03-26T20:21:31Z",
-        "agentName": "GitHub Copilot",
-        "llmModel": "GPT-5.3-Codex"
-      }
-    ],
-    "allowImprovements": true
-  },
-  {
     "id": "2026/03/26/sokoban-warehouse",
     "name": "Sokoban Warehouse",
     "shortDescription": "Classic box-pushing puzzle game with 12 levels of increasing difficulty. Push crates onto targets using swipe, on-screen D-pad, or arrow keys — with unlimited undo and a level select menu.",
@@ -90,7 +48,14 @@
         "llmModel": "claude-sonnet-4-6"
       }
     ],
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": [
+      {
+        "runId": "run-20260327T145952Z-b90288",
+        "path": "backups/run-20260327T145952Z-b90288/index.html",
+        "url": "/apps/2026/03/26/sokoban-warehouse/backups/run-20260327T145952Z-b90288/index.html"
+      }
+    ]
   },
   {
     "id": "2026/03/26/galaxian-blitz",
@@ -157,7 +122,8 @@
         "llmModel": "claude-sonnet-4-6"
       }
     ],
-    "allowImprovements": false
+    "allowImprovements": false,
+    "backups": null
   },
   {
     "id": "2026/03/26/raffle-night-caller",
@@ -186,7 +152,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/25/neon-slot-rush",
@@ -257,7 +224,8 @@
         "llmModel": "claude-sonnet-4-6"
       }
     ],
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/25/peg-solitaire",
@@ -291,7 +259,8 @@
       "requestor": "Perplexity"
     },
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/24/charades-chaos-deck",
@@ -339,7 +308,8 @@
         "llmModel": "claude-sonnet-4-6"
       }
     ],
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/24/foley-scene-mixer",
@@ -368,7 +338,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/24/story-beat-remixer",
@@ -397,7 +368,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/23/dungeon-puzzle-run",
@@ -441,7 +413,8 @@
         "llmModel": "claude-sonnet-4-6"
       }
     ],
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/23/tic-tac-toe-strategy-lab",
@@ -470,7 +443,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/21/texas-lotto-generator",
@@ -504,7 +478,8 @@
       "requestor": "Gary S."
     },
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/21/neighborhood-home-ranker",
@@ -547,7 +522,8 @@
       "requestor": "Alexander M."
     },
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/21/tetris-classic",
@@ -581,7 +557,8 @@
       "requestor": "Jeff Holst"
     },
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/21/morse-code-radio",
@@ -610,7 +587,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/21/pattern-pulse-memory",
@@ -639,7 +617,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/20/sudoku-sprint",
@@ -668,7 +647,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/20/neon-lane-sprinter",
@@ -697,7 +677,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/19/slide-2048",
@@ -726,7 +707,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/19/orbit-memory-match",
@@ -755,7 +737,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/18/cyber-hop",
@@ -793,7 +776,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/17/hangman-word-game",
@@ -822,7 +806,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/17/focus-timer",
@@ -851,7 +836,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/16/mindful-breathing-tracker",
@@ -880,7 +866,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/16/memory-sequence",
@@ -909,7 +896,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/15/focus-sprint-planner",
@@ -938,7 +926,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/15/hydration-nudge-tracker",
@@ -967,7 +956,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/14/decision-spinner",
@@ -996,7 +986,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/14/password-entropy-lab",
@@ -1025,7 +1016,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/14/focus-flip-cards",
@@ -1054,7 +1046,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/13/interval-breathing-coach",
@@ -1083,7 +1076,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/13/bubble-tap",
@@ -1112,7 +1106,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/12/meeting-cost-calculator",
@@ -1141,7 +1136,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/12/timezone-overlap-finder",
@@ -1170,7 +1166,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/12/constellation-explorer",
@@ -1199,7 +1196,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/12/sorting-race-visualizer",
@@ -1228,7 +1226,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/11/lucky-decision-wheel",
@@ -1257,7 +1256,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/10/maze-runner",
@@ -1286,7 +1286,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/10/habit-streak-garden",
@@ -1315,7 +1316,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/10/neon-breakout",
@@ -1344,7 +1346,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/10/pixel-painter",
@@ -1373,7 +1376,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/09/pixel-planet-clicker",
@@ -1402,7 +1406,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/09/gravity-dodge",
@@ -1431,7 +1436,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/08/typing-speed-sprint",
@@ -1460,7 +1466,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/08/daredevil-moto-jump",
@@ -1489,7 +1496,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/08/mini-putt-gauntlet",
@@ -1518,7 +1526,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/08/orbit-harmonics",
@@ -1547,7 +1556,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/08/eagle-eye-teacher",
@@ -1576,7 +1586,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/08/logic-lights-out",
@@ -1605,7 +1616,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/08/space-invaders-clone",
@@ -1634,7 +1646,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/07/workout-timer-pulse",
@@ -1663,7 +1676,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/07/road-rage",
@@ -1692,7 +1706,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/07/neon-velocity",
@@ -1721,7 +1736,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/07/fishing-frenzy",
@@ -1750,7 +1766,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/07/design-dash",
@@ -1779,7 +1796,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/07/realtor-tycoon",
@@ -1808,7 +1826,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/07/zorkish-text-adventure",
@@ -1837,7 +1856,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/07/halftime-hustle",
@@ -1866,7 +1886,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/07/pacman-classic",
@@ -1895,7 +1916,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/07/debug-rush",
@@ -1924,7 +1946,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/07/blackjack",
@@ -1953,7 +1976,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/07/archery-physics",
@@ -1982,7 +2006,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/07/disco-runner",
@@ -2011,7 +2036,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/07/flappy-bird",
@@ -2040,7 +2066,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/07/contrast-lab",
@@ -2069,7 +2096,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/06/habit-heatmap",
@@ -2098,7 +2126,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/06/word-weaver",
@@ -2127,7 +2156,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/06/reaction-ripple",
@@ -2156,7 +2186,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/06/memory-match",
@@ -2185,7 +2216,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/06/focus-fountain",
@@ -2214,7 +2246,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/06/sorting-visualizer",
@@ -2243,7 +2276,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/06/word-scramble",
@@ -2272,7 +2306,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/05/snake-game",
@@ -2301,7 +2336,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/05/breathing-orb",
@@ -2330,7 +2366,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/05/pomodoro-timer",
@@ -2359,7 +2396,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/05/color-palette-generator",
@@ -2388,7 +2426,8 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   },
   {
     "id": "2026/03/05/example-app",
@@ -2417,6 +2456,7 @@
     },
     "suggestion": null,
     "improvements": null,
-    "allowImprovements": true
+    "allowImprovements": true,
+    "backups": null
   }
 ]
