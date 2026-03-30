@@ -10,6 +10,7 @@ import { pathToFileURL, fileURLToPath } from 'url';
 import path from 'path';
 import {
   getIssue,
+  getRepoOwner,
   inferIssueType,
   issueHasLabel,
   listIssuesByLabels,
@@ -34,11 +35,13 @@ function normalizeLabels(labels = []) {
 }
 
 export function normalizeIssue(issue) {
+  const rawBody = issue.body ?? '';
+  const body = rawBody.length > 1000 ? rawBody.slice(0, 1000) + ' [truncated]' : rawBody;
   return {
     number: issue.number,
     type: inferIssueType(issue),
     title: issue.title,
-    body: issue.body,
+    body,
     url: issue.url,
     labels: normalizeLabels(issue.labels),
     createdAt: issue.createdAt,
@@ -186,10 +189,20 @@ export function retrievePendingIssues(
   options,
   deps = {
     getIssue,
+    getRepoOwner,
     listIssuesByLabels,
   }
 ) {
   const { issueNumber, limit, type, includeNeedsHumanReview } = options;
+
+  // Fetch repo owner once for author filtering. Fail open (no filtering) if unavailable.
+  const repoOwner = deps.getRepoOwner ? deps.getRepoOwner() : null;
+  const passesAuthorFilter = (issue) => {
+    if (!repoOwner) {
+      return true;
+    }
+    return (issue.author?.login ?? null) === repoOwner;
+  };
 
   // Lazy-load apps data: only read and parse data/apps.json on first access,
   // and only when actually needed (i.e., when an improvement issue is encountered).
@@ -216,6 +229,7 @@ export function retrievePendingIssues(
     if (
       !issue ||
       String(issue.state).toLowerCase() !== 'open' ||
+      !passesAuthorFilter(issue) ||
       !isPendingCandidate(issue, type, includeNeedsHumanReview) ||
       !isImprovementsAllowed(issue, getApps)
     ) {
@@ -236,6 +250,7 @@ export function retrievePendingIssues(
   const issues = sortIssuesOldestFirst(
     rawIssues
       .filter((issue) => String(issue.state).toLowerCase() === 'open')
+      .filter(passesAuthorFilter)
       .filter((issue) => isPendingCandidate(issue, type, includeNeedsHumanReview))
       .filter((issue) => isImprovementsAllowed(issue, getApps))
       .map(normalizeIssue)

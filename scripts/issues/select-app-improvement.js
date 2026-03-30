@@ -67,14 +67,13 @@ function getBoostedImprovements() {
     labels: ['improvement', 'status:approved', 'boosted'],
     state: 'open',
     limit: 20,
-    fields: ['number', 'title', 'body', 'url'],
+    fields: ['number', 'title', 'body', 'url', 'author'],
   });
   if (!issues || issues.length === 0) {
     return [];
   }
 
   const owner = getRepoOwner();
-  log(`  Repo owner: ${owner}`);
 
   const ranked = issues.map((issue) => ({
     ...issue,
@@ -91,7 +90,7 @@ function getApprovedImprovements() {
     labels: ['improvement', 'status:approved'],
     state: 'open',
     limit: 10,
-    fields: ['number', 'title', 'body', 'url'],
+    fields: ['number', 'title', 'body', 'url', 'author'],
   });
   if (!issues || issues.length === 0) {
     return [];
@@ -164,6 +163,37 @@ function readAppMeta(appPath) {
 }
 
 // ---------------------------------------------------------------------------
+// Guardrails — injection keyword scan (defense-in-depth)
+// ---------------------------------------------------------------------------
+
+function loadRejectPhrases() {
+  const productionPath = path.join(rootDir, 'guardrails.production');
+  const examplePath = path.join(rootDir, 'guardrails.example');
+  const filePath = existsSync(productionPath) ? productionPath : examplePath;
+  if (!existsSync(filePath)) {
+    return [];
+  }
+  try {
+    const content = readFileSync(filePath, 'utf8');
+    const match = content.match(/\[review\.reject_if_contains\][^\[]*phrases\s*=\s*\[([\s\S]*?)\]/);
+    if (!match) {
+      return [];
+    }
+    return [...match[1].matchAll(/"([^"]+)"/g)].map((m) => m[1].toLowerCase());
+  } catch {
+    return [];
+  }
+}
+
+function containsInjectionPhrase(issue, phrases) {
+  if (!phrases.length) {
+    return false;
+  }
+  const text = `${issue.title ?? ''} ${issue.body ?? ''}`.toLowerCase();
+  return phrases.some((phrase) => text.includes(phrase));
+}
+
+// ---------------------------------------------------------------------------
 // Build the enriched result for a found issue
 // ---------------------------------------------------------------------------
 function buildResult(source, issue, apps) {
@@ -217,7 +247,7 @@ function buildResult(source, issue, apps) {
       source === 'github-boosted'
         ? `Boosted improvement issue #${issue.number} with $${issue.tipTotal ?? 0} in verified tips — highest priority.`
         : `Approved improvement issue #${issue.number} — oldest open request.`,
-    prompt: issue.body,
+    prompt: description ?? '',
   };
 }
 
@@ -232,11 +262,26 @@ async function main() {
   const appsPath = path.join(rootDir, 'data', 'apps.json');
   const apps = JSON.parse(readFileSync(appsPath, 'utf8'));
 
+  const repoOwner = getRepoOwner();
+  log(`  Repo owner: ${repoOwner ?? '(unavailable — author filter disabled)'}`);
+
+  const rejectPhrases = loadRejectPhrases();
+  log(`  Loaded ${rejectPhrases.length} injection reject phrase(s) from guardrails.`);
+
+  function isAuthorAllowed(issue) {
+    if (!repoOwner) {
+      return true;
+    } // fail open if owner lookup failed
+    return (issue.author?.login ?? null) === repoOwner;
+  }
+
   // ---------------------------------------------------------------------------
   // Pass 1: Boosted improvement issues
   // ---------------------------------------------------------------------------
   log('Pass 1: GitHub boosted improvement issues');
-  const boostedList = getBoostedImprovements();
+  const boostedList = getBoostedImprovements()
+    .filter((issue) => isAuthorAllowed(issue))
+    .filter((issue) => !containsInjectionPhrase(issue, rejectPhrases));
   for (const issue of boostedList) {
     const result = buildResult('github-boosted', issue, apps);
     if (result.found) {
@@ -251,7 +296,9 @@ async function main() {
   // Pass 2: Approved improvement issues
   // ---------------------------------------------------------------------------
   log('Pass 2: GitHub approved improvement issues');
-  const approvedList = getApprovedImprovements();
+  const approvedList = getApprovedImprovements()
+    .filter((issue) => isAuthorAllowed(issue))
+    .filter((issue) => !containsInjectionPhrase(issue, rejectPhrases));
   for (const issue of approvedList) {
     const result = buildResult('github-approved', issue, apps);
     if (result.found) {

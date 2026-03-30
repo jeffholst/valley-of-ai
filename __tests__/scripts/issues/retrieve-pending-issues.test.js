@@ -434,3 +434,119 @@ describe('retrievePendingIssues — allowImprovements filtering', () => {
     expect(loadApps).toHaveBeenCalledTimes(1);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Author filter
+// ---------------------------------------------------------------------------
+
+describe('retrievePendingIssues — author filter', () => {
+  const makeIssueFromOwner = (number, login) => makeIssue({ number, author: { login } });
+
+  it('includes issues authored by the repo owner', () => {
+    const result = retrievePendingIssues(
+      { limit: 50, issueNumber: null, type: null },
+      {
+        getRepoOwner: jest.fn(() => 'jeffholst'),
+        listIssuesByLabels: jest.fn(() => [makeIssueFromOwner(301, 'jeffholst')]),
+        getIssue: jest.fn(),
+      }
+    );
+
+    expect(result.found).toBe(true);
+    expect(result.issues[0].number).toBe(301);
+  });
+
+  it('excludes issues not authored by the repo owner', () => {
+    const result = retrievePendingIssues(
+      { limit: 50, issueNumber: null, type: null },
+      {
+        getRepoOwner: jest.fn(() => 'jeffholst'),
+        listIssuesByLabels: jest.fn(() => [makeIssueFromOwner(302, 'someattacker')]),
+        getIssue: jest.fn(),
+      }
+    );
+
+    expect(result.found).toBe(false);
+    expect(result.count).toBe(0);
+  });
+
+  it('fails open (includes all) when getRepoOwner returns null', () => {
+    const result = retrievePendingIssues(
+      { limit: 50, issueNumber: null, type: null },
+      {
+        getRepoOwner: jest.fn(() => null),
+        listIssuesByLabels: jest.fn(() => [
+          makeIssueFromOwner(303, 'anyuser'),
+          makeIssueFromOwner(304, 'anotheruser'),
+        ]),
+        getIssue: jest.fn(),
+      }
+    );
+
+    expect(result.found).toBe(true);
+    expect(result.count).toBe(2);
+  });
+
+  it('applies author filter when fetching a single issue by number', () => {
+    const result = retrievePendingIssues(
+      { limit: 50, issueNumber: 305, type: null },
+      {
+        getRepoOwner: jest.fn(() => 'jeffholst'),
+        getIssue: jest.fn(() => makeIssueFromOwner(305, 'someattacker')),
+        listIssuesByLabels: jest.fn(),
+      }
+    );
+
+    expect(result.found).toBe(false);
+    expect(result.count).toBe(0);
+  });
+
+  it('includes a single issue by number when author matches', () => {
+    const result = retrievePendingIssues(
+      { limit: 50, issueNumber: 306, type: null },
+      {
+        getRepoOwner: jest.fn(() => 'jeffholst'),
+        getIssue: jest.fn(() => makeIssueFromOwner(306, 'jeffholst')),
+        listIssuesByLabels: jest.fn(),
+      }
+    );
+
+    expect(result.found).toBe(true);
+    expect(result.issues[0].number).toBe(306);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Body truncation
+// ---------------------------------------------------------------------------
+
+describe('normalizeIssue — body truncation', () => {
+  it('preserves body shorter than 1000 chars unchanged', () => {
+    const issue = makeIssue({ body: 'short body' });
+    expect(normalizeIssue(issue).body).toBe('short body');
+  });
+
+  it('preserves body at exactly 1000 chars unchanged', () => {
+    const body = 'x'.repeat(1000);
+    expect(normalizeIssue(makeIssue({ body })).body).toBe(body);
+  });
+
+  it('truncates body over 1000 chars and appends [truncated]', () => {
+    const body = 'x'.repeat(1001);
+    const result = normalizeIssue(makeIssue({ body })).body;
+    expect(result).toBe('x'.repeat(1000) + ' [truncated]');
+    expect(result.length).toBe(1012);
+  });
+
+  it('handles null body gracefully', () => {
+    const result = normalizeIssue(makeIssue({ body: null })).body;
+    expect(result).toBe('');
+  });
+
+  it('handles undefined body gracefully', () => {
+    const issue = makeIssue();
+    delete issue.body;
+    const result = normalizeIssue(issue).body;
+    expect(result).toBe('');
+  });
+});
