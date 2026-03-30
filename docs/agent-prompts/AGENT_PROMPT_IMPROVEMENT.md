@@ -67,7 +67,7 @@ npm run select:app:improvement
 Verify the issue exists and is approved:
 
 ```bash
-gh issue view <number> --json number,title,body,labels,state
+gh issue view <number> --json number,title,body,labels,state,url
 ```
 
 Check all three:
