@@ -414,10 +414,10 @@ When closing a GitHub issue, the comment must use the **full deployed site URL**
 
 ```bash
 # ✅ Correct — full URL, resolves to the deployed app
-gh issue close <n> --comment "Built as [App Name](https://www.valleyofai.com/apps/YYYY/MM/DD/<app-id>). Thanks!"
+gh issue close <n> --comment "Built as [App Name](https://www.valleyofai.com/apps/<app-id>/index.html). Thanks!"
 
 # ❌ Wrong — relative URL resolves to the GitHub repo, not the deployed site
-gh issue close <n> --comment "Built as [App Name](/apps/YYYY/MM/DD/<app-id>). Thanks!"
+gh issue close <n> --comment "Built as [App Name](/apps/<app-id>/index.html). Thanks!"
 ```
 
 Use the production URL from your environment (`NEXT_PUBLIC_SITE_URL` or the canonical deployed URL for the project).
