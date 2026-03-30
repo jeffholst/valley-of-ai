@@ -531,11 +531,12 @@ describe('normalizeIssue — body truncation', () => {
     expect(normalizeIssue(makeIssue({ body })).body).toBe(body);
   });
 
-  it('truncates body over 1000 chars and appends [truncated]', () => {
+  it('truncates body over 1000 chars and keeps result within 1000 chars', () => {
     const body = 'x'.repeat(1001);
     const result = normalizeIssue(makeIssue({ body })).body;
-    expect(result).toBe('x'.repeat(1000) + ' [truncated]');
-    expect(result.length).toBe(1012);
+    const marker = ' [truncated]';
+    expect(result).toBe('x'.repeat(1000 - marker.length) + marker);
+    expect(result.length).toBe(1000);
   });
 
   it('handles null body gracefully', () => {

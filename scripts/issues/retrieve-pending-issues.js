@@ -36,7 +36,12 @@ function normalizeLabels(labels = []) {
 
 export function normalizeIssue(issue) {
   const rawBody = issue.body ?? '';
-  const body = rawBody.length > 1000 ? rawBody.slice(0, 1000) + ' [truncated]' : rawBody;
+  const TRUNCATION_MARKER = ' [truncated]';
+  const BODY_LIMIT = 1000;
+  const body =
+    rawBody.length > BODY_LIMIT
+      ? rawBody.slice(0, BODY_LIMIT - TRUNCATION_MARKER.length) + TRUNCATION_MARKER
+      : rawBody;
   return {
     number: issue.number,
     type: inferIssueType(issue),
