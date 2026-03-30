@@ -396,7 +396,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 
    ```bash
    gh issue edit <issue-number> --add-label "status:implemented" --remove-label "status:approved" --remove-label "status:pending"
-   gh issue close <issue-number> --comment "Built as [<app-name>](<SITE_URL>/apps/YYYY/MM/DD/<app-id>). Thanks for the suggestion!"
+   gh issue close <issue-number> --comment "Built as [<app-name>](<SITE_URL>/apps/YYYY/MM/DD/<app-id>/index.html). Thanks for the suggestion!"
    ```
 
    Replace `<SITE_URL>` with the production URL from your environment. See `AGENT_PROMPT_SHARED.md` → "Issue Close URL".
