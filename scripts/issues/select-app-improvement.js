@@ -179,7 +179,11 @@ function loadRejectPhrases() {
     if (!match) {
       return [];
     }
-    return [...match[1].matchAll(/"([^"]+)"/g)].map((m) => m[1].toLowerCase());
+    const phraseMatches = [...match[1].matchAll(/"([^"]+)"|'([^']+)'/g)];
+    const phrases = phraseMatches
+      .map((m) => (m[1] ?? m[2])?.toLowerCase())
+      .filter(Boolean);
+    return phrases;
   } catch {
     return [];
   }
