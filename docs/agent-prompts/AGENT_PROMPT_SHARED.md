@@ -420,4 +420,4 @@ gh issue close <n> --comment "Built as [App Name](https://www.valleyofai.com/app
 gh issue close <n> --comment "Built as [App Name](/apps/<app-id>/index.html). Thanks!"
 ```
 
-Use the production URL from your environment (`NEXT_PUBLIC_SITE_URL` or the canonical deployed URL for the project).
+Use the production URL from your environment (`NEXT_PUBLIC_MAIN_SITE_URL` or the canonical deployed URL for the project).
