@@ -39,9 +39,13 @@ Apply one approved improvement to an existing app. The app already exists — do
 ### Step 0: Prep
 
 1. Pull latest main.
-2. Get current UTC time: `date -u +"%Y-%m-%dT%H:%M:%SZ"`
-3. Derive `YYYY/MM/DD` (today's date) from the timestamp — used for the central log path (`logs/YYYY/MM/DD.jsonl`).
-4. Generate `runId` in format: `run-YYYYMMDDTHHMMSSZ-<6-char-hex>`.
+2. Get **current UTC time** (NOW, when this pipeline is executing): `date -u +"%Y-%m-%dT%H:%M:%SZ"`
+3. Derive `YYYY/MM/DD` (**today's date** from the current timestamp) — used for the central log path (`logs/YYYY/MM/DD.jsonl`).
+4. **Generate a NEW unique `runId`** in format: `run-YYYYMMDDTHHMMSSZ-<6-char-hex>` using **today's current date and time**.
+   - **CRITICAL:** Always use the **current execution date/time**, NEVER reuse a timestamp from a previous run or from app creation.
+   - **Example:** If running on March 30, 2026 at 20:12:34 UTC, use: `run-20260330T201234Z-abc123`
+   - Each improvement pipeline MUST have a unique runId to avoid merging logs from different improvement runs.
+   - **Why:** The runId is used in AppLog.jsx to group logs into separate improvement records. If two improvements share the same runId, their logs will merge into a single group, confusing the audit trail and hiding separate change history.
 
 ---
 
@@ -113,6 +117,7 @@ From the selected issue, record:
 Set `<app-id>` to the slug portion of `targetApp.id` (e.g. `freecell-mobile-classic`).
 Set `<app-path>` to the full `targetApp.id` (e.g. `2026/03/22/freecell-mobile-classic`).
 Set `<app-date>` to the `YYYY/MM/DD` portion of `targetApp.id` (e.g. `2026/03/22`) — this is the app's **original creation date**, used for the app-local log path.
+**IMPORTANT:** `<runId>` was already generated in Step 0 and **MUST be unique for this improvement run**. Confirm it uses today's current date/time, NOT an old date.
 
 ⚠️ The app folder already exists. Do NOT create a new one. Logging will write to:
 

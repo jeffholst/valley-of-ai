@@ -72,8 +72,9 @@ Use UTC consistently for:
 
 ⚠️ **Improvement pipeline exception:** The improvement pipeline uses two separate date values — do not conflate them:
 
-- `--date YYYY/MM/DD` → **today's date** → written to the central log (`logs/YYYY/MM/DD.jsonl`)
+- `--date YYYY/MM/DD` → **today's date** (when the improvement is running) → written to the central log (`logs/YYYY/MM/DD.jsonl`)
 - `--app-date <app-date>` → **the app's original creation date** (from `targetApp.id`) → written to the app-local log (`apps/<app-path>/log.jsonl`)
+- `runId` timestamp portion → **today's date and time when the pipeline is running** (NOT when the app was created)
 
 See Step 1.4 of `AGENT_PROMPT_IMPROVEMENT.md` for how to derive and apply each value.
 
@@ -313,6 +314,10 @@ For reasoning decisions and validation checks, use `--category reasoning` or `--
 `run-YYYYMMDDTHHMMSSZ-xxxxxx`
 
 - `xxxxxx` = 6-char hex suffix
+- **CRITICAL:** Each pipeline execution must generate a **NEW, unique `runId`** based on the **current execution time**, never reused from a previous run.
+- The timestamp portion **MUST reflect when the pipeline is actually running**, not when the app was created.
+- **Why:** The `runId` is the grouping key in AppLog.jsx that separates one improvement from another (or app builds). If two different improvements reuse the same `runId`, their logs merge into a single group, creating confusion in the audit trail and hiding separate change histories.
+- **Example:** If running improvement #241 on March 30 at 20:12:34 UTC, use `run-20260330T201234Z-xxxxxx`, NOT a timestamp from when the app was originally created on March 26.
 
 ### Step sequence numbers
 
