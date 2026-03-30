@@ -31,15 +31,6 @@
       "implementedAt": "2026-03-27T15:00:00Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
-    },
-    {
-      "issueNumber": 241,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/241",
-      "description": "When a level is successfully completed, made the \"Next Level\" button the default action when the user presses the Return/Enter key.",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-03-30T19:59:10Z",
-      "agentName": "GitHub Copilot",
-      "llmModel": "Claude Haiku 4.5"
     }
   ],
   "generation": {

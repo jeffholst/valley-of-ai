@@ -841,10 +841,6 @@
           btnNext.classList.add('hidden');
         }
         document.getElementById('winOverlay').classList.remove('hidden');
-        // Focus the Next Level button for keyboard support
-        if (!btnNext.classList.contains('hidden')) {
-          btnNext.focus();
-        }
         buildLevelGrid();
       }
 
@@ -1108,17 +1104,6 @@
       //  KEYBOARD
       // ─────────────────────────────────────────────
       document.addEventListener('keydown', (e) => {
-        // Allow Enter key when win overlay is visible to activate Next Level button
-        const winOverlayVisible = document.getElementById('winOverlay').classList.contains('hidden') === false;
-        if (e.key === 'Enter' && winOverlayVisible) {
-          const btnNext = document.getElementById('btnNextLevel');
-          if (!btnNext.classList.contains('hidden')) {
-            e.preventDefault();
-            btnNext.click();
-          }
-          return;
-        }
-
         if (document.getElementById('levelOverlay').classList.contains('hidden') === false) return;
         switch (e.key) {
           case 'ArrowUp': case 'w': case 'W': e.preventDefault(); move(-1, 0); break;
