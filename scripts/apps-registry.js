@@ -19,6 +19,9 @@ export function findMetaFiles(dir, files = []) {
     const fullPath = path.join(dir, entry.name);
 
     if (entry.isDirectory()) {
+      if (entry.name === 'backups') {
+        continue;
+      }
       findMetaFiles(fullPath, files);
     } else if (entry.name === 'meta.json') {
       files.push(fullPath);
@@ -26,6 +29,29 @@ export function findMetaFiles(dir, files = []) {
   }
 
   return files;
+}
+
+function findBackups(appDir) {
+  const backupsDir = path.join(appDir, 'backups');
+  if (!fs.existsSync(backupsDir)) {
+    return [];
+  }
+
+  const entries = fs.readdirSync(backupsDir, { withFileTypes: true });
+  const backups = [];
+
+  for (const entry of entries) {
+    if (!entry.isDirectory()) {
+      continue;
+    }
+    const runId = entry.name;
+    if (fs.existsSync(path.join(backupsDir, runId, 'index.html'))) {
+      backups.push({ runId, path: `backups/${runId}/index.html` });
+    }
+  }
+
+  backups.sort((a, b) => a.runId.localeCompare(b.runId));
+  return backups;
 }
 
 export function parseDateFromPath(appsDir, filePath) {
@@ -44,7 +70,7 @@ export function parseDateFromPath(appsDir, filePath) {
   return null;
 }
 
-export function transformMeta(appsDir, meta, filePath, dateInfo, basePath = '') {
+export function transformMeta(appsDir, meta, filePath, dateInfo, basePath = '', backups = []) {
   const appDir = path.dirname(filePath);
   const relativeAppDir = path.relative(appsDir, appDir);
   const normalizedAppDir = relativeAppDir.split(path.sep).join('/');
@@ -69,6 +95,14 @@ export function transformMeta(appsDir, meta, filePath, dateInfo, basePath = '') 
     suggestion: meta.suggestion || null,
     improvements: meta.improvements || null,
     allowImprovements: meta.allowImprovements ?? true,
+    backups:
+      backups.length > 0
+        ? backups.map((b) => ({
+            runId: b.runId,
+            path: b.path,
+            url: `${basePath}/apps/${normalizedAppDir}/${b.path}`,
+          }))
+        : null,
   };
 }
 
@@ -96,7 +130,8 @@ export function buildAppsRegistry({ appsDir, basePath = '', onWarning } = {}) {
         continue;
       }
 
-      apps.push(transformMeta(appsDir, meta, filePath, dateInfo, basePath));
+      const backups = findBackups(path.dirname(filePath));
+      apps.push(transformMeta(appsDir, meta, filePath, dateInfo, basePath, backups));
     } catch (error) {
       const warning = `Error processing ${filePath}: ${error.message}`;
       warnings.push(warning);

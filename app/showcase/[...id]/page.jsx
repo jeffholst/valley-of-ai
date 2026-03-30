@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useVotes } from '@/hooks/useVotes';
 import VoteButtons from '@/components/VoteButtons';
 import { notFound } from 'next/navigation';
-import { use } from 'react';
+import { use, useState } from 'react';
 import AppLog from '@/components/AppLog';
 import { githubUrl } from '@/lib/siteConfig';
 
@@ -25,6 +25,7 @@ export default function AppDetailPage({ params }) {
 
 function AppDetailContent({ app, id }) {
   const { upvoteCount, downvoteCount, myVote, isLoading, isVoting, vote } = useVotes(id);
+  const [selectedVersionUrl, setSelectedVersionUrl] = useState(app.appPath);
 
   const formattedDate = new Date(app.createdAt).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -140,17 +141,34 @@ function AppDetailContent({ app, id }) {
               </div>
             </div>
 
-            <a
-              href={app.appPath}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="animate-pulse-ring relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white text-sm bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-600 hover:via-teal-500 hover:to-cyan-600 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-            >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-              Launch App
-            </a>
+            <div className="flex items-center gap-2">
+              <a
+                href={selectedVersionUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="animate-pulse-ring relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white text-sm bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-600 hover:via-teal-500 hover:to-cyan-600 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                Launch App
+              </a>
+              {app.backups && app.backups.length > 0 && (
+                <select
+                  value={selectedVersionUrl}
+                  onChange={(e) => setSelectedVersionUrl(e.target.value)}
+                  className="text-xs rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  aria-label="Select app version"
+                >
+                  <option value={app.appPath}>Current (latest)</option>
+                  {app.backups.map((b) => (
+                    <option key={b.runId} value={b.url}>
+                      {b.runId}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
           </div>
 
           <p className="text-gray-600 dark:text-gray-300 text-lg">{app.shortDescription}</p>
