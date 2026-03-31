@@ -278,6 +278,7 @@ function AppDetailContent({ app, id }) {
             appId={id}
             suggestion={app.suggestion ?? null}
             improvements={app.improvements ?? null}
+            generation={app.generation ?? null}
           />
         </div>
       </div>

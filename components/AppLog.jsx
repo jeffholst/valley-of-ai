@@ -158,7 +158,7 @@ const GROUP_CONFIG = {
 // Run group component
 // ---------------------------------------------------------------------------
 
-function RunGroup({ group, improvementIndex }) {
+function RunGroup({ group, improvementIndex, versionUrl }) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [expandedMessages, setExpandedMessages] = useState(new Set());
 
@@ -192,31 +192,46 @@ function RunGroup({ group, improvementIndex }) {
   return (
     <div className={`rounded-lg border ${config.headerBorder} overflow-hidden`}>
       {/* Group header */}
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className={`w-full flex items-center justify-between px-3 py-2 ${config.headerBg} ${config.headerText} text-xs font-semibold transition-colors hover:opacity-90`}
+      <div
+        className={`w-full flex items-center gap-2 px-2 py-1.5 ${config.headerBg} ${config.headerText}`}
       >
-        <span className="flex items-center gap-2">
-          <span>{label}</span>
-          {runDate && <span className="opacity-60 font-normal">{runDate}</span>}
-          {transactionEnd && (
-            <span className={`px-1.5 py-0.5 rounded text-[10px] ${config.badge}`}>
-              {formatDuration(transactionEnd.pipeline?.durationMs)}
-            </span>
-          )}
-        </span>
-        <svg
-          className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-          fill="currentColor"
-          viewBox="0 0 20 20"
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="flex-1 flex items-center justify-between px-1 py-0.5 text-xs font-semibold transition-colors hover:opacity-90"
         >
-          <path
-            fillRule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
+          <span className="flex items-center gap-2 min-w-0">
+            <span>{label}</span>
+            {runDate && <span className="opacity-60 font-normal">{runDate}</span>}
+            {transactionEnd && (
+              <span className={`px-1.5 py-0.5 rounded text-[10px] ${config.badge}`}>
+                {formatDuration(transactionEnd.pipeline?.durationMs)}
+              </span>
+            )}
+          </span>
+          <svg
+            className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fillRule="evenodd"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
+        {versionUrl && (
+          <a
+            href={versionUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] font-semibold px-2 py-1 rounded border border-current/30 hover:bg-black/5 dark:hover:bg-white/10 whitespace-nowrap"
+            title="Launch this version"
+          >
+            Launch version
+          </a>
+        )}
+      </div>
 
       {isExpanded && (
         <div className="p-3 space-y-2 bg-gray-50 dark:bg-gray-900/50">
@@ -342,7 +357,7 @@ function RunGroup({ group, improvementIndex }) {
 // Main component
 // ---------------------------------------------------------------------------
 
-export default function AppLog({ appId, suggestion, improvements }) {
+export default function AppLog({ appId, suggestion, improvements, generation }) {
   const [logs, setLogs] = useState([]);
   const [isExpanded, setIsExpanded] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -407,10 +422,30 @@ export default function AppLog({ appId, suggestion, improvements }) {
 
   const groups = groupLogs(logs);
   const improvementsList = Array.isArray(improvements) ? improvements : [];
+  const improvementsWithRunId = improvementsList.filter((item) => item?.runId);
   const improvementsByRunId = new Map(
     improvementsList.filter((item) => item?.runId).map((item) => [item.runId, item])
   );
   const improvementsWithoutRunId = improvementsList.filter((item) => !item?.runId);
+  const currentVersionUrl = `/apps/${appId}/index.html`;
+  const backupVersionUrl = (runId) => `/apps/${appId}/backups/${runId}/index.html`;
+
+  const versionUrlByRunId = new Map();
+  if (generation?.runId) {
+    versionUrlByRunId.set(
+      generation.runId,
+      improvementsWithRunId[0]?.runId
+        ? backupVersionUrl(improvementsWithRunId[0].runId)
+        : currentVersionUrl
+    );
+  }
+  improvementsWithRunId.forEach((improvement, idx) => {
+    const nextImprovement = improvementsWithRunId[idx + 1];
+    versionUrlByRunId.set(
+      improvement.runId,
+      nextImprovement?.runId ? backupVersionUrl(nextImprovement.runId) : currentVersionUrl
+    );
+  });
 
   // Count improvement groups for labeling (#1, #2, ...)
   let improvementCounter = 0;
@@ -507,7 +542,12 @@ export default function AppLog({ appId, suggestion, improvements }) {
               }
             }
             items.push(
-              <RunGroup key={group.runId} group={group} improvementIndex={improvementCounter} />
+              <RunGroup
+                key={group.runId}
+                group={group}
+                improvementIndex={improvementCounter}
+                versionUrl={versionUrlByRunId.get(group.runId) ?? null}
+              />
             );
             return items;
           })}
