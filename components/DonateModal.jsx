@@ -54,7 +54,7 @@ export default function DonateModal({ onClose }) {
         </button>
 
         <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/40 rounded-full flex items-center justify-center mx-auto mb-4">
-          <span className="text-3xl">💡</span>
+          <span className="text-3xl donate-bulb">💡</span>
         </div>
 
         <h2
@@ -75,6 +75,35 @@ export default function DonateModal({ onClose }) {
             Maybe later
           </button>
         </div>
+
+        <style jsx>{`
+          .donate-bulb {
+            display: inline-block;
+            animation: bulbFlicker 1.8s steps(1, end) infinite;
+          }
+
+          @keyframes bulbFlicker {
+            0%,
+            14%,
+            18%,
+            22%,
+            35%,
+            60%,
+            100% {
+              opacity: 1;
+              filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.7));
+            }
+
+            15%,
+            19%,
+            23%,
+            36%,
+            61% {
+              opacity: 0.25;
+              filter: none;
+            }
+          }
+        `}</style>
       </div>
     </div>
   );
