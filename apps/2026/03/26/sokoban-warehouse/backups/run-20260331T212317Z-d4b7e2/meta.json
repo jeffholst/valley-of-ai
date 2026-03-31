@@ -1,12 +1,12 @@
 {
   "id": "sokoban-warehouse",
   "name": "Sokoban Warehouse",
-  "shortDescription": "Classic box-pushing puzzle game with 12 levels of increasing difficulty. Push crates onto targets using swipe, on-screen D-pad, or arrow keys — with unlimited undo, level select, and a built-in level builder with shareable links.",
+  "shortDescription": "Classic box-pushing puzzle game with 12 levels of increasing difficulty. Push crates onto targets using swipe, on-screen D-pad, or arrow keys — with unlimited undo and a level select menu.",
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-26T18:53:45Z",
   "category": "Games",
   "status": "active",
-  "tags": ["puzzle", "sokoban", "mobile", "touch", "classic", "grid", "levels", "builder"],
+  "tags": ["puzzle", "sokoban", "mobile", "touch", "classic", "grid", "levels"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "suggestion": {
@@ -40,16 +40,6 @@
       "implementedAt": "2026-03-30T19:59:10Z",
       "agentName": "GitHub Copilot",
       "llmModel": "Claude Haiku 4.5"
-    },
-    {
-      "issueNumber": 254,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/254",
-      "runId": "run-20260331T212317Z-d4b7e2",
-      "description": "Added level builder where users can design custom levels with a tile palette, validate solvability, prove solvability by test-playing, generate shareable links, and export level data to console.",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-03-31T21:23:17Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-opus-4-6"
     }
   ],
   "generation": {

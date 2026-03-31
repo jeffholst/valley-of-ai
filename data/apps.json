@@ -117,7 +117,7 @@
   {
     "id": "2026/03/26/sokoban-warehouse",
     "name": "Sokoban Warehouse",
-    "shortDescription": "Classic box-pushing puzzle game with 12 levels of increasing difficulty. Push crates onto targets using swipe, on-screen D-pad, or arrow keys — with unlimited undo and a level select menu.",
+    "shortDescription": "Classic box-pushing puzzle game with 12 levels of increasing difficulty. Push crates onto targets using swipe, on-screen D-pad, or arrow keys — with unlimited undo, level select, and a built-in level builder with shareable links.",
     "thumbnailUrl": "/apps/2026/03/26/sokoban-warehouse/thumbnail.svg",
     "createdAt": "2026-03-26T18:53:45Z",
     "year": 2026,
@@ -126,7 +126,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["puzzle", "sokoban", "mobile", "touch", "classic", "grid", "levels"],
+    "tags": ["puzzle", "sokoban", "mobile", "touch", "classic", "grid", "levels", "builder"],
     "route": "/apps/2026/03/26/sokoban-warehouse",
     "appPath": "/apps/2026/03/26/sokoban-warehouse/index.html",
     "generation": {
@@ -170,6 +170,16 @@
         "implementedAt": "2026-03-30T19:59:10Z",
         "agentName": "GitHub Copilot",
         "llmModel": "Claude Haiku 4.5"
+      },
+      {
+        "issueNumber": 254,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/254",
+        "runId": "run-20260331T212317Z-d4b7e2",
+        "description": "Added level builder where users can design custom levels with a tile palette, validate solvability, prove solvability by test-playing, generate shareable links, and export level data to console.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-03-31T21:23:17Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-opus-4-6"
       }
     ],
     "allowImprovements": true,
@@ -183,6 +193,11 @@
         "runId": "run-20260327T145952Z-b90288",
         "path": "backups/run-20260327T145952Z-b90288/index.html",
         "url": "/apps/2026/03/26/sokoban-warehouse/backups/run-20260327T145952Z-b90288/index.html"
+      },
+      {
+        "runId": "run-20260331T212317Z-d4b7e2",
+        "path": "backups/run-20260331T212317Z-d4b7e2/index.html",
+        "url": "/apps/2026/03/26/sokoban-warehouse/backups/run-20260331T212317Z-d4b7e2/index.html"
       }
     ]
   },
