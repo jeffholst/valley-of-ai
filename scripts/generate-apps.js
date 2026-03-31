@@ -12,6 +12,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { format as formatWithPrettier } from 'prettier';
 import { buildAppsRegistry } from './apps-registry.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,7 +26,7 @@ const BASE_PATH = '';
 /**
  * Main function
  */
-function main() {
+async function main() {
   console.log('🔍 Scanning for apps...');
 
   const { apps, metaFiles, warnings } = buildAppsRegistry({
@@ -48,9 +49,15 @@ function main() {
     fs.mkdirSync(outputDir, { recursive: true });
   }
 
-  // Write the registry
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(apps, null, 2));
+  // Write the registry using Prettier so future formatting steps do not
+  // create style-only diffs for data/apps.json.
+  const rawJson = JSON.stringify(apps, null, 2);
+  const formattedJson = await formatWithPrettier(rawJson, { parser: 'json' });
+  fs.writeFileSync(OUTPUT_FILE, formattedJson);
   console.log(`\n✨ Generated ${OUTPUT_FILE} with ${apps.length} app(s)`);
 }
 
-main();
+main().catch((error) => {
+  console.error(error instanceof Error ? error.message : String(error));
+  process.exit(1);
+});
