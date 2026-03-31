@@ -21,13 +21,6 @@
   },
   "improvements": [
     {
-      "issueNumber": 247,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/247",
-      "runId": "run-20260331T024754Z-b3c9e1",
-      "appliedAt": "2026-03-31T02:47:54Z",
-      "summary": "Enlarged guess buttons (52x52) with glow, scale, and checkmark badge when selected; whole row highlights purple on selection. Replaced generic points card on reveal screen with a prominent winners banner listing correct guessers by name as green chips."
-    },
-    {
       "issueNumber": 245,
       "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/245",
       "runId": "run-20260331T022221Z-d4e8f1",
