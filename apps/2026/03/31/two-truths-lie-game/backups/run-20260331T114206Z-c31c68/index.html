@@ -576,17 +576,7 @@
         </div>
 
         <div id="playerList" class="player-list"></div>
-        <div style="display: flex; align-items: center; gap: 10px; width: 100%">
-          <p id="playerCountMsg" class="text-muted" style="display: none; flex: 1; margin: 0"></p>
-          <button
-            id="removeAllBtn"
-            class="btn btn-ghost btn-sm"
-            style="display: none; color: var(--danger)"
-            onclick="removeAllPlayers()"
-          >
-            Remove All
-          </button>
-        </div>
+        <p id="playerCountMsg" class="text-muted text-center" style="display: none"></p>
 
         <button id="startBtn" class="btn btn-primary btn-lg full-width" onclick="startGame()" disabled>
           Start Game
@@ -638,7 +628,10 @@
           </div>
         </div>
 
-        <button id="spinBtn" class="btn btn-primary btn-lg" onclick="spinWheel()">🎡 Spin!</button>
+        <div class="flex-row" style="justify-content: center">
+          <button id="spinBtn" class="btn btn-primary btn-lg" onclick="spinWheel()">🎡 Spin!</button>
+          <button id="endGameBtn" class="btn btn-ghost btn-lg" onclick="endRoundEarly()">End Game</button>
+        </div>
         <div id="spinResult" class="winner-name" style="display: none"></div>
         <button
           id="goTurnBtn"
@@ -647,13 +640,6 @@
           onclick="goToTurn()"
         >
           It's their turn →
-        </button>
-        <button
-          class="btn btn-ghost btn-sm"
-          style="margin-top: 8px; opacity: 0.7"
-          onclick="endRoundEarly()"
-        >
-          End Game
         </button>
       </div>
 
@@ -885,7 +871,7 @@
           </table>
         </div>
         <div class="flex-row">
-          <button class="btn btn-ghost" onclick="returnToSetup()">End Game</button>
+          <button class="btn btn-ghost" onclick="endGame()">End Game</button>
           <button class="btn btn-primary" onclick="nextRound()">Next Round →</button>
         </div>
       </div>
@@ -1009,25 +995,17 @@
             p =>
               `<div class="player-chip">
               <span>${escHtml(p.name)}</span>
-              <button data-remove="${escHtml(p.name)}">✕</button>
+              <button onclick="removePlayer(${JSON.stringify(p.name)})">✕</button>
             </div>`,
           )
           .join('');
 
-        // Attach remove listeners (avoids inline onclick quoting issues)
-        list.querySelectorAll('[data-remove]').forEach(btn => {
-          btn.addEventListener('click', () => removePlayer(btn.dataset.remove));
-        });
-
         const n = players.length;
-        const removeAllBtn = document.getElementById('removeAllBtn');
         if (n > 0) {
           msg.style.display = 'block';
           msg.textContent = n === 1 ? '1 player added — need at least 2' : `${n} players`;
-          removeAllBtn.style.display = 'inline-flex';
         } else {
           msg.style.display = 'none';
-          removeAllBtn.style.display = 'none';
         }
         btn.disabled = n < 2;
       }
@@ -1561,26 +1539,6 @@
       function endRoundEarly() {
         speakerQueue = [];
         showRoundEnd();
-      }
-
-      /**
-       * Return to the setup screen with player names preserved but scores reset.
-       */
-      function returnToSetup() {
-        round = 1;
-        spinAngle = 0;
-        currentStatements = ['', '', ''];
-        players.forEach(p => (p.points = 0));
-        renderPlayerList();
-        showScreen('screenSetup');
-      }
-
-      /**
-       * Remove all players from the list.
-       */
-      function removeAllPlayers() {
-        players = [];
-        renderPlayerList();
       }
 
       /**

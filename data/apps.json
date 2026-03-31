@@ -63,6 +63,16 @@
         "implementedAt": "2026-03-31T11:26:54Z",
         "agentName": "Claude Code",
         "llmModel": "claude-opus-4-6"
+      },
+      {
+        "issueNumber": 251,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/251",
+        "runId": "run-20260331T114206Z-c31c68",
+        "description": "Moved End Game button on spinner screen to reduce accidental clicks, changed End Game on Round Complete to return to setup with player names preserved, added Remove All button on setup screen.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-03-31T11:42:06Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-opus-4-6"
       }
     ],
     "allowImprovements": true,
@@ -81,6 +91,11 @@
         "runId": "run-20260331T112654Z-e7f521",
         "path": "backups/run-20260331T112654Z-e7f521/index.html",
         "url": "/apps/2026/03/31/two-truths-lie-game/backups/run-20260331T112654Z-e7f521/index.html"
+      },
+      {
+        "runId": "run-20260331T114206Z-c31c68",
+        "path": "backups/run-20260331T114206Z-c31c68/index.html",
+        "url": "/apps/2026/03/31/two-truths-lie-game/backups/run-20260331T114206Z-c31c68/index.html"
       }
     ]
   },
