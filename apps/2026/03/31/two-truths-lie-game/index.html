@@ -583,37 +583,193 @@
         <h3>Now speaking…</h3>
         <div class="winner-name" id="turnSpeakerName"></div>
 
-        <div class="card">
+        <!-- Phase 1: host enters the 3 statements -->
+        <div id="statementCapture" class="card">
           <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px">
-            After <strong id="turnSpeakerName2"></strong> reads their 3 statements, record each
-            player's guess — which number is the lie?
+            Ask <strong id="turnSpeakerName2"></strong> to share their 3 statements, then type them
+            in below.
           </p>
-          <div class="guess-grid" id="guessGrid"></div>
-        </div>
-
-        <div class="card">
-          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px">
-            Which statement was the LIE?
-          </p>
-          <div class="flex-row" id="lieButtons">
-            <button class="btn btn-ghost" onclick="selectLie(1)">Statement 1</button>
-            <button class="btn btn-ghost" onclick="selectLie(2)">Statement 2</button>
-            <button class="btn btn-ghost" onclick="selectLie(3)">Statement 3</button>
+          <div style="display: flex; flex-direction: column; gap: 10px">
+            <div style="display: flex; gap: 10px; align-items: center">
+              <span
+                style="
+                  background: var(--accent);
+                  color: white;
+                  border-radius: 50%;
+                  width: 28px;
+                  height: 28px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-weight: 700;
+                  flex-shrink: 0;
+                "
+                >1</span
+              >
+              <input
+                id="stmt1"
+                class="input"
+                type="text"
+                placeholder="Statement 1…"
+                maxlength="140"
+                autocomplete="off"
+              />
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center">
+              <span
+                style="
+                  background: var(--accent);
+                  color: white;
+                  border-radius: 50%;
+                  width: 28px;
+                  height: 28px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-weight: 700;
+                  flex-shrink: 0;
+                "
+                >2</span
+              >
+              <input
+                id="stmt2"
+                class="input"
+                type="text"
+                placeholder="Statement 2…"
+                maxlength="140"
+                autocomplete="off"
+              />
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center">
+              <span
+                style="
+                  background: var(--accent);
+                  color: white;
+                  border-radius: 50%;
+                  width: 28px;
+                  height: 28px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-weight: 700;
+                  flex-shrink: 0;
+                "
+                >3</span
+              >
+              <input
+                id="stmt3"
+                class="input"
+                type="text"
+                placeholder="Statement 3…"
+                maxlength="140"
+                autocomplete="off"
+              />
+            </div>
           </div>
-          <p
-            id="lieSelectedMsg"
-            style="display: none; margin-top: 8px; font-size: 0.9rem; color: var(--success); font-weight: 600"
-          ></p>
+          <button
+            id="showStatementsBtn"
+            class="btn btn-primary full-width"
+            style="margin-top: 14px"
+            onclick="submitStatements()"
+            disabled
+          >
+            Show Statements on Screen →
+          </button>
         </div>
 
-        <button
-          id="revealBtn"
-          class="btn btn-danger btn-lg full-width"
-          onclick="revealLie()"
-          disabled
-        >
-          Reveal the Lie!
-        </button>
+        <!-- Phase 2: statements displayed + guess recording (shown after submitStatements) -->
+        <div id="statementsDisplay" style="display: none; width: 100%">
+          <div class="card">
+            <h3 style="margin-bottom: 10px">Statements</h3>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div class="guess-row" style="border-color: var(--accent-dark)">
+                <span
+                  style="
+                    background: var(--accent);
+                    color: white;
+                    border-radius: 50%;
+                    width: 28px;
+                    height: 28px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 700;
+                    flex-shrink: 0;
+                  "
+                  >1</span
+                >
+                <span id="stmtDisplay1" class="guess-name" style="font-weight: 400"></span>
+              </div>
+              <div class="guess-row" style="border-color: var(--accent-dark)">
+                <span
+                  style="
+                    background: var(--accent);
+                    color: white;
+                    border-radius: 50%;
+                    width: 28px;
+                    height: 28px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 700;
+                    flex-shrink: 0;
+                  "
+                  >2</span
+                >
+                <span id="stmtDisplay2" class="guess-name" style="font-weight: 400"></span>
+              </div>
+              <div class="guess-row" style="border-color: var(--accent-dark)">
+                <span
+                  style="
+                    background: var(--accent);
+                    color: white;
+                    border-radius: 50%;
+                    width: 28px;
+                    height: 28px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 700;
+                    flex-shrink: 0;
+                  "
+                  >3</span
+                >
+                <span id="stmtDisplay3" class="guess-name" style="font-weight: 400"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top: 0">
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px">
+              Each player: which number is the lie?
+            </p>
+            <div class="guess-grid" id="guessGrid"></div>
+          </div>
+
+          <div class="card" style="margin-top: 0">
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px">
+              Which statement was the LIE?
+            </p>
+            <div class="flex-row" id="lieButtons">
+              <button class="btn btn-ghost" onclick="selectLie(1)">Statement 1</button>
+              <button class="btn btn-ghost" onclick="selectLie(2)">Statement 2</button>
+              <button class="btn btn-ghost" onclick="selectLie(3)">Statement 3</button>
+            </div>
+            <p
+              id="lieSelectedMsg"
+              style="display: none; margin-top: 8px; font-size: 0.9rem; color: var(--success); font-weight: 600"
+            ></p>
+          </div>
+
+          <button
+            id="revealBtn"
+            class="btn btn-danger btn-lg full-width"
+            onclick="revealLie()"
+            disabled
+          >
+            Reveal the Lie!
+          </button>
+        </div>
       </div>
 
       <!-- ── SCREEN: Reveal ── -->
@@ -621,6 +777,10 @@
         <div class="round-badge" id="roundBadgeReveal"></div>
         <h2>The Lie was Statement <span id="lieNumDisplay"></span>!</h2>
         <p class="text-center" id="revealSpeakerNote" style="color: var(--text-muted)"></p>
+
+        <div id="revealStatements" class="card" style="display: none; width: 100%">
+          <div style="display: flex; flex-direction: column; gap: 8px" id="revealStmtList"></div>
+        </div>
 
         <div class="guess-grid" id="revealGrid"></div>
 
@@ -703,6 +863,9 @@
 
       /** Map of guesser name → guessed statement number. */
       let guesses = {};
+
+      /** The 3 statements entered by the host for the current speaker. */
+      let currentStatements = ['', '', ''];
 
       let timerInterval = null;
       let timerSecs = 60;
@@ -990,15 +1153,18 @@
 
         // Pick a random target segment
         const winnerIdx = Math.floor(Math.random() * n);
-        // Spin 3–6 full rotations then land with winner at the pointer (angle 0 = right)
-        const extraRotations = 3 + Math.random() * 3;
+        // Use an integer number of extra rotations so the correction math is exact.
+        const extraRotations = 3 + Math.floor(Math.random() * 4); // 3, 4, 5, or 6
         const targetSegmentCenter = winnerIdx * slice + slice / 2;
-        // Pointer is at angle 0 relative to drawing start; land pointer on winner
-        const spinTarget =
-          spinAngle +
-          extraRotations * 2 * Math.PI +
-          (2 * Math.PI - (spinAngle % (2 * Math.PI))) -
-          targetSegmentCenter;
+        // Compute how much we need to rotate from the current position so that
+        // segment winnerIdx's center lands at angle 0 (where the pointer is).
+        // We want: (spinAngle + delta + targetSegmentCenter) ≡ 0 (mod 2π)
+        // → delta = -spinAngle - targetSegmentCenter + k*2π for the smallest positive k
+        const correction =
+          ((2 * Math.PI - ((spinAngle + targetSegmentCenter) % (2 * Math.PI))) %
+            (2 * Math.PI)) +
+          extraRotations * 2 * Math.PI;
+        const spinTarget = spinAngle + correction;
 
         const duration = 3500;
         const startTime = performance.now();
@@ -1045,18 +1211,69 @@
 
       /**
        * Transition to the turn screen for the current speaker.
-       * Resets all guesses and the lie selection for this turn.
+       * Shows the statement-capture phase first; guess grid is hidden until statements are submitted.
        */
       function goToTurn() {
         guesses = {};
         currentLie = null;
+        currentStatements = ['', '', ''];
         document.getElementById('roundBadgeTurn').textContent = `Round ${round}`;
         document.getElementById('turnSpeakerName').textContent = currentSpeaker;
         document.getElementById('turnSpeakerName2').textContent = currentSpeaker;
-        buildGuessGrid();
+
+        // Reset statement inputs
+        ['stmt1', 'stmt2', 'stmt3'].forEach(id => {
+          const el = document.getElementById(id);
+          el.value = '';
+          el.disabled = false;
+        });
+        document.getElementById('showStatementsBtn').disabled = true;
+        document.getElementById('statementCapture').style.display = 'block';
+        document.getElementById('statementsDisplay').style.display = 'none';
+
         resetLieButtons();
-        document.getElementById('revealBtn').disabled = true;
         showScreen('screenTurn');
+
+        // Enable submit button when all 3 statements are non-empty
+        ['stmt1', 'stmt2', 'stmt3'].forEach(id => {
+          document.getElementById(id).addEventListener('input', checkStatementsReady);
+        });
+      }
+
+      /**
+       * Enable the "Show Statements" button only when all 3 inputs have content.
+       */
+      function checkStatementsReady() {
+        const all = ['stmt1', 'stmt2', 'stmt3'].every(
+          id => document.getElementById(id).value.trim().length > 0,
+        );
+        document.getElementById('showStatementsBtn').disabled = !all;
+      }
+
+      /**
+       * Lock the statement inputs, display them numbered on screen, and reveal the guess grid.
+       */
+      function submitStatements() {
+        currentStatements = ['stmt1', 'stmt2', 'stmt3'].map(id =>
+          document.getElementById(id).value.trim(),
+        );
+
+        // Lock inputs
+        ['stmt1', 'stmt2', 'stmt3'].forEach(id => {
+          document.getElementById(id).disabled = true;
+        });
+
+        // Display numbered statements
+        ['stmtDisplay1', 'stmtDisplay2', 'stmtDisplay3'].forEach((id, i) => {
+          document.getElementById(id).textContent = currentStatements[i];
+        });
+
+        // Switch phases
+        document.getElementById('statementCapture').style.display = 'none';
+        document.getElementById('statementsDisplay').style.display = 'block';
+
+        buildGuessGrid();
+        document.getElementById('revealBtn').disabled = true;
       }
 
       /**
@@ -1148,6 +1365,25 @@
         document.getElementById('lieNumDisplay').textContent = currentLie;
         document.getElementById('revealSpeakerNote').textContent =
           `${currentSpeaker}'s lie was statement ${currentLie}`;
+
+        // Show the 3 statements on the reveal screen if they were captured
+        const revealStmts = document.getElementById('revealStatements');
+        const revealList = document.getElementById('revealStmtList');
+        if (currentStatements.some(s => s.length > 0)) {
+          revealList.innerHTML = currentStatements
+            .map((s, i) => {
+              const isLie = i + 1 === currentLie;
+              return `<div class="guess-row ${isLie ? 'wrong' : 'correct'}">
+                <span style="background:${isLie ? 'var(--danger)' : 'var(--success)'};color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0">${i + 1}</span>
+                <span style="flex:1;font-size:0.95rem">${escHtml(s)}</span>
+                <span>${isLie ? '🤥' : '✓'}</span>
+              </div>`;
+            })
+            .join('');
+          revealStmts.style.display = 'block';
+        } else {
+          revealStmts.style.display = 'none';
+        }
 
         const guessers = players.filter(p => p.name !== currentSpeaker);
         let correct = 0;
@@ -1251,6 +1487,7 @@
         players = [];
         round = 1;
         spinAngle = 0;
+        currentStatements = ['', '', ''];
         renderPlayerList();
         showScreen('screenSetup');
       }

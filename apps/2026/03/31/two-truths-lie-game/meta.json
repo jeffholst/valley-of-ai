@@ -19,6 +19,15 @@
     "runId": "run-20260331T015453Z-a7f3c2",
     "notes": "Built from community suggestion #243. 6-screen host-driven flow: Setup → Think Timer (round 1 only) → Spinner wheel → Turn/Guess recording → Reveal → Round-end Scoreboard. Dark purple theme optimised for Zoom screen-sharing."
   },
+  "improvements": [
+    {
+      "issueNumber": 245,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/245",
+      "runId": "run-20260331T022221Z-d4e8f1",
+      "appliedAt": "2026-03-31T02:22:21Z",
+      "summary": "Fixed spinner wheel alignment (integer rotations + corrected modulo formula), added host statement capture on turn screen with numbered display, updated reveal screen to show statements with lie highlighted, redrew thumbnail with geometrically perfect circular wheel using SVG arc paths and clipPath."
+    }
+  ],
   "suggestion": {
     "issueNumber": 243,
     "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/243",
