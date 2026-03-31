@@ -50,16 +50,6 @@
       "implementedAt": "2026-03-31T21:23:17Z",
       "agentName": "Claude Code",
       "llmModel": "claude-opus-4-6"
-    },
-    {
-      "issueNumber": 257,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/257",
-      "runId": "run-20260331T220504Z-e3f2c2",
-      "description": "Added a clipboard icon button next to the generated Level Builder share link so users can copy it on demand.",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-03-31T22:05:04Z",
-      "agentName": "Codex",
-      "llmModel": "gpt-5"
     }
   ],
   "generation": {

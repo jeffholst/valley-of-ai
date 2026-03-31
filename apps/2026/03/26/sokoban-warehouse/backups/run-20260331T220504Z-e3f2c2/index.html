@@ -569,36 +569,8 @@
         border: 1px solid var(--border);
         border-radius: 8px;
         color: var(--text);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      #shareLinkText {
-        flex: 1;
-        min-width: 0;
         word-break: break-all;
-        text-align: left;
-      }
-
-      #btnCopyShareLink {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        background: var(--btn-bg);
-        color: var(--text);
-        font-size: 16px;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: background 0.15s;
-        flex-shrink: 0;
-      }
-
-      #btnCopyShareLink:hover {
-        background: var(--btn-hover);
+        text-align: center;
       }
     </style>
   </head>
@@ -686,12 +658,7 @@
         <button id="btnExportConsole" disabled>📋 Export</button>
         <button id="btnCloseBuilder">✕ Close</button>
       </div>
-      <div id="shareOutput" class="hidden">
-        <span id="shareLinkText"></span>
-        <button id="btnCopyShareLink" type="button" aria-label="Copy share link" title="Copy link">
-          📋
-        </button>
-      </div>
+      <div id="shareOutput" class="hidden"></div>
     </div>
 
     <script>
@@ -1430,7 +1397,6 @@
         isValid: false,
         isSolved: false,
         painting: false,
-        lastShareUrl: '',
       };
 
       /**
@@ -1732,17 +1698,12 @@
         const encoded = encodeLevelForURL(lines);
         const url = window.location.origin + window.location.pathname + '#custom=' + encoded;
         const outputEl = document.getElementById('shareOutput');
-        document.getElementById('shareLinkText').textContent = url;
-        builder.lastShareUrl = url;
+        outputEl.textContent = url;
         outputEl.classList.remove('hidden');
-        setBuilderStatus('Share link generated. Tap the clipboard icon to copy it.', 'ok');
-      });
-
-      document.getElementById('btnCopyShareLink').addEventListener('click', () => {
-        if (!builder.lastShareUrl) return;
-        navigator.clipboard.writeText(builder.lastShareUrl).then(
+        // Copy to clipboard
+        navigator.clipboard.writeText(url).then(
           () => setBuilderStatus('Share link copied to clipboard!', 'ok'),
-          () => setBuilderStatus('Copy failed — copy the link text manually.', 'warn')
+          () => setBuilderStatus('Link generated above — copy it manually.', 'ok')
         );
       });
 
