@@ -71,7 +71,16 @@ function getBoostedIssues() {
     limit: 20,
     fields: ['number', 'title', 'body', 'url'],
   });
-  if (!issues || issues.length === 0) {
+  if (issues === null) {
+    throw new Error(
+      'Failed to retrieve boosted approved suggestions from GitHub. ' +
+        'Check gh authentication and network connectivity.'
+    );
+  }
+  if (!Array.isArray(issues)) {
+    throw new Error('GitHub returned an unexpected response while listing boosted suggestions.');
+  }
+  if (issues.length === 0) {
     return null;
   }
 
@@ -95,7 +104,16 @@ function getApprovedIssues() {
     limit: 10,
     fields: ['number', 'title', 'body', 'url'],
   });
-  if (!issues || issues.length === 0) {
+  if (issues === null) {
+    throw new Error(
+      'Failed to retrieve approved suggestions from GitHub. ' +
+        'Check gh authentication and network connectivity.'
+    );
+  }
+  if (!Array.isArray(issues)) {
+    throw new Error('GitHub returned an unexpected response while listing approved suggestions.');
+  }
+  if (issues.length === 0) {
     return null;
   }
   // Prefer lower (older) issue numbers
@@ -348,6 +366,7 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error('select-app-suggestion.js error:', err);
+  const message = err instanceof Error ? err.message : String(err);
+  console.error(`select-app-suggestion.js error: ${message}`);
   process.exit(1);
 });

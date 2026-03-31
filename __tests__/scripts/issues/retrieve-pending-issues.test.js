@@ -151,6 +151,18 @@ describe('retrieve-pending-issues helpers', () => {
 // ---------------------------------------------------------------------------
 
 describe('retrievePendingIssues', () => {
+  it('throws a clear error when GitHub pending issue listing fails', () => {
+    expect(() =>
+      retrievePendingIssues(
+        { limit: 50, issueNumber: null, type: null },
+        {
+          listIssuesByLabels: jest.fn(() => null),
+          getIssue: jest.fn(),
+        }
+      )
+    ).toThrow('Failed to retrieve pending issues from GitHub.');
+  });
+
   it('returns only open pending suggestion and improvement issues', () => {
     const issues = [
       makeIssue({ number: 104, createdAt: '2026-03-04T00:00:00.000Z' }),

@@ -76,7 +76,16 @@ function getBoostedImprovements(repoOwner, rejectPhrases) {
     limit: 20,
     fields: ['number', 'title', 'body', 'url', 'author'],
   });
-  if (!issues || issues.length === 0) {
+  if (issues === null) {
+    throw new Error(
+      'Failed to retrieve boosted approved improvements from GitHub. ' +
+        'Check gh authentication and network connectivity.'
+    );
+  }
+  if (!Array.isArray(issues)) {
+    throw new Error('GitHub returned an unexpected response while listing boosted improvements.');
+  }
+  if (issues.length === 0) {
     return [];
   }
 
@@ -103,7 +112,16 @@ function getApprovedImprovements(repoOwner, rejectPhrases) {
     limit: 10,
     fields: ['number', 'title', 'body', 'url', 'author'],
   });
-  if (!issues || issues.length === 0) {
+  if (issues === null) {
+    throw new Error(
+      'Failed to retrieve approved improvements from GitHub. ' +
+        'Check gh authentication and network connectivity.'
+    );
+  }
+  if (!Array.isArray(issues)) {
+    throw new Error('GitHub returned an unexpected response while listing approved improvements.');
+  }
+  if (issues.length === 0) {
     return [];
   }
   const eligible = issues
@@ -328,6 +346,7 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error('select-app-improvement.js error:', err);
+  const message = err instanceof Error ? err.message : String(err);
+  console.error(`select-app-improvement.js error: ${message}`);
   process.exit(1);
 });

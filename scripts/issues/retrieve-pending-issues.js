@@ -244,13 +244,21 @@ export function retrievePendingIssues(
     return buildRetrieveResult([normalizeIssue(issue)]);
   }
 
-  const rawIssues =
-    deps.listIssuesByLabels({
-      labels: ['status:pending'],
-      state: 'open',
-      limit,
-      fields: ['number', 'title', 'body', 'url', 'state', 'labels', 'createdAt', 'author'],
-    }) ?? [];
+  const rawIssues = deps.listIssuesByLabels({
+    labels: ['status:pending'],
+    state: 'open',
+    limit,
+    fields: ['number', 'title', 'body', 'url', 'state', 'labels', 'createdAt', 'author'],
+  });
+  if (rawIssues === null) {
+    throw new Error(
+      'Failed to retrieve pending issues from GitHub. ' +
+        'Check gh authentication and network connectivity.'
+    );
+  }
+  if (!Array.isArray(rawIssues)) {
+    throw new Error('GitHub returned an unexpected response while listing pending issues.');
+  }
 
   const issues = sortIssuesOldestFirst(
     rawIssues
