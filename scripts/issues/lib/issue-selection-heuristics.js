@@ -99,9 +99,11 @@ export function extractAppPath(issue) {
  * Export these so callers can inspect defaults and override specific values.
  *
  * FREQUENCY — how many improvements in a rolling window trigger a risk flag
- * freqHighCount7d    number  Improvements in last 7 days that trigger HIGH risk (default 3)
- * freqMediumCount7d  number  Improvements in last 7 days that trigger MEDIUM risk (default 2)
- * freqMediumCount30d number  Improvements in last 30 days that trigger MEDIUM risk (default 5)
+ * freqHighCount1d    number  Improvements in last 24 hours that trigger HIGH risk (default 6)
+ * freqMediumCount1d  number  Improvements in last 24 hours that trigger MEDIUM risk (default 4)
+ * freqHighCount7d    number  Improvements in last 7 days that trigger HIGH risk (default 25)
+ * freqMediumCount7d  number  Improvements in last 7 days that trigger MEDIUM risk (default 15)
+ * freqMediumCount30d number  Improvements in last 30 days that trigger MEDIUM risk (default 40)
  *
  * VOLUME — total lifetime improvement count thresholds
  * volumeHighTotal    number  All-time improvement count triggering HIGH risk (default 8)
@@ -124,11 +126,13 @@ export function extractAppPath(issue) {
  * boostOverridesOscillation boolean When true, oscillation risk is reduced to low for boosted issues (default true)
  */
 export const SANITY_DEFAULTS = {
-  freqHighCount7d: 3,
-  freqMediumCount7d: 2,
-  freqMediumCount30d: 5,
-  volumeHighTotal: 8,
-  volumeMediumTotal: 5,
+  freqHighCount1d: 6,
+  freqMediumCount1d: 4,
+  freqHighCount7d: 25,
+  freqMediumCount7d: 15,
+  freqMediumCount30d: 40,
+  volumeHighTotal: 30,
+  volumeMediumTotal: 15,
   oscillationWindow: 4,
   oscillationKeywords: [
     'revert',
@@ -181,6 +185,7 @@ function capRisk(risk, cap) {
  *   overallRisk: 'low'|'medium'|'high',
  *   isBoosted: boolean,
  *   totalImprovements: number,
+ *   recentCount1d: number,
  *   recentCount7d: number,
  *   recentCount30d: number,
  *   oscillationSignals: Array<{issueNumber: number, description: string}>,
@@ -201,10 +206,12 @@ export function computeImprovementSanity(
   const candidate = (candidateDescription || '').toLowerCase();
 
   const msPerDay = 24 * 60 * 60 * 1000;
+  const cutoff1d = new Date(now.getTime() - 1 * msPerDay);
   const cutoff7d = new Date(now.getTime() - 7 * msPerDay);
   const cutoff30d = new Date(now.getTime() - 30 * msPerDay);
 
   // --- Frequency ---
+  const recentCount1d = improvements.filter((i) => new Date(i.implementedAt) > cutoff1d).length;
   const recentCount7d = improvements.filter((i) => new Date(i.implementedAt) > cutoff7d).length;
   const recentCount30d = improvements.filter((i) => new Date(i.implementedAt) > cutoff30d).length;
   const totalImprovements = improvements.length;
@@ -243,9 +250,13 @@ export function computeImprovementSanity(
 
   // --- Individual signal risk levels ---
   let frequencyRisk = 'low';
-  if (recentCount7d >= cfg.freqHighCount7d) {
+  if (recentCount1d >= cfg.freqHighCount1d || recentCount7d >= cfg.freqHighCount7d) {
     frequencyRisk = 'high';
-  } else if (recentCount7d >= cfg.freqMediumCount7d || recentCount30d >= cfg.freqMediumCount30d) {
+  } else if (
+    recentCount1d >= cfg.freqMediumCount1d ||
+    recentCount7d >= cfg.freqMediumCount7d ||
+    recentCount30d >= cfg.freqMediumCount30d
+  ) {
     frequencyRisk = 'medium';
   }
 
@@ -278,6 +289,15 @@ export function computeImprovementSanity(
 
   // --- Build human-readable reasons ---
   const reasons = [];
+  if (recentCount1d >= cfg.freqHighCount1d) {
+    reasons.push(
+      `${recentCount1d} improvements in the last 24 hours (high threshold: ${cfg.freqHighCount1d})`
+    );
+  } else if (recentCount1d >= cfg.freqMediumCount1d) {
+    reasons.push(
+      `${recentCount1d} improvements in the last 24 hours (medium threshold: ${cfg.freqMediumCount1d})`
+    );
+  }
   if (recentCount7d >= cfg.freqHighCount7d) {
     reasons.push(
       `${recentCount7d} improvements in the last 7 days (high threshold: ${cfg.freqHighCount7d})`
@@ -317,6 +337,7 @@ export function computeImprovementSanity(
     overallRisk,
     isBoosted,
     totalImprovements,
+    recentCount1d,
     recentCount7d,
     recentCount30d,
     oscillationSignals,

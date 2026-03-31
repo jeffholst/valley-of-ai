@@ -304,6 +304,7 @@ describe('computeImprovementSanity', () => {
   const NOW = new Date('2026-03-25T12:00:00Z');
 
   const daysAgoFrom = (base, n) => new Date(base.getTime() - n * 24 * 60 * 60 * 1000).toISOString();
+  const hoursAgoFrom = (base, n) => new Date(base.getTime() - n * 60 * 60 * 1000).toISOString();
 
   function makeImprovement(overrides = {}) {
     return {
@@ -341,39 +342,58 @@ describe('computeImprovementSanity', () => {
 
   // --- frequency: medium risk ---
 
-  it('returns medium risk when freqMediumCount7d threshold is met', () => {
+  it('returns medium risk when freqMediumCount1d threshold is met', () => {
     const meta = {
-      improvements: [
-        makeImprovement({ implementedAt: daysAgoFrom(NOW, 1) }),
-        makeImprovement({ implementedAt: daysAgoFrom(NOW, 2) }),
-      ],
+      improvements: Array.from({ length: SANITY_DEFAULTS.freqMediumCount1d }, (_, i) =>
+        makeImprovement({ implementedAt: hoursAgoFrom(NOW, i + 1) })
+      ),
     };
     const result = computeImprovementSanity(meta, 'add something', false, {}, NOW);
     expect(result.overallRisk).toBe('medium');
-    expect(result.recentCount7d).toBe(2);
+    expect(result.recentCount1d).toBe(SANITY_DEFAULTS.freqMediumCount1d);
+    expect(result.signals.frequencyRisk).toBe('medium');
+  });
+
+  it('returns medium risk when freqMediumCount7d threshold is met', () => {
+    const meta = {
+      improvements: Array.from({ length: SANITY_DEFAULTS.freqMediumCount7d }, (_, i) =>
+        makeImprovement({ implementedAt: daysAgoFrom(NOW, 1 + (i % 6)) })
+      ),
+    };
+    const result = computeImprovementSanity(meta, 'add something', false, {}, NOW);
+    expect(result.recentCount7d).toBe(SANITY_DEFAULTS.freqMediumCount7d);
     expect(result.signals.frequencyRisk).toBe('medium');
   });
 
   it('returns medium risk when freqMediumCount30d threshold is met', () => {
     const meta = {
-      improvements: Array.from({ length: 5 }, (_, i) =>
-        makeImprovement({ implementedAt: daysAgoFrom(NOW, 10 + i) })
+      improvements: Array.from({ length: SANITY_DEFAULTS.freqMediumCount30d }, (_, i) =>
+        makeImprovement({ implementedAt: daysAgoFrom(NOW, 10 + (i % 20)) })
       ),
     };
     const result = computeImprovementSanity(meta, 'add something', false, {}, NOW);
-    expect(result.recentCount30d).toBe(5);
+    expect(result.recentCount30d).toBe(SANITY_DEFAULTS.freqMediumCount30d);
     expect(result.signals.frequencyRisk).toBe('medium');
   });
 
   // --- frequency: high risk ---
 
+  it('returns high risk when freqHighCount1d threshold is met', () => {
+    const meta = {
+      improvements: Array.from({ length: SANITY_DEFAULTS.freqHighCount1d }, (_, i) =>
+        makeImprovement({ implementedAt: hoursAgoFrom(NOW, i + 1) })
+      ),
+    };
+    const result = computeImprovementSanity(meta, 'add something', false, {}, NOW);
+    expect(result.overallRisk).toBe('high');
+    expect(result.signals.frequencyRisk).toBe('high');
+  });
+
   it('returns high risk when freqHighCount7d threshold is met', () => {
     const meta = {
-      improvements: [
-        makeImprovement({ implementedAt: daysAgoFrom(NOW, 1) }),
-        makeImprovement({ implementedAt: daysAgoFrom(NOW, 2) }),
-        makeImprovement({ implementedAt: daysAgoFrom(NOW, 3) }),
-      ],
+      improvements: Array.from({ length: SANITY_DEFAULTS.freqHighCount7d }, (_, i) =>
+        makeImprovement({ implementedAt: daysAgoFrom(NOW, 1 + (i % 6)) })
+      ),
     };
     const result = computeImprovementSanity(meta, 'add something', false, {}, NOW);
     expect(result.overallRisk).toBe('high');
@@ -384,18 +404,18 @@ describe('computeImprovementSanity', () => {
 
   it('returns medium risk when volumeMediumTotal threshold is met', () => {
     const meta = {
-      improvements: Array.from({ length: 5 }, () =>
+      improvements: Array.from({ length: SANITY_DEFAULTS.volumeMediumTotal }, () =>
         makeImprovement({ implementedAt: daysAgoFrom(NOW, 60) })
       ),
     };
     const result = computeImprovementSanity(meta, 'add something', false, {}, NOW);
-    expect(result.totalImprovements).toBe(5);
+    expect(result.totalImprovements).toBe(SANITY_DEFAULTS.volumeMediumTotal);
     expect(result.signals.volumeRisk).toBe('medium');
   });
 
   it('returns high risk when volumeHighTotal threshold is met', () => {
     const meta = {
-      improvements: Array.from({ length: 8 }, () =>
+      improvements: Array.from({ length: SANITY_DEFAULTS.volumeHighTotal }, () =>
         makeImprovement({ implementedAt: daysAgoFrom(NOW, 60) })
       ),
     };
@@ -482,11 +502,9 @@ describe('computeImprovementSanity', () => {
 
   it('caps high frequency risk to low when boosted and boostOverridesHighFreq is true', () => {
     const meta = {
-      improvements: [
-        makeImprovement({ implementedAt: daysAgoFrom(NOW, 1) }),
-        makeImprovement({ implementedAt: daysAgoFrom(NOW, 2) }),
-        makeImprovement({ implementedAt: daysAgoFrom(NOW, 3) }),
-      ],
+      improvements: Array.from({ length: SANITY_DEFAULTS.freqHighCount1d }, (_, i) =>
+        makeImprovement({ implementedAt: hoursAgoFrom(NOW, i + 1) })
+      ),
     };
     const result = computeImprovementSanity(meta, 'add something', true, {}, NOW);
     // frequency was high, but boost reduces it to low
@@ -506,7 +524,7 @@ describe('computeImprovementSanity', () => {
   it('never exceeds boostMaxRisk for boosted issues', () => {
     // volume alone can hit high, but boost caps at medium
     const meta = {
-      improvements: Array.from({ length: 8 }, () =>
+      improvements: Array.from({ length: SANITY_DEFAULTS.volumeHighTotal }, () =>
         makeImprovement({ implementedAt: daysAgoFrom(NOW, 60) })
       ),
     };
@@ -518,10 +536,9 @@ describe('computeImprovementSanity', () => {
 
   it('includes boost reason in reasons array when boost was applied and there were signals', () => {
     const meta = {
-      improvements: [
-        makeImprovement({ implementedAt: daysAgoFrom(NOW, 1) }),
-        makeImprovement({ implementedAt: daysAgoFrom(NOW, 2) }),
-      ],
+      improvements: Array.from({ length: SANITY_DEFAULTS.freqMediumCount1d }, (_, i) =>
+        makeImprovement({ implementedAt: hoursAgoFrom(NOW, i + 1) })
+      ),
     };
     const result = computeImprovementSanity(meta, 'add something', true, {}, NOW);
     expect(result.isBoosted).toBe(true);
