@@ -1,5 +1,49 @@
 [
   {
+    "id": "2026/03/31/two-truths-lie-game",
+    "name": "2 Truths and a Lie",
+    "shortDescription": "Host a live 2 Truths and a Lie party game — spin to pick speakers, record guesses, reveal the lie, and track scores across rounds.",
+    "thumbnailUrl": "/apps/2026/03/31/two-truths-lie-game/thumbnail.svg",
+    "createdAt": "2026-03-31T01:54:53Z",
+    "year": 2026,
+    "month": 3,
+    "day": 31,
+    "category": "Entertainment",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "party",
+      "game",
+      "social",
+      "spinner",
+      "multiplayer",
+      "zoom",
+      "icebreaker",
+      "responsive"
+    ],
+    "route": "/apps/2026/03/31/two-truths-lie-game",
+    "appPath": "/apps/2026/03/31/two-truths-lie-game/index.html",
+    "generation": {
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6",
+      "startTime": "2026-03-31T01:54:53Z",
+      "endTime": "2026-03-31T02:02:26Z",
+      "totalTokensIn": 5200,
+      "totalTokensOut": 12400,
+      "runId": "run-20260331T015453Z-a7f3c2",
+      "notes": "Built from community suggestion #243. 6-screen host-driven flow: Setup → Think Timer (round 1 only) → Spinner wheel → Turn/Guess recording → Reveal → Round-end Scoreboard. Dark purple theme optimised for Zoom screen-sharing."
+    },
+    "suggestion": {
+      "issueNumber": 243,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/243",
+      "prompt": "Build a browser-based \"2 Truths and a Lie\" game for a Zoom screen-share host. Start with a setup screen where the host enters participant names. Then show instructions and a 60-second countdown for everyone to think of 3 statements (2 true, 1 false). After the first round timer ends, show a wheel containing all participant names and a button to spin and randomly choose the next speaker. For each turn, show a scoreboard where the host records which statement (1, 2, or 3) each participant guessed was the lie. After reveal, mark everyone who guessed correctly as round winners. Support multiple rounds; only the first round uses the 60-second timer. Make it simple, responsive, and easy to run live on a shared screen.",
+      "requestor": "Jeff Holst"
+    },
+    "improvements": null,
+    "allowImprovements": true,
+    "backups": null
+  },
+  {
     "id": "2026/03/26/sokoban-warehouse",
     "name": "Sokoban Warehouse",
     "shortDescription": "Classic box-pushing puzzle game with 12 levels of increasing difficulty. Push crates onto targets using swipe, on-screen D-pad, or arrow keys — with unlimited undo and a level select menu.",
@@ -46,10 +90,24 @@
         "implementedAt": "2026-03-27T15:00:00Z",
         "agentName": "Claude Code",
         "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 241,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/241",
+        "description": "When a level is successfully completed, made the \"Next Level\" button the default action when the user presses the Return/Enter key.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-03-30T19:59:10Z",
+        "agentName": "GitHub Copilot",
+        "llmModel": "Claude Haiku 4.5"
       }
     ],
     "allowImprovements": true,
     "backups": [
+      {
+        "runId": "run-20260326T201250Z-7d39dd",
+        "path": "backups/run-20260326T201250Z-7d39dd/index.html",
+        "url": "/apps/2026/03/26/sokoban-warehouse/backups/run-20260326T201250Z-7d39dd/index.html"
+      },
       {
         "runId": "run-20260327T145952Z-b90288",
         "path": "backups/run-20260327T145952Z-b90288/index.html",
