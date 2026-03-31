@@ -1599,26 +1599,15 @@
        */
       function renderScoreTable(tbodyId) {
         const sorted = [...players].sort((a, b) => b.points - a.points);
-        const medalByRank = {
-          1: '🥇',
-          2: '🥈',
-          3: '🥉',
-        };
-        let lastPoints = null;
-        let lastRank = 0;
+        const medals = ['🥇', '🥈', '🥉'];
         document.getElementById(tbodyId).innerHTML = sorted
           .map(
-            (p, i) => {
-              const rank = p.points === lastPoints ? lastRank : i + 1;
-              lastPoints = p.points;
-              lastRank = rank;
-
-              return `<tr>
-            <td class="score-rank">${medalByRank[rank] || rank}</td>
+            (p, i) =>
+              `<tr>
+            <td class="score-rank">${medals[i] || i + 1}</td>
             <td>${escHtml(p.name)}</td>
             <td class="score-points">${p.points}</td>
-          </tr>`;
-            },
+          </tr>`,
           )
           .join('');
       }

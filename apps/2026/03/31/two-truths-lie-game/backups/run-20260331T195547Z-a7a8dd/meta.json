@@ -53,16 +53,6 @@
       "implementedAt": "2026-03-31T11:42:06Z",
       "agentName": "Claude Code",
       "llmModel": "claude-opus-4-6"
-    },
-    {
-      "issueNumber": 253,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/253",
-      "runId": "run-20260331T195547Z-a7a8dd",
-      "description": "Updated scoreboard ranking so tied players share the same medal and subsequent ranks are skipped (competition ranking).",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-03-31T19:55:47Z",
-      "agentName": "Codex",
-      "llmModel": "gpt-5"
     }
   ],
   "suggestion": {
