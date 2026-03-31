@@ -178,6 +178,9 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 
 Generate `meta.json` with all required fields: `id`, `name`, `shortDescription`, `thumbnail`, `createdAt`, `category`, `status`, `tags`, `homepagePath`, `inputMode`, `generation` (include agentName, llmModel, startTime, endTime, totalTokensIn/Out, runId, notes).
 
+- `generation.runId` **must exactly equal** the `<runId>` generated in Step 0 (no alternate value, no regeneration).
+- For initial app creation, **do not create an `improvements` array**. Improvements are appended later only by the improvement pipeline.
+
 If this app was built from an approved GitHub issue (Step 1 sources `github-boosted` or `github-approved`), include a `suggestion` object:
 
 ```json

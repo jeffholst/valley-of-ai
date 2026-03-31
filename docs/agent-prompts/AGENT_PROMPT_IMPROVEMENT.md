@@ -278,11 +278,17 @@ Update `apps/<app-path>/meta.json`. **Do not change `id`, `createdAt`, or the or
 
 Append an entry to the `improvements` array (create the array if it does not exist):
 
+- **Always APPEND at the end. Never prepend. Never reorder existing entries.**
+- Keep `improvements[]` in chronological order (oldest first, newest last).
+- **Do not rename fields** for the improvement object. Use the canonical keys shown below.
+- `runId` in this new improvement entry **must exactly match** the `<runId>` generated in Step 0 (this is required for deterministic log-to-metadata correlation).
+
 ```json
 "improvements": [
   {
     "issueNumber": <number>,
     "issueUrl": "<full GitHub issue URL>",
+    "runId": "<runId>",
     "description": "<one-sentence summary of what was changed>",
     "requestor": "<requestor name, or omit if anonymous>",
     "implementedAt": "<UTC timestamp of this run>",
@@ -292,13 +298,21 @@ Append an entry to the `improvements` array (create the array if it does not exi
 ]
 ```
 
+**Compatibility note:** Do not substitute alternate keys such as `summary` or `appliedAt`.
+
+Before logging Step 6 complete, verify:
+
+1. Existing `improvements[]` entries are still in their original order.
+2. The new entry was appended as the final array element.
+3. The new final element has `runId === <runId>`.
+
 Log immediately:
 
 ```bash
 npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
   --step UPDATE_META_JSON --seq 6 --status completed --durationMs <duration> \
   --tokensIn <in> --tokensOut <out> \
-  --message "Updated meta.json with improvement record"
+  --message "Appended improvements[] entry: issueNumber=<issueNumber>, runId=<runId>"
 ```
 
 ---

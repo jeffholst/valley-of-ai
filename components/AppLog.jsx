@@ -406,9 +406,15 @@ export default function AppLog({ appId, suggestion, improvements }) {
   }
 
   const groups = groupLogs(logs);
+  const improvementsList = Array.isArray(improvements) ? improvements : [];
+  const improvementsByRunId = new Map(
+    improvementsList.filter((item) => item?.runId).map((item) => [item.runId, item])
+  );
+  const improvementsWithoutRunId = improvementsList.filter((item) => !item?.runId);
 
   // Count improvement groups for labeling (#1, #2, ...)
   let improvementCounter = 0;
+  let fallbackImprovementIndex = 0;
 
   return (
     <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -468,7 +474,9 @@ export default function AppLog({ appId, suggestion, improvements }) {
             const items = [];
             if (group.type === 'improvement') {
               improvementCounter += 1;
-              const improvement = improvements?.[improvementCounter - 1];
+              const improvement =
+                improvementsByRunId.get(group.runId) ??
+                improvementsWithoutRunId[fallbackImprovementIndex++];
               if (improvement) {
                 items.push(
                   <div
@@ -491,7 +499,9 @@ export default function AppLog({ appId, suggestion, improvements }) {
                         <span className="ml-2 opacity-75">by {improvement.requestor}</span>
                       )}
                     </div>
-                    <div className="opacity-75 leading-relaxed">{improvement.description}</div>
+                    <div className="opacity-75 leading-relaxed">
+                      {improvement.description || improvement.summary}
+                    </div>
                   </div>
                 );
               }
