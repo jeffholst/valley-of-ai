@@ -1337,6 +1337,7 @@
       /**
        * Build the guess entry grid: one row per non-speaker player.
        * Each row has three numbered buttons (1, 2, 3) to record a guess.
+       * Uses data-* attributes + addEventListener to avoid inline onclick quoting issues.
        */
       function buildGuessGrid() {
         const grid = document.getElementById('guessGrid');
@@ -1351,7 +1352,7 @@
                   .map(
                     n =>
                       `<button class="guess-btn" id="gb-${idSafe(p.name)}-${n}"
-                      onclick="recordGuess(${JSON.stringify(p.name)}, ${n})">${n}</button>`,
+                        data-player="${escHtml(p.name)}" data-num="${n}">${n}</button>`,
                   )
                   .join('')}
               </div>
@@ -1359,6 +1360,13 @@
             </div>`,
           )
           .join('');
+
+        // Attach click listeners after building HTML — avoids inline onclick quoting bugs
+        grid.querySelectorAll('.guess-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            recordGuess(btn.dataset.player, parseInt(btn.dataset.num, 10));
+          });
+        });
       }
 
       /**
@@ -1380,12 +1388,11 @@
       }
 
       /**
-       * Enable the reveal button only when all guessers have guessed AND a lie is selected.
+       * Enable the reveal button once the lie statement has been selected.
+       * Players who haven't recorded a guess are counted as wrong on reveal.
        */
       function checkRevealReady() {
-        const guessers = players.filter(p => p.name !== currentSpeaker);
-        const allGuessed = guessers.every(p => guesses[p.name] !== undefined);
-        document.getElementById('revealBtn').disabled = !(allGuessed && currentLie !== null);
+        document.getElementById('revealBtn').disabled = currentLie === null;
       }
 
       /**
@@ -1458,9 +1465,11 @@
               correct++;
               winners.push(p.name);
             }
+            const guessLabel =
+              guesses[p.name] !== undefined ? `guessed #${guesses[p.name]}` : 'no guess';
             return `<div class="guess-row ${isCorrect ? 'correct' : 'wrong'}">
             <span class="guess-name">${escHtml(p.name)}</span>
-            <span style="color:var(--text-muted);font-size:0.9rem">guessed #${guesses[p.name]}</span>
+            <span style="color:var(--text-muted);font-size:0.9rem">${guessLabel}</span>
             <span class="guess-icon">${isCorrect ? '✅' : '❌'}</span>
           </div>`;
           })
