@@ -380,92 +380,29 @@
         gap: 6px;
       }
       .guess-btn {
-        width: 52px;
-        height: 52px;
-        border-radius: 10px;
-        border: 2px solid var(--card-border);
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        border: 1.5px solid var(--card-border);
         background: var(--bg);
         color: var(--text-muted);
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 700;
         cursor: pointer;
-        transition: all 0.15s;
+        transition: all 0.12s;
         display: flex;
         align-items: center;
         justify-content: center;
-        position: relative;
       }
       .guess-btn:hover {
         border-color: var(--accent);
         color: var(--accent-bright);
-        background: rgba(139, 92, 246, 0.12);
-        transform: scale(1.05);
+        background: rgba(139, 92, 246, 0.1);
       }
       .guess-btn.selected {
         background: var(--accent);
         border-color: var(--accent);
         color: white;
-        box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
-        transform: scale(1.1);
-      }
-      .guess-btn.selected::after {
-        content: '✓';
-        position: absolute;
-        top: -6px;
-        right: -6px;
-        background: var(--success);
-        color: white;
-        border-radius: 50%;
-        width: 16px;
-        height: 16px;
-        font-size: 9px;
-        font-weight: 900;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        line-height: 1;
-      }
-      .guess-row.has-guess {
-        border-color: var(--accent-dark);
-        background: rgba(139, 92, 246, 0.06);
-      }
-      /* Winners banner */
-      .winners-banner {
-        width: 100%;
-        background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05));
-        border: 2px solid var(--success);
-        border-radius: 14px;
-        padding: 16px;
-        text-align: center;
-      }
-      .winners-banner h2 {
-        color: var(--success);
-        margin-bottom: 10px;
-        filter: drop-shadow(0 0 6px rgba(16,185,129,0.4));
-      }
-      .winners-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        justify-content: center;
-      }
-      .winner-chip {
-        background: var(--success);
-        color: white;
-        border-radius: 20px;
-        padding: 6px 14px;
-        font-weight: 700;
-        font-size: 1rem;
-      }
-      .no-winners-banner {
-        width: 100%;
-        background: rgba(148, 163, 184, 0.08);
-        border: 2px solid var(--card-border);
-        border-radius: 14px;
-        padding: 14px;
-        text-align: center;
-        color: var(--text-muted);
-        font-size: 1rem;
       }
       .guess-icon {
         font-size: 1.2rem;
@@ -845,9 +782,14 @@
           <div style="display: flex; flex-direction: column; gap: 8px" id="revealStmtList"></div>
         </div>
 
-        <div id="winnersBanner"></div>
-
         <div class="guess-grid" id="revealGrid"></div>
+
+        <div class="card text-center">
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 4px">
+            Points awarded this turn
+          </p>
+          <p id="pointsMsg" style="font-size: 1.4rem; font-weight: 700; color: var(--accent-bright)"></p>
+        </div>
 
         <button id="nextTurnBtn" class="btn btn-primary btn-lg full-width" onclick="nextTurn()"></button>
       </div>
@@ -1373,9 +1315,6 @@
           const btn = document.getElementById(`gb-${idSafe(name)}-${n}`);
           if (btn) btn.classList.toggle('selected', n === num);
         });
-        // Highlight the whole row once a guess has been made
-        const row = document.getElementById(`gr-${idSafe(name)}`);
-        if (row) row.classList.add('has-guess');
         checkRevealReady();
       }
 
@@ -1448,7 +1387,6 @@
 
         const guessers = players.filter(p => p.name !== currentSpeaker);
         let correct = 0;
-        const winners = [];
 
         document.getElementById('revealGrid').innerHTML = guessers
           .map(p => {
@@ -1456,7 +1394,6 @@
             if (isCorrect) {
               p.points++;
               correct++;
-              winners.push(p.name);
             }
             return `<div class="guess-row ${isCorrect ? 'correct' : 'wrong'}">
             <span class="guess-name">${escHtml(p.name)}</span>
@@ -1466,18 +1403,12 @@
           })
           .join('');
 
-        // Winners banner
-        const banner = document.getElementById('winnersBanner');
-        if (winners.length > 0) {
-          banner.innerHTML = `<div class="winners-banner">
-            <h2>🏆 Winner${winners.length > 1 ? 's' : ''}!</h2>
-            <div class="winners-list">
-              ${winners.map(n => `<span class="winner-chip">${escHtml(n)}</span>`).join('')}
-            </div>
-          </div>`;
-        } else {
-          banner.innerHTML = `<div class="no-winners-banner">😅 Nobody guessed the lie!</div>`;
-        }
+        document.getElementById('pointsMsg').textContent =
+          correct === 0
+            ? 'Nobody guessed right!'
+            : correct === 1
+              ? '1 player got it right!'
+              : `${correct} players got it right!`;
 
         // Remove speaker from the queue
         speakerQueue = speakerQueue.filter(n => n !== currentSpeaker);
