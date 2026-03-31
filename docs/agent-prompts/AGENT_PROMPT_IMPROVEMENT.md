@@ -344,11 +344,15 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
 2. **Stage modified files explicitly.** Only include files that actually changed. Do NOT use `git add .` or `git add -A`.
 
+   ⚠️ **The backup folder created in Step 3 MUST be staged — do not skip it.** It is the pre-improvement snapshot and belongs in the PR.
+
    ```bash
-   # Always include:
+   # Always stage — the backup folder is required:
+   git add apps/<app-path>/backups/<runId>/
+
+   # Always stage — core improvement files:
    git add apps/<app-path>/index.html \
-           apps/<app-path>/meta.json \
-           apps/<app-path>/backups/<runId>/
+           apps/<app-path>/meta.json
 
    # Only if thumbnail was updated in Step 5:
    git add apps/<app-path>/thumbnail.svg
