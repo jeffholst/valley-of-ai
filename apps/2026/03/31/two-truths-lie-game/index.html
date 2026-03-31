@@ -1,0 +1,1259 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2 Truths and a Lie - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="2 Truths and a Lie" />
+    <meta name="voa-app-id" content="2026/03/31/two-truths-lie-game" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      /* ── Theme variables ── */
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+      }
+
+      /* ── App-specific palette ── */
+      :root {
+        --accent: #8b5cf6;
+        --accent-bright: #a78bfa;
+        --accent-dark: #6d28d9;
+        --success: #10b981;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --card: #1e293b;
+        --card-border: #334155;
+        --text-muted: #94a3b8;
+      }
+      [data-theme='light'] {
+        --card: #f3f4f6;
+        --card-border: #d1d5db;
+        --text-muted: #6b7280;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        min-height: 100dvh;
+      }
+
+      /* ── Viewport wrapper — accounts for 64px header + 56px footer ── */
+      #app {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        overflow-y: auto;
+        padding: 16px;
+      }
+
+      /* ── Screens ── */
+      .screen {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        max-width: 640px;
+        margin: 0 auto;
+        padding-bottom: 16px;
+      }
+      .screen.active {
+        display: flex;
+        animation: fadeIn 0.2s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        font-size: clamp(1.4rem, 4vw, 2rem);
+        font-weight: 700;
+        color: var(--accent-bright);
+        text-align: center;
+      }
+      h2 {
+        font-size: clamp(1.1rem, 3vw, 1.5rem);
+        font-weight: 600;
+        text-align: center;
+      }
+      h3 {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+      }
+
+      /* ── Buttons ── */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 24px;
+        border-radius: 10px;
+        border: none;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        min-height: 48px;
+        min-width: 44px;
+      }
+      .btn:active {
+        transform: scale(0.97);
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: white;
+      }
+      .btn-primary:hover {
+        background: var(--accent-dark);
+      }
+      .btn-success {
+        background: var(--success);
+        color: white;
+      }
+      .btn-success:hover {
+        filter: brightness(0.9);
+      }
+      .btn-danger {
+        background: var(--danger);
+        color: white;
+      }
+      .btn-danger:hover {
+        filter: brightness(0.9);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--text-muted);
+        border: 1.5px solid var(--card-border);
+      }
+      .btn-ghost:hover {
+        background: var(--surface);
+        color: var(--text);
+      }
+      .btn-lg {
+        font-size: 1.15rem;
+        padding: 14px 32px;
+      }
+      .btn-sm {
+        font-size: 0.875rem;
+        padding: 8px 14px;
+        min-height: 38px;
+      }
+      .btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .full-width {
+        width: 100%;
+      }
+
+      /* ── Cards ── */
+      .card {
+        background: var(--card);
+        border: 1.5px solid var(--card-border);
+        border-radius: 12px;
+        padding: 16px;
+        width: 100%;
+      }
+
+      /* ── Input ── */
+      .input {
+        width: 100%;
+        padding: 12px 14px;
+        background: var(--bg);
+        border: 1.5px solid var(--card-border);
+        border-radius: 8px;
+        color: var(--text);
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      .input:focus {
+        border-color: var(--accent);
+      }
+
+      .row {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+        align-items: center;
+      }
+      .row .input {
+        flex: 1;
+      }
+
+      /* ── Player chips ── */
+      .player-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        width: 100%;
+      }
+      .player-chip {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--surface);
+        border: 1.5px solid var(--card-border);
+        border-radius: 20px;
+        padding: 6px 12px;
+        font-size: 0.9rem;
+      }
+      .player-chip button {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 1rem;
+        line-height: 1;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 24px;
+        min-width: 24px;
+        border-radius: 50%;
+      }
+      .player-chip button:hover {
+        color: var(--danger);
+      }
+
+      /* ── Round badge ── */
+      .round-badge {
+        background: var(--surface);
+        border: 1.5px solid var(--card-border);
+        border-radius: 20px;
+        padding: 4px 14px;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+
+      /* ── Timer ring ── */
+      .timer-ring {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .timer-ring svg {
+        transform: rotate(-90deg);
+      }
+      .timer-number {
+        position: absolute;
+        font-size: clamp(2.5rem, 10vw, 4rem);
+        font-weight: 700;
+        color: var(--accent-bright);
+      }
+      #timerCircle {
+        transition: stroke-dashoffset 1s linear;
+        stroke-linecap: round;
+      }
+
+      /* ── Spinner wheel ── */
+      .wheel-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      }
+      .wheel-wrapper {
+        position: relative;
+        display: inline-block;
+      }
+      #spinCanvas {
+        display: block;
+        border-radius: 50%;
+        max-width: 100%;
+      }
+      .wheel-pointer {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-top: 14px solid transparent;
+        border-bottom: 14px solid transparent;
+        border-right: 28px solid var(--accent-bright);
+        filter: drop-shadow(0 0 4px var(--accent));
+      }
+
+      /* ── Speaker name ── */
+      .winner-name {
+        font-size: clamp(1.8rem, 6vw, 2.8rem);
+        font-weight: 700;
+        color: var(--accent-bright);
+        text-align: center;
+        text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+      }
+
+      @keyframes spinResult {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+      .spin-result {
+        animation: spinResult 0.4s ease;
+      }
+
+      /* ── Guess grid ── */
+      .guess-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+      }
+      .guess-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--card);
+        border: 1.5px solid var(--card-border);
+        border-radius: 10px;
+        padding: 10px 14px;
+      }
+      .guess-row.correct {
+        border-color: var(--success);
+        background: rgba(16, 185, 129, 0.1);
+      }
+      .guess-row.wrong {
+        border-color: var(--danger);
+        background: rgba(239, 68, 68, 0.08);
+      }
+      .guess-name {
+        flex: 1;
+        font-weight: 600;
+        font-size: 1rem;
+      }
+      .guess-btns {
+        display: flex;
+        gap: 6px;
+      }
+      .guess-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        border: 1.5px solid var(--card-border);
+        background: var(--bg);
+        color: var(--text-muted);
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.12s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .guess-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent-bright);
+        background: rgba(139, 92, 246, 0.1);
+      }
+      .guess-btn.selected {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+      }
+      .guess-icon {
+        font-size: 1.2rem;
+        min-width: 24px;
+        text-align: center;
+      }
+
+      /* ── Scoreboard table ── */
+      .score-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .score-table th,
+      .score-table td {
+        padding: 10px 14px;
+        text-align: left;
+        border-bottom: 1px solid var(--card-border);
+      }
+      .score-table th {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+      }
+      .score-table tr:last-child td {
+        border-bottom: none;
+      }
+      .score-rank {
+        font-size: 1.2rem;
+        min-width: 30px;
+      }
+      .score-points {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--accent-bright);
+      }
+
+      /* ── Instructions ── */
+      .instructions {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+      }
+      .instructions li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        background: var(--surface);
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-size: 0.95rem;
+        line-height: 1.45;
+      }
+      .instructions li .num {
+        background: var(--accent);
+        color: white;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 700;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      /* ── Utility ── */
+      .text-center {
+        text-align: center;
+      }
+      .text-muted {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+      .flex-row {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+      }
+      .flex-row .btn {
+        flex: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <!-- ── SCREEN: Setup ── -->
+      <div id="screenSetup" class="screen active">
+        <h1>2 Truths and a Lie</h1>
+        <p class="text-muted text-center">Add everyone who's playing, then start.</p>
+
+        <div class="card">
+          <div class="row">
+            <input
+              id="nameInput"
+              class="input"
+              type="text"
+              placeholder="Enter player name…"
+              maxlength="30"
+              autocomplete="off"
+            />
+            <button class="btn btn-primary" onclick="addPlayer()">Add</button>
+          </div>
+        </div>
+
+        <div id="playerList" class="player-list"></div>
+        <p id="playerCountMsg" class="text-muted text-center" style="display: none"></p>
+
+        <button id="startBtn" class="btn btn-primary btn-lg full-width" onclick="startGame()" disabled>
+          Start Game
+        </button>
+      </div>
+
+      <!-- ── SCREEN: Think Time (round 1 only) ── -->
+      <div id="screenThink" class="screen">
+        <h1>Think Time!</h1>
+        <h2>Everyone: write your 3 statements</h2>
+
+        <div class="timer-ring">
+          <svg width="180" height="180" viewBox="0 0 180 180">
+            <circle cx="90" cy="90" r="80" fill="none" stroke="var(--card-border)" stroke-width="10" />
+            <circle
+              id="timerCircle"
+              cx="90"
+              cy="90"
+              r="80"
+              fill="none"
+              stroke-width="10"
+              stroke-dasharray="502.65"
+              stroke-dashoffset="0"
+            />
+          </svg>
+          <span class="timer-number" id="timerNum">60</span>
+        </div>
+
+        <ul class="instructions">
+          <li><span class="num">1</span>Write 2 TRUE statements about yourself</li>
+          <li><span class="num">2</span>Write 1 LIE — make it believable!</li>
+          <li>
+            <span class="num">3</span>When time's up, the host spins to pick the first speaker
+          </li>
+        </ul>
+
+        <button class="btn btn-ghost full-width" onclick="skipTimer()">Skip Timer →</button>
+      </div>
+
+      <!-- ── SCREEN: Spinner ── -->
+      <div id="screenSpin" class="screen">
+        <div class="round-badge" id="roundBadgeSpin"></div>
+        <h2 id="spinTitle">Who goes next?</h2>
+
+        <div class="wheel-container">
+          <div class="wheel-wrapper" id="wheelWrapper">
+            <canvas id="spinCanvas" width="280" height="280"></canvas>
+            <div class="wheel-pointer" id="wheelPointer"></div>
+          </div>
+        </div>
+
+        <button id="spinBtn" class="btn btn-primary btn-lg" onclick="spinWheel()">🎡 Spin!</button>
+        <div id="spinResult" class="winner-name" style="display: none"></div>
+        <button
+          id="goTurnBtn"
+          class="btn btn-success btn-lg full-width"
+          style="display: none"
+          onclick="goToTurn()"
+        >
+          It's their turn →
+        </button>
+      </div>
+
+      <!-- ── SCREEN: Turn (record guesses) ── -->
+      <div id="screenTurn" class="screen">
+        <div class="round-badge" id="roundBadgeTurn"></div>
+        <h3>Now speaking…</h3>
+        <div class="winner-name" id="turnSpeakerName"></div>
+
+        <div class="card">
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px">
+            After <strong id="turnSpeakerName2"></strong> reads their 3 statements, record each
+            player's guess — which number is the lie?
+          </p>
+          <div class="guess-grid" id="guessGrid"></div>
+        </div>
+
+        <div class="card">
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px">
+            Which statement was the LIE?
+          </p>
+          <div class="flex-row" id="lieButtons">
+            <button class="btn btn-ghost" onclick="selectLie(1)">Statement 1</button>
+            <button class="btn btn-ghost" onclick="selectLie(2)">Statement 2</button>
+            <button class="btn btn-ghost" onclick="selectLie(3)">Statement 3</button>
+          </div>
+          <p
+            id="lieSelectedMsg"
+            style="display: none; margin-top: 8px; font-size: 0.9rem; color: var(--success); font-weight: 600"
+          ></p>
+        </div>
+
+        <button
+          id="revealBtn"
+          class="btn btn-danger btn-lg full-width"
+          onclick="revealLie()"
+          disabled
+        >
+          Reveal the Lie!
+        </button>
+      </div>
+
+      <!-- ── SCREEN: Reveal ── -->
+      <div id="screenReveal" class="screen">
+        <div class="round-badge" id="roundBadgeReveal"></div>
+        <h2>The Lie was Statement <span id="lieNumDisplay"></span>!</h2>
+        <p class="text-center" id="revealSpeakerNote" style="color: var(--text-muted)"></p>
+
+        <div class="guess-grid" id="revealGrid"></div>
+
+        <div class="card text-center">
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 4px">
+            Points awarded this turn
+          </p>
+          <p id="pointsMsg" style="font-size: 1.4rem; font-weight: 700; color: var(--accent-bright)"></p>
+        </div>
+
+        <button id="nextTurnBtn" class="btn btn-primary btn-lg full-width" onclick="nextTurn()"></button>
+      </div>
+
+      <!-- ── SCREEN: Round End Scoreboard ── -->
+      <div id="screenRoundEnd" class="screen">
+        <h1>Round <span id="roundEndNum"></span> Complete!</h1>
+        <div class="card">
+          <table class="score-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Player</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody id="roundEndScores"></tbody>
+          </table>
+        </div>
+        <div class="flex-row">
+          <button class="btn btn-ghost" onclick="endGame()">End Game</button>
+          <button class="btn btn-primary" onclick="nextRound()">Next Round →</button>
+        </div>
+      </div>
+
+      <!-- ── SCREEN: Final Scores ── -->
+      <div id="screenFinal" class="screen">
+        <h1>🏆 Final Scores</h1>
+        <div class="card">
+          <table class="score-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Player</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody id="finalScores"></tbody>
+          </table>
+        </div>
+        <button class="btn btn-primary btn-lg full-width" onclick="resetGame()">Play Again</button>
+      </div>
+    </div>
+
+    <script>
+      /**
+       * 2 Truths and a Lie — Game Controller
+       *
+       * Flow:
+       *   Setup → Think Time (round 1) → Spinner → Turn → Reveal
+       *   → (repeat Spinner/Turn/Reveal for each speaker)
+       *   → Round End Scoreboard → (next round or Final Scores)
+       *
+       * Scoring: 1 point per correct guess. The speaker earns no points.
+       */
+
+      // ── State ──────────────────────────────────────────────────────────────
+      /** @type {{ name: string, points: number }[]} */
+      let players = [];
+
+      let round = 1;
+
+      /** Names of players yet to speak this round. */
+      let speakerQueue = [];
+
+      /** Name of the player currently speaking. */
+      let currentSpeaker = null;
+
+      /** Which statement number (1, 2, or 3) is the lie for this turn. */
+      let currentLie = null;
+
+      /** Map of guesser name → guessed statement number. */
+      let guesses = {};
+
+      let timerInterval = null;
+      let timerSecs = 60;
+
+      /** Whether the wheel is currently animating. */
+      let spinning = false;
+
+      /** Current wheel rotation in radians. */
+      let spinAngle = 0;
+
+      // ── Screen management ──────────────────────────────────────────────────
+
+      /**
+       * Activate a screen by ID and hide all others.
+       * @param {string} id - The ID of the screen element to show.
+       */
+      function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+      }
+
+      // ── Setup screen ───────────────────────────────────────────────────────
+
+      const nameInput = document.getElementById('nameInput');
+      nameInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') addPlayer();
+      });
+
+      /**
+       * Add the name from the input field to the player list.
+       * Ignores empty strings and duplicate names (case-insensitive).
+       */
+      function addPlayer() {
+        const name = nameInput.value.trim();
+        if (!name) return;
+        if (players.find(p => p.name.toLowerCase() === name.toLowerCase())) {
+          nameInput.select();
+          return;
+        }
+        players.push({ name, points: 0 });
+        nameInput.value = '';
+        nameInput.focus();
+        renderPlayerList();
+      }
+
+      /**
+       * Remove a player by name from the list.
+       * @param {string} name - Exact player name to remove.
+       */
+      function removePlayer(name) {
+        players = players.filter(p => p.name !== name);
+        renderPlayerList();
+      }
+
+      /**
+       * Re-render the player chips and update the start button state.
+       * Requires at least 2 players to enable the start button.
+       */
+      function renderPlayerList() {
+        const list = document.getElementById('playerList');
+        const msg = document.getElementById('playerCountMsg');
+        const btn = document.getElementById('startBtn');
+
+        list.innerHTML = players
+          .map(
+            p =>
+              `<div class="player-chip">
+              <span>${escHtml(p.name)}</span>
+              <button onclick="removePlayer(${JSON.stringify(p.name)})">✕</button>
+            </div>`,
+          )
+          .join('');
+
+        const n = players.length;
+        if (n > 0) {
+          msg.style.display = 'block';
+          msg.textContent = n === 1 ? '1 player added — need at least 2' : `${n} players`;
+        } else {
+          msg.style.display = 'none';
+        }
+        btn.disabled = n < 2;
+      }
+
+      /**
+       * Escape HTML special characters to safely insert user input into innerHTML.
+       * @param {string} s - Raw string.
+       * @returns {string} HTML-escaped string.
+       */
+      function escHtml(s) {
+        return s
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      /**
+       * Convert a player name to a DOM-safe ID fragment (alphanumeric + underscore).
+       * @param {string} name
+       * @returns {string}
+       */
+      function idSafe(name) {
+        return name.replace(/[^a-zA-Z0-9]/g, '_');
+      }
+
+      // ── Game start ─────────────────────────────────────────────────────────
+
+      /**
+       * Reset scores and begin a new game from round 1.
+       * Shows the think-time screen (60-second countdown) for round 1.
+       */
+      function startGame() {
+        round = 1;
+        players.forEach(p => (p.points = 0));
+        buildSpeakerQueue();
+        showScreen('screenThink');
+        startTimer();
+      }
+
+      /**
+       * Fill the speaker queue with all player names in their current order.
+       */
+      function buildSpeakerQueue() {
+        speakerQueue = players.map(p => p.name);
+      }
+
+      // ── Think-time timer ───────────────────────────────────────────────────
+
+      const TIMER_CIRCUMFERENCE = 2 * Math.PI * 80; // r=80 matches the SVG
+
+      /**
+       * Start the 60-second countdown and update the ring + number each second.
+       * Automatically transitions to the spinner when time expires.
+       */
+      function startTimer() {
+        timerSecs = 60;
+        updateTimerDisplay(60);
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+          timerSecs--;
+          updateTimerDisplay(timerSecs);
+          if (timerSecs <= 0) {
+            clearInterval(timerInterval);
+            showSpinner();
+          }
+        }, 1000);
+      }
+
+      /**
+       * Update the SVG ring progress and numeric label.
+       * Ring turns yellow below 20s and red below 10s.
+       * @param {number} secs - Seconds remaining.
+       */
+      function updateTimerDisplay(secs) {
+        document.getElementById('timerNum').textContent = secs;
+        const offset = TIMER_CIRCUMFERENCE * (1 - secs / 60);
+        const circle = document.getElementById('timerCircle');
+        circle.style.strokeDashoffset = offset;
+        circle.style.stroke =
+          secs <= 10 ? 'var(--danger)' : secs <= 20 ? 'var(--warning)' : 'var(--accent)';
+      }
+
+      /**
+       * Skip the think-time countdown and go directly to the spinner.
+       */
+      function skipTimer() {
+        clearInterval(timerInterval);
+        showSpinner();
+      }
+
+      // ── Spinner wheel ──────────────────────────────────────────────────────
+
+      /** Segment fill colors for the wheel, cycled for any player count. */
+      const WHEEL_COLORS = [
+        '#7c3aed',
+        '#2563eb',
+        '#059669',
+        '#d97706',
+        '#dc2626',
+        '#0891b2',
+        '#65a30d',
+        '#ea580c',
+        '#9333ea',
+        '#0f766e',
+      ];
+
+      /**
+       * Show the spinner screen, reset result area, and draw the wheel.
+       */
+      function showSpinner() {
+        document.getElementById('roundBadgeSpin').textContent = `Round ${round}`;
+        document.getElementById('spinTitle').textContent =
+          speakerQueue.length < players.length ? 'Who goes next?' : 'Who goes first?';
+        document.getElementById('spinResult').style.display = 'none';
+        document.getElementById('goTurnBtn').style.display = 'none';
+        document.getElementById('spinBtn').disabled = false;
+        showScreen('screenSpin');
+        drawWheel(spinAngle);
+        positionPointer();
+      }
+
+      /**
+       * Position the arrow pointer flush against the right edge of the wheel canvas.
+       */
+      function positionPointer() {
+        const canvas = document.getElementById('spinCanvas');
+        const r = canvas.width / 2;
+        const pointer = document.getElementById('wheelPointer');
+        pointer.style.left = `calc(50% + ${r - 12}px)`;
+      }
+
+      /**
+       * Draw the spinner wheel at a given rotation angle.
+       * Each segment gets a label truncated to 12 characters.
+       * @param {number} angle - Wheel rotation in radians.
+       */
+      function drawWheel(angle) {
+        const canvas = document.getElementById('spinCanvas');
+        const ctx = canvas.getContext('2d');
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        const r = cx - 6;
+        const names = speakerQueue;
+        const n = names.length;
+        const slice = (2 * Math.PI) / n;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < n; i++) {
+          const start = angle + i * slice;
+          const end = start + slice;
+
+          // Segment fill
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.arc(cx, cy, r, start, end);
+          ctx.closePath();
+          ctx.fillStyle = WHEEL_COLORS[i % WHEEL_COLORS.length];
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+
+          // Segment label — rotated to read along the slice midpoint
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate(start + slice / 2);
+          ctx.textAlign = 'right';
+          ctx.fillStyle = 'white';
+          const fs = Math.min(16, Math.max(9, 220 / n));
+          ctx.font = `600 ${fs}px system-ui, sans-serif`;
+          ctx.shadowColor = 'rgba(0,0,0,0.6)';
+          ctx.shadowBlur = 4;
+          const label = names[i].length > 12 ? names[i].slice(0, 11) + '…' : names[i];
+          ctx.fillText(label, r - 8, 5);
+          ctx.restore();
+        }
+
+        // Center hub
+        ctx.beginPath();
+        ctx.arc(cx, cy, 18, 0, 2 * Math.PI);
+        ctx.fillStyle = '#1e293b';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      /**
+       * Animate the wheel with cubic ease-out over ~3.5s.
+       * Randomly selects a winner from the remaining speakerQueue.
+       * After landing, displays the winner's name and reveals the "go to turn" button.
+       */
+      function spinWheel() {
+        if (spinning || speakerQueue.length === 0) return;
+        spinning = true;
+        document.getElementById('spinBtn').disabled = true;
+        document.getElementById('spinResult').style.display = 'none';
+        document.getElementById('goTurnBtn').style.display = 'none';
+
+        const names = speakerQueue;
+        const n = names.length;
+        const slice = (2 * Math.PI) / n;
+
+        // Pick a random target segment
+        const winnerIdx = Math.floor(Math.random() * n);
+        // Spin 3–6 full rotations then land with winner at the pointer (angle 0 = right)
+        const extraRotations = 3 + Math.random() * 3;
+        const targetSegmentCenter = winnerIdx * slice + slice / 2;
+        // Pointer is at angle 0 relative to drawing start; land pointer on winner
+        const spinTarget =
+          spinAngle +
+          extraRotations * 2 * Math.PI +
+          (2 * Math.PI - (spinAngle % (2 * Math.PI))) -
+          targetSegmentCenter;
+
+        const duration = 3500;
+        const startTime = performance.now();
+        const startAngle = spinAngle;
+
+        /**
+         * Animation frame: advances the wheel with cubic ease-out.
+         * @param {number} now - Current timestamp from requestAnimationFrame.
+         */
+        function frame(now) {
+          const t = Math.min((now - startTime) / duration, 1);
+          const ease = 1 - Math.pow(1 - t, 3);
+          spinAngle = startAngle + (spinTarget - startAngle) * ease;
+          drawWheel(spinAngle);
+
+          if (t < 1) {
+            requestAnimationFrame(frame);
+          } else {
+            spinning = false;
+            spinAngle = spinTarget;
+            currentSpeaker = names[winnerIdx];
+            showSpinResult(currentSpeaker);
+          }
+        }
+
+        requestAnimationFrame(frame);
+      }
+
+      /**
+       * Display the spin result with a bounce animation and show the turn button.
+       * @param {string} name - The selected player's name.
+       */
+      function showSpinResult(name) {
+        const el = document.getElementById('spinResult');
+        el.textContent = `🎉 ${name}!`;
+        el.style.display = 'block';
+        el.classList.remove('spin-result');
+        void el.offsetWidth; // trigger reflow to restart animation
+        el.classList.add('spin-result');
+        document.getElementById('goTurnBtn').style.display = 'flex';
+      }
+
+      // ── Turn screen ────────────────────────────────────────────────────────
+
+      /**
+       * Transition to the turn screen for the current speaker.
+       * Resets all guesses and the lie selection for this turn.
+       */
+      function goToTurn() {
+        guesses = {};
+        currentLie = null;
+        document.getElementById('roundBadgeTurn').textContent = `Round ${round}`;
+        document.getElementById('turnSpeakerName').textContent = currentSpeaker;
+        document.getElementById('turnSpeakerName2').textContent = currentSpeaker;
+        buildGuessGrid();
+        resetLieButtons();
+        document.getElementById('revealBtn').disabled = true;
+        showScreen('screenTurn');
+      }
+
+      /**
+       * Build the guess entry grid: one row per non-speaker player.
+       * Each row has three numbered buttons (1, 2, 3) to record a guess.
+       */
+      function buildGuessGrid() {
+        const grid = document.getElementById('guessGrid');
+        const guessers = players.filter(p => p.name !== currentSpeaker);
+        grid.innerHTML = guessers
+          .map(
+            p =>
+              `<div class="guess-row" id="gr-${idSafe(p.name)}">
+              <span class="guess-name">${escHtml(p.name)}</span>
+              <div class="guess-btns">
+                ${[1, 2, 3]
+                  .map(
+                    n =>
+                      `<button class="guess-btn" id="gb-${idSafe(p.name)}-${n}"
+                      onclick="recordGuess(${JSON.stringify(p.name)}, ${n})">${n}</button>`,
+                  )
+                  .join('')}
+              </div>
+              <span class="guess-icon" id="gi-${idSafe(p.name)}"></span>
+            </div>`,
+          )
+          .join('');
+      }
+
+      /**
+       * Record a player's guess and highlight their selected button.
+       * Checks whether the reveal button should be enabled.
+       * @param {string} name - The guesser's name.
+       * @param {number} num - The guessed statement number (1, 2, or 3).
+       */
+      function recordGuess(name, num) {
+        guesses[name] = num;
+        [1, 2, 3].forEach(n => {
+          const btn = document.getElementById(`gb-${idSafe(name)}-${n}`);
+          if (btn) btn.classList.toggle('selected', n === num);
+        });
+        checkRevealReady();
+      }
+
+      /**
+       * Enable the reveal button only when all guessers have guessed AND a lie is selected.
+       */
+      function checkRevealReady() {
+        const guessers = players.filter(p => p.name !== currentSpeaker);
+        const allGuessed = guessers.every(p => guesses[p.name] !== undefined);
+        document.getElementById('revealBtn').disabled = !(allGuessed && currentLie !== null);
+      }
+
+      /**
+       * Mark a statement as the lie and highlight the corresponding button.
+       * @param {number} num - The lie statement number (1, 2, or 3).
+       */
+      function selectLie(num) {
+        currentLie = num;
+        const btns = document.getElementById('lieButtons').querySelectorAll('.btn');
+        btns.forEach((btn, i) => {
+          btn.classList.toggle('btn-danger', i + 1 === num);
+          btn.classList.toggle('btn-ghost', i + 1 !== num);
+        });
+        document.getElementById('lieSelectedMsg').style.display = 'block';
+        document.getElementById('lieSelectedMsg').textContent = `Statement ${num} is the lie.`;
+        checkRevealReady();
+      }
+
+      /**
+       * Reset all lie-selection buttons to their default ghost state.
+       */
+      function resetLieButtons() {
+        document.getElementById('lieButtons').querySelectorAll('.btn').forEach(btn => {
+          btn.classList.remove('btn-danger');
+          btn.classList.add('btn-ghost');
+        });
+        document.getElementById('lieSelectedMsg').style.display = 'none';
+      }
+
+      // ── Reveal screen ──────────────────────────────────────────────────────
+
+      /**
+       * Reveal the lie, award points to correct guessers, and show the reveal screen.
+       * Removes the current speaker from the queue after this turn.
+       */
+      function revealLie() {
+        document.getElementById('roundBadgeReveal').textContent = `Round ${round}`;
+        document.getElementById('lieNumDisplay').textContent = currentLie;
+        document.getElementById('revealSpeakerNote').textContent =
+          `${currentSpeaker}'s lie was statement ${currentLie}`;
+
+        const guessers = players.filter(p => p.name !== currentSpeaker);
+        let correct = 0;
+
+        document.getElementById('revealGrid').innerHTML = guessers
+          .map(p => {
+            const isCorrect = guesses[p.name] === currentLie;
+            if (isCorrect) {
+              p.points++;
+              correct++;
+            }
+            return `<div class="guess-row ${isCorrect ? 'correct' : 'wrong'}">
+            <span class="guess-name">${escHtml(p.name)}</span>
+            <span style="color:var(--text-muted);font-size:0.9rem">guessed #${guesses[p.name]}</span>
+            <span class="guess-icon">${isCorrect ? '✅' : '❌'}</span>
+          </div>`;
+          })
+          .join('');
+
+        document.getElementById('pointsMsg').textContent =
+          correct === 0
+            ? 'Nobody guessed right!'
+            : correct === 1
+              ? '1 player got it right!'
+              : `${correct} players got it right!`;
+
+        // Remove speaker from the queue
+        speakerQueue = speakerQueue.filter(n => n !== currentSpeaker);
+
+        document.getElementById('nextTurnBtn').textContent =
+          speakerQueue.length > 0 ? 'Next Speaker →' : 'Round Complete →';
+
+        showScreen('screenReveal');
+      }
+
+      /**
+       * Advance from the reveal screen.
+       * Spins again if speakers remain; otherwise shows the round-end scoreboard.
+       */
+      function nextTurn() {
+        if (speakerQueue.length > 0) {
+          showSpinner();
+        } else {
+          showRoundEnd();
+        }
+      }
+
+      // ── Round end ──────────────────────────────────────────────────────────
+
+      /**
+       * Show the end-of-round scoreboard with current cumulative scores.
+       */
+      function showRoundEnd() {
+        document.getElementById('roundEndNum').textContent = round;
+        renderScoreTable('roundEndScores');
+        showScreen('screenRoundEnd');
+      }
+
+      /**
+       * Start the next round. Rebuilds the speaker queue; no think timer after round 1.
+       */
+      function nextRound() {
+        round++;
+        buildSpeakerQueue();
+        showSpinner();
+      }
+
+      /**
+       * Skip to the final scores screen immediately.
+       */
+      function endGame() {
+        renderScoreTable('finalScores');
+        showScreen('screenFinal');
+      }
+
+      // ── Final scores ───────────────────────────────────────────────────────
+
+      /**
+       * Render players sorted by score descending into a score table body.
+       * @param {string} tbodyId - ID of the <tbody> element to populate.
+       */
+      function renderScoreTable(tbodyId) {
+        const sorted = [...players].sort((a, b) => b.points - a.points);
+        const medals = ['🥇', '🥈', '🥉'];
+        document.getElementById(tbodyId).innerHTML = sorted
+          .map(
+            (p, i) =>
+              `<tr>
+            <td class="score-rank">${medals[i] || i + 1}</td>
+            <td>${escHtml(p.name)}</td>
+            <td class="score-points">${p.points}</td>
+          </tr>`,
+          )
+          .join('');
+      }
+
+      /**
+       * Reset the entire game: clear players and scores, return to setup screen.
+       */
+      function resetGame() {
+        players = [];
+        round = 1;
+        spinAngle = 0;
+        renderPlayerList();
+        showScreen('screenSetup');
+      }
+    </script>
+  </body>
+</html>
