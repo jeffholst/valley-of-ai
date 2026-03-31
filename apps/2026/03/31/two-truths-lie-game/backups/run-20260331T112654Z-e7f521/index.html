@@ -628,10 +628,7 @@
           </div>
         </div>
 
-        <div class="flex-row" style="justify-content: center">
-          <button id="spinBtn" class="btn btn-primary btn-lg" onclick="spinWheel()">🎡 Spin!</button>
-          <button id="endGameBtn" class="btn btn-ghost btn-lg" onclick="endRoundEarly()">End Game</button>
-        </div>
+        <button id="spinBtn" class="btn btn-primary btn-lg" onclick="spinWheel()">🎡 Spin!</button>
         <div id="spinResult" class="winner-name" style="display: none"></div>
         <button
           id="goTurnBtn"
@@ -829,11 +826,11 @@
 
           <button
             id="revealBtn"
-            class="btn btn-success btn-lg full-width"
+            class="btn btn-danger btn-lg full-width"
             onclick="revealLie()"
             disabled
           >
-            Show the Winners!
+            Reveal the Lie!
           </button>
         </div>
       </div>
@@ -1530,15 +1527,6 @@
         round++;
         buildSpeakerQueue();
         showSpinner();
-      }
-
-      /**
-       * End the current round early from the spinner screen.
-       * Clears the remaining speaker queue and shows the round-end scoreboard.
-       */
-      function endRoundEarly() {
-        speakerQueue = [];
-        showRoundEnd();
       }
 
       /**

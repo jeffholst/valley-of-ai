@@ -33,16 +33,6 @@
       "runId": "run-20260331T022221Z-d4e8f1",
       "appliedAt": "2026-03-31T02:22:21Z",
       "summary": "Fixed spinner wheel alignment (integer rotations + corrected modulo formula), added host statement capture on turn screen with numbered display, updated reveal screen to show statements with lie highlighted, redrew thumbnail with geometrically perfect circular wheel using SVG arc paths and clipPath."
-    },
-    {
-      "issueNumber": 249,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/249",
-      "runId": "run-20260331T112654Z-e7f521",
-      "description": "Renamed Reveal the Lie button to Show the Winners, added End Game button on spinner screen to finish round early and show scoreboard.",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-03-31T11:26:54Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-opus-4-6"
     }
   ],
   "suggestion": {
