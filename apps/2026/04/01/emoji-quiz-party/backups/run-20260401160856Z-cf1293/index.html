@@ -939,24 +939,10 @@
 
       // --- Host Answer Delivery ---
 
-      /** Ensure browser notification permission is granted when enabled */
-      async function ensureNotificationPermission() {
-        if (!('Notification' in window)) return false;
-        if (Notification.permission === 'granted') return true;
-        if (Notification.permission === 'denied') return false;
-        try {
-          const permission = await Notification.requestPermission();
-          return permission === 'granted';
-        } catch (err) {
-          console.warn('Notification permission request failed:', err);
-          return false;
-        }
-      }
-
       /** Request notification permission when that option is checked */
       optNotification.addEventListener('change', function () {
-        if (this.checked) {
-          ensureNotificationPermission();
+        if (this.checked && 'Notification' in window && Notification.permission === 'default') {
+          Notification.requestPermission();
         }
       });
 
@@ -984,15 +970,7 @@
         }
 
         if (useNotification && 'Notification' in window && Notification.permission === 'granted') {
-          try {
-            new Notification('Emoji Quiz Party', {
-              body: msg,
-              requireInteraction: true,
-              tag: `emoji-quiz-party-round-${currentRound + 1}`,
-            });
-          } catch (err) {
-            console.warn('Browser notification failed:', err);
-          }
+          new Notification('Emoji Quiz Party', { body: msg, silent: true });
         }
 
         if (useConsole) {
@@ -1106,15 +1084,12 @@
       }
 
       /** Start a new game: initialize state and show the first round */
-      async function startGame() {
+      function startGame() {
         totalRounds = parseInt(roundSelect.value, 10);
         currentRound = 0;
         players.forEach((p) => (scores[p] = 0));
         roundOrder = shuffle(QUIZ_DATA).slice(0, totalRounds);
         readAnswerPrefs();
-        if (useNotification) {
-          await ensureNotificationPermission();
-        }
         if (usePopup) openHostPopup();
         showScreen('game');
         startRound();
@@ -1265,20 +1240,16 @@
           scoreboardSubtitle.textContent = 'Game Over!';
         }
 
-        const rankEmojis = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'];
-        let previousScore = null;
-        let currentRank = 0;
+        const rankEmojis = [
+          '\uD83E\uDD47',
+          '\uD83E\uDD48',
+          '\uD83E\uDD49',
+        ];
         scoreboardList.innerHTML = sorted
           .map((name, i) => {
-            if (scores[name] !== previousScore) {
-              currentRank = i + 1;
-              previousScore = scores[name];
-            }
             const isWinner = scores[name] === topScore && topScore > 0;
             const rank =
-              currentRank <= 3
-                ? rankEmojis[currentRank - 1]
-                : `<span style="opacity:0.5">${currentRank}</span>`;
+              i < 3 ? rankEmojis[i] : `<span style="opacity:0.5">${i + 1}</span>`;
             return `
             <div class="score-row ${isWinner ? 'winner' : ''}">
               <span class="score-rank">${rank}</span>

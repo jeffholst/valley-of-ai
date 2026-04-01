@@ -25,16 +25,6 @@
       "implementedAt": "2026-04-01T14:35:42Z",
       "agentName": "claude-code",
       "llmModel": "claude-opus-4-6"
-    },
-    {
-      "issueNumber": 263,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/263",
-      "runId": "run-20260401160856Z-cf1293",
-      "description": "Improved host browser notifications reliability and fixed tie-aware medal placement in final scores.",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-04-01T16:08:56Z",
-      "agentName": "codex",
-      "llmModel": "gpt-5"
     }
   ],
   "generation": {
