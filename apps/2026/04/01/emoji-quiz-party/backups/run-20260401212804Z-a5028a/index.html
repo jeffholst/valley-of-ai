@@ -606,9 +606,6 @@
 
         <div class="player-count" id="playerCount">0 players added</div>
         <div class="player-list" id="playerList"></div>
-        <button class="btn btn-danger" id="clearPlayersBtn" type="button">
-          Remove All Users
-        </button>
 
         <div class="round-config">
           <label for="roundSelect">Rounds:</label>
@@ -900,14 +897,12 @@
       let usePopup = true;
       let useNotification = false;
       let useConsole = false;
-      const PLAYER_STORAGE_KEY = 'emoji-quiz-party:players';
 
       // --- DOM refs ---
       const $ = (id) => document.getElementById(id);
 
       const playerNameInput = $('playerNameInput');
       const addPlayerBtn = $('addPlayerBtn');
-      const clearPlayersBtn = $('clearPlayersBtn');
       const playerList = $('playerList');
       const playerCount = $('playerCount');
       const roundSelect = $('roundSelect');
@@ -1047,36 +1042,6 @@
 
       // --- Setup Screen Logic ---
 
-      /** Save the current player list so hosts do not need to re-enter names each session */
-      function persistPlayers() {
-        try {
-          localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(players));
-        } catch (err) {
-          console.warn('Unable to save players to localStorage:', err);
-        }
-      }
-
-      /** Load previously saved players from localStorage and repopulate in-memory scores */
-      function loadPersistedPlayers() {
-        try {
-          const raw = localStorage.getItem(PLAYER_STORAGE_KEY);
-          if (!raw) return;
-          const parsed = JSON.parse(raw);
-          if (!Array.isArray(parsed)) return;
-          players = parsed
-            .map((name) => (typeof name === 'string' ? name.trim() : ''))
-            .filter(Boolean)
-            .slice(0, 12)
-            .filter((name, i, arr) => arr.indexOf(name) === i);
-          scores = {};
-          players.forEach((name) => {
-            scores[name] = 0;
-          });
-        } catch (err) {
-          console.warn('Unable to load players from localStorage:', err);
-        }
-      }
-
       /** Add a player to the list */
       function addPlayer() {
         const name = playerNameInput.value.trim();
@@ -1088,7 +1053,6 @@
         players.push(name);
         scores[name] = 0;
         playerNameInput.value = '';
-        persistPlayers();
         renderPlayerList();
         playerNameInput.focus();
       }
@@ -1098,19 +1062,6 @@
         const name = players[index];
         players.splice(index, 1);
         delete scores[name];
-        persistPlayers();
-        renderPlayerList();
-      }
-
-      /** Remove all players from setup and clear the saved localStorage roster */
-      function clearAllPlayers() {
-        players = [];
-        scores = {};
-        try {
-          localStorage.removeItem(PLAYER_STORAGE_KEY);
-        } catch (err) {
-          console.warn('Unable to clear players from localStorage:', err);
-        }
         renderPlayerList();
       }
 
@@ -1138,12 +1089,9 @@
       }
 
       addPlayerBtn.addEventListener('click', addPlayer);
-      clearPlayersBtn.addEventListener('click', clearAllPlayers);
       playerNameInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') addPlayer();
       });
-      loadPersistedPlayers();
-      renderPlayerList();
 
       // --- Game Logic ---
 
