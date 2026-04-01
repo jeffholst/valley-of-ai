@@ -1,0 +1,28 @@
+{
+  "id": "emoji-quiz-party",
+  "name": "Emoji Quiz Party",
+  "shortDescription": "A presenter-driven emoji guessing game for Zoom calls. Players guess movies, songs, and phrases from emoji combos while a 60-second timer reveals progressive clues.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-04-01T14:04:48Z",
+  "category": "Games",
+  "status": "active",
+  "tags": ["quiz", "emoji", "party", "multiplayer", "zoom", "responsive", "touch", "trivia"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "suggestion": {
+    "issueNumber": 259,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/259",
+    "prompt": "Build a mobile-first Emoji Quiz game suitable for Zoom call. Setup screen: Presenter enters player names (add/remove). Start game when ready. Game screen: - 5 round game begins. - Display current round's Type (Movie / Song / Phrase) in a label - Show large, prominent emojis as the main challenge - Run and display a 60-second countdown timer that reveals 3 clues progressively: Hard clue at ~40s, Medium at ~20s, Easy at ~5s remaining - Show all player name buttons so the presenter can tap to award a point — allow ties (multiple players can be selected per round) - Track and display scores for all players throughout - Show Next Round button to advance - Show a persistent End Game button End Game screen: - Display a styled final scoreboard ranked by score with winner highlighted Data: Preload at least 20 rounds of emoji sets. Data should be stored as emojis,type,title,clue_hard,clue_medium,clue_easy Use a vibrant, fun visual design suited for a group game viewed on screen share.",
+    "requestor": "Jeff Holst"
+  },
+  "generation": {
+    "agentName": "claude-code",
+    "llmModel": "claude-opus-4-6",
+    "startTime": "2026-04-01T14:04:48Z",
+    "endTime": "2026-04-01T14:20:00Z",
+    "totalTokensIn": 25000,
+    "totalTokensOut": 30000,
+    "runId": "run-20260401T140448Z-e3970d",
+    "notes": "Built from community suggestion #259. Emoji quiz party game with setup/game/scoreboard screens, 20 preloaded quiz rounds, progressive clue timer, and confetti celebration. Token counts are estimates."
+  }
+}
