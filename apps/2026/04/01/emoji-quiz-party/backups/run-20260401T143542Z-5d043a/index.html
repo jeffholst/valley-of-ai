@@ -520,53 +520,6 @@
         z-index: 100;
       }
 
-      /* Host Answer Options */
-      .answer-options {
-        width: 100%;
-        margin-bottom: 20px;
-      }
-      .answer-options-label {
-        font-weight: 700;
-        font-size: 0.95rem;
-        margin-bottom: 8px;
-        text-align: center;
-      }
-      .answer-options-hint {
-        font-size: 0.8rem;
-        opacity: 0.5;
-        text-align: center;
-        margin-bottom: 10px;
-      }
-      .answer-option {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 14px;
-        background: var(--surface);
-        border-radius: 10px;
-        margin-bottom: 6px;
-        cursor: pointer;
-        transition: background 0.15s;
-      }
-      .answer-option:hover {
-        background: var(--surface);
-        filter: brightness(1.1);
-      }
-      .answer-option input[type='checkbox'] {
-        width: 20px;
-        height: 20px;
-        accent-color: var(--accent);
-        cursor: pointer;
-      }
-      .answer-option-text {
-        font-size: 0.9rem;
-        font-weight: 600;
-      }
-      .answer-option-desc {
-        font-size: 0.75rem;
-        opacity: 0.6;
-      }
-
       /* Responsive tweaks */
       @media (max-width: 400px) {
         .emoji-display {
@@ -615,40 +568,6 @@
             <option value="15">15</option>
             <option value="20">20</option>
           </select>
-        </div>
-
-        <div class="answer-options">
-          <div class="answer-options-label">Host Answer Display</div>
-          <div class="answer-options-hint">
-            Choose how you see answers (hidden from screen-shared players)
-          </div>
-          <label class="answer-option">
-            <input type="checkbox" id="optPopup" checked />
-            <div>
-              <div class="answer-option-text">Separate popup window</div>
-              <div class="answer-option-desc">
-                Opens a small window — don't share it on Zoom
-              </div>
-            </div>
-          </label>
-          <label class="answer-option">
-            <input type="checkbox" id="optNotification" />
-            <div>
-              <div class="answer-option-text">Browser notification</div>
-              <div class="answer-option-desc">
-                OS notification — invisible on most screen shares
-              </div>
-            </div>
-          </label>
-          <label class="answer-option">
-            <input type="checkbox" id="optConsole" />
-            <div>
-              <div class="answer-option-text">Developer console</div>
-              <div class="answer-option-desc">
-                Prints answer to browser console (F12)
-              </div>
-            </div>
-          </label>
         </div>
 
         <button class="btn btn-accent" id="startGameBtn" disabled>
@@ -892,12 +811,6 @@
       let timeLeft = 60;
       let roundSelections = new Set();
 
-      // Host answer display settings
-      let hostPopupWindow = null;
-      let usePopup = true;
-      let useNotification = false;
-      let useConsole = false;
-
       // --- DOM refs ---
       const $ = (id) => document.getElementById(id);
 
@@ -932,91 +845,6 @@
       const scoreboardSubtitle = $('scoreboardSubtitle');
       const playAgainBtn = $('playAgainBtn');
       const confettiCanvas = $('confettiCanvas');
-
-      const optPopup = $('optPopup');
-      const optNotification = $('optNotification');
-      const optConsole = $('optConsole');
-
-      // --- Host Answer Delivery ---
-
-      /** Request notification permission when that option is checked */
-      optNotification.addEventListener('change', function () {
-        if (this.checked && 'Notification' in window && Notification.permission === 'default') {
-          Notification.requestPermission();
-        }
-      });
-
-      /** Read answer display preferences from the setup checkboxes */
-      function readAnswerPrefs() {
-        usePopup = optPopup.checked;
-        useNotification = optNotification.checked;
-        useConsole = optConsole.checked;
-      }
-
-      /** Send the answer for the current round to the host via selected channels */
-      function deliverAnswerToHost(data) {
-        const msg = `Round ${currentRound + 1}: ${data.title} (${data.type})`;
-
-        if (usePopup && hostPopupWindow && !hostPopupWindow.closed) {
-          const doc = hostPopupWindow.document;
-          doc.getElementById('hostRound').textContent = `Round ${currentRound + 1} / ${totalRounds}`;
-          const typeEl = doc.getElementById('hostType');
-          typeEl.textContent = data.type;
-          typeEl.style.display = 'inline-block';
-          doc.getElementById('hostAnswer').textContent = data.title;
-          doc.getElementById('hostClueHard').textContent = data.clue_hard;
-          doc.getElementById('hostClueMedium').textContent = data.clue_medium;
-          doc.getElementById('hostClueEasy').textContent = data.clue_easy;
-        }
-
-        if (useNotification && 'Notification' in window && Notification.permission === 'granted') {
-          new Notification('Emoji Quiz Party', { body: msg, silent: true });
-        }
-
-        if (useConsole) {
-          console.log(
-            `%c${msg}`,
-            'color: #f59e0b; font-size: 16px; font-weight: bold;'
-          );
-          console.log(`  Hard clue: ${data.clue_hard}`);
-          console.log(`  Medium clue: ${data.clue_medium}`);
-          console.log(`  Easy clue: ${data.clue_easy}`);
-        }
-      }
-
-      /** Open the host answer popup window with a styled display */
-      function openHostPopup() {
-        if (hostPopupWindow && !hostPopupWindow.closed) {
-          hostPopupWindow.focus();
-          return;
-        }
-        hostPopupWindow = window.open('', 'HostAnswers', 'width=360,height=320,left=50,top=50');
-        if (!hostPopupWindow) return;
-        hostPopupWindow.document.write(`<!DOCTYPE html>
-<html><head><title>Host Answers</title><style>
-  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f172a; color: #f9fafb; margin: 0; padding: 16px; }
-  h2 { color: #f59e0b; margin: 0 0 4px; font-size: 1rem; }
-  .round { opacity: 0.7; font-size: 0.85rem; margin-bottom: 12px; }
-  .type { display: inline-block; background: #8b5cf6; color: #fff; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
-  .answer { font-size: 1.8rem; font-weight: 800; margin-bottom: 16px; background: linear-gradient(135deg, #f59e0b, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-  .clues { font-size: 0.85rem; }
-  .clue { padding: 6px 0; border-bottom: 1px solid #1e293b; }
-  .clue-label { font-weight: 700; font-size: 0.7rem; text-transform: uppercase; }
-  .clue-label.hard { color: #ef4444; } .clue-label.medium { color: #f59e0b; } .clue-label.easy { color: #10b981; }
-  .waiting { opacity: 0.5; font-style: italic; margin-top: 40px; text-align: center; }
-</style></head><body>
-  <h2>Host Answers</h2>
-  <div class="round" id="hostRound">Waiting for game to start...</div>
-  <div class="type" id="hostType" style="display:none"></div>
-  <div class="answer" id="hostAnswer"></div>
-  <div class="clues">
-    <div class="clue"><span class="clue-label hard">Hard:</span> <span id="hostClueHard"></span></div>
-    <div class="clue"><span class="clue-label medium">Medium:</span> <span id="hostClueMedium"></span></div>
-    <div class="clue"><span class="clue-label easy">Easy:</span> <span id="hostClueEasy"></span></div>
-  </div>
-</body></html>`);
-        hostPopupWindow.document.close();
-      }
 
       // --- Setup Screen Logic ---
 
@@ -1089,8 +917,6 @@
         currentRound = 0;
         players.forEach((p) => (scores[p] = 0));
         roundOrder = shuffle(QUIZ_DATA).slice(0, totalRounds);
-        readAnswerPrefs();
-        if (usePopup) openHostPopup();
         showScreen('game');
         startRound();
       }
@@ -1101,9 +927,6 @@
         roundLabel.textContent = `Round ${currentRound + 1} / ${totalRounds}`;
         typeBadge.textContent = data.type;
         emojiDisplay.textContent = data.emojis;
-
-        // Deliver answer to host via selected channels
-        deliverAnswerToHost(data);
 
         // Reset clues
         clueHard.classList.remove('visible');
