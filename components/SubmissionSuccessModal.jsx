@@ -82,7 +82,7 @@ export default function SubmissionSuccessModal({
 
         <div className="mt-6">
           <button onClick={onClose} className="btn-primary w-full">
-            Let the bots starve
+            Let the 🤖's starve! 🍽️ 🦴
           </button>
         </div>
 
