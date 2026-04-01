@@ -50,6 +50,16 @@
         "implementedAt": "2026-04-01T16:08:56Z",
         "agentName": "codex",
         "llmModel": "gpt-5"
+      },
+      {
+        "issueNumber": 265,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/265",
+        "runId": "run-20260401212804Z-a5028a",
+        "description": "Persisted setup player names in local browser storage and added a remove-all users action on setup.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-04-01T21:28:04Z",
+        "agentName": "codex",
+        "llmModel": "gpt-5"
       }
     ],
     "allowImprovements": true,
@@ -58,6 +68,11 @@
         "runId": "run-20260401160856Z-cf1293",
         "path": "backups/run-20260401160856Z-cf1293/index.html",
         "url": "/apps/2026/04/01/emoji-quiz-party/backups/run-20260401160856Z-cf1293/index.html"
+      },
+      {
+        "runId": "run-20260401212804Z-a5028a",
+        "path": "backups/run-20260401212804Z-a5028a/index.html",
+        "url": "/apps/2026/04/01/emoji-quiz-party/backups/run-20260401212804Z-a5028a/index.html"
       },
       {
         "runId": "run-20260401T143542Z-5d043a",
