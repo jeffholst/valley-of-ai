@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emoji Quiz Party - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Emoji Quiz Party" />
+    <meta name="voa-app-id" content="2026/04/01/emoji-quiz-party" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --accent: #f59e0b;
+        --accent2: #8b5cf6;
+        --success: #10b981;
+        --danger: #ef4444;
+        --info: #3b82f6;
+        --glow: rgba(245, 158, 11, 0.3);
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+        --accent: #d97706;
+        --accent2: #7c3aed;
+        --success: #059669;
+        --danger: #dc2626;
+        --info: #2563eb;
+        --glow: rgba(217, 119, 6, 0.2);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100dvh;
+        overflow-x: hidden;
+      }
+
+      #appWrapper {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .screen {
+        display: none;
+        width: 100%;
+        max-width: 600px;
+        padding: 16px;
+        flex-direction: column;
+        align-items: center;
+      }
+      .screen.active {
+        display: flex;
+      }
+
+      /* Setup Screen */
+      .setup-title {
+        font-size: 2rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 4px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .setup-subtitle {
+        font-size: 0.95rem;
+        color: var(--text);
+        opacity: 0.7;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .player-input-row {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+        margin-bottom: 16px;
+      }
+      .player-input-row input {
+        flex: 1;
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: 2px solid var(--surface);
+        background: var(--surface);
+        color: var(--text);
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .player-input-row input:focus {
+        border-color: var(--accent);
+      }
+      .player-input-row input::placeholder {
+        opacity: 0.5;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border-radius: 12px;
+        border: none;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+        touch-action: manipulation;
+        min-height: 48px;
+        min-width: 48px;
+      }
+      .btn:active {
+        transform: scale(0.96);
+      }
+      .btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      .btn-accent {
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #fff;
+        box-shadow: 0 4px 15px var(--glow);
+      }
+      .btn-accent:hover:not(:disabled) {
+        box-shadow: 0 6px 25px var(--glow);
+      }
+
+      .btn-add {
+        background: var(--success);
+        color: #fff;
+        padding: 12px 18px;
+        font-size: 1.2rem;
+        border-radius: 12px;
+      }
+
+      .btn-sm {
+        padding: 6px 14px;
+        font-size: 0.85rem;
+        min-height: 36px;
+        min-width: 36px;
+        border-radius: 8px;
+      }
+
+      .btn-danger {
+        background: var(--danger);
+        color: #fff;
+      }
+
+      .btn-info {
+        background: var(--info);
+        color: #fff;
+      }
+
+      .player-list {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+      .player-chip {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--surface);
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .player-chip .remove-btn {
+        background: none;
+        border: none;
+        color: var(--danger);
+        font-size: 1.3rem;
+        cursor: pointer;
+        padding: 4px 8px;
+        line-height: 1;
+        min-height: 44px;
+        min-width: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .player-count {
+        font-size: 0.85rem;
+        opacity: 0.6;
+        margin-bottom: 12px;
+      }
+
+      .round-config {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+      .round-config label {
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+      .round-config select {
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 2px solid var(--surface);
+        background: var(--surface);
+        color: var(--text);
+        font-size: 1rem;
+        cursor: pointer;
+        min-height: 44px;
+      }
+
+      /* Game Screen */
+      .game-header {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .round-label {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--accent);
+      }
+      .type-badge {
+        font-size: 0.85rem;
+        font-weight: 700;
+        padding: 4px 14px;
+        border-radius: 20px;
+        background: var(--accent2);
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .emoji-display {
+        width: 100%;
+        text-align: center;
+        font-size: 3.5rem;
+        padding: 24px 8px;
+        background: var(--surface);
+        border-radius: 16px;
+        margin-bottom: 12px;
+        line-height: 1.4;
+        word-break: break-word;
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        letter-spacing: 4px;
+      }
+
+      .timer-bar-wrap {
+        width: 100%;
+        height: 12px;
+        background: var(--surface);
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 4px;
+      }
+      .timer-bar {
+        height: 100%;
+        border-radius: 6px;
+        transition: width 1s linear, background 0.5s;
+        background: var(--success);
+      }
+      .timer-bar.warn {
+        background: var(--accent);
+      }
+      .timer-bar.danger {
+        background: var(--danger);
+      }
+
+      .timer-text {
+        font-size: 1.5rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 8px;
+        font-variant-numeric: tabular-nums;
+      }
+      .timer-text.danger {
+        color: var(--danger);
+      }
+
+      .clue-section {
+        width: 100%;
+        min-height: 64px;
+        margin-bottom: 12px;
+      }
+      .clue-card {
+        background: var(--surface);
+        border-radius: 10px;
+        padding: 10px 16px;
+        margin-bottom: 6px;
+        display: none;
+        align-items: center;
+        gap: 8px;
+        animation: clueIn 0.4s ease;
+      }
+      .clue-card.visible {
+        display: flex;
+      }
+      @keyframes clueIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .clue-label {
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        white-space: nowrap;
+        padding: 3px 8px;
+        border-radius: 6px;
+        color: #fff;
+      }
+      .clue-label.hard {
+        background: var(--danger);
+      }
+      .clue-label.medium {
+        background: var(--accent);
+      }
+      .clue-label.easy {
+        background: var(--success);
+      }
+      .clue-text {
+        font-size: 0.95rem;
+        font-weight: 500;
+      }
+
+      .answer-reveal {
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+        margin-bottom: 8px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: 700;
+        display: none;
+        animation: clueIn 0.4s ease;
+      }
+      .answer-reveal.visible {
+        display: block;
+      }
+
+      .player-buttons {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .player-score-btn {
+        padding: 10px 8px;
+        border-radius: 10px;
+        border: 2px solid var(--surface);
+        background: var(--surface);
+        color: var(--text);
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        min-height: 52px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        touch-action: manipulation;
+      }
+      .player-score-btn:active {
+        transform: scale(0.96);
+      }
+      .player-score-btn.selected {
+        border-color: var(--success);
+        background: rgba(16, 185, 129, 0.15);
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+      }
+      .player-score-btn .name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 100%;
+      }
+      .player-score-btn .score {
+        font-size: 0.75rem;
+        opacity: 0.7;
+      }
+
+      .game-actions {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      /* Scoreboard Screen */
+      .scoreboard-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 4px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .scoreboard-subtitle {
+        font-size: 0.9rem;
+        opacity: 0.6;
+        margin-bottom: 20px;
+      }
+
+      .scoreboard-list {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 24px;
+      }
+      .score-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        background: var(--surface);
+        border-radius: 12px;
+        transition: transform 0.3s;
+      }
+      .score-row.winner {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(139, 92, 246, 0.2));
+        border: 2px solid var(--accent);
+        box-shadow: 0 4px 20px var(--glow);
+      }
+      .score-rank {
+        font-size: 1.5rem;
+        font-weight: 800;
+        min-width: 40px;
+        text-align: center;
+      }
+      .score-row.winner .score-rank {
+        color: var(--accent);
+      }
+      .score-name {
+        flex: 1;
+        font-size: 1.1rem;
+        font-weight: 700;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .score-value {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--accent);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .confetti-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 100;
+      }
+
+      /* Responsive tweaks */
+      @media (max-width: 400px) {
+        .emoji-display {
+          font-size: 2.5rem;
+          padding: 16px 8px;
+        }
+        .setup-title {
+          font-size: 1.6rem;
+        }
+        .player-buttons {
+          grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="appWrapper">
+      <!-- Setup Screen -->
+      <div id="setupScreen" class="screen active">
+        <div class="setup-title">Emoji Quiz Party</div>
+        <div class="setup-subtitle">
+          A fun emoji guessing game for Zoom calls
+        </div>
+
+        <div class="player-input-row">
+          <input
+            type="text"
+            id="playerNameInput"
+            placeholder="Enter player name..."
+            maxlength="20"
+            autocomplete="off"
+          />
+          <button class="btn btn-add" id="addPlayerBtn" title="Add player">
+            +
+          </button>
+        </div>
+
+        <div class="player-count" id="playerCount">0 players added</div>
+        <div class="player-list" id="playerList"></div>
+
+        <div class="round-config">
+          <label for="roundSelect">Rounds:</label>
+          <select id="roundSelect">
+            <option value="5" selected>5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+          </select>
+        </div>
+
+        <button class="btn btn-accent" id="startGameBtn" disabled>
+          Start Game
+        </button>
+      </div>
+
+      <!-- Game Screen -->
+      <div id="gameScreen" class="screen">
+        <div class="game-header">
+          <span class="round-label" id="roundLabel">Round 1 / 5</span>
+          <span class="type-badge" id="typeBadge">Movie</span>
+        </div>
+
+        <div class="emoji-display" id="emojiDisplay"></div>
+
+        <div class="timer-bar-wrap">
+          <div class="timer-bar" id="timerBar"></div>
+        </div>
+        <div class="timer-text" id="timerText">60</div>
+
+        <div class="clue-section" id="clueSection">
+          <div class="clue-card" id="clueHard">
+            <span class="clue-label hard">Hard</span>
+            <span class="clue-text" id="clueHardText"></span>
+          </div>
+          <div class="clue-card" id="clueMedium">
+            <span class="clue-label medium">Medium</span>
+            <span class="clue-text" id="clueMediumText"></span>
+          </div>
+          <div class="clue-card" id="clueEasy">
+            <span class="clue-label easy">Easy</span>
+            <span class="clue-text" id="clueEasyText"></span>
+          </div>
+        </div>
+
+        <div class="answer-reveal" id="answerReveal"></div>
+
+        <div class="player-buttons" id="playerButtons"></div>
+
+        <div class="game-actions">
+          <button class="btn btn-accent" id="nextRoundBtn">Next Round</button>
+          <button class="btn btn-danger" id="endGameBtn">End Game</button>
+        </div>
+      </div>
+
+      <!-- Scoreboard Screen -->
+      <div id="scoreboardScreen" class="screen">
+        <div class="scoreboard-title">Final Scores</div>
+        <div class="scoreboard-subtitle" id="scoreboardSubtitle">
+          Game Over!
+        </div>
+
+        <div class="scoreboard-list" id="scoreboardList"></div>
+
+        <button class="btn btn-accent" id="playAgainBtn">Play Again</button>
+      </div>
+    </div>
+
+    <canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+
+    <script>
+      /* ============================================================
+       * Emoji Quiz Party
+       * A presenter-driven party game for Zoom calls.
+       * The presenter adds player names, starts the game, and taps
+       * player buttons to award points as players guess emoji combos.
+       * ============================================================ */
+
+      // --- Quiz Data: 20 rounds of emoji sets ---
+      const QUIZ_DATA = [
+        {
+          emojis: '\uD83E\uDD81\uD83D\uDC51',
+          type: 'Movie',
+          title: 'The Lion King',
+          clue_hard: 'Disney animated classic from 1994',
+          clue_medium: 'Hakuna Matata is a song from this',
+          clue_easy: 'Simba is the main character',
+        },
+        {
+          emojis: '\uD83D\uDD7A\uD83D\uDC57\uD83C\uDFB6',
+          type: 'Movie',
+          title: 'Dirty Dancing',
+          clue_hard: 'Set at a summer resort in the Catskills',
+          clue_medium: 'Patrick Swayze starred in this',
+          clue_easy: '"Nobody puts Baby in a corner"',
+        },
+        {
+          emojis: '\uD83C\uDF0A\uD83D\uDEA2\u2764\uFE0F\uD83E\uDDCA',
+          type: 'Movie',
+          title: 'Titanic',
+          clue_hard: "James Cameron's epic from 1997",
+          clue_medium: 'Jack and Rose are the main characters',
+          clue_easy: '"I\'m the king of the world!"',
+        },
+        {
+          emojis: '\uD83D\uDC80\u2694\uFE0F\uD83C\uDFF0\uD83D\uDC09',
+          type: 'Movie',
+          title: 'Game of Thrones',
+          clue_hard: 'Based on George R.R. Martin books',
+          clue_medium: 'Winter is coming',
+          clue_easy: 'The Iron Throne is the ultimate prize',
+        },
+        {
+          emojis: '\uD83C\uDF0C\u2694\uFE0F\uD83D\uDC68\u200D\uD83D\uDC66',
+          type: 'Movie',
+          title: 'Star Wars',
+          clue_hard: 'Space opera franchise that started in 1977',
+          clue_medium: 'The Force is strong with this one',
+          clue_easy: 'Luke, I am your father',
+        },
+        {
+          emojis: '\uD83C\uDFB5\uD83D\uDC69\u200D\uD83C\uDFA4\uD83D\uDC83',
+          type: 'Song',
+          title: 'Single Ladies',
+          clue_hard: 'Released in 2008, had an iconic music video',
+          clue_medium: 'All the single ladies, all the single ladies',
+          clue_easy: 'If you liked it then you shoulda put a ring on it',
+        },
+        {
+          emojis: '\uD83C\uDF19\u2B50\uD83C\uDFA4\uD83D\uDC68',
+          type: 'Song',
+          title: 'Fly Me to the Moon',
+          clue_hard: 'Written by Bart Howard in 1954',
+          clue_medium: 'Frank Sinatra made this a classic',
+          clue_easy: 'Let me play among the stars',
+        },
+        {
+          emojis: '\u2614\uD83D\uDE22\uD83C\uDFB6\uD83D\uDC94',
+          type: 'Song',
+          title: 'Crying in the Rain',
+          clue_hard: 'Originally by the Everly Brothers',
+          clue_medium: 'A-ha also covered this hit',
+          clue_easy: 'Hiding tears with weather',
+        },
+        {
+          emojis: '\uD83C\uDF1E\uD83D\uDE0E\uD83D\uDEE3\uFE0F\uD83C\uDFB5',
+          type: 'Song',
+          title: 'Walking on Sunshine',
+          clue_hard: '1985 hit by Katrina and the Waves',
+          clue_medium: 'An incredibly upbeat and happy song',
+          clue_easy: "And don't it feel good!",
+        },
+        {
+          emojis: '\uD83E\uDDCA\uD83E\uDDCA\uD83D\uDC76',
+          type: 'Song',
+          title: 'Ice Ice Baby',
+          clue_hard: 'Released in 1990, first hip hop single to top Billboard',
+          clue_medium: 'Vanilla Ice performed this',
+          clue_easy: 'Stop, collaborate, and listen',
+        },
+        {
+          emojis: '\uD83D\uDCA1\uD83D\uDCA1\uD83D\uDCA1',
+          type: 'Phrase',
+          title: 'Bright Idea',
+          clue_hard: 'Edison might relate to this expression',
+          clue_medium: 'A sudden inspiration or clever thought',
+          clue_easy: 'A lightbulb moment',
+        },
+        {
+          emojis: '\uD83D\uDC18\uD83D\uDCCD\uD83D\uDE36',
+          type: 'Phrase',
+          title: 'Elephant in the Room',
+          clue_hard: 'Something everyone sees but no one mentions',
+          clue_medium: 'An obvious problem being ignored',
+          clue_easy: 'A large animal in an indoor space, metaphorically',
+        },
+        {
+          emojis: '\uD83C\uDF52\uD83C\uDF70\u2764\uFE0F',
+          type: 'Phrase',
+          title: 'Cherry on Top',
+          clue_hard: 'A finishing touch that makes something perfect',
+          clue_medium: 'Often said about a nice bonus or extra treat',
+          clue_easy: 'Small red fruit sitting on a dessert',
+        },
+        {
+          emojis: '\uD83D\uDD25\uD83D\uDC1B',
+          type: 'Phrase',
+          title: 'Firebug',
+          clue_hard: 'Someone with a dangerous fascination',
+          clue_medium: 'A person who likes to start flames',
+          clue_easy: 'An arsonist nickname, or a glowing insect',
+        },
+        {
+          emojis: '\uD83C\uDF0D\u2601\uFE0F9\uFE0F\u20E3',
+          type: 'Phrase',
+          title: 'Cloud Nine',
+          clue_hard: 'A state of perfect bliss or euphoria',
+          clue_medium: 'You might be on this after great news',
+          clue_easy: 'Floating in the sky, extremely happy',
+        },
+        {
+          emojis: '\uD83D\uDC7B\uD83C\uDFE0\uD83D\uDE31',
+          type: 'Movie',
+          title: 'The Haunting',
+          clue_hard: 'A classic horror premise adapted many times',
+          clue_medium: 'A group investigates a spooky mansion',
+          clue_easy: 'A scary spirit in a dwelling',
+        },
+        {
+          emojis: '\uD83C\uDFB8\u26A1\uD83D\uDC79',
+          type: 'Song',
+          title: 'Thunderstruck',
+          clue_hard: 'Released in 1990 by an Australian band',
+          clue_medium: 'AC/DC performed this rock anthem',
+          clue_easy: 'Thunder! ... na na na na na na na',
+        },
+        {
+          emojis: '\uD83D\uDE80\uD83D\uDC68\u200D\uD83D\uDE80\uD83C\uDF11',
+          type: 'Movie',
+          title: 'Apollo 13',
+          clue_hard: 'Based on real events from April 1970',
+          clue_medium: 'Tom Hanks stars as an astronaut in trouble',
+          clue_easy: '"Houston, we have a problem"',
+        },
+        {
+          emojis: '\uD83D\uDC1F\uD83D\uDD0E\uD83C\uDF0A\uD83D\uDE22',
+          type: 'Movie',
+          title: 'Finding Nemo',
+          clue_hard: 'Pixar film released in 2003',
+          clue_medium: 'A clownfish searches the ocean',
+          clue_easy: 'Just keep swimming!',
+        },
+        {
+          emojis: '\uD83C\uDF39\uD83D\uDC7A\uD83D\uDC78',
+          type: 'Movie',
+          title: 'Beauty and the Beast',
+          clue_hard: 'Disney animated classic from 1991',
+          clue_medium: 'A cursed prince in a castle, and an enchanted rose',
+          clue_easy: 'Tale as old as time',
+        },
+      ];
+
+      // --- State ---
+      let players = [];
+      let scores = {};
+      let currentRound = 0;
+      let totalRounds = 5;
+      let roundOrder = [];
+      let timerInterval = null;
+      let timeLeft = 60;
+      let roundSelections = new Set();
+
+      // --- DOM refs ---
+      const $ = (id) => document.getElementById(id);
+
+      const playerNameInput = $('playerNameInput');
+      const addPlayerBtn = $('addPlayerBtn');
+      const playerList = $('playerList');
+      const playerCount = $('playerCount');
+      const roundSelect = $('roundSelect');
+      const startGameBtn = $('startGameBtn');
+
+      const setupScreen = $('setupScreen');
+      const gameScreen = $('gameScreen');
+      const scoreboardScreen = $('scoreboardScreen');
+
+      const roundLabel = $('roundLabel');
+      const typeBadge = $('typeBadge');
+      const emojiDisplay = $('emojiDisplay');
+      const timerBar = $('timerBar');
+      const timerText = $('timerText');
+      const clueHard = $('clueHard');
+      const clueMedium = $('clueMedium');
+      const clueEasy = $('clueEasy');
+      const clueHardText = $('clueHardText');
+      const clueMediumText = $('clueMediumText');
+      const clueEasyText = $('clueEasyText');
+      const answerReveal = $('answerReveal');
+      const playerButtons = $('playerButtons');
+      const nextRoundBtn = $('nextRoundBtn');
+      const endGameBtn = $('endGameBtn');
+
+      const scoreboardList = $('scoreboardList');
+      const scoreboardSubtitle = $('scoreboardSubtitle');
+      const playAgainBtn = $('playAgainBtn');
+      const confettiCanvas = $('confettiCanvas');
+
+      // --- Setup Screen Logic ---
+
+      /** Add a player to the list */
+      function addPlayer() {
+        const name = playerNameInput.value.trim();
+        if (!name || players.length >= 12) return;
+        if (players.includes(name)) {
+          playerNameInput.value = '';
+          return;
+        }
+        players.push(name);
+        scores[name] = 0;
+        playerNameInput.value = '';
+        renderPlayerList();
+        playerNameInput.focus();
+      }
+
+      /** Remove a player by index */
+      function removePlayer(index) {
+        const name = players[index];
+        players.splice(index, 1);
+        delete scores[name];
+        renderPlayerList();
+      }
+
+      /** Render the player chip list and update the start button state */
+      function renderPlayerList() {
+        playerList.innerHTML = players
+          .map(
+            (name, i) => `
+          <div class="player-chip">
+            <span>${escapeHtml(name)}</span>
+            <button class="remove-btn" onclick="removePlayer(${i})" title="Remove ${escapeHtml(name)}" aria-label="Remove ${escapeHtml(name)}">&#10005;</button>
+          </div>
+        `
+          )
+          .join('');
+        playerCount.textContent = `${players.length} player${players.length !== 1 ? 's' : ''} added`;
+        startGameBtn.disabled = players.length < 2;
+      }
+
+      /** Escape HTML entities to prevent injection */
+      function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      addPlayerBtn.addEventListener('click', addPlayer);
+      playerNameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') addPlayer();
+      });
+
+      // --- Game Logic ---
+
+      /** Shuffle an array using Fisher-Yates algorithm */
+      function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      /** Start a new game: initialize state and show the first round */
+      function startGame() {
+        totalRounds = parseInt(roundSelect.value, 10);
+        currentRound = 0;
+        players.forEach((p) => (scores[p] = 0));
+        roundOrder = shuffle(QUIZ_DATA).slice(0, totalRounds);
+        showScreen('game');
+        startRound();
+      }
+
+      /** Start the current round: set up emojis, clues, timer */
+      function startRound() {
+        const data = roundOrder[currentRound];
+        roundLabel.textContent = `Round ${currentRound + 1} / ${totalRounds}`;
+        typeBadge.textContent = data.type;
+        emojiDisplay.textContent = data.emojis;
+
+        // Reset clues
+        clueHard.classList.remove('visible');
+        clueMedium.classList.remove('visible');
+        clueEasy.classList.remove('visible');
+        clueHardText.textContent = data.clue_hard;
+        clueMediumText.textContent = data.clue_medium;
+        clueEasyText.textContent = data.clue_easy;
+
+        // Reset answer
+        answerReveal.classList.remove('visible');
+        answerReveal.textContent = '';
+
+        // Reset player selections
+        roundSelections.clear();
+        renderPlayerButtons();
+
+        // Start timer
+        timeLeft = 60;
+        updateTimerDisplay();
+        clearInterval(timerInterval);
+        timerInterval = setInterval(timerTick, 1000);
+
+        // Update next round button
+        nextRoundBtn.textContent =
+          currentRound < totalRounds - 1 ? 'Next Round' : 'See Results';
+      }
+
+      /** Timer tick: update display, reveal clues progressively, end round at 0 */
+      function timerTick() {
+        timeLeft--;
+        updateTimerDisplay();
+
+        // Progressive clue reveals
+        if (timeLeft <= 40 && timeLeft > 0) {
+          clueHard.classList.add('visible');
+        }
+        if (timeLeft <= 20 && timeLeft > 0) {
+          clueMedium.classList.add('visible');
+        }
+        if (timeLeft <= 5 && timeLeft > 0) {
+          clueEasy.classList.add('visible');
+        }
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          revealAnswer();
+        }
+      }
+
+      /** Update the timer bar width, color, and text */
+      function updateTimerDisplay() {
+        const pct = (timeLeft / 60) * 100;
+        timerBar.style.width = pct + '%';
+        timerBar.className = 'timer-bar';
+        timerText.className = 'timer-text';
+        if (pct <= 15) {
+          timerBar.classList.add('danger');
+          timerText.classList.add('danger');
+        } else if (pct <= 40) {
+          timerBar.classList.add('warn');
+        }
+        timerText.textContent = timeLeft;
+      }
+
+      /** Reveal the answer for the current round */
+      function revealAnswer() {
+        const data = roundOrder[currentRound];
+        answerReveal.textContent = `Answer: ${data.title}`;
+        answerReveal.classList.add('visible');
+        clueHard.classList.add('visible');
+        clueMedium.classList.add('visible');
+        clueEasy.classList.add('visible');
+      }
+
+      /** Render the player buttons grid for scoring */
+      function renderPlayerButtons() {
+        playerButtons.innerHTML = players
+          .map(
+            (name) => `
+          <button class="player-score-btn ${roundSelections.has(name) ? 'selected' : ''}"
+                  onclick="togglePlayerPoint('${escapeHtml(name)}')"
+                  aria-label="Award point to ${escapeHtml(name)}">
+            <span class="name">${escapeHtml(name)}</span>
+            <span class="score">${scores[name]} pt${scores[name] !== 1 ? 's' : ''}</span>
+          </button>
+        `
+          )
+          .join('');
+      }
+
+      /** Toggle a point for a player in the current round (allows ties) */
+      function togglePlayerPoint(name) {
+        if (roundSelections.has(name)) {
+          roundSelections.delete(name);
+          scores[name]--;
+        } else {
+          roundSelections.add(name);
+          scores[name]++;
+        }
+        renderPlayerButtons();
+      }
+
+      /** Advance to the next round or end the game */
+      function nextRound() {
+        clearInterval(timerInterval);
+        currentRound++;
+        if (currentRound >= totalRounds) {
+          endGame();
+        } else {
+          startRound();
+        }
+      }
+
+      /** End the game and show the scoreboard */
+      function endGame() {
+        clearInterval(timerInterval);
+        showScreen('scoreboard');
+        renderScoreboard();
+        launchConfetti();
+      }
+
+      /** Render the final scoreboard sorted by score descending */
+      function renderScoreboard() {
+        const sorted = [...players].sort((a, b) => scores[b] - scores[a]);
+        const topScore = scores[sorted[0]] || 0;
+        const winners = sorted.filter((p) => scores[p] === topScore);
+
+        if (winners.length === 1) {
+          scoreboardSubtitle.textContent = `${winners[0]} wins!`;
+        } else if (winners.length > 1 && topScore > 0) {
+          scoreboardSubtitle.textContent = "It's a tie!";
+        } else {
+          scoreboardSubtitle.textContent = 'Game Over!';
+        }
+
+        const rankEmojis = [
+          '\uD83E\uDD47',
+          '\uD83E\uDD48',
+          '\uD83E\uDD49',
+        ];
+        scoreboardList.innerHTML = sorted
+          .map((name, i) => {
+            const isWinner = scores[name] === topScore && topScore > 0;
+            const rank =
+              i < 3 ? rankEmojis[i] : `<span style="opacity:0.5">${i + 1}</span>`;
+            return `
+            <div class="score-row ${isWinner ? 'winner' : ''}">
+              <span class="score-rank">${rank}</span>
+              <span class="score-name">${escapeHtml(name)}</span>
+              <span class="score-value">${scores[name]}</span>
+            </div>
+          `;
+          })
+          .join('');
+      }
+
+      /** Reset state and return to setup */
+      function playAgain() {
+        clearInterval(timerInterval);
+        players.forEach((p) => (scores[p] = 0));
+        currentRound = 0;
+        showScreen('setup');
+      }
+
+      /** Switch visible screen */
+      function showScreen(name) {
+        setupScreen.classList.remove('active');
+        gameScreen.classList.remove('active');
+        scoreboardScreen.classList.remove('active');
+        if (name === 'setup') setupScreen.classList.add('active');
+        if (name === 'game') gameScreen.classList.add('active');
+        if (name === 'scoreboard') scoreboardScreen.classList.add('active');
+      }
+
+      // --- Confetti Animation ---
+
+      /** Launch a brief confetti burst on the canvas overlay */
+      function launchConfetti() {
+        const canvas = confettiCanvas;
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const colors = [
+          '#f59e0b',
+          '#8b5cf6',
+          '#10b981',
+          '#ef4444',
+          '#3b82f6',
+          '#ec4899',
+        ];
+
+        for (let i = 0; i < 120; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height - canvas.height,
+            w: Math.random() * 8 + 4,
+            h: Math.random() * 6 + 3,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            vx: (Math.random() - 0.5) * 3,
+            vy: Math.random() * 4 + 2,
+            rot: Math.random() * 360,
+            vr: (Math.random() - 0.5) * 8,
+            opacity: 1,
+          });
+        }
+
+        let frame = 0;
+        const maxFrames = 180;
+
+        function draw() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          let alive = false;
+          particles.forEach((p) => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.rot += p.vr;
+            p.vy += 0.05;
+            if (frame > maxFrames * 0.6) {
+              p.opacity -= 0.015;
+            }
+            if (p.opacity > 0 && p.y < canvas.height + 20) {
+              alive = true;
+              ctx.save();
+              ctx.translate(p.x, p.y);
+              ctx.rotate((p.rot * Math.PI) / 180);
+              ctx.globalAlpha = Math.max(0, p.opacity);
+              ctx.fillStyle = p.color;
+              ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+              ctx.restore();
+            }
+          });
+          frame++;
+          if (alive && frame < maxFrames * 1.5) {
+            requestAnimationFrame(draw);
+          } else {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }
+        }
+        requestAnimationFrame(draw);
+      }
+
+      // --- Event Listeners ---
+      startGameBtn.addEventListener('click', startGame);
+      nextRoundBtn.addEventListener('click', nextRound);
+      endGameBtn.addEventListener('click', endGame);
+      playAgainBtn.addEventListener('click', playAgain);
+
+      // --- Keyboard support ---
+      document.addEventListener('keydown', (e) => {
+        if (
+          gameScreen.classList.contains('active') &&
+          e.key === ' ' &&
+          e.target === document.body
+        ) {
+          e.preventDefault();
+          nextRound();
+        }
+      });
+    </script>
+  </body>
+</html>
