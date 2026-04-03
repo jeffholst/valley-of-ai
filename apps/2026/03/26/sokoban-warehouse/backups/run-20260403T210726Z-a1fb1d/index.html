@@ -613,103 +613,6 @@
       #btnCopyShareLink:hover {
         background: var(--btn-hover);
       }
-
-      /* ── Help overlay ── */
-      #helpOverlay {
-        position: fixed;
-        inset: 64px 0 56px 0;
-        background: var(--bg);
-        z-index: 250;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 20px 16px;
-        overflow-y: auto;
-        gap: 16px;
-      }
-
-      #helpOverlay h2 {
-        font-size: 22px;
-        font-weight: 700;
-        color: var(--accent);
-        margin: 0;
-      }
-
-      .help-content {
-        width: 100%;
-        max-width: 480px;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-
-      .help-section h3 {
-        font-size: 15px;
-        font-weight: 700;
-        color: var(--accent);
-        margin: 0 0 8px;
-        border-bottom: 1px solid var(--border);
-        padding-bottom: 4px;
-      }
-
-      .help-section p {
-        font-size: 13px;
-        line-height: 1.6;
-        color: var(--text);
-        margin: 0 0 6px;
-      }
-
-      .help-legend {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .help-legend-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 13px;
-        line-height: 1.4;
-      }
-
-      .help-legend-icon {
-        width: 36px;
-        height: 36px;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        flex-shrink: 0;
-        border: 1px solid var(--border);
-      }
-
-      .help-legend-text {
-        flex: 1;
-      }
-
-      .help-legend-text strong {
-        color: var(--accent);
-      }
-
-      .help-controls-grid {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 4px 12px;
-        font-size: 13px;
-      }
-
-      .help-key {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 4px;
-        padding: 2px 8px;
-        font-family: monospace;
-        font-size: 12px;
-        text-align: center;
-        white-space: nowrap;
-      }
     </style>
   </head>
   <body>
@@ -731,7 +634,6 @@
         <button class="hud-btn" id="btnRestart" aria-label="Restart level">↺ Reset</button>
         <button class="hud-btn" id="btnLevels" aria-label="Select level">☰ Levels</button>
         <button class="hud-btn" id="btnBuild" aria-label="Level builder">🔨 Build</button>
-        <button class="hud-btn" id="btnHelp" aria-label="Help">? Help</button>
       </div>
 
       <div id="validationWarning" class="hidden" role="alert" aria-live="polite"></div>
@@ -803,68 +705,6 @@
           📋
         </button>
       </div>
-    </div>
-
-    <!-- Help Overlay -->
-    <div id="helpOverlay" class="hidden" role="dialog" aria-label="Help">
-      <h2>How to Play</h2>
-      <div class="help-content">
-        <div class="help-section">
-          <h3>Objective</h3>
-          <p>Push all crates onto the target squares to complete each level. You can only push one crate at a time — you cannot pull crates or push two crates at once.</p>
-        </div>
-
-        <div class="help-section">
-          <h3>Piece Legend</h3>
-          <div class="help-legend">
-            <div class="help-legend-item">
-              <div class="help-legend-icon" style="background:var(--wall);">🧱</div>
-              <div class="help-legend-text"><strong>Wall</strong> — Impassable barrier. Neither you nor crates can move through walls.</div>
-            </div>
-            <div class="help-legend-item">
-              <div class="help-legend-icon" style="background:var(--floor);"></div>
-              <div class="help-legend-text"><strong>Floor</strong> — Open space where you and crates can move freely.</div>
-            </div>
-            <div class="help-legend-item">
-              <div class="help-legend-icon" style="background:var(--floor-target);">🎯</div>
-              <div class="help-legend-text"><strong>Target</strong> — A goal square. Push a crate here to mark it as placed. All targets must be covered to win.</div>
-            </div>
-            <div class="help-legend-item">
-              <div class="help-legend-icon" style="background:var(--floor);">📦</div>
-              <div class="help-legend-text"><strong>Crate</strong> — Push it onto a target square. Cannot be pulled. Avoid pushing it into corners!</div>
-            </div>
-            <div class="help-legend-item">
-              <div class="help-legend-icon" style="background:var(--floor-target);">📦✓</div>
-              <div class="help-legend-text"><strong>Crate on Target</strong> — A crate successfully placed on a target. It turns green with a checkmark.</div>
-            </div>
-            <div class="help-legend-item">
-              <div class="help-legend-icon" style="background:var(--floor);">🧑</div>
-              <div class="help-legend-text"><strong>Player</strong> — That's you! Move around and push crates onto targets.</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="help-section">
-          <h3>Controls</h3>
-          <div class="help-controls-grid">
-            <span class="help-key">Arrow Keys</span><span>Move up / down / left / right</span>
-            <span class="help-key">W A S D</span><span>Alternative movement keys</span>
-            <span class="help-key">Z</span><span>Undo last move</span>
-            <span class="help-key">R</span><span>Restart current level</span>
-            <span class="help-key">Esc</span><span>Close overlays</span>
-            <span class="help-key">Swipe</span><span>Swipe on the game board (touch devices)</span>
-            <span class="help-key">D-Pad</span><span>On-screen directional buttons (below game)</span>
-          </div>
-        </div>
-
-        <div class="help-section">
-          <h3>Tips</h3>
-          <p>Plan your moves carefully — pushing a crate into a corner or against a wall where it can't be freed is a common mistake. Use <strong>Undo</strong> freely to correct errors.</p>
-          <p>The game tracks your <strong>Moves</strong> (steps taken) and <strong>Pushes</strong> (crates pushed). Try to solve each level efficiently!</p>
-          <p>Use the <strong>Level Builder</strong> (🔨 Build) to design your own puzzles and share them with friends via a link.</p>
-        </div>
-      </div>
-      <button class="hud-btn" id="btnCloseHelp" style="margin-top:8px; padding: 10px 24px; font-size:14px;">✕ Close</button>
     </div>
 
     <script>
@@ -1551,24 +1391,13 @@
           return;
         }
 
-        if (document.getElementById('helpOverlay').classList.contains('hidden') === false) {
-          if (e.key === 'Escape') {
-            document.getElementById('helpOverlay').classList.add('hidden');
-          }
-          return;
-        }
         if (document.getElementById('builderOverlay').classList.contains('hidden') === false) {
           if (e.key === 'Escape') {
             document.getElementById('builderOverlay').classList.add('hidden');
           }
           return;
         }
-        if (document.getElementById('levelOverlay').classList.contains('hidden') === false) {
-          if (e.key === 'Escape') {
-            document.getElementById('levelOverlay').classList.add('hidden');
-          }
-          return;
-        }
+        if (document.getElementById('levelOverlay').classList.contains('hidden') === false) return;
         switch (e.key) {
           case 'ArrowUp': case 'w': case 'W': e.preventDefault(); move(-1, 0); break;
           case 'ArrowDown': case 's': case 'S': e.preventDefault(); move(1, 0); break;
@@ -2002,17 +1831,6 @@
           loadLevel(0);
         }
         document.getElementById('builderOverlay').classList.add('hidden');
-      });
-
-      // ─────────────────────────────────────────────
-      //  HELP OVERLAY
-      // ─────────────────────────────────────────────
-      document.getElementById('btnHelp').addEventListener('click', () => {
-        document.getElementById('helpOverlay').classList.remove('hidden');
-      });
-
-      document.getElementById('btnCloseHelp').addEventListener('click', () => {
-        document.getElementById('helpOverlay').classList.add('hidden');
       });
 
       /**

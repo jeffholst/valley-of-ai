@@ -80,16 +80,6 @@
       "implementedAt": "2026-04-03T16:48:37Z",
       "agentName": "Codex",
       "llmModel": "gpt-5"
-    },
-    {
-      "issueNumber": 274,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/274",
-      "runId": "run-20260403T210726Z-a1fb1d",
-      "description": "Added a Help button to the HUD that opens a pop-up help screen with detailed gameplay instructions, a visual piece legend, and controls reference.",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-04-03T21:07:26Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-opus-4-6"
     }
   ],
   "generation": {
