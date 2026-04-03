@@ -70,16 +70,6 @@
       "implementedAt": "2026-04-03T16:03:03Z",
       "agentName": "Codex",
       "llmModel": "gpt-5"
-    },
-    {
-      "issueNumber": 270,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/270",
-      "runId": "run-20260403T164837Z-9a4d12",
-      "description": "Added a clear on-target badge indicator in the level builder when a player or crate is placed on a target tile.",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-04-03T16:48:37Z",
-      "agentName": "Codex",
-      "llmModel": "gpt-5"
     }
   ],
   "generation": {
