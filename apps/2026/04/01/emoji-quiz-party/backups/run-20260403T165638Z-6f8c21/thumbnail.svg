@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="800" y2="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1a1040"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="timerGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="60%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+    <radialGradient id="glowCenter" cx="400" cy="200" r="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgba(245,158,11,0.15)"/>
+      <stop offset="100%" stop-color="rgba(245,158,11,0)"/>
+    </radialGradient>
+    <filter id="titleGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="shadow"/>
+      <feOffset dx="0" dy="2" result="offsetShadow"/>
+      <feFlood flood-color="rgba(0,0,0,0.4)" result="color"/>
+      <feComposite in="color" in2="offsetShadow" operator="in" result="colorShadow"/>
+      <feMerge>
+        <feMergeNode in="colorShadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="cardGlow" x="-5%" y="-5%" width="110%" height="110%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="glow"/>
+      <feFlood flood-color="rgba(139,92,246,0.3)" result="color"/>
+      <feComposite in="color" in2="glow" operator="in" result="colorGlow"/>
+      <feMerge>
+        <feMergeNode in="colorGlow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)"/>
+
+  <!-- Subtle grid texture -->
+  <g opacity="0.04">
+    <line x1="0" y1="50" x2="800" y2="50" stroke="#f9fafb" stroke-width="0.5"/>
+    <line x1="0" y1="100" x2="800" y2="100" stroke="#f9fafb" stroke-width="0.5"/>
+    <line x1="0" y1="150" x2="800" y2="150" stroke="#f9fafb" stroke-width="0.5"/>
+    <line x1="0" y1="200" x2="800" y2="200" stroke="#f9fafb" stroke-width="0.5"/>
+    <line x1="0" y1="250" x2="800" y2="250" stroke="#f9fafb" stroke-width="0.5"/>
+    <line x1="0" y1="300" x2="800" y2="300" stroke="#f9fafb" stroke-width="0.5"/>
+    <line x1="0" y1="350" x2="800" y2="350" stroke="#f9fafb" stroke-width="0.5"/>
+    <line x1="0" y1="400" x2="800" y2="400" stroke="#f9fafb" stroke-width="0.5"/>
+  </g>
+
+  <!-- Center glow -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#glowCenter)"/>
+
+  <!-- Corner accents -->
+  <rect x="0" y="0" width="60" height="4" fill="url(#accentGrad)" opacity="0.6"/>
+  <rect x="0" y="0" width="4" height="60" fill="url(#accentGrad)" opacity="0.6"/>
+  <rect x="740" y="0" width="60" height="4" fill="url(#accentGrad)" opacity="0.6"/>
+  <rect x="796" y="0" width="4" height="60" fill="url(#accentGrad)" opacity="0.6"/>
+  <rect x="0" y="446" width="60" height="4" fill="url(#accentGrad)" opacity="0.6"/>
+  <rect x="0" y="390" width="4" height="60" fill="url(#accentGrad)" opacity="0.6"/>
+  <rect x="740" y="446" width="60" height="4" fill="url(#accentGrad)" opacity="0.6"/>
+  <rect x="796" y="390" width="4" height="60" fill="url(#accentGrad)" opacity="0.6"/>
+
+  <!-- Round label -->
+  <text x="70" y="50" font-family="Segoe UI, system-ui, sans-serif" font-size="18" font-weight="700" fill="#f59e0b" filter="url(#softShadow)">Round 3 / 5</text>
+
+  <!-- Type badge -->
+  <rect x="650" y="32" width="80" height="28" rx="14" fill="#8b5cf6"/>
+  <text x="690" y="51" font-family="Segoe UI, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="0.5">MOVIE</text>
+
+  <!-- Emoji display area -->
+  <rect x="100" y="75" width="600" height="110" rx="16" fill="#1e293b" filter="url(#cardGlow)"/>
+  <text x="400" y="150" font-family="Segoe UI Emoji, Apple Color Emoji, sans-serif" font-size="60" text-anchor="middle" dominant-baseline="central">&#x1F41F;&#x1F50E;&#x1F30A;&#x1F622;</text>
+
+  <!-- Timer bar -->
+  <rect x="100" y="200" width="600" height="12" rx="6" fill="#1e293b"/>
+  <rect x="100" y="200" width="360" height="12" rx="6" fill="url(#timerGrad)"/>
+  <text x="400" y="232" font-family="Segoe UI, system-ui, sans-serif" font-size="22" font-weight="800" fill="#f59e0b" text-anchor="middle" font-variant-numeric="tabular-nums">36</text>
+
+  <!-- Clue cards -->
+  <rect x="100" y="248" width="600" height="36" rx="8" fill="#1e293b"/>
+  <rect x="108" y="255" width="52" height="22" rx="6" fill="#ef4444"/>
+  <text x="134" y="271" font-family="Segoe UI, system-ui, sans-serif" font-size="10" font-weight="800" fill="#fff" text-anchor="middle" letter-spacing="0.5">HARD</text>
+  <text x="172" y="271" font-family="Segoe UI, system-ui, sans-serif" font-size="13" fill="#f9fafb" dominant-baseline="central">Pixar film released in 2003</text>
+
+  <rect x="100" y="290" width="600" height="36" rx="8" fill="#1e293b" opacity="0.5"/>
+  <rect x="108" y="297" width="72" height="22" rx="6" fill="#f59e0b" opacity="0.4"/>
+  <text x="144" y="313" font-family="Segoe UI, system-ui, sans-serif" font-size="10" font-weight="800" fill="#fff" text-anchor="middle" letter-spacing="0.5" opacity="0.4">MEDIUM</text>
+  <text x="192" y="313" font-family="Segoe UI, system-ui, sans-serif" font-size="13" fill="#f9fafb" dominant-baseline="central" opacity="0.3">Reveals at 20s...</text>
+
+  <!-- Player score buttons -->
+  <rect x="100" y="340" width="140" height="52" rx="10" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+  <text x="170" y="363" font-family="Segoe UI, system-ui, sans-serif" font-size="14" font-weight="700" fill="#f9fafb" text-anchor="middle">Alice</text>
+  <text x="170" y="380" font-family="Segoe UI, system-ui, sans-serif" font-size="11" fill="#f9fafb" text-anchor="middle" opacity="0.6">2 pts</text>
+
+  <rect x="250" y="340" width="140" height="52" rx="10" fill="#1e293b"/>
+  <text x="320" y="363" font-family="Segoe UI, system-ui, sans-serif" font-size="14" font-weight="700" fill="#f9fafb" text-anchor="middle">Bob</text>
+  <text x="320" y="380" font-family="Segoe UI, system-ui, sans-serif" font-size="11" fill="#f9fafb" text-anchor="middle" opacity="0.6">1 pt</text>
+
+  <rect x="400" y="340" width="140" height="52" rx="10" fill="#1e293b"/>
+  <text x="470" y="363" font-family="Segoe UI, system-ui, sans-serif" font-size="14" font-weight="700" fill="#f9fafb" text-anchor="middle">Charlie</text>
+  <text x="470" y="380" font-family="Segoe UI, system-ui, sans-serif" font-size="11" fill="#f9fafb" text-anchor="middle" opacity="0.6">2 pts</text>
+
+  <rect x="550" y="340" width="140" height="52" rx="10" fill="#1e293b"/>
+  <text x="620" y="363" font-family="Segoe UI, system-ui, sans-serif" font-size="14" font-weight="700" fill="#f9fafb" text-anchor="middle">Dana</text>
+  <text x="620" y="380" font-family="Segoe UI, system-ui, sans-serif" font-size="11" fill="#f9fafb" text-anchor="middle" opacity="0.6">1 pt</text>
+
+  <!-- Action buttons -->
+  <rect x="280" y="405" width="120" height="36" rx="10" fill="url(#accentGrad)" filter="url(#softShadow)"/>
+  <text x="340" y="428" font-family="Segoe UI, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">Next Round</text>
+
+  <rect x="415" y="405" width="110" height="36" rx="10" fill="#ef4444" filter="url(#softShadow)"/>
+  <text x="470" y="428" font-family="Segoe UI, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">End Game</text>
+
+  <!-- Title -->
+  <text x="400" y="28" font-family="Segoe UI, system-ui, sans-serif" font-size="20" font-weight="800" text-anchor="middle" filter="url(#titleGlow)">
+    <tspan fill="#f59e0b">Emoji Quiz</tspan>
+    <tspan fill="#8b5cf6"> Party</tspan>
+  </text>
+</svg>

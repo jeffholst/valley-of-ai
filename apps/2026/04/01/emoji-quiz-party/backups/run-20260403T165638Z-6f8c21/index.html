@@ -281,16 +281,14 @@
     }
 
     .type-badge {
-      font-size: 1.05rem;
-      font-weight: 900;
-      padding: 8px 16px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 20px;
+      background: var(--accent2);
       color: #fff;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      letter-spacing: 0.05em;
     }
 
     .emoji-display {
@@ -716,7 +714,7 @@
       <div class="timer-bar-wrap">
         <div class="timer-bar" id="timerBar"></div>
       </div>
-      <div class="timer-text" id="timerText">30</div>
+      <div class="timer-text" id="timerText">60</div>
 
       <div class="clue-section" id="clueSection">
         <div class="clue-card" id="clueHard">
@@ -1233,8 +1231,7 @@
     let totalRounds = 5;
     let roundOrder = [];
     let timerInterval = null;
-    const ROUND_DURATION_SECONDS = 30;
-    let timeLeft = ROUND_DURATION_SECONDS;
+    let timeLeft = 60;
     let roundSelections = new Set();
 
     // Host answer display settings
@@ -1518,7 +1515,7 @@
     function startRound() {
       const data = roundOrder[currentRound];
       roundLabel.textContent = `Round ${currentRound + 1} / ${totalRounds}`;
-      typeBadge.textContent = `Type: ${data.type}`;
+      typeBadge.textContent = data.type;
       emojiDisplay.textContent = data.emojis;
 
       // Deliver answer to host via selected channels
@@ -1531,7 +1528,6 @@
       clueHardText.textContent = data.clue_hard;
       clueMediumText.textContent = data.clue_medium;
       clueEasyText.textContent = data.clue_easy;
-      clueHard.classList.add('visible');
 
       // Reset answer
       answerReveal.classList.remove('visible');
@@ -1542,7 +1538,7 @@
       renderPlayerButtons();
 
       // Start timer
-      timeLeft = ROUND_DURATION_SECONDS;
+      timeLeft = 60;
       updateTimerDisplay();
       clearInterval(timerInterval);
       timerInterval = setInterval(timerTick, 1000);
@@ -1558,10 +1554,13 @@
       updateTimerDisplay();
 
       // Progressive clue reveals
-      if (timeLeft <= ROUND_DURATION_SECONDS - 5 && timeLeft > 0) {
+      if (timeLeft <= 40 && timeLeft > 0) {
+        clueHard.classList.add('visible');
+      }
+      if (timeLeft <= 20 && timeLeft > 0) {
         clueMedium.classList.add('visible');
       }
-      if (timeLeft <= ROUND_DURATION_SECONDS - 15 && timeLeft > 0) {
+      if (timeLeft <= 5 && timeLeft > 0) {
         clueEasy.classList.add('visible');
       }
 
@@ -1573,7 +1572,7 @@
 
     /** Update the timer bar width, color, and text */
     function updateTimerDisplay() {
-      const pct = (timeLeft / ROUND_DURATION_SECONDS) * 100;
+      const pct = (timeLeft / 60) * 100;
       timerBar.style.width = pct + '%';
       timerBar.className = 'timer-bar';
       timerText.className = 'timer-text';
