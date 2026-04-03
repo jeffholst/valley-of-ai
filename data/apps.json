@@ -2,7 +2,7 @@
   {
     "id": "2026/04/01/emoji-quiz-party",
     "name": "Emoji Quiz Party",
-    "shortDescription": "A presenter-driven emoji guessing game for Zoom calls. Players guess movies, songs, and phrases from emoji combos while a 60-second timer reveals progressive clues.",
+    "shortDescription": "A presenter-driven emoji guessing game for Zoom calls. Players guess movies, songs, and phrases from emoji combos while a 30-second timer reveals progressive clues.",
     "thumbnailUrl": "/apps/2026/04/01/emoji-quiz-party/thumbnail.svg",
     "createdAt": "2026-04-01T14:04:48Z",
     "year": 2026,
@@ -60,6 +60,16 @@
         "implementedAt": "2026-04-01T21:28:04Z",
         "agentName": "codex",
         "llmModel": "gpt-5"
+      },
+      {
+        "issueNumber": 268,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/268",
+        "runId": "run-20260403T165638Z-6f8c21",
+        "description": "Changed rounds to 30 seconds, revealed clues at 0s/5s/15s elapsed, and made the Type badge more prominent.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-04-03T16:56:38Z",
+        "agentName": "Codex",
+        "llmModel": "gpt-5"
       }
     ],
     "allowImprovements": true,
@@ -78,6 +88,11 @@
         "runId": "run-20260401T143542Z-5d043a",
         "path": "backups/run-20260401T143542Z-5d043a/index.html",
         "url": "/apps/2026/04/01/emoji-quiz-party/backups/run-20260401T143542Z-5d043a/index.html"
+      },
+      {
+        "runId": "run-20260403T165638Z-6f8c21",
+        "path": "backups/run-20260403T165638Z-6f8c21/index.html",
+        "url": "/apps/2026/04/01/emoji-quiz-party/backups/run-20260403T165638Z-6f8c21/index.html"
       }
     ]
   },
