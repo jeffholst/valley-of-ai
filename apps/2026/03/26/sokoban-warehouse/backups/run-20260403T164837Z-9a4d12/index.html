@@ -480,25 +480,12 @@
       .builder-cell {
         width: 32px;
         height: 32px;
-        position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 16px;
         cursor: pointer;
         transition: background 0.1s;
-      }
-
-      .builder-cell::after {
-        content: attr(data-badge);
-        position: absolute;
-        right: 2px;
-        bottom: 1px;
-        font-size: 10px;
-        line-height: 1;
-        color: var(--target-mark);
-        text-shadow: 0 0 2px rgba(0, 0, 0, 0.35);
-        pointer-events: none;
       }
 
       @media (min-width: 400px) {
@@ -1494,11 +1481,6 @@
         'player-on-target': 'var(--floor-target)',
       };
 
-      const BTILE_BADGE = {
-        'crate-on-target': '◎',
-        'player-on-target': '◎',
-      };
-
       function initBuilderGrid() {
         builder.width = parseInt(document.getElementById('bWidth').value, 10) || 8;
         builder.height = parseInt(document.getElementById('bHeight').value, 10) || 8;
@@ -1544,7 +1526,6 @@
       function updateCellAppearance(cell, tile) {
         cell.style.background = BTILE_BG[tile] || 'transparent';
         cell.textContent = BTILE_DISPLAY[tile] || '';
-        cell.dataset.badge = BTILE_BADGE[tile] || '';
       }
 
       function placeTile(r, c) {
