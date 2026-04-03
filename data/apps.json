@@ -272,6 +272,16 @@
         "implementedAt": "2026-03-31T22:05:04Z",
         "agentName": "Codex",
         "llmModel": "gpt-5"
+      },
+      {
+        "issueNumber": 267,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/267",
+        "runId": "run-20260403T160303Z-267a1c",
+        "description": "Updated the level builder so placing player/crate on targets (and targets under player/crate) preserves combined on-target tiles.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-04-03T16:03:03Z",
+        "agentName": "Codex",
+        "llmModel": "gpt-5"
       }
     ],
     "allowImprovements": true,
@@ -295,6 +305,11 @@
         "runId": "run-20260331T220504Z-e3f2c2",
         "path": "backups/run-20260331T220504Z-e3f2c2/index.html",
         "url": "/apps/2026/03/26/sokoban-warehouse/backups/run-20260331T220504Z-e3f2c2/index.html"
+      },
+      {
+        "runId": "run-20260403T160303Z-267a1c",
+        "path": "backups/run-20260403T160303Z-267a1c/index.html",
+        "url": "/apps/2026/03/26/sokoban-warehouse/backups/run-20260403T160303Z-267a1c/index.html"
       }
     ]
   },

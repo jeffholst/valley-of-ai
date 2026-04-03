@@ -1466,8 +1466,6 @@
         target: '🎯',
         crate: '📦',
         player: '🧑',
-        'crate-on-target': '📦',
-        'player-on-target': '🧑',
       };
 
       const BTILE_BG = {
@@ -1477,8 +1475,6 @@
         target: 'var(--floor-target)',
         crate: 'var(--floor)',
         player: 'var(--floor)',
-        'crate-on-target': 'var(--floor-target)',
-        'player-on-target': 'var(--floor-target)',
       };
 
       function initBuilderGrid() {
@@ -1530,43 +1526,22 @@
 
       function placeTile(r, c) {
         const tile = builder.selectedTile;
-        const currentTile = builder.grid[r][c];
         if (tile === 'eraser') {
           builder.grid[r][c] = 'empty';
         } else if (tile === 'player') {
           // Only one player allowed — remove existing
           for (let rr = 0; rr < builder.height; rr++) {
             for (let cc = 0; cc < builder.width; cc++) {
-              if (builder.grid[rr][cc] === 'player' || builder.grid[rr][cc] === 'player-on-target') {
-                builder.grid[rr][cc] = builder.grid[rr][cc] === 'player-on-target' ? 'target' : 'floor';
+              if (builder.grid[rr][cc] === 'player') {
+                builder.grid[rr][cc] = 'floor';
                 const existingCell = document.querySelector(
                   `#builderGrid .builder-cell[data-r="${rr}"][data-c="${cc}"]`
                 );
-                if (existingCell) updateCellAppearance(existingCell, builder.grid[rr][cc]);
+                if (existingCell) updateCellAppearance(existingCell, 'floor');
               }
             }
           }
-          builder.grid[r][c] =
-            currentTile === 'target' || currentTile === 'crate-on-target' ? 'player-on-target' : 'player';
-        } else if (tile === 'crate') {
-          builder.grid[r][c] =
-            currentTile === 'target' || currentTile === 'player-on-target' ? 'crate-on-target' : 'crate';
-        } else if (tile === 'target') {
-          if (currentTile === 'player') {
-            builder.grid[r][c] = 'player-on-target';
-          } else if (currentTile === 'crate') {
-            builder.grid[r][c] = 'crate-on-target';
-          } else {
-            builder.grid[r][c] = 'target';
-          }
-        } else if (tile === 'floor') {
-          if (currentTile === 'player-on-target') {
-            builder.grid[r][c] = 'player';
-          } else if (currentTile === 'crate-on-target') {
-            builder.grid[r][c] = 'crate';
-          } else {
-            builder.grid[r][c] = 'floor';
-          }
+          builder.grid[r][c] = 'player';
         } else {
           builder.grid[r][c] = tile;
         }
@@ -1595,12 +1570,7 @@
         const r = parseInt(cell.dataset.r, 10);
         const c = parseInt(cell.dataset.c, 10);
         // Don't re-place player on drag
-        if (
-          builder.selectedTile === 'player' &&
-          (builder.grid[r][c] === 'player' || builder.grid[r][c] === 'player-on-target')
-        ) {
-          return;
-        }
+        if (builder.selectedTile === 'player' && builder.grid[r][c] === 'player') return;
         placeTile(r, c);
       });
 
@@ -1660,9 +1630,7 @@
         let hasPlayer = false;
         for (let r = 0; r < builder.height; r++) {
           for (let c = 0; c < builder.width; c++) {
-            if (builder.grid[r][c] === 'player' || builder.grid[r][c] === 'player-on-target') {
-              hasPlayer = true;
-            }
+            if (builder.grid[r][c] === 'player') hasPlayer = true;
           }
         }
         if (!hasPlayer) {
