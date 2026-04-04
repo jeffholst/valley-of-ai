@@ -52,15 +52,6 @@
       <stop offset="0%" stop-color="#a855f7" stop-opacity="0.6"/>
       <stop offset="100%" stop-color="#ec4899" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="thrusterFlame" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0"/>
-      <stop offset="40%" stop-color="#fbbf24" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#ef4444" stop-opacity="0.9"/>
-    </linearGradient>
-    <radialGradient id="shipGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#c084fc" stop-opacity="0.4"/>
-      <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
-    </radialGradient>
   </defs>
 
   <!-- Background -->
@@ -119,18 +110,6 @@
   <circle cx="530" cy="160" r="2" fill="#ec4899" opacity="0.6"/>
   <circle cx="560" cy="200" r="1.5" fill="#a855f7" opacity="0.5"/>
 
-  <!-- Player ship (Asteroids-style triangle with thruster) -->
-  <g transform="translate(230, 230) rotate(35)" filter="url(#glow)">
-    <!-- Ship glow -->
-    <circle cx="0" cy="0" r="25" fill="url(#shipGlow)"/>
-    <!-- Thruster flame -->
-    <polygon points="-14,-4 -26,0 -14,4" fill="url(#thrusterFlame)"/>
-    <!-- Ship body -->
-    <polygon points="14,0 -8,-9 -5,0 -8,9" fill="#a855f7" stroke="#c084fc" stroke-width="1.5"/>
-    <!-- Cockpit -->
-    <circle cx="3" cy="0" r="3" fill="rgba(255,255,255,0.3)"/>
-  </g>
-
   <!-- HUD bar at top -->
   <rect x="0" y="0" width="800" height="40" fill="url(#hudGrad)" opacity="0.9"/>
   <rect x="0" y="40" width="800" height="1" fill="#334155"/>
@@ -142,14 +121,11 @@
   <text x="120" y="16" fill="#94a3b8" font-size="9" font-family="sans-serif">SCORE</text>
   <text x="120" y="32" fill="#a855f7" font-size="16" font-weight="bold" font-family="sans-serif">1,280</text>
 
-  <text x="230" y="16" fill="#94a3b8" font-size="9" font-family="sans-serif">LIVES</text>
-  <text x="230" y="32" fill="#ef4444" font-size="14" font-weight="bold" font-family="sans-serif">&#x2764;&#xfe0f;&#x2764;&#xfe0f;&#x2764;&#xfe0f;</text>
+  <text x="230" y="16" fill="#94a3b8" font-size="9" font-family="sans-serif">TAPS</text>
+  <text x="230" y="32" fill="#a855f7" font-size="16" font-weight="bold" font-family="sans-serif">3</text>
 
-  <text x="310" y="16" fill="#94a3b8" font-size="9" font-family="sans-serif">TAPS</text>
-  <text x="310" y="32" fill="#a855f7" font-size="16" font-weight="bold" font-family="sans-serif">3</text>
-
-  <text x="390" y="16" fill="#94a3b8" font-size="9" font-family="sans-serif">GOAL</text>
-  <text x="390" y="32" fill="#a855f7" font-size="16" font-weight="bold" font-family="sans-serif">8/12</text>
+  <text x="310" y="16" fill="#94a3b8" font-size="9" font-family="sans-serif">GOAL</text>
+  <text x="310" y="32" fill="#a855f7" font-size="16" font-weight="bold" font-family="sans-serif">8/12</text>
 
   <!-- Upgrade pills -->
   <rect x="440" y="10" width="70" height="22" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>

@@ -34,16 +34,6 @@
       "implementedAt": "2026-04-04T14:49:24Z",
       "agentName": "Claude Code",
       "llmModel": "claude-opus-4-6"
-    },
-    {
-      "issueNumber": 281,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/281",
-      "runId": "run-20260404T195753Z-5e47d8",
-      "description": "Added Asteroids-style flying ship with swipe/arrow thrust, zero-g physics, 3 lives system, and double-tap/space explosions at ship position.",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-04-04T19:57:53Z",
-      "agentName": "GitHub Copilot",
-      "llmModel": "claude-opus-4-6"
     }
   ],
   "generation": {

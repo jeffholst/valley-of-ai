@@ -303,10 +303,6 @@
           <span class="hud-value" id="hudScore">0</span>
         </div>
         <div class="hud-group">
-          <span class="hud-label">Lives</span>
-          <span class="hud-value" id="hudLives">❤️❤️❤️</span>
-        </div>
-        <div class="hud-group">
           <span class="hud-label">Taps</span>
           <span class="hud-value" id="hudTaps">5</span>
         </div>
@@ -327,8 +323,8 @@
     <!-- Start overlay -->
     <div id="startOverlay" class="overlay" role="dialog" aria-label="Start">
       <h2>Plasma Chain Reaction</h2>
-      <p>Pilot your ship through a dying star! Swipe to fly, double-tap to trigger chain reactions. Avoid the plasma cores!</p>
-      <p style="font-size:12px; opacity:0.6;">Swipe/arrows to thrust · Double-tap/space to explode · 3 lives · Chain reactions clear the field!</p>
+      <p>Tap plasma cores to trigger chain reactions inside a dying star. Chain enough to prevent supernova!</p>
+      <p style="font-size:12px; opacity:0.6;">5 taps per level. Explosions chain outward, shrinking each link. Earn roguelite upgrades!</p>
       <button class="overlay-btn" id="btnStart">Start Game</button>
     </div>
 
@@ -408,15 +404,6 @@
           wavesSpawned: 0,
           gravityWellTimer: 0,
           gravityWell: null, // {x, y, strength, duration, time}
-          ship: {
-            x: 0, y: 0, vx: 0, vy: 0, angle: -Math.PI / 2,
-            radius: 12, lives: 3, invulnerable: 0,
-            thrusting: false, thrustAngle: 0, thrustPower: 0.35,
-            _showThrust: false,
-          },
-          lastTapTime: 0,
-          touchId: null,
-          touchStartX: 0, touchStartY: 0,
         };
         initStars();
       }
@@ -484,13 +471,6 @@
             alive: true,
           });
         }
-
-        // Position ship at center, reset velocity
-        game.ship.x = w / 2;
-        game.ship.y = h / 2;
-        game.ship.vx = 0;
-        game.ship.vy = 0;
-        game.ship.invulnerable = 1.5; // Brief invulnerability at level start
 
         updateHUD();
       }
@@ -751,111 +731,36 @@
       }
 
       // ─────────────────────────────────────────────
-      //  INPUT (Ship controls: swipe thrust + double-tap explosion)
+      //  INPUT
       // ─────────────────────────────────────────────
-
-      /** Convert client coordinates to canvas coordinates */
-      function clientToCanvas(clientX, clientY) {
-        const rect = canvas.getBoundingClientRect();
-        return {
-          x: (clientX - rect.left) * (canvas.width / rect.width),
-          y: (clientY - rect.top) * (canvas.height / rect.height),
-        };
-      }
-
-      /** Trigger explosion at ship position (double-tap or space) */
-      function triggerShipExplosion() {
+      function handleTap(clientX, clientY) {
         if (game.state !== 'playing') return;
         if (game.tapsLeft <= 0) return;
 
+        const rect = canvas.getBoundingClientRect();
+        const x = (clientX - rect.left) * (canvas.width / rect.width);
+        const y = (clientY - rect.top) * (canvas.height / rect.height);
+
         game.tapsLeft--;
         game.chainCount = 0;
-        triggerExplosion(game.ship.x, game.ship.y, 0, true);
+        triggerExplosion(x, y, 0, true);
         game.state = 'animating';
         updateHUD();
       }
 
-      // Track pressed keys for desktop controls
-      const keysDown = {};
-
-      // Touch/pointer controls for ship thrust + double-tap explosion
       canvas.addEventListener('pointerdown', (e) => {
         e.preventDefault();
-        const now = Date.now();
-
-        // Double-tap detection (350ms window)
-        if (now - game.lastTapTime < 350) {
-          triggerShipExplosion();
-          game.lastTapTime = 0;
-          return;
-        }
-        game.lastTapTime = now;
-
-        // Start thrust tracking
-        if (game.state === 'playing' || game.state === 'animating') {
-          game.touchId = e.pointerId;
-          const pos = clientToCanvas(e.clientX, e.clientY);
-          game.touchStartX = pos.x;
-          game.touchStartY = pos.y;
-          game.ship.thrusting = true;
-          // Thrust direction: from ship toward touch point
-          const dx = pos.x - game.ship.x;
-          const dy = pos.y - game.ship.y;
-          game.ship.thrustAngle = Math.atan2(dy, dx);
-          game.ship.angle = game.ship.thrustAngle;
-        }
-
-        canvas.setPointerCapture(e.pointerId);
+        handleTap(e.clientX, e.clientY);
       });
 
-      canvas.addEventListener('pointermove', (e) => {
-        if (e.pointerId !== game.touchId) return;
-        if (!game.ship.thrusting) return;
-        e.preventDefault();
-
-        const pos = clientToCanvas(e.clientX, e.clientY);
-        const dx = pos.x - game.ship.x;
-        const dy = pos.y - game.ship.y;
-        game.ship.thrustAngle = Math.atan2(dy, dx);
-        game.ship.angle = game.ship.thrustAngle;
-      });
-
-      canvas.addEventListener('pointerup', (e) => {
-        if (e.pointerId === game.touchId) {
-          game.ship.thrusting = false;
-          game.touchId = null;
-        }
-      });
-
-      canvas.addEventListener('pointercancel', (e) => {
-        if (e.pointerId === game.touchId) {
-          game.ship.thrusting = false;
-          game.touchId = null;
-        }
-      });
-
-      // Keyboard controls: arrows/WASD for thrust, space for explosion
+      // Keyboard: space/enter to start
       document.addEventListener('keydown', (e) => {
-        keysDown[e.key] = true;
-
-        if (e.key === ' ') {
-          e.preventDefault();
-          if (!document.getElementById('startOverlay').classList.contains('hidden')) {
-            document.getElementById('btnStart').click();
-          } else {
-            triggerShipExplosion();
-          }
-        }
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' || e.key === ' ') {
           if (!document.getElementById('startOverlay').classList.contains('hidden')) {
             e.preventDefault();
             document.getElementById('btnStart').click();
           }
         }
-      });
-
-      document.addEventListener('keyup', (e) => {
-        keysDown[e.key] = false;
       });
 
       // ─────────────────────────────────────────────
@@ -1005,98 +910,6 @@
 
         // Check if all balls are gone (end round early even with taps remaining)
         const aliveBalls = game.balls.filter((b) => b.alive).length;
-
-        // ── Ship physics ──
-        const ship = game.ship;
-
-        // Keyboard thrust
-        let kThrusting = false;
-        if (game.state === 'playing' || game.state === 'animating') {
-          let thrustX = 0, thrustY = 0;
-          if (keysDown['ArrowUp'] || keysDown['w'] || keysDown['W']) thrustY -= 1;
-          if (keysDown['ArrowDown'] || keysDown['s'] || keysDown['S']) thrustY += 1;
-          if (keysDown['ArrowLeft'] || keysDown['a'] || keysDown['A']) thrustX -= 1;
-          if (keysDown['ArrowRight'] || keysDown['d'] || keysDown['D']) thrustX += 1;
-
-          if (thrustX !== 0 || thrustY !== 0) {
-            const kAngle = Math.atan2(thrustY, thrustX);
-            ship.vx += Math.cos(kAngle) * ship.thrustPower * dt * 60;
-            ship.vy += Math.sin(kAngle) * ship.thrustPower * dt * 60;
-            ship.angle = kAngle;
-            kThrusting = true;
-          }
-        }
-
-        // Touch thrust
-        if (ship.thrusting) {
-          ship.vx += Math.cos(ship.thrustAngle) * ship.thrustPower * dt * 60;
-          ship.vy += Math.sin(ship.thrustAngle) * ship.thrustPower * dt * 60;
-        }
-
-        // Very slight drag for playability (zero-g feel with minor damping)
-        const drag = Math.pow(0.995, dt * 60);
-        ship.vx *= drag;
-        ship.vy *= drag;
-
-        // Clamp max speed
-        const maxSpeed = 8;
-        const spd = Math.sqrt(ship.vx * ship.vx + ship.vy * ship.vy);
-        if (spd > maxSpeed) {
-          ship.vx = (ship.vx / spd) * maxSpeed;
-          ship.vy = (ship.vy / spd) * maxSpeed;
-        }
-
-        // Move ship
-        ship.x += ship.vx * dt * 60;
-        ship.y += ship.vy * dt * 60;
-
-        // Bounce ship off walls
-        if (ship.x - ship.radius < 0) { ship.x = ship.radius; ship.vx = Math.abs(ship.vx) * 0.5; }
-        if (ship.x + ship.radius > w) { ship.x = w - ship.radius; ship.vx = -Math.abs(ship.vx) * 0.5; }
-        if (ship.y - ship.radius < 0) { ship.y = ship.radius; ship.vy = Math.abs(ship.vy) * 0.5; }
-        if (ship.y + ship.radius > h) { ship.y = h - ship.radius; ship.vy = -Math.abs(ship.vy) * 0.5; }
-
-        // Invulnerability timer
-        if (ship.invulnerable > 0) {
-          ship.invulnerable -= dt;
-        }
-
-        // Ship-ball collision
-        if (ship.invulnerable <= 0 && (game.state === 'playing' || game.state === 'animating')) {
-          for (const ball of game.balls) {
-            if (!ball.alive) continue;
-            const cdx = ship.x - ball.x;
-            const cdy = ship.y - ball.y;
-            const cdist = Math.sqrt(cdx * cdx + cdy * cdy);
-            if (cdist < ship.radius + ball.r) {
-              ship.lives--;
-              ship.invulnerable = 2; // 2 seconds invulnerability
-              // Knock ship away
-              if (cdist > 0) {
-                ship.vx += (cdx / cdist) * 5;
-                ship.vy += (cdy / cdist) * 5;
-              }
-              // Hit particles
-              spawnParticles(ship.x, ship.y, '#ef4444', 12);
-              game.shakeTime = 0.2;
-              game.shakeIntensity = 5;
-              updateHUD();
-
-              if (ship.lives <= 0) {
-                game.state = 'gameOver';
-                document.getElementById('gameOverStats').textContent =
-                  'Ship destroyed! Level ' + game.level + ' \u00b7 Score: ' + game.score + ' \u00b7 Total cores chained: ' + game.totalPopped;
-                document.getElementById('gameOverOverlay').classList.remove('hidden');
-                document.getElementById('btnRetry').focus();
-                return;
-              }
-              break; // Only one collision per frame
-            }
-          }
-        }
-
-        // Rendering flag for thrust glow
-        ship._showThrust = ship.thrusting || kThrusting;
 
         // Check if animations are done
         if (game.state === 'animating') {
@@ -1270,58 +1083,6 @@
 
         ctx.shadowBlur = 0;
 
-        // ── Ship ──
-        if (game.state === 'playing' || game.state === 'animating' || game.state === 'levelDone') {
-          const ship = game.ship;
-          const blink = ship.invulnerable > 0 && Math.floor(ship.invulnerable * 8) % 2 === 0;
-
-          if (!blink) {
-            ctx.save();
-            ctx.translate(ship.x, ship.y);
-            ctx.rotate(ship.angle);
-
-            // Thruster flame
-            if (ship._showThrust) {
-              const flameLen = 8 + Math.random() * 6;
-              const flameGrad = ctx.createLinearGradient(-ship.radius - flameLen, 0, -ship.radius, 0);
-              flameGrad.addColorStop(0, 'rgba(251, 191, 36, 0)');
-              flameGrad.addColorStop(0.4, 'rgba(251, 191, 36, 0.6)');
-              flameGrad.addColorStop(1, 'rgba(239, 68, 68, 0.9)');
-              ctx.fillStyle = flameGrad;
-              ctx.beginPath();
-              ctx.moveTo(-ship.radius, -4);
-              ctx.lineTo(-ship.radius - flameLen, 0);
-              ctx.lineTo(-ship.radius, 4);
-              ctx.closePath();
-              ctx.fill();
-            }
-
-            // Ship body (triangle)
-            ctx.shadowColor = '#a855f7';
-            ctx.shadowBlur = 10;
-            ctx.fillStyle = '#a855f7';
-            ctx.strokeStyle = '#c084fc';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(ship.radius, 0);
-            ctx.lineTo(-ship.radius * 0.7, -ship.radius * 0.7);
-            ctx.lineTo(-ship.radius * 0.4, 0);
-            ctx.lineTo(-ship.radius * 0.7, ship.radius * 0.7);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
-
-            // Cockpit highlight
-            ctx.shadowBlur = 0;
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-            ctx.beginPath();
-            ctx.arc(ship.radius * 0.2, 0, ship.radius * 0.25, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.restore();
-          }
-        }
-
         // Particles
         for (const p of game.particles) {
           ctx.globalAlpha = p.life;
@@ -1376,11 +1137,6 @@
         document.getElementById('hudScore').textContent = game.score;
         document.getElementById('hudTaps').textContent = game.tapsLeft;
         document.getElementById('hudGoal').textContent = game.popped + '/' + game.goalForLevel;
-        // Lives display using hearts
-        const livesEl = document.getElementById('hudLives');
-        if (livesEl) {
-          livesEl.textContent = '\u2764\ufe0f'.repeat(Math.max(0, game.ship.lives));
-        }
       }
 
       // ─────────────────────────────────────────────
