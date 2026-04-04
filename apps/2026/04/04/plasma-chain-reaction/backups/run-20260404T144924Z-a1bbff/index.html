@@ -400,10 +400,6 @@
           shakeTime: 0,
           shakeIntensity: 0,
           levelStartTime: 0,
-          waveTimer: 0,
-          wavesSpawned: 0,
-          gravityWellTimer: 0,
-          gravityWell: null, // {x, y, strength, duration, time}
         };
         initStars();
       }
@@ -430,17 +426,10 @@
         game.tapsLeft = game.tapsPerLevel;
         game.chainCount = 0;
         game.popped = 0;
-        game.waveTimer = 0;
-        game.wavesSpawned = 0;
-        game.gravityWellTimer = 0;
-        game.gravityWell = null;
 
-        // Difficulty scaling: cap initial balls, raise goal %, increase speed
-        // Fewer initial balls at high levels so 1-tap wipes are less likely
-        const ballCount = Math.min(6 + lvl * 2, 30);
-        // Goal scales higher: must chain 60-80% of balls
-        const goalPct = Math.min(0.6 + lvl * 0.02, 0.85);
-        game.goalForLevel = Math.max(3, Math.ceil(ballCount * goalPct));
+        // Scale difficulty: more balls, higher goal
+        const ballCount = Math.min(8 + lvl * 3, 50);
+        game.goalForLevel = Math.min(Math.floor(ballCount * 0.5) + lvl, ballCount);
         game.balls = [];
         game.explosions = [];
         game.particles = [];
@@ -451,8 +440,6 @@
         const w = canvas.width;
         const h = canvas.height;
         const baseRadius = Math.max(14, Math.min(22, w / 25));
-        // Ball speed increases more aggressively
-        const speed = 1.2 + lvl * 0.3;
 
         for (let i = 0; i < ballCount; i++) {
           const type = pickBallType(lvl);
@@ -462,8 +449,8 @@
             x: margin + Math.random() * (w - margin * 2),
             y: margin + Math.random() * (h - margin * 2),
             r: r,
-            vx: (Math.random() - 0.5) * speed,
-            vy: (Math.random() - 0.5) * speed,
+            vx: (Math.random() - 0.5) * (1 + lvl * 0.15),
+            vy: (Math.random() - 0.5) * (1 + lvl * 0.15),
             type: type,
             hp: type === 'shield' ? 2 : 1,
             visible: type !== 'ghost',
@@ -508,11 +495,9 @@
       function getExplosionRadius(chainDepth) {
         const base = Math.max(14, Math.min(22, canvas.width / 25)) * 3;
         const mult = 1 + getUpgradeVal('radiusMult');
-        // Shrink each chain link by 18%
-        const shrink = Math.pow(0.82, chainDepth);
-        // Reduce base radius at higher levels so density matters more
-        const levelScale = Math.max(0.55, 1 - game.level * 0.04);
-        return base * mult * shrink * levelScale;
+        // Shrink each chain link by 15%
+        const shrink = Math.pow(0.85, chainDepth);
+        return base * mult * shrink;
       }
 
       function showUpgradeSelection() {
@@ -837,97 +822,16 @@
           game.shakeTime -= dt;
         }
 
-        // Wave spawning: spawn extra balls mid-round for more interaction (lvl 2+)
-        if ((game.state === 'playing' || game.state === 'animating') && game.level >= 2) {
-          const maxWaves = Math.min(game.level - 1, 4);
-          const waveInterval = 4; // seconds between waves
-          game.waveTimer += dt;
-          if (game.waveTimer >= waveInterval && game.wavesSpawned < maxWaves) {
-            game.waveTimer = 0;
-            game.wavesSpawned++;
-            const waveCount = Math.min(2 + Math.floor(game.level / 3), 5);
-            const speed = 1.2 + game.level * 0.3;
-            const baseRadius = Math.max(14, Math.min(22, w / 25));
-            for (let i = 0; i < waveCount; i++) {
-              const type = pickBallType(game.level);
-              const r = baseRadius * (type === 'golden' ? 0.8 : 1);
-              // Spawn from edges
-              const edge = Math.floor(Math.random() * 4);
-              let bx, by;
-              if (edge === 0) { bx = r; by = r + Math.random() * (h - r * 2); }
-              else if (edge === 1) { bx = w - r; by = r + Math.random() * (h - r * 2); }
-              else if (edge === 2) { bx = r + Math.random() * (w - r * 2); by = r; }
-              else { bx = r + Math.random() * (w - r * 2); by = h - r; }
-              game.balls.push({
-                x: bx, y: by, r: r,
-                vx: (Math.random() - 0.5) * speed,
-                vy: (Math.random() - 0.5) * speed,
-                type: type, hp: type === 'shield' ? 2 : 1,
-                visible: type !== 'ghost', frozen: 0, alive: true,
-              });
-            }
-            // Update goal to include new balls (partial)
-            game.goalForLevel += Math.ceil(waveCount * 0.5);
-            updateHUD();
-          }
-        }
-
-        // Gravity well events: periodically create a gravity pull toward a point (lvl 3+)
-        if ((game.state === 'playing' || game.state === 'animating') && game.level >= 3) {
-          game.gravityWellTimer += dt;
-          if (!game.gravityWell && game.gravityWellTimer >= 6) {
-            game.gravityWellTimer = 0;
-            game.gravityWell = {
-              x: w * 0.2 + Math.random() * w * 0.6,
-              y: h * 0.2 + Math.random() * h * 0.6,
-              strength: 20 + game.level * 3,
-              duration: 2.5,
-              time: 0,
-            };
-          }
-          if (game.gravityWell) {
-            game.gravityWell.time += dt;
-            if (game.gravityWell.time < game.gravityWell.duration) {
-              // Pull alive balls toward the well center
-              const gw = game.gravityWell;
-              const pullFactor = Math.sin((gw.time / gw.duration) * Math.PI); // ramp up then down
-              for (const ball of game.balls) {
-                if (!ball.alive) continue;
-                const dx = gw.x - ball.x;
-                const dy = gw.y - ball.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist > 5) {
-                  const force = (gw.strength * pullFactor * dt) / Math.max(dist, 30);
-                  ball.vx += (dx / dist) * force;
-                  ball.vy += (dy / dist) * force;
-                }
-              }
-            } else {
-              game.gravityWell = null;
-            }
-          }
-        }
-
-        // Check if all balls are gone (end round early even with taps remaining)
-        const aliveBalls = game.balls.filter((b) => b.alive).length;
-
         // Check if animations are done
         if (game.state === 'animating') {
           if (game.explosions.length === 0 && game.shockwaves.length === 0) {
-            if (aliveBalls === 0) {
-              // All balls destroyed — end level immediately
-              endLevel();
-            } else if (game.tapsLeft > 0) {
+            // All explosions finished — check if more taps or level end
+            if (game.tapsLeft > 0) {
               game.state = 'playing';
             } else {
               endLevel();
             }
           }
-        }
-
-        // Also check during playing state: if no alive balls remain, end immediately
-        if (game.state === 'playing' && aliveBalls === 0 && game.explosions.length === 0) {
-          endLevel();
         }
       }
 
@@ -1099,32 +1003,6 @@
           ctx.fill();
         }
         ctx.globalAlpha = 1;
-
-        // Gravity well indicator
-        if (game.gravityWell && game.gravityWell.time < game.gravityWell.duration) {
-          const gw = game.gravityWell;
-          const progress = gw.time / gw.duration;
-          const pulse = Math.sin(progress * Math.PI);
-          const gwRadius = 30 + pulse * 40;
-          const gwAlpha = pulse * 0.4;
-          const gwGrad = ctx.createRadialGradient(gw.x, gw.y, 0, gw.x, gw.y, gwRadius);
-          gwGrad.addColorStop(0, `rgba(124, 58, 237, ${gwAlpha})`);
-          gwGrad.addColorStop(0.6, `rgba(168, 85, 247, ${gwAlpha * 0.5})`);
-          gwGrad.addColorStop(1, `rgba(168, 85, 247, 0)`);
-          ctx.fillStyle = gwGrad;
-          ctx.beginPath();
-          ctx.arc(gw.x, gw.y, gwRadius, 0, Math.PI * 2);
-          ctx.fill();
-          // Swirl lines
-          ctx.strokeStyle = `rgba(196, 132, 252, ${gwAlpha * 0.8})`;
-          ctx.lineWidth = 1.5;
-          for (let a = 0; a < 3; a++) {
-            const angle = (progress * Math.PI * 4) + (a * Math.PI * 2 / 3);
-            ctx.beginPath();
-            ctx.arc(gw.x, gw.y, gwRadius * 0.6, angle, angle + 1);
-            ctx.stroke();
-          }
-        }
 
         ctx.restore();
       }
