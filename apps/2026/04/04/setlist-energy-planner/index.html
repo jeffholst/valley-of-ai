@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Setlist Energy Planner - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Setlist Energy Planner" />
+    <meta name="voa-app-id" content="2026/04/04/setlist-energy-planner" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <link rel="icon" type="image/svg+xml" href="thumbnail.svg" />
+    <style>
+      :root {
+        --bg: #080b14;
+        --text: #f6f7fb;
+        --surface: #131a2d;
+        --surface-2: #1c2541;
+        --accent: #59e1ff;
+        --accent-2: #b36bff;
+        --good: #56f2a0;
+        --warn: #ffc861;
+        --danger: #ff6a8f;
+      }
+      [data-theme='light'] {
+        --bg: #edf3ff;
+        --text: #12213b;
+        --surface: #ffffff;
+        --surface-2: #dce8ff;
+        --accent: #0066ff;
+        --accent-2: #8a38ff;
+        --good: #0f9f66;
+        --warn: #b47a00;
+        --danger: #d52a56;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background: radial-gradient(circle at 20% 10%, #242a4e 0%, var(--bg) 48%);
+        color: var(--text);
+      }
+      main {
+        max-width: 940px;
+        margin: 0 auto;
+        padding: 14px 12px 20px;
+        display: grid;
+        gap: 12px;
+      }
+      .card {
+        background: color-mix(in oklab, var(--surface), #000 6%);
+        border: 1px solid color-mix(in oklab, var(--accent), transparent 70%);
+        border-radius: 14px;
+        padding: 12px;
+        box-shadow: 0 8px 24px #0000002c;
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+      p {
+        margin: 0;
+        opacity: 0.9;
+      }
+      .grid {
+        display: grid;
+        gap: 10px;
+      }
+      .track {
+        display: grid;
+        grid-template-columns: 1fr 80px 80px 48px;
+        gap: 8px;
+        align-items: center;
+      }
+      input,
+      button {
+        border: 1px solid color-mix(in oklab, var(--accent), transparent 70%);
+        background: var(--surface-2);
+        color: var(--text);
+        border-radius: 10px;
+        min-height: 44px;
+        padding: 0 10px;
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+        transition: transform 0.16s ease, background 0.16s ease;
+      }
+      button:hover,
+      button:focus-visible {
+        transform: translateY(-1px);
+        background: color-mix(in oklab, var(--surface-2), var(--accent) 20%);
+      }
+      .actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .pill {
+        display: inline-block;
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 0.84rem;
+        background: color-mix(in oklab, var(--surface-2), #000 10%);
+      }
+      #energyCurve {
+        width: 100%;
+        height: 180px;
+        background: linear-gradient(180deg, #243261 0%, #11172d 100%);
+        border-radius: 12px;
+        border: 1px solid color-mix(in oklab, var(--accent-2), transparent 60%);
+      }
+      .stat-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      @media (max-width: 700px) {
+        .track {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="card grid">
+        <h1>🎛️ Setlist Energy Planner</h1>
+        <p>Build a smooth energy arc for your next show. Add songs, set BPM + intensity, then optimize flow.</p>
+        <div class="actions">
+          <button id="addBtn" type="button">Add Track</button>
+          <button id="optBtn" type="button">Auto Smooth</button>
+          <button id="demoBtn" type="button">Load Demo</button>
+        </div>
+      </section>
+
+      <section class="card grid">
+        <div class="stat-row">
+          <span class="pill" id="tracksStat">Tracks: 0</span>
+          <span class="pill" id="avgBpmStat">Avg BPM: 0</span>
+          <span class="pill" id="fatigueStat">Crowd Fatigue: 0%</span>
+          <span class="pill" id="arcStat">Arc Score: 0</span>
+        </div>
+        <canvas id="energyCurve" width="900" height="220" aria-label="Energy curve chart"></canvas>
+      </section>
+
+      <section class="card grid" id="list"></section>
+    </main>
+
+    <script>
+      const list = document.getElementById('list');
+      const energyCurve = document.getElementById('energyCurve');
+      const ctx = energyCurve.getContext('2d');
+      const tracksStat = document.getElementById('tracksStat');
+      const avgBpmStat = document.getElementById('avgBpmStat');
+      const fatigueStat = document.getElementById('fatigueStat');
+      const arcStat = document.getElementById('arcStat');
+
+      const state = { tracks: [] };
+      const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+
+      function addTrack(track = { name: `Track ${state.tracks.length + 1}`, bpm: 120, energy: 55 }) {
+        state.tracks.push(track);
+        render();
+      }
+
+      function loadDemo() {
+        state.tracks = [
+          { name: 'Neon Door', bpm: 96, energy: 35 },
+          { name: 'Static Kiss', bpm: 112, energy: 47 },
+          { name: 'Silver Sparks', bpm: 128, energy: 64 },
+          { name: 'Skyline Riot', bpm: 142, energy: 81 },
+          { name: 'Soft Landing', bpm: 108, energy: 52 }
+        ];
+        render();
+      }
+
+      function optimizeCurve() {
+        state.tracks.sort((a, b) => a.energy - b.energy);
+        const peak = state.tracks.pop();
+        if (peak) state.tracks.splice(Math.floor(state.tracks.length * 0.7), 0, peak);
+        render();
+      }
+
+      function computeArcScore() {
+        if (state.tracks.length < 3) return 0;
+        const energies = state.tracks.map((t) => t.energy);
+        const peakIndex = energies.indexOf(Math.max(...energies));
+        const left = energies.slice(0, peakIndex + 1);
+        const right = energies.slice(peakIndex);
+        let trend = 0;
+        for (let i = 1; i < left.length; i++) if (left[i] >= left[i - 1]) trend++;
+        for (let i = 1; i < right.length; i++) if (right[i] <= right[i - 1]) trend++;
+        return Math.round((trend / Math.max(1, state.tracks.length - 1)) * 100);
+      }
+
+      function updateStats() {
+        const len = state.tracks.length;
+        const avgBpm = len ? Math.round(state.tracks.reduce((s, t) => s + t.bpm, 0) / len) : 0;
+        const fatigue = len
+          ? clamp(
+              Math.round(
+                (state.tracks.reduce((s, t) => s + Math.max(0, t.energy - 70), 0) / (len * 30)) * 100
+              ),
+              0,
+              100
+            )
+          : 0;
+        tracksStat.textContent = `Tracks: ${len}`;
+        avgBpmStat.textContent = `Avg BPM: ${avgBpm}`;
+        fatigueStat.textContent = `Crowd Fatigue: ${fatigue}%`;
+        arcStat.textContent = `Arc Score: ${computeArcScore()}`;
+      }
+
+      function drawCurve() {
+        const w = energyCurve.width;
+        const h = energyCurve.height;
+        ctx.clearRect(0, 0, w, h);
+        ctx.strokeStyle = 'rgba(89,225,255,.25)';
+        for (let y = 30; y < h; y += 30) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(w, y);
+          ctx.stroke();
+        }
+        if (!state.tracks.length) return;
+        const points = state.tracks.map((track, i) => ({
+          x: (i / Math.max(1, state.tracks.length - 1)) * (w - 80) + 40,
+          y: h - 20 - (track.energy / 100) * (h - 60)
+        }));
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = '#59e1ff';
+        ctx.beginPath();
+        points.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)));
+        ctx.stroke();
+        points.forEach((p, i) => {
+          ctx.fillStyle = i === Math.floor(points.length * 0.7) ? '#ff6a8f' : '#b36bff';
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 7, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+
+      function render() {
+        list.innerHTML = '';
+        state.tracks.forEach((track, index) => {
+          const row = document.createElement('div');
+          row.className = 'track';
+          row.innerHTML = `
+            <input aria-label="Track name" value="${track.name}" />
+            <input aria-label="BPM" type="number" min="60" max="220" value="${track.bpm}" />
+            <input aria-label="Energy" type="number" min="0" max="100" value="${track.energy}" />
+            <button type="button" aria-label="Delete track">✕</button>
+          `;
+          const [nameInput, bpmInput, energyInput, delBtn] = row.querySelectorAll('input,button');
+          nameInput.addEventListener('input', (e) => {
+            track.name = e.target.value;
+          });
+          bpmInput.addEventListener('input', (e) => {
+            track.bpm = clamp(Number(e.target.value) || 60, 60, 220);
+            drawCurve();
+            updateStats();
+          });
+          energyInput.addEventListener('input', (e) => {
+            track.energy = clamp(Number(e.target.value) || 0, 0, 100);
+            drawCurve();
+            updateStats();
+          });
+          delBtn.addEventListener('click', () => {
+            state.tracks.splice(index, 1);
+            render();
+          });
+          list.appendChild(row);
+        });
+        drawCurve();
+        updateStats();
+      }
+
+      document.getElementById('addBtn').addEventListener('click', () => addTrack());
+      document.getElementById('optBtn').addEventListener('click', optimizeCurve);
+      document.getElementById('demoBtn').addEventListener('click', loadDemo);
+      loadDemo();
+    </script>
+  </body>
+</html>
