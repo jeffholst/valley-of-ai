@@ -1,0 +1,1079 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plasma Chain Reaction - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Plasma Chain Reaction" />
+    <meta name="voa-app-id" content="2026/04/04/plasma-chain-reaction" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --accent: #a855f7;
+        --accent2: #7c3aed;
+        --border: #334155;
+        --btn-bg: #334155;
+        --btn-hover: #475569;
+        --success: #10b981;
+        --danger: #ef4444;
+        --warn: #f59e0b;
+        --plasma-blue: #38bdf8;
+        --plasma-pink: #ec4899;
+        --plasma-gold: #fbbf24;
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+        --border: #cbd5e1;
+        --btn-bg: #e2e8f0;
+        --btn-hover: #cbd5e1;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        overflow: hidden;
+      }
+
+      #appWrapper {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      /* ── HUD ── */
+      #hud {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 12px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .hud-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 44px;
+      }
+
+      .hud-label {
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        opacity: 0.6;
+        line-height: 1;
+      }
+
+      .hud-value {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--accent);
+        line-height: 1.2;
+      }
+
+      .hud-btn {
+        background: var(--btn-bg);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s;
+        white-space: nowrap;
+        min-height: 32px;
+      }
+
+      .hud-btn:hover,
+      .hud-btn:focus-visible {
+        background: var(--btn-hover);
+        outline: none;
+      }
+
+      /* ── Canvas ── */
+      #gameArea {
+        flex: 1;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      #gameCanvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+        user-select: none;
+      }
+
+      /* ── Overlays ── */
+      .overlay {
+        position: fixed;
+        inset: 64px 0 56px 0;
+        background: rgba(15, 23, 42, 0.95);
+        z-index: 200;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        padding: 24px;
+        text-align: center;
+      }
+
+      [data-theme='light'] .overlay {
+        background: rgba(255, 255, 255, 0.95);
+      }
+
+      .overlay h2 {
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--accent);
+      }
+
+      .overlay p {
+        font-size: 14px;
+        opacity: 0.8;
+        max-width: 360px;
+        line-height: 1.5;
+      }
+
+      .overlay-btn {
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 28px;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.15s, transform 0.1s;
+        min-width: 140px;
+        min-height: 44px;
+      }
+
+      .overlay-btn:hover {
+        background: var(--accent2);
+      }
+
+      .overlay-btn:active {
+        transform: scale(0.96);
+      }
+
+      .overlay-btn.secondary {
+        background: var(--btn-bg);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      /* ── Upgrade selection ── */
+      #upgradeOverlay {
+        z-index: 210;
+      }
+
+      .upgrade-cards {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 420px;
+      }
+
+      .upgrade-card {
+        background: var(--surface);
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 12px;
+        width: 120px;
+        cursor: pointer;
+        transition: border-color 0.15s, transform 0.1s, background 0.15s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        min-height: 44px;
+      }
+
+      .upgrade-card:hover,
+      .upgrade-card:focus-visible {
+        border-color: var(--accent);
+        transform: scale(1.04);
+        outline: none;
+      }
+
+      .upgrade-card:active {
+        transform: scale(0.97);
+      }
+
+      .upgrade-icon {
+        font-size: 28px;
+      }
+
+      .upgrade-name {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--accent);
+      }
+
+      .upgrade-desc {
+        font-size: 10px;
+        opacity: 0.7;
+        line-height: 1.3;
+      }
+
+      /* ── Active upgrades bar ── */
+      #upgradeBar {
+        width: 100%;
+        display: flex;
+        gap: 4px;
+        padding: 2px 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+        flex-shrink: 0;
+        min-height: 0;
+      }
+
+      .upgrade-pill {
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 6px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        white-space: nowrap;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="appWrapper">
+      <div id="hud">
+        <div class="hud-group">
+          <span class="hud-label">Level</span>
+          <span class="hud-value" id="hudLevel">1</span>
+        </div>
+        <div class="hud-group">
+          <span class="hud-label">Score</span>
+          <span class="hud-value" id="hudScore">0</span>
+        </div>
+        <div class="hud-group">
+          <span class="hud-label">Taps</span>
+          <span class="hud-value" id="hudTaps">5</span>
+        </div>
+        <div class="hud-group">
+          <span class="hud-label">Goal</span>
+          <span class="hud-value" id="hudGoal">0/5</span>
+        </div>
+        <button class="hud-btn" id="btnRestart" aria-label="Restart game">↺ New</button>
+      </div>
+
+      <div id="upgradeBar"></div>
+
+      <div id="gameArea">
+        <canvas id="gameCanvas" aria-label="Plasma chain reaction game board"></canvas>
+      </div>
+    </div>
+
+    <!-- Start overlay -->
+    <div id="startOverlay" class="overlay" role="dialog" aria-label="Start">
+      <h2>Plasma Chain Reaction</h2>
+      <p>Tap plasma cores to trigger chain reactions inside a dying star. Chain enough to prevent supernova!</p>
+      <p style="font-size:12px; opacity:0.6;">5 taps per level. Explosions chain outward, shrinking each link. Earn roguelite upgrades!</p>
+      <button class="overlay-btn" id="btnStart">Start Game</button>
+    </div>
+
+    <!-- Level complete overlay -->
+    <div id="levelOverlay" class="overlay hidden" role="dialog" aria-label="Level complete">
+      <h2 id="levelTitle">Level Complete!</h2>
+      <p id="levelStats"></p>
+      <div id="levelActions" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;"></div>
+    </div>
+
+    <!-- Upgrade overlay -->
+    <div id="upgradeOverlay" class="overlay hidden" role="dialog" aria-label="Choose upgrade">
+      <h2>Choose an Upgrade</h2>
+      <p>Upgrades stack and combine across levels.</p>
+      <div class="upgrade-cards" id="upgradeCards"></div>
+    </div>
+
+    <!-- Game over overlay -->
+    <div id="gameOverOverlay" class="overlay hidden" role="dialog" aria-label="Game over">
+      <h2>Supernova!</h2>
+      <p id="gameOverStats"></p>
+      <button class="overlay-btn" id="btnRetry">Try Again</button>
+    </div>
+
+    <script>
+      // ─────────────────────────────────────────────
+      //  CONSTANTS & CONFIG
+      // ─────────────────────────────────────────────
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+
+      /** Ball type definitions */
+      const BALL_TYPES = {
+        normal: { color: '#a855f7', glow: '#c084fc', label: '', weight: 50 },
+        splitter: { color: '#ec4899', glow: '#f472b6', label: '✦', weight: 15 },
+        shield: { color: '#38bdf8', glow: '#7dd3fc', label: '🛡', weight: 12 },
+        ghost: { color: '#64748b', glow: '#94a3b8', label: '👻', weight: 10 },
+        magnet: { color: '#f59e0b', glow: '#fbbf24', label: '⊛', weight: 8 },
+        golden: { color: '#fbbf24', glow: '#fde68a', label: '★', weight: 5 },
+      };
+
+      /** All available upgrades */
+      const ALL_UPGRADES = [
+        { id: 'bigger-bang', icon: '💥', name: 'Bigger Bang', desc: '+25% explosion radius', stat: 'radiusMult', val: 0.25 },
+        { id: 'echo-pulse', icon: '🔊', name: 'Echo Pulse', desc: 'Explosions pulse twice', stat: 'echoPulse', val: 1 },
+        { id: 'magnetism', icon: '🧲', name: 'Magnetism', desc: 'Pull nearby balls inward', stat: 'magnetPull', val: 15 },
+        { id: 'chain-freeze', icon: '❄️', name: 'Chain Freeze', desc: 'Freeze slows balls hit', stat: 'chainFreeze', val: 0.4 },
+        { id: 'split-shield', icon: '🔰', name: 'Split Shield', desc: 'Shields split when broken', stat: 'splitShield', val: 1 },
+      ];
+
+      // ─────────────────────────────────────────────
+      //  GAME STATE
+      // ─────────────────────────────────────────────
+      let game = {};
+
+      function resetGame() {
+        game = {
+          level: 1,
+          score: 0,
+          tapsLeft: 5,
+          tapsPerLevel: 5,
+          balls: [],
+          explosions: [],
+          particles: [],
+          shockwaves: [],
+          stars: [],
+          upgrades: [],
+          chainCount: 0,
+          popped: 0,
+          goalForLevel: 5,
+          totalPopped: 0,
+          state: 'playing', // playing, animating, levelDone, gameOver, upgrading
+          shakeTime: 0,
+          shakeIntensity: 0,
+          levelStartTime: 0,
+        };
+        initStars();
+      }
+
+      /** Generate parallax background stars */
+      function initStars() {
+        game.stars = [];
+        for (let i = 0; i < 120; i++) {
+          game.stars.push({
+            x: Math.random(),
+            y: Math.random(),
+            r: Math.random() * 1.5 + 0.3,
+            speed: Math.random() * 0.0002 + 0.00005,
+            brightness: Math.random() * 0.5 + 0.5,
+          });
+        }
+      }
+
+      // ─────────────────────────────────────────────
+      //  LEVEL SETUP
+      // ─────────────────────────────────────────────
+      function startLevel() {
+        const lvl = game.level;
+        game.tapsLeft = game.tapsPerLevel;
+        game.chainCount = 0;
+        game.popped = 0;
+
+        // Scale difficulty: more balls, higher goal
+        const ballCount = Math.min(8 + lvl * 3, 50);
+        game.goalForLevel = Math.min(Math.floor(ballCount * 0.5) + lvl, ballCount);
+        game.balls = [];
+        game.explosions = [];
+        game.particles = [];
+        game.shockwaves = [];
+        game.state = 'playing';
+        game.levelStartTime = Date.now();
+
+        const w = canvas.width;
+        const h = canvas.height;
+        const baseRadius = Math.max(14, Math.min(22, w / 25));
+
+        for (let i = 0; i < ballCount; i++) {
+          const type = pickBallType(lvl);
+          const r = baseRadius * (type === 'golden' ? 0.8 : 1);
+          const margin = r + 10;
+          game.balls.push({
+            x: margin + Math.random() * (w - margin * 2),
+            y: margin + Math.random() * (h - margin * 2),
+            r: r,
+            vx: (Math.random() - 0.5) * (1 + lvl * 0.15),
+            vy: (Math.random() - 0.5) * (1 + lvl * 0.15),
+            type: type,
+            hp: type === 'shield' ? 2 : 1,
+            visible: type !== 'ghost',
+            frozen: 0,
+            alive: true,
+          });
+        }
+
+        updateHUD();
+      }
+
+      /** Pick a ball type weighted by level */
+      function pickBallType(lvl) {
+        // Introduce special types progressively
+        const available = [{ type: 'normal', w: BALL_TYPES.normal.weight }];
+        if (lvl >= 2) available.push({ type: 'splitter', w: BALL_TYPES.splitter.weight });
+        if (lvl >= 3) available.push({ type: 'shield', w: BALL_TYPES.shield.weight });
+        if (lvl >= 4) available.push({ type: 'ghost', w: BALL_TYPES.ghost.weight });
+        if (lvl >= 5) available.push({ type: 'magnet', w: BALL_TYPES.magnet.weight });
+        if (lvl >= 3) available.push({ type: 'golden', w: BALL_TYPES.golden.weight });
+
+        const totalW = available.reduce((s, a) => s + a.w, 0);
+        let rand = Math.random() * totalW;
+        for (const a of available) {
+          rand -= a.w;
+          if (rand <= 0) return a.type;
+        }
+        return 'normal';
+      }
+
+      // ─────────────────────────────────────────────
+      //  UPGRADES
+      // ─────────────────────────────────────────────
+      function getUpgradeVal(stat) {
+        let total = 0;
+        for (const u of game.upgrades) {
+          if (u.stat === stat) total += u.val;
+        }
+        return total;
+      }
+
+      function getExplosionRadius(chainDepth) {
+        const base = Math.max(14, Math.min(22, canvas.width / 25)) * 3;
+        const mult = 1 + getUpgradeVal('radiusMult');
+        // Shrink each chain link by 15%
+        const shrink = Math.pow(0.85, chainDepth);
+        return base * mult * shrink;
+      }
+
+      function showUpgradeSelection() {
+        game.state = 'upgrading';
+        const overlay = document.getElementById('upgradeOverlay');
+        const cards = document.getElementById('upgradeCards');
+        cards.innerHTML = '';
+
+        // Pick 3 random upgrades
+        const shuffled = [...ALL_UPGRADES].sort(() => Math.random() - 0.5);
+        const choices = shuffled.slice(0, 3);
+
+        choices.forEach((upg) => {
+          const card = document.createElement('button');
+          card.className = 'upgrade-card';
+          card.setAttribute('aria-label', upg.name + ': ' + upg.desc);
+          card.innerHTML = `
+            <span class="upgrade-icon">${upg.icon}</span>
+            <span class="upgrade-name">${upg.name}</span>
+            <span class="upgrade-desc">${upg.desc}</span>
+          `;
+          card.addEventListener('click', () => {
+            game.upgrades.push(upg);
+            overlay.classList.add('hidden');
+            renderUpgradeBar();
+            game.level++;
+            startLevel();
+          });
+          cards.appendChild(card);
+        });
+
+        overlay.classList.remove('hidden');
+      }
+
+      function renderUpgradeBar() {
+        const bar = document.getElementById('upgradeBar');
+        bar.innerHTML = '';
+        // Count occurrences
+        const counts = {};
+        game.upgrades.forEach((u) => {
+          counts[u.id] = (counts[u.id] || 0) + 1;
+        });
+        Object.entries(counts).forEach(([id, count]) => {
+          const upg = ALL_UPGRADES.find((u) => u.id === id);
+          if (!upg) return;
+          const pill = document.createElement('span');
+          pill.className = 'upgrade-pill';
+          pill.textContent = upg.icon + ' ' + (count > 1 ? 'x' + count : upg.name);
+          bar.appendChild(pill);
+        });
+      }
+
+      // ─────────────────────────────────────────────
+      //  EXPLOSIONS & CHAIN REACTIONS
+      // ─────────────────────────────────────────────
+      function triggerExplosion(x, y, chainDepth, fromTap) {
+        const radius = getExplosionRadius(chainDepth);
+
+        game.explosions.push({
+          x, y, radius,
+          maxRadius: radius,
+          time: 0,
+          duration: 0.5,
+          chainDepth,
+        });
+
+        // Shockwave ring
+        game.shockwaves.push({ x, y, radius: 0, maxRadius: radius * 1.5, time: 0, duration: 0.4 });
+
+        // Screen shake
+        game.shakeTime = 0.15;
+        game.shakeIntensity = Math.min(6, 2 + chainDepth);
+
+        // Check which balls are hit
+        const hitBalls = [];
+        for (const ball of game.balls) {
+          if (!ball.alive) continue;
+          const dx = ball.x - x;
+          const dy = ball.y - y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < radius + ball.r) {
+            hitBalls.push(ball);
+          }
+        }
+
+        // Apply magnet pull upgrade
+        const magnetPull = getUpgradeVal('magnetPull');
+        if (magnetPull > 0) {
+          for (const ball of game.balls) {
+            if (!ball.alive) continue;
+            const dx = ball.x - x;
+            const dy = ball.y - y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < radius * 2 && dist > 0) {
+              const force = magnetPull / dist;
+              ball.vx -= (dx / dist) * force;
+              ball.vy -= (dy / dist) * force;
+            }
+          }
+        }
+
+        // Process hits
+        for (const ball of hitBalls) {
+          // Ghost: reveal nearby ghosts
+          if (ball.type === 'ghost' && !ball.visible) {
+            ball.visible = true;
+          }
+
+          // Chain freeze
+          const freezeVal = getUpgradeVal('chainFreeze');
+          if (freezeVal > 0) {
+            ball.frozen = Math.max(ball.frozen, freezeVal);
+          }
+
+          ball.hp--;
+          if (ball.hp <= 0) {
+            popBall(ball, chainDepth);
+          } else if (ball.type === 'shield' && getUpgradeVal('splitShield') > 0) {
+            // Split shield: spawn 2 smaller balls when shield layer breaks
+            for (let i = 0; i < 2; i++) {
+              game.balls.push({
+                x: ball.x + (Math.random() - 0.5) * 20,
+                y: ball.y + (Math.random() - 0.5) * 20,
+                r: ball.r * 0.6,
+                vx: (Math.random() - 0.5) * 3,
+                vy: (Math.random() - 0.5) * 3,
+                type: 'normal',
+                hp: 1,
+                visible: true,
+                frozen: 0,
+                alive: true,
+              });
+            }
+          }
+        }
+
+        // Echo pulse upgrade: second explosion after delay
+        const echoPulse = getUpgradeVal('echoPulse');
+        if (echoPulse > 0 && chainDepth === 0) {
+          setTimeout(() => {
+            if (game.state === 'playing' || game.state === 'animating') {
+              triggerExplosion(x, y, chainDepth + 0.5, false);
+            }
+          }, 300);
+        }
+      }
+
+      function popBall(ball, chainDepth) {
+        if (!ball.alive) return;
+        ball.alive = false;
+        game.popped++;
+        game.totalPopped++;
+        game.chainCount++;
+
+        // Score: chain depth multiplier
+        const points = 10 * (chainDepth + 1);
+        game.score += Math.floor(points);
+
+        // Spawn particles
+        spawnParticles(ball.x, ball.y, BALL_TYPES[ball.type].color, ball.type === 'golden' ? 16 : 8);
+
+        // Golden ball: bonus — do NOT tap, chain it for reward
+        if (ball.type === 'golden') {
+          game.score += 50;
+        }
+
+        // Splitter: spawn 2 smaller explosions
+        if (ball.type === 'splitter') {
+          const offset = ball.r * 2;
+          setTimeout(() => {
+            triggerExplosion(ball.x - offset, ball.y, chainDepth + 1, false);
+            triggerExplosion(ball.x + offset, ball.y, chainDepth + 1, false);
+          }, 100);
+          return;
+        }
+
+        // Magnet ball: attracts nearby on pop
+        if (ball.type === 'magnet') {
+          for (const other of game.balls) {
+            if (!other.alive) continue;
+            const dx = other.x - ball.x;
+            const dy = other.y - ball.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist > 0 && dist < 150) {
+              other.vx -= (dx / dist) * 3;
+              other.vy -= (dy / dist) * 3;
+            }
+          }
+        }
+
+        // Chain reaction: explode outward from popped ball
+        setTimeout(() => {
+          triggerExplosion(ball.x, ball.y, chainDepth + 1, false);
+        }, 80);
+
+        updateHUD();
+      }
+
+      // ─────────────────────────────────────────────
+      //  PARTICLES
+      // ─────────────────────────────────────────────
+      function spawnParticles(x, y, color, count) {
+        for (let i = 0; i < count; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 3 + 1;
+          game.particles.push({
+            x, y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 1, // slight upward bias (gravity will pull down)
+            r: Math.random() * 3 + 1,
+            color,
+            life: 1,
+            decay: Math.random() * 0.02 + 0.015,
+          });
+        }
+      }
+
+      // ─────────────────────────────────────────────
+      //  INPUT
+      // ─────────────────────────────────────────────
+      function handleTap(clientX, clientY) {
+        if (game.state !== 'playing') return;
+        if (game.tapsLeft <= 0) return;
+
+        const rect = canvas.getBoundingClientRect();
+        const x = (clientX - rect.left) * (canvas.width / rect.width);
+        const y = (clientY - rect.top) * (canvas.height / rect.height);
+
+        game.tapsLeft--;
+        game.chainCount = 0;
+        triggerExplosion(x, y, 0, true);
+        game.state = 'animating';
+        updateHUD();
+      }
+
+      canvas.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        handleTap(e.clientX, e.clientY);
+      });
+
+      // Keyboard: space/enter to start
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          if (!document.getElementById('startOverlay').classList.contains('hidden')) {
+            e.preventDefault();
+            document.getElementById('btnStart').click();
+          }
+        }
+      });
+
+      // ─────────────────────────────────────────────
+      //  UPDATE LOOP
+      // ─────────────────────────────────────────────
+      let lastTime = 0;
+
+      function update(dt) {
+        const w = canvas.width;
+        const h = canvas.height;
+
+        // Update stars (parallax drift)
+        for (const star of game.stars) {
+          star.y += star.speed * dt * 60;
+          if (star.y > 1) star.y = 0;
+        }
+
+        if (game.state !== 'playing' && game.state !== 'animating') return;
+
+        // Update balls
+        for (const ball of game.balls) {
+          if (!ball.alive) continue;
+
+          // Frozen slowdown
+          const speedMult = ball.frozen > 0 ? 0.2 : 1;
+          ball.frozen = Math.max(0, ball.frozen - dt);
+
+          ball.x += ball.vx * speedMult * dt * 60;
+          ball.y += ball.vy * speedMult * dt * 60;
+
+          // Bounce off walls
+          if (ball.x - ball.r < 0) { ball.x = ball.r; ball.vx = Math.abs(ball.vx); }
+          if (ball.x + ball.r > w) { ball.x = w - ball.r; ball.vx = -Math.abs(ball.vx); }
+          if (ball.y - ball.r < 0) { ball.y = ball.r; ball.vy = Math.abs(ball.vy); }
+          if (ball.y + ball.r > h) { ball.y = h - ball.r; ball.vy = -Math.abs(ball.vy); }
+
+          // Ghost balls: reveal if near explosion
+          if (ball.type === 'ghost' && !ball.visible) {
+            for (const exp of game.explosions) {
+              const dx = ball.x - exp.x;
+              const dy = ball.y - exp.y;
+              if (Math.sqrt(dx * dx + dy * dy) < exp.radius * 1.5) {
+                ball.visible = true;
+                break;
+              }
+            }
+          }
+        }
+
+        // Update explosions
+        for (const exp of game.explosions) {
+          exp.time += dt;
+        }
+        game.explosions = game.explosions.filter((e) => e.time < e.duration);
+
+        // Update shockwaves
+        for (const sw of game.shockwaves) {
+          sw.time += dt;
+          sw.radius = (sw.time / sw.duration) * sw.maxRadius;
+        }
+        game.shockwaves = game.shockwaves.filter((s) => s.time < s.duration);
+
+        // Update particles (teardrop with gravity)
+        for (const p of game.particles) {
+          p.x += p.vx * dt * 60;
+          p.y += p.vy * dt * 60;
+          p.vy += 0.05 * dt * 60; // gravity
+          p.life -= p.decay * dt * 60;
+        }
+        game.particles = game.particles.filter((p) => p.life > 0);
+
+        // Screen shake decay
+        if (game.shakeTime > 0) {
+          game.shakeTime -= dt;
+        }
+
+        // Check if animations are done
+        if (game.state === 'animating') {
+          if (game.explosions.length === 0 && game.shockwaves.length === 0) {
+            // All explosions finished — check if more taps or level end
+            if (game.tapsLeft > 0) {
+              game.state = 'playing';
+            } else {
+              endLevel();
+            }
+          }
+        }
+      }
+
+      function endLevel() {
+        if (game.popped >= game.goalForLevel) {
+          // Level passed
+          game.state = 'levelDone';
+          const overlay = document.getElementById('levelOverlay');
+          const title = document.getElementById('levelTitle');
+          const stats = document.getElementById('levelStats');
+          const actions = document.getElementById('levelActions');
+
+          title.textContent = '✨ Level ' + game.level + ' Complete!';
+          stats.textContent = 'Chained ' + game.popped + ' cores · Score: ' + game.score;
+          actions.innerHTML = '';
+
+          const nextBtn = document.createElement('button');
+          nextBtn.className = 'overlay-btn';
+          nextBtn.textContent = 'Choose Upgrade →';
+          nextBtn.addEventListener('click', () => {
+            overlay.classList.add('hidden');
+            showUpgradeSelection();
+          });
+          actions.appendChild(nextBtn);
+
+          overlay.classList.remove('hidden');
+          nextBtn.focus();
+        } else {
+          // Failed — game over
+          game.state = 'gameOver';
+          document.getElementById('gameOverStats').textContent =
+            'Reached Level ' + game.level + ' · Score: ' + game.score + ' · Total cores chained: ' + game.totalPopped;
+          document.getElementById('gameOverOverlay').classList.remove('hidden');
+          document.getElementById('btnRetry').focus();
+        }
+      }
+
+      // ─────────────────────────────────────────────
+      //  RENDERING
+      // ─────────────────────────────────────────────
+      function render() {
+        const w = canvas.width;
+        const h = canvas.height;
+        const cs = getComputedStyle(document.documentElement);
+        const bgColor = cs.getPropertyValue('--bg').trim();
+
+        // Screen shake offset
+        let sx = 0, sy = 0;
+        if (game.shakeTime > 0) {
+          sx = (Math.random() - 0.5) * game.shakeIntensity * 2;
+          sy = (Math.random() - 0.5) * game.shakeIntensity * 2;
+        }
+
+        ctx.save();
+        ctx.translate(sx, sy);
+
+        // Background
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(-10, -10, w + 20, h + 20);
+
+        // Stars
+        for (const star of game.stars) {
+          ctx.globalAlpha = star.brightness * 0.8;
+          ctx.fillStyle = '#e2e8f0';
+          ctx.beginPath();
+          ctx.arc(star.x * w, star.y * h, star.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+
+        // Shockwave rings
+        for (const sw of game.shockwaves) {
+          const alpha = 1 - sw.time / sw.duration;
+          ctx.strokeStyle = `rgba(168, 85, 247, ${alpha * 0.6})`;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        // Explosions (expanding glow circles)
+        for (const exp of game.explosions) {
+          const progress = exp.time / exp.duration;
+          const currentR = exp.maxRadius * Math.min(1, progress * 2);
+          const alpha = Math.max(0, 1 - progress);
+          const grad = ctx.createRadialGradient(exp.x, exp.y, 0, exp.x, exp.y, currentR);
+          grad.addColorStop(0, `rgba(168, 85, 247, ${alpha * 0.5})`);
+          grad.addColorStop(0.5, `rgba(236, 72, 153, ${alpha * 0.3})`);
+          grad.addColorStop(1, `rgba(168, 85, 247, 0)`);
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(exp.x, exp.y, currentR, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Balls
+        for (const ball of game.balls) {
+          if (!ball.alive || !ball.visible) continue;
+          const bt = BALL_TYPES[ball.type];
+
+          // Glow
+          ctx.shadowColor = bt.glow;
+          ctx.shadowBlur = ball.frozen > 0 ? 4 : 12;
+
+          // Radial gradient fill
+          const grad = ctx.createRadialGradient(
+            ball.x - ball.r * 0.3, ball.y - ball.r * 0.3, ball.r * 0.1,
+            ball.x, ball.y, ball.r
+          );
+          grad.addColorStop(0, bt.glow);
+          grad.addColorStop(1, bt.color);
+
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Inner core
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = 'rgba(255,255,255,0.3)';
+          ctx.beginPath();
+          ctx.arc(ball.x - ball.r * 0.2, ball.y - ball.r * 0.2, ball.r * 0.35, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Frozen indicator
+          if (ball.frozen > 0) {
+            ctx.strokeStyle = 'rgba(56, 189, 248, 0.6)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.r + 3, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+
+          // Shield HP indicator
+          if (ball.type === 'shield' && ball.hp > 1) {
+            ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.r + 4, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+
+          // Type label
+          if (bt.label) {
+            ctx.shadowBlur = 0;
+            ctx.font = `${ball.r * 0.8}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#fff';
+            ctx.fillText(bt.label, ball.x, ball.y + 1);
+          }
+        }
+
+        ctx.shadowBlur = 0;
+
+        // Particles
+        for (const p of game.particles) {
+          ctx.globalAlpha = p.life;
+          ctx.fillStyle = p.color;
+          // Teardrop shape: elongate in direction of motion
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2);
+          ctx.fill();
+          // Trail
+          const tx = p.x - p.vx * 2;
+          const ty = p.y - p.vy * 2;
+          ctx.beginPath();
+          ctx.arc(tx, ty, p.r * p.life * 0.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+
+        ctx.restore();
+      }
+
+      // ─────────────────────────────────────────────
+      //  HUD
+      // ─────────────────────────────────────────────
+      function updateHUD() {
+        document.getElementById('hudLevel').textContent = game.level;
+        document.getElementById('hudScore').textContent = game.score;
+        document.getElementById('hudTaps').textContent = game.tapsLeft;
+        document.getElementById('hudGoal').textContent = game.popped + '/' + game.goalForLevel;
+      }
+
+      // ─────────────────────────────────────────────
+      //  RESIZE
+      // ─────────────────────────────────────────────
+      function resizeCanvas() {
+        const area = document.getElementById('gameArea');
+        canvas.width = area.clientWidth;
+        canvas.height = area.clientHeight;
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+
+      // ─────────────────────────────────────────────
+      //  GAME LOOP
+      // ─────────────────────────────────────────────
+      function gameLoop(timestamp) {
+        const dt = Math.min((timestamp - lastTime) / 1000, 0.05);
+        lastTime = timestamp;
+
+        update(dt);
+        render();
+        requestAnimationFrame(gameLoop);
+      }
+
+      // ─────────────────────────────────────────────
+      //  BUTTONS
+      // ─────────────────────────────────────────────
+      document.getElementById('btnStart').addEventListener('click', () => {
+        document.getElementById('startOverlay').classList.add('hidden');
+        resetGame();
+        resizeCanvas();
+        startLevel();
+      });
+
+      document.getElementById('btnRestart').addEventListener('click', () => {
+        document.getElementById('startOverlay').classList.add('hidden');
+        document.getElementById('levelOverlay').classList.add('hidden');
+        document.getElementById('upgradeOverlay').classList.add('hidden');
+        document.getElementById('gameOverOverlay').classList.add('hidden');
+        resetGame();
+        resizeCanvas();
+        startLevel();
+      });
+
+      document.getElementById('btnRetry').addEventListener('click', () => {
+        document.getElementById('gameOverOverlay').classList.add('hidden');
+        resetGame();
+        resizeCanvas();
+        startLevel();
+      });
+
+      // ─────────────────────────────────────────────
+      //  INIT
+      // ─────────────────────────────────────────────
+      resetGame();
+      resizeCanvas();
+      lastTime = performance.now();
+      requestAnimationFrame(gameLoop);
+    </script>
+  </body>
+</html>

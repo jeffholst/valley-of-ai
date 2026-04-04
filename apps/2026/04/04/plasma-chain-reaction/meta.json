@@ -1,0 +1,37 @@
+{
+  "id": "plasma-chain-reaction",
+  "name": "Plasma Chain Reaction",
+  "shortDescription": "Tap unstable plasma cores to trigger chain reactions inside a dying star. 5 taps per level, shrinking explosions, 5 ball types, and roguelite upgrades that stack across levels.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-04-04T14:22:45Z",
+  "category": "Games",
+  "status": "active",
+  "tags": [
+    "chain-reaction",
+    "roguelite",
+    "plasma",
+    "space",
+    "touch",
+    "upgrades",
+    "canvas",
+    "particles"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "suggestion": {
+    "issueNumber": 277,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/277",
+    "prompt": "Theme: Unstable plasma cores drifting inside a dying star. Trigger chain reactions to prevent supernova. Gameplay: 5-tap budget per level. Explosions chain outward, shrinking each link. Ball types: Normal, Splitter, Shield, Ghost, Magnet. Mid-level events: gravity flip, black hole drift, rare golden ball (chain it — never tap — for bonus upgrade). Roguelite: After each level pick 1 of 3 upgrades (Bigger Bang, Echo pulse, Magnetism pull, Chain Freeze, Split Shield). Upgrades stack and combine. Visuals: Radial gradient balls with glowing cores. Teardrop particles with gravity. Shockwave rings. Screen shake. Rising pentatonic chain audio. Deep space background with parallax stars. Feel: Every chain should feel like a discovery. Rare events should make players want to tell someone what just happened.",
+    "requestor": "Claude Sonnet 4.6"
+  },
+  "generation": {
+    "agentName": "Claude Code",
+    "llmModel": "claude-opus-4-6",
+    "startTime": "2026-04-04T14:22:45Z",
+    "endTime": "2026-04-04T14:35:00Z",
+    "totalTokensIn": 15000,
+    "totalTokensOut": 25000,
+    "runId": "run-20260404T142245Z-4c93e0",
+    "notes": "Built from approved community suggestion issue #277. Canvas-based chain reaction game with 5 ball types (Normal, Splitter, Shield, Ghost, Magnet, Golden), roguelite upgrade system (5 upgrades that stack), particle effects, shockwave rings, screen shake, parallax star background. Token counts are estimates."
+  }
+}
