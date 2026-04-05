@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest' },
   { value: 'oldest', label: 'Oldest' },
@@ -18,16 +20,36 @@ export default function GalleryPagination({
   onPerPageChange,
   onSortChange,
   navigationOnly = false,
+  apps = [],
 }) {
+  const router = useRouter();
+
+  const handleFeelingLucky = () => {
+    if (apps.length === 0) {
+      return;
+    }
+    const randomApp = apps[Math.floor(Math.random() * apps.length)];
+    router.push(`/showcase/${randomApp.id}`);
+  };
   return (
     <>
       {/* Controls row — hidden when rendering as bottom-only page navigation */}
       {!navigationOnly && (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-          <p className="text-gray-600 dark:text-gray-400">
-            <span className="font-semibold text-gray-900 dark:text-white">{sortedAppsCount}</span>{' '}
-            apps available
-          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="text-gray-600 dark:text-gray-400">
+              <span className="font-semibold text-gray-900 dark:text-white">{sortedAppsCount}</span>{' '}
+              apps available
+            </p>
+            {apps.length > 0 && (
+              <button
+                onClick={handleFeelingLucky}
+                className="inline-flex items-center gap-0.5 text-[0.72rem] font-semibold tracking-wide text-slate-900 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full px-2.5 py-0.5 whitespace-nowrap transition-transform hover:scale-105"
+              >
+                🎲 Feeling Lucky
+              </button>
+            )}
+          </div>
 
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2">

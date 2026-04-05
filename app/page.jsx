@@ -253,6 +253,7 @@ export default function HomePage() {
         />
 
         <GalleryPagination
+          apps={sortedApps}
           sortedAppsCount={sortedApps.length}
           currentPage={currentPage}
           totalPages={totalPages}
@@ -278,6 +279,7 @@ export default function HomePage() {
         />
 
         <GalleryPagination
+          apps={sortedApps}
           navigationOnly
           sortedAppsCount={sortedApps.length}
           currentPage={currentPage}
