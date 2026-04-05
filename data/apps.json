@@ -1752,9 +1752,24 @@
       "notes": "Nightly build: Space Invaders clone. Token counters unavailable in runtime."
     },
     "suggestion": null,
-    "improvements": null,
+    "improvements": [
+      {
+        "issueNumber": 284,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/284",
+        "description": "Added dynamic enemy speed scaling, dancing animation with two alternating frames, row-specific enemy colors, improved collision detection, progressive wave positioning, and destructible arch-shaped barriers.",
+        "implementedAt": "2026-04-05T22:34:53Z",
+        "agentName": "GitHub Copilot",
+        "llmModel": "claude-opus-4-6"
+      }
+    ],
     "allowImprovements": true,
-    "backups": null
+    "backups": [
+      {
+        "runId": "run-20260405T220949Z-8494ae",
+        "path": "backups/run-20260405T220949Z-8494ae/index.html",
+        "url": "/apps/2026/03/08/space-invaders-clone/backups/run-20260405T220949Z-8494ae/index.html"
+      }
+    ]
   },
   {
     "id": "2026/03/07/workout-timer-pulse",
