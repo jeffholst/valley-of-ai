@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Birthday Luck Mixer thumbnail">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#090c22" />
+      <stop offset="70%" stop-color="#10173a" />
+      <stop offset="100%" stop-color="#1f2a63" />
+    </linearGradient>
+    <linearGradient id="panelGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1d2550" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#11173a" stop-opacity="0.95" />
+    </linearGradient>
+    <linearGradient id="ballGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22d3ee" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)" />
+  <g opacity="0.2" stroke="#22d3ee" stroke-width="1">
+    <path d="M0 80 H800" />
+    <path d="M0 180 H800" />
+    <path d="M0 280 H800" />
+    <path d="M0 380 H800" />
+  </g>
+
+  <rect x="36" y="30" width="728" height="390" rx="24" fill="url(#panelGrad)" stroke="#7c8ddf" stroke-opacity="0.45" />
+
+  <text x="66" y="80" fill="#f8fafc" font-size="40" font-family="Inter, Segoe UI, sans-serif" font-weight="800" filter="url(#glow)">
+    Birthday Luck Mixer
+  </text>
+  <text x="66" y="112" fill="#a5b4fc" font-size="20" font-family="Inter, Segoe UI, sans-serif">
+    Mix #8 • Luck Score 77 • Best Streak 3
+  </text>
+
+  <rect x="66" y="136" width="320" height="88" rx="14" fill="#20285a" stroke="#95a3f4" stroke-opacity="0.55" />
+  <text x="84" y="164" fill="#c7d2fe" font-size="16" font-family="Inter, Segoe UI, sans-serif">Birthday: 1992-04-14</text>
+  <text x="84" y="192" fill="#c7d2fe" font-size="16" font-family="Inter, Segoe UI, sans-serif">Event: 2026-04-09 • Style: Balanced</text>
+
+  <g transform="translate(438 132)">
+    <rect x="0" y="0" width="298" height="230" rx="18" fill="#171d44" stroke="#8ea0ff" stroke-opacity="0.55" />
+    <text x="20" y="34" fill="#a5b4fc" font-size="16" font-family="Inter, Segoe UI, sans-serif">Lucky Numbers</text>
+
+    <g transform="translate(22 56)">
+      <g>
+        <circle cx="30" cy="34" r="26" fill="url(#ballGrad)" filter="url(#glow)" />
+        <text x="30" y="40" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="800" font-family="Inter, Segoe UI, sans-serif">4</text>
+      </g>
+      <g transform="translate(84 0)">
+        <circle cx="30" cy="34" r="26" fill="url(#ballGrad)" filter="url(#glow)" />
+        <text x="30" y="40" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="800" font-family="Inter, Segoe UI, sans-serif">11</text>
+      </g>
+      <g transform="translate(168 0)">
+        <circle cx="30" cy="34" r="26" fill="url(#ballGrad)" filter="url(#glow)" />
+        <text x="30" y="40" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="800" font-family="Inter, Segoe UI, sans-serif">19</text>
+      </g>
+      <g transform="translate(0 82)">
+        <circle cx="30" cy="34" r="26" fill="url(#ballGrad)" filter="url(#glow)" />
+        <text x="30" y="40" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="800" font-family="Inter, Segoe UI, sans-serif">27</text>
+      </g>
+      <g transform="translate(84 82)">
+        <circle cx="30" cy="34" r="26" fill="url(#ballGrad)" filter="url(#glow)" />
+        <text x="30" y="40" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="800" font-family="Inter, Segoe UI, sans-serif">33</text>
+      </g>
+      <g transform="translate(168 82)">
+        <circle cx="30" cy="34" r="26" fill="#34d399" filter="url(#glow)" />
+        <text x="30" y="40" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="800" font-family="Inter, Segoe UI, sans-serif">45</text>
+      </g>
+    </g>
+  </g>
+
+  <rect x="66" y="246" width="320" height="116" rx="14" fill="#171d44" stroke="#8ea0ff" stroke-opacity="0.5" />
+  <text x="84" y="277" fill="#22d3ee" font-size="18" font-family="Inter, Segoe UI, sans-serif" font-weight="700">Ready to mix your next lucky set.</text>
+  <rect x="84" y="296" width="142" height="44" rx="12" fill="#f97316" />
+  <rect x="238" y="296" width="142" height="44" rx="12" fill="#0ea5e9" />
+  <text x="155" y="325" text-anchor="middle" fill="#fff" font-size="16" font-family="Inter, Segoe UI, sans-serif" font-weight="700">Mix Numbers</text>
+  <text x="309" y="325" text-anchor="middle" fill="#fff" font-size="16" font-family="Inter, Segoe UI, sans-serif" font-weight="700">Reroll Bonus</text>
+</svg>
