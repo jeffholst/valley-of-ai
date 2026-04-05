@@ -301,13 +301,35 @@
         right: 0;
         z-index: 9999;
         display: grid;
-        grid-template-columns: 1fr auto 1fr;
+        grid-template-columns: auto 1fr auto auto;
         align-items: center;
         min-height: 56px;
         padding: 10px 16px;
         background: color-mix(in srgb, var(--surface, #ffffff) 92%, transparent);
         border-bottom: 1px solid color-mix(in srgb, var(--muted, #94a3b8) 28%, transparent);
         backdrop-filter: blur(8px);
+        gap: 8px;
+      }
+
+      .voa-shell-home-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: color-mix(in srgb, var(--muted, #94a3b8) 15%, transparent);
+        color: var(--text, var(--text-primary, #f8fafc));
+        border: none;
+        cursor: pointer;
+        font-size: 1.1rem;
+        transition: background 150ms ease, transform 150ms ease;
+        text-decoration: none;
+      }
+
+      .voa-shell-home-btn:hover {
+        background: color-mix(in srgb, var(--muted, #94a3b8) 28%, transparent);
+        transform: scale(1.08);
       }
 
       #voa-theme-toggle.theme-toggle {
@@ -322,6 +344,13 @@
         align-items: center;
         gap: 7px;
         min-width: 0;
+        cursor: pointer;
+        text-decoration: none;
+        transition: opacity 150ms ease;
+      }
+
+      .voa-shell-app-name:hover {
+        opacity: 0.8;
       }
 
       .voa-shell-ai-tag {
@@ -653,10 +682,15 @@
       @media (max-width: 479px) {
         .voa-shell-app-name-text {
           display: inline-block;
-          max-width: 100px;
+          max-width: 80px;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+        }
+        .voa-shell-home-btn {
+          width: 32px;
+          height: 32px;
+          font-size: 0.95rem;
         }
         .voa-pill-text { display: none; }
         .voa-vote-count { display: none; }
@@ -677,8 +711,19 @@
     header.id = 'voa-shell-header';
     header.className = 'voa-shell-header';
 
-    const appName = document.createElement('div');
+    const homeBtn = document.createElement('a');
+    homeBtn.className = 'voa-shell-home-btn';
+    const isLocalHome =
+      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const homeBase = isLocalHome ? window.location.origin : resolveMainSiteUrl();
+    homeBtn.href = homeBase;
+    homeBtn.innerHTML = '🏠';
+    homeBtn.setAttribute('aria-label', 'Back to home');
+
+    const appName = document.createElement('a');
     appName.className = 'voa-shell-app-name';
+    appName.href = homeBase;
+    appName.setAttribute('aria-label', `Go to ${getAppName()} details`);
     const nameText = document.createElement('span');
     nameText.className = 'voa-shell-app-name-text';
     nameText.textContent = getAppName();
@@ -705,6 +750,7 @@
     aiTag.setAttribute('aria-label', 'View app details');
     voteGroup.appendChild(aiTag);
 
+    header.appendChild(homeBtn);
     header.appendChild(appName);
     header.appendChild(voteGroup);
     header.appendChild(toggle);
