@@ -1,0 +1,25 @@
+{
+  "id": "space-invaders-clone",
+  "name": "Space Invaders Clone",
+  "shortDescription": "A polished browser Space Invaders clone with waves, scoring, lives, and classic left-right-shoot gameplay.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-08T03:00:21Z",
+  "category": "Games",
+  "visible": true,
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["arcade", "space-invaders", "shooter", "keyboard-controls"],
+  "homepagePath": "index.html",
+  "inputMode": "desktop",
+  "generation": {
+    "agentName": "openclaw-dev-agent",
+    "llmModel": "gpt-5.1",
+    "startTime": "2026-03-08T02:59:10Z",
+    "endTime": "2026-03-08T03:00:21Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-20260308T030021Z-4c5ceb",
+    "notes": "Nightly build: Space Invaders clone. Token counters unavailable in runtime."
+  },
+  "votes": 0
+}
