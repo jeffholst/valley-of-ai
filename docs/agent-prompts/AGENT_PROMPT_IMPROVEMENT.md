@@ -374,6 +374,9 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
    # Only if data/apps.json changed (generate:apps doesn't always update it):
    git diff --quiet data/apps.json || git add data/apps.json
 
+   # Verify backup folder is staged before committing:
+   git diff --cached --stat | grep "backups/" || { echo "ERROR: backup files not staged"; exit 1; }
+
    git commit -m "improve: <app-id> — <one-line description of change> [skip deploy]"
    ```
 
