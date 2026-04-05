@@ -5,7 +5,7 @@ import Link from 'next/link';
 import DonateModal from '@/components/DonateModal';
 import GalleryFilters from '@/components/GalleryFilters';
 import GalleryGrid from '@/components/GalleryGrid';
-import GalleryPagination from '@/components/GalleryPagination';
+import GalleryPagination, { PER_PAGE_OPTIONS } from '@/components/GalleryPagination';
 import OptionsDrawer from '@/components/OptionsDrawer';
 import PaymentSuccessModal from '@/components/PaymentSuccessModal';
 import PterodactylSky from '@/components/PterodactylSky';
@@ -34,7 +34,7 @@ export default function HomePage() {
   const [paymentType, setPaymentType] = useState('tip');
   const [sortBy, setSortBy] = useState('newest');
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(PER_PAGE_OPTIONS[0]);
   const [mounted, setMounted] = useState(false);
   const [options, setOptions] = useState(DEFAULT_OPTIONS);
   const [searchQuery, setSearchQuery] = useState('');

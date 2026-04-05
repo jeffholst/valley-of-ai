@@ -6,7 +6,7 @@ const SORT_OPTIONS = [
   { value: 'highest', label: 'Highest rated' },
 ];
 
-const PER_PAGE_OPTIONS = [10, 25, 100];
+export const PER_PAGE_OPTIONS = [12, 30, 100];
 
 export default function GalleryPagination({
   sortedAppsCount,
