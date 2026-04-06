@@ -136,17 +136,6 @@ function getRowColor(row) {
   return palette[row % palette.length];
 }
 
-// ---- UFO Config (easy to tweak) ----
-var UFO_CFG = {
-  spawnMinFrames: 600,   // minimum frames between spawns (~10s at 60fps)
-  spawnMaxFrames: 1800,  // maximum frames between spawns (~30s at 60fps)
-  speed: 2.2,            // horizontal pixels per frame
-  scoreValue: 100,       // bonus points for hitting the UFO
-  y: 22,                 // vertical position (canvas coords, above enemy formation)
-  w: 36,                 // width
-  h: 14                  // height
-};
-
 // ---- Game State ----
 var S = {
   run: false, score: 0, lives: 3, wave: 1,
@@ -159,11 +148,7 @@ var S = {
   animFrame: 0, animTimer: 0,
   // Ship explosion state
   exploding: false, explosionTimer: 0, explosionDuration: 90,
-  particles: [],
-  // UFO state
-  ufo: null,             // { x, y, w, h, dir } or null when inactive
-  ufoTimer: 0,           // countdown frames until next UFO spawn
-  ufoScoreFlash: null    // { x, y, timer, value } for score popup when hit
+  particles: []
 };
 
 var ui = function(id) { return document.getElementById(id); };
@@ -250,7 +235,6 @@ function reset(all) {
   S.bullets = []; S.enemyBullets = [];
   S.animFrame = 0; S.animTimer = 0;
   S.exploding = false; S.explosionTimer = 0; S.particles = [];
-  S.ufo = null; S.ufoScoreFlash = null; resetUfoTimer();
   hideGameOver();
   mkWave();
   mkBarriers();
@@ -338,90 +322,6 @@ function drawExplosion() {
   x.globalAlpha = 1;
 }
 
-/** Reset UFO spawn timer to a random interval */
-function resetUfoTimer() {
-  S.ufoTimer = UFO_CFG.spawnMinFrames +
-    Math.floor(Math.random() * (UFO_CFG.spawnMaxFrames - UFO_CFG.spawnMinFrames));
-}
-
-/** Spawn a UFO from a random side */
-function spawnUfo() {
-  var fromLeft = Math.random() < 0.5;
-  S.ufo = {
-    x: fromLeft ? -UFO_CFG.w : c.width + UFO_CFG.w,
-    y: UFO_CFG.y,
-    w: UFO_CFG.w,
-    h: UFO_CFG.h,
-    dir: fromLeft ? 1 : -1
-  };
-}
-
-/** Update UFO position and spawn timer */
-function updateUfo() {
-  // Update score flash
-  if (S.ufoScoreFlash) {
-    S.ufoScoreFlash.timer--;
-    S.ufoScoreFlash.y -= 0.5;
-    if (S.ufoScoreFlash.timer <= 0) { S.ufoScoreFlash = null; }
-  }
-  // If UFO is active, move it
-  if (S.ufo) {
-    S.ufo.x += S.ufo.dir * UFO_CFG.speed;
-    // Off-screen — remove and reset timer
-    if (S.ufo.x < -UFO_CFG.w * 2 || S.ufo.x > c.width + UFO_CFG.w * 2) {
-      S.ufo = null;
-      resetUfoTimer();
-    }
-    return;
-  }
-  // Countdown to next spawn
-  S.ufoTimer--;
-  if (S.ufoTimer <= 0) { spawnUfo(); }
-}
-
-/** Draw the UFO as a classic saucer shape */
-function drawUfo() {
-  if (!S.ufo) {
-    // Draw score flash even when UFO is gone
-    if (S.ufoScoreFlash) { drawUfoScore(); }
-    return;
-  }
-  var u = S.ufo;
-  var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-  var bodyColor = isDark ? '#e879f9' : '#a21caf';
-  var domeColor = isDark ? '#f0abfc' : '#c026d3';
-  // Saucer body (wide ellipse)
-  x.fillStyle = bodyColor;
-  x.beginPath();
-  x.ellipse(u.x + u.w / 2, u.y + u.h * 0.65, u.w / 2, u.h * 0.35, 0, 0, Math.PI * 2);
-  x.fill();
-  // Dome on top
-  x.fillStyle = domeColor;
-  x.beginPath();
-  x.ellipse(u.x + u.w / 2, u.y + u.h * 0.45, u.w * 0.3, u.h * 0.45, 0, Math.PI, Math.PI * 2);
-  x.fill();
-  // Glow effect
-  x.shadowColor = isDark ? '#e879f9' : '#d946ef';
-  x.shadowBlur = 8;
-  x.fillStyle = isDark ? '#fdf4ff' : '#f5d0fe';
-  x.fillRect(u.x + u.w / 2 - 2, u.y + u.h * 0.5, 4, 3);
-  x.shadowBlur = 0;
-  // Score flash
-  if (S.ufoScoreFlash) { drawUfoScore(); }
-}
-
-/** Draw floating score popup when UFO is hit */
-function drawUfoScore() {
-  var sf = S.ufoScoreFlash;
-  x.globalAlpha = Math.max(0, sf.timer / 40);
-  x.fillStyle = '#e879f9';
-  x.font = 'bold 14px Inter, system-ui';
-  x.textAlign = 'center';
-  x.fillText('+' + sf.value, sf.x, sf.y);
-  x.globalAlpha = 1;
-  x.textAlign = 'start';
-}
-
 /** Axis-aligned bounding box collision check */
 function rectHit(a, b) {
   return a.x < b.x + b.w && a.x + a.w > b.x &&
@@ -488,25 +388,6 @@ function upd() {
 
   // Enemy shooting chance
   if (Math.random() < 0.03 + S.wave * 0.003) enemyShoot();
-
-  // UFO spawn and movement
-  updateUfo();
-
-  // Player bullets hit UFO
-  if (S.ufo) {
-    for (bi = 0; bi < S.bullets.length; bi++) {
-      var pb0 = S.bullets[bi];
-      if (rectHit({ x: pb0.x - 3, y: pb0.y, w: 6, h: 12 }, S.ufo)) {
-        S.score += UFO_CFG.scoreValue;
-        S.ufoScoreFlash = { x: S.ufo.x + S.ufo.w / 2, y: S.ufo.y, timer: 40, value: UFO_CFG.scoreValue };
-        S.ufo = null;
-        pb0.y = -999;
-        resetUfoTimer();
-        u();
-        break;
-      }
-    }
-  }
 
   // Player bullets hit enemies
   var bi, ei;
@@ -660,9 +541,6 @@ function draw() {
 
   // Enemies with per-row colors and dance animation
   S.enemies.forEach(function(e) { if (e.alive) drawEnemy(e); });
-
-  // UFO / mystery ship
-  drawUfo();
 
   // Defensive barriers
   drawBarriers();

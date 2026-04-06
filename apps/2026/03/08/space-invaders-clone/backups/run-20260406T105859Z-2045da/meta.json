@@ -37,16 +37,6 @@
       "implementedAt": "2026-04-06T00:54:51Z",
       "agentName": "Claude Code",
       "llmModel": "claude-opus-4-6"
-    },
-    {
-      "issueNumber": 292,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/292",
-      "runId": "run-20260406T105859Z-2045da",
-      "description": "Added classic UFO / mystery ship that periodically flies across the top of the screen — awards bonus points when shot, configurable spawn interval, speed, and score value.",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-04-06T10:58:59Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-opus-4-6"
     }
   ],
   "generation": {
