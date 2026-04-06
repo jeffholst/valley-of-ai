@@ -214,4 +214,46 @@ describe('resolveRunAttribution', () => {
       llmModel: 'GPT-5.4',
     });
   });
+
+  it('fills missing llmModel from metadata when logs only provide agentName', () => {
+    const result = resolveRunAttribution(
+      {
+        entries: [
+          pipelineEntry('SELECT_IMPROVEMENT', 'run-imp', {
+            agent: 'GitHub Copilot',
+          }),
+        ],
+      },
+      {
+        agentName: 'Other Agent',
+        llmModel: 'GPT-5.4',
+      }
+    );
+
+    expect(result).toEqual({
+      agentName: 'GitHub Copilot',
+      llmModel: 'GPT-5.4',
+    });
+  });
+
+  it('fills missing agentName from metadata when logs only provide llmModel', () => {
+    const result = resolveRunAttribution(
+      {
+        entries: [
+          pipelineEntry('SELECT_IMPROVEMENT', 'run-imp', {
+            llmModel: 'GPT-5.4',
+          }),
+        ],
+      },
+      {
+        agentName: 'GitHub Copilot',
+        llmModel: 'older-model',
+      }
+    );
+
+    expect(result).toEqual({
+      agentName: 'GitHub Copilot',
+      llmModel: 'GPT-5.4',
+    });
+  });
 });
