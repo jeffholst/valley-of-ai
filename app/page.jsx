@@ -14,6 +14,18 @@ import { useAllVoteCounts } from '@/hooks/useVotes';
 import appsData from '@/data/apps.json';
 
 const OPTIONS_STORAGE_KEY = 'voa-page-options';
+const FILTERS_STORAGE_KEY = 'voa-gallery-filters';
+
+const DEFAULT_FILTERS = {
+  searchQuery: '',
+  categoryFilter: '',
+  agentFilter: '',
+  modelFilter: '',
+  inputModeFilter: '',
+  sortBy: 'newest',
+  currentPage: 1,
+  perPage: PER_PAGE_OPTIONS[0],
+};
 
 const DEFAULT_OPTIONS = {
   pterodactyl: true,
@@ -97,6 +109,25 @@ export default function HomePage() {
       const pteroOn = legacy !== null ? legacy === 'true' : !isMobile;
       setOptions((prev) => ({ ...prev, pterodactyl: pteroOn }));
     }
+
+    // Hydrate gallery filters
+    const savedFilters = localStorage.getItem(FILTERS_STORAGE_KEY);
+    if (savedFilters) {
+      try {
+        const f = { ...DEFAULT_FILTERS, ...JSON.parse(savedFilters) };
+        setSearchQuery(f.searchQuery);
+        setCategoryFilter(f.categoryFilter);
+        setAgentFilter(f.agentFilter);
+        setModelFilter(f.modelFilter);
+        setInputModeFilter(f.inputModeFilter);
+        setSortBy(f.sortBy);
+        setPerPage(PER_PAGE_OPTIONS.includes(f.perPage) ? f.perPage : DEFAULT_FILTERS.perPage);
+        setCurrentPage(Math.max(1, f.currentPage));
+      } catch {
+        /* ignore corrupt data */
+      }
+    }
+
     setMounted(true);
   }, []);
 
@@ -106,6 +137,35 @@ export default function HomePage() {
       localStorage.setItem(OPTIONS_STORAGE_KEY, JSON.stringify(options));
     }
   }, [options, mounted]);
+
+  // Persist gallery filters to localStorage
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem(
+        FILTERS_STORAGE_KEY,
+        JSON.stringify({
+          searchQuery,
+          categoryFilter,
+          agentFilter,
+          modelFilter,
+          inputModeFilter,
+          sortBy,
+          currentPage,
+          perPage,
+        })
+      );
+    }
+  }, [
+    searchQuery,
+    categoryFilter,
+    agentFilter,
+    modelFilter,
+    inputModeFilter,
+    sortBy,
+    currentPage,
+    perPage,
+    mounted,
+  ]);
 
   const filteredApps = useMemo(() => {
     return appsData.filter((app) => {
@@ -149,12 +209,19 @@ export default function HomePage() {
     return apps.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }, [filteredApps, sortBy, voteCounts]);
 
-  const totalPages = Math.ceil(sortedApps.length / perPage);
+  const totalPages = Math.max(1, Math.ceil(sortedApps.length / perPage));
+
+  // Clamp currentPage when filters/data change and saved page exceeds total
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const paginatedApps = useMemo(() => {
-    const start = (currentPage - 1) * perPage;
+    const start = (Math.min(currentPage, totalPages) - 1) * perPage;
     return sortedApps.slice(start, start + perPage);
-  }, [sortedApps, currentPage, perPage]);
+  }, [sortedApps, currentPage, totalPages, perPage]);
 
   const activeFilterCount = [
     categoryFilter,
@@ -171,6 +238,8 @@ export default function HomePage() {
     setModelFilter('');
     setInputModeFilter('');
     setCurrentPage(1);
+    setSortBy(DEFAULT_FILTERS.sortBy);
+    setPerPage(DEFAULT_FILTERS.perPage);
   };
 
   const handleFilterChange = (setter) => (value) => {
