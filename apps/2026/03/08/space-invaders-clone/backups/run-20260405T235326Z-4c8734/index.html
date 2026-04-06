@@ -9,54 +9,55 @@
       gtag('js', new Date());
       gtag('config', '__GA_MEASUREMENT_ID__');
     </script>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Space Invaders Clone - __MAIN_SITE_NAME__</title>
 <style>
 :root{--bg:#0a1020;--bg2:#162448;--surface:#0f1730;--text:#edf3ff;--muted:#9ab0e0;--primary:#22d3ee;--enemy:#f43f5e;--player:#4ade80;--bullet:#fef08a;--accent:#22d3ee;--shadow:rgba(0, 0, 0, 0.35);}
 [data-theme="light"]{--bg:#edf4ff;--bg2:#dbeafe;--surface:#fff;--text:#1f2f52;--muted:#60739a;--primary:#0891b2;--enemy:#be123c;--player:#15803d;--bullet:#b45309;--accent:#0891b2;--shadow:rgba(31, 47, 82, 0.12);}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;font-family:Inter,system-ui;background:radial-gradient(1000px 700px at 20% 20%,var(--bg2),var(--bg));color:var(--text)}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px;font-family:Inter,system-ui;background:radial-gradient(1000px 700px at 20% 20%,var(--bg2),var(--bg));color:var(--text)}
+.top-bar{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;z-index:100;background:linear-gradient(to bottom,var(--bg2),transparent)}
+.home-link{display:flex;align-items:center;gap:8px;color:var(--muted);text-decoration:none;font-size:14px;transition:color .2s}
+.home-link:hover{color:var(--primary)}
+.home-link svg{width:20px;height:20px}
+.theme-toggle{background:var(--surface);border:1px solid var(--muted);color:var(--text);width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .3s}
+.theme-toggle:hover{border-color:var(--primary);box-shadow:0 0 15px var(--primary)}
 .card{width:min(860px,100%);background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);border-radius:18px;padding:14px;box-shadow:0 18px 45px #0004}
-h1{margin:0 0 4px;font-size:clamp(1.2rem,4vw,1.8rem)}.sub{margin:0 0 10px;color:var(--muted);font-size:clamp(.75rem,2.5vw,.9rem)}
-.top{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.pill{font-size:clamp(.7rem,2vw,.86rem);padding:4px 8px;border-radius:999px;border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);color:var(--muted);white-space:nowrap}
-.canvas-wrap{position:relative;width:100%;max-width:760px;margin:0 auto}
-canvas{width:100%;aspect-ratio:4/3;display:block;background:#050a14;border-radius:12px;border:1px solid color-mix(in srgb,var(--muted) 26%,transparent)}
-.controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
-button{border:none;border-radius:999px;padding:9px 13px;font:inherit;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(90deg,#7c3aed,var(--primary))}
+h1{margin:0 0 4px}.sub{margin:0 0 10px;color:var(--muted)}
+.top{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.pill{font-size:.86rem;padding:6px 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--muted) 24%,transparent);color:var(--muted)}
+canvas{width:100%;max-width:760px;aspect-ratio:4/3;display:block;margin:auto;background:#050a14;border-radius:12px;border:1px solid color-mix(in srgb,var(--muted) 26%,transparent)}
+.controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}button{border:none;border-radius:999px;padding:9px 13px;font:inherit;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(90deg,#7c3aed,var(--primary))}
 .kbd{text-align:center;color:var(--muted);margin-top:8px;font-size:.9rem}
 
-/* Game over overlay */
-.game-over-overlay{position:absolute;top:0;left:0;right:0;bottom:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,16,32,0.88);border-radius:12px;z-index:50;text-align:center;padding:20px}
-.game-over-overlay.visible{display:flex}
-.game-over-overlay h2{font-size:clamp(1.5rem,5vw,2.5rem);margin:0 0 8px;color:#f43f5e;text-shadow:0 0 20px rgba(244,63,94,0.6)}
-.game-over-overlay .go-sub{color:var(--muted);margin:0 0 16px;font-size:clamp(.85rem,2.5vw,1.1rem)}
-.game-over-overlay .go-stats{display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;justify-content:center}
-.game-over-overlay .go-stat{display:flex;flex-direction:column;align-items:center;gap:2px}
-.game-over-overlay .go-stat .go-val{font-size:clamp(1.2rem,4vw,2rem);font-weight:800;color:var(--primary)}
-.game-over-overlay .go-stat .go-label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
-.game-over-overlay .go-btn{padding:14px 32px;font-size:1.1rem;border:none;border-radius:999px;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(90deg,#7c3aed,var(--primary));transition:transform .15s}
-.game-over-overlay .go-btn:hover{transform:scale(1.05)}
+    @media (max-width: 1024px) {
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot,
+      input[type="button"],
+      input[type="submit"] {
+        min-height: 44px;
+      }
 
-/* Mobile touch controls */
-.touch-controls{display:none;justify-content:space-between;align-items:center;padding:10px 8px;gap:8px;width:100%;max-width:760px;margin:8px auto 0}
-.touch-btn{width:64px;height:64px;border-radius:50%;border:2px solid var(--primary);background:color-mix(in srgb,var(--surface) 80%,transparent);color:var(--text);font-size:1.6rem;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none;transition:background .1s,transform .1s}
-.touch-btn:active,.touch-btn.pressed{background:color-mix(in srgb,var(--primary) 30%,var(--surface));transform:scale(0.92)}
-.touch-btn-fire{width:80px;height:80px;font-size:1.4rem;font-weight:700;border-color:#f43f5e;color:#f43f5e}
-.touch-group{display:flex;gap:12px}
+      .theme-toggle {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        touch-action: manipulation;
+        pointer-events: auto;
+        z-index: 999;
+      }
 
-@media (max-width: 1024px) {
-  button,.btn,[role="button"],input[type="button"],input[type="submit"]{min-height:44px}
-  .touch-controls{display:flex}
-  .kbd{display:none}
-}
+      button,
+      .btn,
+      [role="button"],
+      .letter-tile,
+      .answer-slot {
+        touch-action: manipulation;
+      }
+    }
 
-@media (max-width: 480px) {
-  .card{padding:10px;border-radius:12px}
-  .top{gap:4px}
-  .pill{padding:3px 6px}
-  .touch-btn{width:56px;height:56px;font-size:1.4rem}
-  .touch-btn-fire{width:70px;height:70px;font-size:1.2rem}
-}
 </style>
   <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
   <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
@@ -69,43 +70,43 @@ button{border:none;border-radius:999px;padding:9px 13px;font:inherit;font-weight
   <script src="/apps/shared/app-shell.js" defer></script>
 </head>
 <body>
+<div class="top-bar">
+  <a href="https://www.valleyofai.com" class="home-link">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    Valley of AI
+  </a>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
+</div>
 <main class="card"><h1>👾 Space Invaders Clone</h1><p class="sub">Defend Earth. Move, shoot, clear waves, survive enemy fire.</p>
 <div class="top"><span class="pill" id="score">Score: 0</span><span class="pill" id="lives">Lives: 3</span><span class="pill" id="wave">Wave: 1</span><span class="pill" id="state">State: Ready</span></div>
-<div class="canvas-wrap">
-  <canvas id="game" width="760" height="570" aria-label="Space Invaders game"></canvas>
-  <div class="game-over-overlay" id="gameOverOverlay">
-    <h2 id="goTitle">Game Over</h2>
-    <p class="go-sub" id="goSub">The invaders have been stopped!</p>
-    <div class="go-stats">
-      <div class="go-stat"><span class="go-val" id="goScore">0</span><span class="go-label">Score</span></div>
-      <div class="go-stat"><span class="go-val" id="goWave">1</span><span class="go-label">Wave</span></div>
-    </div>
-    <button class="go-btn" id="goRestart">Play Again</button>
-  </div>
-</div>
+<canvas id="game" width="760" height="570" aria-label="Space Invaders game"></canvas>
 <div class="controls"><button id="start">Start</button><button id="restart">Restart</button></div>
-<p class="kbd">Controls: ← → (or A/D), Space to shoot</p>
-</main>
-
-<!-- Mobile touch controls -->
-<div class="touch-controls" id="touchControls">
-  <div class="touch-group">
-    <button class="touch-btn" id="btnLeft" aria-label="Move left">◀</button>
-    <button class="touch-btn" id="btnRight" aria-label="Move right">▶</button>
-  </div>
-  <button class="touch-btn touch-btn-fire" id="btnFire" aria-label="Fire">FIRE</button>
-</div>
-
+<p class="kbd">Controls: ← → (or A/D), Space shoot</p></main>
 <script>
 // Theme Management
-var storedTheme = localStorage.getItem('theme') ||
+const storedTheme = localStorage.getItem('theme') ||
   (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 document.documentElement.setAttribute('data-theme', storedTheme);
+updateThemeIcon();
 
-var c = document.getElementById('game'), x = c.getContext('2d');
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  updateThemeIcon();
+  updateColors();
+}
+
+function updateThemeIcon() {
+  const btn = document.querySelector('.theme-toggle');
+  if (btn) btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+}
+
+const c = document.getElementById('game'), x = c.getContext('2d');
 
 // Canvas colors (canvas doesn't support CSS variables)
-var colors = {
+const colors = {
   enemy: '#f43f5e',
   player: '#4ade80',
   bullet: '#fef08a',
@@ -113,11 +114,11 @@ var colors = {
 };
 
 // Row-specific enemy colors for visual variety (dark / light theme pairs)
-var rowColorsDark = ['#f43f5e', '#fb923c', '#facc15', '#34d399', '#60a5fa'];
-var rowColorsLight = ['#be123c', '#c2410c', '#a16207', '#059669', '#2563eb'];
+const rowColorsDark = ['#f43f5e', '#fb923c', '#facc15', '#34d399', '#60a5fa'];
+const rowColorsLight = ['#be123c', '#c2410c', '#a16207', '#059669', '#2563eb'];
 
 function updateColors() {
-  var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
   colors.enemy = isDark ? '#f43f5e' : '#be123c';
   colors.player = isDark ? '#4ade80' : '#15803d';
   colors.bullet = isDark ? '#fef08a' : '#b45309';
@@ -125,21 +126,16 @@ function updateColors() {
 }
 updateColors();
 
-// Listen for theme changes from the app shell
-var observer = new MutationObserver(function() { updateColors(); });
-observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-
 /** Returns the row color for an enemy based on current theme */
 function getRowColor(row) {
-  var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-  var palette = isDark ? rowColorsDark : rowColorsLight;
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const palette = isDark ? rowColorsDark : rowColorsLight;
   return palette[row % palette.length];
 }
 
 // ---- Game State ----
-var S = {
+const S = {
   run: false, score: 0, lives: 3, wave: 1,
-  gameOver: false,
   keys: {},
   player: { x: 380, y: 530, w: 44, h: 18, cool: 0 },
   bullets: [], enemyBullets: [], enemies: [],
@@ -148,7 +144,7 @@ var S = {
   animFrame: 0, animTimer: 0
 };
 
-var ui = function(id) { return document.getElementById(id); };
+const ui = id => document.getElementById(id);
 
 /** Update HUD pills */
 function u(state) {
@@ -156,23 +152,6 @@ function u(state) {
   ui('lives').textContent = 'Lives: ' + S.lives;
   ui('wave').textContent = 'Wave: ' + S.wave;
   if (state !== undefined) ui('state').textContent = 'State: ' + state;
-}
-
-/** Show game over overlay with final stats */
-function showGameOver(title, subtitle) {
-  S.gameOver = true;
-  var overlay = ui('gameOverOverlay');
-  ui('goTitle').textContent = title;
-  ui('goSub').textContent = subtitle;
-  ui('goScore').textContent = S.score;
-  ui('goWave').textContent = S.wave;
-  overlay.classList.add('visible');
-}
-
-/** Hide game over overlay */
-function hideGameOver() {
-  S.gameOver = false;
-  ui('gameOverOverlay').classList.remove('visible');
 }
 
 /** Create enemy formation for current wave.
@@ -231,7 +210,6 @@ function reset(all) {
   S.player.x = 380; S.player.cool = 0;
   S.bullets = []; S.enemyBullets = [];
   S.animFrame = 0; S.animTimer = 0;
-  hideGameOver();
   mkWave();
   mkBarriers();
   u('Ready');
@@ -261,17 +239,14 @@ function rectHit(a, b) {
 }
 
 /** Calculate dynamic speed boost based on how many enemies remain.
- *  As enemies are destroyed, survivors move faster (classic Space Invaders).
- *  Extra aggressive boost when 5 or fewer enemies remain. */
+ *  As enemies are destroyed, survivors move faster (classic Space Invaders). */
 function getDynamicSpeed() {
   var total = S.enemies.length;
   var alive = S.enemies.filter(function(e) { return e.alive; }).length;
   if (alive === 0) return S.speed;
+  // Speed multiplier increases as enemies are eliminated
   var ratio = 1 - (alive / total);
-  // Stronger multiplier: up to 3x speed, plus extra burst for last few
-  var multiplier = 1 + ratio * 3;
-  if (alive <= 5) multiplier += 1.5;
-  if (alive <= 2) multiplier += 2;
+  var multiplier = 1 + ratio * 2;
   return S.speed * multiplier;
 }
 
@@ -280,13 +255,13 @@ function upd() {
   if (!S.run) return;
   var p = S.player;
 
-  // Player movement (keyboard + touch)
-  if (S.keys.ArrowLeft || S.keys.a || S.keys._touchLeft) p.x -= 5;
-  if (S.keys.ArrowRight || S.keys.d || S.keys._touchRight) p.x += 5;
+  // Player movement
+  if (S.keys.ArrowLeft || S.keys.a) p.x -= 5;
+  if (S.keys.ArrowRight || S.keys.d) p.x += 5;
   p.x = Math.max(26, Math.min(c.width - 26, p.x));
 
-  // Player shooting (keyboard + touch)
-  if ((S.keys[' '] || S.keys.Spacebar || S.keys._touchFire) && p.cool <= 0) { shoot(); p.cool = 8; }
+  // Player shooting
+  if ((S.keys[' '] || S.keys.Spacebar) && p.cool <= 0) { shoot(); p.cool = 8; }
   if (p.cool > 0) p.cool--;
 
   // Move player bullets
@@ -323,7 +298,7 @@ function upd() {
     var pb = S.bullets[bi];
     for (ei = 0; ei < S.enemies.length; ei++) {
       var en = S.enemies[ei];
-      if (en.alive && rectHit({ x: pb.x - 3, y: pb.y, w: 6, h: 12 }, en)) {
+      if (en.alive && rectHit({ x: pb.x - 2, y: pb.y, w: 4, h: 10 }, en)) {
         en.alive = false;
         pb.y = -999;
         S.score += 10 + (4 - en.row) * 2;
@@ -337,7 +312,7 @@ function upd() {
     var pb2 = S.bullets[bi];
     for (var ki = 0; ki < S.barriers.length; ki++) {
       var blk = S.barriers[ki];
-      if (blk.alive && rectHit({ x: pb2.x - 3, y: pb2.y, w: 6, h: 12 }, blk)) {
+      if (blk.alive && rectHit({ x: pb2.x - 2, y: pb2.y, w: 4, h: 10 }, blk)) {
         blk.alive = false;
         pb2.y = -999;
         break;
@@ -350,7 +325,7 @@ function upd() {
     var eb = S.enemyBullets[bi];
     for (var bki = 0; bki < S.barriers.length; bki++) {
       var blk2 = S.barriers[bki];
-      if (blk2.alive && rectHit({ x: eb.x - 3, y: eb.y, w: 6, h: 12 }, blk2)) {
+      if (blk2.alive && rectHit({ x: eb.x - 2, y: eb.y, w: 4, h: 10 }, blk2)) {
         blk2.alive = false;
         eb.y = 999;
         break;
@@ -358,28 +333,22 @@ function upd() {
     }
   }
 
-  // Enemy bullets hit player (wider hitbox for more reliable detection)
+  // Enemy bullets hit player (improved collision using centered hitbox)
   for (bi = 0; bi < S.enemyBullets.length; bi++) {
     var eb2 = S.enemyBullets[bi];
-    // Player hitbox: slightly padded for reliable hit registration
-    var playerBox = { x: p.x - p.w / 2 - 2, y: p.y - p.h / 2 - 2, w: p.w + 4, h: p.h + 4 };
-    var bulletBox = { x: eb2.x - 3, y: eb2.y, w: 6, h: 12 };
+    var playerBox = { x: p.x - p.w / 2, y: p.y - p.h / 2, w: p.w, h: p.h };
+    var bulletBox = { x: eb2.x - 2, y: eb2.y, w: 4, h: 10 };
     if (rectHit(bulletBox, playerBox)) {
       eb2.y = 999;
       S.lives--;
       u();
-      if (S.lives <= 0) {
-        S.run = false;
-        u('Game Over');
-        showGameOver('Game Over', 'Your ship was destroyed!');
-      }
+      if (S.lives <= 0) { S.run = false; u('Game Over'); }
     }
   }
 
   // Enemies reach player level
   if (S.enemies.some(function(e) { return e.alive && e.y + e.h >= p.y - 18; })) {
     S.run = false; S.lives = 0; u('Invaders Win');
-    showGameOver('Invaders Win!', 'The aliens reached your defenses!');
   }
 
   // All enemies destroyed: advance wave
@@ -486,50 +455,9 @@ document.addEventListener('keyup', function(e) {
   S.keys[k] = false;
 });
 
-// ---- Mobile Touch Controls ----
-// Helper to bind touch start/end for a virtual key
-function bindTouch(btnId, keyName) {
-  var btn = ui(btnId);
-  btn.addEventListener('touchstart', function(e) {
-    e.preventDefault();
-    S.keys[keyName] = true;
-    btn.classList.add('pressed');
-    // Auto-start game on first touch
-    if (!S.run && !S.gameOver) { S.run = true; u('Running'); }
-  }, { passive: false });
-  btn.addEventListener('touchend', function(e) {
-    e.preventDefault();
-    S.keys[keyName] = false;
-    btn.classList.remove('pressed');
-  }, { passive: false });
-  btn.addEventListener('touchcancel', function() {
-    S.keys[keyName] = false;
-    btn.classList.remove('pressed');
-  });
-  // Prevent mouse events from also firing on desktop fallback
-  btn.addEventListener('mousedown', function(e) {
-    e.preventDefault();
-    S.keys[keyName] = true;
-    btn.classList.add('pressed');
-    if (!S.run && !S.gameOver) { S.run = true; u('Running'); }
-  });
-  btn.addEventListener('mouseup', function() {
-    S.keys[keyName] = false;
-    btn.classList.remove('pressed');
-  });
-  btn.addEventListener('mouseleave', function() {
-    S.keys[keyName] = false;
-    btn.classList.remove('pressed');
-  });
-}
-bindTouch('btnLeft', '_touchLeft');
-bindTouch('btnRight', '_touchRight');
-bindTouch('btnFire', '_touchFire');
-
 // Button handlers
-ui('start').onclick = function() { if (!S.gameOver) { S.run = true; u('Running'); } };
+ui('start').onclick = function() { S.run = true; u('Running'); };
 ui('restart').onclick = function() { reset(true); S.run = true; u('Running'); };
-ui('goRestart').onclick = function() { reset(true); S.run = true; u('Running'); };
 
 // Initialize
 reset(true);

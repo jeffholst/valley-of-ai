@@ -1736,9 +1736,16 @@
     "month": 3,
     "day": 8,
     "category": "Games",
-    "inputMode": "desktop",
+    "inputMode": "responsive",
     "status": "active",
-    "tags": ["arcade", "space-invaders", "shooter", "keyboard-controls"],
+    "tags": [
+      "arcade",
+      "space-invaders",
+      "shooter",
+      "keyboard-controls",
+      "touch-controls",
+      "mobile"
+    ],
     "route": "/apps/2026/03/08/space-invaders-clone",
     "appPath": "/apps/2026/03/08/space-invaders-clone/index.html",
     "generation": {
@@ -1760,6 +1767,14 @@
         "implementedAt": "2026-04-05T22:34:53Z",
         "agentName": "GitHub Copilot",
         "llmModel": "claude-opus-4-6"
+      },
+      {
+        "issueNumber": 286,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/286",
+        "description": "Added mobile responsive layout with touch controls (left/right/fire buttons), game over overlay with final score and wave stats, stronger enemy speed scaling for last few enemies, wider bullet collision hitboxes, and removed duplicate shell elements.",
+        "implementedAt": "2026-04-06T00:05:00Z",
+        "agentName": "GitHub Copilot",
+        "llmModel": "claude-opus-4-6"
       }
     ],
     "allowImprovements": true,
@@ -1768,6 +1783,11 @@
         "runId": "run-20260405T220949Z-8494ae",
         "path": "backups/run-20260405T220949Z-8494ae/index.html",
         "url": "/apps/2026/03/08/space-invaders-clone/backups/run-20260405T220949Z-8494ae/index.html"
+      },
+      {
+        "runId": "run-20260405T235326Z-4c8734",
+        "path": "backups/run-20260405T235326Z-4c8734/index.html",
+        "url": "/apps/2026/03/08/space-invaders-clone/backups/run-20260405T235326Z-4c8734/index.html"
       }
     ]
   },

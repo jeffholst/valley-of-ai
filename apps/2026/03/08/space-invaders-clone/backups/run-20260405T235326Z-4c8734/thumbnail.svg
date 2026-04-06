@@ -60,13 +60,5 @@
 <!-- Player ship -->
 <rect x="376" y="346" width="48" height="18" fill="url(#playerGrad)"/><rect x="390" y="338" width="20" height="8" fill="url(#playerGrad)"/>
 
-<!-- Mobile touch controls indicator -->
-<circle cx="130" cy="408" r="20" fill="none" stroke="#22d3ee" stroke-opacity=".5" stroke-width="2"/>
-<text x="130" y="414" font-family="system-ui,sans-serif" font-size="16" fill="#22d3ee" text-anchor="middle">◀</text>
-<circle cx="178" cy="408" r="20" fill="none" stroke="#22d3ee" stroke-opacity=".5" stroke-width="2"/>
-<text x="178" y="414" font-family="system-ui,sans-serif" font-size="16" fill="#22d3ee" text-anchor="middle">▶</text>
-<circle cx="660" cy="408" r="24" fill="none" stroke="#f43f5e" stroke-opacity=".5" stroke-width="2"/>
-<text x="660" y="414" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#f43f5e" text-anchor="middle">FIRE</text>
-
 <text x="94" y="420" font-family="system-ui,sans-serif" font-size="13" fill="#9ab0e0">Score: 420   Lives: 2   Wave: 3   State: Running</text>
 </svg>
