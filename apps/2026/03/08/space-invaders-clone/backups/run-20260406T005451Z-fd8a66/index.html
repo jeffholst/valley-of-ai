@@ -145,10 +145,7 @@ var S = {
   bullets: [], enemyBullets: [], enemies: [],
   barriers: [],
   dir: 1, speed: 0.55, drop: 18, lastShot: 0,
-  animFrame: 0, animTimer: 0,
-  // Ship explosion state
-  exploding: false, explosionTimer: 0, explosionDuration: 90,
-  particles: []
+  animFrame: 0, animTimer: 0
 };
 
 var ui = function(id) { return document.getElementById(id); };
@@ -234,7 +231,6 @@ function reset(all) {
   S.player.x = 380; S.player.cool = 0;
   S.bullets = []; S.enemyBullets = [];
   S.animFrame = 0; S.animTimer = 0;
-  S.exploding = false; S.explosionTimer = 0; S.particles = [];
   hideGameOver();
   mkWave();
   mkBarriers();
@@ -256,70 +252,6 @@ function enemyShoot() {
   if (!alive.length) return;
   var pick = alive[Math.floor(Math.random() * alive.length)];
   S.enemyBullets.push({ x: pick.x + pick.w / 2, y: pick.y + pick.h, v: 3.2 + Math.random() * 1.5 });
-}
-
-/** Trigger ship explosion — creates debris particles from the ship position */
-function explodeShip() {
-  S.exploding = true;
-  S.explosionTimer = 0;
-  S.particles = [];
-  var px = S.player.x, py = S.player.y;
-  // Create debris pieces from the ship body
-  for (var i = 0; i < 16; i++) {
-    var angle = (Math.PI * 2 / 16) * i + (Math.random() - 0.5) * 0.4;
-    var speed = 1.5 + Math.random() * 3;
-    S.particles.push({
-      x: px + (Math.random() - 0.5) * S.player.w,
-      y: py + (Math.random() - 0.5) * S.player.h,
-      vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed - 1,
-      size: 3 + Math.random() * 5,
-      life: 1,
-      decay: 0.008 + Math.random() * 0.008,
-      color: Math.random() < 0.5 ? colors.player : colors.bullet
-    });
-  }
-  // Clear enemy bullets so player isn't hit again during respawn
-  S.enemyBullets = [];
-}
-
-/** Update explosion particles and handle respawn after explosion ends */
-function updateExplosion() {
-  S.explosionTimer++;
-  for (var i = 0; i < S.particles.length; i++) {
-    var p = S.particles[i];
-    p.x += p.vx;
-    p.y += p.vy;
-    p.vy += 0.04; // slight gravity
-    p.life -= p.decay;
-  }
-  S.particles = S.particles.filter(function(p) { return p.life > 0; });
-  // Explosion finished — respawn or game over
-  if (S.explosionTimer >= S.explosionDuration) {
-    S.exploding = false;
-    S.particles = [];
-    if (S.lives <= 0) {
-      S.run = false;
-      u('Game Over');
-      showGameOver('Game Over', 'Your ship was destroyed!');
-    } else {
-      // Respawn player at center
-      S.player.x = 380;
-      S.player.cool = 0;
-      u('Running');
-    }
-  }
-}
-
-/** Draw explosion particles */
-function drawExplosion() {
-  for (var i = 0; i < S.particles.length; i++) {
-    var p = S.particles[i];
-    x.globalAlpha = Math.max(0, p.life);
-    x.fillStyle = p.color;
-    x.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
-  }
-  x.globalAlpha = 1;
 }
 
 /** Axis-aligned bounding box collision check */
@@ -346,10 +278,6 @@ function getDynamicSpeed() {
 /** Main update loop */
 function upd() {
   if (!S.run) return;
-
-  // During explosion, only update particles — game is paused
-  if (S.exploding) { updateExplosion(); return; }
-
   var p = S.player;
 
   // Player movement (keyboard + touch)
@@ -439,10 +367,12 @@ function upd() {
     if (rectHit(bulletBox, playerBox)) {
       eb2.y = 999;
       S.lives--;
-      S.bullets = []; // clear player bullets during explosion
-      u('Hit!');
-      explodeShip();
-      return; // pause game loop — explosion takes over
+      u();
+      if (S.lives <= 0) {
+        S.run = false;
+        u('Game Over');
+        showGameOver('Game Over', 'Your ship was destroyed!');
+      }
     }
   }
 
@@ -522,14 +452,10 @@ function draw() {
     x.fillRect((i * 97) % c.width, (i * 53) % c.height, 1, 1);
   }
 
-  // Player ship (hidden during explosion)
-  if (!S.exploding) {
-    x.fillStyle = colors.player;
-    x.fillRect(S.player.x - S.player.w / 2, S.player.y - S.player.h / 2, S.player.w, S.player.h);
-    x.fillRect(S.player.x - 10, S.player.y - 18, 20, 8);
-  } else {
-    drawExplosion();
-  }
+  // Player ship
+  x.fillStyle = colors.player;
+  x.fillRect(S.player.x - S.player.w / 2, S.player.y - S.player.h / 2, S.player.w, S.player.h);
+  x.fillRect(S.player.x - 10, S.player.y - 18, 20, 8);
 
   // Player bullets
   x.fillStyle = colors.bullet;
