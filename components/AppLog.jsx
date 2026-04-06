@@ -145,11 +145,7 @@ export function resolveRunAttribution(group, fallbackMetadata) {
   }
 
   return {
-    agentName:
-      resolvedAgentName ||
-      fallbackMetadata?.agentName ||
-      fallbackMetadata?.agent ||
-      null,
+    agentName: resolvedAgentName || fallbackMetadata?.agentName || fallbackMetadata?.agent || null,
     llmModel: resolvedLlmModel || fallbackMetadata?.llmModel || null,
   };
 }
