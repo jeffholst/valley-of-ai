@@ -426,16 +426,52 @@ describe('computeImprovementSanity', () => {
 
   // --- oscillation ---
 
-  it('returns high oscillation risk when recent improvement contains a reversal keyword', () => {
+  it('returns medium oscillation risk when one recent improvement contains a reversal keyword', () => {
     const meta = {
       improvements: [
         makeImprovement({ description: 'reverted the payline toggle to simple on/off' }),
       ],
     };
     const result = computeImprovementSanity(meta, 'add paylines back', false, {}, NOW);
-    expect(result.signals.oscillationRisk).toBe('high');
+    expect(result.signals.oscillationRisk).toBe('medium');
     expect(result.oscillationSignals).toHaveLength(1);
+    expect(result.overallRisk).toBe('medium');
+  });
+
+  it('returns high oscillation risk when two or more recent improvements contain reversal keywords', () => {
+    const meta = {
+      improvements: [
+        makeImprovement({ description: 'reverted the payline toggle to simple on/off' }),
+        makeImprovement({ description: 'restored the original card layout' }),
+      ],
+    };
+    const result = computeImprovementSanity(meta, 'add paylines back', false, {}, NOW);
+    expect(result.signals.oscillationRisk).toBe('high');
+    expect(result.oscillationSignals).toHaveLength(2);
     expect(result.overallRisk).toBe('high');
+  });
+
+  it('does not flag oscillation for bare "removed" without qualifying context', () => {
+    const meta = {
+      improvements: [
+        makeImprovement({ description: 'removed duplicate shell elements and cleaned up CSS' }),
+      ],
+    };
+    const result = computeImprovementSanity(meta, 'add a UFO ship', false, {}, NOW);
+    expect(result.signals.oscillationRisk).toBe('low');
+    expect(result.oscillationSignals).toHaveLength(0);
+  });
+
+  it('flags oscillation for "removed the" and "removed feature"', () => {
+    const meta = {
+      improvements: [
+        makeImprovement({ description: 'removed the sidebar navigation' }),
+        makeImprovement({ description: 'removed feature that auto-played music' }),
+      ],
+    };
+    const result = computeImprovementSanity(meta, 'add sidebar back', false, {}, NOW);
+    expect(result.signals.oscillationRisk).toBe('high');
+    expect(result.oscillationSignals).toHaveLength(2);
   });
 
   it('does not flag oscillation for improvements outside the oscillation window', () => {
@@ -514,7 +550,10 @@ describe('computeImprovementSanity', () => {
 
   it('caps oscillation risk to low when boosted and boostOverridesOscillation is true', () => {
     const meta = {
-      improvements: [makeImprovement({ description: 'reverted the previous change' })],
+      improvements: [
+        makeImprovement({ description: 'reverted the previous change' }),
+        makeImprovement({ description: 'restored the original layout' }),
+      ],
     };
     const result = computeImprovementSanity(meta, 'add the feature back', true, {}, NOW);
     expect(result.signals.oscillationRisk).toBe('high'); // raw signal unchanged

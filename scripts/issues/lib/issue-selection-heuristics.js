@@ -137,7 +137,8 @@ export const SANITY_DEFAULTS = {
   oscillationKeywords: [
     'revert',
     'restore',
-    'removed',
+    'removed feature',
+    'removed the',
     're-add',
     'add back',
     'undo',
@@ -267,7 +268,8 @@ export function computeImprovementSanity(
     volumeRisk = 'medium';
   }
 
-  const oscillationRisk = oscillationSignals.length > 0 ? 'high' : 'low';
+  const oscillationRisk =
+    oscillationSignals.length >= 2 ? 'high' : oscillationSignals.length === 1 ? 'medium' : 'low';
   const overlapRisk = recencyOverlapHits.length > 0 ? 'medium' : 'low';
 
   // --- Apply boost overrides to individual signals ---
