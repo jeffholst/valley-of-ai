@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neon Bingo Caller - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Neon Bingo Caller" />
+    <meta name="voa-app-id" content="2026/04/06/neon-bingo-caller" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <link rel="icon" type="image/svg+xml" href="thumbnail.svg" />
+
+    <style>
+      :root {
+        --bg: #090d1f;
+        --text: #ecfeff;
+        --surface: #121a36;
+        --surface-soft: #1f2a52;
+        --accent: #2ee8c4;
+        --accent-2: #ff55b2;
+        --accent-3: #f7d045;
+        --muted: #97a6d2;
+        --ring: rgba(46, 232, 196, 0.45);
+        --danger: #ff6a89;
+      }
+
+      [data-theme='light'] {
+        --bg: #eef3ff;
+        --text: #132247;
+        --surface: #ffffff;
+        --surface-soft: #dfe8ff;
+        --accent: #0aa88e;
+        --accent-2: #d83f92;
+        --accent-3: #b78600;
+        --muted: #536187;
+        --ring: rgba(10, 168, 142, 0.26);
+        --danger: #d62258;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 20% -10%, rgba(255, 85, 178, 0.28), transparent 45%),
+          radial-gradient(circle at 80% 0%, rgba(46, 232, 196, 0.25), transparent 40%), var(--bg);
+      }
+
+      main {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 0.9rem 0.9rem 1.4rem;
+        display: grid;
+        gap: 0.85rem;
+      }
+
+      .panel {
+        background: linear-gradient(155deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.01));
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+        padding: 0.95rem;
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.22);
+        backdrop-filter: blur(4px);
+      }
+
+      .top-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        align-items: center;
+      }
+
+      .title {
+        margin: 0;
+        font-size: clamp(1.1rem, 3.6vw, 1.4rem);
+      }
+
+      .sub {
+        margin: 0.25rem 0 0;
+        color: var(--muted);
+        font-size: 0.87rem;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.65rem;
+      }
+
+      .stat {
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 12px;
+        padding: 0.55rem;
+        background: rgba(17, 27, 59, 0.45);
+        text-align: center;
+      }
+
+      .stat .label {
+        display: block;
+        color: var(--muted);
+        font-size: 0.74rem;
+      }
+
+      .stat .value {
+        display: block;
+        margin-top: 0.2rem;
+        font-weight: 700;
+        font-size: 1.15rem;
+      }
+
+      .callout {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.55rem;
+        justify-items: center;
+      }
+
+      .ball {
+        width: min(66vw, 205px);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(circle at 28% 20%, #ffffff 0 19%, #d3fef6 20% 30%, var(--accent) 58%, #0a765f 100%);
+        border: 4px solid rgba(255, 255, 255, 0.8);
+        box-shadow:
+          inset -14px -12px 20px rgba(0, 0, 0, 0.22),
+          0 0 30px rgba(46, 232, 196, 0.45);
+        color: #052f26;
+        transition: transform 0.25s ease;
+      }
+
+      .ball.pop {
+        transform: scale(1.06);
+      }
+
+      .ball .letter {
+        font-size: clamp(1.4rem, 8vw, 2rem);
+        font-weight: 800;
+        letter-spacing: 1px;
+      }
+
+      .ball .num {
+        font-size: clamp(2.1rem, 12vw, 3.3rem);
+        font-weight: 900;
+        line-height: 1;
+      }
+
+      .patterns {
+        display: flex;
+        gap: 0.45rem;
+        flex-wrap: wrap;
+      }
+
+      .pattern-chip {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 999px;
+        padding: 0.35rem 0.65rem;
+        font-size: 0.76rem;
+        color: var(--text);
+        background: rgba(255, 85, 178, 0.15);
+      }
+
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.6rem;
+      }
+
+      button {
+        border: 0;
+        border-radius: 12px;
+        min-height: 48px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        color: #031e18;
+        background: linear-gradient(130deg, var(--accent), #7bffe3);
+        transition: transform 0.12s ease, box-shadow 0.2s ease;
+      }
+
+      button.secondary {
+        color: var(--text);
+        background: linear-gradient(125deg, var(--surface-soft), #34467a);
+      }
+
+      button.warn {
+        color: #fff;
+        background: linear-gradient(140deg, var(--danger), #ff9a7f);
+      }
+
+      button:hover,
+      button:focus-visible {
+        transform: translateY(-1px);
+        box-shadow: 0 0 0 3px var(--ring);
+        outline: none;
+      }
+
+      .history {
+        max-height: 200px;
+        overflow: auto;
+        padding-right: 0.15rem;
+      }
+
+      .history-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 0.45rem;
+      }
+
+      .hit {
+        border-radius: 10px;
+        padding: 0.45rem 0.2rem;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.06);
+        font-weight: 700;
+        font-size: 0.85rem;
+      }
+
+      .hit small {
+        display: block;
+        margin-bottom: 0.1rem;
+        color: var(--muted);
+        font-size: 0.65rem;
+      }
+
+      .hint {
+        color: var(--muted);
+        font-size: 0.8rem;
+        margin-top: 0.45rem;
+      }
+
+      @media (min-width: 760px) {
+        main {
+          grid-template-columns: 1.05fr 0.95fr;
+          align-items: start;
+        }
+
+        .full {
+          grid-column: 1 / -1;
+        }
+
+        .history {
+          max-height: 260px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="panel">
+        <div class="top-row">
+          <div>
+            <h1 class="title">Neon Bingo Caller</h1>
+            <p class="sub">Tap draw, call the room, and keep the game flowing.</p>
+          </div>
+        </div>
+
+        <div class="stats" aria-live="polite">
+          <div class="stat">
+            <span class="label">Drawn</span>
+            <span class="value" id="drawnCount">0</span>
+          </div>
+          <div class="stat">
+            <span class="label">Remaining</span>
+            <span class="value" id="remainingCount">75</span>
+          </div>
+          <div class="stat">
+            <span class="label">Last 5 Avg Gap</span>
+            <span class="value" id="avgGap">0</span>
+          </div>
+        </div>
+
+        <div class="callout" style="margin-top: 0.9rem">
+          <div class="ball" id="currentBall" role="status" aria-live="polite">
+            <div class="letter" id="currentLetter">B</div>
+            <div class="num" id="currentNumber">--</div>
+          </div>
+
+          <div class="patterns" aria-label="Suggested bingo patterns">
+            <span class="pattern-chip">Line</span>
+            <span class="pattern-chip">4 Corners</span>
+            <span class="pattern-chip">X Pattern</span>
+            <span class="pattern-chip">Blackout</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="actions">
+          <button id="drawBtn" aria-keyshortcuts="Space">Draw Ball</button>
+          <button id="autoBtn" class="secondary">Start Auto (3s)</button>
+          <button id="undoBtn" class="secondary">Undo Last</button>
+          <button id="resetBtn" class="warn">Reset Deck</button>
+        </div>
+
+        <p class="hint">Keyboard: <strong>Space</strong> draw, <strong>A</strong> auto, <strong>U</strong> undo.</p>
+      </section>
+
+      <section class="panel full">
+        <h2 class="title" style="font-size: 1rem; margin-bottom: 0.7rem">Called Numbers</h2>
+        <div class="history" id="historyWrap">
+          <div class="history-grid" id="historyGrid"></div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      /**
+       * Neon Bingo Caller app state and utility functions.
+       * Supports pointer + keyboard interactions and updates live HUD data.
+       */
+      const allBalls = Array.from({ length: 75 }, (_, index) => {
+        const value = index + 1;
+        const letter = value <= 15 ? 'B' : value <= 30 ? 'I' : value <= 45 ? 'N' : value <= 60 ? 'G' : 'O';
+        return { value, letter };
+      });
+
+      const state = {
+        remaining: [...allBalls],
+        drawn: [],
+        autoTimer: null,
+      };
+
+      const currentBall = document.getElementById('currentBall');
+      const currentLetter = document.getElementById('currentLetter');
+      const currentNumber = document.getElementById('currentNumber');
+      const drawnCount = document.getElementById('drawnCount');
+      const remainingCount = document.getElementById('remainingCount');
+      const avgGap = document.getElementById('avgGap');
+      const historyGrid = document.getElementById('historyGrid');
+      const drawBtn = document.getElementById('drawBtn');
+      const autoBtn = document.getElementById('autoBtn');
+      const undoBtn = document.getElementById('undoBtn');
+      const resetBtn = document.getElementById('resetBtn');
+
+      /**
+       * Returns and removes one random ball from the remaining pool.
+       * @returns {{value:number, letter:string}|null}
+       */
+      function drawRandomBall() {
+        if (!state.remaining.length) return null;
+        const pickIndex = Math.floor(Math.random() * state.remaining.length);
+        const [picked] = state.remaining.splice(pickIndex, 1);
+        return picked;
+      }
+
+      /**
+       * Computes average numeric gap between last up to 5 drawn numbers.
+       * @returns {number}
+       */
+      function computeAverageGap() {
+        if (state.drawn.length < 2) return 0;
+        const recent = state.drawn.slice(-5);
+        let totalGap = 0;
+        for (let i = 1; i < recent.length; i += 1) {
+          totalGap += Math.abs(recent[i].value - recent[i - 1].value);
+        }
+        return Math.round(totalGap / Math.max(1, recent.length - 1));
+      }
+
+      /**
+       * Re-renders all data-driven UI elements from current state.
+       */
+      function render() {
+        drawnCount.textContent = String(state.drawn.length);
+        remainingCount.textContent = String(state.remaining.length);
+        avgGap.textContent = String(computeAverageGap());
+
+        const latest = state.drawn[state.drawn.length - 1];
+        currentLetter.textContent = latest ? latest.letter : 'B';
+        currentNumber.textContent = latest ? String(latest.value) : '--';
+
+        historyGrid.innerHTML = '';
+        state.drawn
+          .slice()
+          .reverse()
+          .forEach((ball) => {
+            const item = document.createElement('div');
+            item.className = 'hit';
+            item.innerHTML = `<small>${ball.letter}</small>${ball.value}`;
+            historyGrid.appendChild(item);
+          });
+
+        drawBtn.disabled = state.remaining.length === 0;
+        drawBtn.textContent = state.remaining.length ? 'Draw Ball' : 'Deck Empty';
+      }
+
+      /**
+       * Draws one ball and triggers a small pop animation on current ball display.
+       */
+      function handleDraw() {
+        const picked = drawRandomBall();
+        if (!picked) {
+          stopAuto();
+          return;
+        }
+
+        state.drawn.push(picked);
+        currentBall.classList.add('pop');
+        window.setTimeout(() => currentBall.classList.remove('pop'), 180);
+        render();
+      }
+
+      /**
+       * Restores the latest drawn value back into remaining pool.
+       */
+      function handleUndo() {
+        const last = state.drawn.pop();
+        if (!last) return;
+        state.remaining.push(last);
+        state.remaining.sort((a, b) => a.value - b.value);
+        render();
+      }
+
+      /**
+       * Toggles automatic draw mode every 3 seconds.
+       */
+      function toggleAuto() {
+        if (state.autoTimer) {
+          stopAuto();
+        } else {
+          state.autoTimer = window.setInterval(handleDraw, 3000);
+          autoBtn.textContent = 'Stop Auto';
+        }
+      }
+
+      /**
+       * Stops automatic draw mode.
+       */
+      function stopAuto() {
+        if (!state.autoTimer) return;
+        window.clearInterval(state.autoTimer);
+        state.autoTimer = null;
+        autoBtn.textContent = 'Start Auto (3s)';
+      }
+
+      /**
+       * Resets full deck and history.
+       */
+      function resetDeck() {
+        stopAuto();
+        state.remaining = [...allBalls];
+        state.drawn = [];
+        render();
+      }
+
+      drawBtn.addEventListener('click', handleDraw);
+      autoBtn.addEventListener('click', toggleAuto);
+      undoBtn.addEventListener('click', handleUndo);
+      resetBtn.addEventListener('click', resetDeck);
+
+      window.addEventListener('keydown', (event) => {
+        if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+          return;
+        }
+        if (event.code === 'Space') {
+          event.preventDefault();
+          handleDraw();
+        }
+        if (event.key.toLowerCase() === 'a') {
+          toggleAuto();
+        }
+        if (event.key.toLowerCase() === 'u') {
+          handleUndo();
+        }
+      });
+
+      render();
+    </script>
+  </body>
+</html>
