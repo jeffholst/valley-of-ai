@@ -27,16 +27,6 @@
       "implementedAt": "2026-04-06T00:05:00Z",
       "agentName": "GitHub Copilot",
       "llmModel": "claude-opus-4-6"
-    },
-    {
-      "issueNumber": 287,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/287",
-      "runId": "run-20260406T005451Z-fd8a66",
-      "description": "Added ship explosion animation with debris particles when hit by enemy missile — game pauses during explosion, then respawns a new ship to continue play.",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-04-06T00:54:51Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-opus-4-6"
     }
   ],
   "generation": {
