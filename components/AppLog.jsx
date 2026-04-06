@@ -125,20 +125,32 @@ export function groupLogs(logs) {
 
 export function resolveRunAttribution(group, fallbackMetadata) {
   const entries = Array.isArray(group?.entries) ? group.entries : [];
+  let resolvedAgentName = null;
+  let resolvedLlmModel = null;
 
   for (let idx = entries.length - 1; idx >= 0; idx -= 1) {
     const entry = entries[idx];
-    const agentName = entry?.agentName || entry?.agent || null;
-    const llmModel = entry?.llmModel || null;
 
-    if (agentName || llmModel) {
-      return { agentName, llmModel };
+    if (!resolvedAgentName) {
+      resolvedAgentName = entry?.agentName || entry?.agent || null;
+    }
+
+    if (!resolvedLlmModel) {
+      resolvedLlmModel = entry?.llmModel || null;
+    }
+
+    if (resolvedAgentName && resolvedLlmModel) {
+      break;
     }
   }
 
   return {
-    agentName: fallbackMetadata?.agentName || fallbackMetadata?.agent || null,
-    llmModel: fallbackMetadata?.llmModel || null,
+    agentName:
+      resolvedAgentName ||
+      fallbackMetadata?.agentName ||
+      fallbackMetadata?.agent ||
+      null,
+    llmModel: resolvedLlmModel || fallbackMetadata?.llmModel || null,
   };
 }
 
