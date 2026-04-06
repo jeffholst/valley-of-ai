@@ -7,7 +7,7 @@
  *   - 'improvement' — pipeline runs containing SELECT_IMPROVEMENT
  */
 
-import { groupLogs } from '../../components/AppLog.jsx';
+import { groupLogs, resolveRunAttribution } from '../../components/AppLog.jsx';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -172,5 +172,88 @@ describe('groupLogs', () => {
     const groups = groupLogs(logs);
     const improvementGroups = groups.filter((g) => g.type === 'improvement');
     expect(improvementGroups).toHaveLength(2);
+  });
+});
+
+describe('resolveRunAttribution', () => {
+  it('prefers agent and model values from log entries', () => {
+    const result = resolveRunAttribution(
+      {
+        entries: [
+          pipelineEntry('SELECT_IMPROVEMENT', 'run-imp', {
+            agent: 'GitHub Copilot',
+            llmModel: 'GPT-5.4',
+          }),
+        ],
+      },
+      {
+        agentName: 'Other Agent',
+        llmModel: 'older-model',
+      }
+    );
+
+    expect(result).toEqual({
+      agentName: 'GitHub Copilot',
+      llmModel: 'GPT-5.4',
+    });
+  });
+
+  it('falls back to improvement metadata when logs omit attribution', () => {
+    const result = resolveRunAttribution(
+      {
+        entries: [pipelineEntry('SELECT_IMPROVEMENT', 'run-imp')],
+      },
+      {
+        agentName: 'GitHub Copilot',
+        llmModel: 'GPT-5.4',
+      }
+    );
+
+    expect(result).toEqual({
+      agentName: 'GitHub Copilot',
+      llmModel: 'GPT-5.4',
+    });
+  });
+
+  it('fills missing llmModel from metadata when logs only provide agentName', () => {
+    const result = resolveRunAttribution(
+      {
+        entries: [
+          pipelineEntry('SELECT_IMPROVEMENT', 'run-imp', {
+            agent: 'GitHub Copilot',
+          }),
+        ],
+      },
+      {
+        agentName: 'Other Agent',
+        llmModel: 'GPT-5.4',
+      }
+    );
+
+    expect(result).toEqual({
+      agentName: 'GitHub Copilot',
+      llmModel: 'GPT-5.4',
+    });
+  });
+
+  it('fills missing agentName from metadata when logs only provide llmModel', () => {
+    const result = resolveRunAttribution(
+      {
+        entries: [
+          pipelineEntry('SELECT_IMPROVEMENT', 'run-imp', {
+            llmModel: 'GPT-5.4',
+          }),
+        ],
+      },
+      {
+        agentName: 'GitHub Copilot',
+        llmModel: 'older-model',
+      }
+    );
+
+    expect(result).toEqual({
+      agentName: 'GitHub Copilot',
+      llmModel: 'GPT-5.4',
+    });
   });
 });

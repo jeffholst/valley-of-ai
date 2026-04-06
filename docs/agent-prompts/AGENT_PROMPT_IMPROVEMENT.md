@@ -46,6 +46,23 @@ Apply improvement to an existing app. The app already exists — do not rebuild 
    - **Example:** If running on March 30, 2026 at 20:12:34 UTC, use: `run-20260330T201234Z-abc123`
    - Each improvement pipeline MUST have a unique runId to avoid merging logs from different improvement runs.
    - **Why:** The runId is used in AppLog.jsx to group logs into separate improvement records. If two improvements share the same runId, their logs will merge into a single group, confusing the audit trail and hiding separate change history.
+5. Record two run-scoped attribution values before the first `npm run log` call:
+
+- `<agent-name>` — the exact agent name performing the run (example: `GitHub Copilot`)
+- `<model-id>` — the exact LLM identifier used for the run (example: `GPT-5.4`)
+- These values MUST remain constant for the entire run.
+
+### Required log attribution
+
+Every `npm run log` command in this file MUST include both of these flags:
+
+```bash
+--agent "<agent-name>" --llmModel "<model-id>"
+```
+
+- Do not omit them on `pipeline`, `reasoning`, or `validation` entries.
+- AppLog.jsx uses these fields to display who implemented each improvement run.
+- The `improvements[]` metadata entry added in Step 6 must use the same values.
 
 ---
 
@@ -157,14 +174,16 @@ See `docs/improvement-sanity-check.md` for full signal documentation and thresho
 **Log the transaction start** (only after guardrail and sanity checks pass):
 
 ```bash
-npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> \
+  --agent "<agent-name>" --llmModel "<model-id>" --category pipeline \
   --step TRANSACTION_START --status started --message "Starting improvement pipeline"
 ```
 
 Log `SELECT_IMPROVEMENT`:
 
 ```bash
-npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> \
+  --agent "<agent-name>" --llmModel "<model-id>" --category pipeline \
   --step SELECT_IMPROVEMENT --seq 1 --status completed --durationMs <duration> \
   --tokensIn <in> --tokensOut <out> \
   --message "Selected improvement #<issueNumber> for <app-id>"
@@ -173,7 +192,8 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 Optionally log reasoning:
 
 ```bash
-npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category reasoning \
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> \
+  --agent "<agent-name>" --llmModel "<model-id>" --category reasoning \
   --phase SELECT_IMPROVEMENT --message "Why this improvement was chosen" \
   --decision "<brief description of change>" \
   --rationale "Boosted/approved request, clear scope, high user value"
@@ -305,11 +325,14 @@ Before logging Step 6 complete, verify:
 1. Existing `improvements[]` entries are still in their original order.
 2. The new entry was appended as the final array element.
 3. The new final element has `runId === <runId>`.
+4. The new final element has `agentName === <agent-name>` and `llmModel === <model-id>`.
+5. All log entries written for this run include the same `--agent` and `--llmModel` values.
 
 Log immediately:
 
 ```bash
-npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> \
+  --agent "<agent-name>" --llmModel "<model-id>" --category pipeline \
   --step UPDATE_META_JSON --seq 6 --status completed --durationMs <duration> \
   --tokensIn <in> --tokensOut <out> \
   --message "Appended improvements[] entry: issueNumber=<issueNumber>, runId=<runId>"
@@ -338,7 +361,8 @@ Run the **Standard Validation Sequence** defined in `AGENT_PROMPT_SHARED.md` →
 When passed:
 
 ```bash
-npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> \
+  --agent "<agent-name>" --llmModel "<model-id>" --category pipeline \
   --step VALIDATE_APP --seq 7 --status completed --durationMs <duration> \
   --message "All validation checks passed"
 ```
@@ -494,7 +518,8 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 2. Log `TRANSACTION_END`:
 
    ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
+   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> \
+    --agent "<agent-name>" --llmModel "<model-id>" --category pipeline \
      --step TRANSACTION_END --status success --durationMs <total_duration> \
      --message "Improvement pipeline complete"
    ```
