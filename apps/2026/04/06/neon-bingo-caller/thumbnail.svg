@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Neon Bingo Caller gameplay preview">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#090d1f" />
+      <stop offset="100%" stop-color="#121a36" />
+    </linearGradient>
+    <radialGradient id="orb" cx="30%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="30%" stop-color="#d3fef6" />
+      <stop offset="70%" stop-color="#2ee8c4" />
+      <stop offset="100%" stop-color="#0a765f" />
+    </radialGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1f2a52" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#121a36" stop-opacity="0.92" />
+    </linearGradient>
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)" />
+  <circle cx="120" cy="80" r="110" fill="#ff55b2" opacity="0.2" />
+  <circle cx="710" cy="20" r="150" fill="#2ee8c4" opacity="0.18" />
+
+  <rect x="30" y="28" width="740" height="394" rx="22" fill="url(#panel)" stroke="#ffffff" stroke-opacity="0.18" />
+
+  <text x="54" y="70" fill="#ecfeff" font-size="34" font-family="Inter,Segoe UI,sans-serif" font-weight="700" filter="url(#softGlow)">
+    Neon Bingo Caller
+  </text>
+  <text x="56" y="100" fill="#97a6d2" font-size="17" font-family="Inter,Segoe UI,sans-serif">
+    Drawn 23 • Remaining 52 • Avg Gap 13
+  </text>
+
+  <circle cx="220" cy="238" r="110" fill="url(#orb)" stroke="#ffffff" stroke-width="6" filter="url(#softGlow)" />
+  <text x="220" y="210" text-anchor="middle" fill="#052f26" font-size="50" font-family="Inter,Segoe UI,sans-serif" font-weight="800">G</text>
+  <text x="220" y="275" text-anchor="middle" fill="#052f26" font-size="82" font-family="Inter,Segoe UI,sans-serif" font-weight="900">54</text>
+
+  <g font-family="Inter,Segoe UI,sans-serif" font-weight="700" font-size="18">
+    <rect x="380" y="138" width="112" height="64" rx="14" fill="#162140" stroke="#ffffff" stroke-opacity="0.2" />
+    <text x="436" y="166" text-anchor="middle" fill="#97a6d2" font-size="13">Recent</text>
+    <text x="436" y="188" text-anchor="middle" fill="#ecfeff">N42</text>
+
+    <rect x="503" y="138" width="112" height="64" rx="14" fill="#162140" stroke="#ffffff" stroke-opacity="0.2" />
+    <text x="559" y="166" text-anchor="middle" fill="#97a6d2" font-size="13">Recent</text>
+    <text x="559" y="188" text-anchor="middle" fill="#ecfeff">I16</text>
+
+    <rect x="626" y="138" width="112" height="64" rx="14" fill="#162140" stroke="#ffffff" stroke-opacity="0.2" />
+    <text x="682" y="166" text-anchor="middle" fill="#97a6d2" font-size="13">Recent</text>
+    <text x="682" y="188" text-anchor="middle" fill="#ecfeff">O71</text>
+  </g>
+
+  <g font-family="Inter,Segoe UI,sans-serif" font-size="16" font-weight="600">
+    <rect x="380" y="228" width="125" height="42" rx="21" fill="#ff55b2" fill-opacity="0.2" stroke="#ff55b2" stroke-opacity="0.5" />
+    <text x="442" y="254" text-anchor="middle" fill="#ecfeff">Line</text>
+
+    <rect x="516" y="228" width="125" height="42" rx="21" fill="#ff55b2" fill-opacity="0.2" stroke="#ff55b2" stroke-opacity="0.5" />
+    <text x="578" y="254" text-anchor="middle" fill="#ecfeff">4 Corners</text>
+
+    <rect x="652" y="228" width="86" height="42" rx="21" fill="#ff55b2" fill-opacity="0.2" stroke="#ff55b2" stroke-opacity="0.5" />
+    <text x="695" y="254" text-anchor="middle" fill="#ecfeff">X</text>
+  </g>
+
+  <g>
+    <rect x="378" y="304" width="170" height="58" rx="14" fill="#2ee8c4" />
+    <text x="463" y="339" text-anchor="middle" fill="#052f26" font-size="24" font-family="Inter,Segoe UI,sans-serif" font-weight="800">Draw Ball</text>
+
+    <rect x="564" y="304" width="170" height="58" rx="14" fill="#2d3f73" stroke="#ffffff" stroke-opacity="0.22" />
+    <text x="649" y="339" text-anchor="middle" fill="#ecfeff" font-size="24" font-family="Inter,Segoe UI,sans-serif" font-weight="800">Stop Auto</text>
+  </g>
+</svg>

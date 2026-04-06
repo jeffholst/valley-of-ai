@@ -1,0 +1,22 @@
+{
+  "id": "neon-bingo-caller",
+  "name": "Neon Bingo Caller",
+  "shortDescription": "Fast, polished bingo host console with random calls, auto-draw pacing, and history tracking.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-04-06T07:00:15Z",
+  "category": "Entertainment",
+  "status": "active",
+  "tags": ["bingo", "number-caller", "party", "random", "host-tool", "mobile-friendly"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "dev",
+    "llmModel": "openai-codex/gpt-5.3-codex",
+    "startTime": "2026-04-06T07:00:15Z",
+    "endTime": "2026-04-06T07:03:20Z",
+    "totalTokensIn": 7100,
+    "totalTokensOut": 3580,
+    "runId": "run-20260406T070015Z-a1b2c3",
+    "notes": "Built from vote-and-category-analysis recommendation; no approved GitHub suggestion issue available."
+  }
+}
