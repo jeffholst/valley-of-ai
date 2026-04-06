@@ -123,6 +123,25 @@ export function groupLogs(logs) {
   return groups;
 }
 
+export function resolveRunAttribution(group, fallbackMetadata) {
+  const entries = Array.isArray(group?.entries) ? group.entries : [];
+
+  for (let idx = entries.length - 1; idx >= 0; idx -= 1) {
+    const entry = entries[idx];
+    const agentName = entry?.agentName || entry?.agent || null;
+    const llmModel = entry?.llmModel || null;
+
+    if (agentName || llmModel) {
+      return { agentName, llmModel };
+    }
+  }
+
+  return {
+    agentName: fallbackMetadata?.agentName || fallbackMetadata?.agent || null,
+    llmModel: fallbackMetadata?.llmModel || null,
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Group header config
 // ---------------------------------------------------------------------------
@@ -158,7 +177,7 @@ const GROUP_CONFIG = {
 // Run group component
 // ---------------------------------------------------------------------------
 
-function RunGroup({ group, improvementIndex, versionUrl }) {
+function RunGroup({ group, improvementIndex, versionUrl, attribution }) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [expandedMessages, setExpandedMessages] = useState(new Set());
 
@@ -188,6 +207,8 @@ function RunGroup({ group, improvementIndex, versionUrl }) {
         year: 'numeric',
       })
     : null;
+  const runAttribution = resolveRunAttribution(group, attribution);
+  const hasAttribution = runAttribution.agentName || runAttribution.llmModel;
 
   return (
     <div className={`rounded-lg border ${config.headerBorder} overflow-hidden`}>
@@ -235,6 +256,17 @@ function RunGroup({ group, improvementIndex, versionUrl }) {
 
       {isExpanded && (
         <div className="p-3 space-y-2 bg-gray-50 dark:bg-gray-900/50">
+          {hasAttribution && (
+            <div className="text-xs text-gray-600 dark:text-gray-300 bg-white/70 dark:bg-gray-800/70 rounded px-2 py-1 border border-gray-200 dark:border-gray-700">
+              <span className="font-semibold">Run Attribution:</span>
+              {runAttribution.agentName && <span className="ml-2">{runAttribution.agentName}</span>}
+              {runAttribution.agentName && runAttribution.llmModel && (
+                <span className="mx-2 opacity-50">•</span>
+              )}
+              {runAttribution.llmModel && <span>{runAttribution.llmModel}</span>}
+            </div>
+          )}
+
           {/* Run ID */}
           {transactionStart && (
             <div className="text-xs text-gray-500 dark:text-gray-400 font-mono pb-2 border-b border-gray-200 dark:border-gray-700">
@@ -431,6 +463,7 @@ export default function AppLog({ appId, suggestion, improvements, generation }) 
   const backupVersionUrl = (runId) => `/apps/${appId}/backups/${runId}/index.html`;
 
   const versionUrlByRunId = new Map();
+  const attributionByRunId = new Map();
   if (generation?.runId) {
     versionUrlByRunId.set(
       generation.runId,
@@ -438,6 +471,10 @@ export default function AppLog({ appId, suggestion, improvements, generation }) 
         ? backupVersionUrl(improvementsWithRunId[0].runId)
         : currentVersionUrl
     );
+    attributionByRunId.set(generation.runId, {
+      agentName: generation.agentName,
+      llmModel: generation.llmModel,
+    });
   }
   improvementsWithRunId.forEach((improvement, idx) => {
     const nextImprovement = improvementsWithRunId[idx + 1];
@@ -445,6 +482,10 @@ export default function AppLog({ appId, suggestion, improvements, generation }) 
       improvement.runId,
       nextImprovement?.runId ? backupVersionUrl(nextImprovement.runId) : currentVersionUrl
     );
+    attributionByRunId.set(improvement.runId, {
+      agentName: improvement.agentName,
+      llmModel: improvement.llmModel,
+    });
   });
 
   // Count improvement groups for labeling (#1, #2, ...)
@@ -537,6 +578,18 @@ export default function AppLog({ appId, suggestion, improvements, generation }) 
                     <div className="opacity-75 leading-relaxed">
                       {improvement.description || improvement.summary}
                     </div>
+                    {(improvement.agentName || improvement.llmModel) && (
+                      <div className="mt-2 opacity-75">
+                        <span className="font-semibold">Implemented by:</span>
+                        {improvement.agentName && (
+                          <span className="ml-2">{improvement.agentName}</span>
+                        )}
+                        {improvement.agentName && improvement.llmModel && (
+                          <span className="mx-2">•</span>
+                        )}
+                        {improvement.llmModel && <span>{improvement.llmModel}</span>}
+                      </div>
+                    )}
                   </div>
                 );
               }
@@ -546,6 +599,7 @@ export default function AppLog({ appId, suggestion, improvements, generation }) 
                 key={group.runId}
                 group={group}
                 improvementIndex={improvementCounter}
+                attribution={attributionByRunId.get(group.runId) ?? null}
                 versionUrl={versionUrlByRunId.get(group.runId) ?? null}
               />
             );

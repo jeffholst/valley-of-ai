@@ -21,6 +21,8 @@
  *   --appId <ID>          Application identifier
  *   --date <YYYY/MM/DD>   Date of the run used to derive the central log path (logs/YYYY/MM/DD.jsonl)
  *   --app-date <YYYY/MM/DD> Original creation date of the app for the app-local log path (defaults to --date)
+ *   --agent <NAME>        Agent name responsible for the run (e.g. GitHub Copilot)
+ *   --llmModel <ID>       Model identifier used for the run (e.g. GPT-5.4)
  *   --category <TYPE>     Log category: pipeline|reasoning|validation
  *   --message <TEXT>      Human-readable description of the log entry
  *   --phase <PHASE>       Pipeline phase (e.g., GENERATE_HTML, VALIDATE_APP)
@@ -47,18 +49,21 @@
  *
  * EXAMPLES:
  *   # Pipeline step with seq for progress tracking
- *   npm run log -- --runId run-20260316-abc123 --appId my-app --date 2026/03/16 --category pipeline \
+ *   npm run log -- --runId run-20260316-abc123 --appId my-app --date 2026/03/16 \
+ *     --agent "GitHub Copilot" --llmModel "GPT-5.4" --category pipeline \
  *     --step GENERATE_HTML --seq 3 --status success --durationMs 5000 \
  *     --tokensIn 3000 --tokensOut 2500 --message "Generated index.html"
  *
  *   # Reasoning entry (no seq needed)
- *   npm run log -- --runId run-20260316-abc123 --appId my-app --date 2026/03/16 --category reasoning \
+ *   npm run log -- --runId run-20260316-abc123 --appId my-app --date 2026/03/16 \
+ *     --agent "GitHub Copilot" --llmModel "GPT-5.4" --category reasoning \
  *     --phase GENERATE_HTML --message "2x2 grid optimal for mobile" \
  *     --decision "grid-2x2" --alternatives "grid-3x3,grid-responsive" \
  *     --rationale "Better thumb reach on mobile"
  *
  *   # Validation check (no seq)
- *   npm run log -- --runId run-20260316-abc123 --appId my-app --date 2026/03/16 --category validation \
+ *   npm run log -- --runId run-20260316-abc123 --appId my-app --date 2026/03/16 \
+ *     --agent "GitHub Copilot" --llmModel "GPT-5.4" --category validation \
  *     --checkType "file-exists" --name "HTML validation" --result PASS \
  *     --message "All 53 HTML files valid"
  *
@@ -77,6 +82,8 @@ program
     '--app-date <YYYY/MM/DD>',
     'Original creation date of the app for the app-local log path (defaults to --date)'
   )
+  .option('--agent <name>', 'Agent name responsible for the run')
+  .option('--llmModel <id>', 'Model identifier used for the run')
   .option('--category <type>', 'Log category: pipeline|reasoning|validation')
   .option('--step <name>', 'Pipeline step name')
   .option('--seq <number>', 'Step sequence number')
@@ -159,6 +166,9 @@ const entry = {
   timestamp: new Date().toISOString(),
   runId: args.runId,
   appId: args.appId,
+  agent: args.agent || null,
+  agentName: args.agent || null,
+  llmModel: args.llmModel || null,
   category: args.category,
   message: args.message || '',
 };
