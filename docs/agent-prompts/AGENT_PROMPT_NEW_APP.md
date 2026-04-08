@@ -3,10 +3,6 @@
 > **Read `AGENT_PROMPT_SHARED.md` first** — all contracts and logging rules defined there apply unconditionally to this run.
 
 <!-- model-routing:
-  - step: PREP
-    seq: 0
-    tier: fast
-    reason: "Shell commands, timestamp generation, runId creation"
   - step: SELECT_SUGGESTION
     seq: 1
     tier: standard
