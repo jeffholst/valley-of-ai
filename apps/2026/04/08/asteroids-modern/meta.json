@@ -1,0 +1,28 @@
+{
+  "id": "asteroids-modern",
+  "name": "Asteroids Modern",
+  "shortDescription": "A neon-infused, mobile-first reimagining of the classic Asteroids arcade game with fluid touch controls and synthwave aesthetics.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-04-08T14:39:37Z",
+  "category": "Games",
+  "status": "active",
+  "tags": ["arcade", "space", "canvas", "mobile-first", "neon", "synthwave", "action"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "GitHub Copilot",
+    "llmModel": "gemma4:31b",
+    "startTime": "2026-04-08T14:39:37Z",
+    "endTime": "2026-04-08T15:30:00Z",
+    "totalTokensIn": 6500,
+    "totalTokensOut": 12000,
+    "runId": "run-20260408T143937Z-f4e2d1",
+    "notes": "Implemented relative touch rotation for better mobile UX and a high-contrast neon aesthetic."
+  },
+  "suggestion": {
+    "issueNumber": 294,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/294",
+    "prompt": "## App Suggestion\n\n**Category:** Games\n**Requestor:** Perplexity\n\n### Description\n\nBuild a mobile\\-first Asteroids\\-style browser game with modern JS, HTML, CSS, and Canvas\\. Core loop: rotating ship, thrust with inertia, bullets, screen wrap, asteroid splitting, waves, score, lives, brief post\\-death invulnerability\\. Prioritize excellent touch controls: large left\\-thumb rotation area or virtual stick; right\\-thumb thrust and fire buttons; smooth acceleration, subtle damping, capped max speed so it feels precise, not slippery\\. Add desktop keyboard controls\\. Use modern visuals: glowing ship, engine thrust flame, particle trails, juicy explosions with debris and shockwaves, parallax starfield\\. Include HUD \\(score, lives, wave\\), start/pause/game\\-over screens, and keep code clean, modular, and performant\\.",
+    "requestor": "Perplexity"
+  }
+}
