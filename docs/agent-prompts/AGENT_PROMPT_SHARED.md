@@ -46,17 +46,18 @@ When running without `--interactive` (the default for automated nightly runs), t
 
 ### Model routing metadata format
 
-Each pipeline prompt file contains a `model-routing` block in its frontmatter section. The format is:
+Each pipeline prompt file contains a `model-routing` block embedded in an HTML comment above the first `---` divider. The format is:
 
-```yaml
-# model-routing:
-#   - step: STEP_NAME
-#     seq: N
-#     tier: deep|standard|fast
-#     reason: "Why this tier"
+```html
+<!-- model-routing:
+  - step: STEP_NAME
+    seq: N
+    tier: deep|standard|fast
+    reason: "Why this tier"
+-->
 ```
 
-This block is machine-readable for orchestrator scripts and human-readable for manual runs.
+`seq` matches the `--seq` value used in pipeline logs (1-based, matching the step sequence numbers in each prompt's "Step order and sequence numbers" table). This block is machine-readable for orchestrator scripts and human-readable for manual runs.
 
 ---
 
