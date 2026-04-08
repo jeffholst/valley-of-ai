@@ -2,6 +2,69 @@
 
 > **Read `AGENT_PROMPT_SHARED.md` first** — all contracts and logging rules defined there apply unconditionally to this run.
 
+<!-- model-routing:
+  - step: SELECT_IMPROVEMENT
+    seq: 1
+    tier: standard
+    reason: "Script output parsing, issue verification, guardrail + sanity checks"
+  - step: ANALYZE_APP
+    seq: 2
+    tier: deep
+    reason: "Must deeply understand existing code structure before making surgical changes"
+  - step: BACKUP_APP
+    seq: 3
+    tier: fast
+    reason: "File copy commands"
+  - step: MODIFY_HTML
+    seq: 4
+    tier: deep
+    reason: "Surgical code changes to existing app — must preserve all functionality"
+  - step: UPDATE_THUMBNAIL
+    seq: 5
+    tier: standard
+    reason: "Conditional SVG update, follows template spec"
+  - step: UPDATE_META_JSON
+    seq: 6
+    tier: fast
+    reason: "Structured data append with known values"
+  - step: VALIDATE_APP
+    seq: 7
+    tier: fast
+    reason: "Running validation scripts, checking output"
+  - step: GIT_CHECKOUT_BRANCH
+    seq: 8
+    tier: fast
+    reason: "Git command"
+  - step: GIT_COMMIT
+    seq: 9
+    tier: fast
+    reason: "Git command"
+  - step: GIT_PUSH
+    seq: 10
+    tier: fast
+    reason: "Git command"
+  - step: CREATE_PR
+    seq: 11
+    tier: fast
+    reason: "Templated PR body creation"
+  - step: PR_REVIEW
+    seq: 12
+    tier: standard
+    reason: "Verify only intended changes, no regressions — needs reasoning"
+  - step: UPDATE_REGISTRY
+    seq: 13
+    tier: fast
+    reason: "Verification only"
+  - step: MERGE_PR_DEPLOY
+    seq: 14
+    tier: fast
+    reason: "Git/gh merge commands, deployment wait"
+  - step: DELETE_BRANCH
+    seq: 15
+    tier: fast
+    reason: "Git cleanup commands"
+-->
+
 ---
 
 ## Mission

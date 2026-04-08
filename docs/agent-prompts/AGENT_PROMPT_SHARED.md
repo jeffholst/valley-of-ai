@@ -6,6 +6,61 @@
 
 ---
 
+## Interactive Mode: Per-Step Model Routing
+
+Each pipeline step is tagged with a **model tier** indicating the level of reasoning required. When running interactively, the orchestrator pauses before each step and lets the operator choose which model to use.
+
+### Model Tiers
+
+| Tier         | When to use                                       | Default models                   |
+| ------------ | ------------------------------------------------- | -------------------------------- |
+| **deep**     | Creative generation, complex code, architecture   | Opus, o3                         |
+| **standard** | Analysis, review, moderate reasoning              | Sonnet, GPT-4o                   |
+| **fast**     | Mechanical tasks, git ops, logging, file assembly | Haiku, GPT-4o-mini, Gemini Flash |
+
+### Interactive prompt format
+
+When `--interactive` mode is active, the orchestrator displays this before each step:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Step 3/14: GENERATE_HTML [recommended: deep]
+  "Full app code generation — highest value creative step"
+
+Model: (d) deep    (s) standard    (f) fast
+Choice [d]:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+The operator can accept the recommended default (press Enter) or override by typing `d`, `s`, or `f`. The chosen model is used for that step only; the next step resets to its own default.
+
+### Tier assignment rules
+
+- **deep**: Steps that generate or substantially modify application code, or require creative ideation. These steps produce the most value and benefit most from stronger reasoning.
+- **standard**: Steps that require understanding and judgment (code review, security analysis, duplication assessment) but follow a structured checklist rather than open-ended generation.
+- **fast**: Steps that execute shell commands, copy files, assemble structured data from known values, or run existing scripts. These steps have deterministic or near-deterministic outputs regardless of model capability.
+
+### Non-interactive mode
+
+When running without `--interactive` (the default for automated nightly runs), the pipeline uses the recommended tier for every step without pausing. The tier metadata in each prompt file serves as the model selection policy.
+
+### Model routing metadata format
+
+Each pipeline prompt file contains a `model-routing` block embedded in an HTML comment above the first `---` divider. The format is:
+
+```html
+<!-- model-routing:
+  - step: STEP_NAME
+    seq: N
+    tier: deep|standard|fast
+    reason: "Why this tier"
+-->
+```
+
+`seq` matches the `--seq` value used in pipeline logs (1-based, matching the step sequence numbers in each prompt's "Step order and sequence numbers" table). This block is machine-readable for orchestrator scripts and human-readable for manual runs.
+
+---
+
 ## Coding Standards
 
 - Static only: HTML/CSS/JS (no backend).
