@@ -2,8 +2,13 @@
   <defs>
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
     </linearGradient>
+    <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:0" />
+    </radialGradient>
     <filter id="glow">
       <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
       <feMerge>
@@ -12,9 +17,23 @@
       </feMerge>
     </filter>
     <filter id="deepGlow">
-      <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
       <feMerge>
         <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="bulletGlow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="edgeGlow">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
@@ -22,33 +41,86 @@
 
   <!-- Background -->
   <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)" />
-  
-  <!-- Starfield -->
-  <circle cx="100" cy="100" r="1" fill="white" opacity="0.5" />
-  <circle cx="250" cy="50" r="1.5" fill="white" opacity="0.8" />
-  <circle cx="400" cy="300" r="1" fill="white" opacity="0.3" />
-  <circle cx="600" cy="150" r="1.2" fill="white" opacity="0.6" />
-  <circle cx="750" cy="400" r="1" fill="white" opacity="0.4" />
-  <circle cx="50" cy="350" r="1.5" fill="white" opacity="0.7" />
-  <circle cx="300" cy="200" r="1" fill="white" opacity="0.5" />
-  <circle cx="500" cy="100" r="1.2" fill="white" opacity="0.8" />
+  <rect x="0" y="0" width="800" height="450" fill="url(#centerGlow)" />
+
+  <!-- Corner accents -->
+  <rect x="0" y="0" width="120" height="2" fill="#00f2ff" opacity="0.3" filter="url(#edgeGlow)" />
+  <rect x="0" y="0" width="2" height="80" fill="#00f2ff" opacity="0.3" filter="url(#edgeGlow)" />
+  <rect x="680" y="448" width="120" height="2" fill="#00f2ff" opacity="0.3" filter="url(#edgeGlow)" />
+  <rect x="798" y="370" width="2" height="80" fill="#00f2ff" opacity="0.3" filter="url(#edgeGlow)" />
+
+  <!-- Parallax Starfield: layer 1 (distant, small) -->
+  <circle cx="45" cy="30" r="0.8" fill="white" opacity="0.3" />
+  <circle cx="120" cy="80" r="0.6" fill="white" opacity="0.4" />
+  <circle cx="210" cy="25" r="0.7" fill="white" opacity="0.25" />
+  <circle cx="340" cy="60" r="0.5" fill="white" opacity="0.35" />
+  <circle cx="480" cy="40" r="0.8" fill="white" opacity="0.3" />
+  <circle cx="570" cy="90" r="0.6" fill="white" opacity="0.4" />
+  <circle cx="680" cy="30" r="0.7" fill="white" opacity="0.25" />
+  <circle cx="760" cy="75" r="0.5" fill="white" opacity="0.3" />
+  <circle cx="90" cy="180" r="0.6" fill="white" opacity="0.35" />
+  <circle cx="160" cy="320" r="0.7" fill="white" opacity="0.3" />
+  <circle cx="300" cy="400" r="0.5" fill="white" opacity="0.25" />
+  <circle cx="520" cy="380" r="0.6" fill="white" opacity="0.35" />
+  <circle cx="650" cy="420" r="0.8" fill="white" opacity="0.3" />
+  <circle cx="730" cy="300" r="0.5" fill="white" opacity="0.4" />
+  <circle cx="380" cy="150" r="0.6" fill="white" opacity="0.3" />
+
+  <!-- Parallax Starfield: layer 2 (mid, medium) -->
+  <circle cx="100" cy="100" r="1.2" fill="white" opacity="0.5" />
+  <circle cx="250" cy="50" r="1.5" fill="white" opacity="0.7" />
+  <circle cx="500" cy="100" r="1.3" fill="white" opacity="0.6" />
+  <circle cx="600" cy="350" r="1.4" fill="white" opacity="0.5" />
+  <circle cx="50" cy="350" r="1.5" fill="white" opacity="0.6" />
+  <circle cx="300" cy="200" r="1.2" fill="white" opacity="0.5" />
+  <circle cx="700" cy="180" r="1.3" fill="white" opacity="0.55" />
+  <circle cx="420" cy="280" r="1.4" fill="white" opacity="0.5" />
+
+  <!-- Parallax Starfield: layer 3 (close, bright) -->
+  <circle cx="180" cy="140" r="2.0" fill="white" opacity="0.8" />
+  <circle cx="620" cy="80" r="2.2" fill="white" opacity="0.75" />
+  <circle cx="350" cy="350" r="1.8" fill="white" opacity="0.7" />
+  <circle cx="750" cy="250" r="2.0" fill="white" opacity="0.8" />
 
   <!-- Asteroids -->
-  <path d="M 600 100 L 630 80 L 660 110 L 640 150 L 580 140 Z" fill="none" stroke="#00f2ff" stroke-width="3" filter="url(#glow)" />
-  <path d="M 200 300 L 240 280 L 270 320 L 250 360 L 180 340 Z" fill="none" stroke="#00f2ff" stroke-width="3" filter="url(#glow)" />
-  <path d="M 400 50 L 430 30 L 460 60 L 440 90 L 380 80 Z" fill="none" stroke="#00f2ff" stroke-width="3" filter="url(#glow)" />
+  <path d="M 600 110 L 635 80 L 670 95 L 665 140 L 635 160 L 590 150 Z" fill="none" stroke="#00f2ff" stroke-width="2.5" filter="url(#glow)" />
+  <path d="M 150 280 L 190 260 L 225 280 L 230 320 L 200 350 L 160 340 L 140 310 Z" fill="none" stroke="#00f2ff" stroke-width="2.5" filter="url(#glow)" />
+  <path d="M 680 300 L 710 280 L 735 300 L 725 330 L 690 335 Z" fill="none" stroke="#00f2ff" stroke-width="2" filter="url(#glow)" />
+  <path d="M 80 80 L 110 65 L 130 85 L 120 110 L 90 105 Z" fill="none" stroke="#00f2ff" stroke-width="2" filter="url(#glow)" />
+  <path d="M 450 60 L 480 40 L 510 55 L 505 85 L 475 95 L 445 80 Z" fill="none" stroke="#00f2ff" stroke-width="2" filter="url(#glow)" />
 
-  <!-- Ship -->
-  <g transform="translate(400, 225) rotate(45)">
-    <path d="M 0 -15 L 10 10 L -10 10 Z" fill="none" stroke="#00f2ff" stroke-width="3" filter="url(#deepGlow)" />
+  <!-- Ship with nose indicator -->
+  <g transform="translate(380, 210) rotate(30)">
+    <!-- Ship body -->
+    <path d="M 0 -18 L 12 12 L -12 12 Z" fill="none" stroke="#00f2ff" stroke-width="3" filter="url(#deepGlow)" />
+    <!-- Nose indicator (pink dot) -->
+    <circle cx="0" cy="-18" r="3.5" fill="#ff00ff" filter="url(#bulletGlow)" />
+    <circle cx="0" cy="-18" r="6" fill="#ff00ff" opacity="0.25" />
     <!-- Thrust Flame -->
-    <path d="M -5 12 L 0 25 L 5 12 Z" fill="#ff00ff" filter="url(#glow)" />
+    <path d="M -6 14 L 0 30 L 6 14 Z" fill="#ff00ff" opacity="0.9" filter="url(#glow)" />
+    <path d="M -3 14 L 0 22 L 3 14 Z" fill="#ffaaff" opacity="0.7" />
   </g>
 
-  <!-- Bullets -->
-  <circle cx="430" cy="200" r="3" fill="#ff00ff" filter="url(#glow)" />
-  <circle cx="460" cy="180" r="3" fill="#ff00ff" filter="url(#glow)" />
+  <!-- Bullets with glow halos -->
+  <circle cx="410" cy="185" r="5" fill="#ff00ff" opacity="0.3" filter="url(#bulletGlow)" />
+  <circle cx="410" cy="185" r="3" fill="#ffffff" />
+  <circle cx="435" cy="165" r="5" fill="#ff00ff" opacity="0.3" filter="url(#bulletGlow)" />
+  <circle cx="435" cy="165" r="3" fill="#ffffff" />
+  <circle cx="460" cy="148" r="5" fill="#ff00ff" opacity="0.3" filter="url(#bulletGlow)" />
+  <circle cx="460" cy="148" r="3" fill="#ffffff" />
+
+  <!-- Explosion particles near an asteroid -->
+  <circle cx="230" cy="270" r="2" fill="#00f2ff" opacity="0.8" />
+  <circle cx="220" cy="265" r="1.5" fill="#00f2ff" opacity="0.6" />
+  <circle cx="240" cy="260" r="1.8" fill="#00f2ff" opacity="0.7" />
+  <circle cx="215" cy="275" r="1.2" fill="#ff00ff" opacity="0.5" />
+  <circle cx="235" cy="280" r="1.5" fill="#ff00ff" opacity="0.6" />
+
+  <!-- HUD -->
+  <text x="30" y="30" font-family="'Courier New', monospace" font-size="16" font-weight="bold" fill="#f9fafb">SCORE: <tspan fill="#00f2ff">2450</tspan></text>
+  <text x="370" y="30" font-family="'Courier New', monospace" font-size="16" font-weight="bold" fill="#f9fafb">WAVE: <tspan fill="#00f2ff">3</tspan></text>
+  <text x="690" y="30" font-family="'Courier New', monospace" font-size="16" font-weight="bold" fill="#f9fafb">LIVES: <tspan fill="#00f2ff">2</tspan></text>
 
   <!-- Title -->
-  <text x="400" y="380" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="50" fill="#00f2ff" filter="url(#deepGlow)" style="text-transform: uppercase; letter-spacing: 8px;">ASTEROIDS MODERN</text>
+  <text x="400" y="415" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="36" fill="#00f2ff" filter="url(#deepGlow)" style="text-transform: uppercase; letter-spacing: 6px;">ASTEROIDS MODERN</text>
 </svg>

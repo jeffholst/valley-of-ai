@@ -70,7 +70,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: var(--bg);
+      background: radial-gradient(circle at center, #1e1b4b 0%, var(--bg) 100%);
     }
 
     canvas {
@@ -268,37 +268,21 @@
     const livesEl = document.getElementById('lives');
     const finalScoreEl = document.getElementById('finalScore');
 
-    // Resolve CSS variables for canvas rendering (canvas 2D context cannot use var())
-    const themeColors = {};
-    function resolveThemeColors() {
-      const style = getComputedStyle(document.documentElement);
-      themeColors.bg = style.getPropertyValue('--bg').trim();
-      themeColors.text = style.getPropertyValue('--text').trim();
-      themeColors.surface = style.getPropertyValue('--surface').trim();
-      themeColors.neonBlue = style.getPropertyValue('--neon-blue').trim();
-      themeColors.neonPink = style.getPropertyValue('--neon-pink').trim();
-      themeColors.neonPurple = style.getPropertyValue('--neon-purple').trim();
-    }
-    resolveThemeColors();
-
-    // Re-resolve colors when theme changes
-    const themeObserver = new MutationObserver(() => resolveThemeColors());
-    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-
     // Game Constants
     const FPS = 60;
     const SHIP_SIZE = 20;
     const SHIP_THRUST = 5;
-    const SHIP_TURN_SPEED = 360;
+    const SHIP_TURN_SPEED = 360; // degrees per second
     const FRICTION = 0.7;
     const BULLET_SPEED = 500;
     const BULLET_MAX = 10;
-    const BULLET_DIST = 0.6;
+    const BULLET_DIST = 0.6; // max distance bullet can travel (fraction of screen width)
     const ASTEROID_NUM = 3;
     const ASTEROID_SIZE = 100;
     const ASTEROID_SPEED = 50;
     const ASTEROID_VERTICES = 10;
     const ASTEROID_JAG = 0.4;
+    const SHOW_BOUNDING_BOX = false;
 
     // Game State
     let score, lives, wave, ship, asteroids, bullets, particles, stars;
@@ -320,7 +304,7 @@
       resize();
       window.addEventListener('resize', resize);
       setupInputs();
-
+      
       document.getElementById('btnStart').onclick = startGame;
       document.getElementById('btnRestart').onclick = startGame;
       document.getElementById('btnResume').onclick = resumeGame;
@@ -333,31 +317,17 @@
       createStars();
     }
 
-    /** Create parallax starfield with three depth layers */
     function createStars() {
       stars = [];
-      const layers = [
-        { count: 60, sizeMin: 0.5, sizeMax: 1.2, speedMin: 0.1, speedMax: 0.3 },
-        { count: 40, sizeMin: 1.2, sizeMax: 2.0, speedMin: 0.3, speedMax: 0.6 },
-        { count: 20, sizeMin: 2.0, sizeMax: 3.0, speedMin: 0.6, speedMax: 1.0 }
-      ];
-      layers.forEach((layer, layerIdx) => {
-        for (let i = 0; i < layer.count; i++) {
-          const angle = Math.random() * Math.PI * 2;
-          const speed = layer.speedMin + Math.random() * (layer.speedMax - layer.speedMin);
-          stars.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            size: layer.sizeMin + Math.random() * (layer.sizeMax - layer.sizeMin),
-            baseOpacity: 0.3 + Math.random() * 0.7,
-            twinklePhase: Math.random() * Math.PI * 2,
-            twinkleSpeed: 0.5 + Math.random() * 2,
-            vx: Math.cos(angle) * speed,
-            vy: Math.sin(angle) * speed,
-            layer: layerIdx
-          });
-        }
-      });
+      for (let i = 0; i < 100; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 2,
+          opacity: Math.random(),
+          speed: Math.random() * 0.5
+        });
+      }
     }
 
     function setupInputs() {
@@ -376,10 +346,9 @@
         if (e.code === 'Space') input.fire = false;
       });
 
-      // Mobile Touch - rotation zone
+      // Mobile Touch
       const rotateZone = document.getElementById('rotateZone');
       rotateZone.addEventListener('touchstart', e => {
-        e.preventDefault();
         const touch = e.touches[0];
         input.touchX = touch.clientX;
         input.touchY = touch.clientY;
@@ -390,6 +359,9 @@
         const touch = e.touches[0];
         if (input.touchX !== null) {
           const dx = touch.clientX - input.touchX;
+          const dy = touch.clientY - input.touchY;
+          const angle = Math.atan2(dy, dx);
+          // Map touch delta to rotation
           ship.rot = (dx > 0) ? 1 : (dx < 0) ? -1 : 0;
         }
       }, { passive: false });
@@ -416,18 +388,18 @@
       bullets = [];
       particles = [];
       asteroids = [];
-
+      
       ship = createShip();
       spawnWave();
-
+      
       document.getElementById('startScreen').classList.add('hidden');
       document.getElementById('gameOverScreen').classList.add('hidden');
       document.getElementById('pauseScreen').classList.add('hidden');
-
+      
       gameRunning = true;
       paused = false;
       updateHUD();
-
+      
       requestAnimationFrame(gameLoop);
     }
 
@@ -447,7 +419,7 @@
         x: canvas.width / 2,
         y: canvas.height / 2,
         r: SHIP_SIZE / 2,
-        a: 90 / 180 * Math.PI,
+        a: 90 / 180 * Math.PI, // convert to radians
         rot: 0,
         thrusting: false,
         thrust: { x: 0, y: 0 },
@@ -475,7 +447,6 @@
         this.x = x;
         this.y = y;
         this.r = r;
-        // Asteroid velocities are set once at creation and never modified
         this.xv = (Math.random() * ASTEROID_SPEED / FPS) * (Math.random() < 0.5 ? 1 : -1);
         this.yv = (Math.random() * ASTEROID_SPEED / FPS) * (Math.random() < 0.5 ? 1 : -1);
         this.a = Math.random() * Math.PI * 2;
@@ -487,7 +458,7 @@
       }
 
       draw() {
-        ctx.strokeStyle = themeColors.neonBlue;
+        ctx.strokeStyle = 'var(--neon-blue)';
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(
@@ -505,7 +476,6 @@
       }
 
       update() {
-        // Constant velocity — never modified by external input
         this.x += this.xv;
         this.y += this.yv;
 
@@ -548,29 +518,16 @@
       const deltaTime = timestamp - lastTime;
       lastTime = timestamp;
 
-      // Clear canvas with resolved background color
-      ctx.fillStyle = themeColors.bg;
+      // Clear Canvas
+      ctx.fillStyle = 'var(--bg)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Draw moving starfield with twinkling
-      const time = timestamp * 0.001;
+      // Draw Stars
       stars.forEach(s => {
-        const twinkle = 0.5 + 0.5 * Math.sin(time * s.twinkleSpeed + s.twinklePhase);
-        const alpha = s.baseOpacity * twinkle;
-        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.size * 0.5, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Move stars in their individual directions
-        s.x += s.vx;
-        s.y += s.vy;
-
-        // Wrap around edges
-        if (s.x < -5) s.x = canvas.width + 5;
-        else if (s.x > canvas.width + 5) s.x = -5;
-        if (s.y < -5) s.y = canvas.height + 5;
-        else if (s.y > canvas.height + 5) s.y = -5;
+        ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
+        ctx.fillRect(s.x, s.y, s.size, s.size);
+        s.y += s.speed;
+        if (s.y > canvas.height) s.y = 0;
       });
 
       // Ship Rotation
@@ -582,16 +539,16 @@
       if (input.thrust) {
         ship.thrust.x += SHIP_THRUST * Math.cos(ship.a) / FPS;
         ship.thrust.y += SHIP_THRUST * Math.sin(ship.a) / FPS;
-
+        
         // Thrust Flame
-        ctx.strokeStyle = themeColors.neonPink;
+        ctx.strokeStyle = 'var(--neon-pink)';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(ship.x - ship.r * (0.5 * Math.cos(ship.a) + 0.5 * Math.sin(ship.a)),
+        ctx.moveTo(ship.x - ship.r * (0.5 * Math.cos(ship.a) + 0.5 * Math.sin(ship.a)), 
                    ship.y - ship.r * (0.5 * Math.sin(ship.a) - 0.5 * Math.cos(ship.a)));
-        ctx.lineTo(ship.x - ship.r * 1.5 * Math.cos(ship.a),
+        ctx.lineTo(ship.x - ship.r * 1.5 * Math.cos(ship.a), 
                    ship.y - ship.r * 1.5 * Math.sin(ship.a));
-        ctx.lineTo(ship.x - ship.r * (0.5 * Math.cos(ship.a) - 0.5 * Math.sin(ship.a)),
+        ctx.lineTo(ship.x - ship.r * (0.5 * Math.cos(ship.a) - 0.5 * Math.sin(ship.a)), 
                    ship.y - ship.r * (0.5 * Math.sin(ship.a) + 0.5 * Math.cos(ship.a)));
         ctx.stroke();
       } else {
@@ -609,37 +566,19 @@
       if (ship.y < 0 - ship.r) ship.y = canvas.height + ship.r;
       else if (ship.y > canvas.height + ship.r) ship.y = 0 - ship.r;
 
-      // Draw Ship with prominent nose indicator
+      // Draw Ship
       if (!ship.dead) {
-        const noseX = ship.x + 4/3 * ship.r * Math.cos(ship.a);
-        const noseY = ship.y + 4/3 * ship.r * Math.sin(ship.a);
-
-        // Ship outline
-        ctx.strokeStyle = themeColors.neonBlue;
+        ctx.strokeStyle = 'var(--neon-blue)';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(noseX, noseY);
+        ctx.moveTo(ship.x + 4/3 * ship.r * Math.cos(ship.a), ship.y + 4/3 * ship.r * Math.sin(ship.a));
         ctx.lineTo(ship.x - ship.r * (2/3 * Math.cos(ship.a) + Math.sin(ship.a)), ship.y - ship.r * (2/3 * Math.sin(ship.a) - Math.cos(ship.a)));
         ctx.lineTo(ship.x - ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)), ship.y - ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a)));
         ctx.closePath();
         ctx.stroke();
-
-        // Filled cockpit/nose indicator
-        ctx.fillStyle = themeColors.neonPink;
-        ctx.beginPath();
-        ctx.arc(noseX, noseY, 3, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Nose glow
-        ctx.fillStyle = themeColors.neonPink;
-        ctx.globalAlpha = 0.3;
-        ctx.beginPath();
-        ctx.arc(noseX, noseY, 6, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1.0;
       }
 
-      // Bullets — larger and brighter for visibility
+      // Bullets
       if (input.fire && ship.canShoot) {
         bullets.push({
           x: ship.x + 4/3 * ship.r * Math.cos(ship.a),
@@ -658,6 +597,7 @@
         b.y += b.yv;
         b.dist += Math.sqrt(b.xv**2 + b.yv**2);
 
+        // Wrap bullets
         if (b.x < 0) b.x = canvas.width; else if (b.x > canvas.width) b.x = 0;
         if (b.y < 0) b.y = canvas.height; else if (b.y > canvas.height) b.y = 0;
 
@@ -666,18 +606,9 @@
           continue;
         }
 
-        // Bullet glow for visibility on any background
-        ctx.fillStyle = themeColors.neonPink;
-        ctx.globalAlpha = 0.3;
+        ctx.fillStyle = 'var(--neon-pink)';
         ctx.beginPath();
-        ctx.arc(b.x, b.y, 6, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1.0;
-
-        // Bullet core
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, 3, 0, Math.PI * 2);
+        ctx.arc(b.x, b.y, 2, 0, Math.PI * 2);
         ctx.fill();
       }
 
@@ -689,7 +620,7 @@
 
         // Collision with ship
         if (!ship.dead && distBetweenPoints(ship.x, ship.y, a.x, a.y) < ship.r + a.r) {
-          createExplosion(ship.x, ship.y, themeColors.neonBlue, 20);
+          createExplosion(ship.x, ship.y, 'var(--neon-blue)', 20);
           lives--;
           updateHUD();
           if (lives <= 0) {
@@ -704,14 +635,14 @@
         for (let j = bullets.length - 1; j >= 0; j--) {
           let b = bullets[j];
           if (distBetweenPoints(b.x, b.y, a.x, a.y) < a.r) {
-            createExplosion(a.x, a.y, themeColors.neonBlue, 10);
+            createExplosion(a.x, a.y, 'var(--neon-blue)', 10);
             bullets.splice(j, 1);
-
+            
             if (a.r > ASTEROID_SIZE / 4) {
               asteroids.push(new Asteroid(a.x, a.y, a.r / 2));
               asteroids.push(new Asteroid(a.x, a.y, a.r / 2));
             }
-
+            
             score += Math.floor(100 / (a.r / 10));
             updateHUD();
             asteroids.splice(i, 1);
