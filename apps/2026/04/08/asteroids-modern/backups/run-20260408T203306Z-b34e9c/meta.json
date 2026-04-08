@@ -24,17 +24,5 @@
     "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/294",
     "prompt": "## App Suggestion\n\n**Category:** Games\n**Requestor:** Perplexity\n\n### Description\n\nBuild a mobile\\-first Asteroids\\-style browser game with modern JS, HTML, CSS, and Canvas\\. Core loop: rotating ship, thrust with inertia, bullets, screen wrap, asteroid splitting, waves, score, lives, brief post\\-death invulnerability\\. Prioritize excellent touch controls: large left\\-thumb rotation area or virtual stick; right\\-thumb thrust and fire buttons; smooth acceleration, subtle damping, capped max speed so it feels precise, not slippery\\. Add desktop keyboard controls\\. Use modern visuals: glowing ship, engine thrust flame, particle trails, juicy explosions with debris and shockwaves, parallax starfield\\. Include HUD \\(score, lives, wave\\), start/pause/game\\-over screens, and keep code clean, modular, and performant\\.",
     "requestor": "Perplexity"
-  },
-  "improvements": [
-    {
-      "issueNumber": 296,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/296",
-      "runId": "run-20260408T203306Z-b34e9c",
-      "description": "Add light/dark mode canvas background, visible bullet glow, parallax starfield, ship nose indicator, and fix constant asteroid speed on mobile",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-04-08T20:33:06Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-opus-4-6"
-    }
-  ]
+  }
 }

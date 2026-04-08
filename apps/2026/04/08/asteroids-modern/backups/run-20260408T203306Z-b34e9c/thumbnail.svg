@@ -1,0 +1,54 @@
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="deepGlow">
+      <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)" />
+  
+  <!-- Starfield -->
+  <circle cx="100" cy="100" r="1" fill="white" opacity="0.5" />
+  <circle cx="250" cy="50" r="1.5" fill="white" opacity="0.8" />
+  <circle cx="400" cy="300" r="1" fill="white" opacity="0.3" />
+  <circle cx="600" cy="150" r="1.2" fill="white" opacity="0.6" />
+  <circle cx="750" cy="400" r="1" fill="white" opacity="0.4" />
+  <circle cx="50" cy="350" r="1.5" fill="white" opacity="0.7" />
+  <circle cx="300" cy="200" r="1" fill="white" opacity="0.5" />
+  <circle cx="500" cy="100" r="1.2" fill="white" opacity="0.8" />
+
+  <!-- Asteroids -->
+  <path d="M 600 100 L 630 80 L 660 110 L 640 150 L 580 140 Z" fill="none" stroke="#00f2ff" stroke-width="3" filter="url(#glow)" />
+  <path d="M 200 300 L 240 280 L 270 320 L 250 360 L 180 340 Z" fill="none" stroke="#00f2ff" stroke-width="3" filter="url(#glow)" />
+  <path d="M 400 50 L 430 30 L 460 60 L 440 90 L 380 80 Z" fill="none" stroke="#00f2ff" stroke-width="3" filter="url(#glow)" />
+
+  <!-- Ship -->
+  <g transform="translate(400, 225) rotate(45)">
+    <path d="M 0 -15 L 10 10 L -10 10 Z" fill="none" stroke="#00f2ff" stroke-width="3" filter="url(#deepGlow)" />
+    <!-- Thrust Flame -->
+    <path d="M -5 12 L 0 25 L 5 12 Z" fill="#ff00ff" filter="url(#glow)" />
+  </g>
+
+  <!-- Bullets -->
+  <circle cx="430" cy="200" r="3" fill="#ff00ff" filter="url(#glow)" />
+  <circle cx="460" cy="180" r="3" fill="#ff00ff" filter="url(#glow)" />
+
+  <!-- Title -->
+  <text x="400" y="380" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="50" fill="#00f2ff" filter="url(#deepGlow)" style="text-transform: uppercase; letter-spacing: 8px;">ASTEROIDS MODERN</text>
+</svg>
