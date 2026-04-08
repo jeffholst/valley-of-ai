@@ -2,6 +2,25 @@
 
 > **Read `AGENT_PROMPT_SHARED.md` first** — the shared safety and repo rules still apply here.
 
+<!-- model-routing:
+  - step: LOAD_GUARDRAILS
+    seq: 0
+    tier: fast
+    reason: "File read — load guardrails.production or guardrails.example"
+  - step: RETRIEVE_PENDING
+    seq: 1
+    tier: fast
+    reason: "Run npm run issues:pending script"
+  - step: REVIEW_ISSUE
+    seq: 2
+    tier: standard
+    reason: "Security analysis, prompt injection detection, legitimacy assessment"
+  - step: APPLY_DECISION
+    seq: 3
+    tier: fast
+    reason: "Run npm run issues:decide script"
+-->
+
 ---
 
 ## Mission

@@ -2,6 +2,69 @@
 
 > **Read `AGENT_PROMPT_SHARED.md` first** — all contracts and logging rules defined there apply unconditionally to this run.
 
+<!-- model-routing:
+  - step: PREP
+    seq: 0
+    tier: fast
+    reason: "Shell commands, timestamp generation, runId creation"
+  - step: SELECT_SUGGESTION
+    seq: 1
+    tier: standard
+    reason: "Script output parsing, duplication analysis, concept selection"
+  - step: RESEARCH_IDEAS
+    seq: 2
+    tier: deep
+    reason: "Creative ideation — mechanics design, UX inspiration, unique angle"
+  - step: GENERATE_HTML
+    seq: 3
+    tier: deep
+    reason: "Full app code generation — highest value creative step"
+  - step: GENERATE_THUMBNAIL
+    seq: 4
+    tier: standard
+    reason: "SVG generation following template spec, color matching"
+  - step: CREATE_META_JSON
+    seq: 5
+    tier: fast
+    reason: "Structured data assembly from known values"
+  - step: VALIDATE_APP
+    seq: 6
+    tier: fast
+    reason: "Running validation scripts, checking output"
+  - step: GIT_CHECKOUT_BRANCH
+    seq: 7
+    tier: fast
+    reason: "Git command"
+  - step: GIT_COMMIT
+    seq: 8
+    tier: fast
+    reason: "Git command"
+  - step: GIT_PUSH
+    seq: 9
+    tier: fast
+    reason: "Git command"
+  - step: CREATE_PR
+    seq: 10
+    tier: fast
+    reason: "Templated PR body creation"
+  - step: PR_REVIEW
+    seq: 11
+    tier: standard
+    reason: "Code quality review requires reasoning about correctness"
+  - step: UPDATE_REGISTRY
+    seq: 12
+    tier: fast
+    reason: "Verification only — confirm apps.json includes new entry"
+  - step: MERGE_PR_DEPLOY
+    seq: 13
+    tier: fast
+    reason: "Git/gh merge commands, deployment wait"
+  - step: DELETE_BRANCH
+    seq: 14
+    tier: fast
+    reason: "Git cleanup commands"
+-->
+
 ---
 
 ## Mission
