@@ -9,11 +9,6 @@
       <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:0.4" />
       <stop offset="100%" style="stop-color:#0f172a;stop-opacity:0" />
     </radialGradient>
-    <radialGradient id="shieldGrad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" style="stop-color:#00f2ff;stop-opacity:0.08" />
-      <stop offset="80%" style="stop-color:#00f2ff;stop-opacity:0.04" />
-      <stop offset="100%" style="stop-color:#00f2ff;stop-opacity:0" />
-    </radialGradient>
     <filter id="glow">
       <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
       <feMerge>
@@ -42,13 +37,6 @@
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-    <filter id="purpleGlow">
-      <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
-      <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
   </defs>
 
   <!-- Background -->
@@ -61,7 +49,7 @@
   <rect x="680" y="448" width="120" height="2" fill="#00f2ff" opacity="0.3" filter="url(#edgeGlow)" />
   <rect x="798" y="370" width="2" height="80" fill="#00f2ff" opacity="0.3" filter="url(#edgeGlow)" />
 
-  <!-- Starfield: distant -->
+  <!-- Parallax Starfield: layer 1 (distant, small) -->
   <circle cx="45" cy="30" r="0.8" fill="white" opacity="0.3" />
   <circle cx="120" cy="80" r="0.6" fill="white" opacity="0.4" />
   <circle cx="210" cy="25" r="0.7" fill="white" opacity="0.25" />
@@ -75,49 +63,37 @@
   <circle cx="300" cy="400" r="0.5" fill="white" opacity="0.25" />
   <circle cx="520" cy="380" r="0.6" fill="white" opacity="0.35" />
   <circle cx="650" cy="420" r="0.8" fill="white" opacity="0.3" />
+  <circle cx="730" cy="300" r="0.5" fill="white" opacity="0.4" />
+  <circle cx="380" cy="150" r="0.6" fill="white" opacity="0.3" />
 
-  <!-- Starfield: mid -->
+  <!-- Parallax Starfield: layer 2 (mid, medium) -->
   <circle cx="100" cy="100" r="1.2" fill="white" opacity="0.5" />
   <circle cx="250" cy="50" r="1.5" fill="white" opacity="0.7" />
   <circle cx="500" cy="100" r="1.3" fill="white" opacity="0.6" />
   <circle cx="600" cy="350" r="1.4" fill="white" opacity="0.5" />
   <circle cx="50" cy="350" r="1.5" fill="white" opacity="0.6" />
+  <circle cx="300" cy="200" r="1.2" fill="white" opacity="0.5" />
   <circle cx="700" cy="180" r="1.3" fill="white" opacity="0.55" />
+  <circle cx="420" cy="280" r="1.4" fill="white" opacity="0.5" />
 
-  <!-- Starfield: bright -->
+  <!-- Parallax Starfield: layer 3 (close, bright) -->
   <circle cx="180" cy="140" r="2.0" fill="white" opacity="0.8" />
   <circle cx="620" cy="80" r="2.2" fill="white" opacity="0.75" />
   <circle cx="350" cy="350" r="1.8" fill="white" opacity="0.7" />
+  <circle cx="750" cy="250" r="2.0" fill="white" opacity="0.8" />
 
   <!-- Asteroids -->
-  <path d="M 600 130 L 635 100 L 670 115 L 665 160 L 635 180 L 590 170 Z" fill="none" stroke="#00f2ff" stroke-width="2.5" filter="url(#glow)" />
+  <path d="M 600 110 L 635 80 L 670 95 L 665 140 L 635 160 L 590 150 Z" fill="none" stroke="#00f2ff" stroke-width="2.5" filter="url(#glow)" />
   <path d="M 150 280 L 190 260 L 225 280 L 230 320 L 200 350 L 160 340 L 140 310 Z" fill="none" stroke="#00f2ff" stroke-width="2.5" filter="url(#glow)" />
-  <path d="M 80 100 L 110 85 L 130 105 L 120 130 L 90 125 Z" fill="none" stroke="#00f2ff" stroke-width="2" filter="url(#glow)" />
-  <path d="M 450 80 L 480 60 L 510 75 L 505 105 L 475 115 L 445 100 Z" fill="none" stroke="#00f2ff" stroke-width="2" filter="url(#glow)" />
+  <path d="M 680 300 L 710 280 L 735 300 L 725 330 L 690 335 Z" fill="none" stroke="#00f2ff" stroke-width="2" filter="url(#glow)" />
+  <path d="M 80 80 L 110 65 L 130 85 L 120 110 L 90 105 Z" fill="none" stroke="#00f2ff" stroke-width="2" filter="url(#glow)" />
+  <path d="M 450 60 L 480 40 L 510 55 L 505 85 L 475 95 L 445 80 Z" fill="none" stroke="#00f2ff" stroke-width="2" filter="url(#glow)" />
 
-  <!-- Enemy UFO -->
-  <g filter="url(#purpleGlow)">
-    <!-- UFO body -->
-    <ellipse cx="650" cy="200" rx="30" ry="10" fill="none" stroke="#bc13fe" stroke-width="2.5" />
-    <!-- UFO dome -->
-    <ellipse cx="650" cy="195" rx="12" ry="8" fill="none" stroke="#bc13fe" stroke-width="2" />
-    <!-- UFO glow -->
-    <ellipse cx="650" cy="200" rx="38" ry="14" fill="#bc13fe" opacity="0.12" />
-  </g>
-
-  <!-- UFO bullets aimed at player -->
-  <circle cx="610" cy="210" r="4" fill="#bc13fe" opacity="0.4" filter="url(#bulletGlow)" />
-  <circle cx="610" cy="210" r="2" fill="#ffffff" />
-  <circle cx="575" cy="218" r="4" fill="#bc13fe" opacity="0.3" filter="url(#bulletGlow)" />
-  <circle cx="575" cy="218" r="2" fill="#ffffff" />
-
-  <!-- Ship with shield and nose indicator -->
-  <g transform="translate(380, 230) rotate(30)">
-    <!-- Shield circle -->
-    <circle cx="0" cy="0" r="28" fill="url(#shieldGrad)" stroke="#00f2ff" stroke-width="1.5" opacity="0.5" />
+  <!-- Ship with nose indicator -->
+  <g transform="translate(380, 210) rotate(30)">
     <!-- Ship body -->
     <path d="M 0 -18 L 12 12 L -12 12 Z" fill="none" stroke="#00f2ff" stroke-width="3" filter="url(#deepGlow)" />
-    <!-- Nose indicator -->
+    <!-- Nose indicator (pink dot) -->
     <circle cx="0" cy="-18" r="3.5" fill="#ff00ff" filter="url(#bulletGlow)" />
     <circle cx="0" cy="-18" r="6" fill="#ff00ff" opacity="0.25" />
     <!-- Thrust Flame -->
@@ -125,24 +101,26 @@
     <path d="M -3 14 L 0 22 L 3 14 Z" fill="#ffaaff" opacity="0.7" />
   </g>
 
-  <!-- Player bullets -->
-  <circle cx="410" cy="205" r="5" fill="#ff00ff" opacity="0.3" filter="url(#bulletGlow)" />
-  <circle cx="410" cy="205" r="3" fill="#ffffff" />
-  <circle cx="435" cy="185" r="5" fill="#ff00ff" opacity="0.3" filter="url(#bulletGlow)" />
-  <circle cx="435" cy="185" r="3" fill="#ffffff" />
+  <!-- Bullets with glow halos -->
+  <circle cx="410" cy="185" r="5" fill="#ff00ff" opacity="0.3" filter="url(#bulletGlow)" />
+  <circle cx="410" cy="185" r="3" fill="#ffffff" />
+  <circle cx="435" cy="165" r="5" fill="#ff00ff" opacity="0.3" filter="url(#bulletGlow)" />
+  <circle cx="435" cy="165" r="3" fill="#ffffff" />
+  <circle cx="460" cy="148" r="5" fill="#ff00ff" opacity="0.3" filter="url(#bulletGlow)" />
+  <circle cx="460" cy="148" r="3" fill="#ffffff" />
 
-  <!-- Explosion near asteroid -->
+  <!-- Explosion particles near an asteroid -->
   <circle cx="230" cy="270" r="2" fill="#00f2ff" opacity="0.8" />
   <circle cx="220" cy="265" r="1.5" fill="#00f2ff" opacity="0.6" />
   <circle cx="240" cy="260" r="1.8" fill="#00f2ff" opacity="0.7" />
   <circle cx="215" cy="275" r="1.2" fill="#ff00ff" opacity="0.5" />
+  <circle cx="235" cy="280" r="1.5" fill="#ff00ff" opacity="0.6" />
 
   <!-- HUD -->
-  <text x="30" y="30" font-family="'Courier New', monospace" font-size="16" font-weight="bold" fill="#f9fafb">SCORE: <tspan fill="#00f2ff">3950</tspan></text>
-  <text x="300" y="30" font-family="'Courier New', monospace" font-size="16" font-weight="bold" fill="#f9fafb">WAVE: <tspan fill="#00f2ff">4</tspan></text>
-  <text x="500" y="30" font-family="'Courier New', monospace" font-size="16" font-weight="bold" fill="#f9fafb">LIVES: <tspan fill="#00f2ff">2</tspan></text>
-  <text x="680" y="30" font-family="'Courier New', monospace" font-size="14" font-weight="bold" fill="#f9fafb">&#x1F6E1;2 &#x26A1;1</text>
+  <text x="30" y="30" font-family="'Courier New', monospace" font-size="16" font-weight="bold" fill="#f9fafb">SCORE: <tspan fill="#00f2ff">2450</tspan></text>
+  <text x="370" y="30" font-family="'Courier New', monospace" font-size="16" font-weight="bold" fill="#f9fafb">WAVE: <tspan fill="#00f2ff">3</tspan></text>
+  <text x="690" y="30" font-family="'Courier New', monospace" font-size="16" font-weight="bold" fill="#f9fafb">LIVES: <tspan fill="#00f2ff">2</tspan></text>
 
   <!-- Title -->
-  <text x="400" y="420" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="36" fill="#00f2ff" filter="url(#deepGlow)" style="text-transform: uppercase; letter-spacing: 6px;">ASTEROIDS MODERN</text>
+  <text x="400" y="415" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="36" fill="#00f2ff" filter="url(#deepGlow)" style="text-transform: uppercase; letter-spacing: 6px;">ASTEROIDS MODERN</text>
 </svg>
