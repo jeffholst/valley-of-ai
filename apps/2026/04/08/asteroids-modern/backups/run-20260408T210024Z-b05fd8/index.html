@@ -181,20 +181,17 @@
       display: flex;
       justify-content: center;
       align-items: flex-end;
-      padding: 20px;
-      gap: 12px;
-      flex-wrap: wrap;
-      align-content: flex-end;
+      padding: 40px;
+      gap: 20px;
     }
 
     .action-btn {
-      width: 64px;
-      height: 64px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.1);
       border: 3px solid var(--neon-blue);
       color: var(--neon-blue);
-      font-size: 1.4rem;
       font-weight: bold;
       display: flex;
       justify-content: center;
@@ -217,11 +214,6 @@
     #btnFire:active {
       background: var(--neon-pink);
     }
-
-    .action-btn.disabled {
-      opacity: 0.3;
-      pointer-events: none;
-    }
   </style>
 </head>
 <body>
@@ -231,7 +223,6 @@
       <div class="hud-item">SCORE: <span id="score">0</span></div>
       <div class="hud-item">WAVE: <span id="wave">1</span></div>
       <div class="hud-item">LIVES: <span id="lives">3</span></div>
-      <div class="hud-item">🛡<span id="shieldCount">3</span> ⚡<span id="hyperCount">3</span></div>
     </div>
 
     <canvas id="gameCanvas"></canvas>
@@ -241,8 +232,8 @@
       <p style="margin-bottom: 2rem; opacity: 0.8;">Avoid asteroids. Survive the waves.</p>
       <button id="btnStart" class="btn">Launch Ship</button>
       <p style="margin-top: 2rem; font-size: 0.9rem; opacity: 0.6;">
-        Desktop: Arrows/WASD to move, Space to fire, F shield, H hyperspace<br>
-        Mobile: Left side to rotate, Right side buttons for actions
+        Desktop: Arrows/WASD to move, Space to fire<br>
+        Mobile: Left side to rotate, Right side to thrust/fire
       </p>
     </div>
 
@@ -260,10 +251,8 @@
     <div id="controls">
       <div id="rotateZone" class="control-zone"></div>
       <div id="actionZone" class="control-zone">
-        <div id="btnShield" class="action-btn" title="Force Field">🛡</div>
-        <div id="btnHyper" class="action-btn" title="Hyperspace">⚡</div>
-        <div id="btnThrust" class="action-btn" title="Thrust">🔥</div>
-        <div id="btnFire" class="action-btn" title="Fire">💥</div>
+        <div id="btnThrust" class="action-btn">THRUST</div>
+        <div id="btnFire" class="action-btn">FIRE</div>
       </div>
     </div>
   </div>
@@ -277,8 +266,6 @@
     const scoreEl = document.getElementById('score');
     const waveEl = document.getElementById('wave');
     const livesEl = document.getElementById('lives');
-    const shieldCountEl = document.getElementById('shieldCount');
-    const hyperCountEl = document.getElementById('hyperCount');
     const finalScoreEl = document.getElementById('finalScore');
 
     // Resolve CSS variables for canvas rendering (canvas 2D context cannot use var())
@@ -313,28 +300,8 @@
     const ASTEROID_VERTICES = 10;
     const ASTEROID_JAG = 0.4;
 
-    // UFO Constants
-    const UFO_SIZE = 25;
-    const UFO_SPEED = 80;
-    const UFO_SHOOT_INTERVAL = 1500;
-    const UFO_BULLET_SPEED = 300;
-    const UFO_SPAWN_INTERVAL = 15000;
-    const UFO_POINTS = 500;
-
-    // Power-up Constants
-    const SHIELD_MAX = 3;
-    const SHIELD_DURATION = 3000;
-    const HYPER_MAX = 3;
-
     // Game State
     let score, lives, wave, ship, asteroids, bullets, particles, stars;
-    let ufo = null;
-    let ufoBullets = [];
-    let ufoTimer = 0;
-    let shieldCharges, hyperCharges;
-    let shieldActive = false;
-    let shieldEndTime = 0;
-    let hyperFlashTime = 0;
     let gameRunning = false;
     let paused = false;
     let lastTime = 0;
@@ -345,8 +312,6 @@
       right: false,
       thrust: false,
       fire: false,
-      shield: false,
-      hyper: false,
       touchX: null,
       touchY: null
     };
@@ -402,8 +367,6 @@
         if (e.code === 'ArrowRight' || e.code === 'KeyD') input.right = true;
         if (e.code === 'ArrowUp' || e.code === 'KeyW') input.thrust = true;
         if (e.code === 'Space') input.fire = true;
-        if (e.code === 'KeyF') activateShield();
-        if (e.code === 'KeyH') activateHyperspace();
         if (e.code === 'Escape') togglePause();
       });
       window.addEventListener('keyup', e => {
@@ -444,12 +407,6 @@
       const btnFire = document.getElementById('btnFire');
       btnFire.addEventListener('touchstart', e => { e.preventDefault(); input.fire = true; });
       btnFire.addEventListener('touchend', () => { input.fire = false; });
-
-      const btnShield = document.getElementById('btnShield');
-      btnShield.addEventListener('touchstart', e => { e.preventDefault(); activateShield(); });
-
-      const btnHyper = document.getElementById('btnHyper');
-      btnHyper.addEventListener('touchstart', e => { e.preventDefault(); activateHyperspace(); });
     }
 
     function startGame() {
@@ -459,18 +416,9 @@
       bullets = [];
       particles = [];
       asteroids = [];
-      ufo = null;
-      ufoBullets = [];
-      ufoTimer = 0;
-      shieldCharges = SHIELD_MAX;
-      hyperCharges = HYPER_MAX;
-      shieldActive = false;
-      shieldEndTime = 0;
-      hyperFlashTime = 0;
 
       ship = createShip();
       spawnWave();
-      updatePowerUpButtons();
 
       document.getElementById('startScreen').classList.add('hidden');
       document.getElementById('gameOverScreen').classList.add('hidden');
@@ -584,116 +532,10 @@
       return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
 
-    /** Enemy UFO that flies across the screen and shoots at the player */
-    class UFO {
-      constructor() {
-        this.r = UFO_SIZE;
-        // Enter from left or right edge
-        const fromLeft = Math.random() < 0.5;
-        this.x = fromLeft ? -this.r : canvas.width + this.r;
-        this.y = 50 + Math.random() * (canvas.height - 100);
-        this.xv = (fromLeft ? 1 : -1) * UFO_SPEED / FPS;
-        this.yv = (Math.random() - 0.5) * (UFO_SPEED * 0.4) / FPS;
-        this.shootTimer = 0;
-        this.alive = true;
-      }
-
-      update(timestamp) {
-        this.x += this.xv;
-        this.y += this.yv;
-
-        // Bounce off top/bottom
-        if (this.y < this.r || this.y > canvas.height - this.r) {
-          this.yv *= -1;
-        }
-
-        // Remove when off-screen
-        if (this.x < -this.r * 3 || this.x > canvas.width + this.r * 3) {
-          this.alive = false;
-        }
-
-        // Shoot at player
-        this.shootTimer += 1000 / FPS;
-        if (this.shootTimer >= UFO_SHOOT_INTERVAL && ship && !ship.dead) {
-          this.shootTimer = 0;
-          const angle = Math.atan2(ship.y - this.y, ship.x - this.x);
-          ufoBullets.push({
-            x: this.x,
-            y: this.y,
-            xv: UFO_BULLET_SPEED * Math.cos(angle) / FPS,
-            yv: UFO_BULLET_SPEED * Math.sin(angle) / FPS,
-            dist: 0
-          });
-        }
-      }
-
-      draw() {
-        // Classic saucer shape
-        ctx.strokeStyle = themeColors.neonPurple || '#bc13fe';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        // Top dome
-        ctx.ellipse(this.x, this.y - 4, this.r * 0.4, this.r * 0.3, 0, Math.PI, 0);
-        ctx.stroke();
-        ctx.beginPath();
-        // Main body
-        ctx.ellipse(this.x, this.y, this.r, this.r * 0.35, 0, 0, Math.PI * 2);
-        ctx.stroke();
-        // Glow
-        ctx.fillStyle = themeColors.neonPurple || '#bc13fe';
-        ctx.globalAlpha = 0.15;
-        ctx.beginPath();
-        ctx.ellipse(this.x, this.y, this.r * 1.3, this.r * 0.5, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1.0;
-      }
-    }
-
-    /** Activate force field shield */
-    function activateShield() {
-      if (!gameRunning || paused || ship.dead) return;
-      if (shieldCharges <= 0 || shieldActive) return;
-      shieldCharges--;
-      shieldActive = true;
-      shieldEndTime = performance.now() + SHIELD_DURATION;
-      updateHUD();
-      updatePowerUpButtons();
-    }
-
-    /** Activate hyperspace teleport */
-    function activateHyperspace() {
-      if (!gameRunning || paused || ship.dead) return;
-      if (hyperCharges <= 0) return;
-      hyperCharges--;
-      // Teleport to random safe location
-      let tries = 0;
-      do {
-        ship.x = 50 + Math.random() * (canvas.width - 100);
-        ship.y = 50 + Math.random() * (canvas.height - 100);
-        tries++;
-      } while (tries < 20 && asteroids.some(a => distBetweenPoints(ship.x, ship.y, a.x, a.y) < a.r + ship.r + 30));
-      ship.thrust.x = 0;
-      ship.thrust.y = 0;
-      hyperFlashTime = performance.now() + 300;
-      createExplosion(ship.x, ship.y, themeColors.neonBlue, 15);
-      updateHUD();
-      updatePowerUpButtons();
-    }
-
-    /** Update disabled state of power-up buttons */
-    function updatePowerUpButtons() {
-      const shieldBtn = document.getElementById('btnShield');
-      const hyperBtn = document.getElementById('btnHyper');
-      if (shieldBtn) shieldBtn.classList.toggle('disabled', shieldCharges <= 0);
-      if (hyperBtn) hyperBtn.classList.toggle('disabled', hyperCharges <= 0);
-    }
-
     function updateHUD() {
       scoreEl.innerText = score;
       waveEl.innerText = wave;
       livesEl.innerText = lives;
-      shieldCountEl.innerText = shieldCharges;
-      hyperCountEl.innerText = hyperCharges;
     }
 
     function gameLoop(timestamp) {
@@ -795,38 +637,6 @@
         ctx.arc(noseX, noseY, 6, 0, Math.PI * 2);
         ctx.fill();
         ctx.globalAlpha = 1.0;
-
-        // Shield visual
-        if (shieldActive) {
-          if (performance.now() < shieldEndTime) {
-            const pulse = 0.4 + 0.3 * Math.sin(timestamp * 0.01);
-            ctx.strokeStyle = themeColors.neonBlue;
-            ctx.lineWidth = 2;
-            ctx.globalAlpha = pulse;
-            ctx.beginPath();
-            ctx.arc(ship.x, ship.y, ship.r * 2.5, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.globalAlpha = 0.08;
-            ctx.fillStyle = themeColors.neonBlue;
-            ctx.beginPath();
-            ctx.arc(ship.x, ship.y, ship.r * 2.5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.globalAlpha = 1.0;
-          } else {
-            shieldActive = false;
-          }
-        }
-
-        // Hyperspace flash
-        if (hyperFlashTime > 0 && performance.now() < hyperFlashTime) {
-          ctx.strokeStyle = themeColors.neonBlue;
-          ctx.lineWidth = 1;
-          ctx.globalAlpha = 0.5;
-          ctx.beginPath();
-          ctx.arc(ship.x, ship.y, ship.r * 4, 0, Math.PI * 2);
-          ctx.stroke();
-          ctx.globalAlpha = 1.0;
-        }
       }
 
       // Bullets — larger and brighter for visibility
@@ -877,20 +687,8 @@
         a.update();
         a.draw();
 
-        // Collision with ship (shield absorbs hit)
+        // Collision with ship
         if (!ship.dead && distBetweenPoints(ship.x, ship.y, a.x, a.y) < ship.r + a.r) {
-          if (shieldActive) {
-            // Shield absorbs the hit, destroy the asteroid
-            createExplosion(a.x, a.y, themeColors.neonBlue, 10);
-            if (a.r > ASTEROID_SIZE / 4) {
-              asteroids.push(new Asteroid(a.x, a.y, a.r / 2));
-              asteroids.push(new Asteroid(a.x, a.y, a.r / 2));
-            }
-            asteroids.splice(i, 1);
-            shieldActive = false;
-            shieldEndTime = 0;
-            continue;
-          }
           createExplosion(ship.x, ship.y, themeColors.neonBlue, 20);
           lives--;
           updateHUD();
@@ -926,102 +724,6 @@
         wave++;
         updateHUD();
         spawnWave();
-      }
-
-      // UFO spawning
-      ufoTimer += 1000 / FPS;
-      if (!ufo && ufoTimer >= UFO_SPAWN_INTERVAL) {
-        ufo = new UFO();
-        ufoTimer = 0;
-      }
-
-      // UFO update and draw
-      if (ufo) {
-        ufo.update(timestamp);
-        if (!ufo.alive) {
-          ufo = null;
-        } else {
-          ufo.draw();
-
-          // UFO collision with player bullets
-          for (let j = bullets.length - 1; j >= 0; j--) {
-            if (distBetweenPoints(bullets[j].x, bullets[j].y, ufo.x, ufo.y) < ufo.r) {
-              createExplosion(ufo.x, ufo.y, themeColors.neonPurple || '#bc13fe', 15);
-              score += UFO_POINTS;
-              updateHUD();
-              bullets.splice(j, 1);
-              ufo = null;
-              break;
-            }
-          }
-
-          // UFO collision with ship
-          if (ufo && !ship.dead && distBetweenPoints(ship.x, ship.y, ufo.x, ufo.y) < ship.r + ufo.r) {
-            if (shieldActive) {
-              createExplosion(ufo.x, ufo.y, themeColors.neonPurple || '#bc13fe', 15);
-              score += UFO_POINTS;
-              updateHUD();
-              ufo = null;
-              shieldActive = false;
-              shieldEndTime = 0;
-            } else {
-              createExplosion(ship.x, ship.y, themeColors.neonBlue, 20);
-              lives--;
-              updateHUD();
-              if (lives <= 0) {
-                ship.dead = true;
-                gameOver();
-              } else {
-                ship = createShip();
-              }
-            }
-          }
-        }
-      }
-
-      // UFO bullets
-      for (let i = ufoBullets.length - 1; i >= 0; i--) {
-        let b = ufoBullets[i];
-        b.x += b.xv;
-        b.y += b.yv;
-        b.dist += Math.sqrt(b.xv**2 + b.yv**2);
-
-        if (b.x < 0 || b.x > canvas.width || b.y < 0 || b.y > canvas.height || b.dist > canvas.width * 0.8) {
-          ufoBullets.splice(i, 1);
-          continue;
-        }
-
-        // Draw UFO bullet (purple)
-        ctx.fillStyle = themeColors.neonPurple || '#bc13fe';
-        ctx.globalAlpha = 0.4;
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, 5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1.0;
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, 2, 0, Math.PI * 2);
-        ctx.fill();
-
-        // UFO bullet hits player
-        if (!ship.dead && distBetweenPoints(b.x, b.y, ship.x, ship.y) < ship.r + 3) {
-          if (shieldActive) {
-            shieldActive = false;
-            shieldEndTime = 0;
-            ufoBullets.splice(i, 1);
-            continue;
-          }
-          createExplosion(ship.x, ship.y, themeColors.neonBlue, 20);
-          ufoBullets.splice(i, 1);
-          lives--;
-          updateHUD();
-          if (lives <= 0) {
-            ship.dead = true;
-            gameOver();
-          } else {
-            ship = createShip();
-          }
-        }
       }
 
       // Particles
