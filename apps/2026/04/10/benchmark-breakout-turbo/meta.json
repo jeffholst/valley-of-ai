@@ -1,0 +1,37 @@
+{
+  "id": "benchmark-breakout-turbo",
+  "name": "Benchmark Breakout Turbo",
+  "shortDescription": "Portrait-friendly benchmark Breakout with charge shots, combo chains, mobile-safe controls, and polished arcade FX.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-04-10T23:50:24Z",
+  "category": "Games",
+  "status": "active",
+  "tags": [
+    "arcade",
+    "breakout",
+    "portrait",
+    "touch-controls",
+    "keyboard",
+    "charge-shot",
+    "combo",
+    "mobile-first"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "pi-coding-agent",
+    "llmModel": "gpt-4o",
+    "startTime": "2026-04-10T23:50:24Z",
+    "endTime": "2026-04-10T23:53:55Z",
+    "totalTokensIn": 4500,
+    "totalTokensOut": 5060,
+    "runId": "run-20260410T235024Z-296319",
+    "notes": "Built from approved benchmark suggestion #307 as a second benchmark Breakout variant with a portrait-first layout and charge-shot mechanic."
+  },
+  "suggestion": {
+    "issueNumber": 307,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/307",
+    "prompt": "Category: Games | Benchmark Breakout request. Treat as a controlled repeatable test where duplication is acceptable. Build a premium mobile-first Breakout game with smooth paddle control for touch, mouse, and keyboard; responsive layout; crisp graphics; fluid animation; readable HUD; score, lives, combo scoring; increasing difficulty; multiple brick patterns; fair rebound angles; progressive speed tuning; balanced power-ups; particle effects; subtle screen shake; adaptive audio; polished transitions; onboarding; sound toggle; 44px+ touch targets; no placeholders; no broken features; no build tools.",
+    "requestor": "Jeff Holst"
+  }
+}
