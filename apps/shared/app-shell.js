@@ -288,6 +288,23 @@
     const style = document.createElement('style');
     style.id = 'voa-shell-style';
     style.textContent = `
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --muted: #94a3b8;
+        --primary: #2563eb;
+        --accent: #22d3ee;
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+        --muted: #9ca3af;
+        --primary: #3b82f6;
+        --accent: #06b6d4;
+      }
+
       body.voa-shell-enabled {
         padding-top: 64px;
         padding-bottom: 56px;
