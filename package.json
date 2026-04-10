@@ -10,6 +10,7 @@
     "start": "next start",
     "sync": "node scripts/sync-public-content.js",
     "generate:apps": "node scripts/generate-apps.js",
+    "generate:versus": "node scripts/generate-versus.js",
     "validate:apps": "node scripts/validate-apps.js",
     "validate:responsive": "node scripts/validate-responsive.js",
     "validate:responsive:sample": "node scripts/validate-responsive.js --limit 5",
