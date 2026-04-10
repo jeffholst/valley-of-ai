@@ -27,8 +27,8 @@
         "model": "openai-codex/gpt-5.3-codex",
         "agent": "dev",
         "generationTime": 133,
-        "tokensIn": null,
-        "tokensOut": null
+        "tokensIn": 0,
+        "tokensOut": 0
       },
       {
         "appId": "2026/03/21/pattern-pulse-memory",
@@ -39,8 +39,8 @@
         "model": "openai-codex/gpt-5.3-codex",
         "agent": "dev",
         "generationTime": 308,
-        "tokensIn": null,
-        "tokensOut": null
+        "tokensIn": 0,
+        "tokensOut": 0
       }
     ]
   },
@@ -72,8 +72,8 @@
         "model": "gpt-5.3-codex",
         "agent": "openclaw-dev-agent",
         "generationTime": 121,
-        "tokensIn": null,
-        "tokensOut": null
+        "tokensIn": 0,
+        "tokensOut": 0
       }
     ]
   },
