@@ -19,7 +19,8 @@ export default function VersusEntryCard({
     : null;
 
   return (
-    <div className={`card overflow-hidden border-t-4 ${color.bg.replace('bg-', 'border-')}`}>
+    <div className="card overflow-hidden">
+      <div className={`h-1 w-full ${color.bg}`} />
       {/* Thumbnail */}
       <a
         href={entry.appPath}
