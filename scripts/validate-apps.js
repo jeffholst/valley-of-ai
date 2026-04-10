@@ -311,6 +311,9 @@ function validateVersusSynchronization() {
   // Validate versus data integrity
   const dataErrors = validateVersusData(competitions, appsById);
   errors.push(...dataErrors);
+  if (dataErrors.length > 0) {
+    return errors;
+  }
 
   // Check versus-registry.json is in sync
   if (!fs.existsSync(versusRegistryPath)) {
