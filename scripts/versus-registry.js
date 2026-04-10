@@ -10,15 +10,17 @@ export function validateVersusData(competitions, appsById) {
   const seenIds = new Set();
 
   for (const comp of competitions) {
-    // Duplicate ID check
-    if (seenIds.has(comp.id)) {
-      errors.push(`duplicate competition id: "${comp.id}"`);
-    }
-    seenIds.add(comp.id);
+    const hasValidId = typeof comp.id === 'string' && comp.id.length > 0;
 
     // Required fields
-    if (!comp.id || typeof comp.id !== 'string') {
+    if (!hasValidId) {
       errors.push('competition missing or invalid id');
+    } else {
+      // Duplicate ID check
+      if (seenIds.has(comp.id)) {
+        errors.push(`duplicate competition id: "${comp.id}"`);
+      }
+      seenIds.add(comp.id);
     }
     if (!comp.title || typeof comp.title !== 'string') {
       errors.push(`${comp.id}: missing or invalid title`);
