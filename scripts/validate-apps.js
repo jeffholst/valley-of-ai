@@ -297,6 +297,11 @@ function validateVersusSynchronization() {
     return errors;
   }
 
+  if (!Array.isArray(competitions)) {
+    errors.push('data/versus.json must contain a top-level array of competitions');
+    return errors;
+  }
+
   // Load apps registry for cross-reference
   let apps;
   try {
