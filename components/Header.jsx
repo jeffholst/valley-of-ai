@@ -63,6 +63,12 @@ export default function Header() {
                 Home
               </Link>
               <Link
+                href="/versus"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors duration-200"
+              >
+                Versus
+              </Link>
+              <Link
                 href="/suggest"
                 className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors duration-200"
               >
@@ -105,6 +111,13 @@ export default function Header() {
               className="block rounded-lg px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-medium transition-colors duration-200"
             >
               Home
+            </Link>
+            <Link
+              href="/versus"
+              onClick={closeMenu}
+              className="block rounded-lg px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-medium transition-colors duration-200"
+            >
+              Versus
             </Link>
             <Link
               href="/suggest"

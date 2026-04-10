@@ -12,12 +12,15 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { buildAppsRegistry } from './apps-registry.js';
+import { validateVersusData, buildVersusRegistry } from './versus-registry.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const root = path.resolve(__dirname, '..');
 const appsRoot = path.join(root, 'apps');
 const registryPath = path.join(root, 'data', 'apps.json');
+const versusInputPath = path.join(root, 'data', 'versus.json');
+const versusRegistryPath = path.join(root, 'data', 'versus-registry.json');
 const schemaPath = path.join(root, 'docs', 'json-schema', 'meta.json');
 
 const REQUIRED_CHECKS = [
@@ -278,6 +281,68 @@ function validateRegistrySynchronization() {
   return errors;
 }
 
+function validateVersusSynchronization() {
+  const errors = [];
+
+  if (!fs.existsSync(versusInputPath)) {
+    // No versus.json — nothing to validate
+    return errors;
+  }
+
+  let competitions;
+  try {
+    competitions = JSON.parse(fs.readFileSync(versusInputPath, 'utf8'));
+  } catch (error) {
+    errors.push(`data/versus.json is not valid JSON: ${error.message}`);
+    return errors;
+  }
+
+  // Load apps registry for cross-reference
+  let apps;
+  try {
+    apps = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+  } catch {
+    errors.push('cannot validate versus: data/apps.json is missing or invalid');
+    return errors;
+  }
+
+  const appsById = new Map(apps.map((a) => [a.id, a]));
+
+  // Validate versus data integrity
+  const dataErrors = validateVersusData(competitions, appsById);
+  errors.push(...dataErrors);
+
+  // Check versus-registry.json is in sync
+  if (!fs.existsSync(versusRegistryPath)) {
+    errors.push(
+      'data/versus-registry.json not found; run `npm run generate:versus` and commit the result'
+    );
+    return errors;
+  }
+
+  let committedVersusRegistry;
+  try {
+    committedVersusRegistry = JSON.parse(fs.readFileSync(versusRegistryPath, 'utf8'));
+  } catch (error) {
+    errors.push(`data/versus-registry.json is not valid JSON: ${error.message}`);
+    return errors;
+  }
+
+  const expectedRegistry = buildVersusRegistry(competitions, appsById);
+  expectedRegistry.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  const expectedJson = JSON.stringify(expectedRegistry, null, 2);
+  const currentJson = JSON.stringify(committedVersusRegistry, null, 2);
+
+  if (currentJson !== expectedJson) {
+    errors.push(
+      'data/versus-registry.json is out of sync; run `npm run generate:versus` and commit the updated registry'
+    );
+  }
+
+  return errors;
+}
+
 function main() {
   if (!fs.existsSync(appsRoot)) {
     console.error('ERROR: apps directory not found.');
@@ -330,6 +395,7 @@ function main() {
   }
 
   const registryErrors = validateRegistrySynchronization();
+  const versusErrors = validateVersusSynchronization();
 
   // Report results
   let hasFailures = false;
@@ -372,6 +438,16 @@ function main() {
     }
   } else {
     console.log('Validated data/apps.json registry synchronization: passed.');
+  }
+
+  if (versusErrors.length > 0) {
+    hasFailures = true;
+    console.error(`\nVersus validation failed: ${versusErrors.length} issue(s) found.`);
+    for (const error of versusErrors) {
+      console.error(`  - ${error}`);
+    }
+  } else if (fs.existsSync(versusInputPath)) {
+    console.log('Validated data/versus.json and versus-registry.json: passed.');
   }
 
   if (hasFailures) {

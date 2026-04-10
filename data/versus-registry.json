@@ -1,0 +1,113 @@
+[
+  {
+    "id": "memory-game-battle",
+    "title": "Memory Game Battle",
+    "prompt": "Build a memory card matching game with multiple difficulty levels, a timer, move counter, and satisfying flip animations.",
+    "createdAt": "2026-03-19T12:00:00Z",
+    "category": "Games",
+    "entries": [
+      {
+        "appId": "2026/03/06/memory-match",
+        "name": "Memory Match",
+        "shortDescription": "Classic card matching memory game with 3D flip animations, multiple difficulty levels, move counter, timer, and celebration effects. Train your memory!",
+        "thumbnailUrl": "/apps/2026/03/06/memory-match/thumbnail.svg",
+        "appPath": "/apps/2026/03/06/memory-match/index.html",
+        "model": "claude-opus-4.5",
+        "agent": "claude-opus-4.5",
+        "generationTime": 300,
+        "tokensIn": 6000,
+        "tokensOut": 4500
+      },
+      {
+        "appId": "2026/03/19/orbit-memory-match",
+        "name": "Orbit Memory Match",
+        "shortDescription": "Memorize and replay an expanding sequence on orbiting color nodes. Built for touch, mouse, and keyboard with responsive gameplay.",
+        "thumbnailUrl": "/apps/2026/03/19/orbit-memory-match/thumbnail.svg",
+        "appPath": "/apps/2026/03/19/orbit-memory-match/index.html",
+        "model": "openai-codex/gpt-5.3-codex",
+        "agent": "dev",
+        "generationTime": 133,
+        "tokensIn": null,
+        "tokensOut": null
+      },
+      {
+        "appId": "2026/03/21/pattern-pulse-memory",
+        "name": "Pattern Pulse Memory",
+        "shortDescription": "A polished Simon-style memory game with keyboard, mouse, and touch controls.",
+        "thumbnailUrl": "/apps/2026/03/21/pattern-pulse-memory/thumbnail.svg",
+        "appPath": "/apps/2026/03/21/pattern-pulse-memory/index.html",
+        "model": "openai-codex/gpt-5.3-codex",
+        "agent": "dev",
+        "generationTime": 308,
+        "tokensIn": null,
+        "tokensOut": null
+      }
+    ]
+  },
+  {
+    "id": "decision-wheel-duel",
+    "title": "Decision Wheel Duel",
+    "prompt": "Create a fun decision spinner wheel where users can add custom options, spin the wheel with realistic physics, and get a random result with celebratory animations.",
+    "createdAt": "2026-03-14T12:00:00Z",
+    "category": "Entertainment",
+    "entries": [
+      {
+        "appId": "2026/03/11/lucky-decision-wheel",
+        "name": "Lucky Decision Wheel",
+        "shortDescription": "Spin a polished weighted decision wheel to break ties, settle debates, and track your most frequent winners.",
+        "thumbnailUrl": "/apps/2026/03/11/lucky-decision-wheel/thumbnail.svg",
+        "appPath": "/apps/2026/03/11/lucky-decision-wheel/index.html",
+        "model": "gpt-5.3-codex",
+        "agent": "openclaw-dev-agent",
+        "generationTime": 60,
+        "tokensIn": 4500,
+        "tokensOut": 4000
+      },
+      {
+        "appId": "2026/03/14/decision-spinner",
+        "name": "Decision Spinner",
+        "shortDescription": "A polished weighted option spinner with touch/keyboard controls and fairness-aware winner history.",
+        "thumbnailUrl": "/apps/2026/03/14/decision-spinner/thumbnail.svg",
+        "appPath": "/apps/2026/03/14/decision-spinner/index.html",
+        "model": "gpt-5.3-codex",
+        "agent": "openclaw-dev-agent",
+        "generationTime": 121,
+        "tokensIn": null,
+        "tokensOut": null
+      }
+    ]
+  },
+  {
+    "id": "sorting-visualizer-showdown",
+    "title": "Sorting Visualizer Showdown",
+    "prompt": "Build a sorting algorithm visualizer that lets users compare different sorting algorithms (bubble sort, merge sort, quick sort) side by side with animated bar charts, speed controls, and array size options.",
+    "createdAt": "2026-03-12T12:00:00Z",
+    "category": "Education",
+    "entries": [
+      {
+        "appId": "2026/03/06/sorting-visualizer",
+        "name": "Sorting Algorithm Visualizer",
+        "shortDescription": "Interactive visualization of sorting algorithms including Bubble, Selection, Insertion, Merge, and Quick Sort. Watch algorithms sort data in real-time with comparison and swap tracking.",
+        "thumbnailUrl": "/apps/2026/03/06/sorting-visualizer/thumbnail.svg",
+        "appPath": "/apps/2026/03/06/sorting-visualizer/index.html",
+        "model": "claude-opus-4.5",
+        "agent": "claude-opus-4.5",
+        "generationTime": 360,
+        "tokensIn": 6100,
+        "tokensOut": 12600
+      },
+      {
+        "appId": "2026/03/12/sorting-race-visualizer",
+        "name": "Sorting Race Visualizer",
+        "shortDescription": "Pit two classic sorting algorithms against each other on identical data and watch their speed, comparisons, and swap counts update live.",
+        "thumbnailUrl": "/apps/2026/03/12/sorting-race-visualizer/thumbnail.svg",
+        "appPath": "/apps/2026/03/12/sorting-race-visualizer/index.html",
+        "model": "gpt-5.3-codex",
+        "agent": "openclaw-dev-agent",
+        "generationTime": 229,
+        "tokensIn": 6400,
+        "tokensOut": 5500
+      }
+    ]
+  }
+]
