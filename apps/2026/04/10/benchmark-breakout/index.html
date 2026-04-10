@@ -744,9 +744,9 @@
 
     // Resize handling to keep aspect ratio crisp
     function resizeCanvas() {
-      const rect = canvas.getBoundingClientRect();
-      const scale = rect.width / canvas.width;
-      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      // Keep a 1:1 transform and let CSS handle responsive sizing. The previous
+      // scale transform double-scaled the canvas on mobile, making the game tiny.
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
     window.addEventListener('resize', resizeCanvas);
 
