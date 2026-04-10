@@ -1,5 +1,49 @@
 [
   {
+    "id": "2026/04/10/benchmark-breakout",
+    "name": "Benchmark Breakout",
+    "shortDescription": "Premium mobile-first breakout benchmark with smooth touch/mouse/keyboard control, combos, power-ups, and polished FX.",
+    "thumbnailUrl": "/apps/2026/04/10/benchmark-breakout/thumbnail.svg",
+    "createdAt": "2026-04-10T23:18:27Z",
+    "year": 2026,
+    "month": 4,
+    "day": 10,
+    "category": "Games",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "arcade",
+      "breakout",
+      "touch-controls",
+      "keyboard",
+      "canvas",
+      "power-ups",
+      "combo",
+      "mobile-first"
+    ],
+    "route": "/apps/2026/04/10/benchmark-breakout",
+    "appPath": "/apps/2026/04/10/benchmark-breakout/index.html",
+    "generation": {
+      "agentName": "pi-coding-agent",
+      "llmModel": "gpt-4o",
+      "startTime": "2026-04-10T23:18:27Z",
+      "endTime": "2026-04-10T23:21:50Z",
+      "totalTokensIn": 5620,
+      "totalTokensOut": 4880,
+      "runId": "run-20260410T231827Z-146d73",
+      "notes": "Built from approved benchmark breakout suggestion #308; duplication accepted per requestor instructions."
+    },
+    "suggestion": {
+      "issueNumber": 308,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/308",
+      "prompt": "Category: Games | Benchmark Breakout request. Treat as a controlled, repeatable test where duplication is acceptable. Build a premium mobile-first Breakout game with smooth paddle control for touch, mouse, and keyboard; responsive layout; crisp graphics; fluid animation; satisfying collisions; readable HUD; score, lives, combo/bonus scoring; increasing difficulty; multiple brick patterns; fair rebound angles; progressive speed tuning; balanced power-ups; particle effects; subtle screen shake; adaptive audio; polished transitions; onboarding; sound toggle; 44px+ touch targets; no hover UI; stable 60 FPS; no placeholders; no broken features; no build tools.",
+      "requestor": "Jeff Holst"
+    },
+    "improvements": null,
+    "allowImprovements": true,
+    "backups": null
+  },
+  {
     "id": "2026/04/08/asteroids-modern",
     "name": "Asteroids Modern",
     "shortDescription": "A neon-infused, mobile-first reimagining of the classic Asteroids arcade game with fluid touch controls and synthwave aesthetics.",
