@@ -315,6 +315,13 @@ function validateVersusSynchronization() {
     return errors;
   }
 
+  // If the source versus data is invalid, stop here so we report the
+  // collected validation errors instead of risking a crash while building
+  // the derived registry from bad references.
+  if (dataErrors.length > 0) {
+    return errors;
+  }
+
   // Check versus-registry.json is in sync
   if (!fs.existsSync(versusRegistryPath)) {
     errors.push(
