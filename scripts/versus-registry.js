@@ -44,6 +44,10 @@ export function validateVersusData(competitions, appsById) {
 
     // Check each entry references a valid app
     for (const entry of comp.entries) {
+      if (!entry || typeof entry !== 'object') {
+        errors.push(`${comp.id}: entry must be a non-null object`);
+        continue;
+      }
       if (!entry.appId) {
         errors.push(`${comp.id}: entry missing appId`);
         continue;
@@ -54,7 +58,9 @@ export function validateVersusData(competitions, appsById) {
     }
 
     // Check for duplicate entries within a competition
-    const entryIds = comp.entries.map((e) => e.appId);
+    const entryIds = comp.entries
+      .filter((entry) => entry && typeof entry === 'object' && entry.appId)
+      .map((entry) => entry.appId);
     const uniqueEntryIds = new Set(entryIds);
     if (uniqueEntryIds.size !== entryIds.length) {
       errors.push(`${comp.id}: duplicate appId in entries`);
