@@ -9,6 +9,7 @@
   "tags": ["bingo", "number-caller", "party", "random", "host-tool", "mobile-friendly"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
+  "visible": false,
   "generation": {
     "agentName": "dev",
     "llmModel": "openai-codex/gpt-5.3-codex",

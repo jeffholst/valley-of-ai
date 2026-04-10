@@ -9,6 +9,7 @@
   "tags": ["arcade", "maze", "canvas", "mobile-first", "touch-controls", "neon", "ghost-ai"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
+  "visible": false,
   "generation": {
     "agentName": "GitHub Copilot",
     "llmModel": "gemma4:31b",
