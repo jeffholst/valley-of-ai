@@ -1,0 +1,28 @@
+{
+  "id": "neon-maze-chase",
+  "name": "Neon Maze Chase",
+  "shortDescription": "A high-contrast neon maze-chase game with distinct ghost AI behaviors and responsive touch controls.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-04-10T16:16:53Z",
+  "category": "Games",
+  "status": "active",
+  "tags": ["arcade", "maze", "canvas", "mobile-first", "touch-controls", "neon", "ghost-ai"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "GitHub Copilot",
+    "llmModel": "gemma4:31b",
+    "startTime": "2026-04-10T16:16:53Z",
+    "endTime": "2026-04-10T16:55:00Z",
+    "totalTokensIn": 11000,
+    "totalTokensOut": 6500,
+    "runId": "run-20260410T161653Z-80c4fa",
+    "notes": "Recreated Pac-Man-inspired game with a neon aesthetic and differentiated ghost AI for model comparison."
+  },
+  "suggestion": {
+    "issueNumber": 304,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/304",
+    "prompt": "## App Suggestion\n\n**Category:** Games\n**Requestor:** Jeff Holst\n\n### Description\n\nBuild a mobile\\-first Pac\\-Man\\-inspired browser game using plain JavaScript and HTML5 Canvas in a single self\\-contained HTML file with embedded CSS and JS\\. Include a tile\\-based maze, walls, pellets, score, lives, start screen, game over, restart, and win state\\. The player must move smoothly on the grid and collect all pellets to clear the level\\. Add 4 ghosts with simple but distinct chase behavior; they cannot be purely random\\. Include proper collision detection, responsive canvas sizing, portrait-friendly layout, keyboard controls, and touch controls for phones\\. Keep visuals retro and simple using Canvas shapes only—no external assets or libraries\\. Code should be modular, clean, and fully playable, with separated logic for state, rendering, input, and enemy behavior\\. Prioritize correctness, smooth gameplay, and mobile usability\\.",
+    "requestor": "Jeff Holst"
+  }
+}
