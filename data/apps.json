@@ -1,5 +1,49 @@
 [
   {
+    "id": "2026/04/11/benchmark-breakout-opus",
+    "name": "Benchmark Breakout Opus",
+    "shortDescription": "A premium Breakout game built as a benchmark for Claude Opus 4.6. Features smooth paddle physics, combo scoring, power-ups, particle effects, screen shake, adaptive Web Audio, and 5 progressively difficult levels with multi-hit and indestructible bricks.",
+    "thumbnailUrl": "/apps/2026/04/11/benchmark-breakout-opus/thumbnail.svg",
+    "createdAt": "2026-04-11T03:19:17Z",
+    "year": 2026,
+    "month": 4,
+    "day": 11,
+    "category": "Games",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "arcade",
+      "breakout",
+      "benchmark",
+      "canvas",
+      "touch-controls",
+      "power-ups",
+      "combo",
+      "mobile-first"
+    ],
+    "route": "/apps/2026/04/11/benchmark-breakout-opus",
+    "appPath": "/apps/2026/04/11/benchmark-breakout-opus/index.html",
+    "generation": {
+      "agentName": "claude-code",
+      "llmModel": "claude-opus-4-6",
+      "startTime": "2026-04-11T03:19:17Z",
+      "endTime": "2026-04-11T03:30:00Z",
+      "totalTokensIn": 17500,
+      "totalTokensOut": 25000,
+      "runId": "run-20260411T031917Z-68c4bc",
+      "notes": "Benchmark Breakout built by Claude Opus 4.6 from issue #306. Features canvas-based rendering, Web Audio API synthesized SFX, 5 level patterns, 3 power-up types, combo multiplier scoring, particle effects, and screen shake. Token counts are estimates."
+    },
+    "suggestion": {
+      "issueNumber": 306,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/306",
+      "prompt": "Benchmark Breakout game for LLM comparison. Must feel premium, mobile-first touch + desktop. Smooth paddle control (touch, mouse, keyboard); responsive layout; crisp graphics; fluid animation; satisfying collisions; readable HUD; score, lives, combo/bonus scoring, increasing difficulty, multiple brick patterns, fair rebound angles, progressive speed tuning, balanced power-ups, particle effects, subtle screen shake, adaptive audio, polished transitions, onboarding, sound toggle, 44px+ touch targets, no hover UI, stable 60 FPS, no placeholders, no broken features, no build tools.",
+      "requestor": "Jeff Holst"
+    },
+    "improvements": null,
+    "allowImprovements": true,
+    "backups": null
+  },
+  {
     "id": "2026/04/10/benchmark-breakout-turbo",
     "name": "Benchmark Breakout Turbo",
     "shortDescription": "Portrait-friendly benchmark Breakout with charge shots, combo chains, mobile-safe controls, and polished arcade FX.",
