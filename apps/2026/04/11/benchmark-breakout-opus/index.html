@@ -789,10 +789,13 @@
       const paddleTop = GAME_H - PADDLE_Y_OFFSET - PADDLE_H;
       const paddleLeft = paddle.x - paddle.w / 2;
 
+      // Time factor: normalize to 60fps so speed constants stay the same
+      const tf = dt * 60;
+
       // Update power-up drops
       for (let i = powerUps.length - 1; i >= 0; i--) {
         const pu = powerUps[i];
-        pu.y += pu.vy;
+        pu.y += pu.vy * tf;
         // Check paddle catch
         if (pu.y + PU_SIZE >= paddleTop && pu.y <= paddleTop + PADDLE_H &&
             pu.x >= paddleLeft && pu.x <= paddleLeft + paddle.w) {
@@ -812,8 +815,8 @@
         ball.trail.push({ x: ball.x, y: ball.y });
         if (ball.trail.length > 8) ball.trail.shift();
 
-        ball.x += ball.vx;
-        ball.y += ball.vy;
+        ball.x += ball.vx * tf;
+        ball.y += ball.vy * tf;
 
         // Wall collisions
         if (ball.x - ball.r <= 0) { ball.x = ball.r; ball.vx = Math.abs(ball.vx); AudioEngine.wallBounce(); }
