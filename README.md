@@ -273,6 +273,7 @@ stripe trigger checkout.session.completed
 | `npm run issues:decide`              | 🏷️ Apply an issue review decision. Removes `status:pending` and adds `status:approved` or `status:rejected`, or for `needs-human-review` keeps pending in place, adds `status:needs-human-review`, and comments the reason. Requires `--issue`, `--status`, and `--reason`.                                                                                                                              |
 | `npm run select:app:suggestion`      | 🤖 Recommend the next **new app** concept to build — checks GitHub for boosted/approved `suggestion` issues first (ranked by verified tip total), then falls back to Supabase vote analysis and category gap scoring when no issues exist. Outputs a JSON recommendation with duplication-risk scoring and saturated/recent tag warnings to avoid repeating existing concepts.                           |
 | `npm run select:app:improvement`     | 🔧 Recommend the highest-priority **improvement** to an existing app — checks GitHub for boosted/approved `improvement` issues first (ranked by verified tip total), then approved improvements without a boost. Outputs a JSON recommendation including the target app's metadata. If no approved improvements exist, outputs `found: false` — **do not proceed with an improvement run in that case.** |
+| `npm run agent`                      | 🚀 Harness for launching AI agent pipelines. Composes the correct prompt files and opens Claude Code. Pipeline is required (`review`, `new-app`, `improve`). Pass `--issue <n>` to act on a specific GitHub issue, bypassing heuristic selection and duplication checks entirely.                                                                                                                        |
 
 Examples:
 
@@ -297,6 +298,18 @@ npm run issues:pending -- --limit 10
 
 # Apply a review decision
 npm run issues:decide -- --issue 123 --status approved --reason "Clear legitimate request with no prompt-injection indicators."
+
+# Launch an agent pipeline (review / new-app / improve)
+npm run agent -- review
+npm run agent -- new-app
+npm run agent -- improve
+
+# Force a specific issue, bypassing heuristics and duplication checks
+npm run agent -- new-app --issue 42
+npm run agent -- improve --issue 99
+
+# Review a single issue instead of the full pending queue
+npm run agent -- review --issue 15
 ```
 
 ### Build & Deployment Pipeline
@@ -427,6 +440,8 @@ This is useful for documentation-only changes or quick fixes that don't require 
 ├── 📖 Documentation
 │   ├── 📄 docs/STYLE_GUIDE.md      # Code style, naming, conventions, best practices
 │   ├── 📄 docs/TESTING.md          # Testing guide and examples
+│   ├── 📁 docs/how-to/             # Step-by-step operational guides
+│   │   └── 📄 how-to-versus.md    # How to add a new versus competition
 │   └── 📁 docs/agent-prompts/      # AI agent pipeline prompts
 │       ├── 📄 AGENT_PROMPT_SHARED.md      # Shared contracts: logging, HTML rules, thumbnail spec
 │       ├── 📄 AGENT_PROMPT_ISSUE_REVIEW.md # Review pending suggestion/improvement issues safely
@@ -657,6 +672,17 @@ The field defaults to `true` for all apps — no action is needed to keep improv
 3. **No fallback** — returns `found: false` if nothing is approved; the agent stops
 
 Both scripts include duplication guardrails: `duplicationRisk` scoring, `saturatedTags` (tags in ≥20% of apps), and `recentTags` (tags from the last 14 days) to avoid building the same concept twice.
+
+---
+
+## ⚔️ Versus Competitions
+
+Versus pits multiple AI models against the same prompt so visitors can compare results side-by-side and vote for their favourite.
+
+- **`/versus`** — lists all competitions
+- **`/versus/<id>`** — head-to-head detail page with a comparison table, model info, vote bar, and entry cards
+
+To add a new competition manually, see [📖 docs/how-to/how-to-versus.md](docs/how-to/how-to-versus.md).
 
 ---
 
