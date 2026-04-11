@@ -360,7 +360,7 @@
     const BRICK_COLS = 10;
     const BRICK_PAD = 3;
     const BRICK_TOP = 60;
-    const BASE_SPEED = 5;
+    const BASE_SPEED = 3;
     const MAX_LEVELS = 5;
     const MAX_LIVES = 3;
 
@@ -481,7 +481,7 @@
       canvas.height = GAME_H * dpr;
       canvas.style.width = rect.width + 'px';
       canvas.style.height = rect.height + 'px';
-      ctx2d.setTransform(dpr * rect.width / GAME_W, 0, 0, dpr * rect.height / GAME_H, 0, 0);
+      ctx2d.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
     /* ========== GAME STATE ========== */
@@ -620,12 +620,18 @@
         const newBalls = [];
         for (const b of balls) {
           for (let i = 0; i < 2; i++) {
-            const angle = -Math.PI / 3 + (i * Math.PI / 3);
+            const spread = (i === 0 ? -1 : 1) * (Math.PI / 4);
+            const baseAngle = Math.atan2(b.vy, b.vx);
+            const angle = baseAngle + spread;
             const nb = createBall(b.x, b.y, angle);
             nb.speed = b.speed;
-            const s = b.speed;
-            nb.vx = Math.cos(angle) * s;
-            nb.vy = Math.sin(angle) * s;
+            nb.vx = Math.cos(angle) * b.speed;
+            nb.vy = Math.sin(angle) * b.speed;
+            // Ensure ball always has meaningful vertical movement
+            const minVy = b.speed * 0.3;
+            if (Math.abs(nb.vy) < minVy) {
+              nb.vy = nb.vy >= 0 ? minVy : -minVy;
+            }
             newBalls.push(nb);
           }
         }
@@ -1085,11 +1091,13 @@
     /* ========== INPUT HANDLERS ========== */
     // Touch
     container.addEventListener('touchstart', (e) => {
+      if (state !== 'playing') return;
       e.preventDefault();
       paddleTarget = canvasX(e.touches[0].clientX);
     }, { passive: false });
 
     container.addEventListener('touchmove', (e) => {
+      if (state !== 'playing') return;
       e.preventDefault();
       paddleTarget = canvasX(e.touches[0].clientX);
     }, { passive: false });
