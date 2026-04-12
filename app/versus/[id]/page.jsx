@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { notFound } from 'next/navigation';
 import VersusEntryCard from '@/components/VersusEntryCard';
+import VersusComparisonTable from '@/components/VersusComparisonTable';
 import VersusVoteBar from '@/components/VersusVoteBar';
 import { useVersusVotes } from '@/hooks/useVersusVotes';
 
@@ -98,6 +99,9 @@ function VersusDetailContent({ competition }) {
             isLoading={isLoading}
           />
         </div>
+
+        {/* Head-to-head comparison table */}
+        <VersusComparisonTable entries={competition.entries} />
 
         {/* Entry cards grid */}
         <div

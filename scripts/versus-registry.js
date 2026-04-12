@@ -97,6 +97,7 @@ export function buildVersusRegistry(competitions, appsById) {
             : null,
         tokensIn: app.generation?.totalTokensIn ?? null,
         tokensOut: app.generation?.totalTokensOut ?? null,
+        improvementCount: Array.isArray(app.improvements) ? app.improvements.length : 0,
       };
     }),
   }));

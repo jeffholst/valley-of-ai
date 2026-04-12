@@ -16,7 +16,8 @@
         "agent": "claude-opus-4.5",
         "generationTime": 300,
         "tokensIn": 6000,
-        "tokensOut": 4500
+        "tokensOut": 4500,
+        "improvementCount": 0
       },
       {
         "appId": "2026/03/19/orbit-memory-match",
@@ -28,7 +29,8 @@
         "agent": "dev",
         "generationTime": 133,
         "tokensIn": 0,
-        "tokensOut": 0
+        "tokensOut": 0,
+        "improvementCount": 0
       },
       {
         "appId": "2026/03/21/pattern-pulse-memory",
@@ -40,7 +42,8 @@
         "agent": "dev",
         "generationTime": 308,
         "tokensIn": 0,
-        "tokensOut": 0
+        "tokensOut": 0,
+        "improvementCount": 0
       }
     ]
   },
@@ -61,7 +64,8 @@
         "agent": "openclaw-dev-agent",
         "generationTime": 60,
         "tokensIn": 4500,
-        "tokensOut": 4000
+        "tokensOut": 4000,
+        "improvementCount": 0
       },
       {
         "appId": "2026/03/14/decision-spinner",
@@ -73,7 +77,8 @@
         "agent": "openclaw-dev-agent",
         "generationTime": 121,
         "tokensIn": 0,
-        "tokensOut": 0
+        "tokensOut": 0,
+        "improvementCount": 0
       }
     ]
   },
@@ -94,7 +99,8 @@
         "agent": "claude-opus-4.5",
         "generationTime": 360,
         "tokensIn": 6100,
-        "tokensOut": 12600
+        "tokensOut": 12600,
+        "improvementCount": 0
       },
       {
         "appId": "2026/03/12/sorting-race-visualizer",
@@ -106,7 +112,8 @@
         "agent": "openclaw-dev-agent",
         "generationTime": 229,
         "tokensIn": 6400,
-        "tokensOut": 5500
+        "tokensOut": 5500,
+        "improvementCount": 0
       }
     ]
   }
