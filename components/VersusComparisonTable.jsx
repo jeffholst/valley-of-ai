@@ -23,6 +23,11 @@ const MODEL_INFO = {
     ],
     description:
       "Anthropic's most capable model at its release, excelling at complex reasoning, creative tasks, and coding. Known for thoughtful, detailed outputs with strong safety alignment.",
+    leaderboards: [
+      { name: 'Chatbot Arena', url: 'https://lmarena.ai/' },
+      { name: 'SWE-bench', url: 'https://www.swebench.com/' },
+      { name: 'Artificial Analysis', url: 'https://artificialanalysis.ai/' },
+    ],
   },
   'gpt-5.3-codex': {
     displayName: 'GPT-5.3 Codex',
@@ -38,6 +43,11 @@ const MODEL_INFO = {
     ],
     description:
       "OpenAI's code-specialized model optimized for software development. Designed for fast, accurate code generation across many programming languages with strong tool-use capabilities.",
+    leaderboards: [
+      { name: 'Chatbot Arena', url: 'https://lmarena.ai/' },
+      { name: 'SWE-bench', url: 'https://www.swebench.com/' },
+      { name: 'Scale SEAL', url: 'https://scale.com/leaderboard' },
+    ],
   },
   'openai-codex/gpt-5.3-codex': {
     displayName: 'GPT-5.3 Codex',
@@ -53,6 +63,11 @@ const MODEL_INFO = {
     ],
     description:
       "OpenAI's Codex agent platform running GPT-5.3, designed for autonomous coding tasks. Executes multi-step development workflows including writing, testing, and debugging code in sandboxed environments.",
+    leaderboards: [
+      { name: 'Chatbot Arena', url: 'https://lmarena.ai/' },
+      { name: 'SWE-bench', url: 'https://www.swebench.com/' },
+      { name: 'Scale SEAL', url: 'https://scale.com/leaderboard' },
+    ],
   },
 };
 
@@ -146,6 +161,7 @@ export default function VersusComparisonTable({ entries }) {
               render={(e) => formatTime(e.generationTime)}
               highlight="lowest"
               getValue={(e) => e.generationTime}
+              winLabel="Fastest"
             />
             <ComparisonRow
               label="Tokens In"
@@ -228,6 +244,39 @@ export default function VersusComparisonTable({ entries }) {
                     </div>
                   </div>
                 )}
+                {info.leaderboards?.length > 0 && (
+                  <div className="mt-3">
+                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                      Benchmark Leaderboards
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {info.leaderboards.map((lb) => (
+                        <a
+                          key={lb.name}
+                          href={lb.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          {lb.name}
+                          <svg
+                            className="w-2.5 h-2.5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -237,7 +286,7 @@ export default function VersusComparisonTable({ entries }) {
   );
 }
 
-function ComparisonRow({ label, entries, render, highlight, getValue }) {
+function ComparisonRow({ label, entries, render, highlight, getValue, winLabel = 'Best' }) {
   // Determine which entry "wins" for highlighting
   let winnerIndex = -1;
   if (highlight === 'lowest' && getValue) {
@@ -246,6 +295,15 @@ function ComparisonRow({ label, entries, render, highlight, getValue }) {
       const v = getValue(e);
       if (v !== null && v !== undefined && v > 0 && v < min) {
         min = v;
+        winnerIndex = i;
+      }
+    });
+  } else if (highlight === 'highest' && getValue) {
+    let max = -Infinity;
+    entries.forEach((e, i) => {
+      const v = getValue(e);
+      if (v !== null && v !== undefined && v > 0 && v > max) {
+        max = v;
         winnerIndex = i;
       }
     });
@@ -266,7 +324,7 @@ function ComparisonRow({ label, entries, render, highlight, getValue }) {
           <span className="flex items-center gap-1">
             {render(entry)}
             {i === winnerIndex && (
-              <span className="text-emerald-500 text-[10px] font-bold uppercase">Fastest</span>
+              <span className="text-emerald-500 text-[10px] font-bold uppercase">{winLabel}</span>
             )}
           </span>
         </td>
