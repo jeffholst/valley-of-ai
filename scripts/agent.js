@@ -108,8 +108,9 @@ const label = issueNumber ? `${pipeline} (issue #${issueNumber})` : pipeline;
 console.log(`\nLaunching agent pipeline: ${label}`);
 console.log('─'.repeat(50));
 
-const result = spawnSync('claude', [fullPrompt], {
-  stdio: 'inherit',
+const result = spawnSync('claude', [], {
+  input: fullPrompt,
+  stdio: ['pipe', 'inherit', 'inherit'],
   shell: false,
 });
 
