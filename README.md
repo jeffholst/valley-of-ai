@@ -22,6 +22,8 @@ _Every app you see was conceived, designed, coded, and deployed by artificial in
 
 ---
 
+> **New contributor?** Start with [CONTRIBUTING.md](CONTRIBUTING.md) — it covers local setup, the PR process, and where to find the full docs.
+
 </div>
 
 ## ✨ Features
@@ -577,6 +579,8 @@ Each app includes rich metadata in `meta.json`:
 ---
 
 ## 🤖 AI Agent Pipelines
+
+> **Note for human contributors:** The files in `docs/agent-prompts/` are read directly by AI agents at runtime — they are not required reading for contributing to the gallery or its codebase. If you're a human contributor, [CONTRIBUTING.md](CONTRIBUTING.md) is the right starting point.
 
 The AI agents that review, build, and improve apps follow structured prompts in `docs/agent-prompts/`.
 

@@ -1,3 +1,5 @@
+> **Wiki candidate:** This file is intended to move to the [GitHub Wiki](https://github.com/jeffholst/valley-of-ai/wiki) as the **Style Guide** page. Until then, the content lives here.
+
 # Valley of AI — Style Guide
 
 ## Overview
@@ -7,6 +9,7 @@ This document defines the coding standards, conventions, and best practices for 
 ## Tooling
 
 ### ESLint
+
 We use ESLint to enforce code quality rules and catch common mistakes.
 
 ```bash
@@ -17,6 +20,7 @@ npm run lint:fix      # Auto-fix linting errors
 **Config:** `.eslintrc.json` — extends `next/core-web-vitals`
 
 ### Prettier
+
 We use Prettier for opinionated code formatting to eliminate style debates.
 
 ```bash
@@ -30,6 +34,7 @@ npm run format        # Format all files
 ## JavaScript/JSX Conventions
 
 ### Variable Declaration
+
 - Use `const` by default, `let` if reassignment is needed, never use `var`
 - Use camelCase for variable and function names
 - Use UPPER_SNAKE_CASE for constants
@@ -47,6 +52,7 @@ const handleclick = () => {};
 ```
 
 ### Naming Conventions
+
 - Component names: **PascalCase** (`Header.jsx`, `AppCard.jsx`)
 - Hook names: Start with **use** (`useVotes.js`, `useTheme.js`)
 - Event handlers: Prefix with **on** (`onClick`, `onChange`, `onSubmit`)
@@ -65,6 +71,7 @@ const voted = checkVote();
 ```
 
 ### Functions and Methods
+
 - Use arrow functions in React components and callbacks
 - Write concise, single-purpose functions
 - Add JSDoc comments for complex logic
@@ -86,6 +93,7 @@ const analyzePassword = (pwd) => {
 ```
 
 ### React Components
+
 - Use functional components (not class components)
 - Place `use client` directive at the top for client components
 - Keep components small and focused
@@ -99,7 +107,7 @@ import { useState } from 'react';
 
 export default function AppCard({ app }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  
+
   return (
     <div onClick={() => setIsExpanded(!isExpanded)}>
       {app.name}
@@ -117,6 +125,7 @@ export default function AppCard({ app }) {
 ```
 
 ### Conditionals and Loops
+
 - Use explicit comparisons and conditions
 - Use early returns to reduce nesting
 - Avoid ternaries for multi-line conditions
@@ -134,7 +143,7 @@ if (password !== '') {
   // nested logic
 }
 
-const strength = score >= 80 ? 'Excellent' : (score >= 65 ? 'Strong' : (score >= 35 ? 'Fair' : 'Weak'));
+const strength = score >= 80 ? 'Excellent' : score >= 65 ? 'Strong' : score >= 35 ? 'Fair' : 'Weak';
 ```
 
 ---
@@ -164,6 +173,7 @@ const strength = score >= 80 ? 'Excellent' : (score >= 65 ? 'Strong' : (score >=
 ## File Organization
 
 ### Directory Structure
+
 ```
 /
 ├── app/                 # Next.js App Router
@@ -183,6 +193,7 @@ const strength = score >= 80 ? 'Excellent' : (score >= 65 ? 'Strong' : (score >=
 ```
 
 ### File Naming
+
 - Components: **PascalCase** (`Header.jsx`, `LayoutShell.jsx`)
 - Hooks: **camelCase** (`useVotes.js`, `useTheme.js`)
 - Utilities: **camelCase** (`siteConfig.js`, `supabase.js`)
@@ -193,6 +204,7 @@ const strength = score >= 80 ? 'Excellent' : (score >= 65 ? 'Strong' : (score >=
 ## Git and Commits
 
 ### Commit Messages
+
 Follow [Conventional Commits](https://www.conventionalcommits.org/) format:
 
 ```
@@ -204,6 +216,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/) format:
 ```
 
 **Types:**
+
 - `feat:` – New feature
 - `fix:` – Bug fix
 - `docs:` – Documentation
@@ -214,6 +227,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/) format:
 - `chore:` – Dependency updates, build config
 
 **Examples:**
+
 ```
 feat(entropy-lab): add generator checkboxes for charset options
 fix(supabase): handle missing env vars during build on Vercel
@@ -222,6 +236,7 @@ refactor(components): extract password validation logic
 ```
 
 ### Branch Naming
+
 - Feature: `feat/description` (e.g., `feat/password-generator`)
 - Bug fix: `fix/description` (e.g., `fix/hydration-mismatch`)
 - Documentation: `docs/description` (e.g., `docs/update-readme`)
@@ -231,6 +246,7 @@ refactor(components): extract password validation logic
 ## Testing and Validation
 
 ### Before Committing
+
 ```bash
 # Run linter
 npm run lint
@@ -279,8 +295,8 @@ import HeavyComponent from './Heavy';
 
 ```jsx
 // ✅ Good
-<button 
-  onClick={handleVote} 
+<button
+  onClick={handleVote}
   aria-label="Vote for this app"
   disabled={hasVoted}
 >
@@ -330,6 +346,7 @@ const entropy = pwd.length * Math.log2(charsetSize);
 ## Summary Checklist
 
 Before submitting a PR:
+
 - [ ] Code passes ESLint (`npm run lint`)
 - [ ] Code is formatted with Prettier (`npm run format`)
 - [ ] Build succeeds locally (`npm run build`)

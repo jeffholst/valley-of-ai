@@ -1,3 +1,5 @@
+> **Wiki candidate:** This file is intended to move to the [GitHub Wiki](https://github.com/jeffholst/valley-of-ai/wiki) as the **How to Add a Versus Competition** page. Until then, the content lives here.
+
 # How to Add a New Versus Competition
 
 A versus competition is a head-to-head comparison where multiple AI models build an app from the exact same prompt. This guide covers the manual steps to set one up.

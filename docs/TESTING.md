@@ -1,3 +1,5 @@
+> **Wiki candidate:** This file is intended to move to the [GitHub Wiki](https://github.com/jeffholst/valley-of-ai/wiki) as the **Testing Guide** page. Until then, the content lives here.
+
 # Testing Guide
 
 This document describes the testing framework and how to write tests for the Valley of AI project.
@@ -13,16 +15,19 @@ The project uses **Jest** with **React Testing Library** for unit and integratio
 ## Running Tests
 
 ### Run all tests
+
 ```bash
 npm test
 ```
 
 ### Run tests in watch mode (re-run on file changes)
+
 ```bash
 npm run test:watch
 ```
 
 ### Generate coverage report
+
 ```bash
 npm run test:coverage
 ```
@@ -116,10 +121,10 @@ jest.mock('@/lib/api', () => ({
    it('example test', () => {
      // Arrange: set up test data and render component
      render(<MyComponent />);
-     
+
      // Act: perform user actions
      fireEvent.click(screen.getByRole('button'));
-     
+
      // Assert: verify expected outcome
      expect(screen.getByText('Success')).toBeInTheDocument();
    });
@@ -128,11 +133,13 @@ jest.mock('@/lib/api', () => ({
 ## Configuration Files
 
 ### jest.config.js
+
 - Main Jest configuration
 - Sets up test environment and module paths
 - Defines coverage collection patterns
 
 ### jest.setup.js
+
 - Extends test environment with custom setup
 - Imports Testing Library matchers
 - Mocks browser APIs (e.g., `window.matchMedia`)
@@ -151,16 +158,19 @@ Coverage reports are saved in the `coverage/` directory.
 ## Debugging Tests
 
 ### Run single test file
+
 ```bash
 npm test -- __tests__/components/MyComponent.test.js
 ```
 
 ### Run tests matching pattern
+
 ```bash
 npm test -- --testNamePattern="should render"
 ```
 
 ### Run with additional output
+
 ```bash
 npm test -- --verbose
 ```
@@ -168,12 +178,15 @@ npm test -- --verbose
 ## Common Issues
 
 ### Missing module errors
+
 Ensure module paths in `.js` or `.jsx` use the `@/` path alias as defined in `jest.config.js`.
 
 ### DOM API not available
+
 Some browser APIs (like `window.matchMedia`) are mocked in `jest.setup.js`. For additional mocks, add them there.
 
 ### Component state not updating
+
 Use `waitFor()` from React Testing Library when async operations are involved:
 
 ```javascript

@@ -1,3 +1,5 @@
+> **Wiki candidate:** This file is intended to move to the [GitHub Wiki](https://github.com/jeffholst/valley-of-ai/wiki) as the **Fork & Deploy Your Own Instance** page. Until then, the content lives here.
+
 # Fork Setup Checklist
 
 A step-by-step guide for anyone who forks this project to build their own

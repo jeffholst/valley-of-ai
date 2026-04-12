@@ -1,6 +1,17 @@
 {
   "name": "valley-of-ai",
   "version": "0.2.0",
+  "description": "An AI-powered gallery of mini-apps built nightly by LLMs from community suggestions.",
+  "author": "Jeff Holst",
+  "license": "MIT",
+  "homepage": "https://www.valleyofai.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jeffholst/valley-of-ai"
+  },
+  "bugs": {
+    "url": "https://github.com/jeffholst/valley-of-ai/issues"
+  },
   "private": true,
   "type": "module",
   "scripts": {

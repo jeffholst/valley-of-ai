@@ -1,3 +1,5 @@
+> **Wiki candidate:** This file is intended to move to the [GitHub Wiki](https://github.com/jeffholst/valley-of-ai/wiki) as the **Git Workflow** page. Until then, the content lives here.
+
 # Git workflow
 
 ## Small changes
@@ -75,7 +77,6 @@ git checkout main
 git pull origin main
 ```
 
-
 ## Medium > changes
 
 ### 1. Make sure main is up to date
@@ -111,16 +112,16 @@ The `-u` sets up tracking so future `git push`/`pull` work without extra args.
 
 ### 5. Open a pull request on GitHub
 
-- Go to the repo in GitHub; you’ll see a banner for your new branch with a “Compare & pull request” button.  
+- Go to the repo in GitHub; you’ll see a banner for your new branch with a “Compare & pull request” button.
 - Click it, set:
   - Base: `main`
   - Compare: `fix/scroll-to-top-detail`
-- Add a short title and description (what changed, why).  
+- Add a short title and description (what changed, why).
 - Create the PR and request a review from a teammate.
 
 ### 6. Address review comments (if any)
 
-- Make edits locally on the same branch.  
+- Make edits locally on the same branch.
 - Then:
 
 ```bash
@@ -135,7 +136,7 @@ GitHub updates the existing PR automatically.
 
 Once approved and checks pass:
 
-- On GitHub: click “Merge” (often “Squash and merge” or “Rebase and merge”, depending on team preference).  
+- On GitHub: click “Merge” (often “Squash and merge” or “Rebase and merge”, depending on team preference).
 - After merge, locally:
 
 ```bash

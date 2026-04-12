@@ -1,0 +1,14 @@
+# CODEOWNERS — auto-requests review from the listed owner(s) when a PR touches these paths.
+# See https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything not matched below
+* @jeffholst
+
+# AI agent pipelines — changes here affect nightly automation
+docs/agent-prompts/ @jeffholst
+
+# Core data files — changes affect the live registry
+data/ @jeffholst
+
+# CI/CD and GitHub config
+.github/ @jeffholst
