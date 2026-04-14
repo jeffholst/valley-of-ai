@@ -1,6 +1,6 @@
 name: App Suggestion
 description: Suggest a new mini-app for AI to build
-title: '[Suggestion] '
+title: 'Suggestion: [add suggestiont title] '
 labels:
   - suggestion
   - status:pending
