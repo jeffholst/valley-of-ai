@@ -8,6 +8,7 @@
   const SOCIAL_INSTAGRAM_URL_PLACEHOLDER = '__SOCIAL_INSTAGRAM_URL__';
   const SUPABASE_URL_PLACEHOLDER = '__SUPABASE_URL__';
   const SUPABASE_ANON_KEY_PLACEHOLDER = '__SUPABASE_ANON_KEY__';
+  let currentShareUrl = null;
   const SHELL_CONFIG_PATH = '/apps/shared/shell-config.json';
   const DEFAULT_MAIN_SITE_URL = '';
   const DEFAULT_MAIN_SITE_NAME = '';
@@ -850,6 +851,7 @@
 
     const platformAnchors = [];
 
+    currentShareUrl = _voaShareUrl || window.location.href;
     const platforms = [
       {
         label: 'X / Twitter',
@@ -923,7 +925,7 @@
         item.href = p.copyOpen;
         item.target = '_blank';
         item.addEventListener('click', () => {
-          navigator.clipboard.writeText(_voaShareUrl || window.location.href).catch(() => {});
+          navigator.clipboard.writeText(currentShareUrl || window.location.href).catch(() => {});
           item.style.opacity = '0.7';
           setTimeout(() => {
             item.style.opacity = '';
