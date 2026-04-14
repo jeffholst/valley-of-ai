@@ -34,7 +34,7 @@ export async function generateMetadata({ params }) {
   const baseDescription = app.shortDescription || `Explore ${app.name} on ${siteName}.`;
   const rawDescription = `An AI-generated web app${agentName}${modelName}. ${baseDescription}`;
   const description =
-    rawDescription.length > 160 ? `${rawDescription.slice(0, 159)}\u2026` : rawDescription;
+    rawDescription.length <= 160 ? rawDescription : `${rawDescription.slice(0, 159)}\u2026`;
   const pageUrl = new URL(`/showcase/${id}`, siteUrl).toString();
   const imageUrl = app.thumbnailUrl ? new URL(app.thumbnailUrl, siteUrl).toString() : null;
   const keywords = [
