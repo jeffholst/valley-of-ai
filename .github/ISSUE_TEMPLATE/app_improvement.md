@@ -16,4 +16,4 @@ assignees: ''
 
 ### Description
 
-What specifically should be improved? Be concrete — the AI agent uses this to implement the change.
+Describe what should be improved in 1,000 characters or less. Be concrete — the AI agent uses this to implement the change.
