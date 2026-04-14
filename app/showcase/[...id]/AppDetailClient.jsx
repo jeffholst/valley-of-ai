@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { useVotes } from '@/hooks/useVotes';
+import { useVotes, useAllVoteCounts } from '@/hooks/useVotes';
 import VoteButtons from '@/components/VoteButtons';
 import AppLog from '@/components/AppLog';
 import AppCard from '@/components/AppCard';
@@ -11,6 +11,8 @@ import { githubUrl, siteName } from '@/lib/siteConfig';
 
 export default function AppDetailClient({ app, id, similarApps }) {
   const { upvoteCount, downvoteCount, myVote, isLoading, isVoting, vote } = useVotes(id);
+  const similarAppIds = similarApps?.map((a) => a.id) ?? [];
+  const { voteCounts: similarVoteCounts } = useAllVoteCounts(similarAppIds);
   const [selectedVersionUrl, setSelectedVersionUrl] = useState(app.appPath);
 
   const formattedDate = new Date(app.createdAt).toLocaleDateString('en-US', {
@@ -317,7 +319,11 @@ export default function AppDetailClient({ app, id, similarApps }) {
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {similarApps.map((similar) => (
-                <AppCard key={similar.id} app={similar} />
+                <AppCard
+                  key={similar.id}
+                  app={similar}
+                  initialCounts={similarVoteCounts[similar.id]}
+                />
               ))}
             </div>
           </div>
