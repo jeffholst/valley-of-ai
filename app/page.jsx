@@ -11,6 +11,7 @@ import PaymentSuccessModal from '@/components/PaymentSuccessModal';
 import PterodactylSky from '@/components/PterodactylSky';
 import { usePterodactyls } from '@/hooks/usePterodactyls';
 import { useAllVoteCounts } from '@/hooks/useVotes';
+import { trendingScore } from '@/lib/trendingScore';
 import appsData from '@/data/apps.json';
 
 const OPTIONS_STORAGE_KEY = 'voa-page-options';
@@ -207,16 +208,10 @@ export default function HomePage() {
       return apps.sort((a, b) => (voteCounts[b.id]?.net ?? 0) - (voteCounts[a.id]?.net ?? 0));
     }
     if (sortBy === 'trending') {
-      // Trending score = recentNet / (hoursOld + 2)^gravity
-      // recentNet: net votes cast in the last 7 days (upvotes minus downvotes)
-      // hoursOld: hours since the app was created
-      // gravity 1.5: gentler than Hacker News (1.8) — apps are more durable than news items
       const now = Date.now();
       return apps.sort((a, b) => {
-        const hoursA = (now - new Date(a.createdAt)) / 3600000;
-        const hoursB = (now - new Date(b.createdAt)) / 3600000;
-        const scoreA = (voteCounts[a.id]?.recentNet ?? 0) / Math.pow(hoursA + 2, 1.5);
-        const scoreB = (voteCounts[b.id]?.recentNet ?? 0) / Math.pow(hoursB + 2, 1.5);
+        const scoreA = trendingScore(a.createdAt, voteCounts[a.id]?.recentNet ?? 0, now);
+        const scoreB = trendingScore(b.createdAt, voteCounts[b.id]?.recentNet ?? 0, now);
         return scoreB - scoreA;
       });
     }
