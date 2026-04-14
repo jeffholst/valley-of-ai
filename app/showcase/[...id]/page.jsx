@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { siteName, siteUrl } from '@/lib/siteConfig';
 import appsData from '@/data/apps.json';
+import { getSimilarApps } from '@/lib/similarApps';
 import AppDetailClient from './AppDetailClient';
 
 export const dynamic = 'force-static';
@@ -116,10 +117,12 @@ export default async function AppDetailPage({ params }) {
     .replace(/\u2028/g, '\\u2028')
     .replace(/\u2029/g, '\\u2029');
 
+  const similarApps = getSimilarApps(app, appsData, 5);
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd }} />
-      <AppDetailClient app={app} id={id} />
+      <AppDetailClient app={app} id={id} similarApps={similarApps} />
     </>
   );
 }
