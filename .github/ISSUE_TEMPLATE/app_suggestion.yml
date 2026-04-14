@@ -5,15 +5,6 @@ labels:
   - suggestion
   - status:pending
 body:
-  - type: input
-    id: concept
-    attributes:
-      label: App Concept
-      description: A short, descriptive name for the app.
-      placeholder: 'e.g., Budget Tracker, Typing Speed Test'
-    validations:
-      required: true
-
   - type: dropdown
     id: category
     attributes:
