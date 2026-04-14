@@ -197,31 +197,22 @@ export default function AppDetailClient({ app, id, similarApps }) {
           )}
         </div>
 
-        {previewMediaUrl && (
+        {previewMediaUrl && !isImagePreview && (
           <div className="card p-6 mb-8">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
               Gameplay Preview
             </h2>
             <div className="aspect-video rounded-xl overflow-hidden bg-slate-900">
-              {isImagePreview ? (
-                <img
-                  src={previewMediaUrl}
-                  alt={`${app.name} gameplay preview`}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              ) : (
-                <video
-                  src={previewMediaUrl}
-                  poster={app.thumbnailUrl || undefined}
-                  className="w-full h-full object-cover"
-                  muted
-                  playsInline
-                  loop
-                  autoPlay
-                  controls
-                />
-              )}
+              <video
+                src={previewMediaUrl}
+                poster={app.thumbnailUrl || undefined}
+                className="w-full h-full object-cover"
+                muted
+                playsInline
+                loop
+                autoPlay
+                controls
+              />
             </div>
           </div>
         )}
