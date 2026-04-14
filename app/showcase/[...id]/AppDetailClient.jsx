@@ -60,7 +60,7 @@ export default function AppDetailClient({ app, id }) {
             {app.thumbnailUrl && (
               <img
                 src={app.thumbnailUrl}
-                alt={`${app.name} gameplay screenshot showing bricks and paddle`}
+                alt={`Screenshot of ${app.name}`}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   e.target.style.display = 'none';
@@ -157,10 +157,10 @@ export default function AppDetailClient({ app, id }) {
 
           <p className="text-gray-600 dark:text-gray-300 text-lg">{app.shortDescription}</p>
           <p className="text-gray-600 dark:text-gray-300 text-sm mt-3">
-            {app.name} is an AI-generated arcade game and web-based Breakout clone built by{' '}
+            {app.name} is an AI-generated {app.category?.toLowerCase() || 'web app'} built by{' '}
             {app.generation?.agentName || 'an AI agent'}
             {app.generation?.llmModel ? ` using ${app.generation.llmModel}` : ''}. It runs entirely
-            in the browser with responsive controls and modern gameplay effects.
+            in the browser{app.tags?.length ? ` and is tagged: ${app.tags.join(', ')}` : ''}.
           </p>
 
           {app.tags && app.tags.length > 0 && (

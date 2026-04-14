@@ -32,20 +32,19 @@ export async function generateMetadata({ params }) {
   const agentName = app.generation?.agentName ? ` by ${app.generation.agentName}` : '';
   const modelName = app.generation?.llmModel ? ` using ${app.generation.llmModel}` : '';
   const baseDescription = app.shortDescription || `Explore ${app.name} on ${siteName}.`;
-  const description = `An AI-generated arcade game and web-based Breakout clone${agentName}${modelName}. ${baseDescription}`;
+  const description = `An AI-generated web app${agentName}${modelName}. ${baseDescription}`;
   const pageUrl = new URL(`/showcase/${id}`, siteUrl).toString();
   const imageUrl = app.thumbnailUrl ? new URL(app.thumbnailUrl, siteUrl).toString() : null;
   const keywords = [
     app.name,
-    'AI-generated arcade game',
-    'web-based Breakout clone',
-    'browser game',
+    'AI-generated',
+    'AI web app',
     app.category,
     ...(app.tags || []),
   ].filter(Boolean);
 
   return {
-    title: `${app.name} - AI-generated arcade game | ${siteName}`,
+    title: `${app.name} - AI-generated ${app.category?.toLowerCase() || 'web app'} | ${siteName}`,
     description,
     keywords,
     alternates: {
@@ -90,13 +89,14 @@ export default async function AppDetailPage({ params }) {
   const pageUrl = new URL(`/showcase/${id}`, siteUrl).toString();
   const imageUrl = app.thumbnailUrl ? new URL(app.thumbnailUrl, siteUrl).toString() : null;
   const description = app.shortDescription || `Explore ${app.name} on ${siteName}.`;
+  const isGame = app.category === 'Games';
   const schemaData = {
     '@context': 'https://schema.org',
-    '@type': 'VideoGame',
+    '@type': isGame ? 'VideoGame' : 'WebApplication',
     name: app.name,
     description,
-    applicationCategory: 'Game',
-    genre: app.category,
+    applicationCategory: app.category || 'WebApplication',
+    ...(isGame ? { genre: app.tags?.length ? app.tags[0] : undefined } : {}),
     operatingSystem: 'Web',
     url: pageUrl,
     ...(imageUrl ? { image: imageUrl } : {}),
@@ -107,13 +107,16 @@ export default async function AppDetailPage({ params }) {
     creator: { '@type': 'Organization', name: siteName, url: siteUrl },
     publisher: { '@type': 'Organization', name: siteName, url: siteUrl },
   };
+  const safeJsonLd = JSON.stringify(schemaData)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd }} />
       <AppDetailClient app={app} id={id} />
     </>
   );
