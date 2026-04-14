@@ -34,34 +34,6 @@ body:
     id: description
     attributes:
       label: Description
-      description: What should this app do? Describe the core experience in 2–3 sentences.
+      description: What should this app do? Describe the core experience in 1,000 characters or less.
     validations:
       required: true
-
-  - type: textarea
-    id: features
-    attributes:
-      label: Key Features
-      description: What interactions or functionality should it include?
-      placeholder: |
-        -
-        -
-        -
-    validations:
-      required: false
-
-  - type: textarea
-    id: why
-    attributes:
-      label: Why Build This?
-      description: What makes this app interesting or fun? Who would use it?
-    validations:
-      required: false
-
-  - type: textarea
-    id: references
-    attributes:
-      label: References / Inspiration
-      description: Links, screenshots, or examples of similar apps (optional).
-    validations:
-      required: false
