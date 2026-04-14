@@ -173,12 +173,12 @@ Git commits also run the repo's pre-commit hook via `lint-staged`, so staged fil
 
 ### 3rd Party Service Requirements
 
-| Service                                                                | Purpose                                                                   |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| [Supabase](https://supabase.com)                                       | Storing and retrieving app votes — [setup guide](docs/SUPABASE_SETUP.md)  |
-| [GitHub Issues](https://docs.github.com/en/issues)                     | Persistent storage for community app suggestions and improvement requests |
-| [Google Analytics](https://analytics.google.com)                       | Analytic tracking                                                         |
-| [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) | Bot protection on suggestion and improvement forms                        |
+| Service                                                                | Purpose                                                                                                         |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| [Supabase](https://supabase.com)                                       | Storing and retrieving app votes — [setup guide](https://github.com/jeffholst/valley-of-ai/wiki/Supabase-Setup) |
+| [GitHub Issues](https://docs.github.com/en/issues)                     | Persistent storage for community app suggestions and improvement requests                                       |
+| [Google Analytics](https://analytics.google.com)                       | Analytic tracking                                                                                               |
+| [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) | Bot protection on suggestion and improvement forms                                                              |
 
 ### GitHub Labels
 
@@ -249,6 +249,14 @@ Client-side variables use the `NEXT_PUBLIC_*` prefix (accessible in the browser)
 | `STRIPE_WEBHOOK_SECRET`              | Server | Stripe webhook signing secret for verifying payment events                       |
 
 If these values are missing, parts of the app may fail at runtime.
+
+### Cloudflare Setup
+
+Full setup instructions (creating a Turnstile widget, configuring allowed domains, and adding keys to Vercel) are in the [Cloudflare Setup wiki page](https://github.com/jeffholst/valley-of-ai/wiki/Cloudflare-Setup).
+
+### Stripe Setup
+
+Full setup instructions (account creation, API keys, webhook configuration, local testing, and troubleshooting) are in the [Stripe Setup wiki page](https://github.com/jeffholst/valley-of-ai/wiki/Stripe-Setup).
 
 ### Stripe Local Testing
 

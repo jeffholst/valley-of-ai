@@ -4,21 +4,70 @@ Automatic heuristic analysis applied to every improvement candidate before the p
 
 ---
 
+## Quick Reference
+
+| `overallRisk` | Agent action             | Log step       |
+| ------------- | ------------------------ | -------------- |
+| `low`         | Continue silently        | _(none)_       |
+| `medium`      | Log warning and continue | `SANITY_WARN`  |
+| `high`        | Log abort and **stop**   | `SANITY_ABORT` |
+
+Read `improvementSanity.overallRisk` from the selection output. If `isBoosted` is `true`, risk is capped at `medium` — the agent will always proceed.
+
+---
+
+## Output Shape
+
+```json
+{
+  "overallRisk": "medium",
+  "isBoosted": false,
+  "totalImprovements": 4,
+  "recentCount7d": 2,
+  "recentCount30d": 4,
+  "oscillationSignals": [],
+  "recencyOverlapHits": [],
+  "signals": {
+    "frequencyRisk": "medium",
+    "volumeRisk": "low",
+    "oscillationRisk": "low",
+    "overlapRisk": "low"
+  },
+  "reasons": ["2 improvements in the last 7 days (medium threshold: 2)"]
+}
+```
+
+---
+
+## Agent Behavior (AGENT_PROMPT_IMPROVEMENT.md)
+
+After the guardrail check passes, the agent reads `improvementSanity.overallRisk` from the selection output:
+
+**`low`** — continue silently.
+
+**`medium`** — log `SANITY_WARN` and proceed. The reasons are recorded in the audit trail for human review:
+
+```bash
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> \
+  --category pipeline --step SANITY_WARN --status warning \
+  --message "Sanity warning — <reasons joined by '; '>. Proceeding with caution."
+```
+
+**`high`** — log `SANITY_ABORT` and **stop immediately**:
+
+```bash
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> \
+  --category pipeline --step SANITY_ABORT --status aborted \
+  --message "Sanity check halted pipeline — <reasons joined by '; '>."
+```
+
+---
+
 ## Where It Runs
 
 The check is computed inside `scripts/issues/select-app-improvement.js` when building the selection result. The output is available as `improvementSanity` on the JSON object returned by `npm run select:app:improvement`.
 
 The improvement pipeline agent reads this field during Step 1.4 (after the guardrail check, before logging `SELECT_IMPROVEMENT`).
-
----
-
-## Risk Levels
-
-| Level    | Meaning                                             | Agent action                   |
-| -------- | --------------------------------------------------- | ------------------------------ |
-| `low`    | No concerns detected                                | Continue silently              |
-| `medium` | One or more soft signals; elevated but not blocking | Log `SANITY_WARN` and continue |
-| `high`   | Strong signal of problematic pattern                | Log `SANITY_ABORT` and stop    |
 
 ---
 
@@ -125,53 +174,6 @@ All thresholds are defined in `SANITY_DEFAULTS` (exported from `scripts/issues/l
 | `boostMaxRisk`              | `'medium'`   | Maximum `overallRisk` allowed for boosted issues                                                 |
 | `boostOverridesHighFreq`    | `true`       | When true, high frequency risk is reduced to low for boosted issues                              |
 | `boostOverridesOscillation` | `true`       | When true, oscillation risk is reduced to low for boosted issues                                 |
-
----
-
-## Output Shape
-
-```json
-{
-  "overallRisk": "medium",
-  "isBoosted": false,
-  "totalImprovements": 4,
-  "recentCount7d": 2,
-  "recentCount30d": 4,
-  "oscillationSignals": [],
-  "recencyOverlapHits": [],
-  "signals": {
-    "frequencyRisk": "medium",
-    "volumeRisk": "low",
-    "oscillationRisk": "low",
-    "overlapRisk": "low"
-  },
-  "reasons": ["2 improvements in the last 7 days (medium threshold: 2)"]
-}
-```
-
----
-
-## Agent Behavior (AGENT_PROMPT_IMPROVEMENT.md)
-
-After the guardrail check passes, the agent reads `improvementSanity.overallRisk` from the selection output:
-
-**`low`** — continue silently.
-
-**`medium`** — log `SANITY_WARN` and proceed. The reasons are recorded in the audit trail for human review:
-
-```bash
-npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> \
-  --category pipeline --step SANITY_WARN --status warning \
-  --message "Sanity warning — <reasons joined by '; '>. Proceeding with caution."
-```
-
-**`high`** — log `SANITY_ABORT` and **stop immediately**:
-
-```bash
-npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> \
-  --category pipeline --step SANITY_ABORT --status aborted \
-  --message "Sanity check halted pipeline — <reasons joined by '; '>."
-```
 
 ---
 
