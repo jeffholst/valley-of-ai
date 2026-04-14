@@ -175,7 +175,7 @@ Git commits also run the repo's pre-commit hook via `lint-staged`, so staged fil
 
 | Service                                                                | Purpose                                                                   |
 | ---------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| [Supabase](https://supabase.com)                                       | Storing and retrieving app votes                                          |
+| [Supabase](https://supabase.com)                                       | Storing and retrieving app votes — [setup guide](docs/SUPABASE_SETUP.md)  |
 | [GitHub Issues](https://docs.github.com/en/issues)                     | Persistent storage for community app suggestions and improvement requests |
 | [Google Analytics](https://analytics.google.com)                       | Analytic tracking                                                         |
 | [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) | Bot protection on suggestion and improvement forms                        |
