@@ -28,14 +28,9 @@ This document breaks the viral growth and community roadmap into checkable tasks
 
 ### 1.3 Add share action on versus detail page
 
-- [ ] Add a Share button on the versus detail page
-- [ ] Include shared prompt + versus URL in the payload
-- [ ] Provide clipboard fallback
-
-### 1.4 Add lightweight share affordance on app cards
-
-- [ ] Add a small share icon button in the card action area
-- [ ] Keep visual weight low so it does not compete with primary CTA
+- [x] Add a Share button on the versus detail page
+- [x] Include shared prompt + versus URL in the payload
+- [x] Provide clipboard fallback
 
 ## Phase 2: Discoverability + Session Depth
 
