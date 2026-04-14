@@ -54,8 +54,8 @@ This document breaks the viral growth and community roadmap into checkable tasks
 
 ### 2.4 Add Featured/Trending section to home
 
-- [ ] Add a small horizontal section above the gallery
-- [ ] Use trending list for now; allow manual override later
+- [x] Add a small horizontal section above the gallery
+- [x] Use trending list for now; allow manual override later
 
 ## Phase 3: Community Onboarding
 
