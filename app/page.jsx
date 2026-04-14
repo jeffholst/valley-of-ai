@@ -9,7 +9,6 @@ import GalleryPagination, { PER_PAGE_OPTIONS } from '@/components/GalleryPaginat
 import OptionsDrawer from '@/components/OptionsDrawer';
 import PaymentSuccessModal from '@/components/PaymentSuccessModal';
 import PterodactylSky from '@/components/PterodactylSky';
-import TrendingRow from '@/components/TrendingRow';
 import { usePterodactyls } from '@/hooks/usePterodactyls';
 import { useAllVoteCounts } from '@/hooks/useVotes';
 import { trendingScore } from '@/lib/trendingScore';
@@ -233,19 +232,6 @@ export default function HomePage() {
     return sortedApps.slice(start, start + perPage);
   }, [sortedApps, currentPage, totalPages, perPage]);
 
-  const trendingApps = useMemo(() => {
-    const now = Date.now();
-    return appsData
-      .map((app) => ({
-        app,
-        score: trendingScore(app.createdAt, voteCounts[app.id]?.recentNet ?? 0, now),
-      }))
-      .filter(({ score }) => score > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 6)
-      .map(({ app }) => app);
-  }, [voteCounts]);
-
   const activeFilterCount = [
     categoryFilter,
     agentFilter,
@@ -328,8 +314,6 @@ export default function HomePage() {
             and our AI might bring it to life.
           </p>
         </div>
-
-        <TrendingRow apps={trendingApps} voteCounts={voteCounts} />
 
         <GalleryFilters
           searchQuery={searchQuery}
