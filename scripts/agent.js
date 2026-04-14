@@ -125,7 +125,9 @@ if (result.error) {
 }
 
 if (result.signal || result.status === null) {
-  console.error(`\nError: \`claude\` terminated abnormally${result.signal ? ` (signal: ${result.signal})` : ''}.\n`);
+  console.error(
+    `\nError: \`claude\` terminated abnormally${result.signal ? ` (signal: ${result.signal})` : ''}.\n`
+  );
   process.exit(1);
 }
 
