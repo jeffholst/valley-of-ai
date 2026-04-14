@@ -26,6 +26,40 @@ _Every app you see was conceived, designed, coded, and deployed by artificial in
 
 </div>
 
+## 🚀 How It Works
+
+```
+💡 You suggest an app idea
+        ↓
+🤖 AI agent reviews & builds it (14-step pipeline)
+        ↓
+✅ PR reviewed, merged to main
+        ↓
+🌐 Live at valleyofai.com within minutes
+```
+
+## 🙋 What Can I Do Here?
+
+<table>
+<tr>
+<td align="center" width="33%">
+<h3>🎮 Use the Gallery</h3>
+Browse and play 100+ AI-built mini-apps. Vote on your favorites.<br/><br/>
+<a href="https://www.valleyofai.com">Open the Gallery →</a>
+</td>
+<td align="center" width="33%">
+<h3>💡 Suggest an App</h3>
+Submit an idea and the AI pipeline will build it — usually within 24 hours.<br/><br/>
+<a href="https://github.com/jeffholst/valley-of-ai/issues/new?template=app_suggestion.yml">Suggest an App →</a>
+</td>
+<td align="center" width="33%">
+<h3>🔧 Improve an App</h3>
+Spot something that could be better? Request an improvement to any existing app.<br/><br/>
+<a href="https://github.com/jeffholst/valley-of-ai/issues/new?template=app_improvement.md">Request an Improvement →</a>
+</td>
+</tr>
+</table>
+
 ## ✨ Features
 
 <table>
@@ -686,7 +720,7 @@ Versus pits multiple AI models against the same prompt so visitors can compare r
 - **`/versus`** — lists all competitions
 - **`/versus/<id>`** — head-to-head detail page with a comparison table, model info, vote bar, and entry cards
 
-To add a new competition manually, see [📖 docs/how-to/how-to-versus.md](docs/how-to/how-to-versus.md).
+To add a new competition manually, see [📖 How to Add a Versus Competition](https://github.com/jeffholst/valley-of-ai/wiki/How-to-Add-a-Versus-Competition).
 
 ---
 
@@ -725,7 +759,7 @@ Before submitting a PR, ensure your code meets our standards:
 
 #### 1️⃣ Style & Format
 
-- Read [📖 STYLE_GUIDE.md](docs/STYLE_GUIDE.md) for code conventions, naming, React patterns, CSS standards
+- Read [📖 Style Guide](https://github.com/jeffholst/valley-of-ai/wiki/Style-Guide) for code conventions, naming, React patterns, CSS standards
 - Run `npm run lint:fix` to auto-fix linting issues (semicolons, quotes, spacing)
 - Run `npm run format` to apply Prettier formatting (100 char line width, single quotes)
 - Verify with `npm run lint` — must pass with **0 warnings**
@@ -737,7 +771,7 @@ Before submitting a PR, ensure your code meets our standards:
 - Test files go in `__tests__/` mirroring the source structure
 - Run `npm test` to verify all 57+ tests pass
 - Check coverage with `npm run test:coverage`
-- See [📖 TESTING.md](docs/TESTING.md) for testing examples and best practices
+- See [📖 Testing Guide](https://github.com/jeffholst/valley-of-ai/wiki/Testing-Guide) for testing examples and best practices
 
 #### 3️⃣ PR Process
 
