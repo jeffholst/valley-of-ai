@@ -1,0 +1,67 @@
+name: App Suggestion
+description: Suggest a new mini-app for AI to build
+title: '[Suggestion] '
+labels:
+  - suggestion
+  - status:pending
+body:
+  - type: input
+    id: concept
+    attributes:
+      label: App Concept
+      description: A short, descriptive name for the app.
+      placeholder: 'e.g., Budget Tracker, Typing Speed Test'
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Games
+        - Productivity
+        - Utilities
+        - Visualizations
+        - Creative
+        - Entertainment
+        - Education
+        - Design
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What should this app do? Describe the core experience in 2–3 sentences.
+    validations:
+      required: true
+
+  - type: textarea
+    id: features
+    attributes:
+      label: Key Features
+      description: What interactions or functionality should it include?
+      placeholder: |
+        -
+        -
+        -
+    validations:
+      required: false
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why Build This?
+      description: What makes this app interesting or fun? Who would use it?
+    validations:
+      required: false
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References / Inspiration
+      description: Links, screenshots, or examples of similar apps (optional).
+    validations:
+      required: false

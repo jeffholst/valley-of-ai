@@ -239,13 +239,28 @@ async function main() {
   };
 
   // ---------------------------------------------------------------------------
+  // Helpers
+  // ---------------------------------------------------------------------------
+
+  // Parses the Category from an issue body.
+  // Handles both the legacy markdown format (**Category:** <value>)
+  // and the YAML issue form format (### Category\n\n<value>).
+  function parseCategory(body) {
+    return (
+      (body.match(/\*\*Category:\*\*\s*([^\n]+)/i) ||
+        body.match(/###\s*Category\s*\n+([^\n#]+)/i) ||
+        [])[1]?.trim() ?? null
+    );
+  }
+
+  // ---------------------------------------------------------------------------
   // Pass 1: GitHub boosted issues
   // ---------------------------------------------------------------------------
   log('Pass 1: GitHub boosted issues');
   const boosted = getBoostedIssues();
   if (boosted) {
     const dupRisk = computeDuplicationRisk(`${boosted.title} ${boosted.body}`, apps);
-    const category = (boosted.body.match(/\*\*Category:\*\*\s*(.+)/i) || [])[1]?.trim();
+    const category = parseCategory(boosted.body);
     const existingInCategory = category
       ? apps
           .filter((a) => a.category?.toLowerCase() === category.toLowerCase())
@@ -275,7 +290,7 @@ async function main() {
   const approved = getApprovedIssues();
   if (approved) {
     const dupRisk = computeDuplicationRisk(`${approved.title} ${approved.body}`, apps);
-    const category = (approved.body.match(/\*\*Category:\*\*\s*(.+)/i) || [])[1]?.trim();
+    const category = parseCategory(approved.body);
     const existingInCategory = category
       ? apps
           .filter((a) => a.category?.toLowerCase() === category.toLowerCase())
