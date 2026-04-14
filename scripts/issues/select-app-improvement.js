@@ -242,7 +242,7 @@ function buildResult(source, issue, apps) {
     };
   }
 
-  const requestor = (issue.body || '').match(/\*\*Requestor:\*\*\s*(.+)/i)?.[1]?.trim() ?? null;
+  const requestor = issue.author?.login ?? null;
   const description =
     (issue.body || '').match(/###\s*Description\s*\n+([\s\S]+?)(?:\n###|$)/i)?.[1]?.trim() ?? null;
 
