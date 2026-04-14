@@ -186,7 +186,9 @@ export function useVotesMutation(appId, initialCounts) {
   return { upvoteCount, downvoteCount, myVote, isLoading: false, isVoting, vote };
 }
 
-// Hook for fetching vote counts for multiple apps (used by gallery for "Highest rated" sort)
+// Hook for fetching vote counts for multiple apps (used by gallery sorts).
+// Returns { up, down, net, recentNet } per app where recentNet is the net
+// votes cast in the last 7 days — used by the Trending sort.
 export function useAllVoteCounts(appIds) {
   const [voteCounts, setVoteCounts] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -202,27 +204,32 @@ export function useAllVoteCounts(appIds) {
       try {
         const { data, error } = await supabase
           .from('votes')
-          .select('app_id, vote_type')
+          .select('app_id, vote_type, voted_at')
           .in('app_id', appIds);
 
         if (error) {
           throw error;
         }
 
+        const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
         const counts = {};
         appIds.forEach((id) => {
-          counts[id] = { up: 0, down: 0, net: 0 };
+          counts[id] = { up: 0, down: 0, net: 0, recentNet: 0 };
         });
         data?.forEach((row) => {
           if (!counts[row.app_id]) {
-            counts[row.app_id] = { up: 0, down: 0, net: 0 };
+            counts[row.app_id] = { up: 0, down: 0, net: 0, recentNet: 0 };
           }
-          if (row.vote_type === 'up') {
+          const isUp = row.vote_type === 'up';
+          if (isUp) {
             counts[row.app_id].up += 1;
           } else {
             counts[row.app_id].down += 1;
           }
           counts[row.app_id].net = counts[row.app_id].up - counts[row.app_id].down;
+          if (row.voted_at && new Date(row.voted_at).getTime() >= sevenDaysAgo) {
+            counts[row.app_id].recentNet += isUp ? 1 : -1;
+          }
         });
 
         setVoteCounts(counts);

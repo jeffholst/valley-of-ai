@@ -36,14 +36,14 @@ This document breaks the viral growth and community roadmap into checkable tasks
 
 ### 2.1 Add Trending sort option
 
-- [ ] Add a new sort option in gallery filters
-- [ ] Decide signal (initially: recent votes + recency)
-- [ ] Document the formula in code comments
+- [x] Add a new sort option in gallery filters
+- [x] Decide signal (initially: recent votes + recency)
+- [x] Document the formula in code comments
 
 ### 2.2 Implement trending sort logic
 
-- [ ] Compute trending score from app data (vote velocity + recency)
-- [ ] Use a conservative fallback if data is missing
+- [x] Compute trending score from app data (vote velocity + recency)
+- [x] Use a conservative fallback if data is missing
 - [ ] Add a unit test for ranking stability
 
 ### 2.3 Add Similar Apps section

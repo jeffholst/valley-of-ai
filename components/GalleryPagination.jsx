@@ -6,6 +6,7 @@ const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest' },
   { value: 'oldest', label: 'Oldest' },
   { value: 'highest', label: 'Highest rated' },
+  { value: 'trending', label: 'Trending' },
 ];
 
 export const PER_PAGE_OPTIONS = [12, 30, 100];
