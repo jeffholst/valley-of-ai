@@ -29,13 +29,26 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  const description = app.shortDescription || `Explore ${app.name} on ${siteName}.`;
+  const agentName = app.generation?.agentName ? ` by ${app.generation.agentName}` : '';
+  const modelName = app.generation?.llmModel ? ` using ${app.generation.llmModel}` : '';
+  const baseDescription = app.shortDescription || `Explore ${app.name} on ${siteName}.`;
+  const rawDescription = `An AI-generated web app${agentName}${modelName}. ${baseDescription}`;
+  const description =
+    rawDescription.length <= 160 ? rawDescription : `${rawDescription.slice(0, 159)}\u2026`;
   const pageUrl = new URL(`/showcase/${id}`, siteUrl).toString();
   const imageUrl = app.thumbnailUrl ? new URL(app.thumbnailUrl, siteUrl).toString() : null;
+  const keywords = [
+    app.name,
+    'AI-generated',
+    'AI web app',
+    app.category,
+    ...(app.tags || []),
+  ].filter(Boolean);
 
   return {
-    title: `${app.name} - ${siteName}`,
+    title: `${app.name} - AI-generated ${app.category ? `${app.category.toLowerCase()} app` : 'web app'} | ${siteName}`,
     description,
+    keywords,
     alternates: {
       canonical: pageUrl,
     },
@@ -75,5 +88,38 @@ export default async function AppDetailPage({ params }) {
     notFound();
   }
 
-  return <AppDetailClient app={app} id={id} />;
+  const pageUrl = new URL(`/showcase/${id}`, siteUrl).toString();
+  const imageUrl = app.thumbnailUrl ? new URL(app.thumbnailUrl, siteUrl).toString() : null;
+  const description = app.shortDescription || `Explore ${app.name} on ${siteName}.`;
+  const isGame = app.category === 'Games';
+  const schemaData = {
+    '@context': 'https://schema.org',
+    '@type': isGame ? 'VideoGame' : 'WebApplication',
+    name: app.name,
+    description,
+    applicationCategory: app.category || 'WebApplication',
+    ...(isGame ? { genre: app.tags?.length ? app.tags[0] : undefined } : {}),
+    operatingSystem: 'Web',
+    url: pageUrl,
+    ...(imageUrl ? { image: imageUrl } : {}),
+    ...(app.createdAt ? { datePublished: app.createdAt } : {}),
+    ...(app.generation?.agentName
+      ? { author: { '@type': 'Organization', name: app.generation.agentName } }
+      : {}),
+    creator: { '@type': 'Organization', name: siteName, url: siteUrl },
+    publisher: { '@type': 'Organization', name: siteName, url: siteUrl },
+  };
+  const safeJsonLd = JSON.stringify(schemaData)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd }} />
+      <AppDetailClient app={app} id={id} />
+    </>
+  );
 }
