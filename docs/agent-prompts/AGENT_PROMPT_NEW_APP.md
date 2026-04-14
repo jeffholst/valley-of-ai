@@ -204,6 +204,19 @@ Quality standards (non-negotiable):
 - **Accessible**: semantic HTML, sufficient color contrast, keyboard navigable
 - **No JS errors**: console clean on load and during use
 - **If a game**: clear score display, win/loss/restart states all implemented and functional
+- **Social sharing:** See `AGENT_PROMPT_SHARED.md` → "Social Share Hook".
+  - **Games (required):** call `window.voaShare()` in the game-over handler with the final score.
+  - **Utilities (when a result exists):** call it when the primary result is produced.
+  - Always use the guard pattern; never call `window.voaShare` without first checking it exists.
+
+  ```js
+  // Inside game-over / result handler:
+  if (window.voaShare) {
+    window.voaShare({
+      text: `I scored ${score.toLocaleString()} in ${APP_NAME}! Can you beat it?`,
+    });
+  }
+  ```
 
 Log immediately:
 
