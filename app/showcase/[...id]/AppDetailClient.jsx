@@ -157,7 +157,8 @@ export default function AppDetailClient({ app, id }) {
 
           <p className="text-gray-600 dark:text-gray-300 text-lg">{app.shortDescription}</p>
           <p className="text-gray-600 dark:text-gray-300 text-sm mt-3">
-            {app.name} is an AI-generated {app.category?.toLowerCase() || 'web app'} built by{' '}
+            {app.name} is an AI-generated{' '}
+            {app.category ? `${app.category.toLowerCase()} app` : 'web app'} built by{' '}
             {app.generation?.agentName || 'an AI agent'}
             {app.generation?.llmModel ? ` using ${app.generation.llmModel}` : ''}. It runs entirely
             in the browser{app.tags?.length ? ` and is tagged: ${app.tags.join(', ')}` : ''}.

@@ -32,7 +32,9 @@ export async function generateMetadata({ params }) {
   const agentName = app.generation?.agentName ? ` by ${app.generation.agentName}` : '';
   const modelName = app.generation?.llmModel ? ` using ${app.generation.llmModel}` : '';
   const baseDescription = app.shortDescription || `Explore ${app.name} on ${siteName}.`;
-  const description = `An AI-generated web app${agentName}${modelName}. ${baseDescription}`;
+  const rawDescription = `An AI-generated web app${agentName}${modelName}. ${baseDescription}`;
+  const description =
+    rawDescription.length > 160 ? `${rawDescription.slice(0, 159)}\u2026` : rawDescription;
   const pageUrl = new URL(`/showcase/${id}`, siteUrl).toString();
   const imageUrl = app.thumbnailUrl ? new URL(app.thumbnailUrl, siteUrl).toString() : null;
   const keywords = [
@@ -44,7 +46,7 @@ export async function generateMetadata({ params }) {
   ].filter(Boolean);
 
   return {
-    title: `${app.name} - AI-generated ${app.category?.toLowerCase() || 'web app'} | ${siteName}`,
+    title: `${app.name} - AI-generated ${app.category ? `${app.category.toLowerCase()} app` : 'web app'} | ${siteName}`,
     description,
     keywords,
     alternates: {
@@ -102,7 +104,7 @@ export default async function AppDetailPage({ params }) {
     ...(imageUrl ? { image: imageUrl } : {}),
     ...(app.createdAt ? { datePublished: app.createdAt } : {}),
     ...(app.generation?.agentName
-      ? { author: { '@type': 'Person', name: app.generation.agentName } }
+      ? { author: { '@type': 'Organization', name: app.generation.agentName } }
       : {}),
     creator: { '@type': 'Organization', name: siteName, url: siteUrl },
     publisher: { '@type': 'Organization', name: siteName, url: siteUrl },
