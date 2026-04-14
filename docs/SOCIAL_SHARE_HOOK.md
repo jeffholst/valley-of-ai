@@ -69,7 +69,7 @@ No new UI is needed. All styling, platform coverage, and mobile bottom-sheet beh
     ```js
     const url = _voaShareUrl || window.location.href;
     const text = _voaShareText || '👉 Checkout what AI built';
-    const shareMsg = encodeURIComponent(text + ' ' + url);
+    const shareMsg = encodeURIComponent(text + ': ' + url);
     const shareEnc = encodeURIComponent(text);
     const urlEnc = encodeURIComponent(url);
     ```
