@@ -21,9 +21,9 @@ This document breaks the viral growth and community roadmap into checkable tasks
 
 ### 1.2 Add share action on app detail page
 
-- [ ] Add a Share button on the app detail page
-- [ ] Use Web Share API when available; fall back to clipboard copy
-- [ ] Include the app title and URL in the share payload
+- [x] Add a Share button on the app detail page
+- [x] Use Web Share API when available; fall back to clipboard copy
+- [x] Include the app title and URL in the share payload
 - [ ] Track share click event (wire in analytics later)
 
 ### 1.3 Add share action on versus detail page
