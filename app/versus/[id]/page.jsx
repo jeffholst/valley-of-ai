@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import VersusEntryCard from '@/components/VersusEntryCard';
 import VersusComparisonTable from '@/components/VersusComparisonTable';
 import VersusVoteBar from '@/components/VersusVoteBar';
+import ShareButton from '@/components/ShareButton';
 import { useVersusVotes } from '@/hooks/useVersusVotes';
 
 import versusData from '@/data/versus-registry.json';
@@ -74,6 +75,10 @@ function VersusDetailContent({ competition }) {
                 </span>
               </div>
             </div>
+            <ShareButton
+              title={competition.title}
+              text={`Which AI built the best "${competition.title}"? Vote and compare on Valley of AI.`}
+            />
           </div>
 
           {/* Shared prompt */}
