@@ -48,9 +48,9 @@ This document breaks the viral growth and community roadmap into checkable tasks
 
 ### 2.3 Add Similar Apps section
 
-- [ ] On app detail, show 4-6 similar apps
-- [ ] Similarity rule: same category, then shared tags, then recency
-- [ ] Exclude current app from results
+- [x] On app detail, show 4-6 similar apps
+- [x] Similarity rule: same category, then shared tags, then recency
+- [x] Exclude current app from results
 
 ### 2.4 Add Featured/Trending section to home
 
