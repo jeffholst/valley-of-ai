@@ -44,7 +44,7 @@ This document breaks the viral growth and community roadmap into checkable tasks
 
 - [x] Compute trending score from app data (vote velocity + recency)
 - [x] Use a conservative fallback if data is missing
-- [ ] Add a unit test for ranking stability
+- [x] Add a unit test for ranking stability
 
 ### 2.3 Add Similar Apps section
 
