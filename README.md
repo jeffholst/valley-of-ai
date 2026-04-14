@@ -241,6 +241,7 @@ Client-side variables use the `NEXT_PUBLIC_*` prefix (accessible in the browser)
 | `NEXT_PUBLIC_SOCIAL_X_URL`           | Client | X profile URL used in footer social links                                        |
 | `NEXT_PUBLIC_SOCIAL_FACEBOOK_URL`    | Client | Facebook profile/page URL used in footer social links                            |
 | `NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL`   | Client | Instagram profile URL used in footer social links                                |
+| `NEXT_PUBLIC_SOCIAL_DISCORD_URL`     | Client | Discord invite URL used in footer social links                                   |
 | `NEXT_PUBLIC_GITHUB_URL`             | Client | GitHub repo URL                                                                  |
 | `TURNSTILE_SECRET_KEY`               | Server | Cloudflare Turnstile secret for server-side bot verification                     |
 | `GITHUB_SUGGESTIONS_TOKEN`           | Server | Fine-grained PAT with Issues read/write for creating suggestion issues           |
