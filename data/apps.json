@@ -1,5 +1,48 @@
 [
   {
+    "id": "2026/04/14/missile-command-modern",
+    "name": "Missile Command Modern",
+    "shortDescription": "Defend 6 cities from waves of incoming missiles. Tap or click to launch interceptors, chain explosions for combo bonuses, and survive as long as you can.",
+    "thumbnailUrl": "/apps/2026/04/14/missile-command-modern/thumbnail.svg",
+    "createdAt": "2026-04-14T20:33:46Z",
+    "year": 2026,
+    "month": 4,
+    "day": 14,
+    "category": "Games",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "arcade",
+      "defense",
+      "missiles",
+      "canvas",
+      "touch-controls",
+      "wave-based",
+      "mobile-first",
+      "chain-reaction"
+    ],
+    "route": "/apps/2026/04/14/missile-command-modern",
+    "appPath": "/apps/2026/04/14/missile-command-modern/index.html",
+    "generation": {
+      "runId": "run-20260414T203346Z-ed6b9c",
+      "agentName": "claude-code",
+      "llmModel": "claude-sonnet-4-6",
+      "startTime": "2026-04-14T20:33:46Z",
+      "endTime": "2026-04-14T21:15:00Z",
+      "totalTokensIn": 6800,
+      "totalTokensOut": 13200,
+      "notes": "Modern reimagining of Missile Command with 6 enemy types (ICBM, split-warhead, MRV, decoy, shielded, bomber), chain-explosion combo multiplier, city repair between waves, and social share hook on game-over."
+    },
+    "suggestion": {
+      "issueNumber": 325,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/325",
+      "prompt": "### Category\n\nGames\n\n### Description\n\nBuild a modern reimagining of Missile Command for web and mobile. Core loop: defend cities at the bottom of the screen by intercepting incoming missiles with timed counter-blasts, inspired by the original arcade formula of protecting cities from descending attacks. Controls must work with mouse and touch: tap/click to target, or use touch-move-release gesture aiming for mobile. Because touch is easier and more precise than the original trackball, increase challenge with fast mixed attack patterns, split-warhead missiles, decoys, shielded enemies, EMP zones, limited ammo, silo cooldowns, chain-reaction scoring, and priority threats like bombers/satellites. Make it highly polished with detailed VFX, smooth 60fps gameplay, juicy explosions, shockwaves, trails, screen shake, dynamic lighting, parallax skies, crisp HUD, satisfying audio, and readable telegraphs. Include combos, escalating waves, power-ups, city repair between rounds."
+    },
+    "improvements": null,
+    "allowImprovements": true,
+    "backups": null
+  },
+  {
     "id": "2026/04/11/benchmark-breakout-opus",
     "name": "Benchmark Breakout Opus",
     "shortDescription": "A premium Breakout game built as a benchmark for Claude Opus 4.6. Features smooth paddle physics, combo scoring, power-ups, particle effects, screen shake, adaptive Web Audio, and 5 progressively difficult levels with multi-hit and indestructible bricks.",
