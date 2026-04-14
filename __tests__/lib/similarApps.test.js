@@ -3,7 +3,7 @@ import { getSimilarApps } from '@/lib/similarApps';
 const makeApp = (overrides) => ({
   id: 'default-id',
   name: 'Default App',
-  category: 'Tools',
+  category: 'Utilities',
   tags: [],
   createdAt: '2026-01-01T00:00:00Z',
   visible: true,
@@ -26,7 +26,7 @@ describe('getSimilarApps', () => {
   it('excludes apps with visible: false', () => {
     const current = makeApp({ id: 'current', category: 'Games' });
     const hidden = makeApp({ id: 'hidden', category: 'Games', visible: false });
-    const visible = makeApp({ id: 'visible', category: 'Tools' });
+    const visible = makeApp({ id: 'visible', category: 'Utilities' });
     const results = getSimilarApps(current, [current, hidden, visible]);
     expect(results.find((r) => r.id === 'hidden')).toBeUndefined();
   });
@@ -34,7 +34,7 @@ describe('getSimilarApps', () => {
   it('prioritizes same-category apps over cross-category apps', () => {
     const current = makeApp({ id: 'current', category: 'Games', tags: [] });
     const sameCategory = makeApp({ id: 'same-cat', category: 'Games', tags: [] });
-    const differentCategory = makeApp({ id: 'diff-cat', category: 'Tools', tags: [] });
+    const differentCategory = makeApp({ id: 'diff-cat', category: 'Utilities', tags: [] });
     const results = getSimilarApps(current, [current, differentCategory, sameCategory]);
     expect(results[0].id).toBe('same-cat');
   });
@@ -64,19 +64,18 @@ describe('getSimilarApps', () => {
     expect(results).toHaveLength(4);
   });
 
-  it('includes cross-category apps when needed to fill results', () => {
+  it('returns empty array when no apps have a positive score', () => {
     const current = makeApp({ id: 'current', category: 'Games', tags: [] });
-    const crossCat = makeApp({ id: 'cross', category: 'Tools', tags: [] });
+    const crossCat = makeApp({ id: 'cross', category: 'Utilities', tags: [] });
     const results = getSimilarApps(current, [current, crossCat], 5);
-    expect(results).toHaveLength(1);
-    expect(results[0].id).toBe('cross');
+    expect(results).toHaveLength(0);
   });
 
   it('scores shared tags from cross-category apps correctly', () => {
     const current = makeApp({ id: 'current', category: 'Games', tags: ['canvas', 'mobile'] });
     const sameTagsDiffCat = makeApp({
       id: 'tags-match',
-      category: 'Tools',
+      category: 'Utilities',
       tags: ['canvas', 'mobile'],
     });
     const sameCatNoTags = makeApp({ id: 'cat-match', category: 'Games', tags: [] });
