@@ -316,6 +316,44 @@ Before committing any layout changes, confirm at 320px viewport width:
 
 ---
 
+## Social Share Hook
+
+`app-shell.js` exposes `window.voaShare(options)` globally on every page that loads the shell.
+Calling it opens the 10-platform share drawer pre-loaded with a custom message. Use it at natural
+share moments: game-over with a score, challenge completed, result generated.
+
+**Guard pattern** — `app-shell.js` loads with `defer`; always check before calling:
+
+```js
+if (window.voaShare) {
+  window.voaShare({
+    text: `I scored ${score.toLocaleString()} in ${APP_NAME}! Can you beat it?`,
+    // url is optional — defaults to window.location.href
+  });
+}
+```
+
+**Options**
+
+| Field  | Type   | Default                       | Description                              |
+| ------ | ------ | ----------------------------- | ---------------------------------------- |
+| `text` | string | `'👉 Checkout what AI built'` | Custom share copy shown on all platforms |
+| `url`  | string | `window.location.href`        | URL included in share payload            |
+
+**Copy conventions** — keep under 200 characters:
+
+- Games: `"I scored {score} in {App Name}! Can you beat it?"`
+- Utilities: `"I just used {App Name} to {result}. Try it!"`
+
+**When to call**
+
+- Game-over — pass the final score or outcome
+- Level or streak milestone
+- Creative output generated (image, composition, computed result)
+- NOT on every user action — only once per natural completion moment
+
+---
+
 ## Logging Model (Most Important)
 
 All logging is handled by `npm run log`. Each app run is one transaction (TRANSACTION_START → STEP entries → TRANSACTION_END).
