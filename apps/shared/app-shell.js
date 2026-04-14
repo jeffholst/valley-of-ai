@@ -1002,14 +1002,22 @@
       }
     });
 
+    let _voaEffectiveShareUrl = null;
+    let _voaEffectiveShareText = null;
+
     function openShareDrawer() {
       const url = _voaShareUrl || window.location.href;
       const text = _voaShareText || '👉 Checkout what AI built';
+
+      _voaEffectiveShareUrl = url;
+      _voaEffectiveShareText = text;
+
       _voaShareText = null;
       _voaShareUrl = null;
-      const pUrl = encodeURIComponent(url);
-      const sText = encodeURIComponent(text);
-      const sMsg = encodeURIComponent(text + ': ' + url);
+
+      const pUrl = encodeURIComponent(_voaEffectiveShareUrl);
+      const sText = encodeURIComponent(_voaEffectiveShareText);
+      const sMsg = encodeURIComponent(_voaEffectiveShareText + ': ' + _voaEffectiveShareUrl);
       for (const { anchor, hrefFn } of platformAnchors) {
         anchor.href = hrefFn(pUrl, sText, sMsg);
       }
@@ -1023,6 +1031,8 @@
       backdrop.classList.remove('open');
       drawer.classList.remove('open');
       drawer.setAttribute('aria-hidden', 'true');
+      _voaEffectiveShareUrl = null;
+      _voaEffectiveShareText = null;
     }
 
     window.voaShare = function voaShare(opts) {
