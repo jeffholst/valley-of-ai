@@ -232,7 +232,7 @@ If clean, continue.
 
 > **Boost note:** If `improvementSanity.isBoosted` is `true`, the sanity check has already applied reduced scrutiny. A `medium` risk on a boosted issue is still safe to proceed — the boost cap ensures boosted requests are never blocked at `high`.
 
-See `docs/improvement-sanity-check.md` for full signal documentation and threshold configuration.
+See `docs/agent-prompts/lib/improvement-sanity-check.md` for full signal documentation and threshold configuration.
 
 **Log the transaction start** (only after guardrail and sanity checks pass):
 
