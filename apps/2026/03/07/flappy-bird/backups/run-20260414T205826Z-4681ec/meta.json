@@ -20,17 +20,5 @@
     "totalTokensOut": 4200,
     "runId": "run-20260307T151000Z-0fa3be",
     "notes": "Classic Flappy Bird game with gravity physics, pipe obstacles, scoring system, best score tracking, dark/light mode, touch and keyboard controls."
-  },
-  "improvements": [
-    {
-      "issueNumber": 327,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/327",
-      "runId": "run-20260414T205826Z-4681ec",
-      "description": "update game to include social media sharing of score when game over",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-04-14T21:00:17Z",
-      "agentName": "claude-code",
-      "llmModel": "claude-sonnet-4-6"
-    }
-  ]
+  }
 }
