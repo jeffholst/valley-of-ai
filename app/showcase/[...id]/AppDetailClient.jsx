@@ -2,14 +2,17 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { useVotes } from '@/hooks/useVotes';
+import { useVotes, useAllVoteCounts } from '@/hooks/useVotes';
 import VoteButtons from '@/components/VoteButtons';
 import AppLog from '@/components/AppLog';
+import AppCard from '@/components/AppCard';
 import ShareButton from '@/components/ShareButton';
 import { githubUrl, siteName } from '@/lib/siteConfig';
 
-export default function AppDetailClient({ app, id }) {
+export default function AppDetailClient({ app, id, similarApps }) {
   const { upvoteCount, downvoteCount, myVote, isLoading, isVoting, vote } = useVotes(id);
+  const similarAppIds = similarApps?.map((a) => a.id) ?? [];
+  const { voteCounts: similarVoteCounts } = useAllVoteCounts(similarAppIds);
   const [selectedVersionUrl, setSelectedVersionUrl] = useState(app.appPath);
 
   const formattedDate = new Date(app.createdAt).toLocaleDateString('en-US', {
@@ -305,6 +308,24 @@ export default function AppDetailClient({ app, id }) {
                 </div>
               )}
             </dl>
+          </div>
+        )}
+
+        {/* Similar Apps */}
+        {similarApps && similarApps.length > 0 && (
+          <div className="mt-8">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Similar Apps
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {similarApps.map((similar) => (
+                <AppCard
+                  key={similar.id}
+                  app={similar}
+                  initialCounts={similarVoteCounts[similar.id]}
+                />
+              ))}
+            </div>
           </div>
         )}
 
