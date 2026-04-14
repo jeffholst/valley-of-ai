@@ -207,7 +207,7 @@ export default function AppDetailClient({ app, id }) {
               )}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <dt className="text-sm text-gray-500 dark:text-gray-400">Agent</dt>
                 <dd className="font-medium text-gray-900 dark:text-white">
@@ -252,7 +252,7 @@ export default function AppDetailClient({ app, id }) {
                   </dd>
                 </div>
               )}
-            </div>
+            </dl>
           </div>
         )}
 
