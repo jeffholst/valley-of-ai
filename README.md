@@ -256,10 +256,12 @@ If these values are missing, parts of the app may fail at runtime.
 
 This project uses the [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started) to manage database migrations. `supabase/config.toml` and `supabase/migrations/` are committed to the repo.
 
+**Prerequisite:** Install the Supabase CLI ([docs](https://supabase.com/docs/guides/local-development/cli/getting-started#installation)) and make sure it is available on your PATH before running the commands below. Alternatively, prefix any `supabase` command with `npx` (e.g. `npx supabase link ...`). The `npm run db:*` scripts already use `npx supabase` so no global install is required for those.
+
 Full initial setup instructions are in the [Supabase Setup wiki page](https://github.com/jeffholst/valley-of-ai/wiki/Supabase-Setup). Once you have a Supabase project, link and apply migrations with:
 
 ```bash
-supabase link --project-ref <your-project-ref>
+supabase link --project-ref <your-project-ref>   # or: npx supabase link --project-ref <your-project-ref>
 npm run db:push
 ```
 
