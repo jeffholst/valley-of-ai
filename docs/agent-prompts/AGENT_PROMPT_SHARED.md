@@ -354,6 +354,48 @@ if (window.voaShare) {
 
 ---
 
+## Leaderboard Hook
+
+`app-shell.js` exposes `window.voaLeaderboard` on every page that loads the shell. Use it in
+games to let players submit high scores and view the per-game top-10 leaderboard. A 🏆 button
+appears in the shell header automatically when an `app_id` is present.
+
+**Submit a score at game-over (required guard pattern):**
+
+```js
+// Inside game-over / result handler (after voaShare):
+if (window.voaLeaderboard) {
+  window.voaLeaderboard.submit(score);
+  // Optional: pass { label: 'points' } to customize the score unit shown in the modal
+  // e.g. window.voaLeaderboard.submit(score, { label: 'pipes passed' });
+}
+```
+
+**Just view the leaderboard without submitting:**
+
+```js
+if (window.voaLeaderboard) {
+  window.voaLeaderboard.show();
+}
+```
+
+**`meta.json` — required `maxScore` field for all games:**
+
+```json
+{ "maxScore": 9999 }
+```
+
+Set this to a plausible upper bound for the game's score. The API rejects submissions above
+this value, preventing trivially fake high scores. Ask: what is an exceptionally good but
+physically possible score? Use that as your ceiling, multiplied 2–3×.
+Example values: Flappy Bird → 999, Missile Command → 999999, Tetris → 9999.
+
+**When to call:** Only at game-over, with the final score. Not during gameplay.
+**Not for utilities:** Only games have scores. Do not add `voaLeaderboard` calls to utility or
+design apps.
+
+---
+
 ## Logging Model (Most Important)
 
 All logging is handled by `npm run log`. Each app run is one transaction (TRANSACTION_START → STEP entries → TRANSACTION_END).

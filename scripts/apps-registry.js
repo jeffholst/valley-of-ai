@@ -95,6 +95,7 @@ export function transformMeta(appsDir, meta, filePath, dateInfo, basePath = '', 
     suggestion: meta.suggestion || null,
     improvements: meta.improvements || null,
     allowImprovements: meta.allowImprovements ?? true,
+    maxScore: meta.maxScore ?? null,
     backups:
       backups.length > 0
         ? backups.map((b) => ({

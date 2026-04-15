@@ -40,6 +40,7 @@
     },
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -84,6 +85,7 @@
     },
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -128,6 +130,7 @@
     },
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -172,6 +175,7 @@
     },
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -228,6 +232,7 @@
       }
     ],
     "allowImprovements": true,
+    "maxScore": null,
     "backups": [
       {
         "runId": "run-20260408T203306Z-b34e9c",
@@ -304,6 +309,7 @@
       }
     ],
     "allowImprovements": true,
+    "maxScore": null,
     "backups": [
       {
         "runId": "run-20260404T144924Z-a1bbff",
@@ -391,6 +397,7 @@
       }
     ],
     "allowImprovements": true,
+    "maxScore": null,
     "backups": [
       {
         "runId": "run-20260401160856Z-cf1293",
@@ -501,6 +508,7 @@
       }
     ],
     "allowImprovements": true,
+    "maxScore": null,
     "backups": [
       {
         "runId": "run-20260331T022221Z-d4e8f1",
@@ -638,6 +646,7 @@
       }
     ],
     "allowImprovements": true,
+    "maxScore": null,
     "backups": [
       {
         "runId": "run-20260326T201250Z-7d39dd",
@@ -742,6 +751,7 @@
       }
     ],
     "allowImprovements": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -814,6 +824,7 @@
       }
     ],
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -849,6 +860,7 @@
     },
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -898,6 +910,7 @@
       }
     ],
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -943,6 +956,7 @@
       }
     ],
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -973,6 +987,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1008,6 +1023,7 @@
     },
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1052,6 +1068,7 @@
     },
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1087,6 +1104,7 @@
     },
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1117,6 +1135,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1147,6 +1166,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1177,6 +1197,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1207,6 +1228,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1237,6 +1259,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1276,6 +1299,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1306,6 +1330,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1336,6 +1361,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1366,6 +1392,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1396,6 +1423,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1426,6 +1454,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1456,6 +1485,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1486,6 +1516,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1516,6 +1547,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1546,6 +1578,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1576,6 +1609,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1606,6 +1640,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1636,6 +1671,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1666,6 +1702,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1696,6 +1733,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1726,6 +1764,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1756,6 +1795,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1786,6 +1826,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1816,6 +1857,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1846,6 +1888,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1876,6 +1919,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1906,6 +1950,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1936,6 +1981,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1966,6 +2012,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2040,6 +2087,7 @@
       }
     ],
     "allowImprovements": true,
+    "maxScore": null,
     "backups": [
       {
         "runId": "run-20260405T220949Z-8494ae",
@@ -2091,6 +2139,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2121,6 +2170,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2151,6 +2201,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2181,6 +2232,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2211,6 +2263,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2241,6 +2294,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2271,6 +2325,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2301,6 +2356,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2331,6 +2387,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2361,6 +2418,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2391,6 +2449,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2421,6 +2480,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2462,6 +2522,7 @@
       }
     ],
     "allowImprovements": true,
+    "maxScore": 999,
     "backups": [
       {
         "runId": "run-20260414T205826Z-4681ec",
@@ -2498,6 +2559,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2528,6 +2590,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2558,6 +2621,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2588,6 +2652,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2618,6 +2683,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2648,6 +2714,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2678,6 +2745,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2708,6 +2776,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2738,6 +2807,7 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "maxScore": null,
     "backups": null
   }
 ]

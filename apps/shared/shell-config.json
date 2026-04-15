@@ -5,6 +5,7 @@
   "socialFacebookUrl": "__SOCIAL_FACEBOOK_URL__",
   "socialInstagramUrl": "__SOCIAL_INSTAGRAM_URL__",
   "socialDiscordUrl": "__SOCIAL_DISCORD_URL__",
+  "turnstileSiteKey": "__TURNSTILE_SITE_KEY__",
   "supabaseUrl": "__SUPABASE_URL__",
   "supabaseAnonKey": "__SUPABASE_ANON_KEY__",
   "storagePrefix": "__STORAGE_PREFIX__"

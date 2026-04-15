@@ -8,6 +8,7 @@
   const SOCIAL_INSTAGRAM_URL_PLACEHOLDER = '__SOCIAL_INSTAGRAM_URL__';
   const SOCIAL_DISCORD_URL_PLACEHOLDER = '__SOCIAL_DISCORD_URL__';
   const SUPABASE_URL_PLACEHOLDER = '__SUPABASE_URL__';
+  const TURNSTILE_SITE_KEY_PLACEHOLDER = '__TURNSTILE_SITE_KEY__';
   const SUPABASE_ANON_KEY_PLACEHOLDER = '__SUPABASE_ANON_KEY__';
   let currentShareUrl = null;
   const SHELL_CONFIG_PATH = '/apps/shared/shell-config.json';
@@ -98,6 +99,10 @@
 
   function resolveSupabaseAnonKey() {
     return resolveConfigUrl('supabaseAnonKey', SUPABASE_ANON_KEY_PLACEHOLDER);
+  }
+
+  function resolveTurnstileSiteKey() {
+    return resolveConfigUrl('turnstileSiteKey', TURNSTILE_SITE_KEY_PLACEHOLDER);
   }
 
   function getLocalVoteRecord(appId) {
@@ -723,12 +728,214 @@
         .voa-vote-count { display: none; }
         .voa-footer-site-name { display: none; }
       }
+
+      /* Leaderboard modal */
+      .voa-lb-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 10002;
+        background: rgba(0,0,0,0.55);
+        backdrop-filter: blur(3px);
+        align-items: center;
+        justify-content: center;
+      }
+
+      .voa-lb-backdrop.open {
+        display: flex;
+        animation: voa-fade-in 200ms ease forwards;
+      }
+
+      .voa-lb-modal {
+        position: relative;
+        background: var(--surface, #1e293b);
+        border: 1px solid color-mix(in srgb, var(--muted, #94a3b8) 28%, transparent);
+        border-radius: 20px;
+        padding: 24px 20px 20px;
+        width: 100%;
+        max-width: 400px;
+        margin: 16px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        animation: voa-lb-slide-up 280ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+      }
+
+      @keyframes voa-lb-slide-up {
+        from { opacity: 0; transform: translateY(20px) scale(0.97); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      .voa-lb-title {
+        font: 700 1.05rem/1.3 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        color: var(--text, #f8fafc);
+        text-align: center;
+        margin: 0 0 18px;
+      }
+
+      .voa-lb-label {
+        font: 600 0.88rem/1.4 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        color: var(--text, #f8fafc);
+        margin: 0 0 8px;
+        display: block;
+      }
+
+      .voa-lb-input {
+        width: 100%;
+        min-height: 44px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid color-mix(in srgb, var(--muted, #94a3b8) 40%, transparent);
+        background: color-mix(in srgb, var(--bg, #0f172a) 60%, var(--surface, #1e293b));
+        color: var(--text, #f8fafc);
+        font: 0.92rem/1.4 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        box-sizing: border-box;
+        outline: none;
+        transition: border-color 150ms;
+      }
+
+      .voa-lb-input:focus {
+        border-color: var(--accent, #22d3ee);
+      }
+
+      .voa-lb-error {
+        color: #f87171;
+        font: 0.8rem/1.3 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        min-height: 1.2em;
+        margin: 6px 0 0;
+        display: block;
+      }
+
+      .voa-lb-turnstile {
+        margin: 14px 0 0;
+        display: flex;
+        justify-content: center;
+        min-height: 65px;
+      }
+
+      .voa-lb-btn-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+      }
+
+      .voa-lb-submit-btn {
+        flex: 1;
+        min-height: 44px;
+        border-radius: 10px;
+        border: none;
+        background: var(--primary, #2563eb);
+        color: #fff;
+        font: 700 0.92rem/1 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        cursor: pointer;
+        transition: opacity 150ms, transform 150ms;
+      }
+
+      .voa-lb-submit-btn:hover:not(:disabled) {
+        opacity: 0.88;
+        transform: scale(1.02);
+      }
+
+      .voa-lb-submit-btn:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+
+      .voa-lb-cancel-btn {
+        min-height: 44px;
+        padding: 0 16px;
+        border-radius: 10px;
+        border: 1px solid color-mix(in srgb, var(--muted, #94a3b8) 40%, transparent);
+        background: transparent;
+        color: var(--text, #f8fafc);
+        font: 600 0.88rem/1 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        cursor: pointer;
+        transition: background 150ms;
+      }
+
+      .voa-lb-cancel-btn:hover {
+        background: color-mix(in srgb, var(--muted, #94a3b8) 15%, transparent);
+      }
+
+      .voa-lb-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 4px;
+        font: 0.88rem/1.4 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      }
+
+      .voa-lb-table th {
+        color: var(--muted, #94a3b8);
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 4px 8px;
+        text-align: left;
+        border-bottom: 1px solid color-mix(in srgb, var(--muted, #94a3b8) 20%, transparent);
+      }
+
+      .voa-lb-table td {
+        padding: 8px 8px;
+        color: var(--text, #f8fafc);
+        border-bottom: 1px solid color-mix(in srgb, var(--muted, #94a3b8) 10%, transparent);
+      }
+
+      .voa-lb-table tr.voa-lb-me td {
+        background: color-mix(in srgb, var(--accent, #22d3ee) 12%, transparent);
+        font-weight: 600;
+      }
+
+      .voa-lb-empty {
+        text-align: center;
+        color: var(--muted, #94a3b8);
+        font: 0.88rem/1.5 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        padding: 20px 0;
+        margin: 0;
+      }
+
+      .voa-lb-close-btn {
+        display: block;
+        width: 100%;
+        min-height: 44px;
+        border-radius: 10px;
+        border: 1px solid color-mix(in srgb, var(--muted, #94a3b8) 40%, transparent);
+        background: transparent;
+        color: var(--text, #f8fafc);
+        font: 600 0.92rem/1 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        cursor: pointer;
+        margin-top: 16px;
+        transition: background 150ms;
+      }
+
+      .voa-lb-close-btn:hover {
+        background: color-mix(in srgb, var(--muted, #94a3b8) 15%, transparent);
+      }
+
+      #voa-lb-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid color-mix(in srgb, var(--muted, #94a3b8) 28%, transparent);
+        background: var(--surface, #1e293b);
+        color: var(--text, #f8fafc);
+        cursor: pointer;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 150ms, background 150ms;
+      }
+
+      #voa-lb-btn:hover {
+        transform: scale(1.08);
+        background: color-mix(in srgb, var(--muted, #94a3b8) 28%, transparent);
+      }
     `;
     document.head.appendChild(style);
   }
 
   let _voaShareText = null;
   let _voaShareUrl = null;
+  let _leaderboardModalOpen = false;
 
   function injectShell() {
     if (document.getElementById('voa-shell-header')) {
@@ -779,6 +986,18 @@
     aiTag.innerHTML = '🧠 <span class="voa-pill-text">Learn</span>';
     aiTag.setAttribute('aria-label', 'View app details');
     voteGroup.appendChild(aiTag);
+
+    const lbHeaderBtn = document.createElement('button');
+    lbHeaderBtn.id = 'voa-lb-btn';
+    lbHeaderBtn.type = 'button';
+    lbHeaderBtn.setAttribute('aria-label', 'Leaderboard');
+    lbHeaderBtn.textContent = '🏆';
+    lbHeaderBtn.addEventListener('click', () => {
+      if (window.voaLeaderboard) {
+        window.voaLeaderboard.show();
+      }
+    });
+    voteGroup.appendChild(lbHeaderBtn);
 
     header.appendChild(homeBtn);
     header.appendChild(appName);
@@ -1048,6 +1267,287 @@
       _voaShareText = opts && typeof opts.text === 'string' ? opts.text : null;
       _voaShareUrl = opts && typeof opts.url === 'string' ? opts.url : null;
       openShareDrawer();
+    };
+
+    // Leaderboard modal
+    const lbBackdrop = document.createElement('div');
+    lbBackdrop.className = 'voa-lb-backdrop';
+    lbBackdrop.setAttribute('aria-hidden', 'true');
+
+    const lbModal = document.createElement('div');
+    lbModal.className = 'voa-lb-modal';
+    lbModal.setAttribute('role', 'dialog');
+    lbModal.setAttribute('aria-modal', 'true');
+    lbModal.setAttribute('aria-label', 'Leaderboard');
+
+    const lbTitle = document.createElement('p');
+    lbTitle.className = 'voa-lb-title';
+    lbModal.appendChild(lbTitle);
+
+    const lbContentArea = document.createElement('div');
+    lbModal.appendChild(lbContentArea);
+    lbBackdrop.appendChild(lbModal);
+    document.body.appendChild(lbBackdrop);
+
+    lbBackdrop.addEventListener('click', (e) => {
+      if (e.target === lbBackdrop) {
+        closeLbModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && _leaderboardModalOpen) {
+        closeLbModal();
+      }
+    });
+
+    function closeLbModal() {
+      lbBackdrop.classList.remove('open');
+      lbBackdrop.setAttribute('aria-hidden', 'true');
+      _leaderboardModalOpen = false;
+    }
+
+    function openLbModal() {
+      lbBackdrop.classList.add('open');
+      lbBackdrop.setAttribute('aria-hidden', 'false');
+      _leaderboardModalOpen = true;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    async function fetchTopScores(appId) {
+      const res = await fetch(`/api/scores?appId=${encodeURIComponent(appId)}`);
+      if (!res.ok) {
+        return [];
+      }
+      const data = await res.json();
+      return data.scores || [];
+    }
+
+    async function submitScore(appId, playerName, score, turnstileToken) {
+      const res = await fetch('/api/scores', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ appId, playerName, score, turnstileToken }),
+      });
+      return res.json();
+    }
+
+    function renderScoreTable(scores, highlightName) {
+      if (!scores || scores.length === 0) {
+        const empty = document.createElement('p');
+        empty.className = 'voa-lb-empty';
+        empty.textContent = 'No scores yet. Be the first!';
+        return empty;
+      }
+      const table = document.createElement('table');
+      table.className = 'voa-lb-table';
+      const thead = document.createElement('thead');
+      thead.innerHTML = '<tr><th>#</th><th>Player</th><th>Score</th></tr>';
+      table.appendChild(thead);
+      const tbody = document.createElement('tbody');
+      for (const row of scores) {
+        const tr = document.createElement('tr');
+        if (highlightName && row.player_name === highlightName) {
+          tr.className = 'voa-lb-me';
+        }
+        tr.innerHTML = `<td>${row.rank}</td><td>${escapeHtml(row.player_name)}</td><td>${row.score}</td>`;
+        tbody.appendChild(tr);
+      }
+      table.appendChild(tbody);
+      return table;
+    }
+
+    function appendLbCloseBtn() {
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'voa-lb-close-btn';
+      closeBtn.type = 'button';
+      closeBtn.textContent = 'Close';
+      closeBtn.addEventListener('click', closeLbModal);
+      lbContentArea.appendChild(closeBtn);
+    }
+
+    async function openLeaderboardBoard(appId, highlightName) {
+      lbTitle.textContent = `\uD83C\uDFC6 Top 10 \u2014 ${getAppName()}`;
+      lbContentArea.innerHTML = '<p class="voa-lb-empty">Loading scores\u2026</p>';
+      openLbModal();
+      try {
+        const scores = await fetchTopScores(appId);
+        lbContentArea.innerHTML = '';
+        lbContentArea.appendChild(renderScoreTable(scores, highlightName || null));
+      } catch {
+        lbContentArea.innerHTML = '<p class="voa-lb-empty">Failed to load scores.</p>';
+      }
+      appendLbCloseBtn();
+    }
+
+    function openLeaderboardSubmit(score, opts) {
+      const appId = resolveAppId();
+      if (!appId) {
+        return;
+      }
+      const appName = getAppName();
+      const label = opts && typeof opts.label === 'string' ? opts.label : 'points';
+      const prefix = resolveStoragePrefix();
+      const savedName = (() => {
+        try {
+          return localStorage.getItem(`${prefix}_player_name`) || '';
+        } catch {
+          return '';
+        }
+      })();
+      const siteKey = resolveTurnstileSiteKey();
+      const isLocal =
+        window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+      lbTitle.textContent = '\uD83C\uDFC6 New High Score!';
+      lbContentArea.innerHTML = '';
+
+      const scoreDisplay = document.createElement('p');
+      scoreDisplay.style.cssText =
+        'text-align:center;font:700 1.5rem/1.2 system-ui;color:var(--accent,#22d3ee);margin:0 0 16px;';
+      scoreDisplay.textContent = `${score} ${label}`;
+      lbContentArea.appendChild(scoreDisplay);
+
+      const nameLabel = document.createElement('label');
+      nameLabel.className = 'voa-lb-label';
+      nameLabel.setAttribute('for', 'voa-lb-name-input');
+      nameLabel.textContent = 'Your name (2\u201320 characters):';
+      lbContentArea.appendChild(nameLabel);
+
+      const nameInput = document.createElement('input');
+      nameInput.className = 'voa-lb-input';
+      nameInput.id = 'voa-lb-name-input';
+      nameInput.type = 'text';
+      nameInput.maxLength = 20;
+      nameInput.autocomplete = 'nickname';
+      nameInput.placeholder = 'Enter your name';
+      nameInput.value = savedName;
+      lbContentArea.appendChild(nameInput);
+
+      const errorMsg = document.createElement('span');
+      errorMsg.className = 'voa-lb-error';
+      errorMsg.setAttribute('role', 'alert');
+      lbContentArea.appendChild(errorMsg);
+
+      let turnstileToken = null;
+      if (siteKey && !isLocal) {
+        const tsDiv = document.createElement('div');
+        tsDiv.className = 'voa-lb-turnstile';
+        tsDiv.id = 'voa-lb-turnstile-widget';
+        lbContentArea.appendChild(tsDiv);
+
+        if (!document.getElementById('voa-turnstile-script')) {
+          const tsScript = document.createElement('script');
+          tsScript.id = 'voa-turnstile-script';
+          tsScript.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+          tsScript.async = true;
+          tsScript.defer = true;
+          document.head.appendChild(tsScript);
+        }
+
+        function tryRenderTurnstile() {
+          if (window.turnstile) {
+            window.turnstile.render('#voa-lb-turnstile-widget', {
+              sitekey: siteKey,
+              callback: (token) => {
+                turnstileToken = token;
+              },
+              'expired-callback': () => {
+                turnstileToken = null;
+              },
+              'error-callback': () => {
+                turnstileToken = null;
+              },
+              theme: 'auto',
+              size: 'normal',
+            });
+          } else {
+            setTimeout(tryRenderTurnstile, 200);
+          }
+        }
+        tryRenderTurnstile();
+      }
+
+      const btnRow = document.createElement('div');
+      btnRow.className = 'voa-lb-btn-row';
+
+      const submitBtn = document.createElement('button');
+      submitBtn.className = 'voa-lb-submit-btn';
+      submitBtn.type = 'button';
+      submitBtn.textContent = 'Submit Score';
+
+      const cancelBtn = document.createElement('button');
+      cancelBtn.className = 'voa-lb-cancel-btn';
+      cancelBtn.type = 'button';
+      cancelBtn.textContent = 'Skip';
+      cancelBtn.addEventListener('click', closeLbModal);
+
+      btnRow.appendChild(submitBtn);
+      btnRow.appendChild(cancelBtn);
+      lbContentArea.appendChild(btnRow);
+
+      openLbModal();
+      nameInput.focus();
+
+      submitBtn.addEventListener('click', async () => {
+        const name = nameInput.value.trim();
+        if (name.length < 2 || name.length > 20) {
+          errorMsg.textContent = 'Name must be 2\u201320 characters.';
+          return;
+        }
+        if (!/^[a-zA-Z0-9 _\-]+$/.test(name)) {
+          errorMsg.textContent = 'Only letters, numbers, spaces, - and _ are allowed.';
+          return;
+        }
+        if (siteKey && !isLocal && !turnstileToken) {
+          errorMsg.textContent = 'Please complete the bot check first.';
+          return;
+        }
+        errorMsg.textContent = '';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting\u2026';
+        try {
+          const result = await submitScore(appId, name, score, turnstileToken || '');
+          if (result.scores) {
+            try {
+              localStorage.setItem(`${prefix}_player_name`, name);
+            } catch {
+              /* ignore */
+            }
+            lbTitle.textContent = `\uD83C\uDFC6 Top 10 \u2014 ${appName}`;
+            lbContentArea.innerHTML = '';
+            lbContentArea.appendChild(renderScoreTable(result.scores, name));
+            appendLbCloseBtn();
+          } else {
+            errorMsg.textContent = result.error || 'Failed to submit score. Please try again.';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Score';
+          }
+        } catch {
+          errorMsg.textContent = 'Network error. Please try again.';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit Score';
+        }
+      });
+    }
+
+    window.voaLeaderboard = {
+      submit: function (score, opts) {
+        openLeaderboardSubmit(score, opts || {});
+      },
+      show: function () {
+        const appId = resolveAppId();
+        if (appId) {
+          void openLeaderboardBoard(appId, null);
+        }
+      },
     };
 
     document.body.prepend(header);
