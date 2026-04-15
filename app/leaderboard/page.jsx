@@ -25,10 +25,7 @@ async function fetchTopScoresByApp() {
         return [appId, []];
       }
 
-      return [
-        appId,
-        data.map((row, index) => ({ ...row, rank: index + 1 })),
-      ];
+      return [appId, data.map((row, index) => ({ ...row, rank: index + 1 }))];
     })
   );
 
