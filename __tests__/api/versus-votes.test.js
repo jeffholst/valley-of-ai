@@ -81,6 +81,12 @@ describe('GET /api/versus-votes', () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body).toHaveLength(2);
+
+    const client = createServiceClient.mock.results[0].value;
+    expect(client.from).toHaveBeenCalledWith('versus_votes');
+    const chain = client.from.mock.results[0].value;
+    expect(chain.select).toHaveBeenCalledWith('voted_app_id, created_at');
+    expect(chain.eq).toHaveBeenCalledWith('versus_id', VALID_VERSUS_ID);
   });
 
   it('returns 500 on DB error for single versusId', async () => {
@@ -93,6 +99,12 @@ describe('GET /api/versus-votes', () => {
     makeSelectClient({ data: SAMPLE_VOTES, error: null });
     const res = await GET(makeGetRequest({ versusIds: `${VALID_VERSUS_ID},another-match` }));
     expect(res.status).toBe(200);
+
+    const client = createServiceClient.mock.results[0].value;
+    expect(client.from).toHaveBeenCalledWith('versus_votes');
+    const chain = client.from.mock.results[0].value;
+    expect(chain.select).toHaveBeenCalledWith('versus_id, voted_app_id, created_at');
+    expect(chain.in).toHaveBeenCalledWith('versus_id', [VALID_VERSUS_ID, 'another-match']);
   });
 
   it('returns 500 on DB error for bulk', async () => {
@@ -153,6 +165,14 @@ describe('POST /api/versus-votes', () => {
     expect(res.status).toBe(201);
     const body = await res.json();
     expect(body.ok).toBe(true);
+
+    const client = createServiceClient.mock.results[0].value;
+    expect(client.from).toHaveBeenCalledWith('versus_votes');
+    const chain = client.from.mock.results[0].value;
+    expect(chain.insert).toHaveBeenCalledWith({
+      versus_id: VALID_VERSUS_ID,
+      voted_app_id: VALID_VOTED_APP_ID,
+    });
   });
 
   it('returns 500 on DB error', async () => {

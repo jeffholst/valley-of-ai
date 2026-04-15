@@ -86,6 +86,12 @@ describe('GET /api/votes', () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body).toHaveLength(2);
+
+    const client = createServiceClient.mock.results[0].value;
+    expect(client.from).toHaveBeenCalledWith('app_votes');
+    const chain = client.from.mock.results[0].value;
+    expect(chain.select).toHaveBeenCalledWith('vote_type, created_at');
+    expect(chain.eq).toHaveBeenCalledWith('app_id', VALID_APP_ID);
   });
 
   it('returns 500 on DB error for single appId', async () => {
@@ -98,6 +104,12 @@ describe('GET /api/votes', () => {
     makeSelectClient({ data: SAMPLE_VOTES, error: null });
     const res = await GET(makeGetRequest({ appIds: `${VALID_APP_ID},2026/03/08/snake` }));
     expect(res.status).toBe(200);
+
+    const client = createServiceClient.mock.results[0].value;
+    expect(client.from).toHaveBeenCalledWith('app_votes');
+    const chain = client.from.mock.results[0].value;
+    expect(chain.select).toHaveBeenCalledWith('app_id, vote_type, created_at');
+    expect(chain.in).toHaveBeenCalledWith('app_id', [VALID_APP_ID, '2026/03/08/snake']);
   });
 
   it('returns 400 for invalid appId in bulk list', async () => {
@@ -159,6 +171,11 @@ describe('POST /api/votes', () => {
     expect(res.status).toBe(201);
     const body = await res.json();
     expect(body.ok).toBe(true);
+
+    const client = createServiceClient.mock.results[0].value;
+    expect(client.from).toHaveBeenCalledWith('app_votes');
+    const chain = client.from.mock.results[0].value;
+    expect(chain.insert).toHaveBeenCalledWith({ app_id: VALID_APP_ID, vote_type: 'up' });
   });
 
   it('returns 201 for valid down vote', async () => {
