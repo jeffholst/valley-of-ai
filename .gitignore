@@ -36,6 +36,9 @@ yarn-error.log*
 # Husky generated hook runtime files
 .husky/_/
 
+# Supabase CLI local state (created by `supabase link`)
+.supabase/
+
 # Synced at build time
 public/apps/
 public/logs/

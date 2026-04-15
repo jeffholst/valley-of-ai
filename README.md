@@ -252,6 +252,31 @@ Client-side variables use the `NEXT_PUBLIC_*` prefix (accessible in the browser)
 
 If these values are missing, parts of the app may fail at runtime.
 
+### Supabase CLI Setup
+
+This project uses the [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started) to manage database migrations. `supabase/config.toml` and `supabase/migrations/` are committed to the repo.
+
+Full initial setup instructions are in the [Supabase Setup wiki page](https://github.com/jeffholst/valley-of-ai/wiki/Supabase-Setup). Once you have a Supabase project, link and apply migrations with:
+
+```bash
+supabase link --project-ref <your-project-ref>
+npm run db:push
+```
+
+#### Adding future migrations
+
+```bash
+npm run migration:new <name>   # creates supabase/migrations/<timestamp>_<name>.sql
+# edit the file, then:
+npm run db:push
+```
+
+| Command                 | Description                                     |
+| ----------------------- | ----------------------------------------------- |
+| `npm run db:push`       | Apply pending migrations to the remote database |
+| `npm run db:diff`       | Show schema diff between local and remote       |
+| `npm run migration:new` | Scaffold a new timestamped migration file       |
+
 ### Cloudflare Setup
 
 Full setup instructions (creating a Turnstile widget, configuring allowed domains, and adding keys to Vercel) are in the [Cloudflare Setup wiki page](https://github.com/jeffholst/valley-of-ai/wiki/Cloudflare-Setup).
