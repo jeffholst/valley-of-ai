@@ -7,10 +7,7 @@ jest.mock('@/data/apps.json', () => [
   { id: '2026/03/07/no-max-game', name: 'No Max Game' },
 ]);
 
-jest.mock('@/lib/supabase', () => ({
-  supabase: { from: jest.fn() },
-  createServiceClient: jest.fn(),
-}));
+jest.mock('@/lib/supabaseAdmin', () => ({ createServiceClient: jest.fn() }));
 
 jest.mock('@/lib/turnstile', () => ({
   verifyTurnstile: jest.fn(),
@@ -21,7 +18,7 @@ jest.mock('@/app/api/scores/profanity', () => ({
 }));
 
 import { GET, POST } from '@/app/api/scores/route';
-import { supabase, createServiceClient } from '@/lib/supabase';
+import { createServiceClient } from '@/lib/supabaseAdmin';
 import { verifyTurnstile } from '@/lib/turnstile';
 import { isClean } from '@/app/api/scores/profanity';
 
@@ -54,20 +51,21 @@ function makePostRequest(body) {
   });
 }
 
-// Returns a chainable anon query mock
-function makeAnonChain(result) {
+// Returns a service client mock that handles GET (single select chain)
+function makeGetClient(selectResult) {
   const chain = {
     select: jest.fn().mockReturnThis(),
     eq: jest.fn().mockReturnThis(),
     order: jest.fn().mockReturnThis(),
-    limit: jest.fn().mockResolvedValue(result),
+    limit: jest.fn().mockResolvedValue(selectResult),
   };
-  supabase.from.mockReturnValue(chain);
-  return chain;
+  const client = { from: jest.fn().mockReturnValue(chain) };
+  createServiceClient.mockReturnValue(client);
+  return client;
 }
 
-// Returns a service client mock for the POST (insert + select)
-function makeServiceClient(insertResult, selectResult) {
+// Returns a service client mock for POST (insert + select)
+function makePostClient(insertResult, selectResult) {
   const selectChain = {
     select: jest.fn().mockReturnThis(),
     eq: jest.fn().mockReturnThis(),
@@ -85,16 +83,15 @@ function makeServiceClient(insertResult, selectResult) {
 }
 
 beforeEach(() => {
-  makeAnonChain({ data: SAMPLE_SCORES, error: null });
-  makeServiceClient({ error: null }, { data: SAMPLE_SCORES, error: null });
+  makeGetClient({ data: SAMPLE_SCORES, error: null });
   verifyTurnstile.mockResolvedValue(true);
   isClean.mockReturnValue(true);
-  process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co';
+  process.env.SUPABASE_URL = 'https://test.supabase.co';
   process.env.SUPABASE_SECRET_KEY = 'test-service-key';
 });
 
 afterEach(() => {
-  delete process.env.NEXT_PUBLIC_SUPABASE_URL;
+  delete process.env.SUPABASE_URL;
   delete process.env.SUPABASE_SECRET_KEY;
   jest.clearAllMocks();
 });
@@ -119,6 +116,12 @@ describe('GET /api/scores', () => {
     expect(res.status).toBe(400);
   });
 
+  it('returns 503 when createServiceClient returns null', async () => {
+    createServiceClient.mockReturnValue(null);
+    const res = await GET(makeGetRequest(VALID_APP_ID));
+    expect(res.status).toBe(503);
+  });
+
   it('returns scores on success', async () => {
     const res = await GET(makeGetRequest(VALID_APP_ID));
     expect(res.status).toBe(200);
@@ -129,7 +132,7 @@ describe('GET /api/scores', () => {
   });
 
   it('returns 500 when Supabase returns an error', async () => {
-    makeAnonChain({ data: null, error: { message: 'DB error' } });
+    makeGetClient({ data: null, error: { message: 'DB error' } });
     const res = await GET(makeGetRequest(VALID_APP_ID));
     expect(res.status).toBe(500);
   });
@@ -138,6 +141,10 @@ describe('GET /api/scores', () => {
 // ─── POST ───────────────────────────────────────────────────────────────────
 
 describe('POST /api/scores', () => {
+  beforeEach(() => {
+    makePostClient({ error: null }, { data: SAMPLE_SCORES, error: null });
+  });
+
   describe('env guard', () => {
     it('returns 503 when createServiceClient returns null', async () => {
       createServiceClient.mockReturnValue(null);
@@ -204,6 +211,7 @@ describe('POST /api/scores', () => {
     });
 
     it('allows no maxScore restriction (no-max-game)', async () => {
+      makePostClient({ error: null }, { data: SAMPLE_SCORES, error: null });
       const res = await POST(
         makePostRequest({ ...VALID_POST_BODY, appId: '2026/03/07/no-max-game', score: 99999 })
       );
@@ -288,7 +296,7 @@ describe('POST /api/scores', () => {
     });
 
     it('trims whitespace from playerName before inserting', async () => {
-      const client = makeServiceClient({ error: null }, { data: SAMPLE_SCORES, error: null });
+      const client = makePostClient({ error: null }, { data: SAMPLE_SCORES, error: null });
       await POST(makePostRequest({ ...VALID_POST_BODY, playerName: '  Alice  ' }));
       const insertCall = client.from.mock.results[0].value.insert.mock.calls[0][0];
       expect(insertCall.player_name).toBe('Alice');

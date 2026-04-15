@@ -125,17 +125,17 @@ function getApprovedIssues() {
 // Supabase helpers
 // ---------------------------------------------------------------------------
 function buildSupabaseClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SECRET_KEY;
   if (!url || !key) {
     return null;
   }
-  return createClient(url, key);
+  return createClient(url, key, { auth: { persistSession: false } });
 }
 
 async function getVoteCounts(supabase, appIds) {
   const { data, error } = await supabase
-    .from('votes')
+    .from('app_votes')
     .select('app_id, vote_type')
     .in('app_id', appIds);
 

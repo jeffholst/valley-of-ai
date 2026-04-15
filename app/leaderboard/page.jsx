@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
+import { createServiceClient } from '@/lib/supabaseAdmin';
 import appsData from '@/data/apps.json';
 
 export const metadata = {
@@ -14,6 +14,11 @@ async function fetchTopScoresByApp() {
 
   const results = await Promise.all(
     appIds.map(async (appId) => {
+      const supabase = createServiceClient();
+      if (!supabase) {
+        return [appId, []];
+      }
+
       const { data, error } = await supabase
         .from('leaderboard_scores')
         .select('app_id, player_name, score')

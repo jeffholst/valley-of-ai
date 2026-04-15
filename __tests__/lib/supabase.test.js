@@ -2,44 +2,64 @@
  * @jest-environment node
  */
 
-describe('lib/supabase mock fallback client', () => {
+jest.mock('@supabase/supabase-js', () => ({
+  createClient: jest.fn(() => ({ _isMock: true })),
+}));
+
+import { createClient } from '@supabase/supabase-js';
+
+describe('lib/supabaseAdmin createServiceClient', () => {
   const ORIGINAL_ENV = process.env;
 
   beforeEach(() => {
     jest.resetModules();
     process.env = { ...ORIGINAL_ENV };
-    delete process.env.NEXT_PUBLIC_SUPABASE_URL;
-    delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    delete process.env.SUPABASE_URL;
+    delete process.env.SUPABASE_SECRET_KEY;
+    createClient.mockClear();
   });
 
   afterAll(() => {
     process.env = ORIGINAL_ENV;
   });
 
-  it('supports chained order/limit queries', async () => {
-    let supabase;
+  it('returns null when env vars are missing', () => {
+    let createServiceClient;
     jest.isolateModules(() => {
-      ({ supabase } = require('@/lib/supabase'));
+      ({ createServiceClient } = require('@/lib/supabaseAdmin'));
     });
-
-    const result = await supabase
-      .from('leaderboard_scores')
-      .select('player_name, score')
-      .eq('app_id', '2026/03/07/flappy-bird')
-      .order('score', { ascending: false })
-      .limit(10);
-
-    expect(result).toEqual({ count: 0, data: [], error: null });
+    expect(createServiceClient()).toBeNull();
+    expect(createClient).not.toHaveBeenCalled();
   });
 
-  it('supports awaiting queries that end at eq()', async () => {
-    let supabase;
+  it('returns null when only SUPABASE_URL is set', () => {
+    process.env.SUPABASE_URL = 'https://test.supabase.co';
+    let createServiceClient;
     jest.isolateModules(() => {
-      ({ supabase } = require('@/lib/supabase'));
+      ({ createServiceClient } = require('@/lib/supabaseAdmin'));
     });
+    expect(createServiceClient()).toBeNull();
+  });
 
-    const result = await supabase.from('votes').select('vote_type').eq('app_id', 'x');
+  it('returns null when only SUPABASE_SECRET_KEY is set', () => {
+    process.env.SUPABASE_SECRET_KEY = 'service-role-key';
+    let createServiceClient;
+    jest.isolateModules(() => {
+      ({ createServiceClient } = require('@/lib/supabaseAdmin'));
+    });
+    expect(createServiceClient()).toBeNull();
+  });
 
-    expect(result).toEqual({ count: 0, data: [], error: null });
+  it('returns a Supabase client when both env vars are set', () => {
+    process.env.SUPABASE_URL = 'https://test.supabase.co';
+    process.env.SUPABASE_SECRET_KEY = 'service-role-key';
+    let createServiceClient;
+    jest.isolateModules(() => {
+      ({ createServiceClient } = require('@/lib/supabaseAdmin'));
+    });
+    const client = createServiceClient();
+    expect(client).not.toBeNull();
+    // createClient is called inside the isolated module registry — verify via result shape
+    expect(client._isMock).toBe(true);
   });
 });
