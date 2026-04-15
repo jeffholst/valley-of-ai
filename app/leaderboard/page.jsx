@@ -10,26 +10,29 @@ export const metadata = {
 export const revalidate = 60;
 
 async function fetchTopScoresByApp() {
-  const { data, error } = await supabase
-    .from('leaderboard_scores')
-    .select('app_id, player_name, score')
-    .order('score', { ascending: false });
+  const appIds = appsData.map((app) => app.id).filter(Boolean);
 
-  if (error || !data) {
-    return {};
-  }
+  const results = await Promise.all(
+    appIds.map(async (appId) => {
+      const { data, error } = await supabase
+        .from('leaderboard_scores')
+        .select('app_id, player_name, score')
+        .eq('app_id', appId)
+        .order('score', { ascending: false })
+        .limit(3);
 
-  // Group by app_id, keeping top 3 per app
-  const groups = {};
-  for (const row of data) {
-    if (!groups[row.app_id]) {
-      groups[row.app_id] = [];
-    }
-    if (groups[row.app_id].length < 3) {
-      groups[row.app_id].push({ ...row, rank: groups[row.app_id].length + 1 });
-    }
-  }
-  return groups;
+      if (error || !data) {
+        return [appId, []];
+      }
+
+      return [
+        appId,
+        data.map((row, index) => ({ ...row, rank: index + 1 })),
+      ];
+    })
+  );
+
+  return Object.fromEntries(results);
 }
 
 function ScoreCard({ app, scores }) {
