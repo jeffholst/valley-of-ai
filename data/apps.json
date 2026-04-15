@@ -1,5 +1,42 @@
 [
   {
+    "id": "2026/04/15/fortune-wheel-deluxe",
+    "name": "Fortune Wheel Deluxe",
+    "shortDescription": "A polished, customizable decision wheel for those who can't make up their mind.",
+    "thumbnailUrl": "/apps/2026/04/15/fortune-wheel-deluxe/thumbnail.svg",
+    "createdAt": "2026-04-15T07:06:39Z",
+    "year": 2026,
+    "month": 4,
+    "day": 15,
+    "category": "Entertainment",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "decision-maker",
+      "randomizer",
+      "customizable",
+      "wheel",
+      "entertainment",
+      "visuals"
+    ],
+    "route": "/apps/2026/04/15/fortune-wheel-deluxe",
+    "appPath": "/apps/2026/04/15/fortune-wheel-deluxe/index.html",
+    "generation": {
+      "agentName": "Dev",
+      "llmModel": "ollama/gemma4:31b",
+      "startTime": "2026-04-15T07:06:39Z",
+      "endTime": "2026-04-15T07:25:00Z",
+      "totalTokensIn": 15000,
+      "totalTokensOut": 13000,
+      "runId": "run-20260415T070639Z-a1b2c3",
+      "notes": "Built as a vote-inspired project in the Entertainment category. Focuses on smooth animations and a clean mobile-first UI."
+    },
+    "suggestion": null,
+    "improvements": null,
+    "allowImprovements": true,
+    "backups": null
+  },
+  {
     "id": "2026/04/08/asteroids-modern",
     "name": "Asteroids Modern",
     "shortDescription": "A neon-infused, mobile-first reimagining of the classic Asteroids arcade game with fluid touch controls and synthwave aesthetics.",
@@ -11,7 +48,15 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["arcade", "space", "canvas", "mobile-first", "neon", "synthwave", "action"],
+    "tags": [
+      "arcade",
+      "space",
+      "canvas",
+      "mobile-first",
+      "neon",
+      "synthwave",
+      "action"
+    ],
     "route": "/apps/2026/04/08/asteroids-modern",
     "appPath": "/apps/2026/04/08/asteroids-modern/index.html",
     "generation": {
@@ -78,7 +123,14 @@
     "category": "Entertainment",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["bingo", "number-caller", "party", "random", "host-tool", "mobile-friendly"],
+    "tags": [
+      "bingo",
+      "number-caller",
+      "party",
+      "random",
+      "host-tool",
+      "mobile-friendly"
+    ],
     "route": "/apps/2026/04/06/neon-bingo-caller",
     "appPath": "/apps/2026/04/06/neon-bingo-caller/index.html",
     "generation": {
@@ -184,7 +236,16 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["quiz", "emoji", "party", "multiplayer", "zoom", "responsive", "touch", "trivia"],
+    "tags": [
+      "quiz",
+      "emoji",
+      "party",
+      "multiplayer",
+      "zoom",
+      "responsive",
+      "touch",
+      "trivia"
+    ],
     "route": "/apps/2026/04/01/emoji-quiz-party",
     "appPath": "/apps/2026/04/01/emoji-quiz-party/index.html",
     "generation": {
@@ -396,7 +457,16 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["puzzle", "sokoban", "mobile", "touch", "classic", "grid", "levels", "builder"],
+    "tags": [
+      "puzzle",
+      "sokoban",
+      "mobile",
+      "touch",
+      "classic",
+      "grid",
+      "levels",
+      "builder"
+    ],
     "route": "/apps/2026/03/26/sokoban-warehouse",
     "appPath": "/apps/2026/03/26/sokoban-warehouse/index.html",
     "generation": {
@@ -543,7 +613,15 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["shooter", "arcade", "space", "canvas", "mobile-first", "wave-based", "power-ups"],
+    "tags": [
+      "shooter",
+      "arcade",
+      "space",
+      "canvas",
+      "mobile-first",
+      "wave-based",
+      "power-ups"
+    ],
     "route": "/apps/2026/03/26/galaxian-blitz",
     "appPath": "/apps/2026/03/26/galaxian-blitz/index.html",
     "generation": {
@@ -611,7 +689,14 @@
     "category": "Entertainment",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["slot-machine", "casino", "rng", "mobile-first", "paylines", "neon"],
+    "tags": [
+      "slot-machine",
+      "casino",
+      "rng",
+      "mobile-first",
+      "paylines",
+      "neon"
+    ],
     "route": "/apps/2026/03/25/neon-slot-rush",
     "appPath": "/apps/2026/03/25/neon-slot-rush/index.html",
     "generation": {
@@ -683,7 +768,14 @@
     "category": "Entertainment",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["puzzle", "solitaire", "strategy", "board-game", "classic", "mobile-first"],
+    "tags": [
+      "puzzle",
+      "solitaire",
+      "strategy",
+      "board-game",
+      "classic",
+      "mobile-first"
+    ],
     "route": "/apps/2026/03/25/peg-solitaire",
     "appPath": "/apps/2026/03/25/peg-solitaire/index.html",
     "generation": {
@@ -767,7 +859,15 @@
     "category": "Games",
     "inputMode": "mobile",
     "status": "active",
-    "tags": ["roguelike", "puzzle", "mobile", "touch", "dungeon", "strategy", "seeded"],
+    "tags": [
+      "roguelike",
+      "puzzle",
+      "mobile",
+      "touch",
+      "dungeon",
+      "strategy",
+      "seeded"
+    ],
     "route": "/apps/2026/03/23/dungeon-puzzle-run",
     "appPath": "/apps/2026/03/23/dungeon-puzzle-run/index.html",
     "generation": {
@@ -812,7 +912,14 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["tic-tac-toe", "minimax", "strategy", "responsive", "keyboard", "touch"],
+    "tags": [
+      "tic-tac-toe",
+      "minimax",
+      "strategy",
+      "responsive",
+      "keyboard",
+      "touch"
+    ],
     "route": "/apps/2026/03/23/tic-tac-toe-strategy-lab",
     "appPath": "/apps/2026/03/23/tic-tac-toe-strategy-lab/index.html",
     "generation": {
@@ -842,7 +949,15 @@
     "category": "Entertainment",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["lottery", "texas", "random", "numbers", "animation", "confetti", "generator"],
+    "tags": [
+      "lottery",
+      "texas",
+      "random",
+      "numbers",
+      "animation",
+      "confetti",
+      "generator"
+    ],
     "route": "/apps/2026/03/21/texas-lotto-generator",
     "appPath": "/apps/2026/03/21/texas-lotto-generator/index.html",
     "generation": {
@@ -956,7 +1071,14 @@
     "category": "Education",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["morse-code", "audio", "educational", "translator", "web-audio-api", "radio"],
+    "tags": [
+      "morse-code",
+      "audio",
+      "educational",
+      "translator",
+      "web-audio-api",
+      "radio"
+    ],
     "route": "/apps/2026/03/21/morse-code-radio",
     "appPath": "/apps/2026/03/21/morse-code-radio/index.html",
     "generation": {
@@ -1145,7 +1267,14 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["hangman", "word-game", "puzzle", "animation", "keyboard", "touch"],
+    "tags": [
+      "hangman",
+      "word-game",
+      "puzzle",
+      "animation",
+      "keyboard",
+      "touch"
+    ],
     "route": "/apps/2026/03/17/hangman-word-game",
     "appPath": "/apps/2026/03/17/hangman-word-game/index.html",
     "generation": {
@@ -1175,7 +1304,14 @@
     "category": "Productivity",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["timer", "productivity", "focus", "utility", "pomodoro", "time-management"],
+    "tags": [
+      "timer",
+      "productivity",
+      "focus",
+      "utility",
+      "pomodoro",
+      "time-management"
+    ],
     "route": "/apps/2026/03/17/focus-timer",
     "appPath": "/apps/2026/03/17/focus-timer/index.html",
     "generation": {
@@ -1205,7 +1341,13 @@
     "category": "Utilities",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["breathing", "meditation", "stress-relief", "habit-tracking", "4-7-8"],
+    "tags": [
+      "breathing",
+      "meditation",
+      "stress-relief",
+      "habit-tracking",
+      "4-7-8"
+    ],
     "route": "/apps/2026/03/16/mindful-breathing-tracker",
     "appPath": "/apps/2026/03/16/mindful-breathing-tracker/index.html",
     "generation": {
@@ -1235,7 +1377,13 @@
     "category": "Productivity",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["productivity", "pomodoro", "task-planning", "priority-scoring", "mobile-friendly"],
+    "tags": [
+      "productivity",
+      "pomodoro",
+      "task-planning",
+      "priority-scoring",
+      "mobile-friendly"
+    ],
     "route": "/apps/2026/03/15/focus-sprint-planner",
     "appPath": "/apps/2026/03/15/focus-sprint-planner/index.html",
     "generation": {
@@ -1355,7 +1503,15 @@
     "category": "Utilities",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["breathing", "wellness", "mindfulness", "timer", "mobile", "focus", "health"],
+    "tags": [
+      "breathing",
+      "wellness",
+      "mindfulness",
+      "timer",
+      "mobile",
+      "focus",
+      "health"
+    ],
     "route": "/apps/2026/03/13/interval-breathing-coach",
     "appPath": "/apps/2026/03/13/interval-breathing-coach/index.html",
     "generation": {
@@ -1385,7 +1541,16 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["game", "tap", "mobile", "responsive", "arcade", "high-score", "touch", "reaction"],
+    "tags": [
+      "game",
+      "tap",
+      "mobile",
+      "responsive",
+      "arcade",
+      "high-score",
+      "touch",
+      "reaction"
+    ],
     "route": "/apps/2026/03/13/bubble-tap",
     "appPath": "/apps/2026/03/13/bubble-tap/index.html",
     "generation": {
@@ -1445,7 +1610,13 @@
     "category": "Utilities",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["timezone", "scheduling", "meeting-planner", "global-teams", "productivity"],
+    "tags": [
+      "timezone",
+      "scheduling",
+      "meeting-planner",
+      "global-teams",
+      "productivity"
+    ],
     "route": "/apps/2026/03/12/timezone-overlap-finder",
     "appPath": "/apps/2026/03/12/timezone-overlap-finder/index.html",
     "generation": {
@@ -1475,7 +1646,14 @@
     "category": "Education",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["astronomy", "stars", "constellations", "mythology", "interactive", "educational"],
+    "tags": [
+      "astronomy",
+      "stars",
+      "constellations",
+      "mythology",
+      "interactive",
+      "educational"
+    ],
     "route": "/apps/2026/03/12/constellation-explorer",
     "appPath": "/apps/2026/03/12/constellation-explorer/index.html",
     "generation": {
@@ -2290,7 +2468,14 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": ["game", "flappy-bird", "arcade", "tap", "touch-controls", "endless-runner"],
+    "tags": [
+      "game",
+      "flappy-bird",
+      "arcade",
+      "tap",
+      "touch-controls",
+      "endless-runner"
+    ],
     "route": "/apps/2026/03/07/flappy-bird",
     "appPath": "/apps/2026/03/07/flappy-bird/index.html",
     "generation": {
@@ -2410,7 +2595,13 @@
     "category": "Visualizations",
     "inputMode": "desktop",
     "status": "active",
-    "tags": ["algorithms", "sorting", "visualization", "educational", "computer-science"],
+    "tags": [
+      "algorithms",
+      "sorting",
+      "visualization",
+      "educational",
+      "computer-science"
+    ],
     "route": "/apps/2026/03/06/sorting-visualizer",
     "appPath": "/apps/2026/03/06/sorting-visualizer/index.html",
     "generation": {

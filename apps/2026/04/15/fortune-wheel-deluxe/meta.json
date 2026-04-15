@@ -1,0 +1,29 @@
+{
+  "id": "fortune-wheel-deluxe",
+  "name": "Fortune Wheel Deluxe",
+  "shortDescription": "A polished, customizable decision wheel for those who can't make up their mind.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-04-15T07:06:39Z",
+  "category": "Entertainment",
+  "status": "active",
+  "tags": [
+    "decision-maker",
+    "randomizer",
+    "customizable",
+    "wheel",
+    "entertainment",
+    "visuals"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "Dev",
+    "llmModel": "ollama/gemma4:31b",
+    "startTime": "2026-04-15T07:06:39Z",
+    "endTime": "2026-04-15T07:25:00Z",
+    "totalTokensIn": 15000,
+    "totalTokensOut": 13000,
+    "runId": "run-20260415T070639Z-a1b2c3",
+    "notes": "Built as a vote-inspired project in the Entertainment category. Focuses on smooth animations and a clean mobile-first UI."
+  }
+}
