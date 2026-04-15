@@ -33,7 +33,7 @@ export async function GET(request) {
   // Bulk: appIds is a comma-separated list
   const ids = appIds.split(',').map((id) => id.trim());
   const invalid = ids.find((id) => !APP_ID_PATTERN.test(id));
-  if (invalid) {
+  if (invalid !== undefined) {
     return Response.json({ error: `Invalid appId format: ${invalid}` }, { status: 400 });
   }
 
