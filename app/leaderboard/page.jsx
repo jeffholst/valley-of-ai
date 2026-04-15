@@ -96,8 +96,17 @@ export default async function LeaderboardPage() {
     .filter((app) => appIds.includes(app.id) && app.status === 'active')
     .sort((a, b) => {
       // Sort by number of scores desc, then by highest score desc
-      const aTop = scoreGroups[a.id]?.[0]?.score ?? 0;
-      const bTop = scoreGroups[b.id]?.[0]?.score ?? 0;
+      const aScores = scoreGroups[a.id] ?? [];
+      const bScores = scoreGroups[b.id] ?? [];
+      const aCount = aScores.length;
+      const bCount = bScores.length;
+
+      if (aCount !== bCount) {
+        return bCount - aCount;
+      }
+
+      const aTop = aScores[0]?.score ?? 0;
+      const bTop = bScores[0]?.score ?? 0;
       return bTop - aTop;
     });
 
