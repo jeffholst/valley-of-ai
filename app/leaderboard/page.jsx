@@ -11,14 +11,14 @@ export const revalidate = 60;
 
 async function fetchTopScoresByApp() {
   const appIds = appsData.map((app) => app.id).filter(Boolean);
+  const supabase = createServiceClient();
+
+  if (!supabase) {
+    return Object.fromEntries(appIds.map((appId) => [appId, []]));
+  }
 
   const results = await Promise.all(
     appIds.map(async (appId) => {
-      const supabase = createServiceClient();
-      if (!supabase) {
-        return [appId, []];
-      }
-
       const { data, error } = await supabase
         .from('leaderboard_scores')
         .select('app_id, player_name, score')
