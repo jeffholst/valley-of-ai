@@ -1438,6 +1438,8 @@
       errorMsg.setAttribute('role', 'alert');
       lbContentArea.appendChild(errorMsg);
 
+      openLbModal();
+
       let turnstileToken = null;
       if (siteKey && !isLocal) {
         const tsDiv = document.createElement('div');
@@ -1454,9 +1456,18 @@
           document.head.appendChild(tsScript);
         }
 
+        const TURNSTILE_RENDER_RETRY_DELAY_MS = 200;
+        const TURNSTILE_RENDER_MAX_RETRIES = 25;
+        let turnstileRenderRetries = 0;
+
         function tryRenderTurnstile() {
+          const turnstileWidget = document.getElementById('voa-lb-turnstile-widget');
+          if (!_leaderboardModalOpen || !turnstileWidget || !turnstileWidget.isConnected) {
+            return;
+          }
+
           if (window.turnstile) {
-            window.turnstile.render('#voa-lb-turnstile-widget', {
+            window.turnstile.render(turnstileWidget, {
               sitekey: siteKey,
               callback: (token) => {
                 turnstileToken = token;
@@ -1471,7 +1482,11 @@
               size: 'normal',
             });
           } else {
-            setTimeout(tryRenderTurnstile, 200);
+            if (turnstileRenderRetries >= TURNSTILE_RENDER_MAX_RETRIES) {
+              return;
+            }
+            turnstileRenderRetries += 1;
+            setTimeout(tryRenderTurnstile, TURNSTILE_RENDER_RETRY_DELAY_MS);
           }
         }
         tryRenderTurnstile();
@@ -1495,7 +1510,6 @@
       btnRow.appendChild(cancelBtn);
       lbContentArea.appendChild(btnRow);
 
-      openLbModal();
       nameInput.focus();
 
       submitBtn.addEventListener('click', async () => {
