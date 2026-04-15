@@ -174,12 +174,12 @@ Git commits also run the repo's pre-commit hook via `lint-staged`, so staged fil
 
 ### 3rd Party Service Requirements
 
-| Service                                                                | Purpose                                                                                                         |
-| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| [Supabase](https://supabase.com)                                       | Storing and retrieving app votes — [setup guide](https://github.com/jeffholst/valley-of-ai/wiki/Supabase-Setup) |
-| [GitHub Issues](https://docs.github.com/en/issues)                     | Persistent storage for community app suggestions and improvement requests                                       |
-| [Google Analytics](https://analytics.google.com)                       | Analytic tracking                                                                                               |
-| [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) | Bot protection on suggestion and improvement forms                                                              |
+| Service                                                                | Purpose                                                                                                                                     |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Supabase](https://supabase.com)                                       | Storing and retrieving app votes and game leaderboard scores — [setup guide](https://github.com/jeffholst/valley-of-ai/wiki/Supabase-Setup) |
+| [GitHub Issues](https://docs.github.com/en/issues)                     | Persistent storage for community app suggestions and improvement requests                                                                   |
+| [Google Analytics](https://analytics.google.com)                       | Analytic tracking                                                                                                                           |
+| [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) | Bot protection on suggestion and improvement forms                                                                                          |
 
 ### GitHub Labels
 
@@ -234,6 +234,7 @@ Client-side variables use the `NEXT_PUBLIC_*` prefix (accessible in the browser)
 | ------------------------------------ | ------ | -------------------------------------------------------------------------------- |
 | `NEXT_PUBLIC_SUPABASE_URL`           | Client | Supabase project URL for voting data                                             |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY`      | Client | Supabase anonymous key for client access                                         |
+| `SUPABASE_SECRET_KEY`                | Server | Supabase service role key for server-side leaderboard score writes               |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY`     | Client | Cloudflare Turnstile site key (production only; skipped in development)          |
 | `NEXT_PUBLIC_GA_MEASUREMENT_ID`      | Client | Google Analytics measurement ID                                                  |
 | `NEXT_PUBLIC_MAIN_SITE_URL`          | Client | Main site URL used by app footer links                                           |
@@ -619,6 +620,7 @@ Each app includes rich metadata in `meta.json`:
 > - `improvements` is optional — appended to each time an improvement pipeline runs against this app.
 > - `visible` defaults to `true`. Set to `false` to hide an app from the gallery without deleting it.
 > - `allowImprovements` defaults to `true`. Set to `false` to lock an app from new community improvement submissions (see [Disabling improvements for an app](#disabling-improvements-for-an-app)).
+> - `maxScore` is optional but required for games that use the leaderboard hook. The API rejects leaderboard submissions above this value. Set it to a plausible ceiling for each game.
 
 ---
 
@@ -720,6 +722,14 @@ The field defaults to `true` for all apps — no action is needed to keep improv
 3. **No fallback** — returns `found: false` if nothing is approved; the agent stops
 
 Both scripts include duplication guardrails: `duplicationRisk` scoring, `saturatedTags` (tags in ≥20% of apps), and `recentTags` (tags from the last 14 days) to avoid building the same concept twice.
+
+---
+
+## 🏆 Leaderboards
+
+The `/leaderboard` page shows top scores across all Valley of AI games. Each game that uses the `voaLeaderboard` hook gets a card with the top-3 players. The 🏆 button in the in-app header opens the per-game top-10 leaderboard modal.
+
+See the [Leaderboard Hook documentation](docs/LEADERBOARD_HOOK.md) for how to add scoring to a game.
 
 ---
 

@@ -11,6 +11,7 @@
   "tags": ["game", "flappy-bird", "arcade", "tap", "touch-controls", "endless-runner"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
+  "maxScore": 999,
   "generation": {
     "agentName": "copilot-agent",
     "llmModel": "claude-opus-4.5",

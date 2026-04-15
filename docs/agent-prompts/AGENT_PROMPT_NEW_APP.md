@@ -218,6 +218,16 @@ Quality standards (non-negotiable):
   }
   ```
 
+- **Leaderboard (games only, required):** Call `window.voaLeaderboard?.submit(score)` immediately
+  after `voaShare` in the game-over handler. See `AGENT_PROMPT_SHARED.md` → "Leaderboard Hook".
+
+  ```js
+  // Inside game-over handler, right after voaShare:
+  if (window.voaLeaderboard) {
+    window.voaLeaderboard.submit(score);
+  }
+  ```
+
 Log immediately:
 
 ```bash
@@ -252,6 +262,7 @@ Generate `meta.json` with all required fields: `id`, `name`, `shortDescription`,
 
 - `generation.runId` **must exactly equal** the `<runId>` generated in Step 0 (no alternate value, no regeneration).
 - For initial app creation, **do not create an `improvements` array**. Improvements are appended later only by the improvement pipeline.
+- **For games:** include `"maxScore": <N>` — the API rejects leaderboard submissions above this value, preventing impossible scores. Set it to a plausible ceiling (e.g. Flappy Bird → 999, Missile Command → 999999, Tetris → 9999). See `AGENT_PROMPT_SHARED.md` → "Leaderboard Hook".
 
 If this app was built from an approved GitHub issue (Step 1 sources `github-boosted` or `github-approved`), include a `suggestion` object:
 

@@ -322,6 +322,10 @@ Edit `apps/<app-path>/index.html` to implement the improvement.
   `AGENT_PROMPT_SHARED.md` → "Social Share Hook"). Call it in the game-over or result handler using
   the guard pattern. Do not add a visible "Share" button unless the improvement request specifically
   asks for one — the hook opens the drawer without extra UI.
+- **If the improvement adds leaderboard functionality** — use `window.voaLeaderboard` from
+  `app-shell.js` (see `AGENT_PROMPT_SHARED.md` → "Leaderboard Hook"). Call
+  `window.voaLeaderboard?.submit(score)` in the game-over handler, after `voaShare`. Also add
+  `"maxScore": <N>` to `meta.json`.
 - If the improvement changes visible UI, verify it still works at 320px width with the shared shell header/footer present.
 - **If the improvement touches CSS layout or adds/moves UI controls** — see `AGENT_PROMPT_SHARED.md` → "Shell Layout" for the authoritative header/footer pixel values, safe-zone diagram, ✅/❌ CSS patterns, and interactive control placement rules. Apply them before writing any layout CSS.
 
