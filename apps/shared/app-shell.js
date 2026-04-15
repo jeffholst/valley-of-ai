@@ -936,6 +936,7 @@
   let _voaShareText = null;
   let _voaShareUrl = null;
   let _leaderboardModalOpen = false;
+  let _turnstileWidgetId = null;
 
   function injectShell() {
     if (document.getElementById('voa-shell-header')) {
@@ -1304,6 +1305,10 @@
     });
 
     function closeLbModal() {
+      if (_turnstileWidgetId !== null && window.turnstile) {
+        window.turnstile.remove(_turnstileWidgetId);
+        _turnstileWidgetId = null;
+      }
       lbBackdrop.classList.remove('open');
       lbBackdrop.setAttribute('aria-hidden', 'true');
       _leaderboardModalOpen = false;
@@ -1467,7 +1472,7 @@
           }
 
           if (window.turnstile) {
-            window.turnstile.render(turnstileWidget, {
+            _turnstileWidgetId = window.turnstile.render(turnstileWidget, {
               sitekey: siteKey,
               callback: (token) => {
                 turnstileToken = token;
