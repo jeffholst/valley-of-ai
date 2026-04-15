@@ -63,7 +63,8 @@ export async function POST(request) {
     return Response.json({ error: 'Invalid request body' }, { status: 400 });
   }
 
-  const { appId, playerName, score, turnstileToken } = body;
+  const { appId, playerName: rawPlayerName, score, turnstileToken } = body;
+  const playerName = typeof rawPlayerName === 'string' ? rawPlayerName.trim() : '';
 
   // Validate appId
   if (!appId || !APP_ID_RE.test(appId)) {
@@ -86,7 +87,7 @@ export async function POST(request) {
   }
 
   // Validate player name format
-  if (!playerName || !PLAYER_NAME_RE.test(playerName)) {
+  if (!PLAYER_NAME_RE.test(playerName)) {
     return Response.json(
       { error: 'Player name must be 2–20 characters (letters, numbers, spaces, - or _)' },
       { status: 400 }
@@ -123,7 +124,7 @@ export async function POST(request) {
   // Insert score via service role client (bypasses RLS)
   const { error: insertError } = await serviceClient.from('leaderboard_scores').insert({
     app_id: appId,
-    player_name: playerName.trim(),
+    player_name: playerName,
     score,
   });
 

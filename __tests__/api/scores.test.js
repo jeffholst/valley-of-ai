@@ -215,6 +215,16 @@ describe('POST /api/scores', () => {
       expect(res.status).toBe(400);
     });
 
+    it('returns 400 when trimmed playerName is too short', async () => {
+      const res = await POST(makePostRequest({ ...VALID_POST_BODY, playerName: '  A  ' }));
+      expect(res.status).toBe(400);
+    });
+
+    it('returns 400 for whitespace-only playerName', async () => {
+      const res = await POST(makePostRequest({ ...VALID_POST_BODY, playerName: '     ' }));
+      expect(res.status).toBe(400);
+    });
+
     it('returns 400 for playerName too long', async () => {
       const res = await POST(makePostRequest({ ...VALID_POST_BODY, playerName: 'A'.repeat(21) }));
       expect(res.status).toBe(400);
