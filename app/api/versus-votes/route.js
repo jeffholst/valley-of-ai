@@ -23,7 +23,8 @@ export async function GET(request) {
       .select('voted_app_id, created_at')
       .eq('versus_id', versusId);
     if (error) {
-      return Response.json({ error: error.message }, { status: 500 });
+      console.error('Supabase error fetching versus votes:', error);
+      return Response.json({ error: 'Failed to fetch votes' }, { status: 500 });
     }
     return Response.json(data);
   }
@@ -40,7 +41,8 @@ export async function GET(request) {
     .select('versus_id, voted_app_id, created_at')
     .in('versus_id', ids);
   if (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('Supabase error fetching versus votes (bulk):', error);
+    return Response.json({ error: 'Failed to fetch votes' }, { status: 500 });
   }
   return Response.json(data);
 }
@@ -71,7 +73,8 @@ export async function POST(request) {
     .from('versus_votes')
     .insert({ versus_id: versusId, voted_app_id: votedAppId });
   if (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('Supabase error inserting versus vote:', error);
+    return Response.json({ error: 'Failed to save vote' }, { status: 500 });
   }
   return Response.json({ ok: true }, { status: 201 });
 }
