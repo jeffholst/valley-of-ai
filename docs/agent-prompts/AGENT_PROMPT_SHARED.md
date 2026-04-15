@@ -396,6 +396,31 @@ design apps.
 
 ---
 
+## Keyboard Event Handling (Games)
+
+Game `keydown`/`keyup` listeners **must not** call `preventDefault()` when focus is inside a
+text input. The shell renders overlays (leaderboard name entry, etc.) on top of the game; global
+key suppression prevents users from typing spaces and other characters in those fields.
+
+**Required guard — apply to every `keydown` and `keyup` listener in a game:**
+
+```js
+document.addEventListener('keydown', (e) => {
+  const tag = document.activeElement?.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+  if (e.key === ' ') {
+    e.preventDefault(); /* jump / shoot / etc. */
+  }
+  // other controls...
+});
+```
+
+Without this guard, pressing space to type `"Cool Cat"` in the leaderboard name field triggers
+the game's jump/fire action and the space character is never inserted.
+
+---
+
 ## Logging Model (Most Important)
 
 All logging is handled by `npm run log`. Each app run is one transaction (TRANSACTION_START → STEP entries → TRANSACTION_END).

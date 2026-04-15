@@ -796,6 +796,13 @@
         border-color: var(--accent, #22d3ee);
       }
 
+      .voa-lb-hint {
+        color: var(--muted, #94a3b8);
+        font: 0.78rem/1.3 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        margin: 5px 0 0;
+        display: block;
+      }
+
       .voa-lb-error {
         color: #f87171;
         font: 0.8rem/1.3 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
@@ -1425,7 +1432,7 @@
       const nameLabel = document.createElement('label');
       nameLabel.className = 'voa-lb-label';
       nameLabel.setAttribute('for', 'voa-lb-name-input');
-      nameLabel.textContent = 'Your name (2\u201320 characters):';
+      nameLabel.textContent = 'Your name:';
       lbContentArea.appendChild(nameLabel);
 
       const nameInput = document.createElement('input');
@@ -1434,9 +1441,16 @@
       nameInput.type = 'text';
       nameInput.maxLength = 20;
       nameInput.autocomplete = 'nickname';
-      nameInput.placeholder = 'Enter your name';
+      nameInput.placeholder = 'e.g. Star Player, CoolCat99';
       nameInput.value = savedName;
+      nameInput.addEventListener('keydown', (e) => e.stopPropagation());
+      nameInput.addEventListener('keyup', (e) => e.stopPropagation());
+
+      const nameHint = document.createElement('span');
+      nameHint.className = 'voa-lb-hint';
+      nameHint.textContent = 'Letters, numbers, spaces, hyphens \u2014 2 to 20 characters';
       lbContentArea.appendChild(nameInput);
+      lbContentArea.appendChild(nameHint);
 
       const errorMsg = document.createElement('span');
       errorMsg.className = 'voa-lb-error';
@@ -1485,6 +1499,7 @@
               },
               theme: 'auto',
               size: 'normal',
+              appearance: 'interaction-only',
             });
           } else {
             if (turnstileRenderRetries >= TURNSTILE_RENDER_MAX_RETRIES) {

@@ -228,6 +228,27 @@ Quality standards (non-negotiable):
   }
   ```
 
+- **Keyboard event handling (games only, required):** Game `keydown`/`keyup` listeners must not
+  call `preventDefault()` when focus is inside a text input. The shell overlays (leaderboard name
+  entry, etc.) are rendered on top of the game; if the game swallows key events globally, users
+  cannot type spaces or other characters in those fields.
+
+  ```js
+  document.addEventListener('keydown', (e) => {
+    // Never block keys when the user is typing in an input
+    const tag = document.activeElement?.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+    // Normal game controls follow:
+    if (e.key === ' ') {
+      /* jump / shoot / etc. */ e.preventDefault();
+    }
+    // ...
+  });
+  ```
+
+  Apply the same guard to `keyup` listeners.
+
 Log immediately:
 
 ```bash
