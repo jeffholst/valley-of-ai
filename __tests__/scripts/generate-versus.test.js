@@ -4,7 +4,7 @@
  * Covers the pure validation and registry-building functions.
  */
 
-import { validateVersusData, buildVersusRegistry } from '../../scripts/versus-registry.js';
+import { validateVersusData, buildVersusRegistry } from '../../scripts/versus-registry.mjs';
 
 // ---------------------------------------------------------------------------
 // Helpers

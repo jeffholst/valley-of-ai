@@ -11,8 +11,8 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { buildAppsRegistry } from './apps-registry.js';
-import { validateVersusData, buildVersusRegistry } from './versus-registry.js';
+import { buildAppsRegistry } from './apps-registry.mjs';
+import { validateVersusData, buildVersusRegistry } from './versus-registry.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

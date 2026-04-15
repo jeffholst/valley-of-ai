@@ -13,7 +13,7 @@ import {
   issueHasLabel,
   loadEnv,
   removeLabels,
-} from './lib/issue-github-client.js';
+} from './lib/issue-github-client.mjs';
 
 export const VALID_STATUSES = new Set(['approved', 'rejected', 'needs-human-review']);
 const HUMAN_REVIEW_LABEL = 'status:needs-human-review';

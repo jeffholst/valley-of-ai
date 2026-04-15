@@ -14,7 +14,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { format as formatWithPrettier } from 'prettier';
-import { validateVersusData, buildVersusRegistry } from './versus-registry.js';
+import { validateVersusData, buildVersusRegistry } from './versus-registry.mjs';
 
 // Re-export for consumers that import from this file (e.g. validate-apps.js)
 export { validateVersusData, buildVersusRegistry };

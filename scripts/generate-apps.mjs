@@ -13,7 +13,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { format as formatWithPrettier } from 'prettier';
-import { buildAppsRegistry } from './apps-registry.js';
+import { buildAppsRegistry } from './apps-registry.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

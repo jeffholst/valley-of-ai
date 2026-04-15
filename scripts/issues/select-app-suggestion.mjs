@@ -23,12 +23,12 @@ import {
   getRepoOwner,
   listIssuesByLabels,
   loadEnv,
-} from './lib/issue-github-client.js';
+} from './lib/issue-github-client.mjs';
 import {
   computeSaturatedTags,
   computeRecentTags,
   computeDuplicationRisk,
-} from './lib/issue-selection-heuristics.js';
+} from './lib/issue-selection-heuristics.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

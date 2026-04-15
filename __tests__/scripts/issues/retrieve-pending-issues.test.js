@@ -1,5 +1,5 @@
 /**
- * Tests for scripts/issues/retrieve-pending-issues.js
+ * Tests for scripts/issues/retrieve-pending-issues.mjs
  *
  * Covers helper behavior, CLI argument parsing, npm-config fallback handling,
  * and queue selection rules for fresh pending items vs. needs-human-review.
@@ -12,7 +12,7 @@ import {
   parseArgs,
   retrievePendingIssues,
   sortIssuesOldestFirst,
-} from '../../../scripts/issues/retrieve-pending-issues.js';
+} from '../../../scripts/issues/retrieve-pending-issues.mjs';
 
 // Minimal issue factory for queue-filtering and normalization tests.
 function makeIssue(overrides = {}) {

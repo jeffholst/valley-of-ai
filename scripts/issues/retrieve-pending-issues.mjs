@@ -15,8 +15,8 @@ import {
   issueHasLabel,
   listIssuesByLabels,
   loadEnv,
-} from './lib/issue-github-client.js';
-import { extractAppPath } from './lib/issue-selection-heuristics.js';
+} from './lib/issue-github-client.mjs';
+import { extractAppPath } from './lib/issue-selection-heuristics.mjs';
 
 const _retrieveFilename = fileURLToPath(import.meta.url);
 const _retrieveDir = path.dirname(_retrieveFilename);
