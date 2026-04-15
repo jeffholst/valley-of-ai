@@ -266,7 +266,7 @@ npm run db:push
 #### Adding future migrations
 
 ```bash
-npm run migration:new <name>   # creates supabase/migrations/<timestamp>_<name>.sql
+npm run migration:new -- <name>   # creates supabase/migrations/<timestamp>_<name>.sql
 # edit the file, then:
 npm run db:push
 ```
