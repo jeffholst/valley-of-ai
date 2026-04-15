@@ -26,6 +26,7 @@ export async function GET(request) {
     .select('player_name, score, created_at')
     .eq('app_id', appId)
     .order('score', { ascending: false })
+    .order('created_at', { ascending: true })
     .limit(10);
 
   if (error) {
