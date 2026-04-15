@@ -58,7 +58,7 @@ export default function HomePage() {
   const [inputModeFilter, setInputModeFilter] = useState('');
 
   const { pterodactyls, handleKill } = usePterodactyls();
-  const { voteCounts, isLoading: _votesLoading } = useAllVoteCounts(allAppIds);
+  const { voteCounts, isLoading: votesLoading } = useAllVoteCounts(allAppIds);
 
   // Open donate modal if ?donate=1 is in the URL
   useEffect(() => {
@@ -329,7 +329,7 @@ export default function HomePage() {
           </p>
         </div>
 
-        <TrendingRow apps={trendingApps} voteCounts={voteCounts} />
+        <TrendingRow apps={trendingApps} voteCounts={voteCounts} isLoading={votesLoading} />
 
         <GalleryFilters
           searchQuery={searchQuery}

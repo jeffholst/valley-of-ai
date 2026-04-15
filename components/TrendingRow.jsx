@@ -2,7 +2,29 @@
 
 import AppCard from '@/components/AppCard';
 
-export default function TrendingRow({ apps, voteCounts }) {
+export default function TrendingRow({ apps, voteCounts, isLoading }) {
+  if (isLoading) {
+    return (
+      <div className="mb-8">
+        <div className="h-7 w-28 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-3" />
+        <div className="flex gap-4 overflow-x-auto pb-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="w-64 flex-shrink-0">
+              <div className="card overflow-hidden animate-pulse">
+                <div className="aspect-video bg-gray-200 dark:bg-gray-700" />
+                <div className="p-4 space-y-2">
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
+                  <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
+                  <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/3" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   if (!apps || apps.length === 0) {
     return null;
   }
