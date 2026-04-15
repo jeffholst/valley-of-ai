@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
+import { createServiceClient } from '@/lib/supabaseAdmin';
 import appsData from '@/data/apps.json';
 
 export const metadata = {
@@ -11,6 +11,11 @@ export const revalidate = 60;
 
 async function fetchTopScoresByApp() {
   const appIds = appsData.map((app) => app.id).filter(Boolean);
+  const supabase = createServiceClient();
+
+  if (!supabase) {
+    return Object.fromEntries(appIds.map((appId) => [appId, []]));
+  }
 
   const results = await Promise.all(
     appIds.map(async (appId) => {

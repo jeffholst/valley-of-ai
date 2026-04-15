@@ -7,9 +7,7 @@
   const SOCIAL_FACEBOOK_URL_PLACEHOLDER = '__SOCIAL_FACEBOOK_URL__';
   const SOCIAL_INSTAGRAM_URL_PLACEHOLDER = '__SOCIAL_INSTAGRAM_URL__';
   const SOCIAL_DISCORD_URL_PLACEHOLDER = '__SOCIAL_DISCORD_URL__';
-  const SUPABASE_URL_PLACEHOLDER = '__SUPABASE_URL__';
   const TURNSTILE_SITE_KEY_PLACEHOLDER = '__TURNSTILE_SITE_KEY__';
-  const SUPABASE_ANON_KEY_PLACEHOLDER = '__SUPABASE_ANON_KEY__';
   let currentShareUrl = null;
   const SHELL_CONFIG_PATH = '/apps/shared/shell-config.json';
   const DEFAULT_MAIN_SITE_URL = '';
@@ -93,14 +91,6 @@
     );
   }
 
-  function resolveSupabaseUrl() {
-    return resolveConfigUrl('supabaseUrl', SUPABASE_URL_PLACEHOLDER);
-  }
-
-  function resolveSupabaseAnonKey() {
-    return resolveConfigUrl('supabaseAnonKey', SUPABASE_ANON_KEY_PLACEHOLDER);
-  }
-
   function resolveTurnstileSiteKey() {
     return resolveConfigUrl('turnstileSiteKey', TURNSTILE_SITE_KEY_PLACEHOLDER);
   }
@@ -137,11 +127,8 @@
     }
   }
 
-  async function fetchVoteCounts(appId, supabaseUrl, anonKey) {
-    const res = await fetch(
-      `${supabaseUrl}/rest/v1/votes?app_id=eq.${encodeURIComponent(appId)}&select=vote_type`,
-      { headers: { apikey: anonKey, Authorization: `Bearer ${anonKey}` } }
-    );
+  async function fetchVoteCounts(appId) {
+    const res = await fetch(`/api/votes?appId=${encodeURIComponent(appId)}`);
     if (!res.ok) {
       return { up: 0, down: 0 };
     }
@@ -152,16 +139,11 @@
     };
   }
 
-  async function submitVote(appId, type, supabaseUrl, anonKey) {
-    const res = await fetch(`${supabaseUrl}/rest/v1/votes`, {
+  async function submitVote(appId, type) {
+    const res = await fetch('/api/votes', {
       method: 'POST',
-      headers: {
-        apikey: anonKey,
-        Authorization: `Bearer ${anonKey}`,
-        'Content-Type': 'application/json',
-        Prefer: 'return=minimal',
-      },
-      body: JSON.stringify({ app_id: appId, vote_type: type }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ appId, voteType: type }),
     });
     return res.ok || res.status === 201;
   }
@@ -1612,12 +1594,6 @@
     improveLink.title = 'Suggest an improvement for this app';
     container.appendChild(improveLink);
 
-    const supabaseUrl = resolveSupabaseUrl();
-    const anonKey = resolveSupabaseAnonKey();
-    if (!supabaseUrl || !anonKey) {
-      return;
-    }
-
     const myVoteRecord = getLocalVoteRecord(appId);
     const myVote = myVoteRecord?.type ?? null;
     const voted = !!myVote;
@@ -1625,7 +1601,7 @@
     // Fetch initial counts
     let counts = { up: 0, down: 0 };
     try {
-      counts = await fetchVoteCounts(appId, supabaseUrl, anonKey);
+      counts = await fetchVoteCounts(appId);
     } catch {
       /* ignore */
     }
@@ -1673,7 +1649,7 @@
         downBtn.classList.add('active-down');
       }
       try {
-        const ok = await submitVote(appId, type, supabaseUrl, anonKey);
+        const ok = await submitVote(appId, type);
         if (ok) {
           saveLocalVoteRecord(appId, type);
         } else {

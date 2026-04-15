@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
 import { storagePrefix } from '@/lib/siteConfig';
 
 const STORAGE_KEY = `${storagePrefix}_versus_votes`;
@@ -42,15 +41,12 @@ export function useVersusVotes(versusId) {
     async function fetchVotes() {
       setIsLoading(true);
       try {
-        const { data, error } = await supabase
-          .from('versus_votes')
-          .select('voted_app_id')
-          .eq('versus_id', versusId);
-
-        if (error) {
-          console.error('Error fetching versus votes:', error);
+        const res = await fetch(`/api/versus-votes?versusId=${encodeURIComponent(versusId)}`);
+        if (!res.ok) {
+          console.error('Error fetching versus votes:', res.status);
           return;
         }
+        const data = await res.json();
 
         const counts = {};
         for (const row of data || []) {
@@ -83,12 +79,14 @@ export function useVersusVotes(versusId) {
       setTotalVotes((prev) => prev + 1);
 
       try {
-        const { error } = await supabase
-          .from('versus_votes')
-          .insert({ versus_id: versusId, voted_app_id: appId });
+        const res = await fetch('/api/versus-votes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ versusId, votedAppId: appId }),
+        });
 
-        if (error) {
-          console.error('Error submitting versus vote:', error);
+        if (!res.ok) {
+          console.error('Error submitting versus vote:', res.status);
           // Revert optimistic update
           setMyVote(null);
           setVoteCounts((prev) => ({
@@ -123,15 +121,14 @@ export function useAllVersusVoteCounts(versusIds) {
 
       setIsLoading(true);
       try {
-        const { data, error } = await supabase
-          .from('versus_votes')
-          .select('versus_id, voted_app_id')
-          .in('versus_id', versusIds);
-
-        if (error) {
-          console.error('Error fetching all versus votes:', error);
+        const res = await fetch(
+          `/api/versus-votes?versusIds=${encodeURIComponent(versusIds.join(','))}`
+        );
+        if (!res.ok) {
+          console.error('Error fetching all versus votes:', res.status);
           return;
         }
+        const data = await res.json();
 
         const counts = {};
         for (const row of data || []) {

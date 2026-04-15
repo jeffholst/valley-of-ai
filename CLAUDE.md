@@ -232,4 +232,4 @@ ESLint covers `app/`, `components/`, `hooks/`, `lib/`, `scripts/`, and `__tests_
 `.env.local` — optional local overrides (also git-ignored)
 Shell/CI environment always takes precedence over both files.
 
-Key variables: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_SITE_NAME`, `GITHUB_SUGGESTIONS_TOKEN`, `GITHUB_REPO`, `TURNSTILE_SECRET_KEY`, Stripe keys.
+Key variables: `SUPABASE_URL`, `SUPABASE_SECRET_KEY` (server-only — never `NEXT_PUBLIC_`), `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_SITE_NAME`, `GITHUB_SUGGESTIONS_TOKEN`, `GITHUB_REPO`, `TURNSTILE_SECRET_KEY`, Stripe keys.

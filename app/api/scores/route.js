@@ -1,5 +1,5 @@
 import { verifyTurnstile } from '@/lib/turnstile';
-import { supabase, createServiceClient } from '@/lib/supabase';
+import { createServiceClient } from '@/lib/supabaseAdmin';
 import { isClean } from './profanity';
 import appsData from '@/data/apps.json';
 
@@ -19,6 +19,11 @@ export async function GET(request) {
 
   if (!appId || !APP_ID_RE.test(appId)) {
     return Response.json({ error: 'Invalid app ID' }, { status: 400 });
+  }
+
+  const supabase = createServiceClient();
+  if (!supabase) {
+    return Response.json({ error: 'Leaderboard unavailable' }, { status: 503 });
   }
 
   const { data, error } = await supabase

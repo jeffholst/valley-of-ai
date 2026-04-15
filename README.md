@@ -232,9 +232,8 @@ Client-side variables use the `NEXT_PUBLIC_*` prefix (accessible in the browser)
 
 | Variable                             | Side   | Used For                                                                         |
 | ------------------------------------ | ------ | -------------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SUPABASE_URL`           | Client | Supabase project URL for voting data                                             |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY`      | Client | Supabase anonymous key for client access                                         |
-| `SUPABASE_SECRET_KEY`                | Server | Supabase service role key for server-side leaderboard score writes               |
+| `SUPABASE_URL`                       | Server | Supabase project URL (server-only — all Supabase calls go through API routes)    |
+| `SUPABASE_SECRET_KEY`                | Server | Supabase service role key — bypasses RLS for all reads and writes                |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY`     | Client | Cloudflare Turnstile site key (production only; skipped in development)          |
 | `NEXT_PUBLIC_GA_MEASUREMENT_ID`      | Client | Google Analytics measurement ID                                                  |
 | `NEXT_PUBLIC_MAIN_SITE_URL`          | Client | Main site URL used by app footer links                                           |
@@ -425,10 +424,10 @@ This is useful for documentation-only changes or quick fixes that don't require 
 │   └── 📄 ThemeToggle.jsx # Dark/light mode switcher
 │
 ├── 🪝 hooks/              # Custom React hooks
-│   └── 📄 useVotes.js     # Voting logic (Supabase integration)
+│   └── 📄 useVotes.js     # Voting logic (fetches /api/votes)
 │
 ├── 📚 lib/                # Utilities and config
-│   ├── 📄 supabase.js     # Supabase client setup
+│   ├── 📄 supabaseAdmin.js # Supabase service-role client (server-only)
 │   └── 📄 siteConfig.js   # Site-wide configuration
 │
 ├── 🎨 styles/             # Global styles
