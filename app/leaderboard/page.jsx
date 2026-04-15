@@ -68,7 +68,7 @@ function ScoreCard({ app, scores }) {
         <ol className="space-y-1 flex-1">
           {scores.map((entry, i) => (
             <li
-              key={i}
+              key={`${entry.app_id}-${entry.rank}-${entry.player_name}-${entry.score}`}
               className="flex items-center justify-between text-sm py-1.5 px-2 rounded-lg bg-gray-50 dark:bg-gray-700/50"
             >
               <span className="flex items-center gap-2 min-w-0">
