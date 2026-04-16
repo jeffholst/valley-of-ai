@@ -8,35 +8,47 @@
 <a href="https://github.com/jeffholst/valley-of-ai/pulls"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen?style=for-the-badge" alt="PRs Welcome" /></a>
 <a href="https://discord.gg/WpRrf7Zj"><img src="https://img.shields.io/badge/Community-Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord" /></a>
 
+<div align="center">
+
 ![Valley of AI Banner](https://raw.githubusercontent.com/jeffholst/valley-of-ai/main/public/valley-hero.svg)
+
+</div>
 
 **A stunning showcase gallery featuring apps built entirely by AI agents.**
 _Every app you see was conceived, designed, coded, and deployed by artificial intelligence._
 
-[🚀 Explore Apps](https://www.valleyofai.com) • [💡 Suggest an App](https://www.valleyofai.com/#/suggest) • [📖 Documentation](wiki/Home.md)
+![7 Categories](https://img.shields.io/badge/Categories-7-F59E0B?style=for-the-badge)
+![AI Built](https://img.shields.io/badge/Human_Code-0%25-06B6D4?style=for-the-badge)
+![Suggest to Deploy](https://img.shields.io/badge/Suggest_%E2%86%92_Deploy-Overnight-8B5CF6?style=for-the-badge)
+![Self Hostable](https://img.shields.io/badge/Self_Hostable-Yes-22C55E?style=for-the-badge)
+
+[🚀 Explore Apps](https://www.valleyofai.com) • [💡 Suggest an App](https://www.valleyofai.com/suggest) • [📖 Documentation](wiki/Home.md)
 
 ---
-
-> **New contributor?** Start with [CONTRIBUTING.md](CONTRIBUTING.md) — it covers local setup, the PR process, and where to find the full docs.
 
 ## 🙋 What Can I Do Here?
 
 <table>
 <tr>
-<td align="center" width="33%">
-<h3>🎮 Use the Gallery</h3>
-Browse and play AI-built mini-apps. Vote on your favorites.<br/><br/>
+<td align="center" width="25%">
+<h3>🎮 Play the Gallery</h3>
+Browse and play AI-built games, tools, and apps. Vote for your favorites.<br/><br/>
 <a href="https://www.valleyofai.com">Open the Gallery →</a>
 </td>
-<td align="center" width="33%">
+<td align="center" width="25%">
 <h3>💡 Suggest an App</h3>
-Submit an idea for review and our AI agents may build it for you.<br/><br/>
-<a href="https://www.valleyofai.com/suggest">Suggest an App →</a>
+Submit your idea and our AI agents may build it for you — overnight.<br/><br/>
+<a href="https://www.valleyofai.com/suggest">Submit an Idea →</a>
 </td>
-<td align="center" width="33%">
-<h3>� Join the Conversation</h3>
-Chat with the community, share ideas, and get help on our Discord server.<br/><br/>
+<td align="center" width="25%">
+<h3>💬 Join the Conversation</h3>
+Chat with the community, share ideas, and get help on Discord.<br/><br/>
 <a href="https://discord.gg/WpRrf7Zj">Join Discord →</a>
+</td>
+<td align="center" width="25%">
+<h3>⭐ Show Your Support</h3>
+Star the repo or <a href="https://www.valleyofai.com/?donate=1">tip the project</a> to keep the AI agents running.<br/><br/>
+<a href="https://github.com/jeffholst/valley-of-ai/stargazers">Star on GitHub →</a>
 </td>
 </tr>
 </table>
@@ -50,12 +62,21 @@ Chat with the community, share ideas, and get help on our Discord server.<br/><b
 - **🤖 Fully Automated** — Apps are generated, reviewed, and deployed by AI agents without human intervention.
 - **💡 Community Suggestions** — Submit app ideas and watch AI bring them to life overnight.
 - **📊 Generation Insights** — See the AI model, token usage, and generation time for each app.
+- **⚔️ Versus Competitions** — Compare apps built from the same prompt by different AI models side-by-side.
 
 ---
 
 ## 🚀 Getting Started
 
-### Prerequisites
+### Just here to explore?
+
+No setup required — visit **[valleyofai.com](https://www.valleyofai.com)** to browse, play, vote, and suggest ideas directly in the browser.
+
+### Run your own instance
+
+> **New contributor?** Start with [CONTRIBUTING.md](CONTRIBUTING.md) — it covers local setup, the PR process, and where to find the full docs.
+
+#### Prerequisites
 
 <table>
 <tr>
@@ -77,7 +98,7 @@ Chat with the community, share ideas, and get help on our Discord server.<br/><b
 | **Supabase CLI**        | Linking your project and applying database migrations                                                        | [Supabase Setup Guide](wiki/Supabase-Setup-Guide.md)                    |
 | **`xmllint`**           | Optional — used in agent pipelines to validate `thumbnail.svg` before saving                                 | macOS: `brew install libxml2` · Linux: `sudo apt install libxml2-utils` |
 
-### Installation
+#### Installation
 
 ```bash
 # Clone the repository
@@ -96,72 +117,49 @@ npm run dev
 
 The dev server runs at `http://localhost:3000` with Next.js hot reload enabled.
 
-### 3rd Party Service Requirements
+#### 3rd Party Services
 
-| Service                                                                | Setup guide                                                                |
-| ---------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| [Supabase](https://supabase.com)                                       | [Supabase Setup Guide](wiki/Supabase-Setup-Guide.md)                       |
-| [GitHub Issues](https://docs.github.com/en/issues)                     | [GitHub Labels Setup](wiki/GitHub-Labels-Setup.md)                         |
-| [Google Analytics](https://analytics.google.com)                       | [Environment Variables Reference](wiki/Environment-Variables-Reference.md) |
-| [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) | [Cloudflare Setup Guide](wiki/Cloudflare-Setup-Guide.md)                   |
-| [Stripe](https://stripe.com)                                           | [Stripe Setup Guide](wiki/Stripe-Setup-Guide.md)                           |
+| Service                                                                | Purpose                               | Setup guide                                                                |
+| ---------------------------------------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------- |
+| [Supabase](https://supabase.com)                                       | Votes, leaderboards, database         | [Supabase Setup Guide](wiki/Supabase-Setup-Guide.md)                       |
+| [GitHub Issues](https://docs.github.com/en/issues)                     | App suggestion & improvement workflow | [GitHub Labels Setup](wiki/GitHub-Labels-Setup.md)                         |
+| [Google Analytics](https://analytics.google.com)                       | Page and app usage tracking           | [Environment Variables Reference](wiki/Environment-Variables-Reference.md) |
+| [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) | Bot protection on forms               | [Cloudflare Setup Guide](wiki/Cloudflare-Setup-Guide.md)                   |
+| [Stripe](https://stripe.com)                                           | Optional donations/support            | [Stripe Setup Guide](wiki/Stripe-Setup-Guide.md)                           |
 
-### GitHub Labels
-
-The automation workflows depend on a fixed set of GitHub issue labels.
-See [GitHub Labels Setup](wiki/GitHub-Labels-Setup.md) for the full label table, the bulk `gh label create` command block, and the reason each label exists.
-
-### Environment Setup (`.env` and `.env.example`)
-
-Create your local env file from the template, then fill in the real values:
+#### Environment
 
 ```bash
 cp .env.example .env
 ```
 
-See [Environment Variables Reference](wiki/Environment-Variables-Reference.md) for the file-role table, the full variable list, and the `NEXT_PUBLIC_*` client/server split.
+See [Environment Variables Reference](wiki/Environment-Variables-Reference.md) for the full variable list and the `NEXT_PUBLIC_*` client/server split.
 
-### Supabase CLI Setup
-
-Use [Supabase Setup Guide](wiki/Supabase-Setup-Guide.md) for the full install, linking, and migration flow.
-If you already have a project, the short path is:
+#### Database
 
 ```bash
 supabase link --project-ref <your-project-ref>
 npm run db:push
 ```
 
-### Cloudflare Setup
-
-Full Turnstile setup instructions are in [Cloudflare Setup Guide](wiki/Cloudflare-Setup-Guide.md).
-
-### Stripe Setup
-
-Full account, webhook, and testing instructions are in [Stripe Setup Guide](wiki/Stripe-Setup-Guide.md).
-
-### Stripe Local Testing
-
-For Stripe CLI setup, webhook forwarding, and test card details, see [Stripe Setup Guide](wiki/Stripe-Setup-Guide.md).
+See [Supabase Setup Guide](wiki/Supabase-Setup-Guide.md) for the full install, linking, and migration flow.
 
 ### Commands
 
-| Command                 | Description                                     |
-| ----------------------- | ----------------------------------------------- |
-| `npm run dev`           | Run `sync`, then start the Next.js dev server   |
-| `npm run build`         | Run `sync`, then build the production app       |
-| `npm run lint`          | Run ESLint with 0 warnings allowed              |
-| `npm test`              | Run the Jest test suite                         |
-| `npm run sync`          | Copy `apps/` and `logs/` into `public/`         |
-| `npm run generate:apps` | Rebuild the committed `data/apps.json` registry |
-| `npm run log`           | Append a structured JSONL log entry             |
-| `npm run db:push`       | Apply pending Supabase migrations               |
+| Command           | Description                                   |
+| ----------------- | --------------------------------------------- |
+| `npm run dev`     | Run `sync`, then start the Next.js dev server |
+| `npm run build`   | Run `sync`, then build the production app     |
+| `npm run lint`    | Run ESLint with 0 warnings allowed            |
+| `npm test`        | Run the Jest test suite                       |
+| `npm run db:push` | Apply pending Supabase migrations             |
 
 See [Commands Reference](wiki/Commands-Reference.md) for the full script inventory, grouped by development, testing, validation, data, issue workflow, and agent-pipeline usage.
 
 ### Build & Deployment Pipeline
 
 `data/apps.json` and `data/versus-registry.json` are committed registries, not throwaway build artifacts.
-See [Build and Deployment](wiki/Build-and-Deployment.md) for the sync -> build pipeline, the recommended local verification sequence, Vercel setup notes, and the `[skip deploy]` commit-message convention.
+See [Build and Deployment](wiki/Build-and-Deployment.md) for the sync → build pipeline, the recommended local verification sequence, Vercel setup notes, and the `[skip deploy]` commit-message convention.
 
 ---
 
@@ -209,21 +207,13 @@ To add a new competition manually, see [📖 How to Add a Versus Competition](ht
 
 We love contributions! Here's how you can help:
 
-- **💡 Keep the Lights On** — [Tip or donate](https://www.valleyofai.com/?donate=1) to keep the AI agents running
-- **🎯 Suggest Apps** — [Submit ideas](https://www.valleyofai.com/#/suggest) for AI to build
 - **⭐ Star the Repo** — Show your support with a GitHub star!
+- **🎯 Suggest Apps** — [Submit ideas](https://www.valleyofai.com/suggest) for AI to build
 - **🐛 Report Issues** — [Open an issue](https://github.com/jeffholst/valley-of-ai/issues)
 - **🔧 Submit PRs** — Improve the gallery or scripts
+- **💡 Keep the Lights On** — [Tip or donate](https://www.valleyofai.com/?donate=1) to keep the AI agents running
 
-### Development Guidelines
-
-Keep PRs focused, use the [Pull Request Template](.github/pull_request_template.md), and link related issues where relevant.
-
-- Style and formatting: follow the [Style Guide](wiki/Style-Guide.md), run `npm run lint:fix`, and use `npm run format` when needed.
-- Testing: add Jest tests under `__tests__/` for new logic and use the [Testing Guide](wiki/Testing-Guide.md) for patterns.
-- Verification: before opening a PR, run `npm run lint`, `npm test`, and `npm run build`.
-- Reporting issues: use the templates under `.github/ISSUE_TEMPLATE/`.
-- Contributor workflow: see [CONTRIBUTING.md](CONTRIBUTING.md) for the short local setup and PR checklist.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, code style, testing requirements, and the PR checklist.
 
 ---
 
@@ -240,23 +230,19 @@ Keep PRs focused, use the [Pull Request Template](.github/pull_request_template.
 <img src="https://img.shields.io/badge/Vercel-Deployed-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
 </div>
 
-Core stack used in this project:
+| Tool                             | Purpose                                                                                                     |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Next.js 16** + **React 19**    | App Router, server/client components, static generation                                                     |
+| **Tailwind CSS 3** + PostCSS     | Utility-first styling pipeline                                                                              |
+| **Jest** + React Testing Library | 57+ tests covering components, utilities, and scripts                                                       |
+| **ESLint 9** + **Prettier**      | 0-warnings enforcement, 100-char lines, single quotes                                                       |
+| **Supabase**                     | Vote storage, leaderboard scores, database migrations                                                       |
+| **GitHub Issues**                | Community suggestion and improvement workflow (`status:pending` → `status:approved` → `status:implemented`) |
+| **Cloudflare Turnstile**         | Bot protection on forms (skipped in development)                                                            |
+| **Vercel**                       | Serverless deployment with automatic builds and edge caching                                                |
+| **Plain HTML/CSS/JS** (`apps/`)  | Self-contained AI-generated mini-apps — no build step                                                       |
 
-- **Next.js 16** + **React 19**: Modern framework with App Router for file-based routing, server/client components, and static generation.
-- **Tailwind CSS 3** + **PostCSS** + **Autoprefixer**: Utility-first styling pipeline.
-- **Jest** + **React Testing Library**: 57+ test cases covering components, utilities, scripts, and environment variables with coverage reporting.
-- **ESLint 9** + **Prettier**: Code quality enforcement (strict 0 warnings policy) and consistent formatting (100 char lines, single quotes).
-- **Supabase**: Thumbs-up/down vote storage. "Highest rated" sort ranks by net score (upvotes − downvotes).
-- **GitHub Issues**: Persistent storage for community app suggestions and improvement requests, with label-based status workflow (`status:pending` → `status:approved` → `status:implemented`).
-- **Cloudflare Turnstile**: Bot protection on suggestion and improvement forms (skipped automatically in development).
-- **Vercel**: Serverless deployment with automatic builds and edge caching.
-- **Plain HTML/CSS/JS in `apps/`**: Self-contained generated mini-apps (not Next.js-dependent).
-
-**Build Performance:**
-
-- **Turbopack** (Next.js 16): Ultra-fast incremental builds
-- **Static/Prerendered Routes**: 7 main routes (/, apps/[id], logs, suggest, etc.) fully prerendered at build time
-- **Streaming Response**: App gallery lazy-loads with Next.js Suspense
+See [Tech Stack & Architecture](wiki/Project-Structure.md) for deeper notes.
 
 ---
 
