@@ -345,7 +345,7 @@
 
         /** Number of enemy missiles to spawn this wave */
         function waveMissileCount() {
-          return Math.min(6 + wave * 2, 24);
+          return Math.min(4 + wave * 2, 24);
         }
 
         /** Pick an enemy type based on current wave difficulty */
@@ -895,11 +895,6 @@
             window.voaShare({
               text: `I scored ${score.toLocaleString()} defending cities in Missile Command Modern! Survived ${wave} wave${wave !== 1 ? 's' : ''}. Can you beat it?`,
             });
-          }
-
-          // Leaderboard hook: submit final score
-          if (window.voaLeaderboard) {
-            window.voaLeaderboard.submit(score);
           }
         }
 
