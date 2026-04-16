@@ -74,6 +74,12 @@ export default function Header() {
               >
                 Suggest
               </Link>
+              <Link
+                href="/leaderboard"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-medium transition-colors duration-200"
+              >
+                Leaderboard
+              </Link>
               {process.env.NODE_ENV === 'development' && (
                 <Link
                   href="/logs"
@@ -125,6 +131,13 @@ export default function Header() {
               className="block rounded-lg px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-medium transition-colors duration-200"
             >
               Suggest
+            </Link>
+            <Link
+              href="/leaderboard"
+              onClick={closeMenu}
+              className="block rounded-lg px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 font-medium transition-colors duration-200"
+            >
+              Leaderboard
             </Link>
             {process.env.NODE_ENV === 'development' && (
               <Link
