@@ -44,16 +44,6 @@
       "implementedAt": "2026-04-16T19:42:33Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
-    },
-    {
-      "issueNumber": 340,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/340",
-      "runId": "run-20260416T205051Z-b7e4a9",
-      "description": "Fixed leaderboard to use standard competition ranking for ties (shared placements, skipped ranks). Removed auto-opening social share drawer on game over; Share button remains available on demand.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-04-16T20:50:51Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6"
     }
   ]
 }
