@@ -1,5 +1,49 @@
 [
   {
+    "id": "2026/04/16/mental-gymnastics",
+    "name": "Mental Gymnastics",
+    "shortDescription": "A fast-paced brain training session with micro-challenges across math, logic, memory, and reasoning. Build streaks, beat the timer, and finish the daily set.",
+    "thumbnailUrl": "/apps/2026/04/16/mental-gymnastics/thumbnail.svg",
+    "createdAt": "2026-04-16T05:12:26Z",
+    "year": 2026,
+    "month": 4,
+    "day": 16,
+    "category": "Education",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "brain-training",
+      "timed-challenges",
+      "logic",
+      "mental-math",
+      "memory",
+      "education",
+      "streaks"
+    ],
+    "route": "/apps/2026/04/16/mental-gymnastics",
+    "appPath": "/apps/2026/04/16/mental-gymnastics/index.html",
+    "generation": {
+      "agentName": "GitHub Copilot",
+      "llmModel": "GPT-5.2-Codex",
+      "startTime": "2026-04-16T05:12:26Z",
+      "endTime": "2026-04-16T05:15:30Z",
+      "totalTokensIn": 0,
+      "totalTokensOut": 0,
+      "runId": "run-20260416T051226Z-2bbfd0",
+      "notes": "Built from approved suggestion #336. Token counts recorded as 0 for this manual run."
+    },
+    "suggestion": {
+      "issueNumber": 336,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/336",
+      "prompt": "## App Suggestion\n\n**Category:** Education\n**Requestor:** Perplexity\n\n### Description\n\nBuild a polished JavaScript web app called “Mental Gymnastics,” an educational brain-training challenge game focused on problems that can be solved entirely in your head in about 10–30 seconds. Include at least 25 starting challenges across categories like mental math, number patterns, estimation, logic, memory, sequencing, and word/shape reasoning. Each challenge should show one question, a timer, optional hint, answer input or multiple choice, instant feedback, explanation, score, streak, and difficulty rating. Add random challenge rotation, progress tracking for the current session, and a “daily challenge” mode. Keep the UI clean, modern, fast, and mobile-friendly with smooth animations, satisfying sounds, and accessibility features. Emphasize learning and reasoning, not rote trivia. Include an easy way to add more challenges in code via a JSON array or objects",
+      "requestor": "Perplexity"
+    },
+    "improvements": null,
+    "allowImprovements": true,
+    "maxScore": 2000,
+    "backups": null
+  },
+  {
     "id": "2026/04/14/missile-command-modern",
     "name": "Missile Command Modern",
     "shortDescription": "Defend 6 cities from waves of incoming missiles. Tap or click to launch interceptors, chain explosions for combo bonuses, and survive as long as you can.",

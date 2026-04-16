@@ -1,0 +1,1082 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Mental Gymnastics" />
+    <meta name="voa-app-id" content="2026/04/16/mental-gymnastics" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <title>Mental Gymnastics - __MAIN_SITE_NAME__</title>
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --surface-soft: #24344a;
+        --accent: #38bdf8;
+        --accent-strong: #0ea5e9;
+        --good: #22c55e;
+        --warn: #f59e0b;
+        --bad: #ef4444;
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #0f172a;
+        --surface: #f3f4f6;
+        --surface-soft: #e2e8f0;
+        --accent: #2563eb;
+        --accent-strong: #1d4ed8;
+        --good: #16a34a;
+        --warn: #d97706;
+        --bad: #dc2626;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      #app {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        overflow: hidden;
+      }
+      .shell {
+        height: 100%;
+        overflow: auto;
+        padding: 24px 20px 32px;
+      }
+      .hero {
+        display: grid;
+        gap: 16px;
+        align-items: center;
+      }
+      .title {
+        font-size: clamp(1.6rem, 1.1rem + 2vw, 2.4rem);
+        font-weight: 700;
+      }
+      .subtitle {
+        color: color-mix(in srgb, var(--text) 70%, transparent);
+        line-height: 1.5;
+      }
+      .mode-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .btn {
+        border: none;
+        border-radius: 999px;
+        padding: 10px 18px;
+        font-weight: 600;
+        cursor: pointer;
+        background: var(--surface-soft);
+        color: var(--text);
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+      .btn.primary {
+        background: var(--accent);
+        color: #fff;
+      }
+      .btn:active {
+        transform: scale(0.98);
+      }
+      .grid {
+        margin-top: 20px;
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+      .card {
+        background: var(--surface);
+        border-radius: 18px;
+        padding: 16px;
+        box-shadow: 0 12px 30px -20px rgba(15, 23, 42, 0.6);
+      }
+      .stats {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      }
+      .stat {
+        padding: 12px;
+        background: var(--surface-soft);
+        border-radius: 12px;
+      }
+      .stat-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        opacity: 0.7;
+      }
+      .stat-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-top: 4px;
+      }
+      .challenge {
+        display: grid;
+        gap: 14px;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: var(--surface-soft);
+      }
+      .timer {
+        font-weight: 700;
+        font-size: 1.1rem;
+      }
+      .timer.warn {
+        color: var(--warn);
+      }
+      .timer.danger {
+        color: var(--bad);
+      }
+      .question {
+        font-size: 1.2rem;
+        font-weight: 600;
+      }
+      .choices {
+        display: grid;
+        gap: 10px;
+      }
+      .choice {
+        border: 1px solid transparent;
+        background: var(--surface-soft);
+        padding: 12px 14px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: border 0.2s ease, background 0.2s ease;
+      }
+      .choice:hover {
+        border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+      }
+      .choice.correct {
+        background: color-mix(in srgb, var(--good) 25%, var(--surface-soft));
+        border-color: var(--good);
+      }
+      .choice.wrong {
+        background: color-mix(in srgb, var(--bad) 20%, var(--surface-soft));
+        border-color: var(--bad);
+      }
+      .input-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .input-row input {
+        flex: 1 1 160px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid color-mix(in srgb, var(--text) 15%, transparent);
+        background: transparent;
+        color: var(--text);
+      }
+      .hint {
+        background: color-mix(in srgb, var(--accent) 15%, transparent);
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-size: 0.95rem;
+      }
+      .feedback {
+        border-left: 4px solid var(--accent);
+        padding: 10px 12px;
+        background: color-mix(in srgb, var(--accent) 10%, transparent);
+        border-radius: 12px;
+      }
+      .feedback.good {
+        border-left-color: var(--good);
+      }
+      .feedback.bad {
+        border-left-color: var(--bad);
+      }
+      .progress {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .progress-bar {
+        position: relative;
+        height: 8px;
+        flex: 1;
+        background: color-mix(in srgb, var(--text) 12%, transparent);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: var(--accent);
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+      .footer-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .daily-chip {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      @media (max-width: 640px) {
+        .shell {
+          padding: 18px 16px 28px;
+        }
+        .btn {
+          width: 100%;
+          justify-content: center;
+        }
+        .input-row {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main id="app">
+      <div class="shell">
+        <section class="hero card">
+          <div class="title">Mental Gymnastics</div>
+          <div class="subtitle">
+            Short, focused brain challenges designed for quick reasoning. Solve 10 micro-puzzles,
+            keep your streak alive, and finish a daily challenge to build momentum.
+          </div>
+          <div class="mode-row">
+            <button class="btn primary" id="startPractice">Start Practice</button>
+            <button class="btn" id="startDaily">Daily Challenge</button>
+            <label class="toggle">
+              <input type="checkbox" id="soundToggle" checked /> Sounds
+            </label>
+          </div>
+        </section>
+
+        <section class="grid">
+          <div class="card stats">
+            <div class="stat">
+              <div class="stat-label">Score</div>
+              <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Streak</div>
+              <div class="stat-value" id="streak">0</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Accuracy</div>
+              <div class="stat-value" id="accuracy">0%</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Mode</div>
+              <div class="stat-value" id="modeLabel">Practice</div>
+            </div>
+          </div>
+
+          <div class="card challenge" id="challengeCard">
+            <div class="progress">
+              <span id="progressLabel">Ready to start</span>
+              <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+            </div>
+            <div class="badge" id="categoryBadge">Category: Mixed</div>
+            <div class="timer" id="timer">00:00</div>
+            <div class="question" id="question">Pick a mode to begin.</div>
+            <div id="memoryReveal" class="hint" style="display: none"></div>
+            <div class="choices" id="choices"></div>
+            <form class="input-row" id="inputRow" style="display: none">
+              <input type="text" id="answerInput" autocomplete="off" placeholder="Type your answer" />
+              <button class="btn primary" type="submit">Submit</button>
+            </form>
+            <div id="hint" class="hint" style="display: none"></div>
+            <div id="feedback" class="feedback" style="display: none"></div>
+            <div class="footer-actions">
+              <button class="btn" id="hintButton" disabled>Show Hint</button>
+              <button class="btn" id="nextButton" style="display: none">Next Challenge</button>
+              <button class="btn" id="endSession" style="display: none">End Session</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const CHALLENGES = [
+        {
+          id: 'math-1',
+          category: 'Mental Math',
+          type: 'input',
+          question: '27 x 3 = ?',
+          answer: 81,
+          hint: 'Think of 30 x 3 minus 9.',
+          explanation: '30 x 3 = 90. Subtract 9 to get 81.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'math-2',
+          category: 'Mental Math',
+          type: 'input',
+          question: '145 - 78 = ?',
+          answer: 67,
+          hint: 'Subtract 80, then add 2 back.',
+          explanation: '145 - 80 = 65, plus 2 equals 67.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'math-3',
+          category: 'Mental Math',
+          type: 'input',
+          question: '15% of 260 = ?',
+          answer: 39,
+          hint: '10% is 26, 5% is 13.',
+          explanation: '26 + 13 = 39.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'math-4',
+          category: 'Mental Math',
+          type: 'input',
+          question: '12 x 12 = ?',
+          answer: 144,
+          hint: 'Square of 12.',
+          explanation: '12 x 12 = 144.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'pattern-1',
+          category: 'Number Patterns',
+          type: 'mcq',
+          question: '2, 6, 12, 20, 30, ? (next number)',
+          options: ['40', '42', '44', '46'],
+          answer: '42',
+          hint: 'The gaps grow by 2 each time.',
+          explanation: 'Differences: +4, +6, +8, +10, +12. Next = 30 + 12 = 42.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'pattern-2',
+          category: 'Number Patterns',
+          type: 'mcq',
+          question: '3, 9, 27, ?, 243',
+          options: ['54', '72', '81', '90'],
+          answer: '81',
+          hint: 'Multiply by 3 each time.',
+          explanation: '3 x 3 = 9, 9 x 3 = 27, 27 x 3 = 81, 81 x 3 = 243.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'estimate-1',
+          category: 'Estimation',
+          type: 'mcq',
+          question: 'Estimate 19 x 52.',
+          options: ['500', '1000', '1500', '2000'],
+          answer: '1000',
+          hint: 'Round to 20 x 50.',
+          explanation: '20 x 50 = 1000, the exact answer is 988.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'logic-1',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'All bloops are razzies. All razzies are lazzies. Are all bloops lazzies?',
+          options: ['Yes', 'No', 'Only some', 'Cannot determine'],
+          answer: 'Yes',
+          hint: 'Think of a chain: bloops -> razzies -> lazzies.',
+          explanation: 'If all bloops are razzies and all razzies are lazzies, then all bloops are lazzies.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'logic-2',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'If today is Tuesday, what day will it be 3 days after tomorrow?',
+          options: ['Friday', 'Saturday', 'Sunday', 'Monday'],
+          answer: 'Saturday',
+          hint: 'Tomorrow is Wednesday.',
+          explanation: 'Tomorrow is Wednesday. Three days after is Saturday.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'sequence-1',
+          category: 'Sequencing',
+          type: 'mcq',
+          question: 'Arrange from smallest to largest: 0.4, 2/5, 0.39, 0.41',
+          options: ['0.39, 0.4, 2/5, 0.41', '0.39, 2/5, 0.4, 0.41', '2/5, 0.39, 0.4, 0.41', '0.4, 0.39, 2/5, 0.41'],
+          answer: '0.39, 0.4, 2/5, 0.41',
+          hint: '2/5 = 0.4 exactly.',
+          explanation: '0.39 < 0.4 = 2/5 < 0.41.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'word-1',
+          category: 'Word Reasoning',
+          type: 'mcq',
+          question: 'Which word does not belong?',
+          options: ['Triangle', 'Square', 'Circle', 'Purple'],
+          answer: 'Purple',
+          hint: 'Three are shapes.',
+          explanation: 'Triangle, square, and circle are shapes; purple is a color.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'word-2',
+          category: 'Word Reasoning',
+          type: 'mcq',
+          question: 'Choose the best synonym for "brief".',
+          options: ['Tiny', 'Short', 'Speedy', 'Quiet'],
+          answer: 'Short',
+          hint: 'Think about time length.',
+          explanation: 'Brief means short in duration.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'shape-1',
+          category: 'Shape Reasoning',
+          type: 'mcq',
+          question: 'A square is rotated 45 degrees. How many sides does it still have?',
+          options: ['3', '4', '5', '8'],
+          answer: '4',
+          hint: 'Rotation does not change sides.',
+          explanation: 'A square remains a 4-sided shape after rotation.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'logic-3',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'If 5 machines make 5 widgets in 5 minutes, how long would 10 machines take to make 10 widgets?',
+          options: ['5 minutes', '10 minutes', '15 minutes', '20 minutes'],
+          answer: '5 minutes',
+          hint: 'Each machine makes 1 widget in 5 minutes.',
+          explanation: 'Each machine makes 1 widget in 5 minutes, so 10 machines make 10 widgets in 5 minutes.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'estimate-2',
+          category: 'Estimation',
+          type: 'mcq',
+          question: 'Estimate 398 + 604.',
+          options: ['900', '1000', '1100', '1200'],
+          answer: '1000',
+          hint: 'Round to 400 + 600.',
+          explanation: '400 + 600 = 1000, exact is 1002.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'sequence-2',
+          category: 'Sequencing',
+          type: 'mcq',
+          question: 'What comes next in the alphabet sequence? C, F, I, L, ?',
+          options: ['M', 'N', 'O', 'P'],
+          answer: 'O',
+          hint: 'Skip two letters each time.',
+          explanation: 'C to F (+3), F to I (+3), I to L (+3). L + 3 = O.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'math-5',
+          category: 'Mental Math',
+          type: 'input',
+          question: 'What is 7/8 as a decimal (2 decimal places)?',
+          answer: 0.88,
+          hint: '0.875 rounds to two decimals.',
+          explanation: '7/8 = 0.875, which rounds to 0.88.',
+          difficulty: 3,
+          timeLimit: 30,
+        },
+        {
+          id: 'logic-4',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'Which statement must be true if all cats are mammals?',
+          options: ['All mammals are cats', 'All cats are mammals', 'No cats are mammals', 'Some mammals are not cats'],
+          answer: 'All cats are mammals',
+          hint: 'The original statement is already the answer.',
+          explanation: 'The statement itself is the required truth.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'pattern-3',
+          category: 'Number Patterns',
+          type: 'mcq',
+          question: '1, 1, 2, 3, 5, 8, ? (next number)',
+          options: ['11', '12', '13', '14'],
+          answer: '13',
+          hint: 'Add the two previous numbers.',
+          explanation: 'Fibonacci sequence: 5 + 8 = 13.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'math-6',
+          category: 'Mental Math',
+          type: 'input',
+          question: 'What is 18 x 7?',
+          answer: 126,
+          hint: '20 x 7 minus 2 x 7.',
+          explanation: '140 - 14 = 126.',
+          difficulty: 2,
+          timeLimit: 20,
+        },
+        {
+          id: 'memory-1',
+          category: 'Memory',
+          type: 'memory',
+          question: 'What was the third item?',
+          sequence: ['K', 'T', '9', 'R', '2'],
+          answer: '9',
+          hint: 'The sequence starts with letters.',
+          explanation: 'The third item was 9.',
+          difficulty: 2,
+          timeLimit: 20,
+        },
+        {
+          id: 'memory-2',
+          category: 'Memory',
+          type: 'memory',
+          question: 'Which color was last?',
+          sequence: ['Blue', 'Amber', 'Green', 'Violet'],
+          answer: 'Violet',
+          hint: 'It is a purple shade.',
+          explanation: 'The last color was Violet.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'memory-3',
+          category: 'Memory',
+          type: 'memory',
+          question: 'What was the first word?',
+          sequence: ['Orbit', 'Ladder', 'Signal', 'Bridge'],
+          answer: 'Orbit',
+          hint: 'Think of space.',
+          explanation: 'The first word was Orbit.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'sequence-3',
+          category: 'Sequencing',
+          type: 'mcq',
+          question: 'Which is the correct order of operations?',
+          options: ['Multiply, add, subtract, divide', 'Parentheses, exponents, multiply/divide, add/subtract', 'Add/subtract, multiply/divide, exponents', 'Exponents, parentheses, add/subtract, multiply/divide'],
+          answer: 'Parentheses, exponents, multiply/divide, add/subtract',
+          hint: 'Remember PEMDAS.',
+          explanation: 'PEMDAS order: Parentheses, Exponents, Multiply/Divide, Add/Subtract.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'logic-5',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'If A is taller than B, and B is taller than C, who is shortest?',
+          options: ['A', 'B', 'C', 'Cannot determine'],
+          answer: 'C',
+          hint: 'Tallest to shortest: A > B > C.',
+          explanation: 'C is shortest.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'estimate-3',
+          category: 'Estimation',
+          type: 'mcq',
+          question: 'Estimate 6.2 x 48.',
+          options: ['200', '300', '400', '500'],
+          answer: '300',
+          hint: 'Round to 6 x 50.',
+          explanation: '6 x 50 = 300, exact is 297.6.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'word-3',
+          category: 'Word Reasoning',
+          type: 'mcq',
+          question: 'Choose the word that completes the analogy: Book is to Reading as Fork is to ___.',
+          options: ['Cooking', 'Eating', 'Shopping', 'Writing'],
+          answer: 'Eating',
+          hint: 'Forks are used while doing this.',
+          explanation: 'Fork is used for eating.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'pattern-4',
+          category: 'Number Patterns',
+          type: 'mcq',
+          question: '10, 9, 7, 4, 0, ? (next number)',
+          options: ['-2', '-3', '-4', '-5'],
+          answer: '-5',
+          hint: 'Subtract 1, 2, 3, 4, ...',
+          explanation: 'Differences: -1, -2, -3, -4, -5.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'logic-6',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'Which is a valid conclusion? If it rains, the ground is wet. The ground is wet.',
+          options: ['It rained', 'It may have rained', 'It did not rain', 'Raining is impossible'],
+          answer: 'It may have rained',
+          hint: 'Wet ground has more than one cause.',
+          explanation: 'Wet ground does not guarantee rain; other causes exist.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'math-7',
+          category: 'Mental Math',
+          type: 'input',
+          question: 'What is 60% of 45?',
+          answer: 27,
+          hint: 'Half is 22.5, plus 10% (4.5).',
+          explanation: '45 x 0.6 = 27.',
+          difficulty: 2,
+          timeLimit: 20,
+        },
+        {
+          id: 'sequence-4',
+          category: 'Sequencing',
+          type: 'mcq',
+          question: 'Arrange in chronological order: Middle Ages, Renaissance, Industrial Revolution, Digital Age.',
+          options: ['Renaissance, Middle Ages, Industrial Revolution, Digital Age', 'Middle Ages, Renaissance, Industrial Revolution, Digital Age', 'Middle Ages, Industrial Revolution, Renaissance, Digital Age', 'Renaissance, Industrial Revolution, Middle Ages, Digital Age'],
+          answer: 'Middle Ages, Renaissance, Industrial Revolution, Digital Age',
+          hint: 'Think: medieval then rebirth, then machines, then computers.',
+          explanation: 'Middle Ages precede Renaissance, then Industrial Revolution, then Digital Age.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'word-4',
+          category: 'Word Reasoning',
+          type: 'mcq',
+          question: 'Which pair are opposites?',
+          options: ['Bright/Dull', 'Large/Wide', 'Quick/Swift', 'Silent/Quiet'],
+          answer: 'Bright/Dull',
+          hint: 'Opposites are true contrasts.',
+          explanation: 'Bright and dull are opposites; the others are similar.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'shape-2',
+          category: 'Shape Reasoning',
+          type: 'mcq',
+          question: 'How many corners does a hexagon have?',
+          options: ['4', '5', '6', '8'],
+          answer: '6',
+          hint: 'Hex means six.',
+          explanation: 'A hexagon has six corners.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'logic-7',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'If some singers are dancers and some dancers are painters, must some singers be painters?',
+          options: ['Yes', 'No', 'Only if all dancers sing', 'Only if all singers dance'],
+          answer: 'No',
+          hint: 'The overlap may not be the same people.',
+          explanation: 'The two groups of dancers could be different, so no requirement.',
+          difficulty: 3,
+          timeLimit: 30,
+        },
+      ];
+
+      const state = {
+        mode: 'Practice',
+        queue: [],
+        index: -1,
+        score: 0,
+        streak: 0,
+        correct: 0,
+        total: 0,
+        timerId: null,
+        timeLeft: 0,
+        active: false,
+        hintRevealed: false,
+        answered: false,
+      };
+
+      const els = {
+        score: document.getElementById('score'),
+        streak: document.getElementById('streak'),
+        accuracy: document.getElementById('accuracy'),
+        modeLabel: document.getElementById('modeLabel'),
+        progressLabel: document.getElementById('progressLabel'),
+        progressFill: document.getElementById('progressFill'),
+        categoryBadge: document.getElementById('categoryBadge'),
+        timer: document.getElementById('timer'),
+        question: document.getElementById('question'),
+        choices: document.getElementById('choices'),
+        inputRow: document.getElementById('inputRow'),
+        answerInput: document.getElementById('answerInput'),
+        hint: document.getElementById('hint'),
+        feedback: document.getElementById('feedback'),
+        hintButton: document.getElementById('hintButton'),
+        nextButton: document.getElementById('nextButton'),
+        endSession: document.getElementById('endSession'),
+        memoryReveal: document.getElementById('memoryReveal'),
+        soundToggle: document.getElementById('soundToggle'),
+      };
+
+      const PRACTICE_LENGTH = 10;
+      const DAILY_LENGTH = 10;
+      const MEMORY_REVEAL_MS = 3000;
+
+      function mulberry32(seed) {
+        return function () {
+          let t = (seed += 0x6d2b79f5);
+          t = Math.imul(t ^ (t >>> 15), t | 1);
+          t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+
+      function seededShuffle(list, seed) {
+        const rng = mulberry32(seed);
+        const arr = [...list];
+        for (let i = arr.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(rng() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      function getDailySeed() {
+        const now = new Date();
+        const key = `${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${now.getUTCDate()}`;
+        let hash = 0;
+        for (let i = 0; i < key.length; i += 1) {
+          hash = (hash << 5) - hash + key.charCodeAt(i);
+          hash |= 0;
+        }
+        return Math.abs(hash);
+      }
+
+      function formatTimer(seconds) {
+        const s = Math.max(0, Math.ceil(seconds));
+        return `00:${String(s).padStart(2, '0')}`;
+      }
+
+      function updateStats() {
+        els.score.textContent = state.score;
+        els.streak.textContent = state.streak;
+        const accuracy = state.total ? Math.round((state.correct / state.total) * 100) : 0;
+        els.accuracy.textContent = `${accuracy}%`;
+        els.modeLabel.textContent = state.mode;
+      }
+
+      function setProgress() {
+        if (state.index < 0) {
+          els.progressLabel.textContent = 'Ready to start';
+          els.progressFill.style.width = '0%';
+          return;
+        }
+        els.progressLabel.textContent = `Challenge ${state.index + 1} of ${state.queue.length}`;
+        els.progressFill.style.width = `${((state.index + 1) / state.queue.length) * 100}%`;
+      }
+
+      function updateTimerDisplay() {
+        els.timer.textContent = formatTimer(state.timeLeft);
+        els.timer.classList.toggle('warn', state.timeLeft <= 7 && state.timeLeft > 3);
+        els.timer.classList.toggle('danger', state.timeLeft <= 3);
+      }
+
+      function playTone(frequency, duration) {
+        if (!els.soundToggle.checked) return;
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = ctx.createOscillator();
+        const gain = ctx.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.value = frequency;
+        gain.gain.value = 0.12;
+        oscillator.connect(gain);
+        gain.connect(ctx.destination);
+        oscillator.start();
+        oscillator.stop(ctx.currentTime + duration / 1000);
+      }
+
+      function resetFeedback() {
+        els.feedback.style.display = 'none';
+        els.feedback.textContent = '';
+        els.feedback.className = 'feedback';
+        els.hint.style.display = 'none';
+        els.hint.textContent = '';
+        els.hintButton.disabled = false;
+        els.nextButton.style.display = 'none';
+      }
+
+      function showFeedback(isCorrect, message, explanation) {
+        els.feedback.style.display = 'block';
+        els.feedback.classList.toggle('good', isCorrect);
+        els.feedback.classList.toggle('bad', !isCorrect);
+        els.feedback.innerHTML = `<strong>${message}</strong><br/>${explanation}`;
+      }
+
+      function clearChoices() {
+        els.choices.innerHTML = '';
+        els.inputRow.style.display = 'none';
+        els.answerInput.value = '';
+      }
+
+      function stopTimer() {
+        if (state.timerId) {
+          clearInterval(state.timerId);
+        }
+        state.timerId = null;
+      }
+
+      function startTimer(limit) {
+        stopTimer();
+        state.timeLeft = limit;
+        updateTimerDisplay();
+        state.timerId = setInterval(() => {
+          state.timeLeft -= 1;
+          updateTimerDisplay();
+          if (state.timeLeft <= 0) {
+            handleAnswer(null, true);
+          }
+        }, 1000);
+      }
+
+      function renderChallenge() {
+        const challenge = state.queue[state.index];
+        if (!challenge) return;
+        state.hintRevealed = false;
+        state.answered = false;
+        els.categoryBadge.textContent = `Category: ${challenge.category}`;
+        els.question.textContent = challenge.question;
+        resetFeedback();
+        clearChoices();
+        els.hintButton.disabled = false;
+        els.endSession.style.display = 'inline-flex';
+
+        if (challenge.type === 'mcq') {
+          challenge.options.forEach((option) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'choice';
+            button.textContent = option;
+            button.addEventListener('click', () => handleAnswer(option));
+            els.choices.appendChild(button);
+          });
+        } else if (challenge.type === 'input') {
+          els.inputRow.style.display = 'flex';
+          els.answerInput.focus();
+        } else if (challenge.type === 'memory') {
+          els.memoryReveal.style.display = 'block';
+          els.memoryReveal.textContent = `Memorize: ${challenge.sequence.join('  ')} `;
+          setTimeout(() => {
+            if (state.queue[state.index]?.id !== challenge.id) return;
+            els.memoryReveal.style.display = 'none';
+            startTimer(challenge.timeLimit);
+          }, MEMORY_REVEAL_MS);
+        }
+
+        if (challenge.type !== 'memory') {
+          startTimer(challenge.timeLimit);
+        }
+      }
+
+      function normalizeAnswer(value, expected) {
+        if (typeof expected === 'number') {
+          const parsed = Number.parseFloat(value);
+          return Number.isFinite(parsed) ? Number(parsed.toFixed(2)) : null;
+        }
+        return String(value).trim().toLowerCase();
+      }
+
+      function handleAnswer(value, timedOut = false) {
+        if (state.answered) return;
+        state.answered = true;
+        stopTimer();
+
+        const challenge = state.queue[state.index];
+        if (!challenge) return;
+
+        state.total += 1;
+        const expected = challenge.answer;
+        const normalized = value === null ? null : normalizeAnswer(value, expected);
+        const expectedNormalized = normalizeAnswer(expected, expected);
+        const isCorrect = !timedOut && normalized !== null && normalized === expectedNormalized;
+
+        if (isCorrect) {
+          const bonus = Math.max(0, Math.floor(state.timeLeft));
+          state.score += 10 * challenge.difficulty + bonus;
+          state.streak += 1;
+          state.correct += 1;
+          playTone(660, 150);
+        } else {
+          state.streak = 0;
+          playTone(220, 180);
+        }
+
+        updateStats();
+        setProgress();
+
+        if (challenge.type === 'mcq') {
+          Array.from(els.choices.children).forEach((button) => {
+            if (button.textContent === challenge.answer) {
+              button.classList.add('correct');
+            } else if (button.textContent === value) {
+              button.classList.add('wrong');
+            }
+            button.disabled = true;
+          });
+        }
+
+        const message = timedOut
+          ? 'Time is up.'
+          : isCorrect
+            ? 'Correct!'
+            : `Not quite. The answer is ${challenge.answer}.`;
+        showFeedback(isCorrect, message, challenge.explanation);
+
+        els.nextButton.style.display = 'inline-flex';
+        els.hintButton.disabled = true;
+
+        if (state.index + 1 >= state.queue.length) {
+          els.nextButton.textContent = 'See Results';
+        } else {
+          els.nextButton.textContent = 'Next Challenge';
+        }
+      }
+
+      function showResults() {
+        els.question.textContent = 'Session complete.';
+        els.categoryBadge.textContent = state.mode === 'Daily' ? 'Daily challenge complete' : 'Practice complete';
+        els.choices.innerHTML = '';
+        els.inputRow.style.display = 'none';
+        els.timer.textContent = '00:00';
+        els.hintButton.disabled = true;
+        els.nextButton.style.display = 'none';
+        els.endSession.style.display = 'none';
+
+        const accuracy = state.total ? Math.round((state.correct / state.total) * 100) : 0;
+        const summary = `Score: ${state.score} | Accuracy: ${accuracy}% | Best streak: ${state.streak}`;
+        els.feedback.style.display = 'block';
+        els.feedback.className = 'feedback good';
+        els.feedback.innerHTML = `<strong>${summary}</strong><br/>Try another run to improve your streak.`;
+
+        if (window.voaShare) {
+          window.voaShare({
+            text: `I just scored ${state.score} in Mental Gymnastics! Can you beat my streak?`,
+          });
+        }
+        if (window.voaLeaderboard) {
+          window.voaLeaderboard.submit(state.score, { label: 'points' });
+        }
+      }
+
+      function nextChallenge() {
+        if (state.index + 1 >= state.queue.length) {
+          showResults();
+          return;
+        }
+        state.index += 1;
+        setProgress();
+        renderChallenge();
+      }
+
+      function startSession(mode) {
+        const list = mode === 'Daily' ? seededShuffle(CHALLENGES, getDailySeed()) : seededShuffle(CHALLENGES, Date.now());
+        state.queue = list.slice(0, mode === 'Daily' ? DAILY_LENGTH : PRACTICE_LENGTH);
+        state.mode = mode;
+        state.index = 0;
+        state.score = 0;
+        state.streak = 0;
+        state.correct = 0;
+        state.total = 0;
+        state.active = true;
+        updateStats();
+        setProgress();
+        renderChallenge();
+      }
+
+      document.getElementById('startPractice').addEventListener('click', () => startSession('Practice'));
+      document.getElementById('startDaily').addEventListener('click', () => startSession('Daily'));
+
+      els.hintButton.addEventListener('click', () => {
+        if (state.hintRevealed) return;
+        const challenge = state.queue[state.index];
+        if (!challenge) return;
+        els.hint.style.display = 'block';
+        els.hint.textContent = `Hint: ${challenge.hint}`;
+        state.hintRevealed = true;
+      });
+
+      els.nextButton.addEventListener('click', nextChallenge);
+
+      els.endSession.addEventListener('click', () => {
+        stopTimer();
+        showResults();
+      });
+
+      els.inputRow.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (state.answered) return;
+        handleAnswer(els.answerInput.value);
+      });
+
+      updateStats();
+      setProgress();
+    </script>
+  </body>
+</html>
