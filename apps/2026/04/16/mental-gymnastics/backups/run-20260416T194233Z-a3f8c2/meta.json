@@ -33,17 +33,5 @@
     "totalTokensOut": 0,
     "runId": "run-20260416T051226Z-2bbfd0",
     "notes": "Built from approved suggestion #336. Token counts recorded as 0 for this manual run."
-  },
-  "improvements": [
-    {
-      "issueNumber": 338,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/338",
-      "runId": "run-20260416T194233Z-a3f8c2",
-      "description": "Redesigned as host-facilitated multiplayer game with setup screen (player manager, turn selector, moderator popup window), host game screen with A/B/C/D choices and reveal-then-award flow, results leaderboard, and dark theme font readability fixes. Solo practice mode preserved.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-04-16T19:42:33Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6"
-    }
-  ]
+  }
 }
