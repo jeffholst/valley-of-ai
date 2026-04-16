@@ -977,20 +977,6 @@
     aiTag.setAttribute('aria-label', 'View app details');
     voteGroup.appendChild(aiTag);
 
-    if (appDetailId) {
-      const lbHeaderBtn = document.createElement('button');
-      lbHeaderBtn.id = 'voa-lb-btn';
-      lbHeaderBtn.type = 'button';
-      lbHeaderBtn.setAttribute('aria-label', 'Leaderboard');
-      lbHeaderBtn.textContent = '🏆';
-      lbHeaderBtn.addEventListener('click', () => {
-        if (window.voaLeaderboard) {
-          window.voaLeaderboard.show();
-        }
-      });
-      voteGroup.appendChild(lbHeaderBtn);
-    }
-
     header.appendChild(homeBtn);
     header.appendChild(appName);
     header.appendChild(voteGroup);
@@ -1625,6 +1611,18 @@
     improveLink.innerHTML = '💡 <span class="voa-pill-text">Improve</span>';
     improveLink.title = 'Suggest an improvement for this app';
     container.appendChild(improveLink);
+
+    const lbHeaderBtn = document.createElement('button');
+    lbHeaderBtn.id = 'voa-lb-btn';
+    lbHeaderBtn.type = 'button';
+    lbHeaderBtn.setAttribute('aria-label', 'Leaderboard');
+    lbHeaderBtn.textContent = '🏆';
+    lbHeaderBtn.addEventListener('click', () => {
+      if (window.voaLeaderboard) {
+        window.voaLeaderboard.show();
+      }
+    });
+    container.appendChild(lbHeaderBtn);
 
     const myVoteRecord = getLocalVoteRecord(appId);
     const myVote = myVoteRecord?.type ?? null;
