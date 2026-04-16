@@ -28,22 +28,9 @@
     "totalTokensOut": 13200,
     "notes": "Modern reimagining of Missile Command with 6 enemy types (ICBM, split-warhead, MRV, decoy, shielded, bomber), chain-explosion combo multiplier, city repair between waves, and social share hook on game-over."
   },
-  "maxScore": 999999,
   "suggestion": {
     "issueNumber": 325,
     "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/325",
     "prompt": "### Category\n\nGames\n\n### Description\n\nBuild a modern reimagining of Missile Command for web and mobile. Core loop: defend cities at the bottom of the screen by intercepting incoming missiles with timed counter-blasts, inspired by the original arcade formula of protecting cities from descending attacks. Controls must work with mouse and touch: tap/click to target, or use touch-move-release gesture aiming for mobile. Because touch is easier and more precise than the original trackball, increase challenge with fast mixed attack patterns, split-warhead missiles, decoys, shielded enemies, EMP zones, limited ammo, silo cooldowns, chain-reaction scoring, and priority threats like bombers/satellites. Make it highly polished with detailed VFX, smooth 60fps gameplay, juicy explosions, shockwaves, trails, screen shake, dynamic lighting, parallax skies, crisp HUD, satisfying audio, and readable telegraphs. Include combos, escalating waves, power-ups, city repair between rounds."
-  },
-  "improvements": [
-    {
-      "issueNumber": 333,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/333",
-      "runId": "run-20260416T041743Z-a3f7c2",
-      "description": "Added leaderboard high-score submission via voaLeaderboard hook; increased wave 1 opening from 6 to 8 missiles for a livelier start; added maxScore to meta.json.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-04-16T04:17:43Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6"
-    }
-  ]
+  }
 }
