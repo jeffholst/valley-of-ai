@@ -1,32 +1,23 @@
-<div align="center">
 # 🏔️ Valley of AI
+
 ### _Where AI Dreams Become Digital Reality_
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-valleyofai.com-blue?style=for-the-badge)](https://www.valleyofai.com)
-[![GitHub Stars](https://img.shields.io/github/stars/jeffholst/valley-of-ai?style=for-the-badge&logo=github&color=gold)](https://github.com/jeffholst/valley-of-ai/stargazers)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=for-the-badge)](https://github.com/jeffholst/valley-of-ai/pulls)
-[![Discord](https://img.shields.io/badge/Community-Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/WpRrf7Zj)
-<br />
-<a href="https://valleyofai.com"><img src="https://raw.githubusercontent.com/jeffholst/valley-of-ai/main/public/valley-hero.svg" alt="Valley of AI Banner" width="600" /></a>
-<br />
-**A stunning showcase gallery featuring apps built entirely by AI agents.**  
+
+<a href="https://www.valleyofai.com"><img src="https://img.shields.io/badge/Live_Demo-valleyofai.com-blue?style=for-the-badge" alt="Live Demo" /></a>
+<a href="https://github.com/jeffholst/valley-of-ai/stargazers"><img src="https://img.shields.io/github/stars/jeffholst/valley-of-ai?style=for-the-badge&logo=github&color=gold" alt="GitHub Stars" /></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License" /></a>
+<a href="https://github.com/jeffholst/valley-of-ai/pulls"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen?style=for-the-badge" alt="PRs Welcome" /></a>
+<a href="https://discord.gg/WpRrf7Zj"><img src="https://img.shields.io/badge/Community-Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord" /></a>
+
+![Valley of AI Banner](https://raw.githubusercontent.com/jeffholst/valley-of-ai/main/public/valley-hero.svg)
+
+**A stunning showcase gallery featuring apps built entirely by AI agents.**
 _Every app you see was conceived, designed, coded, and deployed by artificial intelligence._
+
 [🚀 Explore Apps](https://www.valleyofai.com) • [💡 Suggest an App](https://www.valleyofai.com/#/suggest) • [📖 Documentation](wiki/Home.md)
+
 ---
+
 > **New contributor?** Start with [CONTRIBUTING.md](CONTRIBUTING.md) — it covers local setup, the PR process, and where to find the full docs.
-</div>
-
-## 🚀 How It Works
-
-```
-💡 You suggest an app idea
-        ↓
-🤖 AI agent reviews & builds it (14-step pipeline)
-        ↓
-✅ PR reviewed, merged to main
-        ↓
-🌐 Live at valleyofai.com within minutes
-```
 
 ## 🙋 What Can I Do Here?
 
@@ -34,68 +25,31 @@ _Every app you see was conceived, designed, coded, and deployed by artificial in
 <tr>
 <td align="center" width="33%">
 <h3>🎮 Use the Gallery</h3>
-Browse and play 100+ AI-built mini-apps. Vote on your favorites.<br/><br/>
+Browse and play AI-built mini-apps. Vote on your favorites.<br/><br/>
 <a href="https://www.valleyofai.com">Open the Gallery →</a>
 </td>
 <td align="center" width="33%">
 <h3>💡 Suggest an App</h3>
-Submit an idea and the AI pipeline will build it — usually within 24 hours.<br/><br/>
-<a href="https://github.com/jeffholst/valley-of-ai/issues/new?template=app_suggestion.yml">Suggest an App →</a>
+Submit an idea for review and our AI agents may build it for you.<br/><br/>
+<a href="https://www.valleyofai.com/suggest">Suggest an App →</a>
 </td>
 <td align="center" width="33%">
-<h3>🔧 Improve an App</h3>
-Spot something that could be better? Request an improvement to any existing app.<br/><br/>
-<a href="https://github.com/jeffholst/valley-of-ai/issues/new?template=app_improvement.md">Request an Improvement →</a>
+<h3>� Join the Conversation</h3>
+Chat with the community, share ideas, and get help on our Discord server.<br/><br/>
+<a href="https://discord.gg/WpRrf7Zj">Join Discord →</a>
 </td>
 </tr>
 </table>
 
 ## ✨ Features
 
-<table>
-<tr>
-<td width="50%">
-### 🎨 Beautiful Gallery
-Responsive, modern UI showcasing AI-generated apps with thumbnails, descriptions, and metadata.
-### 🌓 Dark/Light Mode
-Seamlessly switch themes with persisted preferences for comfortable viewing.
-### 🔍 Smart Filtering
-Filter by category, sort by date or votes, and search through the collection.
-</td>
-<td width="50%">
-### 🗳️ Community Voting
-👍 or 👎 every app! Thumbs-up/down voting powered by Supabase. One vote per app per browser, tracked in localStorage.
-### 🤖 Fully Automated
-Apps are generated, reviewed, and deployed by AI agents without human intervention.
-### 💡 Community Suggestions
-Submit app ideas and watch AI bring them to life overnight.
-### 📊 Generation Insights
-See the AI model, token usage, and generation time for each app.
-</td>
-</tr>
-</table>
-
----
-
-## 🎮 Featured Apps
-
-| App                                                                                                          | Description                                               | Category       |
-| ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- | -------------- |
-| 🃏 **[Blackjack](https://www.valleyofai.com/apps/2026/03/07/blackjack/index.html)**                          | Classic blackjack with betting and dealer logic           | Games          |
-| 🎨 **[Contrast Lab](https://www.valleyofai.com/apps/2026/03/07/contrast-lab/index.html)**                    | WCAG contrast checker for accessible color pairs          | Design         |
-| 🎣 **[Fishing Frenzy](https://www.valleyofai.com/apps/2026/03/07/fishing-frenzy/index.html)**                | Arcade-style fishing with timing and depth control        | Games          |
-| 🐦 **[Flappy Bird](https://www.valleyofai.com/apps/2026/03/07/flappy-bird/index.html)**                      | Classic tap-to-fly game with pipes                        | Games          |
-| 🕯️ **[Lantern of Hollowmere](https://www.valleyofai.com/apps/2026/03/07/zorkish-text-adventure/index.html)** | Parser-style text adventure in a haunted village          | Entertainment  |
-| 🧠 **[Memory Match](https://www.valleyofai.com/apps/2026/03/06/memory-match/index.html)**                    | Card matching game with animated flips                    | Games          |
-| 🌌 **[Orbit Harmonics](https://www.valleyofai.com/apps/2026/03/08/orbit-harmonics/index.html)**              | Interactive harmonic orbit visualizer with tunable curves | Visualizations |
-| ⏱️ **[Pomodoro Timer](https://www.valleyofai.com/apps/2026/03/05/pomodoro-timer/index.html)**                | Elegant focus timer for productivity sessions             | Productivity   |
-| 🏎️ **[Road Rage](https://www.valleyofai.com/apps/2026/03/07/road-rage/index.html)**                          | Fast-paced lane-switching driving challenge               | Games          |
-| 🐍 **[Snake Game](https://www.valleyofai.com/apps/2026/03/05/snake-game/index.html)**                        | Grow your snake while avoiding collisions                 | Games          |
-| 🔤 **[Word Weaver](https://www.valleyofai.com/apps/2026/03/06/word-weaver/index.html)**                      | Word transformation puzzle utility with hint support      | Utilities      |
-
-<div align="center">
-<i>...and more being added every night by our AI agents!</i>
-</div>
+- **🎨 Beautiful Gallery** — Responsive, modern UI showcasing AI-generated apps with thumbnails, descriptions, and metadata.
+- **🌓 Dark/Light Mode** — Seamlessly switch themes with persisted preferences for comfortable viewing.
+- **🔍 Smart Filtering** — Filter by category, sort by date or votes, and search through the collection.
+- **🗳️ Community Voting** — 👍 or 👎 every app! Thumbs-up/down voting via Supabase. One vote per app per browser.
+- **🤖 Fully Automated** — Apps are generated, reviewed, and deployed by AI agents without human intervention.
+- **💡 Community Suggestions** — Submit app ideas and watch AI bring them to life overnight.
+- **📊 Generation Insights** — See the AI model, token usage, and generation time for each app.
 
 ---
 
@@ -109,6 +63,7 @@ See the AI model, token usage, and generation time for each app.
 <td><img src="https://img.shields.io/badge/npm-9+-CB3837?style=flat-square&logo=npm&logoColor=white" /></td>
 <td><img src="https://img.shields.io/badge/GitHub_CLI-required-181717?style=flat-square&logo=github&logoColor=white" /></td>
 <td><img src="https://img.shields.io/badge/git-required-F05032?style=flat-square&logo=git&logoColor=white" /></td>
+<td><img src="https://img.shields.io/badge/Supabase_CLI-required-3FCF8E?style=flat-square&logo=supabase&logoColor=white" /></td>
 </tr>
 </table>
 
@@ -119,6 +74,7 @@ See the AI model, token usage, and generation time for each app.
 | **git**                 | All git operations in the agent pipelines                                                                    | [git-scm.com](https://git-scm.com)                                      |
 | **GitHub CLI (`gh`)**   | Creating labels, issues, PRs, and merges — used in agent pipelines and setup commands throughout this README | [cli.github.com](https://cli.github.com) — then run `gh auth login`     |
 | **Playwright browsers** | `npm run validate:responsive` and `npm run validate:responsive:sample` (uses Chromium headlessly)            | Run once after `npm install`: `npx playwright install chromium`         |
+| **Supabase CLI**        | Linking your project and applying database migrations                                                        | [Supabase Setup Guide](wiki/Supabase-Setup-Guide.md)                    |
 | **`xmllint`**           | Optional — used in agent pipelines to validate `thumbnail.svg` before saving                                 | macOS: `brew install libxml2` · Linux: `sudo apt install libxml2-utils` |
 
 ### Installation
@@ -215,12 +171,6 @@ See [Project Structure](wiki/Project-Structure.md) for the full annotated tree c
 
 ---
 
-## 🤖 How It Works
-
-See [AI Agent Pipelines](wiki/AI-Agent-Pipelines.md) for the detailed seven-step workflow, the prompt-file map, Vercel integration notes, the issue-review flow, and the app-selection logic.
-
----
-
 ## 📊 App Metadata
 
 Every app includes a `meta.json` file that drives gallery display, generation history, versus registry generation, and improvement tracking.
@@ -228,11 +178,19 @@ See [App Metadata Reference](wiki/App-Metadata-Reference.md) for the annotated e
 
 ---
 
-## 🏆 Leaderboards
+## 🤖 AI Agent Pipelines
 
-The `/leaderboard` page shows top scores across all Valley of AI games. Each game that uses the `voaLeaderboard` hook gets a card with the top-3 players. The 🏆 button in the in-app header opens the per-game top-10 leaderboard modal.
+The gallery is built and maintained by AI agents following structured prompt files. Each run reads `AGENT_PROMPT_SHARED.md` first (logging rules, HTML contracts, thumbnail spec), then the flow-specific prompt:
 
-See the [Leaderboard Hook documentation](docs/LEADERBOARD_HOOK.md) for how to add scoring to a game.
+| Prompt file                                                                       | When to use                                                                       |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| [`AGENT_PROMPT_ISSUE_REVIEW.md`](docs/agent-prompts/AGENT_PROMPT_ISSUE_REVIEW.md) | Review pending GitHub issues for legitimacy and prompt injection before approving |
+| [`AGENT_PROMPT_NEW_APP.md`](docs/agent-prompts/AGENT_PROMPT_NEW_APP.md)           | Build a new app from scratch using an approved suggestion                         |
+| [`AGENT_PROMPT_IMPROVEMENT.md`](docs/agent-prompts/AGENT_PROMPT_IMPROVEMENT.md)   | Apply an approved improvement to an existing app                                  |
+
+To run a pipeline, give your AI agent both files as context: start with `AGENT_PROMPT_SHARED.md`, then add the flow-specific prompt. The agent will handle app selection, building, validation, PR creation, and logging automatically.
+
+See [AI Agent Pipelines](wiki/AI-Agent-Pipelines.md) for the full seven-step walkthrough, the issue-review workflow, Vercel integration notes, and the `guardrails.production` customization guide.
 
 ---
 
@@ -251,30 +209,11 @@ To add a new competition manually, see [📖 How to Add a Versus Competition](ht
 
 We love contributions! Here's how you can help:
 
-<table>
-<tr>
-<td align="center">
-<b>💡 Keep the Lights On</b><br/>
-<a href="https://www.valleyofai.com/?donate=1">Tip or donate</a> — keeps the AI agents running
-</td>
-<td align="center">
-<b>🎯 Suggest Apps</b><br/>
-<a href="https://www.valleyofai.com/#/suggest">Submit ideas</a> for AI to build
-</td>
-<td align="center">
-<b>⭐ Star the Repo</b><br/>
-Show your support with a star!
-</td>
-<td align="center">
-<b>🐛 Report Issues</b><br/>
-<a href="https://github.com/jeffholst/valley-of-ai/issues">Open an issue</a>
-</td>
-<td align="center">
-<b>🔧 Submit PRs</b><br/>
-Improve the gallery or scripts
-</td>
-</tr>
-</table>
+- **💡 Keep the Lights On** — [Tip or donate](https://www.valleyofai.com/?donate=1) to keep the AI agents running
+- **🎯 Suggest Apps** — [Submit ideas](https://www.valleyofai.com/#/suggest) for AI to build
+- **⭐ Star the Repo** — Show your support with a GitHub star!
+- **🐛 Report Issues** — [Open an issue](https://github.com/jeffholst/valley-of-ai/issues)
+- **🔧 Submit PRs** — Improve the gallery or scripts
 
 ### Development Guidelines
 
@@ -291,14 +230,14 @@ Keep PRs focused, use the [Pull Request Template](.github/pull_request_template.
 ## 🛠️ Tech Stack
 
 <div align="center">
-![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js&logoColor=white)
-![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
-![Jest](https://img.shields.io/badge/Jest-Testing-15C213?style=for-the-badge&logo=jest&logoColor=white)
-![ESLint](https://img.shields.io/badge/ESLint-Lint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)
-![Supabase](https://img.shields.io/badge/Supabase-Votes-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white)
-![Cloudflare](https://img.shields.io/badge/Turnstile-Captcha-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)
-![Vercel](https://img.shields.io/badge/Vercel-Deployed-000000?style=for-the-badge&logo=vercel&logoColor=white)
+<img src="https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js" />
+<img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
+<img src="https://img.shields.io/badge/Tailwind-3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
+<img src="https://img.shields.io/badge/Jest-Testing-15C213?style=for-the-badge&logo=jest&logoColor=white" alt="Jest" />
+<img src="https://img.shields.io/badge/ESLint-Lint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white" alt="ESLint" />
+<img src="https://img.shields.io/badge/Supabase-Votes-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" />
+<img src="https://img.shields.io/badge/Turnstile-Captcha-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare" />
+<img src="https://img.shields.io/badge/Vercel-Deployed-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
 </div>
 
 Core stack used in this project:
@@ -323,12 +262,11 @@ Core stack used in this project:
 
 ## 📜 License
 
-<div align="center">
 **MIT License** — Feel free to use, modify, and distribute.
 Made with 🤖 by AI, coaxed with ❤️ by humans.
----
-<a href="https://www.valleyofai.com">
-<img src="https://img.shields.io/badge/Visit-Valley_of_AI-8B5CF6?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Visit Valley of AI" />
-</a>
-**[⬆ Back to Top](#-valley-of-ai)**
+
+<div align="center">
+<a href="https://www.valleyofai.com"><img src="https://img.shields.io/badge/Visit-Valley_of_AI-8B5CF6?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Visit Valley of AI" /></a>
 </div>
+
+[⬆ Back to Top](#️-valley-of-ai)
