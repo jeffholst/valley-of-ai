@@ -1666,21 +1666,14 @@
           .map((name) => ({ name, score: host.scores[name] }))
           .sort((a, b) => b.score - a.score);
 
-        /* Standard competition ranking: ties share rank, next rank skips occupied positions */
-        const MEDAL_ICONS = { 1: '🥇', 2: '🥈', 3: '🥉' };
-        let currentRank = 1;
-        sorted.forEach((entry, i) => {
-          entry.rank = i > 0 && entry.score === sorted[i - 1].score ? sorted[i - 1].rank : currentRank;
-          currentRank = i + 2;
-        });
-
         const list = document.getElementById('resultsList');
         list.innerHTML = '';
+        const medals = ['🥇', '🥈', '🥉'];
 
-        sorted.forEach((entry) => {
+        sorted.forEach((entry, i) => {
           const li = document.createElement('li');
           li.className = 'leaderboard-item';
-          const rankIcon = MEDAL_ICONS[entry.rank] || `${entry.rank}.`;
+          const rankIcon = medals[i] || `${i + 1}.`;
           li.innerHTML = `
             <span class="leaderboard-rank">${rankIcon}</span>
             <span class="leaderboard-name">${escHtml(entry.name)}</span>
@@ -1689,20 +1682,20 @@
           list.appendChild(li);
         });
 
-        const topScore = sorted[0]?.score ?? 0;
-        const topPlayers = sorted.filter((e) => e.score === topScore);
-        let subtitle;
-        if (topPlayers.length > 1) {
-          const names = topPlayers.map((p) => p.name).join(' & ');
-          subtitle = `${names} tied for 1st with ${topScore} pt${topScore !== 1 ? 's' : ''}!`;
-        } else if (topPlayers.length === 1) {
-          subtitle = `${topPlayers[0].name} wins with ${topScore} point${topScore !== 1 ? 's' : ''}!`;
-        } else {
-          subtitle = 'Game complete!';
-        }
-        document.getElementById('resultsSubtitle').textContent = subtitle;
+        const winner = sorted[0];
+        document.getElementById('resultsSubtitle').textContent = winner
+          ? `${winner.name} wins with ${winner.score} point${winner.score !== 1 ? 's' : ''}!`
+          : 'Game complete!';
 
         showScreen('screen-results');
+
+        if (window.voaShare) {
+          window.voaShare({
+            text: winner
+              ? `${winner.name} just won Mental Gymnastics with ${winner.score} pts! Can you beat them?`
+              : 'Just finished a Mental Gymnastics session!',
+          });
+        }
       }
 
       /* ══════════════════════════════════════════════
@@ -1946,6 +1939,9 @@
 
         showScreen('screen-results');
 
+        if (window.voaShare) {
+          window.voaShare({ text: `I scored ${solo.score} in Mental Gymnastics! Can you beat me?` });
+        }
         if (window.voaLeaderboard) {
           window.voaLeaderboard.submit(solo.score, { label: 'points' });
         }
