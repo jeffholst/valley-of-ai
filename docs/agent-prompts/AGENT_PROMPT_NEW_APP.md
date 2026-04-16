@@ -229,15 +229,17 @@ Quality standards (non-negotiable):
   ```
 
 - **Keyboard event handling (games only, required):** Game `keydown`/`keyup` listeners must not
-  call `preventDefault()` when focus is inside a text input. The shell overlays (leaderboard name
-  entry, etc.) are rendered on top of the game; if the game swallows key events globally, users
-  cannot type spaces or other characters in those fields.
+  call `preventDefault()` or act on keys when a shell overlay is open or when focus is inside a
+  text input. See `AGENT_PROMPT_SHARED.md` → "Keyboard Event Handling (Games)" for the full
+  explanation. Apply **both** guards to every `keydown` and `keyup` listener:
 
   ```js
   document.addEventListener('keydown', (e) => {
     // Never block keys when the user is typing in an input
     const tag = document.activeElement?.tagName;
     if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    // Never block keys when a shell overlay (leaderboard, share drawer) is open
+    if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
 
     // Normal game controls follow:
     if (e.key === ' ') {
@@ -246,8 +248,6 @@ Quality standards (non-negotiable):
     // ...
   });
   ```
-
-  Apply the same guard to `keyup` listeners.
 
 Log immediately:
 

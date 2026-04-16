@@ -1193,7 +1193,7 @@
     copyBtn.textContent = 'Copy link';
     copyBtn.addEventListener('click', () => {
       navigator.clipboard
-        .writeText(window.location.href)
+        .writeText(_voaEffectiveShareUrl || window.location.href)
         .then(() => {
           copyBtn.textContent = 'Copied!';
           setTimeout(() => {
@@ -1222,6 +1222,20 @@
       }
     });
 
+    // Block all keystrokes from reaching the game while the share drawer is open.
+    // The drawer is a direct child of body (sibling of the backdrop), so events from
+    // focusable elements inside it (copy button, platform links) bubble through the
+    // drawer — stopping propagation here prevents the game from seeing them.
+    drawer.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeShareDrawer();
+      }
+      e.stopPropagation();
+    });
+    drawer.addEventListener('keyup', (e) => {
+      e.stopPropagation();
+    });
+
     let _voaEffectiveShareUrl = null;
     let _voaEffectiveShareText = null;
 
@@ -1231,6 +1245,11 @@
 
       _voaEffectiveShareUrl = url;
       _voaEffectiveShareText = text;
+      // Keep currentShareUrl (used by Instagram/TikTok "copies link" handlers) in sync
+      // with the URL that was actually passed to voaShare() for this opening.
+      currentShareUrl = url;
+      // Update the displayed URL in the copy row to reflect any custom URL from voaShare().
+      urlSpan.textContent = url;
 
       _voaShareText = null;
       _voaShareUrl = null;
@@ -1285,6 +1304,19 @@
       if (e.target === lbBackdrop) {
         closeLbModal();
       }
+    });
+
+    // Block all keystrokes from reaching the game while the leaderboard modal is open.
+    // Using the backdrop (parent of lbModal) catches events from any focusable child —
+    // not just the name input, but also the Submit/Cancel/Close buttons.
+    lbBackdrop.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeLbModal();
+      }
+      e.stopPropagation();
+    });
+    lbBackdrop.addEventListener('keyup', (e) => {
+      e.stopPropagation();
     });
 
     document.addEventListener('keydown', (e) => {
