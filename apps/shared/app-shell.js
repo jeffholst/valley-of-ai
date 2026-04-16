@@ -1478,6 +1478,7 @@
         const TURNSTILE_RENDER_RETRY_DELAY_MS = 200;
         const TURNSTILE_RENDER_MAX_RETRIES = 25;
         let turnstileRenderRetries = 0;
+        let turnstileLoadFailed = false;
 
         function tryRenderTurnstile() {
           const turnstileWidget = document.getElementById('voa-lb-turnstile-widget');
@@ -1503,6 +1504,7 @@
             });
           } else {
             if (turnstileRenderRetries >= TURNSTILE_RENDER_MAX_RETRIES) {
+              turnstileLoadFailed = true;
               return;
             }
             turnstileRenderRetries += 1;
@@ -1542,7 +1544,7 @@
           errorMsg.textContent = 'Only letters, numbers, spaces, - and _ are allowed.';
           return;
         }
-        if (siteKey && !isLocal && !turnstileToken) {
+        if (siteKey && !isLocal && !turnstileToken && !turnstileLoadFailed) {
           errorMsg.textContent = 'Please complete the bot check first.';
           return;
         }
