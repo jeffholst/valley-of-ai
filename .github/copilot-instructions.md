@@ -77,7 +77,8 @@ scripts/
     retrieve-pending-issues.mjs
     decide-issue.mjs
     lib/
-      issue-selection-heuristics.js  # Pure utility functions (unit-tested)
+      issue-selection-heuristics.mjs  # Pure utility functions (unit-tested)
+      issue-github-client.mjs          # Shared GitHub issue/env helpers
 
 __tests__/
   scripts/issues/lib/issue-selection-heuristics.test.js  # 31 tests
