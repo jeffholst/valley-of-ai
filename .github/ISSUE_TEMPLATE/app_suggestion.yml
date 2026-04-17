@@ -13,11 +13,10 @@ body:
         - Games
         - Productivity
         - Utilities
-        - Visualizations
-        - Creative
-        - Entertainment
-        - Education
         - Design
+        - Education
+        - Entertainment
+        - Visualizations
     validations:
       required: true
 
