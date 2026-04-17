@@ -1,0 +1,51 @@
+<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e5e7eb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d1d5db;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+      <feOffset dx="2" dy="2" result="offsetblur" />
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#sandGradient)" />
+  
+  <!-- Garden Border -->
+  <rect x="50" y="50" width="700" height="350" rx="20" ry="20" fill="#f3f4f6" stroke="#9ca3af" stroke-width="4" />
+  <rect x="60" y="60" width="680" height="330" rx="15" ry="15" fill="#d1d5db" />
+
+  <!-- Raked Patterns (S-curves) -->
+  <g stroke="#9ca3af" stroke-width="3" fill="none" opacity="0.6">
+    <path d="M 100 150 Q 150 100, 200 150 T 300 150 T 400 150 T 500 150 T 600 150" />
+    <path d="M 100 180 Q 150 130, 200 180 T 300 180 T 400 180 T 500 180 T 600 180" />
+    <path d="M 100 210 Q 150 160, 200 210 T 300 210 T 400 210 T 500 210 T 600 210" />
+    <path d="M 100 240 Q 150 190, 200 240 T 300 240 T 400 240 T 500 240 T 600 240" />
+  </g>
+
+  <!-- Stones -->
+  <ellipse cx="200" cy="200" rx="30" ry="20" fill="#4b5563" filter="url(#shadow)" />
+  <ellipse cx="230" cy="220" rx="15" ry="12" fill="#6b7280" filter="url(#shadow)" />
+  <ellipse cx="550" cy="150" rx="40" ry="30" fill="#374151" filter="url(#shadow)" />
+
+  <!-- App Title -->
+  <text x="400" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="#374151" filter="url(#glow)">
+    Zen Garden Sketch
+  </text>
+  
+  <!-- Minimalist Tool UI snippet -->
+  <rect x="300" y="360" width="200" height="40" rx="20" fill="#f3f4f6" stroke="#9ca3af" />
+  <text x="400" y="385" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">
+    Rake the sand. Find your peace.
+  </text>
+</svg>

@@ -1,5 +1,42 @@
 [
   {
+    "id": "2026/04/17/zen-garden-sketch",
+    "name": "Zen Garden Sketch",
+    "shortDescription": "A minimalist sand-raking simulation for relaxation and mindfulness.",
+    "thumbnailUrl": "/apps/2026/04/17/zen-garden-sketch/thumbnail.svg",
+    "createdAt": "2026-04-17T07:05:46Z",
+    "year": 2026,
+    "month": 4,
+    "day": 17,
+    "category": "Design",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "mindfulness",
+      "simulation",
+      "minimalist",
+      "drawing",
+      "relaxation",
+      "zen"
+    ],
+    "route": "/apps/2026/04/17/zen-garden-sketch",
+    "appPath": "/apps/2026/04/17/zen-garden-sketch/index.html",
+    "generation": {
+      "agentName": "Dev",
+      "llmModel": "ollama/gemma4:31b",
+      "startTime": "2026-04-17T07:05:46Z",
+      "endTime": "2026-04-17T07:22:00Z",
+      "totalTokensIn": 6000,
+      "totalTokensOut": 7000,
+      "runId": "run-20260417T070546Z-a1b2c3",
+      "notes": "Initial creation of Zen Garden Sketch app."
+    },
+    "suggestion": null,
+    "improvements": null,
+    "allowImprovements": true,
+    "backups": null
+  },
+  {
     "id": "2026/04/15/fortune-wheel-deluxe",
     "name": "Fortune Wheel Deluxe",
     "shortDescription": "A polished, customizable decision wheel for those who can't make up their mind.",

@@ -1,0 +1,29 @@
+{
+  "id": "zen-garden-sketch",
+  "name": "Zen Garden Sketch",
+  "shortDescription": "A minimalist sand-raking simulation for relaxation and mindfulness.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-04-17T07:05:46Z",
+  "category": "Design",
+  "status": "active",
+  "tags": [
+    "mindfulness",
+    "simulation",
+    "minimalist",
+    "drawing",
+    "relaxation",
+    "zen"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "Dev",
+    "llmModel": "ollama/gemma4:31b",
+    "startTime": "2026-04-17T07:05:46Z",
+    "endTime": "2026-04-17T07:22:00Z",
+    "totalTokensIn": 6000,
+    "totalTokensOut": 7000,
+    "runId": "run-20260417T070546Z-a1b2c3",
+    "notes": "Initial creation of Zen Garden Sketch app."
+  }
+}
