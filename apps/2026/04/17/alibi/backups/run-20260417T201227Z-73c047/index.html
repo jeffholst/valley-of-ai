@@ -544,155 +544,6 @@
         border-style: solid;
       }
 
-      /* ── Rating panel ─────────────────────────── */
-      .rating-list {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-      .rating-row {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        align-items: center;
-        gap: 12px;
-        padding: 10px 14px;
-        background: var(--surface-soft);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-      }
-      .rating-row .rater-name {
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-      .rating-row .accused-badge {
-        padding: 2px 8px;
-        background: var(--accent-soft);
-        color: var(--accent);
-        border-radius: 999px;
-        font-size: 0.7rem;
-        font-weight: 700;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-      }
-      .rating-buttons {
-        display: inline-flex;
-        gap: 4px;
-        padding: 4px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-      }
-      .rating-buttons button {
-        font: inherit;
-        min-width: 44px;
-        min-height: 36px;
-        padding: 6px 14px;
-        border: 0;
-        background: transparent;
-        color: var(--text-muted);
-        font-weight: 700;
-        font-variant-numeric: tabular-nums;
-        border-radius: 8px;
-        cursor: pointer;
-      }
-      .rating-buttons button:hover {
-        color: var(--text);
-      }
-      .rating-buttons button[aria-pressed='true'] {
-        background: var(--good);
-        color: #fff;
-      }
-      @media (max-width: 520px) {
-        .rating-row {
-          grid-template-columns: 1fr;
-        }
-        .rating-buttons {
-          justify-content: space-between;
-        }
-        .rating-buttons button {
-          flex: 1;
-        }
-      }
-
-      /* ── Help modal ─────────────────────────── */
-      .modal-backdrop {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.55);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 80px 16px 80px;
-        z-index: 9100;
-        overflow-y: auto;
-      }
-      .modal-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        max-width: 640px;
-        width: 100%;
-        max-height: 100%;
-        overflow-y: auto;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
-      }
-      .modal-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 20px 24px;
-        border-bottom: 1px solid var(--border-soft);
-        position: sticky;
-        top: 0;
-        background: var(--surface);
-        z-index: 1;
-      }
-      .modal-head h2 {
-        margin: 0;
-        font-size: 1.3rem;
-        color: var(--accent);
-      }
-      .modal-close {
-        font: inherit;
-        font-size: 1.5rem;
-        line-height: 1;
-        border: 0;
-        background: transparent;
-        color: var(--text-muted);
-        cursor: pointer;
-        padding: 4px 10px;
-        border-radius: 8px;
-      }
-      .modal-close:hover {
-        background: var(--surface-soft);
-        color: var(--text);
-      }
-      .modal-body {
-        padding: 20px 24px 24px;
-        line-height: 1.55;
-      }
-      .modal-body h3 {
-        margin: 18px 0 8px;
-        font-size: 1rem;
-        color: var(--text);
-        letter-spacing: 0.01em;
-      }
-      .modal-body ul,
-      .modal-body ol {
-        margin: 8px 0;
-        padding-left: 22px;
-      }
-      .modal-body li {
-        margin-bottom: 6px;
-      }
-      .modal-body p {
-        margin: 8px 0;
-      }
-
       /* ── Scoreboard ─────────────────────────── */
       .scoreboard {
         margin-top: 20px;
@@ -1032,16 +883,16 @@
               </div>
 
               <div class="setup-actions">
-                <button id="show-help-btn" class="btn" type="button">
-                  <span aria-hidden="true">📖</span> How to Play
+                <button id="open-moderator" class="btn" type="button">
+                  <span aria-hidden="true">🪟</span> Open Moderator Window
                 </button>
                 <button id="start-game" class="btn primary lg" type="button" disabled>
                   Start Game →
                 </button>
               </div>
               <p class="muted" style="margin: 10px 0 0; font-size: 0.85rem">
-                The moderator window can be opened from the game screen once play begins. Keep it
-                on a second screen or minimized.
+                The moderator window shows the truth reveal and prompt ideas. Keep it on a second
+                screen or minimized.
               </p>
             </div>
           </div>
@@ -1114,18 +965,24 @@
         <div id="award-panel" class="card award-panel hidden">
           <div class="award-group">
             <h3>
-              <span aria-hidden="true">⭐</span> Rate the Accused
-              <span class="pts" id="rating-total">0 pts</span>
+              <span aria-hidden="true">🏆</span> Best Alibi
+              <span class="pts">+2 pts</span>
             </h3>
-            <p class="muted" style="margin: 0 0 12px; font-size: 0.9rem">
-              Each player (including the accused) rates the alibi. Points go to
-              <strong id="rating-accused-name">the accused</strong>.
-              <br />
-              <span style="font-size: 0.85rem"
-                >1 = not believable · 2 = somewhat believable · 3 = totally believable</span
-              >
+            <p class="muted" style="margin: 0 0 10px; font-size: 0.9rem">
+              Who told the most creative, entertaining, or clever story?
             </p>
-            <div id="rating-list" class="rating-list"></div>
+            <div class="award-buttons" id="award-best"></div>
+          </div>
+
+          <div class="award-group">
+            <h3>
+              <span aria-hidden="true">🤝</span> Most Convincing
+              <span class="pts">+1 pt</span>
+            </h3>
+            <p class="muted" style="margin: 0 0 10px; font-size: 0.9rem">
+              Who sold it best? (Optional — skip if nobody stood out.)
+            </p>
+            <div class="award-buttons" id="award-convincing"></div>
           </div>
 
           <div class="actions-row" style="justify-content: flex-end">
@@ -1140,9 +997,6 @@
         </div>
 
         <div class="actions-row" style="margin-top: 20px">
-          <button id="open-moderator" class="btn" type="button">
-            <span aria-hidden="true">🪟</span> Open Moderator Window
-          </button>
           <button id="quit-game-btn" class="btn ghost" type="button">End Game</button>
           <button id="help-btn" class="btn ghost" type="button">Keyboard Shortcuts</button>
         </div>
@@ -1197,60 +1051,6 @@
         </div>
       </section>
     </main>
-
-    <div
-      id="help-modal"
-      class="modal-backdrop hidden"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="help-modal-title"
-    >
-      <div class="modal-card">
-        <div class="modal-head">
-          <h2 id="help-modal-title">How to Play Alibi</h2>
-          <button id="help-close-btn" class="modal-close" type="button" aria-label="Close">×</button>
-        </div>
-        <div class="modal-body">
-          <p>
-            <strong>Alibi</strong> is a 5–10 minute team-builder icebreaker. One player at a time
-            has to invent a ridiculous-but-convincing alibi for a silly crime while everyone else
-            decides how believable it sounded.
-          </p>
-          <h3>Setup</h3>
-          <ul>
-            <li>Add 2–12 player names. Names are saved locally and reload next time.</li>
-            <li>Pick a round count, alibi timer, and whether the accused rotates in order or randomly.</li>
-          </ul>
-          <h3>Each round</h3>
-          <ol>
-            <li>A silly crime is shown on screen.</li>
-            <li>Spin to pick <em>The Accused</em>.</li>
-            <li>Start the timer — the accused has 30–60 seconds to improvise an alibi.</li>
-            <li>
-              Optionally open the <strong>Moderator Window</strong> on a second screen to peek at
-              the "real truth" and prompt ideas.
-            </li>
-            <li>
-              Reveal awards and everyone — including the accused — rates the alibi: 1 = not
-              believable, 2 = somewhat believable, 3 = totally believable.
-            </li>
-            <li>The accused earns the sum of those ratings.</li>
-          </ol>
-          <h3>Winning</h3>
-          <p>
-            After the final round, the player with the highest total score wins. Ties share the
-            same medal. There is no penalty for a bad alibi — only reward for creative, convincing
-            ones.
-          </p>
-          <h3>Tips for hosts</h3>
-          <ul>
-            <li>Keep rounds fast — don't over-explain rules between rounds.</li>
-            <li>Encourage hecklers to interject questions; it makes alibis funnier.</li>
-            <li>If the group is shy, use "Solo Practice" mode to warm up.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
@@ -2149,8 +1949,8 @@
         timerRunning: false,
         scores: {},
         roundHistory: [],
-        // Map of raterIndex (player index) → rating value (1|2|3)
-        ratings: {},
+        pendingBest: null,
+        pendingConvincing: null,
         modWindow: null,
         soloIndex: 0,
         soloScore: 0,
@@ -2305,26 +2105,9 @@
           });
         });
 
+        $('#open-moderator').addEventListener('click', openModeratorWindow);
         $('#start-game').addEventListener('click', startHostGame);
         $('#start-solo').addEventListener('click', startSoloGame);
-        $('#show-help-btn').addEventListener('click', showHelpModal);
-        $('#help-close-btn').addEventListener('click', hideHelpModal);
-        $('#help-modal').addEventListener('click', (e) => {
-          if (e.target.id === 'help-modal') hideHelpModal();
-        });
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape' && !$('#help-modal').classList.contains('hidden')) {
-            hideHelpModal();
-          }
-        });
-      }
-
-      function showHelpModal() {
-        $('#help-modal').classList.remove('hidden');
-        $('#help-close-btn').focus();
-      }
-      function hideHelpModal() {
-        $('#help-modal').classList.add('hidden');
       }
 
       /* ── Screen transitions ─────────────────────── */
@@ -2354,7 +2137,8 @@
         state.currentRound++;
         state.currentCrime = state.crimeQueue[state.currentRound - 1];
         state.currentAccusedIndex = null;
-        state.ratings = {};
+        state.pendingBest = null;
+        state.pendingConvincing = null;
         state.timerRemaining = state.timerLength;
         state.timerRunning = false;
         stopTimerTick();
@@ -2473,88 +2257,55 @@
         state.timerRunning = false;
       }
 
-      /* ── Rating (per-player 1-3) ─────────────────────── */
-      const RATING_LABELS = {
-        1: 'Not believable',
-        2: 'Somewhat believable',
-        3: 'Totally believable'
-      };
-
+      /* ── Awards ─────────────────────── */
       function revealAwards() {
         stopTimer();
         $('#award-panel').classList.remove('hidden');
-        renderRatingPanel();
+        renderAwardButtons('award-best', 'pendingBest');
+        renderAwardButtons('award-convincing', 'pendingConvincing');
       }
 
-      function renderRatingPanel() {
-        const accusedName =
-          state.currentAccusedIndex !== null
-            ? state.players[state.currentAccusedIndex]
-            : 'the accused';
-        $('#rating-accused-name').textContent = accusedName;
-        const list = $('#rating-list');
-        list.innerHTML = '';
+      function renderAwardButtons(containerId, stateKey) {
+        const root = $('#' + containerId);
+        root.innerHTML = '';
         state.players.forEach((name, i) => {
-          const row = document.createElement('div');
-          row.className = 'rating-row';
-          const label = document.createElement('span');
-          label.className = 'rater-name';
-          label.appendChild(document.createTextNode(name));
-          if (i === state.currentAccusedIndex) {
-            const badge = document.createElement('span');
-            badge.className = 'accused-badge';
-            badge.textContent = 'The Accused';
-            label.appendChild(badge);
-          }
-          const btns = document.createElement('div');
-          btns.className = 'rating-buttons';
-          btns.setAttribute('role', 'group');
-          btns.setAttribute('aria-label', `${name} rating (1–3)`);
-          [1, 2, 3].forEach((val) => {
-            const b = document.createElement('button');
-            b.type = 'button';
-            b.textContent = val;
-            b.title = RATING_LABELS[val];
-            b.setAttribute('aria-label', `${name}: ${val} — ${RATING_LABELS[val]}`);
-            b.setAttribute('aria-pressed', state.ratings[i] === val ? 'true' : 'false');
-            b.addEventListener('click', () => {
-              if (state.ratings[i] === val) {
-                delete state.ratings[i];
-              } else {
-                state.ratings[i] = val;
-              }
-              renderRatingPanel();
-            });
-            btns.appendChild(b);
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'btn sm';
+          b.textContent = name;
+          if (state[stateKey] === i) b.classList.add('selected');
+          b.addEventListener('click', () => {
+            state[stateKey] = state[stateKey] === i ? null : i;
+            renderAwardButtons(containerId, stateKey);
           });
-          row.appendChild(label);
-          row.appendChild(btns);
-          list.appendChild(row);
+          root.appendChild(b);
         });
-        updateRatingTotalDisplay();
-      }
-
-      function ratingTotal() {
-        return Object.values(state.ratings).reduce((s, v) => s + (v || 0), 0);
-      }
-
-      function updateRatingTotalDisplay() {
-        const total = ratingTotal();
-        $('#rating-total').textContent = `${total} pt${total === 1 ? '' : 's'}`;
+        const noneBtn = document.createElement('button');
+        noneBtn.type = 'button';
+        noneBtn.className = 'btn sm nowinner';
+        noneBtn.textContent = 'No winner';
+        if (state[stateKey] === 'none') noneBtn.classList.add('selected');
+        noneBtn.addEventListener('click', () => {
+          state[stateKey] = state[stateKey] === 'none' ? null : 'none';
+          renderAwardButtons(containerId, stateKey);
+        });
+        root.appendChild(noneBtn);
       }
 
       function applyAwards() {
-        if (state.currentAccusedIndex === null) return;
-        const total = ratingTotal();
-        if (total > 0) {
-          const name = state.players[state.currentAccusedIndex];
-          state.scores[name] = (state.scores[name] || 0) + total;
+        if (state.pendingBest !== null && state.pendingBest !== 'none') {
+          const name = state.players[state.pendingBest];
+          state.scores[name] += 2;
+        }
+        if (state.pendingConvincing !== null && state.pendingConvincing !== 'none') {
+          const name = state.players[state.pendingConvincing];
+          state.scores[name] += 1;
         }
         state.roundHistory.push({
           round: state.currentRound,
           accusedIndex: state.currentAccusedIndex,
-          ratings: { ...state.ratings },
-          totalAwarded: total,
+          best: state.pendingBest,
+          convincing: state.pendingConvincing,
           crimeId: state.currentCrime.id
         });
       }
@@ -2939,7 +2690,6 @@
 
       /* ── Global listeners ─────────────────────── */
       function initGameListeners() {
-        $('#open-moderator').addEventListener('click', openModeratorWindow);
         $('#spin-btn').addEventListener('click', spinForAccused);
         $('#start-timer-btn').addEventListener('click', startTimer);
         $('#stop-timer-btn').addEventListener('click', stopTimer);
@@ -2949,7 +2699,8 @@
           nextRound();
         });
         $('#skip-round-btn').addEventListener('click', () => {
-          state.ratings = {};
+          state.pendingBest = null;
+          state.pendingConvincing = null;
           nextRound();
         });
         $('#quit-game-btn').addEventListener('click', () => {
@@ -3011,7 +2762,6 @@
             '.voa-lb-backdrop.open, .voa-share-backdrop.open'
           );
           if (inShellOverlay) return;
-          if (!$('#help-modal').classList.contains('hidden')) return;
           const active = document.querySelector('.screen.active');
           if (!active) return;
           if (active.id === 'game-screen') {

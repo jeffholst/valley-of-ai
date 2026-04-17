@@ -33,17 +33,5 @@
     "totalTokensOut": 0,
     "runId": "run-20260417T123358Z-70772d",
     "notes": "Built from approved suggestion #342. Team-builder icebreaker with moderator popup window, standard competition ranking, manual-only sharing, 40 silly crime scenarios, and a solo practice mode."
-  },
-  "improvements": [
-    {
-      "issueNumber": 346,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/346",
-      "runId": "run-20260417T201227Z-73c047",
-      "description": "Replaced Best Alibi / Most Convincing voting with a per-player 1-3 Rate-the-Accused system, moved the Open Moderator Window button to the game screen, added a How to Play help modal on the setup screen.",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-04-17T20:12:27Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-opus-4-7"
-    }
-  ]
+  }
 }

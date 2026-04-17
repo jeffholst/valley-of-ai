@@ -38,10 +38,27 @@
       "prompt": "## App Suggestion\n\n**Category:** Other\n**Requestor:** Jeff Holst\n\n### Description\n\nCreate a unique, fun, browser-based team builder app for live Zoom calls as a 5–10 minute icebreaker. Easy to host, visually clear on screen share, fast onboarding. Use existing party mechanics or fresh inventions. Include moderator controls to add/remove participant names before or during play, start/reset rounds, and adjust duration. Add an optional off-screen moderator answer popup/panel revealed only when needed. Use simple rules, low friction, and group-safe humor. Include a leaderboard with fair competition ranking: ties share the same rank and medal/placement, and later ranks must skip accordingly (1,1,3 / 2,2,2,5). Do not auto-open any social share drawer or game-over sharing hook. Prioritize accessibility, responsive layout, and polished host mode for screen sharing.",
       "requestor": "Jeff Holst"
     },
-    "improvements": null,
+    "improvements": [
+      {
+        "issueNumber": 346,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/346",
+        "runId": "run-20260417T201227Z-73c047",
+        "description": "Replaced Best Alibi / Most Convincing voting with a per-player 1-3 Rate-the-Accused system, moved the Open Moderator Window button to the game screen, added a How to Play help modal on the setup screen.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-04-17T20:12:27Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-opus-4-7"
+      }
+    ],
     "allowImprovements": true,
     "maxScore": 100,
-    "backups": null
+    "backups": [
+      {
+        "runId": "run-20260417T201227Z-73c047",
+        "path": "backups/run-20260417T201227Z-73c047/index.html",
+        "url": "/apps/2026/04/17/alibi/backups/run-20260417T201227Z-73c047/index.html"
+      }
+    ]
   },
   {
     "id": "2026/04/16/mental-gymnastics",
