@@ -13,6 +13,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { buildAppsRegistry } from './apps-registry.mjs';
 import { validateVersusData, buildVersusRegistry } from './versus-registry.mjs';
+export { parseIssueTemplateCategories, parseSharedPromptCategories } from './category-parsers.mjs';
+import { parseIssueTemplateCategories, parseSharedPromptCategories } from './category-parsers.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,6 +24,9 @@ const registryPath = path.join(root, 'data', 'apps.json');
 const versusInputPath = path.join(root, 'data', 'versus.json');
 const versusRegistryPath = path.join(root, 'data', 'versus-registry.json');
 const schemaPath = path.join(root, 'docs', 'json-schema', 'meta.json');
+const versusSchemaPath = path.join(root, 'docs', 'json-schema', 'versus.json');
+const issueTemplatePath = path.join(root, '.github', 'ISSUE_TEMPLATE', 'app_suggestion.yml');
+const sharedPromptPath = path.join(root, 'docs', 'agent-prompts', 'AGENT_PROMPT_SHARED.md');
 
 const REQUIRED_CHECKS = [
   {
@@ -358,6 +363,86 @@ function validateVersusSynchronization() {
   return errors;
 }
 
+function arraysEqual(a, b) {
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function validateCategorySynchronization(schema) {
+  const errors = [];
+  const schemaCategories = schema?.properties?.category?.enum;
+
+  if (!Array.isArray(schemaCategories) || schemaCategories.length === 0) {
+    errors.push('docs/json-schema/meta.json is missing properties.category.enum');
+    return errors;
+  }
+
+  // Validate versus schema category enum.
+  let versusSchema;
+  try {
+    versusSchema = JSON.parse(fs.readFileSync(versusSchemaPath, 'utf8'));
+  } catch (error) {
+    errors.push(`cannot validate docs/json-schema/versus.json: ${error.message}`);
+    return errors;
+  }
+
+  const versusCategories = versusSchema?.items?.properties?.category?.enum;
+  if (!Array.isArray(versusCategories)) {
+    errors.push('docs/json-schema/versus.json is missing items.properties.category.enum');
+  } else if (!arraysEqual(schemaCategories, versusCategories)) {
+    errors.push(
+      'docs/json-schema/versus.json category enum is out of sync with docs/json-schema/meta.json; run `npm run sync:categories`'
+    );
+  }
+
+  // Validate issue template category options.
+  let issueTemplate;
+  try {
+    issueTemplate = fs.readFileSync(issueTemplatePath, 'utf8');
+  } catch (error) {
+    errors.push(`cannot validate .github/ISSUE_TEMPLATE/app_suggestion.yml: ${error.message}`);
+    return errors;
+  }
+
+  const issueCategories = parseIssueTemplateCategories(issueTemplate);
+  if (!issueCategories) {
+    errors.push('could not parse category options from .github/ISSUE_TEMPLATE/app_suggestion.yml');
+  } else if (!arraysEqual(schemaCategories, issueCategories)) {
+    errors.push(
+      '.github/ISSUE_TEMPLATE/app_suggestion.yml category options are out of sync with docs/json-schema/meta.json; run `npm run sync:categories`'
+    );
+  }
+
+  // Validate agent prompt category list.
+  let sharedPrompt;
+  try {
+    sharedPrompt = fs.readFileSync(sharedPromptPath, 'utf8');
+  } catch (error) {
+    errors.push(`cannot validate docs/agent-prompts/AGENT_PROMPT_SHARED.md: ${error.message}`);
+    return errors;
+  }
+
+  const promptCategories = parseSharedPromptCategories(sharedPrompt);
+  if (!promptCategories) {
+    errors.push('could not parse category line in docs/agent-prompts/AGENT_PROMPT_SHARED.md');
+  } else if (!arraysEqual(schemaCategories, promptCategories)) {
+    errors.push(
+      'docs/agent-prompts/AGENT_PROMPT_SHARED.md category list is out of sync with docs/json-schema/meta.json; run `npm run sync:categories`'
+    );
+  }
+
+  return errors;
+}
+
 function main() {
   if (!fs.existsSync(appsRoot)) {
     console.error('ERROR: apps directory not found.');
@@ -411,6 +496,7 @@ function main() {
 
   const registryErrors = validateRegistrySynchronization();
   const versusErrors = validateVersusSynchronization();
+  const categoryErrors = validateCategorySynchronization(schema);
 
   // Report results
   let hasFailures = false;
@@ -463,6 +549,20 @@ function main() {
     }
   } else if (fs.existsSync(versusInputPath)) {
     console.log('Validated data/versus.json and versus-registry.json: passed.');
+  }
+
+  if (categoryErrors.length > 0) {
+    hasFailures = true;
+    console.error(
+      `\nCategory synchronization validation failed: ${categoryErrors.length} issue(s) found.`
+    );
+    for (const error of categoryErrors) {
+      console.error(`  - ${error}`);
+    }
+  } else {
+    console.log(
+      'Validated category synchronization across schema, issue template, and prompts: passed.'
+    );
   }
 
   if (hasFailures) {

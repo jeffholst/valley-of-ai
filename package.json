@@ -19,6 +19,7 @@
     "build": "npm run sync && next build",
     "start": "next start",
     "sync": "node scripts/sync-public-content.mjs",
+    "sync:categories": "node scripts/sync-categories.mjs",
     "generate:apps": "node scripts/generate-apps.mjs",
     "generate:versus": "node scripts/generate-versus.mjs",
     "validate:apps": "node scripts/validate-apps.mjs",
