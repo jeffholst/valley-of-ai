@@ -13,6 +13,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { buildAppsRegistry } from './apps-registry.mjs';
 import { validateVersusData, buildVersusRegistry } from './versus-registry.mjs';
+export { parseIssueTemplateCategories, parseSharedPromptCategories } from './category-parsers.mjs';
+import { parseIssueTemplateCategories, parseSharedPromptCategories } from './category-parsers.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -373,33 +375,6 @@ function arraysEqual(a, b) {
   }
 
   return true;
-}
-
-function parseIssueTemplateCategories(content) {
-  const optionsBlockPattern =
-    /(id:\s*category[\s\S]*?^\s*options:\s*\n)([\s\S]*?)(^\s*validations:\s*\n)/m;
-  const match = content.match(optionsBlockPattern);
-
-  if (!match) {
-    return null;
-  }
-
-  return match[2]
-    .split('\n')
-    .map((line) => line.match(/^\s*-\s+(.+)$/)?.[1]?.trim())
-    .filter(Boolean);
-}
-
-function parseSharedPromptCategories(content) {
-  const categoryLineMatch = content.match(/- `category`: one of (.+)$/m);
-  if (!categoryLineMatch) {
-    return null;
-  }
-
-  return categoryLineMatch[1]
-    .split('|')
-    .map((token) => token.trim().replace(/^`|`$/g, ''))
-    .filter(Boolean);
 }
 
 function validateCategorySynchronization(schema) {

@@ -41,15 +41,16 @@ If renaming a category, update all affected `meta.json` files to use the new nam
 ## Steps
 
 1. Decide exactly which categories to add, remove, or rename.
-2. Update `.github/ISSUE_TEMPLATE/app_suggestion.yml` — the dropdown options.
-3. Update `docs/json-schema/meta.json` — the `category` enum.
-4. Update `docs/json-schema/versus.json` — the `category` enum.
-5. Update `docs/agent-prompts/AGENT_PROMPT_SHARED.md` — the prose category list (~line 150).
-6. _(Rename only)_ Update affected `apps/*/meta.json` files, then run:
+2. Update `docs/json-schema/meta.json` — the canonical `category` enum.
+3. Run `npm run sync:categories` to automatically propagate the change to:
+   - `docs/json-schema/versus.json`
+   - `.github/ISSUE_TEMPLATE/app_suggestion.yml`
+   - `docs/agent-prompts/AGENT_PROMPT_SHARED.md`
+4. _(Rename only)_ Update affected `apps/*/meta.json` files, then run:
    ```bash
    npm run generate:apps
    ```
-7. Validate everything is consistent:
+5. Validate everything is consistent:
    ```bash
    npm run validate:apps
    ```
