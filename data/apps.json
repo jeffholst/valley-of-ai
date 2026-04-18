@@ -2859,6 +2859,15 @@
         "implementedAt": "2026-04-18T16:25:43Z",
         "agentName": "GitHub Copilot",
         "llmModel": "GPT-5.3-Codex"
+      },
+      {
+        "issueNumber": 354,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/354",
+        "description": "Manual round advancement with Start Next Round button; highlight empty tiles to show current entry position; display player scores on +1 buttons.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-18T17:01:51Z",
+        "agentName": "GitHub Copilot",
+        "llmModel": "Claude Haiku 4.5"
       }
     ],
     "allowImprovements": true,
@@ -2868,6 +2877,11 @@
         "runId": "run-20260418T162543Z-9209f8",
         "path": "backups/run-20260418T162543Z-9209f8/index.html",
         "url": "/apps/2026/03/06/word-scramble/backups/run-20260418T162543Z-9209f8/index.html"
+      },
+      {
+        "runId": "run-20260418T165927Z-a7f2c9",
+        "path": "backups/run-20260418T165927Z-a7f2c9/index.html",
+        "url": "/apps/2026/03/06/word-scramble/backups/run-20260418T165927Z-a7f2c9/index.html"
       }
     ]
   },
