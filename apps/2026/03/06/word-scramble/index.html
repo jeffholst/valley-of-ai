@@ -678,7 +678,7 @@
       const startBtn = document.createElement('button');
       startBtn.type = 'button';
       startBtn.className = 'btn';
-      startBtn.textContent = `Start Round ${currentRound + 1}`;
+      startBtn.textContent = 'Start Next Round';
       startBtn.addEventListener('click', () => {
         currentRound += 1;
         buildRound();
@@ -767,7 +767,6 @@
       });
 
       setTimeout(() => {
-        showRoundMessage('Round ended. Moderator: click "Start Next Round" to continue.', 'info');
         renderStartNextButton();
       }, 900);
     }
