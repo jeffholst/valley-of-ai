@@ -2826,17 +2826,17 @@
   },
   {
     "id": "2026/03/06/word-scramble",
-    "name": "Word Scramble",
-    "shortDescription": "A fun word puzzle game where you unscramble letters to reveal words. Features multiple difficulty levels, time pressure, streak bonuses, and keyboard support.",
+    "name": "Word Scramble Party",
+    "shortDescription": "A multiplayer icebreaker where moderators run timed word-scramble rounds, award points to the first responder, and finish with fair tie-aware rankings.",
     "thumbnailUrl": "/apps/2026/03/06/word-scramble/thumbnail.svg",
     "createdAt": "2026-03-06T14:30:00Z",
     "year": 2026,
     "month": 3,
     "day": 6,
-    "category": "Games",
-    "inputMode": "desktop",
+    "category": "Icebreakers",
+    "inputMode": "responsive",
     "status": "active",
-    "tags": ["game", "puzzle", "words", "educational", "keyboard-controls"],
+    "tags": ["icebreaker", "multiplayer", "word-game", "moderator", "party", "round-based"],
     "route": "/apps/2026/03/06/word-scramble",
     "appPath": "/apps/2026/03/06/word-scramble/index.html",
     "generation": {
@@ -2850,10 +2850,26 @@
       "notes": "Generated as a test of the full agent workflow including git operations and transactional logging."
     },
     "suggestion": null,
-    "improvements": null,
+    "improvements": [
+      {
+        "issueNumber": 351,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/351",
+        "description": "Converted Word Scramble into a multiplayer icebreaker with participant setup, timed rounds, moderator winner assignment, answer panel window, and fair tie-ranked scoring.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-18T16:25:43Z",
+        "agentName": "GitHub Copilot",
+        "llmModel": "GPT-5.3-Codex"
+      }
+    ],
     "allowImprovements": true,
     "maxScore": null,
-    "backups": null
+    "backups": [
+      {
+        "runId": "run-20260418T162543Z-9209f8",
+        "path": "backups/run-20260418T162543Z-9209f8/index.html",
+        "url": "/apps/2026/03/06/word-scramble/backups/run-20260418T162543Z-9209f8/index.html"
+      }
+    ]
   },
   {
     "id": "2026/03/05/snake-game",
