@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', '__GA_MEASUREMENT_ID__');
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word Scramble Party - __MAIN_SITE_NAME__</title>
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+  <meta name="voa-github-url" content="__GITHUB_URL__" />
+  <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+  <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+  <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+  <meta name="application-name" content="Word Scramble Party" />
+  <meta name="voa-app-id" content="2026/03/06/word-scramble" />
+  <script src="/apps/shared/app-shell.js" defer></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --text: #f9fafb;
+      --surface: #1e293b;
+      --card: #15213e;
+      --muted: #9ca3af;
+      --accent: #22d3ee;
+      --accent-2: #38bdf8;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --border: #334155;
+    }
+
+    [data-theme='light'] {
+      --bg: #ffffff;
+      --text: #1f2937;
+      --surface: #f3f4f6;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #0891b2;
+      --accent-2: #0369a1;
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --border: #d1d5db;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 20%, rgb(34 211 238 / 18%), transparent 45%),
+        radial-gradient(circle at 85% 0%, rgb(56 189 248 / 18%), transparent 40%),
+        var(--bg);
+      line-height: 1.4;
+    }
+
+    .app {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 1.25rem 1rem 1.5rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgb(15 23 42 / 92%), rgb(30 41 59 / 92%));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1rem 1.25rem;
+      box-shadow: 0 18px 28px rgb(2 6 23 / 25%);
+    }
+
+    [data-theme='light'] .hero {
+      background: linear-gradient(135deg, rgb(240 249 255 / 95%), rgb(236 253 245 / 95%));
+      box-shadow: 0 14px 24px rgb(15 23 42 / 10%);
+    }
+
+    h1 {
+      font-size: clamp(1.5rem, 2.4vw, 2rem);
+      margin-bottom: 0.3rem;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1rem;
+      box-shadow: 0 10px 20px rgb(2 6 23 / 22%);
+    }
+
+    [data-theme='light'] .card {
+      box-shadow: 0 10px 20px rgb(15 23 42 / 8%);
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .row {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    label {
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    input,
+    button {
+      font: inherit;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      min-height: 44px;
+    }
+
+    input {
+      background: var(--surface);
+      color: var(--text);
+      padding: 0.5rem 0.7rem;
+      width: min(100%, 320px);
+    }
+
+    .name-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.3rem 0.7rem;
+      font-weight: 700;
+      font-size: 0.87rem;
+    }
+
+    .pill button {
+      min-height: 24px;
+      width: 24px;
+      border-radius: 50%;
+      border: none;
+      background: var(--danger);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .btn {
+      cursor: pointer;
+      color: #fff;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: none;
+      padding: 0.5rem 1rem;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.65rem;
+    }
+
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.6rem;
+      text-align: center;
+    }
+
+    .stat b {
+      display: block;
+      font-size: 1.2rem;
+    }
+
+    .timer-urgent {
+      color: var(--danger);
+    }
+
+    .hint {
+      background: var(--surface);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 0.7rem;
+      font-size: 0.95rem;
+    }
+
+    .scramble,
+    .answer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      justify-content: center;
+    }
+
+    .tile {
+      width: 48px;
+      height: 56px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      font-weight: 800;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      user-select: none;
+      text-transform: uppercase;
+    }
+
+    .tile.letter {
+      cursor: pointer;
+      color: #fff;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    }
+
+    .tile.letter.used {
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    .tile.slot {
+      background: var(--surface);
+      border-style: dashed;
+    }
+
+    .tile.slot.filled {
+      border-style: solid;
+      cursor: pointer;
+      background: rgb(8 145 178 / 14%);
+    }
+
+    .message {
+      border-radius: 10px;
+      padding: 0.7rem 0.8rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: 1px solid transparent;
+    }
+
+    .message.info {
+      background: rgb(34 211 238 / 14%);
+      border-color: rgb(34 211 238 / 45%);
+    }
+
+    .message.success {
+      background: rgb(34 197 94 / 14%);
+      border-color: rgb(34 197 94 / 45%);
+    }
+
+    .message.warn {
+      background: rgb(245 158 11 / 14%);
+      border-color: rgb(245 158 11 / 45%);
+    }
+
+    .winner-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.5rem;
+    }
+
+    .score-list {
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      gap: 0.6rem;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.55rem 0.7rem;
+    }
+
+    .rank {
+      font-weight: 800;
+    }
+
+    .score {
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 640px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .app {
+        padding: 0.85rem;
+      }
+
+      .score-row {
+        grid-template-columns: 64px 1fr auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <h1>Word Scramble Party</h1>
+      <p>
+        Multiplayer icebreaker mode for live groups. Add players, run timed rounds, award each round
+        to the first correct responder, and finish with tie-aware placements.
+      </p>
+    </section>
+
+    <section id="setupScreen" class="card screen active" aria-label="Setup screen">
+      <h2>1) Setup Round</h2>
+      <p class="muted">Participant settings are saved to local storage for your next session.</p>
+      <div class="row">
+        <label for="participantInput">Participant Name</label>
+        <input id="participantInput" maxlength="24" placeholder="Add player" />
+        <button id="addParticipantBtn" class="btn" type="button">Add Participant</button>
+      </div>
+      <div id="nameList" class="name-list" aria-live="polite"></div>
+      <div class="row">
+        <label for="roundsInput">Number of Rounds</label>
+        <input id="roundsInput" type="number" min="1" max="30" value="6" />
+      </div>
+      <div class="row">
+        <button id="startBtn" class="btn" type="button">Start Game</button>
+      </div>
+      <p class="muted">Need at least two participants to start.</p>
+    </section>
+
+    <section id="playScreen" class="card screen" aria-label="Round play screen">
+      <h2>2) Live Round</h2>
+      <div class="stats">
+        <div class="stat">
+          <span>Round</span>
+          <b id="roundStat">1 / 6</b>
+        </div>
+        <div class="stat">
+          <span>Timer</span>
+          <b id="timerStat">30</b>
+        </div>
+        <div class="stat">
+          <span>Solved</span>
+          <b id="solvedStat">0</b>
+        </div>
+      </div>
+
+      <div id="roundMessage" class="message info">Moderator: choose winner after each solved round.</div>
+      <div id="hintBox" class="hint">Hint: <strong>Loading...</strong></div>
+      <div id="scramble" class="scramble" aria-label="Scrambled letters"></div>
+      <div id="answer" class="answer" aria-label="Answer slots"></div>
+
+      <div class="row">
+        <button id="clearBtn" class="btn btn-secondary" type="button">Clear Answer</button>
+        <button id="submitBtn" class="btn" type="button">Check Answer</button>
+        <button id="skipBtn" class="btn btn-secondary" type="button">Skip Round</button>
+      </div>
+
+      <div class="row">
+        <button id="openPanelBtn" class="btn btn-secondary" type="button">Open Answer Panel Window</button>
+      </div>
+
+      <div>
+        <h3>Award This Round</h3>
+        <p class="muted">Click the participant who answered first. This ends the current round.</p>
+        <div id="winnerGrid" class="winner-grid"></div>
+      </div>
+    </section>
+
+    <section id="scoreScreen" class="card screen" aria-label="Final scoreboard">
+      <h2>3) Final Scoreboard</h2>
+      <p class="muted">Placements use fair shared ranking for ties (1, 1, 3 style).</p>
+      <div id="scoreList" class="score-list"></div>
+      <div class="row">
+        <button id="playAgainBtn" class="btn" type="button">Play Again</button>
+        <button id="editSetupBtn" class="btn btn-secondary" type="button">Edit Participants</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'voa-word-scramble-party-config';
+
+    const WORDS = [
+      { word: 'apple', hint: 'A common fruit often in lunch boxes' },
+      { word: 'dance', hint: 'Move to rhythm and music' },
+      { word: 'guitar', hint: 'String instrument with six strings' },
+      { word: 'planet', hint: 'Earth is one of these' },
+      { word: 'bridge', hint: 'Structure used to cross water' },
+      { word: 'castle', hint: 'Historic fortress for royalty' },
+      { word: 'memory', hint: 'What this game challenges' },
+      { word: 'camera', hint: 'Device used to take photos' },
+      { word: 'rocket', hint: 'Vehicle that launches to space' },
+      { word: 'forest', hint: 'Large area full of trees' },
+      { word: 'puzzle', hint: 'A problem to solve for fun' },
+      { word: 'travel', hint: 'To go from place to place' },
+      { word: 'friend', hint: 'Someone you trust and enjoy' },
+      { word: 'silver', hint: 'Metal and also a medal color' },
+      { word: 'orange', hint: 'Color and citrus fruit' },
+      { word: 'school', hint: 'Place for classes and learning' },
+      { word: 'runner', hint: 'Someone moving quickly by foot' },
+      { word: 'market', hint: 'Place where goods are sold' },
+      { word: 'winter', hint: 'The coldest season' },
+      { word: 'bright', hint: 'Very full of light' }
+    ];
+
+    const setupScreen = document.getElementById('setupScreen');
+    const playScreen = document.getElementById('playScreen');
+    const scoreScreen = document.getElementById('scoreScreen');
+
+    const participantInput = document.getElementById('participantInput');
+    const roundsInput = document.getElementById('roundsInput');
+    const nameList = document.getElementById('nameList');
+    const startBtn = document.getElementById('startBtn');
+
+    const roundStat = document.getElementById('roundStat');
+    const timerStat = document.getElementById('timerStat');
+    const solvedStat = document.getElementById('solvedStat');
+    const roundMessage = document.getElementById('roundMessage');
+    const hintBox = document.getElementById('hintBox');
+    const scrambleEl = document.getElementById('scramble');
+    const answerEl = document.getElementById('answer');
+    const winnerGrid = document.getElementById('winnerGrid');
+
+    const scoreList = document.getElementById('scoreList');
+
+    let participants = [];
+    let roundsTotal = 6;
+    let currentRound = 1;
+    let solvedRounds = 0;
+    let timerLeft = 30;
+    let timerHandle = null;
+    let activeWord = null;
+    let scramble = [];
+    let answer = [];
+    let usedIndices = new Set();
+    let usedWords = new Set();
+    let roundClosed = false;
+    let answerPanelWindow = null;
+
+    function showScreen(name) {
+      setupScreen.classList.toggle('active', name === 'setup');
+      playScreen.classList.toggle('active', name === 'play');
+      scoreScreen.classList.toggle('active', name === 'score');
+    }
+
+    function persistSetup() {
+      const payload = {
+        names: participants.map((p) => p.name),
+        roundsTotal
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    }
+
+    function loadSetup() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        const names = Array.isArray(data.names) ? data.names : [];
+        participants = names
+          .filter((name) => typeof name === 'string' && name.trim().length > 0)
+          .slice(0, 12)
+          .map((name, index) => ({ id: index + 1, name: name.trim(), score: 0 }));
+        const parsedRounds = Number.parseInt(data.roundsTotal, 10);
+        roundsTotal = Number.isFinite(parsedRounds) ? Math.min(30, Math.max(1, parsedRounds)) : 6;
+        roundsInput.value = String(roundsTotal);
+      } catch (_error) {
+        participants = [];
+      }
+    }
+
+    function renderParticipants() {
+      nameList.innerHTML = '';
+      participants.forEach((participant, index) => {
+        const pill = document.createElement('div');
+        pill.className = 'pill';
+        pill.textContent = participant.name;
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.setAttribute('aria-label', `Remove ${participant.name}`);
+        removeBtn.textContent = 'x';
+        removeBtn.addEventListener('click', () => {
+          participants.splice(index, 1);
+          participants = participants.map((item, idx) => ({ ...item, id: idx + 1 }));
+          renderParticipants();
+          persistSetup();
+          updateStartState();
+        });
+
+        pill.appendChild(removeBtn);
+        nameList.appendChild(pill);
+      });
+    }
+
+    function updateStartState() {
+      startBtn.disabled = participants.length < 2;
+    }
+
+    function addParticipant() {
+      const name = participantInput.value.trim();
+      if (!name) return;
+      if (participants.length >= 12) {
+        showRoundMessage('Participant limit reached (12).', 'warn');
+        return;
+      }
+      if (participants.some((item) => item.name.toLowerCase() === name.toLowerCase())) {
+        showRoundMessage('Duplicate participant names are not allowed.', 'warn');
+        return;
+      }
+      participants.push({ id: participants.length + 1, name, score: 0 });
+      participantInput.value = '';
+      renderParticipants();
+      updateStartState();
+      persistSetup();
+    }
+
+    function shuffleLetters(letters) {
+      const copy = [...letters];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function getWordForRound() {
+      const available = WORDS.filter((entry) => !usedWords.has(entry.word));
+      if (available.length === 0) {
+        usedWords.clear();
+        return getWordForRound();
+      }
+      const picked = available[Math.floor(Math.random() * available.length)];
+      usedWords.add(picked.word);
+      return picked;
+    }
+
+    function buildRound() {
+      activeWord = getWordForRound();
+      do {
+        scramble = shuffleLetters(activeWord.word.split(''));
+      } while (scramble.join('') === activeWord.word);
+
+      answer = [];
+      usedIndices = new Set();
+      timerLeft = 30;
+      roundClosed = false;
+
+      roundStat.textContent = `${currentRound} / ${roundsTotal}`;
+      solvedStat.textContent = String(solvedRounds);
+      hintBox.innerHTML = `Hint: <strong>${activeWord.hint}</strong>`;
+      showRoundMessage('Unscramble the word. Moderator awards each round winner.', 'info');
+      renderRoundTiles();
+      renderWinnerButtons();
+      startTimer();
+      updateAnswerPanel();
+    }
+
+    function renderRoundTiles() {
+      timerStat.textContent = String(timerLeft);
+      timerStat.classList.toggle('timer-urgent', timerLeft <= 7);
+
+      scrambleEl.innerHTML = scramble
+        .map(
+          (letter, index) =>
+            `<button type="button" class="tile letter ${usedIndices.has(index) ? 'used' : ''}" data-index="${index}" aria-label="Letter ${letter}">${letter}</button>`
+        )
+        .join('');
+
+      answerEl.innerHTML = '';
+      for (let i = 0; i < activeWord.word.length; i += 1) {
+        const slotData = answer[i];
+        const slot = document.createElement('button');
+        slot.type = 'button';
+        slot.className = `tile slot${slotData ? ' filled' : ''}`;
+        slot.textContent = slotData ? slotData.letter : '';
+        slot.setAttribute('aria-label', slotData ? `Remove ${slotData.letter}` : 'Empty answer slot');
+        if (slotData) {
+          slot.addEventListener('click', () => removeLetter(i));
+        } else {
+          slot.disabled = true;
+        }
+        answerEl.appendChild(slot);
+      }
+
+      scrambleEl.querySelectorAll('button').forEach((button) => {
+        button.addEventListener('click', () => {
+          const idx = Number.parseInt(button.dataset.index, 10);
+          selectLetter(idx);
+        });
+      });
+    }
+
+    function renderWinnerButtons() {
+      winnerGrid.innerHTML = '';
+      participants.forEach((participant) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'btn';
+        button.textContent = `${participant.name} +1`;
+        button.addEventListener('click', () => awardRound(participant.id));
+        winnerGrid.appendChild(button);
+      });
+      const noPoint = document.createElement('button');
+      noPoint.type = 'button';
+      noPoint.className = 'btn btn-secondary';
+      noPoint.textContent = 'No Point This Round';
+      noPoint.addEventListener('click', () => finishRound(null));
+      winnerGrid.appendChild(noPoint);
+    }
+
+    function selectLetter(index) {
+      if (roundClosed || usedIndices.has(index) || answer.length >= activeWord.word.length) return;
+      usedIndices.add(index);
+      answer.push({ letter: scramble[index], sourceIndex: index });
+      renderRoundTiles();
+      updateAnswerPanel();
+    }
+
+    function removeLetter(index) {
+      if (roundClosed || !answer[index]) return;
+      usedIndices.delete(answer[index].sourceIndex);
+      answer.splice(index, 1);
+      renderRoundTiles();
+      updateAnswerPanel();
+    }
+
+    function clearAnswer() {
+      if (roundClosed) return;
+      answer = [];
+      usedIndices = new Set();
+      renderRoundTiles();
+      updateAnswerPanel();
+    }
+
+    function showRoundMessage(text, tone) {
+      roundMessage.className = `message ${tone}`;
+      roundMessage.textContent = text;
+    }
+
+    function submitAnswer() {
+      if (roundClosed) return;
+      if (answer.length !== activeWord.word.length) {
+        showRoundMessage('Fill every slot before checking the answer.', 'warn');
+        return;
+      }
+      const guess = answer.map((item) => item.letter).join('');
+      if (guess === activeWord.word) {
+        showRoundMessage('Correct answer. Moderator: choose who answered first.', 'success');
+      } else {
+        showRoundMessage('Not correct yet. Keep trying.', 'warn');
+      }
+      updateAnswerPanel();
+    }
+
+    function startTimer() {
+      stopTimer();
+      timerHandle = setInterval(() => {
+        timerLeft -= 1;
+        renderRoundTiles();
+        if (timerLeft <= 0) {
+          stopTimer();
+          showRoundMessage(`Time up. Answer was: ${activeWord.word.toUpperCase()}`, 'warn');
+          finishRound(null);
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (!timerHandle) return;
+      clearInterval(timerHandle);
+      timerHandle = null;
+    }
+
+    function awardRound(participantId) {
+      const winner = participants.find((participant) => participant.id === participantId);
+      if (!winner) return;
+      winner.score += 1;
+      solvedRounds += 1;
+      showRoundMessage(`${winner.name} gets this round!`, 'success');
+      finishRound(participantId);
+    }
+
+    function finishRound(_winnerId) {
+      if (roundClosed) return;
+      roundClosed = true;
+      stopTimer();
+      winnerGrid.querySelectorAll('button').forEach((button) => {
+        button.disabled = true;
+      });
+
+      setTimeout(() => {
+        if (currentRound >= roundsTotal) {
+          showFinalScoreboard();
+          return;
+        }
+        currentRound += 1;
+        buildRound();
+      }, 900);
+    }
+
+    function computePlacements(players) {
+      const sorted = [...players].sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        return a.name.localeCompare(b.name);
+      });
+
+      let previousScore = null;
+      let currentRank = 0;
+      return sorted.map((player, index) => {
+        if (previousScore === null || player.score < previousScore) {
+          currentRank = index + 1;
+        }
+        previousScore = player.score;
+        return {
+          ...player,
+          rank: currentRank
+        };
+      });
+    }
+
+    function rankLabel(rank) {
+      if (rank === 1) return 'Gold';
+      if (rank === 2) return 'Silver';
+      if (rank === 3) return 'Bronze';
+      return `${rank}th`;
+    }
+
+    function showFinalScoreboard() {
+      stopTimer();
+      showScreen('score');
+      const placements = computePlacements(participants);
+      scoreList.innerHTML = '';
+
+      placements.forEach((entry) => {
+        const row = document.createElement('div');
+        row.className = 'score-row';
+
+        const rank = document.createElement('div');
+        rank.className = 'rank';
+        rank.textContent = `${entry.rank}. ${rankLabel(entry.rank)}`;
+
+        const name = document.createElement('div');
+        name.textContent = entry.name;
+
+        const score = document.createElement('div');
+        score.className = 'score';
+        score.textContent = `${entry.score} pts`;
+
+        row.appendChild(rank);
+        row.appendChild(name);
+        row.appendChild(score);
+        scoreList.appendChild(row);
+      });
+    }
+
+    function restartGame() {
+      participants = participants.map((participant) => ({ ...participant, score: 0 }));
+      currentRound = 1;
+      solvedRounds = 0;
+      usedWords = new Set();
+      showScreen('play');
+      buildRound();
+    }
+
+    function openAnswerPanel() {
+      answerPanelWindow = window.open('', 'voa-answer-panel', 'width=520,height=620');
+      if (!answerPanelWindow) {
+        showRoundMessage('Popup blocked. Allow popups for moderator panel.', 'warn');
+        return;
+      }
+      updateAnswerPanel();
+    }
+
+    function updateAnswerPanel() {
+      if (!answerPanelWindow || answerPanelWindow.closed || !activeWord) return;
+      const partialAnswer = answer.map((entry) => entry.letter).join('').toUpperCase();
+      answerPanelWindow.document.open();
+      answerPanelWindow.document.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Word Scramble Moderator Panel</title>
+  <style>
+    body { font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; margin: 0; padding: 16px; background: #0f172a; color: #f8fafc; }
+    .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 12px; margin-bottom: 12px; }
+    h1 { margin: 0 0 10px; font-size: 1.2rem; }
+    h2 { margin: 0 0 6px; font-size: 0.95rem; color: #67e8f9; }
+    b { color: #22d3ee; }
+  </style>
+</head>
+<body>
+  <h1>Moderator Answer Panel</h1>
+  <div class="card"><h2>Round</h2><div><b>${currentRound}</b> / ${roundsTotal}</div></div>
+  <div class="card"><h2>Hint</h2><div>${activeWord.hint}</div></div>
+  <div class="card"><h2>Answer</h2><div><b>${activeWord.word.toUpperCase()}</b></div></div>
+  <div class="card"><h2>Current Guess</h2><div>${partialAnswer || '-'}</div></div>
+  <div class="card"><h2>Timer</h2><div>${timerLeft}s</div></div>
+</body>
+</html>`);
+      answerPanelWindow.document.close();
+    }
+
+    function startGame() {
+      roundsTotal = Number.parseInt(roundsInput.value, 10);
+      if (!Number.isFinite(roundsTotal) || roundsTotal < 1 || roundsTotal > 30) {
+        showRoundMessage('Rounds must be between 1 and 30.', 'warn');
+        return;
+      }
+      participants = participants.map((participant, index) => ({
+        id: index + 1,
+        name: participant.name,
+        score: 0
+      }));
+
+      persistSetup();
+      usedWords = new Set();
+      currentRound = 1;
+      solvedRounds = 0;
+      showScreen('play');
+      buildRound();
+    }
+
+    function setupKeyboardSupport() {
+      document.addEventListener('keydown', (event) => {
+        const tag = document.activeElement ? document.activeElement.tagName : '';
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (!playScreen.classList.contains('active')) return;
+        if (event.key === 'Enter') {
+          submitAnswer();
+          return;
+        }
+        if (event.key === 'Backspace') {
+          if (answer.length > 0) {
+            removeLetter(answer.length - 1);
+          }
+          return;
+        }
+        if (event.key === 'Escape') {
+          clearAnswer();
+          return;
+        }
+        if (/^[a-zA-Z]$/.test(event.key)) {
+          const letter = event.key.toLowerCase();
+          const idx = scramble.findIndex((item, index) => item === letter && !usedIndices.has(index));
+          if (idx >= 0) {
+            selectLetter(idx);
+          }
+        }
+      });
+    }
+
+    document.getElementById('addParticipantBtn').addEventListener('click', addParticipant);
+    participantInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        addParticipant();
+      }
+    });
+
+    roundsInput.addEventListener('change', () => {
+      const value = Number.parseInt(roundsInput.value, 10);
+      if (Number.isFinite(value)) {
+        roundsTotal = Math.min(30, Math.max(1, value));
+        roundsInput.value = String(roundsTotal);
+        persistSetup();
+      }
+    });
+
+    startBtn.addEventListener('click', startGame);
+    document.getElementById('clearBtn').addEventListener('click', clearAnswer);
+    document.getElementById('submitBtn').addEventListener('click', submitAnswer);
+    document.getElementById('skipBtn').addEventListener('click', () => {
+      showRoundMessage(`Round skipped. Answer was ${activeWord.word.toUpperCase()}.`, 'warn');
+      finishRound(null);
+    });
+    document.getElementById('openPanelBtn').addEventListener('click', openAnswerPanel);
+    document.getElementById('playAgainBtn').addEventListener('click', restartGame);
+    document.getElementById('editSetupBtn').addEventListener('click', () => {
+      stopTimer();
+      showScreen('setup');
+    });
+
+    loadSetup();
+    renderParticipants();
+    updateStartState();
+    setupKeyboardSupport();
+  </script>
+</body>
+</html>
