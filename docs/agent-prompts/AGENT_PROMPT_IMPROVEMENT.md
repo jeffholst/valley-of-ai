@@ -71,6 +71,8 @@
 
 Apply improvement to an existing app. The app already exists — do not rebuild it from scratch. Make the targeted change described in the issue, keep everything else working, and leave the codebase in a better state than you found it.
 
+**Hard requirement:** Every improvement PR must include the pre-improvement backup snapshot at `apps/<app-path>/backups/<runId>/` (at minimum: `index.html`, `meta.json`, `thumbnail.svg`). If backup files are not present in the commit and PR diff, the run is incomplete and must not proceed.
+
 ---
 
 ## Step order and sequence numbers
@@ -295,6 +297,12 @@ mkdir -p apps/<app-path>/backups/<runId>/
 cp apps/<app-path>/index.html    apps/<app-path>/backups/<runId>/index.html
 cp apps/<app-path>/meta.json     apps/<app-path>/backups/<runId>/meta.json
 cp apps/<app-path>/thumbnail.svg apps/<app-path>/backups/<runId>/thumbnail.svg
+
+# Blocking check: all required backup files must exist before continuing.
+test -f apps/<app-path>/backups/<runId>/index.html \
+  && test -f apps/<app-path>/backups/<runId>/meta.json \
+  && test -f apps/<app-path>/backups/<runId>/thumbnail.svg \
+  || { echo "ERROR: missing backup files"; exit 1; }
 ```
 
 Log immediately:
@@ -477,6 +485,10 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
    git diff --cached --stat | grep "backups/" || { echo "ERROR: backup files not staged"; exit 1; }
 
    git commit -m "improve: <app-id> — <one-line description of change> [skip deploy]"
+
+   # Verify committed files include the backup snapshot for this run:
+   git show --name-only --format="" HEAD | grep "^apps/<app-path>/backups/<runId>/" \
+     || { echo "ERROR: backup files not included in commit"; exit 1; }
    ```
 
    - **MUST include `[skip deploy]` in commit message.**
@@ -514,24 +526,28 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
    - `Closes #<issueNumber>`
    - What changed and why
    - What existing functionality was verified as preserved
-   - Confirmation that all validation commands passed
 
-   - **Log immediately:**
+- Confirmation that backup snapshot files are included at `apps/<app-path>/backups/<runId>/`
+- Confirmation that all validation commands passed
 
-   ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
-     --step CREATE_PR --seq 11 --status completed --durationMs <duration> \
-     --message "Created PR #<NUMBER> for improve/<app-id>"
-   ```
+- **Log immediately:**
+
+```bash
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
+  --step CREATE_PR --seq 11 --status completed --durationMs <duration> \
+  --message "Created PR #<NUMBER> for improve/<app-id>"
+```
 
 3. Execute: Self-review PR — verify only intended files changed, no regressions.
-   - **Log immediately:**
 
-   ```bash
-   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
-     --step PR_REVIEW --seq 12 --status completed --durationMs <duration> \
-     --message "PR review complete — improvement scoped correctly, no regressions"
-   ```
+- Confirm the PR file list includes `apps/<app-path>/backups/<runId>/index.html`, `apps/<app-path>/backups/<runId>/meta.json`, and `apps/<app-path>/backups/<runId>/thumbnail.svg`.
+- **Log immediately:**
+
+```bash
+npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> --category pipeline \
+  --step PR_REVIEW --seq 12 --status completed --durationMs <duration> \
+  --message "PR review complete — improvement scoped correctly, no regressions"
+```
 
 4. Confirm `data/apps.json` in the PR reflects any meta.json changes correctly.
    - **Log immediately:**
