@@ -196,7 +196,7 @@ The authoritative schema is at `docs/json-schema/meta.json`. Validate against it
 **Key constraints:**
 
 - `id`: lowercase kebab-case slug only (e.g. `snake-game`)
-- `category`: one of `Games` | `Productivity` | `Utilities` | `Design` | `Education` | `Entertainment` | `Visualizations`
+- `category`: one of `Games` | `Productivity` | `Utilities` | `Design` | `Education` | `Entertainment` | `Visualizations` | `Icebreakers`
 - `inputMode`: one of `desktop` | `mobile` | `responsive`
 - `status`: one of `active` | `experimental` | `retired`
 - `tags`: 2–8 unique strings, each 2–30 characters

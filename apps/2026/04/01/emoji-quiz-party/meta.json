@@ -4,7 +4,7 @@
   "shortDescription": "A presenter-driven emoji guessing game for Zoom calls. Players guess movies, songs, and phrases from emoji combos while a 30-second timer reveals progressive clues.",
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-04-01T14:04:48Z",
-  "category": "Games",
+  "category": "Icebreakers",
   "status": "active",
   "tags": ["quiz", "emoji", "party", "multiplayer", "zoom", "responsive", "touch", "trivia"],
   "homepagePath": "index.html",

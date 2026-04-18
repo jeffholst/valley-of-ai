@@ -7,16 +7,16 @@
     "category": "Games",
     "entries": [
       {
-        "appId": "2026/04/10/benchmark-breakout",
-        "name": "Benchmark Breakout",
-        "shortDescription": "Premium mobile-first breakout benchmark with smooth touch/mouse/keyboard control, combos, power-ups, and polished FX.",
-        "thumbnailUrl": "/apps/2026/04/10/benchmark-breakout/thumbnail.svg",
-        "appPath": "/apps/2026/04/10/benchmark-breakout/index.html",
+        "appId": "2026/04/10/benchmark-breakout-turbo",
+        "name": "Benchmark Breakout Turbo",
+        "shortDescription": "Portrait-friendly benchmark Breakout with charge shots, combo chains, mobile-safe controls, and polished arcade FX.",
+        "thumbnailUrl": "/apps/2026/04/10/benchmark-breakout-turbo/thumbnail.svg",
+        "appPath": "/apps/2026/04/10/benchmark-breakout-turbo/index.html",
         "model": "gpt-4o",
         "agent": "pi-coding-agent",
-        "generationTime": 203,
-        "tokensIn": 5620,
-        "tokensOut": 4880,
+        "generationTime": 211,
+        "tokensIn": 4500,
+        "tokensOut": 5060,
         "improvementCount": 0
       },
       {

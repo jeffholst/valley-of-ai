@@ -15,7 +15,8 @@ const CATEGORIES = [
   'Education',
   'Design',
   'Entertainment',
-  'Other',
+  'Visualizations',
+  'Icebreakers',
 ];
 
 export default function SuggestPage() {
