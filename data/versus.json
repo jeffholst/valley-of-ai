@@ -6,7 +6,6 @@
     "createdAt": "2026-04-18T12:00:00Z",
     "category": "Games",
     "entries": [
-      { "appId": "2026/04/10/benchmark-breakout" },
       { "appId": "2026/04/10/benchmark-breakout-turbo" },
       { "appId": "2026/04/11/benchmark-breakout-opus" }
     ]
