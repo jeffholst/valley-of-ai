@@ -580,7 +580,9 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
 ---
 
-### Step 10: Finalize transaction log and commit
+### Step 10: Finalize transaction log and commit (MANDATORY — always perform)
+
+This step is **always required** on every improvement pipeline run. Do not prompt the user — execute these steps automatically as the final part of the pipeline.
 
 1. **Confirm you are on the main branch:**
 
@@ -608,14 +610,15 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
    Replace `<SITE_URL>` with the production URL from your environment. See `AGENT_PROMPT_SHARED.md` → "Issue Close URL".
 
-4. **Final commit** — on a successful run, verify all 17 log entries are present (TRANSACTION_START + seq 1–15 + TRANSACTION_END) in BOTH log files, then commit:
+4. **Post-merge log finalization commit** — ALWAYS executed on successful run completion. Verify all 17 log entries are present (TRANSACTION_START + seq 1–15 + TRANSACTION_END) in BOTH log files, then commit immediately:
 
    ```bash
    git add apps/<app-path>/log.jsonl logs/YYYY/MM/DD.jsonl
-   git commit -m "chore: finalize transaction logs for <app-id> improvement"
+   git commit -m "chore: finalize transaction logs for <app-id> improvement [skip deploy]"
    git push origin main
    ```
 
    - **CRITICAL:** Both files MUST be committed together:
      - `apps/<app-path>/log.jsonl` — app-local improvement record (appended to existing file)
      - `logs/YYYY/MM/DD.jsonl` — today's central log entry
+   - **NEVER defer this step or ask for user confirmation.** This is a mandatory part of the transaction finalization.
