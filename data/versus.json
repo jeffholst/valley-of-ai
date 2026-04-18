@@ -1,36 +1,14 @@
 [
   {
-    "id": "sorting-visualizer-showdown",
-    "title": "Sorting Visualizer Showdown",
-    "prompt": "Build a sorting algorithm visualizer that lets users compare different sorting algorithms (bubble sort, merge sort, quick sort) side by side with animated bar charts, speed controls, and array size options.",
-    "createdAt": "2026-03-12T12:00:00Z",
-    "category": "Education",
-    "entries": [
-      { "appId": "2026/03/06/sorting-visualizer" },
-      { "appId": "2026/03/12/sorting-race-visualizer" }
-    ]
-  },
-  {
-    "id": "decision-wheel-duel",
-    "title": "Decision Wheel Duel",
-    "prompt": "Create a fun decision spinner wheel where users can add custom options, spin the wheel with realistic physics, and get a random result with celebratory animations.",
-    "createdAt": "2026-03-14T12:00:00Z",
-    "category": "Entertainment",
-    "entries": [
-      { "appId": "2026/03/11/lucky-decision-wheel" },
-      { "appId": "2026/03/14/decision-spinner" }
-    ]
-  },
-  {
-    "id": "memory-game-battle",
-    "title": "Memory Game Battle",
-    "prompt": "Build a memory card matching game with multiple difficulty levels, a timer, move counter, and satisfying flip animations.",
-    "createdAt": "2026-03-19T12:00:00Z",
+    "id": "benchmark-breakout-battle",
+    "title": "Benchmark Breakout Battle",
+    "prompt": "Build a premium mobile-first Breakout game with smooth paddle control for touch, mouse, and keyboard; responsive layout; crisp graphics; fluid animation; satisfying collisions; readable HUD; score, lives, combo/bonus scoring; increasing difficulty; multiple brick patterns; fair rebound angles; progressive speed tuning; balanced power-ups; particle effects; subtle screen shake; adaptive audio; polished transitions; onboarding; sound toggle; 44px+ touch targets; no hover UI; stable 60 FPS; no placeholders; no broken features; no build tools.",
+    "createdAt": "2026-04-18T12:00:00Z",
     "category": "Games",
     "entries": [
-      { "appId": "2026/03/06/memory-match" },
-      { "appId": "2026/03/19/orbit-memory-match" },
-      { "appId": "2026/03/21/pattern-pulse-memory" }
+      { "appId": "2026/04/10/benchmark-breakout" },
+      { "appId": "2026/04/10/benchmark-breakout-turbo" },
+      { "appId": "2026/04/11/benchmark-breakout-opus" }
     ]
   }
 ]
