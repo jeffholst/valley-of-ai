@@ -17,6 +17,7 @@ body:
         - Education
         - Entertainment
         - Visualizations
+        - Icebreakers
     validations:
       required: true
 

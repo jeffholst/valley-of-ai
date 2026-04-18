@@ -174,6 +174,7 @@ function analyzeCategoryGaps(apps, voteCounts) {
     Education: 5,
     Visualizations: 6,
     Design: 7,
+    Icebreakers: 8,
   };
 
   const byCategory = {};

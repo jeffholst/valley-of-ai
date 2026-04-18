@@ -24,24 +24,24 @@ If `npm run lint` or `npm test` fail on a clean checkout with no changes, **docu
 
 ## Key Commands
 
-| Command | Purpose |
-|---|---|
-| `npm run dev` | Dev server (runs sync first) |
-| `npm run build` | Production build (runs sync first) |
-| `npm run sync` | Copy `apps/` + `logs/` → `public/` with placeholder replacement |
-| `npm run generate:apps` | Regenerate `data/apps.json` from all `apps/*/meta.json` |
-| `npm run generate:versus` | Regenerate `data/versus-registry.json` from `versus.json` + `apps.json` |
-| `npm run validate:apps` | Validate HTML contracts, metadata schema, registry sync |
-| `npm run validate:responsive:sample` | Responsive check on 5 apps (fast spot-check) |
-| `npm run lint` | ESLint — 0 errors, 0 warnings required |
-| `npm run lint:fix` | Auto-fix lint issues |
-| `npm run format` | Prettier (100 char, single quotes, 2-space indent) |
-| `npm test` | Jest unit tests |
-| `npm run log` | Append a structured pipeline log entry |
-| `npm run issues:pending` | List pending suggestion/improvement issues |
-| `npm run issues:decide` | Apply approved/rejected/human-review issue decisions |
-| `npm run select:app:suggestion` | (Agent use only) Recommend next new app concept |
-| `npm run select:app:improvement` | (Agent use only) Recommend next improvement |
+| Command                              | Purpose                                                                 |
+| ------------------------------------ | ----------------------------------------------------------------------- |
+| `npm run dev`                        | Dev server (runs sync first)                                            |
+| `npm run build`                      | Production build (runs sync first)                                      |
+| `npm run sync`                       | Copy `apps/` + `logs/` → `public/` with placeholder replacement         |
+| `npm run generate:apps`              | Regenerate `data/apps.json` from all `apps/*/meta.json`                 |
+| `npm run generate:versus`            | Regenerate `data/versus-registry.json` from `versus.json` + `apps.json` |
+| `npm run validate:apps`              | Validate HTML contracts, metadata schema, registry sync                 |
+| `npm run validate:responsive:sample` | Responsive check on 5 apps (fast spot-check)                            |
+| `npm run lint`                       | ESLint — 0 errors, 0 warnings required                                  |
+| `npm run lint:fix`                   | Auto-fix lint issues                                                    |
+| `npm run format`                     | Prettier (100 char, single quotes, 2-space indent)                      |
+| `npm test`                           | Jest unit tests                                                         |
+| `npm run log`                        | Append a structured pipeline log entry                                  |
+| `npm run issues:pending`             | List pending suggestion/improvement issues                              |
+| `npm run issues:decide`              | Apply approved/rejected/human-review issue decisions                    |
+| `npm run select:app:suggestion`      | (Agent use only) Recommend next new app concept                         |
+| `npm run select:app:improvement`     | (Agent use only) Recommend next improvement                             |
 
 ---
 
@@ -144,7 +144,9 @@ Every app's `index.html` must include these head tags **exactly as shown** — `
 <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
+  function gtag() {
+    dataLayer.push(arguments);
+  }
   gtag('js', new Date());
   gtag('config', '__GA_MEASUREMENT_ID__');
 </script>
@@ -200,8 +202,9 @@ The authoritative schema is at `docs/json-schema/meta.json`.
 **Required fields:** `id`, `name`, `shortDescription`, `thumbnail`, `createdAt`, `category`, `status`, `tags`, `homepagePath`, `inputMode`, `generation`
 
 **Key constraints:**
+
 - `id`: lowercase kebab-case (e.g. `snake-game`)
-- `category`: `Games` | `Productivity` | `Utilities` | `Design` | `Education` | `Entertainment` | `Visualizations`
+- `category`: `Games` | `Productivity` | `Utilities` | `Design` | `Education` | `Entertainment` | `Visualizations` | `Icebreakers`
 - `inputMode`: `desktop` | `mobile` | `responsive`
 - `status`: `active` | `experimental` | `retired`
 - `tags`: 2–8 unique strings, each 2–30 characters
@@ -211,6 +214,7 @@ The authoritative schema is at `docs/json-schema/meta.json`.
 - `generation.runId`: format `run-YYYYMMDDTHHMMSSZ-xxxxxx`
 
 **Optional fields:**
+
 - `visible`: `false` to hide from gallery without deleting
 - `allowImprovements`: `false` to prevent community improvement submissions (pipeline skips the app automatically)
 - `suggestion`: only present if built from a community suggestion issue
@@ -262,6 +266,7 @@ npm run test:coverage    # Coverage report
 Copy `.env.example` to `.env` for local development. **Never commit real secrets.**
 
 Key variables:
+
 - `SUPABASE_URL`, `SUPABASE_SECRET_KEY` — server-only, never `NEXT_PUBLIC_`
 - `NEXT_PUBLIC_GA_MEASUREMENT_ID`
 - `GITHUB_SUGGESTIONS_TOKEN`, `GITHUB_REPO` — used by issue scripts
@@ -274,6 +279,7 @@ Key variables:
 ## CI / Deployment
 
 The GitHub Actions workflow (`.github/workflows/deploy.yml`) runs on push to `main` and on PRs:
+
 1. `npm ci`
 2. `npm run generate:apps`
 3. `npm run lint`
