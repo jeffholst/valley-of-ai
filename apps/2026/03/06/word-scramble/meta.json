@@ -1,16 +1,27 @@
 {
   "id": "word-scramble",
-  "name": "Word Scramble",
-  "shortDescription": "A fun word puzzle game where you unscramble letters to reveal words. Features multiple difficulty levels, time pressure, streak bonuses, and keyboard support.",
+  "name": "Word Scramble Party",
+  "shortDescription": "A multiplayer icebreaker where moderators run timed word-scramble rounds, award points to the first responder, and finish with fair tie-aware rankings.",
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-06T14:30:00Z",
-  "category": "Games",
+  "category": "Icebreakers",
   "visible": true,
   "allowImprovements": true,
   "status": "active",
-  "tags": ["game", "puzzle", "words", "educational", "keyboard-controls"],
+  "tags": ["icebreaker", "multiplayer", "word-game", "moderator", "party", "round-based"],
   "homepagePath": "index.html",
-  "inputMode": "desktop",
+  "inputMode": "responsive",
+  "improvements": [
+    {
+      "issueNumber": 351,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/351",
+      "description": "Converted Word Scramble into a multiplayer icebreaker with participant setup, timed rounds, moderator winner assignment, answer panel window, and fair tie-ranked scoring.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-04-18T16:25:43Z",
+      "agentName": "GitHub Copilot",
+      "llmModel": "GPT-5.3-Codex"
+    }
+  ],
   "generation": {
     "agentName": "claude-opus-4.5",
     "llmModel": "claude-opus-4.5",
