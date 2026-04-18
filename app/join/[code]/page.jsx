@@ -3,8 +3,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ref, get, set, serverTimestamp } from 'firebase/database';
-import { getFirebaseDb, getFirebaseConfig } from '@/lib/firebase/client';
 import { isValidSessionCode, normalizeSessionCode } from '@/lib/firebase/sessionCodes';
 import { storagePrefix } from '@/lib/siteConfig';
 
@@ -47,29 +45,45 @@ export default function JoinPage() {
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
+  const fetchSession = useCallback(async () => {
+    const response = await fetch(`/api/multiplayer/sessions/${code}`, { cache: 'no-store' });
+    if (response.status === 404) {
+      return null;
+    }
+    if (!response.ok) {
+      throw new Error('session-fetch-failed');
+    }
+    const payload = await response.json();
+    return payload?.session || null;
+  }, [code]);
+
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
-      if (!getFirebaseConfig()) {
-        setStatus('unconfigured');
-        return;
-      }
-      if (!isValidSessionCode(code)) {
-        setStatus('not-found');
-        return;
-      }
       try {
-        const db = getFirebaseDb();
-        const snap = await get(ref(db, `sessions/${code}`));
-        if (cancelled) {
+        const statusRes = await fetch('/api/multiplayer/status', { cache: 'no-store' });
+        if (!statusRes.ok) {
+          setStatus('unconfigured');
           return;
         }
-        if (!snap.exists()) {
+        const statusPayload = await statusRes.json();
+        if (!statusPayload?.configured) {
+          setStatus('unconfigured');
+          return;
+        }
+        if (!isValidSessionCode(code)) {
           setStatus('not-found');
           return;
         }
-        const data = snap.val();
+        const data = await fetchSession();
+        if (cancelled) {
+          return;
+        }
+        if (!data) {
+          setStatus('not-found');
+          return;
+        }
         if (!data.appPath) {
           setStatus('not-found');
           return;
@@ -104,7 +118,7 @@ export default function JoinPage() {
     return () => {
       cancelled = true;
     };
-  }, [code, router]);
+  }, [code, fetchSession, router]);
 
   const handleSubmit = useCallback(
     async (event) => {
@@ -117,14 +131,17 @@ export default function JoinPage() {
       setErrorMessage(null);
       setSubmitting(true);
       try {
-        const db = getFirebaseDb();
-        const playerId = generatePlayerId();
-        const playerPath = `sessions/${code}/players/${playerId}`;
-        await set(ref(db, playerPath), {
-          id: playerId,
-          name: trimmed,
-          joinedAt: serverTimestamp(),
+        const response = await fetch(`/api/multiplayer/sessions/${code}/players`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ name: trimmed }),
         });
+        if (!response.ok) {
+          throw new Error('join-failed');
+        }
+        const payload = await response.json();
+        const playerId = payload?.playerId || generatePlayerId();
+        const appPath = payload?.appPath || session.appPath;
         try {
           window.localStorage.setItem(
             playerStorageKey(code),
@@ -133,7 +150,7 @@ export default function JoinPage() {
         } catch {
           // ignore — non-fatal
         }
-        router.replace(buildRedirectUrl(session.appPath, code, playerId));
+        router.replace(buildRedirectUrl(appPath, code, playerId));
       } catch (err) {
         console.error('Failed to register player', err);
         setErrorMessage('Could not join the game. Try again in a moment.');
@@ -166,8 +183,8 @@ export default function JoinPage() {
           <div className="space-y-3 text-sm text-gray-700 dark:text-gray-200">
             <p>Multiplayer isn’t configured on this site.</p>
             <p className="text-gray-500 dark:text-gray-400">
-              The site owner needs to set <code>NEXT_PUBLIC_FIREBASE_*</code> environment variables
-              before join links work.
+              The site owner needs to configure Supabase environment variables before join links
+              work.
             </p>
             <Link href="/" className="text-orange-600 hover:underline dark:text-orange-400">
               Back to the gallery

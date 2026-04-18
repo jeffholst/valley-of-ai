@@ -34,7 +34,7 @@
       {
         "issueNumber": 356,
         "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/356",
-        "description": "Wired Team Taboo to Firebase Realtime Database so participants join from their own devices with real-time sync. Moderator creates a session with a 6-char join code; participants join via /join/<code>, pick a name, and are auto-split into teams at start. Live roster, role-based card visibility (active clue-giver + opposing team + moderator see the card; active team's other players see a guessing view), server-time-synced 60s timer, synchronized scoreboard, reconnection via localStorage. Adds reusable Next.js /join/[code] page for any multiplayer app, shared lib/firebase/* helpers, Firebase env placeholders in sync-public-content, and database.rules.json security rules.",
+        "description": "Migrated Team Taboo multiplayer from Firebase to Supabase-backed session storage routed through Next.js API endpoints. Moderator still creates a 6-char join code; participants join via /join/<code>, pick a name, and are auto-split into teams at start. Live roster, role-based card visibility (active clue-giver + opposing team + moderator see the card; active team's other players see a guessing view), synchronized timer/scoreboard, and localStorage reconnection are preserved. Added Supabase migration for multiplayer_sessions plus API routes for session create/read/update and player joins.",
         "requestor": "Jeff Holst",
         "implementedAt": "2026-04-18T20:27:31Z",
         "agentName": "Claude Code",

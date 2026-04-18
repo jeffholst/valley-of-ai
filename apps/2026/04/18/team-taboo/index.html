@@ -22,10 +22,6 @@
     <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
     <meta name="application-name" content="Team Taboo" />
     <meta name="voa-app-id" content="2026/04/18/team-taboo" />
-    <meta name="voa-firebase-api-key" content="__FIREBASE_API_KEY__" />
-    <meta name="voa-firebase-auth-domain" content="__FIREBASE_AUTH_DOMAIN__" />
-    <meta name="voa-firebase-database-url" content="__FIREBASE_DATABASE_URL__" />
-    <meta name="voa-firebase-project-id" content="__FIREBASE_PROJECT_ID__" />
     <script src="/apps/shared/app-shell.js" defer></script>
     <style>
       :root {
@@ -748,8 +744,8 @@
         <div class="fatal">
           <h2>Multiplayer not configured</h2>
           <p>
-            This site is missing Firebase configuration. Ask the site owner to set the
-            <code>NEXT_PUBLIC_FIREBASE_*</code> environment variables.
+            This site is missing Supabase multiplayer configuration. Ask the site owner to set
+            required Supabase environment variables.
           </p>
         </div>
       </section>
@@ -963,32 +959,19 @@
 
     <script type="module">
       // ------------------------------------------------------------------
-      // Team Taboo — multiplayer via Firebase Realtime Database.
+      // Team Taboo — multiplayer via Supabase (through Next.js API routes).
       //
       // Moderator's browser is authoritative for game mutations. Players write
-      // only their own player record. Firebase `onValue` listeners keep every
-      // client in sync. See /database.rules.json for access rules and
-      // /lib/firebase/* for the shared Next.js helpers.
+      // only their own player record via the join endpoint. A lightweight poll
+      // loop keeps every client in sync with the latest session snapshot.
       // ------------------------------------------------------------------
-
-      import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-      import {
-        getDatabase,
-        ref,
-        onValue,
-        get,
-        set,
-        update,
-        remove,
-        serverTimestamp,
-        onDisconnect,
-      } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
       const APP_NAME = 'Team Taboo';
       const APP_ID = 'team-taboo';
       const APP_PATH = '2026/04/18/team-taboo';
       const STORAGE_PREFIX = '__STORAGE_PREFIX__';
       const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      const SESSION_POLL_MS = 800;
 
       // --- Word cards ---------------------------------------------------
       const CARDS = [
@@ -1049,30 +1032,175 @@
         { target: 'SUBMARINE', taboo: ['underwater', 'periscope', 'navy', 'yellow', 'dive'] },
       ];
 
-      // --- Firebase config from placeholder-replaced meta tags -----------
-      function readMeta(name) {
-        const el = document.querySelector(`meta[name="${name}"]`);
-        return el ? el.getAttribute('content') : '';
+      // --- Multiplayer API wrappers --------------------------------------
+      function ref(_db, path) {
+        return path;
       }
 
-      function looksLikeUnreplacedPlaceholder(value) {
-        return !value || /^__[A-Z_]+__$/.test(value);
+      function serverTimestamp() {
+        return Date.now();
       }
 
-      function getFirebaseConfig() {
-        const apiKey = readMeta('voa-firebase-api-key');
-        const authDomain = readMeta('voa-firebase-auth-domain');
-        const databaseURL = readMeta('voa-firebase-database-url');
-        const projectId = readMeta('voa-firebase-project-id');
-        if (
-          looksLikeUnreplacedPlaceholder(apiKey) ||
-          looksLikeUnreplacedPlaceholder(authDomain) ||
-          looksLikeUnreplacedPlaceholder(databaseURL) ||
-          looksLikeUnreplacedPlaceholder(projectId)
-        ) {
-          return null;
+      function onDisconnect() {
+        return {
+          set: async () => {},
+        };
+      }
+
+      function buildSnapshot(value) {
+        return {
+          exists: () => value !== null && value !== undefined,
+          val: () => value,
+        };
+      }
+
+      function flattenPatch(prefix, value, out) {
+        if (value === null || value === undefined) {
+          out[prefix] = value;
+          return;
         }
-        return { apiKey, authDomain, databaseURL, projectId };
+        const isObject = typeof value === 'object' && !Array.isArray(value);
+        if (!isObject) {
+          out[prefix] = value;
+          return;
+        }
+        const entries = Object.entries(value);
+        if (entries.length === 0) {
+          out[prefix] = {};
+          return;
+        }
+        entries.forEach(([key, child]) => {
+          flattenPatch(`${prefix}/${key}`, child, out);
+        });
+      }
+
+      async function isMultiplayerConfigured() {
+        const response = await fetch('/api/multiplayer/status', { cache: 'no-store' });
+        if (!response.ok) return false;
+        const payload = await response.json();
+        return Boolean(payload?.configured);
+      }
+
+      async function get(path) {
+        const parts = String(path)
+          .split('/')
+          .filter(Boolean);
+        if (parts[0] !== 'sessions' || !parts[1]) {
+          return buildSnapshot(null);
+        }
+        const response = await fetch(`/api/multiplayer/sessions/${parts[1]}`, { cache: 'no-store' });
+        if (response.status === 404) {
+          return buildSnapshot(null);
+        }
+        if (!response.ok) {
+          throw new Error('Failed to fetch session');
+        }
+        const payload = await response.json();
+        const sessionData = payload?.session || null;
+        if (parts.length === 2) {
+          return buildSnapshot(sessionData);
+        }
+        let nested = sessionData;
+        for (let i = 2; i < parts.length; i += 1) {
+          nested = nested?.[parts[i]];
+        }
+        return buildSnapshot(nested);
+      }
+
+      async function set(path, value) {
+        const parts = String(path)
+          .split('/')
+          .filter(Boolean);
+        if (parts[0] !== 'sessions' || !parts[1] || parts.length !== 2) {
+          throw new Error('Unsupported set path');
+        }
+        const body = {
+          code: parts[1],
+          appId: value.appId,
+          appName: value.appName,
+          appPath: value.appPath,
+          moderatorId: value.moderatorId,
+          settings: value.settings || {},
+        };
+        const response = await fetch('/api/multiplayer/sessions', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        if (!response.ok) {
+          throw new Error('Failed to create session');
+        }
+      }
+
+      async function update(path, patch) {
+        const parts = String(path)
+          .split('/')
+          .filter(Boolean);
+        if (parts[0] !== 'sessions' || !parts[1]) {
+          throw new Error('Unsupported update path');
+        }
+        const code = parts[1];
+        const scope = parts.slice(2).join('/');
+        const normalizedPatch = {};
+        let nextStatus = null;
+
+        if (scope) {
+          Object.entries(patch || {}).forEach(([key, value]) => {
+            flattenPatch(`${scope}/${key}`, value, normalizedPatch);
+          });
+        } else {
+          Object.entries(patch || {}).forEach(([key, value]) => {
+            if (key === 'status' && typeof value === 'string') {
+              nextStatus = value;
+              return;
+            }
+            if (key.includes('/')) {
+              normalizedPatch[key] = value;
+              return;
+            }
+            flattenPatch(key, value, normalizedPatch);
+          });
+        }
+
+        const response = await fetch(`/api/multiplayer/sessions/${code}`, {
+          method: 'PATCH',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            moderatorId,
+            status: nextStatus,
+            patch: normalizedPatch,
+          }),
+        });
+        if (!response.ok) {
+          throw new Error('Failed to update session');
+        }
+      }
+
+      function onValue(path, callback) {
+        let cancelled = false;
+        let timerId = null;
+
+        const tick = async () => {
+          try {
+            const snap = await get(path);
+            if (!cancelled) {
+              callback(snap);
+            }
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error('Session poll failed', error);
+          }
+        };
+
+        tick();
+        timerId = setInterval(tick, SESSION_POLL_MS);
+
+        return () => {
+          cancelled = true;
+          if (timerId) {
+            clearInterval(timerId);
+          }
+        };
       }
 
       // --- Pure helpers -------------------------------------------------
@@ -1203,7 +1331,7 @@
       const rosterListB = document.getElementById('rosterListB');
 
       // --- Runtime state ------------------------------------------------
-      let db = null;
+      const db = null;
       let sessionCode = null;
       let role = null; // 'moderator' | 'player'
       let moderatorId = null;
@@ -1220,17 +1348,18 @@
         openPanelBtn.style.display = role === 'moderator' && session ? 'inline-block' : 'none';
       }
 
-      // --- Firebase init -----------------------------------------------
-      const config = getFirebaseConfig();
-      if (!config) {
-        heroSubtitle.textContent = 'Multiplayer is not configured on this site.';
-        showScreen('configError');
-      } else {
-        const existing = getApps();
-        const firebaseApp = existing.length > 0 ? existing[0] : initializeApp(config);
-        db = getDatabase(firebaseApp);
+      // --- Multiplayer init --------------------------------------------
+      async function init() {
+        const configured = await isMultiplayerConfigured();
+        if (!configured) {
+          heroSubtitle.textContent = 'Multiplayer is not configured on this site.';
+          showScreen('configError');
+          return;
+        }
         bootstrap();
       }
+
+      init();
 
       // --- Bootstrap: decide the starting screen based on URL + storage -
       function bootstrap() {
@@ -1322,7 +1451,7 @@
           console.error('Failed to create session', err);
           newGameBtn.disabled = false;
           newGameBtn.textContent = 'New Game';
-          alert('Could not create a game. Check your Firebase connection and try again.');
+          alert('Could not create a game. Check your connection and try again.');
         }
       }
 
@@ -1373,10 +1502,6 @@
           sessionCode = code;
           playerId = pid;
           role = 'player';
-
-          // Mark offline-removal so the roster cleans up if the player disconnects.
-          onDisconnect(ref(db, `sessions/${code}/players/${pid}/online`)).set(false);
-          await update(ref(db, `sessions/${code}/players/${pid}`), { online: true });
 
           subscribeSession();
         } catch (err) {
