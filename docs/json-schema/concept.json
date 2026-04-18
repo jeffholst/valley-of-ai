@@ -12,7 +12,16 @@
     },
     "category": {
       "type": "string",
-      "enum": ["Games", "Productivity", "Utilities", "Design", "Education", "Entertainment", "Visualizations"]
+      "enum": [
+        "Games",
+        "Productivity",
+        "Utilities",
+        "Design",
+        "Education",
+        "Entertainment",
+        "Visualizations",
+        "Icebreakers"
+      ]
     },
     "title": {
       "type": "string",
