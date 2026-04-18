@@ -1,5 +1,41 @@
 [
   {
+    "id": "2026/04/18/team-taboo",
+    "name": "Team Taboo",
+    "shortDescription": "A single-screen moderator-run Taboo game for Zoom calls. Teams compete to guess target words while the clue-giver dodges forbidden words — with timer, scoring, and a private moderator panel.",
+    "thumbnailUrl": "/apps/2026/04/18/team-taboo/thumbnail.svg",
+    "createdAt": "2026-04-18T19:55:20Z",
+    "year": 2026,
+    "month": 4,
+    "day": 18,
+    "category": "Icebreakers",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": ["icebreaker", "multiplayer", "word-game", "moderator", "party", "team-game"],
+    "route": "/apps/2026/04/18/team-taboo",
+    "appPath": "/apps/2026/04/18/team-taboo/index.html",
+    "generation": {
+      "agentName": "Claude Code",
+      "llmModel": "claude-opus-4-7",
+      "startTime": "2026-04-18T19:55:20Z",
+      "endTime": "2026-04-18T20:10:00Z",
+      "totalTokensIn": 16500,
+      "totalTokensOut": 18800,
+      "runId": "run-20260418T195520Z-5e8462",
+      "notes": "Static-app constraint (no backend, no cross-device sync) meant the issue's real-time multiplayer spec could not be implemented literally. Built as a single-screen moderator-run variant — the moderator runs the game on their shared Zoom screen, teammates look away during their team's clue-giving turn, and a private moderator panel holds team rosters. Preserves the core Taboo loop: auto-team split, rotating clue-givers, 60s timer, correct/skip/violation scoring, target score, end-game summary. Rejected alternatives: WebRTC P2P (signaling reliability concerns), external realtime service (exposes credentials). Matches the pattern established by word-scramble. Token counts are rough estimates."
+    },
+    "suggestion": {
+      "issueNumber": 356,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/356",
+      "prompt": "Build a web app for Taboo on a Zoom call where only the moderator screenshares. Moderator clicks \"New Game\" → app shows a URL and join code on the shared screen to paste in Zoom chat. Participants open the link, enter the code and their name; the shared screen updates with joiners live. On \"Start,\" auto-split players into two teams; each player's screen shows their team. The moderator has a private panel (hidden from screenshare) listing both teams. Each round the moderator picks a guesser from each team and starts a turn. Only the active guesser sees the target word and taboo words. Their teammates see a \"guessing...\" view with no words. The opposing team sees the full card to catch violations. \"Begin Round\" starts a 60s timer; moderator marks correct/skip/violation. Scores update live on all screens. Rotate guessers; first to the target score wins. Requirements: real-time sync, role-based views (moderator/guesser/teammate/opponent), timer, scoreboard, end-game summary.",
+      "requestor": "Jeff Holst"
+    },
+    "improvements": null,
+    "allowImprovements": true,
+    "maxScore": null,
+    "backups": null
+  },
+  {
     "id": "2026/04/17/alibi",
     "name": "Alibi",
     "shortDescription": "A fast, host-facilitated team builder for Zoom calls. Each round shows a silly crime, picks one player as The Accused, and they have 45 seconds to invent an alibi while the moderator reveals the 'real truth' in a side window.",
