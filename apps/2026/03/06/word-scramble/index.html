@@ -273,6 +273,13 @@
       background: rgb(8 145 178 / 14%);
     }
 
+    .tile.slot.highlight-next {
+      border-style: solid;
+      border-color: var(--warning);
+      border-width: 3px;
+      box-shadow: inset 0 0 0 1px var(--warning), 0 0 8px rgb(245 158 11 / 45%);
+    }
+
     .message {
       border-radius: 10px;
       padding: 0.7rem 0.8rem;
@@ -485,6 +492,7 @@
     let usedWords = new Set();
     let roundClosed = false;
     let answerPanelWindow = null;
+    let nextSlotIndex = 0;
 
     function showScreen(name) {
       setupScreen.classList.toggle('active', name === 'setup');
@@ -609,6 +617,8 @@
       timerStat.textContent = String(timerLeft);
       timerStat.classList.toggle('timer-urgent', timerLeft <= 7);
 
+      nextSlotIndex = answer.length;
+
       scrambleEl.innerHTML = scramble
         .map(
           (letter, index) =>
@@ -621,7 +631,8 @@
         const slotData = answer[i];
         const slot = document.createElement('button');
         slot.type = 'button';
-        slot.className = `tile slot${slotData ? ' filled' : ''}`;
+        const isNextSlot = i === nextSlotIndex;
+        slot.className = `tile slot${slotData ? ' filled' : ''}${isNextSlot && !roundClosed ? ' highlight-next' : ''}`;
         slot.textContent = slotData ? slotData.letter : '';
         slot.setAttribute('aria-label', slotData ? `Remove ${slotData.letter}` : 'Empty answer slot');
         if (slotData) {
@@ -646,7 +657,7 @@
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'btn';
-        button.textContent = `${participant.name} +1`;
+        button.textContent = `${participant.name} +1 (${participant.score})`;
         button.addEventListener('click', () => awardRound(participant.id));
         winnerGrid.appendChild(button);
       });
@@ -656,6 +667,23 @@
       noPoint.textContent = 'No Point This Round';
       noPoint.addEventListener('click', () => finishRound(null));
       winnerGrid.appendChild(noPoint);
+    }
+
+    function renderStartNextButton() {
+      winnerGrid.innerHTML = '';
+      if (currentRound >= roundsTotal) {
+        showFinalScoreboard();
+        return;
+      }
+      const startBtn = document.createElement('button');
+      startBtn.type = 'button';
+      startBtn.className = 'btn';
+      startBtn.textContent = `Start Round ${currentRound + 1}`;
+      startBtn.addEventListener('click', () => {
+        currentRound += 1;
+        buildRound();
+      });
+      winnerGrid.appendChild(startBtn);
     }
 
     function selectLetter(index) {
@@ -739,12 +767,8 @@
       });
 
       setTimeout(() => {
-        if (currentRound >= roundsTotal) {
-          showFinalScoreboard();
-          return;
-        }
-        currentRound += 1;
-        buildRound();
+        showRoundMessage('Round ended. Moderator: click "Start Next Round" to continue.', 'info');
+        renderStartNextButton();
       }, 900);
     }
 
