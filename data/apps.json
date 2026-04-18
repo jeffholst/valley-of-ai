@@ -1,5 +1,42 @@
 [
   {
+    "id": "2026/04/18/mindful-palette-flow",
+    "name": "Mindful Palette Flow",
+    "shortDescription": "A meditative drawing experience where gentle touch creates flowing, mood-shifting color patterns.",
+    "thumbnailUrl": "/apps/2026/04/18/mindful-palette-flow/thumbnail.svg",
+    "createdAt": "2026-04-18T07:03:01Z",
+    "year": 2026,
+    "month": 4,
+    "day": 18,
+    "category": "Design",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "mindfulness",
+      "meditative",
+      "color-flow",
+      "generative-art",
+      "relaxation",
+      "minimalist"
+    ],
+    "route": "/apps/2026/04/18/mindful-palette-flow",
+    "appPath": "/apps/2026/04/18/mindful-palette-flow/index.html",
+    "generation": {
+      "agentName": "Dev",
+      "llmModel": "ollama/gemma4:31b",
+      "startTime": "2026-04-18T07:03:01Z",
+      "endTime": "2026-04-18T07:15:00Z",
+      "totalTokensIn": 6000,
+      "totalTokensOut": 5000,
+      "runId": "run-20260418T070518Z-a1b2c3",
+      "notes": "Created as a meditative design tool inspired by Zen Garden Sketch."
+    },
+    "suggestion": null,
+    "improvements": null,
+    "allowImprovements": true,
+    "backups": null
+  },
+  {
     "id": "2026/04/17/zen-garden-sketch",
     "name": "Zen Garden Sketch",
     "shortDescription": "A minimalist sand-raking simulation for relaxation and mindfulness.",
