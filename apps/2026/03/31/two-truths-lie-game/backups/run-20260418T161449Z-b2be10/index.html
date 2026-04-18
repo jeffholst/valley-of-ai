@@ -921,10 +921,6 @@
        * Scoring: 1 point per correct guess. The speaker earns no points.
        */
 
-      // ── Persistence ────────────────────────────────────────────────────────
-      /** localStorage key for persisting player names across sessions. */
-      const SAVED_NAMES_KEY = 'voa-2tl-saved-names';
-
       // ── State ──────────────────────────────────────────────────────────────
       /** @type {{ name: string, points: number }[]} */
       let players = [];
@@ -974,39 +970,6 @@
       });
 
       /**
-       * Load previously-saved player names from localStorage into the players list.
-       * Only names persist across sessions; scores always start at zero.
-       */
-      function loadSavedNames() {
-        try {
-          const raw = localStorage.getItem(SAVED_NAMES_KEY);
-          if (!raw) return;
-          const names = JSON.parse(raw);
-          if (!Array.isArray(names)) return;
-          players = names
-            .filter(n => typeof n === 'string' && n.trim())
-            .map(name => ({ name: name.trim(), points: 0 }));
-        } catch {
-          // Ignore corrupted storage; start with an empty list.
-        }
-      }
-
-      /**
-       * Persist the current player names to localStorage so they can be recalled
-       * on the next visit.
-       */
-      function saveNames() {
-        try {
-          localStorage.setItem(SAVED_NAMES_KEY, JSON.stringify(players.map(p => p.name)));
-        } catch {
-          // localStorage unavailable (private mode, quota) — silently skip.
-        }
-      }
-
-      loadSavedNames();
-      renderPlayerList();
-
-      /**
        * Add the name from the input field to the player list.
        * Ignores empty strings and duplicate names (case-insensitive).
        */
@@ -1020,7 +983,6 @@
         players.push({ name, points: 0 });
         nameInput.value = '';
         nameInput.focus();
-        saveNames();
         renderPlayerList();
       }
 
@@ -1030,7 +992,6 @@
        */
       function removePlayer(name) {
         players = players.filter(p => p.name !== name);
-        saveNames();
         renderPlayerList();
       }
 
@@ -1619,7 +1580,6 @@
        */
       function removeAllPlayers() {
         players = [];
-        saveNames();
         renderPlayerList();
       }
 
@@ -1671,7 +1631,6 @@
         round = 1;
         spinAngle = 0;
         currentStatements = ['', '', ''];
-        saveNames();
         renderPlayerList();
         showScreen('screenSetup');
       }

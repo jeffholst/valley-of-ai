@@ -63,16 +63,6 @@
       "implementedAt": "2026-03-31T19:55:47Z",
       "agentName": "Codex",
       "llmModel": "gpt-5"
-    },
-    {
-      "issueNumber": 350,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/350",
-      "runId": "run-20260418T161449Z-b2be10",
-      "description": "Persist setup-screen player names to localStorage so they are recalled on the next visit. Names are saved after add, remove, remove-all, and reset; scores always start at zero.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-04-18T16:14:49Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-opus-4-7"
     }
   ],
   "suggestion": {
