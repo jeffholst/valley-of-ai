@@ -23,8 +23,8 @@ const appsRoot = path.join(root, 'apps');
 const registryPath = path.join(root, 'data', 'apps.json');
 const versusInputPath = path.join(root, 'data', 'versus.json');
 const versusRegistryPath = path.join(root, 'data', 'versus-registry.json');
-const schemaPath = path.join(root, 'docs', 'json-schema', 'meta.json');
-const versusSchemaPath = path.join(root, 'docs', 'json-schema', 'versus.json');
+const schemaPath = path.join(root, 'schemas', 'meta.json');
+const versusSchemaPath = path.join(root, 'schemas', 'versus.json');
 const issueTemplatePath = path.join(root, '.github', 'ISSUE_TEMPLATE', 'app_suggestion.yml');
 const sharedPromptPath = path.join(root, 'docs', 'agent-prompts', 'AGENT_PROMPT_SHARED.md');
 
@@ -382,7 +382,7 @@ function validateCategorySynchronization(schema) {
   const schemaCategories = schema?.properties?.category?.enum;
 
   if (!Array.isArray(schemaCategories) || schemaCategories.length === 0) {
-    errors.push('docs/json-schema/meta.json is missing properties.category.enum');
+    errors.push('schemas/meta.json is missing properties.category.enum');
     return errors;
   }
 
@@ -391,16 +391,16 @@ function validateCategorySynchronization(schema) {
   try {
     versusSchema = JSON.parse(fs.readFileSync(versusSchemaPath, 'utf8'));
   } catch (error) {
-    errors.push(`cannot validate docs/json-schema/versus.json: ${error.message}`);
+    errors.push(`cannot validate schemas/versus.json: ${error.message}`);
     return errors;
   }
 
   const versusCategories = versusSchema?.items?.properties?.category?.enum;
   if (!Array.isArray(versusCategories)) {
-    errors.push('docs/json-schema/versus.json is missing items.properties.category.enum');
+    errors.push('schemas/versus.json is missing items.properties.category.enum');
   } else if (!arraysEqual(schemaCategories, versusCategories)) {
     errors.push(
-      'docs/json-schema/versus.json category enum is out of sync with docs/json-schema/meta.json; run `npm run sync:categories`'
+      'schemas/versus.json category enum is out of sync with schemas/meta.json; run `npm run sync:categories`'
     );
   }
 
@@ -418,7 +418,7 @@ function validateCategorySynchronization(schema) {
     errors.push('could not parse category options from .github/ISSUE_TEMPLATE/app_suggestion.yml');
   } else if (!arraysEqual(schemaCategories, issueCategories)) {
     errors.push(
-      '.github/ISSUE_TEMPLATE/app_suggestion.yml category options are out of sync with docs/json-schema/meta.json; run `npm run sync:categories`'
+      '.github/ISSUE_TEMPLATE/app_suggestion.yml category options are out of sync with schemas/meta.json; run `npm run sync:categories`'
     );
   }
 
@@ -436,7 +436,7 @@ function validateCategorySynchronization(schema) {
     errors.push('could not parse category line in docs/agent-prompts/AGENT_PROMPT_SHARED.md');
   } else if (!arraysEqual(schemaCategories, promptCategories)) {
     errors.push(
-      'docs/agent-prompts/AGENT_PROMPT_SHARED.md category list is out of sync with docs/json-schema/meta.json; run `npm run sync:categories`'
+      'docs/agent-prompts/AGENT_PROMPT_SHARED.md category list is out of sync with schemas/meta.json; run `npm run sync:categories`'
     );
   }
 
