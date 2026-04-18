@@ -2,7 +2,7 @@
 
 /**
  * Synchronizes category definitions across files that duplicate the canonical
- * category enum defined in docs/json-schema/meta.json.
+ * category enum defined in schemas/meta.json.
  */
 
 import fs from 'fs';
@@ -19,8 +19,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const root = path.resolve(__dirname, '..');
 
-const metaSchemaPath = path.join(root, 'docs', 'json-schema', 'meta.json');
-const versusSchemaPath = path.join(root, 'docs', 'json-schema', 'versus.json');
+const metaSchemaPath = path.join(root, 'schemas', 'meta.json');
+const versusSchemaPath = path.join(root, 'schemas', 'versus.json');
 const issueTemplatePath = path.join(root, '.github', 'ISSUE_TEMPLATE', 'app_suggestion.yml');
 const sharedPromptPath = path.join(root, 'docs', 'agent-prompts', 'AGENT_PROMPT_SHARED.md');
 
@@ -33,13 +33,11 @@ function getCanonicalCategories() {
   const categories = metaSchema?.properties?.category?.enum;
 
   if (!Array.isArray(categories) || categories.length === 0) {
-    throw new Error('docs/json-schema/meta.json does not define properties.category.enum');
+    throw new Error('schemas/meta.json does not define properties.category.enum');
   }
 
   if (!categories.every((category) => typeof category === 'string' && category.trim().length > 0)) {
-    throw new Error(
-      'docs/json-schema/meta.json properties.category.enum must be non-empty strings'
-    );
+    throw new Error('schemas/meta.json properties.category.enum must be non-empty strings');
   }
 
   return categories;

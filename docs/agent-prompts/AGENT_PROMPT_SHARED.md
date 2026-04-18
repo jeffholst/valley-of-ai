@@ -189,7 +189,7 @@ apps/YYYY/MM/DD/<app-id>/
 
 ### meta.json schema
 
-The authoritative schema is at `docs/json-schema/meta.json`. Validate against it when writing or updating `meta.json`.
+The authoritative schema is at `schemas/meta.json`. Validate against it when writing or updating `meta.json`.
 
 **Required fields:** `id`, `name`, `shortDescription`, `thumbnail`, `createdAt`, `category`, `status`, `tags`, `homepagePath`, `inputMode`, `generation`
 

@@ -8,7 +8,7 @@
  * Replaces the category enum values inside a versus-schema JSON string.
  * Throws when the expected enum block is not found.
  *
- * @param {string} content - Raw content of docs/json-schema/versus.json
+ * @param {string} content - Raw content of schemas/versus.json
  * @param {string[]} categories - Ordered list of canonical category values
  * @returns {string} Updated file content
  */
@@ -18,7 +18,7 @@ export function transformVersusSchema(content, categories) {
   const match = content.match(enumBlockPattern);
 
   if (!match) {
-    throw new Error('docs/json-schema/versus.json is missing items.properties.category.enum');
+    throw new Error('schemas/versus.json is missing items.properties.category.enum');
   }
 
   const indentMatch = match[2].match(/\n(\s*)"/);

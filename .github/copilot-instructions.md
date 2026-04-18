@@ -197,7 +197,7 @@ Every app's `index.html` must include these head tags **exactly as shown** — `
 
 ## `meta.json` Schema
 
-The authoritative schema is at `docs/json-schema/meta.json`.
+The authoritative schema is at `schemas/meta.json`.
 
 **Required fields:** `id`, `name`, `shortDescription`, `thumbnail`, `createdAt`, `category`, `status`, `tags`, `homepagePath`, `inputMode`, `generation`
 
