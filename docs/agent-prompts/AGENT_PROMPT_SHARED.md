@@ -73,6 +73,55 @@ Each pipeline prompt file contains a `model-routing` block embedded in an HTML c
 
 ---
 
+## Code Quality Principles
+
+These principles apply to every code-generation step in every pipeline. They bias toward
+caution over speed; for trivial changes, use judgment.
+
+### Simplicity first
+
+Write the minimum code that satisfies the requested feature set and the contracts in this
+document. Do not add behavior that wasn't requested.
+
+- No features beyond what the issue or prompt asks for.
+- No abstractions, helpers, or config layers for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for scenarios that cannot happen (trust browser APIs, internal callers).
+- Validate at boundaries (user input, parsed JSON, network responses) — not internal calls.
+- If a section reads as overcomplicated, rewrite it shorter before moving on.
+
+### Surgical changes
+
+Touch only what the task requires. Match the surrounding style even if you would write it
+differently. Do not "improve" adjacent code, comments, or formatting that the task did not
+ask you to change.
+
+- Every changed line must trace directly to the issue or prompt.
+- Remove imports/variables/functions that **your** changes made unused. Do not delete
+  pre-existing dead code that is unrelated to the task.
+- If you notice unrelated bugs or dead code, record them in the run notes — do not silently
+  fix them.
+
+### State assumptions in run notes, do not stall
+
+The pipeline runs autonomously — there is no human to ask mid-run. When the issue is
+ambiguous or you must pick between reasonable interpretations:
+
+- Pick the most defensible option, build it, and proceed.
+- Record the assumption and any rejected alternatives in `meta.json.generation.notes`
+  (or `meta.json.improvements[].notes` for the improvement pipeline) so a reviewer can see
+  what you chose and why.
+- Do not silently pick. Do not stall waiting for clarification.
+
+### Verify against the goal, not the prompt
+
+Before logging a code-generation step as `completed`, restate the success criterion for that
+step in one line and confirm the artifact meets it. For improvements, the criterion is the
+issue body. For new apps, it is the suggestion prompt plus the contracts in this file.
+If you cannot state a concrete check, the step is not done.
+
+---
+
 ## Non-Negotiable Contracts
 
 ### Issue review gate

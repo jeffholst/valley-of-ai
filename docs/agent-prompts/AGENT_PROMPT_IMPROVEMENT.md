@@ -313,7 +313,11 @@ Edit `apps/<app-path>/index.html` to implement the improvement.
 
 **Constraints:**
 
-- **Surgical changes only** — change the minimum necessary to address the issue. Do not rewrite sections that are not involved.
+- **Surgical changes only** — change the minimum necessary to address the issue. Do not rewrite sections that are not involved. See `AGENT_PROMPT_SHARED.md` → "Code Quality Principles" → "Surgical changes" for the full rule set.
+  - Every changed line must trace directly to the issue body.
+  - Match the existing style in this file even if you would write it differently elsewhere.
+  - Do not refactor, rename, or reformat unrelated code, comments, or whitespace.
+  - Remove only the imports/variables/functions that **your** edit orphaned. Leave pre-existing dead code alone and note it in `meta.json.improvements[].notes` instead.
 - **Preserve all existing functionality** — the improvement must not break any currently working features.
 - **Maintain all required head tags** — verify shell config tags, GA tag, and `voa-app-id` are still present and correct after editing (see `AGENT_PROMPT_SHARED.md`).
 - **Keep theme support** — CSS variable structure must remain intact.
