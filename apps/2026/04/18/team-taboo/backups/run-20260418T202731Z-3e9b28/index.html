@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Team Taboo - __MAIN_SITE_NAME__</title>
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Team Taboo" />
+    <meta name="voa-app-id" content="2026/04/18/team-taboo" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --card: #15213e;
+        --muted: #9ca3af;
+        --accent: #f97316;
+        --accent-2: #fbbf24;
+        --team-a: #3b82f6;
+        --team-a-soft: rgb(59 130 246 / 18%);
+        --team-b: #ec4899;
+        --team-b-soft: rgb(236 72 153 / 18%);
+        --success: #22c55e;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --border: #334155;
+      }
+
+      [data-theme='light'] {
+        --bg: #fff7ed;
+        --text: #1f2937;
+        --surface: #fed7aa;
+        --card: #ffffff;
+        --muted: #6b7280;
+        --accent: #ea580c;
+        --accent-2: #d97706;
+        --team-a: #2563eb;
+        --team-a-soft: rgb(37 99 235 / 12%);
+        --team-b: #db2777;
+        --team-b-soft: rgb(219 39 119 / 12%);
+        --success: #16a34a;
+        --warning: #d97706;
+        --danger: #dc2626;
+        --border: #d1d5db;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        min-height: 100vh;
+        font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 10% 20%, rgb(249 115 22 / 22%), transparent 45%),
+          radial-gradient(circle at 85% 10%, rgb(236 72 153 / 18%), transparent 40%),
+          var(--bg);
+        line-height: 1.4;
+      }
+
+      .app {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 1.25rem 1rem 1.5rem;
+        display: grid;
+        gap: 1rem;
+      }
+
+      .hero {
+        background: linear-gradient(135deg, rgb(15 23 42 / 92%), rgb(76 29 149 / 60%));
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 1rem 1.25rem;
+        box-shadow: 0 18px 28px rgb(2 6 23 / 25%);
+      }
+
+      [data-theme='light'] .hero {
+        background: linear-gradient(135deg, rgb(255 247 237 / 95%), rgb(254 215 170 / 70%));
+        box-shadow: 0 14px 24px rgb(15 23 42 / 8%);
+      }
+
+      h1 {
+        font-size: clamp(1.5rem, 2.4vw, 2rem);
+        margin-bottom: 0.3rem;
+        letter-spacing: 0.01em;
+      }
+
+      .hero p {
+        color: var(--muted);
+        font-size: 0.98rem;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1rem 1.1rem 1.2rem;
+        box-shadow: 0 8px 18px rgb(2 6 23 / 18%);
+      }
+
+      [data-theme='light'] .card {
+        box-shadow: 0 4px 12px rgb(15 23 42 / 6%);
+      }
+
+      .screen {
+        display: none;
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      .section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 0.7rem;
+        color: var(--accent);
+      }
+
+      label {
+        display: block;
+        font-size: 0.9rem;
+        color: var(--muted);
+        margin-bottom: 0.3rem;
+      }
+
+      input[type='text'],
+      input[type='number'],
+      select {
+        width: 100%;
+        padding: 0.7rem 0.85rem;
+        font-size: 1rem;
+        color: var(--text);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font-family: inherit;
+      }
+
+      input:focus,
+      select:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+      }
+
+      .add-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.5rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .btn {
+        cursor: pointer;
+        border: none;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 0.7rem 1.1rem;
+        min-height: 44px;
+        transition:
+          transform 0.08s ease,
+          filter 0.15s ease,
+          background 0.15s ease;
+        color: #0f172a;
+      }
+
+      .btn:active {
+        transform: translateY(1px);
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: #1a1203;
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        filter: brightness(1.1);
+      }
+
+      .btn-secondary {
+        background: var(--surface);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      .btn-secondary:hover:not(:disabled) {
+        background: var(--border);
+      }
+
+      .btn-success {
+        background: var(--success);
+        color: #052e16;
+      }
+
+      .btn-warning {
+        background: var(--warning);
+        color: #1f1302;
+      }
+
+      .btn-danger {
+        background: var(--danger);
+        color: #fff;
+      }
+
+      .btn-block {
+        width: 100%;
+      }
+
+      .player-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin: 0.8rem 0;
+        min-height: 2.5rem;
+      }
+
+      .player-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.9rem;
+      }
+
+      .player-pill button {
+        background: transparent;
+        border: none;
+        color: var(--danger);
+        font-size: 1.1rem;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+      }
+
+      .controls-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.6rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .muted {
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      .scoreboard {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .team-score {
+        background: var(--surface);
+        border: 2px solid var(--border);
+        border-radius: 14px;
+        padding: 0.9rem 0.8rem;
+        text-align: center;
+        transition:
+          border-color 0.2s ease,
+          transform 0.2s ease;
+      }
+
+      .team-score.team-a {
+        border-color: var(--team-a);
+        background: var(--team-a-soft);
+      }
+
+      .team-score.team-b {
+        border-color: var(--team-b);
+        background: var(--team-b-soft);
+      }
+
+      .team-score.active {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgb(249 115 22 / 35%);
+      }
+
+      .team-score h3 {
+        font-size: 1rem;
+        margin-bottom: 0.2rem;
+      }
+
+      .team-score .score-num {
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .team-score .team-members {
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin-top: 0.3rem;
+        line-height: 1.3;
+      }
+
+      .round-header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.8rem;
+        align-items: center;
+        margin-bottom: 0.8rem;
+      }
+
+      .timer {
+        font-size: 2rem;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        padding: 0.4rem 0.9rem;
+        background: var(--surface);
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        min-width: 5rem;
+        text-align: center;
+        color: var(--accent);
+      }
+
+      .timer.warning {
+        color: var(--warning);
+        border-color: var(--warning);
+      }
+
+      .timer.danger {
+        color: var(--danger);
+        border-color: var(--danger);
+        animation: pulse 0.6s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      .taboo-card {
+        background: linear-gradient(160deg, var(--card), var(--surface));
+        border: 3px solid var(--accent);
+        border-radius: 18px;
+        padding: 1.5rem 1.2rem;
+        text-align: center;
+        box-shadow: 0 12px 32px rgb(249 115 22 / 25%);
+      }
+
+      .taboo-target {
+        font-size: clamp(1.8rem, 6vw, 2.6rem);
+        font-weight: 900;
+        color: var(--accent-2);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 0.6rem 0;
+        border-bottom: 2px solid var(--accent);
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 8px rgb(251 191 36 / 40%);
+      }
+
+      .taboo-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .taboo-list li {
+        font-size: clamp(1rem, 3vw, 1.3rem);
+        font-weight: 600;
+        color: var(--danger);
+        padding: 0.3rem 0;
+        text-decoration: line-through;
+        text-decoration-color: var(--danger);
+        text-decoration-thickness: 2px;
+      }
+
+      .round-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .round-actions .btn {
+        font-size: 0.95rem;
+        padding: 0.8rem 0.4rem;
+      }
+
+      .notice {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--accent);
+        border-radius: 10px;
+        padding: 0.7rem 0.9rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.92rem;
+      }
+
+      .notice.warn {
+        border-left-color: var(--warning);
+      }
+
+      .notice.danger {
+        border-left-color: var(--danger);
+      }
+
+      .team-ready {
+        display: grid;
+        gap: 0.8rem;
+        text-align: center;
+        padding: 1rem;
+      }
+
+      .team-ready .team-name {
+        font-size: 1.4rem;
+        font-weight: 800;
+      }
+
+      .team-ready .team-a-name {
+        color: var(--team-a);
+      }
+
+      .team-ready .team-b-name {
+        color: var(--team-b);
+      }
+
+      .team-ready .active-player {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--accent-2);
+        padding: 0.6rem 1rem;
+        background: var(--surface);
+        border: 2px solid var(--accent);
+        border-radius: 12px;
+        display: inline-block;
+      }
+
+      .team-ready .instructions {
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+
+      .mod-panel-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgb(0 0 0 / 82%);
+        z-index: 9000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 64px 1rem 56px;
+        backdrop-filter: blur(4px);
+      }
+
+      .mod-panel-overlay.open {
+        display: flex;
+      }
+
+      .mod-panel {
+        background: var(--card);
+        border: 2px solid var(--accent);
+        border-radius: 18px;
+        padding: 1.2rem 1rem;
+        max-width: 520px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+        box-shadow: 0 24px 48px rgb(0 0 0 / 50%);
+      }
+
+      .mod-panel h2 {
+        font-size: 1.2rem;
+        color: var(--accent);
+        margin-bottom: 0.6rem;
+      }
+
+      .mod-panel .roster {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+        margin: 0.8rem 0;
+      }
+
+      .mod-panel .roster-col {
+        background: var(--surface);
+        border-radius: 12px;
+        padding: 0.7rem;
+      }
+
+      .mod-panel .roster-col.team-a {
+        border-top: 3px solid var(--team-a);
+      }
+
+      .mod-panel .roster-col.team-b {
+        border-top: 3px solid var(--team-b);
+      }
+
+      .mod-panel .roster-col h3 {
+        font-size: 0.95rem;
+        margin-bottom: 0.4rem;
+      }
+
+      .mod-panel .roster-col ol {
+        padding-left: 1.2rem;
+        font-size: 0.88rem;
+        line-height: 1.6;
+      }
+
+      .mod-panel .roster-col .active {
+        color: var(--accent-2);
+        font-weight: 700;
+      }
+
+      .mod-panel .warning-text {
+        background: var(--warning);
+        color: #1f1302;
+        padding: 0.5rem 0.7rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 0.6rem;
+      }
+
+      .mod-panel-close {
+        margin-top: 0.6rem;
+      }
+
+      .open-panel-btn {
+        position: relative;
+        font-size: 0.85rem;
+        padding: 0.5rem 0.8rem;
+        min-height: 36px;
+      }
+
+      .game-over {
+        text-align: center;
+        padding: 1.5rem 1rem;
+      }
+
+      .game-over h2 {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+        color: var(--accent-2);
+      }
+
+      .winner-badge {
+        display: inline-block;
+        padding: 0.6rem 1.5rem;
+        border-radius: 999px;
+        font-size: 1.3rem;
+        font-weight: 800;
+        margin: 0.5rem 0;
+      }
+
+      .winner-badge.team-a {
+        background: var(--team-a);
+        color: white;
+      }
+
+      .winner-badge.team-b {
+        background: var(--team-b);
+        color: white;
+      }
+
+      .final-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+        margin: 1rem 0;
+      }
+
+      .stat-box {
+        background: var(--surface);
+        border-radius: 10px;
+        padding: 0.7rem;
+        text-align: center;
+      }
+
+      .stat-box .label {
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      .stat-box .value {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--accent);
+      }
+
+      .top-bar {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.6rem;
+        align-items: center;
+      }
+
+      .hint {
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin-top: 0.4rem;
+      }
+
+      .kbd {
+        display: inline-block;
+        padding: 0.08rem 0.35rem;
+        font-family: monospace;
+        font-size: 0.78rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-bottom-width: 2px;
+        border-radius: 4px;
+        color: var(--text);
+      }
+
+      @media (max-width: 420px) {
+        .round-actions {
+          grid-template-columns: 1fr;
+        }
+
+        .controls-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .mod-panel .roster {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <div class="top-bar">
+          <div>
+            <h1>🤫 Team Taboo</h1>
+            <p>Clue-givers guide their team past the forbidden words. Moderator runs the show.</p>
+          </div>
+          <button
+            id="openPanelBtn"
+            class="btn btn-secondary open-panel-btn"
+            style="display: none"
+            aria-label="Open moderator panel"
+          >
+            📋 Mod Panel
+          </button>
+        </div>
+      </header>
+
+      <!-- Setup screen -->
+      <section id="setupScreen" class="card screen active" aria-label="Setup screen">
+        <h2 class="section-title">Add players</h2>
+        <div class="add-row">
+          <input
+            id="playerInput"
+            type="text"
+            placeholder="Player name"
+            maxlength="24"
+            autocomplete="off"
+          />
+          <button id="addPlayerBtn" class="btn btn-primary">Add</button>
+        </div>
+        <div id="playerList" class="player-list" aria-live="polite"></div>
+        <p id="playerHint" class="muted">Add at least 4 players (2 per team) to start.</p>
+
+        <h2 class="section-title" style="margin-top: 1rem">Game settings</h2>
+        <div class="controls-grid">
+          <div>
+            <label for="targetScore">Target score</label>
+            <select id="targetScore">
+              <option value="3">3 (quick)</option>
+              <option value="5">5</option>
+              <option value="7" selected>7</option>
+              <option value="10">10</option>
+              <option value="15">15 (long)</option>
+            </select>
+          </div>
+          <div>
+            <label for="roundLength">Round length</label>
+            <select id="roundLength">
+              <option value="30">30 seconds</option>
+              <option value="60" selected>60 seconds</option>
+              <option value="90">90 seconds</option>
+            </select>
+          </div>
+        </div>
+        <button id="startGameBtn" class="btn btn-primary btn-block" disabled>
+          Assign Teams &amp; Start
+        </button>
+        <p class="hint">
+          Teams are auto-split when you start. On each round the shared screen shows the card for
+          the active clue-giver. Guessing teammates should look away or close their eyes.
+        </p>
+      </section>
+
+      <!-- Round-ready screen -->
+      <section id="readyScreen" class="card screen" aria-label="Round ready screen">
+        <div class="scoreboard">
+          <div id="scoreTeamA" class="team-score team-a">
+            <h3 id="labelTeamA">Team A</h3>
+            <div class="score-num" id="numTeamA">0</div>
+            <div class="team-members" id="membersTeamA"></div>
+          </div>
+          <div id="scoreTeamB" class="team-score team-b">
+            <h3 id="labelTeamB">Team B</h3>
+            <div class="score-num" id="numTeamB">0</div>
+            <div class="team-members" id="membersTeamB"></div>
+          </div>
+        </div>
+        <div class="team-ready">
+          <div>
+            <span class="team-name" id="activeTeamName">Team A</span>
+            <span>’s turn</span>
+          </div>
+          <div>
+            <div class="muted" style="margin-bottom: 0.4rem">Clue-giver</div>
+            <span id="activePlayerName" class="active-player">—</span>
+          </div>
+          <p class="instructions">
+            <strong id="activePlayerLabel">Player</strong>: read the target word and describe it to
+            your team <em>without using</em> the forbidden words.<br />
+            <strong>Teammates</strong>: look away until you’re guessing. The opposing team watches
+            for violations.
+          </p>
+          <button id="beginRoundBtn" class="btn btn-primary btn-block">
+            Begin Round <span class="kbd">Space</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- In-round screen -->
+      <section id="roundScreen" class="card screen" aria-label="In-round screen">
+        <div class="round-header">
+          <div>
+            <strong id="inRoundTeamName" style="font-size: 1.1rem">Team A</strong>
+            <div class="muted" id="inRoundPlayer">Clue-giver: —</div>
+          </div>
+          <div id="timerDisplay" class="timer" role="timer" aria-live="polite">0:60</div>
+        </div>
+        <div class="taboo-card" id="tabooCard">
+          <div class="taboo-target" id="targetWord">—</div>
+          <ul class="taboo-list" id="tabooList"></ul>
+        </div>
+        <div class="round-actions">
+          <button id="correctBtn" class="btn btn-success" aria-label="Correct guess">
+            ✓ Correct <span class="kbd">C</span>
+          </button>
+          <button id="skipBtn" class="btn btn-warning" aria-label="Skip card">
+            ↻ Skip <span class="kbd">S</span>
+          </button>
+          <button id="violationBtn" class="btn btn-danger" aria-label="Taboo violation">
+            ✗ Violation <span class="kbd">V</span>
+          </button>
+        </div>
+        <p class="hint">
+          Correct: +1 for the active team. Violation: −1 penalty. Skip: no change, next card.
+        </p>
+      </section>
+
+      <!-- Round-end screen -->
+      <section id="summaryScreen" class="card screen" aria-label="Round summary screen">
+        <h2 class="section-title">Round summary</h2>
+        <div class="scoreboard">
+          <div class="team-score team-a">
+            <h3 id="sumLabelA">Team A</h3>
+            <div class="score-num" id="sumNumA">0</div>
+          </div>
+          <div class="team-score team-b">
+            <h3 id="sumLabelB">Team B</h3>
+            <div class="score-num" id="sumNumB">0</div>
+          </div>
+        </div>
+        <div id="roundResults" class="notice"></div>
+        <button id="nextRoundBtn" class="btn btn-primary btn-block">Next Round</button>
+      </section>
+
+      <!-- Game-over screen -->
+      <section id="endScreen" class="card screen" aria-label="End game screen">
+        <div class="game-over">
+          <h2>🏆 Game Over</h2>
+          <div id="winnerBadge" class="winner-badge team-a">Team A wins!</div>
+          <p id="finalScoreText" class="muted" style="margin: 0.4rem 0 0.8rem"></p>
+          <div class="final-stats">
+            <div class="stat-box">
+              <div class="label">Rounds played</div>
+              <div class="value" id="statRounds">0</div>
+            </div>
+            <div class="stat-box">
+              <div class="label">Cards revealed</div>
+              <div class="value" id="statCards">0</div>
+            </div>
+          </div>
+          <button id="playAgainBtn" class="btn btn-primary btn-block">Play Again</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Moderator-only private panel -->
+    <div id="modPanelOverlay" class="mod-panel-overlay" role="dialog" aria-modal="true">
+      <div class="mod-panel">
+        <h2>📋 Moderator Panel</h2>
+        <div class="warning-text">
+          ⚠️ Private view — stop sharing your screen or move this window off-share before opening.
+        </div>
+        <div class="roster">
+          <div class="roster-col team-a">
+            <h3 id="rosterLabelA">Team A</h3>
+            <ol id="rosterListA"></ol>
+          </div>
+          <div class="roster-col team-b">
+            <h3 id="rosterLabelB">Team B</h3>
+            <ol id="rosterListB"></ol>
+          </div>
+        </div>
+        <p class="muted" style="font-size: 0.82rem; margin-bottom: 0.6rem">
+          Clue-giver order rotates top-to-bottom within each team. Current clue-giver is
+          highlighted.
+        </p>
+        <button id="closePanelBtn" class="btn btn-secondary btn-block mod-panel-close">
+          Close Panel
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // ------------------------------------------------------------------
+      // Team Taboo — single-screen moderator-run variant
+      //
+      // Static-app constraint (no backend, no cross-device sync): the entire
+      // game runs on the moderator's shared Zoom screen. The clue-giver reads
+      // the card aloud; teammates look away. A private moderator panel holds
+      // team rosters and rotation state.
+      // ------------------------------------------------------------------
+
+      const APP_NAME = 'Team Taboo';
+
+      // --- Word cards ---------------------------------------------------
+      // Each card: target word + 5 forbidden (taboo) words the clue-giver
+      // cannot say or gesture. Cards are shuffled on game start.
+      const CARDS = [
+        { target: 'BEACH', taboo: ['sand', 'ocean', 'sun', 'towel', 'waves'] },
+        { target: 'PIZZA', taboo: ['cheese', 'Italy', 'slice', 'dough', 'pepperoni'] },
+        { target: 'COMPUTER', taboo: ['keyboard', 'screen', 'laptop', 'type', 'mouse'] },
+        { target: 'ELEPHANT', taboo: ['trunk', 'gray', 'big', 'Africa', 'tusks'] },
+        { target: 'BASEBALL', taboo: ['bat', 'field', 'pitcher', 'diamond', 'home run'] },
+        { target: 'CHRISTMAS', taboo: ['tree', 'Santa', 'December', 'presents', 'snow'] },
+        { target: 'HOSPITAL', taboo: ['doctor', 'nurse', 'sick', 'emergency', 'bed'] },
+        { target: 'BATHROOM', taboo: ['toilet', 'shower', 'sink', 'soap', 'tub'] },
+        { target: 'AIRPLANE', taboo: ['fly', 'sky', 'wings', 'pilot', 'airport'] },
+        { target: 'COFFEE', taboo: ['bean', 'morning', 'cup', 'caffeine', 'brew'] },
+        { target: 'GUITAR', taboo: ['strings', 'music', 'strum', 'rock', 'pluck'] },
+        { target: 'UMBRELLA', taboo: ['rain', 'open', 'handle', 'wet', 'cover'] },
+        { target: 'WEDDING', taboo: ['bride', 'groom', 'married', 'ring', 'dress'] },
+        { target: 'VOLCANO', taboo: ['lava', 'erupt', 'mountain', 'hot', 'ash'] },
+        { target: 'BIRTHDAY', taboo: ['cake', 'candles', 'year', 'wish', 'party'] },
+        { target: 'LIBRARY', taboo: ['book', 'quiet', 'read', 'shelf', 'librarian'] },
+        { target: 'SOCCER', taboo: ['ball', 'goal', 'kick', 'field', 'football'] },
+        { target: 'PIRATE', taboo: ['ship', 'treasure', 'eye patch', 'parrot', 'ocean'] },
+        { target: 'HAMBURGER', taboo: ['meat', 'bun', 'ketchup', 'grill', 'beef'] },
+        { target: 'SNOWMAN', taboo: ['carrot', 'cold', 'scarf', 'melt', 'winter'] },
+        { target: 'MICROWAVE', taboo: ['heat', 'food', 'kitchen', 'timer', 'popcorn'] },
+        { target: 'TELESCOPE', taboo: ['stars', 'space', 'lens', 'see', 'Galileo'] },
+        { target: 'CACTUS', taboo: ['desert', 'spikes', 'prickly', 'water', 'green'] },
+        { target: 'DENTIST', taboo: ['teeth', 'drill', 'cavity', 'mouth', 'brush'] },
+        { target: 'ZOMBIE', taboo: ['dead', 'brains', 'walk', 'scary', 'undead'] },
+        { target: 'LIGHTHOUSE', taboo: ['beacon', 'ship', 'coast', 'light', 'tower'] },
+        { target: 'SALAD', taboo: ['lettuce', 'dressing', 'vegetable', 'bowl', 'green'] },
+        { target: 'VAMPIRE', taboo: ['bite', 'blood', 'fangs', 'Dracula', 'night'] },
+        { target: 'PENCIL', taboo: ['write', 'eraser', 'lead', 'sharp', 'paper'] },
+        { target: 'SKATEBOARD', taboo: ['wheels', 'trick', 'ramp', 'street', 'ollie'] },
+        { target: 'FIREWORKS', taboo: ['explode', 'July', 'sparks', 'sky', 'boom'] },
+        { target: 'MERMAID', taboo: ['fish', 'sea', 'tail', 'Ariel', 'underwater'] },
+        { target: 'KANGAROO', taboo: ['Australia', 'jump', 'pouch', 'boxing', 'joey'] },
+        { target: 'POPCORN', taboo: ['movie', 'butter', 'kernel', 'pop', 'corn'] },
+        { target: 'CASTLE', taboo: ['king', 'moat', 'tower', 'knight', 'stone'] },
+        { target: 'LADDER', taboo: ['climb', 'rungs', 'tall', 'paint', 'step'] },
+        { target: 'CAMEL', taboo: ['desert', 'hump', 'sand', 'spit', 'Egypt'] },
+        { target: 'PILLOW', taboo: ['sleep', 'head', 'bed', 'soft', 'fluffy'] },
+        { target: 'BINGO', taboo: ['numbers', 'cards', 'grandma', 'call', 'game'] },
+        { target: 'RAINBOW', taboo: ['colors', 'rain', 'arc', 'sky', 'sunshine'] },
+        { target: 'JELLYFISH', taboo: ['sting', 'tentacle', 'ocean', 'float', 'clear'] },
+        { target: 'BICYCLE', taboo: ['wheels', 'pedal', 'ride', 'handle', 'bike'] },
+        { target: 'FIRETRUCK', taboo: ['red', 'siren', 'hose', 'fire', 'ladder'] },
+        { target: 'TELEPHONE', taboo: ['call', 'ring', 'number', 'dial', 'hello'] },
+        { target: 'COWBOY', taboo: ['horse', 'hat', 'rope', 'cattle', 'west'] },
+        { target: 'CUPCAKE', taboo: ['frosting', 'bake', 'cake', 'sweet', 'paper'] },
+        { target: 'OCTOPUS', taboo: ['arms', 'ocean', 'ink', 'suction', 'eight'] },
+        { target: 'BACKPACK', taboo: ['school', 'straps', 'carry', 'books', 'bag'] },
+        { target: 'WATERFALL', taboo: ['river', 'drop', 'mist', 'rocks', 'Niagara'] },
+        { target: 'NINJA', taboo: ['sword', 'stealth', 'Japan', 'black', 'shadow'] },
+        { target: 'CHOCOLATE', taboo: ['sweet', 'cocoa', 'bar', 'brown', 'candy'] },
+        { target: 'TRAMPOLINE', taboo: ['bounce', 'jump', 'springs', 'yard', 'flip'] },
+        { target: 'DINOSAUR', taboo: ['T-Rex', 'extinct', 'fossil', 'roar', 'Jurassic'] },
+        { target: 'ICE CREAM', taboo: ['cone', 'scoop', 'cold', 'sundae', 'melt'] },
+        { target: 'SUBMARINE', taboo: ['underwater', 'periscope', 'navy', 'yellow', 'dive'] },
+      ];
+
+      // --- DOM refs -----------------------------------------------------
+      const screens = {
+        setup: document.getElementById('setupScreen'),
+        ready: document.getElementById('readyScreen'),
+        round: document.getElementById('roundScreen'),
+        summary: document.getElementById('summaryScreen'),
+        end: document.getElementById('endScreen'),
+      };
+
+      const playerInput = document.getElementById('playerInput');
+      const addPlayerBtn = document.getElementById('addPlayerBtn');
+      const playerListEl = document.getElementById('playerList');
+      const playerHint = document.getElementById('playerHint');
+      const startGameBtn = document.getElementById('startGameBtn');
+      const targetScoreSel = document.getElementById('targetScore');
+      const roundLengthSel = document.getElementById('roundLength');
+
+      const labelTeamA = document.getElementById('labelTeamA');
+      const labelTeamB = document.getElementById('labelTeamB');
+      const numTeamA = document.getElementById('numTeamA');
+      const numTeamB = document.getElementById('numTeamB');
+      const scoreTeamA = document.getElementById('scoreTeamA');
+      const scoreTeamB = document.getElementById('scoreTeamB');
+      const membersTeamA = document.getElementById('membersTeamA');
+      const membersTeamB = document.getElementById('membersTeamB');
+
+      const activeTeamName = document.getElementById('activeTeamName');
+      const activePlayerName = document.getElementById('activePlayerName');
+      const activePlayerLabel = document.getElementById('activePlayerLabel');
+      const beginRoundBtn = document.getElementById('beginRoundBtn');
+
+      const inRoundTeamName = document.getElementById('inRoundTeamName');
+      const inRoundPlayer = document.getElementById('inRoundPlayer');
+      const timerDisplay = document.getElementById('timerDisplay');
+      const targetWord = document.getElementById('targetWord');
+      const tabooList = document.getElementById('tabooList');
+      const correctBtn = document.getElementById('correctBtn');
+      const skipBtn = document.getElementById('skipBtn');
+      const violationBtn = document.getElementById('violationBtn');
+
+      const sumLabelA = document.getElementById('sumLabelA');
+      const sumLabelB = document.getElementById('sumLabelB');
+      const sumNumA = document.getElementById('sumNumA');
+      const sumNumB = document.getElementById('sumNumB');
+      const roundResults = document.getElementById('roundResults');
+      const nextRoundBtn = document.getElementById('nextRoundBtn');
+
+      const winnerBadge = document.getElementById('winnerBadge');
+      const finalScoreText = document.getElementById('finalScoreText');
+      const statRounds = document.getElementById('statRounds');
+      const statCards = document.getElementById('statCards');
+      const playAgainBtn = document.getElementById('playAgainBtn');
+
+      const openPanelBtn = document.getElementById('openPanelBtn');
+      const closePanelBtn = document.getElementById('closePanelBtn');
+      const modPanelOverlay = document.getElementById('modPanelOverlay');
+      const rosterLabelA = document.getElementById('rosterLabelA');
+      const rosterLabelB = document.getElementById('rosterLabelB');
+      const rosterListA = document.getElementById('rosterListA');
+      const rosterListB = document.getElementById('rosterListB');
+
+      // --- Game state --------------------------------------------------
+      let players = [];
+      let teams = { A: [], B: [] };
+      const teamNames = { A: 'Sharks', B: 'Foxes' };
+      let scores = { A: 0, B: 0 };
+      let cueIndex = { A: 0, B: 0 };
+      let activeTeam = 'A';
+      let targetScore = 7;
+      let roundLength = 60;
+      let timerId = null;
+      let timeRemaining = 0;
+      let cardDeck = [];
+      let cardPointer = 0;
+      let currentCard = null;
+      let roundsPlayed = 0;
+      let cardsRevealed = 0;
+      let roundResultTally = { correct: 0, skipped: 0, violations: 0 };
+
+      // --- Helpers -----------------------------------------------------
+
+      /** Switch visible screen — only one active at a time. */
+      function showScreen(name) {
+        Object.keys(screens).forEach((key) => {
+          screens[key].classList.toggle('active', key === name);
+        });
+        // Mod panel button is useful after setup only
+        openPanelBtn.style.display = name === 'setup' ? 'none' : 'inline-block';
+      }
+
+      /** Re-render the setup-screen player chip list + start-button state. */
+      function renderPlayerList() {
+        playerListEl.innerHTML = '';
+        players.forEach((name, index) => {
+          const pill = document.createElement('span');
+          pill.className = 'player-pill';
+          pill.textContent = name;
+          const removeBtn = document.createElement('button');
+          removeBtn.type = 'button';
+          removeBtn.setAttribute('aria-label', `Remove ${name}`);
+          removeBtn.textContent = '×';
+          removeBtn.addEventListener('click', () => {
+            players.splice(index, 1);
+            renderPlayerList();
+          });
+          pill.appendChild(removeBtn);
+          playerListEl.appendChild(pill);
+        });
+        const ok = players.length >= 4 && players.length % 2 === 0;
+        startGameBtn.disabled = !ok;
+        if (players.length < 4) {
+          playerHint.textContent = `Add at least ${4 - players.length} more (need 2 per team, even total).`;
+        } else if (players.length % 2 !== 0) {
+          playerHint.textContent = `Add 1 more player to make teams even.`;
+        } else {
+          playerHint.textContent = `${players.length} players — ready to start.`;
+        }
+      }
+
+      /** Fisher-Yates shuffle (in place). */
+      function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      /** Assign players into two teams of equal size by shuffled draft. */
+      function assignTeams() {
+        const shuffled = shuffle([...players]);
+        teams = { A: [], B: [] };
+        shuffled.forEach((name, index) => {
+          (index % 2 === 0 ? teams.A : teams.B).push(name);
+        });
+      }
+
+      /** Build and shuffle the card deck for this session. */
+      function buildDeck() {
+        cardDeck = shuffle([...CARDS]);
+        cardPointer = 0;
+      }
+
+      /** Pull next card (wraps deck if exhausted). */
+      function drawCard() {
+        if (cardPointer >= cardDeck.length) buildDeck();
+        const card = cardDeck[cardPointer];
+        cardPointer += 1;
+        cardsRevealed += 1;
+        return card;
+      }
+
+      /** Render score boxes and highlight the active team. */
+      function renderScoreboard() {
+        labelTeamA.textContent = teamNames.A;
+        labelTeamB.textContent = teamNames.B;
+        numTeamA.textContent = String(scores.A);
+        numTeamB.textContent = String(scores.B);
+        membersTeamA.textContent = teams.A.join(', ');
+        membersTeamB.textContent = teams.B.join(', ');
+        scoreTeamA.classList.toggle('active', activeTeam === 'A');
+        scoreTeamB.classList.toggle('active', activeTeam === 'B');
+        sumLabelA.textContent = teamNames.A;
+        sumLabelB.textContent = teamNames.B;
+        sumNumA.textContent = String(scores.A);
+        sumNumB.textContent = String(scores.B);
+      }
+
+      /** Render the moderator panel rosters, marking current clue-givers. */
+      function renderModPanel() {
+        rosterLabelA.textContent = teamNames.A;
+        rosterLabelB.textContent = teamNames.B;
+        rosterListA.innerHTML = '';
+        rosterListB.innerHTML = '';
+        teams.A.forEach((name, index) => {
+          const li = document.createElement('li');
+          li.textContent = name;
+          if (activeTeam === 'A' && index === cueIndex.A) li.classList.add('active');
+          rosterListA.appendChild(li);
+        });
+        teams.B.forEach((name, index) => {
+          const li = document.createElement('li');
+          li.textContent = name;
+          if (activeTeam === 'B' && index === cueIndex.B) li.classList.add('active');
+          rosterListB.appendChild(li);
+        });
+      }
+
+      /** Prepare the "ready for round" view for the active team. */
+      function setupReadyScreen() {
+        const current = teams[activeTeam][cueIndex[activeTeam]];
+        activeTeamName.textContent = teamNames[activeTeam];
+        activeTeamName.className = `team-name team-${activeTeam.toLowerCase()}-name`;
+        activePlayerName.textContent = current;
+        activePlayerLabel.textContent = current;
+        inRoundTeamName.textContent = teamNames[activeTeam];
+        inRoundPlayer.textContent = `Clue-giver: ${current}`;
+        renderScoreboard();
+        renderModPanel();
+        showScreen('ready');
+      }
+
+      /** Render the current card into the in-round view. */
+      function renderCurrentCard() {
+        if (!currentCard) return;
+        targetWord.textContent = currentCard.target;
+        tabooList.innerHTML = '';
+        currentCard.taboo.forEach((word) => {
+          const li = document.createElement('li');
+          li.textContent = word;
+          tabooList.appendChild(li);
+        });
+      }
+
+      /** Format seconds as M:SS with leading zero. */
+      function formatTime(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m}:${s.toString().padStart(2, '0')}`;
+      }
+
+      /** Start the countdown for a round and update the timer display. */
+      function startTimer() {
+        timeRemaining = roundLength;
+        updateTimerDisplay();
+        clearInterval(timerId);
+        timerId = setInterval(() => {
+          timeRemaining -= 1;
+          updateTimerDisplay();
+          if (timeRemaining <= 0) {
+            endRound('timeout');
+          }
+        }, 1000);
+      }
+
+      function updateTimerDisplay() {
+        timerDisplay.textContent = formatTime(Math.max(0, timeRemaining));
+        timerDisplay.classList.remove('warning', 'danger');
+        if (timeRemaining <= 10) {
+          timerDisplay.classList.add('danger');
+        } else if (timeRemaining <= 20) {
+          timerDisplay.classList.add('warning');
+        }
+      }
+
+      /** Kick off a round: draw a card, start the timer, show the round view. */
+      function beginRound() {
+        roundResultTally = { correct: 0, skipped: 0, violations: 0 };
+        currentCard = drawCard();
+        renderCurrentCard();
+        showScreen('round');
+        startTimer();
+      }
+
+      /** Player guessed correctly — +1 for active team, next card immediately. */
+      function markCorrect() {
+        scores[activeTeam] += 1;
+        roundResultTally.correct += 1;
+        currentCard = drawCard();
+        renderCurrentCard();
+      }
+
+      /** Skipped — no score change, next card. */
+      function markSkip() {
+        roundResultTally.skipped += 1;
+        currentCard = drawCard();
+        renderCurrentCard();
+      }
+
+      /** Taboo violation — −1 for active team. Score cannot go below 0. */
+      function markViolation() {
+        scores[activeTeam] = Math.max(0, scores[activeTeam] - 1);
+        roundResultTally.violations += 1;
+        currentCard = drawCard();
+        renderCurrentCard();
+      }
+
+      /** End the current round and show either summary or game-over. */
+      function endRound(reason) {
+        clearInterval(timerId);
+        timerId = null;
+        roundsPlayed += 1;
+        renderScoreboard();
+
+        if (scores.A >= targetScore || scores.B >= targetScore) {
+          finishGame();
+          return;
+        }
+
+        const endedWord = reason === 'timeout' ? 'ran out' : 'ended early';
+        roundResults.innerHTML = `
+          <strong>Round ${endedWord}.</strong><br />
+          ${teamNames[activeTeam]} scored <strong>${roundResultTally.correct}</strong>
+          (skipped ${roundResultTally.skipped}, violations ${roundResultTally.violations}).
+        `;
+
+        // Advance clue-giver order, then swap teams
+        cueIndex[activeTeam] = (cueIndex[activeTeam] + 1) % teams[activeTeam].length;
+        activeTeam = activeTeam === 'A' ? 'B' : 'A';
+        renderModPanel();
+        showScreen('summary');
+      }
+
+      /** Game complete — show winner, fire share + leaderboard hooks. */
+      function finishGame() {
+        const winner = scores.A > scores.B ? 'A' : scores.B > scores.A ? 'B' : null;
+        if (winner) {
+          winnerBadge.textContent = `${teamNames[winner]} win!`;
+          winnerBadge.className = `winner-badge team-${winner.toLowerCase()}`;
+        } else {
+          winnerBadge.textContent = `Tie game!`;
+          winnerBadge.className = `winner-badge team-a`;
+        }
+        finalScoreText.textContent = `${teamNames.A} ${scores.A} — ${teamNames.B} ${scores.B}`;
+        statRounds.textContent = String(roundsPlayed);
+        statCards.textContent = String(cardsRevealed);
+        showScreen('end');
+
+        if (window.voaShare) {
+          const shareText = winner
+            ? `${teamNames[winner]} won ${APP_NAME} ${scores[winner]}–${scores[winner === 'A' ? 'B' : 'A']}! Who’s on your team?`
+            : `We tied ${scores.A}–${scores.B} at ${APP_NAME}! Can your crew break the tie?`;
+          window.voaShare({ text: shareText });
+        }
+      }
+
+      /** Reset everything for a new game with the same players. */
+      function resetForReplay() {
+        scores = { A: 0, B: 0 };
+        cueIndex = { A: 0, B: 0 };
+        activeTeam = 'A';
+        roundsPlayed = 0;
+        cardsRevealed = 0;
+        teamNames.A = pickTeamName();
+        teamNames.B = pickTeamName(teamNames.A);
+        assignTeams();
+        buildDeck();
+        setupReadyScreen();
+      }
+
+      /** Pick a playful team name, avoiding a collision with the other team. */
+      function pickTeamName(exclude) {
+        const options = [
+          'Sharks',
+          'Foxes',
+          'Wolves',
+          'Ravens',
+          'Tigers',
+          'Hawks',
+          'Pandas',
+          'Otters',
+          'Dragons',
+          'Lions',
+        ];
+        const filtered = options.filter((name) => name !== exclude);
+        return filtered[Math.floor(Math.random() * filtered.length)];
+      }
+
+      // --- Event wiring -------------------------------------------------
+
+      addPlayerBtn.addEventListener('click', () => addPlayer());
+      playerInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          addPlayer();
+        }
+      });
+
+      function addPlayer() {
+        const name = playerInput.value.trim();
+        if (!name) return;
+        if (players.length >= 16) {
+          playerHint.textContent = 'Max 16 players per game.';
+          return;
+        }
+        if (players.some((existing) => existing.toLowerCase() === name.toLowerCase())) {
+          playerHint.textContent = 'That name is already in the list.';
+          return;
+        }
+        players.push(name);
+        playerInput.value = '';
+        playerInput.focus();
+        renderPlayerList();
+      }
+
+      startGameBtn.addEventListener('click', () => {
+        targetScore = parseInt(targetScoreSel.value, 10);
+        roundLength = parseInt(roundLengthSel.value, 10);
+        teamNames.A = pickTeamName();
+        teamNames.B = pickTeamName(teamNames.A);
+        assignTeams();
+        buildDeck();
+        scores = { A: 0, B: 0 };
+        cueIndex = { A: 0, B: 0 };
+        activeTeam = 'A';
+        roundsPlayed = 0;
+        cardsRevealed = 0;
+        setupReadyScreen();
+      });
+
+      beginRoundBtn.addEventListener('click', () => beginRound());
+      correctBtn.addEventListener('click', () => markCorrect());
+      skipBtn.addEventListener('click', () => markSkip());
+      violationBtn.addEventListener('click', () => markViolation());
+      nextRoundBtn.addEventListener('click', () => setupReadyScreen());
+      playAgainBtn.addEventListener('click', () => resetForReplay());
+
+      openPanelBtn.addEventListener('click', () => {
+        renderModPanel();
+        modPanelOverlay.classList.add('open');
+      });
+      closePanelBtn.addEventListener('click', () => modPanelOverlay.classList.remove('open'));
+      modPanelOverlay.addEventListener('click', (event) => {
+        if (event.target === modPanelOverlay) modPanelOverlay.classList.remove('open');
+      });
+
+      // Keyboard shortcuts for the moderator: only when not typing in a field
+      // and when no shell overlay or mod panel is open.
+      document.addEventListener('keydown', (event) => {
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
+        if (modPanelOverlay.classList.contains('open')) return;
+
+        const key = event.key.toLowerCase();
+        if (screens.ready.classList.contains('active') && event.key === ' ') {
+          event.preventDefault();
+          beginRound();
+          return;
+        }
+        if (screens.round.classList.contains('active')) {
+          if (key === 'c') {
+            event.preventDefault();
+            markCorrect();
+          } else if (key === 's') {
+            event.preventDefault();
+            markSkip();
+          } else if (key === 'v') {
+            event.preventDefault();
+            markViolation();
+          } else if (event.key === 'Enter') {
+            event.preventDefault();
+            endRound('early');
+          }
+        }
+        if (screens.summary.classList.contains('active') && event.key === 'Enter') {
+          event.preventDefault();
+          setupReadyScreen();
+        }
+      });
+
+      // First render
+      renderPlayerList();
+    </script>
+  </body>
+</html>

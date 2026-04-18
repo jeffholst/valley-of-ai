@@ -22,6 +22,10 @@
     <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
     <meta name="application-name" content="Team Taboo" />
     <meta name="voa-app-id" content="2026/04/18/team-taboo" />
+    <meta name="voa-firebase-api-key" content="__FIREBASE_API_KEY__" />
+    <meta name="voa-firebase-auth-domain" content="__FIREBASE_AUTH_DOMAIN__" />
+    <meta name="voa-firebase-database-url" content="__FIREBASE_DATABASE_URL__" />
+    <meta name="voa-firebase-project-id" content="__FIREBASE_PROJECT_ID__" />
     <script src="/apps/shared/app-shell.js" defer></script>
     <style>
       :root {
@@ -143,8 +147,6 @@
         margin-bottom: 0.3rem;
       }
 
-      input[type='text'],
-      input[type='number'],
       select {
         width: 100%;
         padding: 0.7rem 0.85rem;
@@ -156,17 +158,9 @@
         font-family: inherit;
       }
 
-      input:focus,
       select:focus {
         outline: 2px solid var(--accent);
         outline-offset: 1px;
-      }
-
-      .add-row {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 0.5rem;
-        margin-bottom: 0.8rem;
       }
 
       .btn {
@@ -251,14 +245,9 @@
         font-size: 0.9rem;
       }
 
-      .player-pill button {
-        background: transparent;
-        border: none;
-        color: var(--danger);
-        font-size: 1.1rem;
-        cursor: pointer;
-        padding: 0;
-        line-height: 1;
+      .player-pill.self {
+        border-color: var(--accent);
+        background: rgb(249 115 22 / 18%);
       }
 
       .controls-grid {
@@ -404,6 +393,21 @@
         text-decoration: line-through;
         text-decoration-color: var(--danger);
         text-decoration-thickness: 2px;
+      }
+
+      .guess-placeholder {
+        background: var(--card);
+        border: 3px dashed var(--border);
+        border-radius: 18px;
+        padding: 2.5rem 1.2rem;
+        text-align: center;
+      }
+
+      .guess-placeholder .big {
+        font-size: clamp(1.4rem, 4vw, 2rem);
+        font-weight: 800;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
       }
 
       .round-actions {
@@ -630,6 +634,47 @@
         align-items: center;
       }
 
+      .join-box {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 0.9rem 1rem;
+        display: grid;
+        gap: 0.6rem;
+      }
+
+      .join-code {
+        font-family: ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
+        font-size: clamp(1.6rem, 5vw, 2.4rem);
+        font-weight: 800;
+        letter-spacing: 0.2em;
+        color: var(--accent-2);
+        text-align: center;
+        padding: 0.6rem 0.4rem;
+        background: var(--card);
+        border-radius: 10px;
+        border: 2px dashed var(--accent);
+        user-select: all;
+      }
+
+      .join-url-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .join-url {
+        font-family: ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
+        font-size: 0.85rem;
+        padding: 0.5rem 0.7rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        word-break: break-all;
+        color: var(--text);
+      }
+
       .hint {
         font-size: 0.78rem;
         color: var(--muted);
@@ -646,6 +691,20 @@
         border-bottom-width: 2px;
         border-radius: 4px;
         color: var(--text);
+      }
+
+      .fatal {
+        background: rgb(239 68 68 / 14%);
+        border: 1px solid var(--danger);
+        border-radius: 12px;
+        padding: 1rem 1.1rem;
+        color: var(--text);
+      }
+
+      .fatal h2 {
+        color: var(--danger);
+        font-size: 1.1rem;
+        margin-bottom: 0.4rem;
       }
 
       @media (max-width: 420px) {
@@ -669,7 +728,9 @@
         <div class="top-bar">
           <div>
             <h1>🤫 Team Taboo</h1>
-            <p>Clue-givers guide their team past the forbidden words. Moderator runs the show.</p>
+            <p id="heroSubtitle">
+              Clue-givers guide their team past the forbidden words.
+            </p>
           </div>
           <button
             id="openPanelBtn"
@@ -682,23 +743,51 @@
         </div>
       </header>
 
-      <!-- Setup screen -->
-      <section id="setupScreen" class="card screen active" aria-label="Setup screen">
-        <h2 class="section-title">Add players</h2>
-        <div class="add-row">
-          <input
-            id="playerInput"
-            type="text"
-            placeholder="Player name"
-            maxlength="24"
-            autocomplete="off"
-          />
-          <button id="addPlayerBtn" class="btn btn-primary">Add</button>
+      <!-- Fatal config error -->
+      <section id="configError" class="card screen" aria-label="Configuration error">
+        <div class="fatal">
+          <h2>Multiplayer not configured</h2>
+          <p>
+            This site is missing Firebase configuration. Ask the site owner to set the
+            <code>NEXT_PUBLIC_FIREBASE_*</code> environment variables.
+          </p>
         </div>
-        <div id="playerList" class="player-list" aria-live="polite"></div>
-        <p id="playerHint" class="muted">Add at least 4 players (2 per team) to start.</p>
+      </section>
 
-        <h2 class="section-title" style="margin-top: 1rem">Game settings</h2>
+      <!-- Landing for moderator (no session yet) -->
+      <section id="landingScreen" class="card screen" aria-label="Start a new game">
+        <h2 class="section-title">Host a game</h2>
+        <p class="muted" style="margin-bottom: 0.8rem">
+          Click <strong>New Game</strong> to create a room. You’ll get a join link to paste into
+          Zoom chat.
+        </p>
+        <button id="newGameBtn" class="btn btn-primary btn-block">New Game</button>
+        <p class="hint">
+          Participants don’t need to be on this page. Share the join link and they’ll land on their
+          own lobby screen.
+        </p>
+      </section>
+
+      <!-- Moderator lobby: waiting for players + settings -->
+      <section id="lobbyScreen" class="card screen" aria-label="Moderator lobby">
+        <h2 class="section-title">Invite players</h2>
+        <div class="join-box">
+          <label>Game code</label>
+          <div id="joinCode" class="join-code" aria-live="polite">------</div>
+          <label>Join link</label>
+          <div class="join-url-row">
+            <div id="joinUrl" class="join-url"></div>
+            <button id="copyLinkBtn" class="btn btn-secondary" style="min-height: 40px">
+              📋 Copy
+            </button>
+          </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top: 1rem">Players</h2>
+        <div id="lobbyPlayers" class="player-list" aria-live="polite"></div>
+        <p id="lobbyHint" class="muted">Waiting for participants to join…</p>
+
+        <h2 class="section-title" style="margin-top: 1rem">Settings</h2>
         <div class="controls-grid">
           <div>
             <label for="targetScore">Target score</label>
@@ -722,10 +811,16 @@
         <button id="startGameBtn" class="btn btn-primary btn-block" disabled>
           Assign Teams &amp; Start
         </button>
-        <p class="hint">
-          Teams are auto-split when you start. On each round the shared screen shows the card for
-          the active clue-giver. Guessing teammates should look away or close their eyes.
+      </section>
+
+      <!-- Player lobby: waiting for host to start -->
+      <section id="playerLobbyScreen" class="card screen" aria-label="Player lobby">
+        <h2 class="section-title" id="playerLobbyTitle">You’re in!</h2>
+        <p class="muted" id="playerLobbySubtitle">
+          Waiting for the host to start the game…
         </p>
+        <h2 class="section-title" style="margin-top: 1rem">Players</h2>
+        <div id="playerLobbyPlayers" class="player-list" aria-live="polite"></div>
       </section>
 
       <!-- Round-ready screen -->
@@ -751,13 +846,8 @@
             <div class="muted" style="margin-bottom: 0.4rem">Clue-giver</div>
             <span id="activePlayerName" class="active-player">—</span>
           </div>
-          <p class="instructions">
-            <strong id="activePlayerLabel">Player</strong>: read the target word and describe it to
-            your team <em>without using</em> the forbidden words.<br />
-            <strong>Teammates</strong>: look away until you’re guessing. The opposing team watches
-            for violations.
-          </p>
-          <button id="beginRoundBtn" class="btn btn-primary btn-block">
+          <p class="instructions" id="readyInstructions"></p>
+          <button id="beginRoundBtn" class="btn btn-primary btn-block" style="display: none">
             Begin Round <span class="kbd">Space</span>
           </button>
         </div>
@@ -772,11 +862,23 @@
           </div>
           <div id="timerDisplay" class="timer" role="timer" aria-live="polite">0:60</div>
         </div>
-        <div class="taboo-card" id="tabooCard">
+
+        <!-- Card (shown to moderator, clue-giver, opposing team) -->
+        <div id="tabooCard" class="taboo-card" style="display: none">
           <div class="taboo-target" id="targetWord">—</div>
           <ul class="taboo-list" id="tabooList"></ul>
         </div>
-        <div class="round-actions">
+
+        <!-- Placeholder (shown to active-team non-giver teammates) -->
+        <div id="guessPlaceholder" class="guess-placeholder" style="display: none">
+          <div class="big">🤐 Guessing…</div>
+          <p class="muted">
+            Your teammate is giving clues. Shout your guesses out loud — no peeking at the card!
+          </p>
+        </div>
+
+        <!-- Moderator-only action buttons -->
+        <div id="roundActions" class="round-actions" style="display: none">
           <button id="correctBtn" class="btn btn-success" aria-label="Correct guess">
             ✓ Correct <span class="kbd">C</span>
           </button>
@@ -787,9 +889,7 @@
             ✗ Violation <span class="kbd">V</span>
           </button>
         </div>
-        <p class="hint">
-          Correct: +1 for the active team. Violation: −1 penalty. Skip: no change, next card.
-        </p>
+        <p id="roundHint" class="hint"></p>
       </section>
 
       <!-- Round-end screen -->
@@ -806,7 +906,9 @@
           </div>
         </div>
         <div id="roundResults" class="notice"></div>
-        <button id="nextRoundBtn" class="btn btn-primary btn-block">Next Round</button>
+        <button id="nextRoundBtn" class="btn btn-primary btn-block" style="display: none">
+          Next Round
+        </button>
       </section>
 
       <!-- Game-over screen -->
@@ -825,7 +927,9 @@
               <div class="value" id="statCards">0</div>
             </div>
           </div>
-          <button id="playAgainBtn" class="btn btn-primary btn-block">Play Again</button>
+          <button id="playAgainBtn" class="btn btn-primary btn-block" style="display: none">
+            Play Again
+          </button>
         </div>
       </section>
     </main>
@@ -857,21 +961,36 @@
       </div>
     </div>
 
-    <script>
+    <script type="module">
       // ------------------------------------------------------------------
-      // Team Taboo — single-screen moderator-run variant
+      // Team Taboo — multiplayer via Firebase Realtime Database.
       //
-      // Static-app constraint (no backend, no cross-device sync): the entire
-      // game runs on the moderator's shared Zoom screen. The clue-giver reads
-      // the card aloud; teammates look away. A private moderator panel holds
-      // team rosters and rotation state.
+      // Moderator's browser is authoritative for game mutations. Players write
+      // only their own player record. Firebase `onValue` listeners keep every
+      // client in sync. See /database.rules.json for access rules and
+      // /lib/firebase/* for the shared Next.js helpers.
       // ------------------------------------------------------------------
+
+      import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+      import {
+        getDatabase,
+        ref,
+        onValue,
+        get,
+        set,
+        update,
+        remove,
+        serverTimestamp,
+        onDisconnect,
+      } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
       const APP_NAME = 'Team Taboo';
+      const APP_ID = 'team-taboo';
+      const APP_PATH = '2026/04/18/team-taboo';
+      const STORAGE_PREFIX = '__STORAGE_PREFIX__';
+      const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
       // --- Word cards ---------------------------------------------------
-      // Each card: target word + 5 forbidden (taboo) words the clue-giver
-      // cannot say or gesture. Cards are shuffled on game start.
       const CARDS = [
         { target: 'BEACH', taboo: ['sand', 'ocean', 'sun', 'towel', 'waves'] },
         { target: 'PIZZA', taboo: ['cheese', 'Italy', 'slice', 'dough', 'pepperoni'] },
@@ -930,22 +1049,110 @@
         { target: 'SUBMARINE', taboo: ['underwater', 'periscope', 'navy', 'yellow', 'dive'] },
       ];
 
+      // --- Firebase config from placeholder-replaced meta tags -----------
+      function readMeta(name) {
+        const el = document.querySelector(`meta[name="${name}"]`);
+        return el ? el.getAttribute('content') : '';
+      }
+
+      function looksLikeUnreplacedPlaceholder(value) {
+        return !value || /^__[A-Z_]+__$/.test(value);
+      }
+
+      function getFirebaseConfig() {
+        const apiKey = readMeta('voa-firebase-api-key');
+        const authDomain = readMeta('voa-firebase-auth-domain');
+        const databaseURL = readMeta('voa-firebase-database-url');
+        const projectId = readMeta('voa-firebase-project-id');
+        if (
+          looksLikeUnreplacedPlaceholder(apiKey) ||
+          looksLikeUnreplacedPlaceholder(authDomain) ||
+          looksLikeUnreplacedPlaceholder(databaseURL) ||
+          looksLikeUnreplacedPlaceholder(projectId)
+        ) {
+          return null;
+        }
+        return { apiKey, authDomain, databaseURL, projectId };
+      }
+
+      // --- Pure helpers -------------------------------------------------
+      function generateSessionCode(length = 6) {
+        let code = '';
+        for (let i = 0; i < length; i += 1) {
+          code += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
+        }
+        return code;
+      }
+
+      function generateId(prefix = 'id') {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+          return `${prefix}-${crypto.randomUUID()}`;
+        }
+        return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+      }
+
+      function shuffleInPlace(array) {
+        for (let i = array.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
+
+      function pickTeamName(exclude) {
+        const options = [
+          'Sharks',
+          'Foxes',
+          'Wolves',
+          'Ravens',
+          'Tigers',
+          'Hawks',
+          'Pandas',
+          'Otters',
+          'Dragons',
+          'Lions',
+        ];
+        const filtered = options.filter((name) => name !== exclude);
+        return filtered[Math.floor(Math.random() * filtered.length)];
+      }
+
+      function parseHashParams() {
+        const hash = window.location.hash.startsWith('#')
+          ? window.location.hash.slice(1)
+          : window.location.hash;
+        return new URLSearchParams(hash);
+      }
+
+      function localKey(suffix) {
+        return `${STORAGE_PREFIX}:${APP_ID}:${suffix}`;
+      }
+
       // --- DOM refs -----------------------------------------------------
       const screens = {
-        setup: document.getElementById('setupScreen'),
+        configError: document.getElementById('configError'),
+        landing: document.getElementById('landingScreen'),
+        lobby: document.getElementById('lobbyScreen'),
+        playerLobby: document.getElementById('playerLobbyScreen'),
         ready: document.getElementById('readyScreen'),
         round: document.getElementById('roundScreen'),
         summary: document.getElementById('summaryScreen'),
         end: document.getElementById('endScreen'),
       };
 
-      const playerInput = document.getElementById('playerInput');
-      const addPlayerBtn = document.getElementById('addPlayerBtn');
-      const playerListEl = document.getElementById('playerList');
-      const playerHint = document.getElementById('playerHint');
+      const heroSubtitle = document.getElementById('heroSubtitle');
+      const newGameBtn = document.getElementById('newGameBtn');
+      const joinCodeEl = document.getElementById('joinCode');
+      const joinUrlEl = document.getElementById('joinUrl');
+      const copyLinkBtn = document.getElementById('copyLinkBtn');
+      const lobbyPlayersEl = document.getElementById('lobbyPlayers');
+      const lobbyHint = document.getElementById('lobbyHint');
       const startGameBtn = document.getElementById('startGameBtn');
       const targetScoreSel = document.getElementById('targetScore');
       const roundLengthSel = document.getElementById('roundLength');
+
+      const playerLobbyTitle = document.getElementById('playerLobbyTitle');
+      const playerLobbySubtitle = document.getElementById('playerLobbySubtitle');
+      const playerLobbyPlayersEl = document.getElementById('playerLobbyPlayers');
 
       const labelTeamA = document.getElementById('labelTeamA');
       const labelTeamB = document.getElementById('labelTeamB');
@@ -958,14 +1165,18 @@
 
       const activeTeamName = document.getElementById('activeTeamName');
       const activePlayerName = document.getElementById('activePlayerName');
-      const activePlayerLabel = document.getElementById('activePlayerLabel');
+      const readyInstructions = document.getElementById('readyInstructions');
       const beginRoundBtn = document.getElementById('beginRoundBtn');
 
       const inRoundTeamName = document.getElementById('inRoundTeamName');
       const inRoundPlayer = document.getElementById('inRoundPlayer');
       const timerDisplay = document.getElementById('timerDisplay');
+      const tabooCard = document.getElementById('tabooCard');
+      const guessPlaceholder = document.getElementById('guessPlaceholder');
       const targetWord = document.getElementById('targetWord');
       const tabooList = document.getElementById('tabooList');
+      const roundActions = document.getElementById('roundActions');
+      const roundHint = document.getElementById('roundHint');
       const correctBtn = document.getElementById('correctBtn');
       const skipBtn = document.getElementById('skipBtn');
       const violationBtn = document.getElementById('violationBtn');
@@ -991,354 +1202,733 @@
       const rosterListA = document.getElementById('rosterListA');
       const rosterListB = document.getElementById('rosterListB');
 
-      // --- Game state --------------------------------------------------
-      let players = [];
-      let teams = { A: [], B: [] };
-      const teamNames = { A: 'Sharks', B: 'Foxes' };
-      let scores = { A: 0, B: 0 };
-      let cueIndex = { A: 0, B: 0 };
-      let activeTeam = 'A';
-      let targetScore = 7;
-      let roundLength = 60;
-      let timerId = null;
-      let timeRemaining = 0;
-      let cardDeck = [];
-      let cardPointer = 0;
-      let currentCard = null;
-      let roundsPlayed = 0;
-      let cardsRevealed = 0;
-      let roundResultTally = { correct: 0, skipped: 0, violations: 0 };
+      // --- Runtime state ------------------------------------------------
+      let db = null;
+      let sessionCode = null;
+      let role = null; // 'moderator' | 'player'
+      let moderatorId = null;
+      let playerId = null;
+      let session = null; // latest snapshot of /sessions/<code>
+      let sessionUnsubscribe = null;
+      let timerTickId = null;
 
-      // --- Helpers -----------------------------------------------------
-
-      /** Switch visible screen — only one active at a time. */
+      // --- Screen navigation -------------------------------------------
       function showScreen(name) {
-        Object.keys(screens).forEach((key) => {
-          screens[key].classList.toggle('active', key === name);
+        Object.entries(screens).forEach(([key, el]) => {
+          el.classList.toggle('active', key === name);
         });
-        // Mod panel button is useful after setup only
-        openPanelBtn.style.display = name === 'setup' ? 'none' : 'inline-block';
+        openPanelBtn.style.display = role === 'moderator' && session ? 'inline-block' : 'none';
       }
 
-      /** Re-render the setup-screen player chip list + start-button state. */
-      function renderPlayerList() {
-        playerListEl.innerHTML = '';
-        players.forEach((name, index) => {
-          const pill = document.createElement('span');
-          pill.className = 'player-pill';
-          pill.textContent = name;
-          const removeBtn = document.createElement('button');
-          removeBtn.type = 'button';
-          removeBtn.setAttribute('aria-label', `Remove ${name}`);
-          removeBtn.textContent = '×';
-          removeBtn.addEventListener('click', () => {
-            players.splice(index, 1);
-            renderPlayerList();
-          });
-          pill.appendChild(removeBtn);
-          playerListEl.appendChild(pill);
-        });
-        const ok = players.length >= 4 && players.length % 2 === 0;
-        startGameBtn.disabled = !ok;
-        if (players.length < 4) {
-          playerHint.textContent = `Add at least ${4 - players.length} more (need 2 per team, even total).`;
-        } else if (players.length % 2 !== 0) {
-          playerHint.textContent = `Add 1 more player to make teams even.`;
-        } else {
-          playerHint.textContent = `${players.length} players — ready to start.`;
-        }
+      // --- Firebase init -----------------------------------------------
+      const config = getFirebaseConfig();
+      if (!config) {
+        heroSubtitle.textContent = 'Multiplayer is not configured on this site.';
+        showScreen('configError');
+      } else {
+        const existing = getApps();
+        const firebaseApp = existing.length > 0 ? existing[0] : initializeApp(config);
+        db = getDatabase(firebaseApp);
+        bootstrap();
       }
 
-      /** Fisher-Yates shuffle (in place). */
-      function shuffle(arr) {
-        for (let i = arr.length - 1; i > 0; i -= 1) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
-      }
+      // --- Bootstrap: decide the starting screen based on URL + storage -
+      function bootstrap() {
+        const params = parseHashParams();
+        const hashCode = params.get('code');
+        const hashPid = params.get('pid');
+        const hashRole = params.get('role');
 
-      /** Assign players into two teams of equal size by shuffled draft. */
-      function assignTeams() {
-        const shuffled = shuffle([...players]);
-        teams = { A: [], B: [] };
-        shuffled.forEach((name, index) => {
-          (index % 2 === 0 ? teams.A : teams.B).push(name);
-        });
-      }
-
-      /** Build and shuffle the card deck for this session. */
-      function buildDeck() {
-        cardDeck = shuffle([...CARDS]);
-        cardPointer = 0;
-      }
-
-      /** Pull next card (wraps deck if exhausted). */
-      function drawCard() {
-        if (cardPointer >= cardDeck.length) buildDeck();
-        const card = cardDeck[cardPointer];
-        cardPointer += 1;
-        cardsRevealed += 1;
-        return card;
-      }
-
-      /** Render score boxes and highlight the active team. */
-      function renderScoreboard() {
-        labelTeamA.textContent = teamNames.A;
-        labelTeamB.textContent = teamNames.B;
-        numTeamA.textContent = String(scores.A);
-        numTeamB.textContent = String(scores.B);
-        membersTeamA.textContent = teams.A.join(', ');
-        membersTeamB.textContent = teams.B.join(', ');
-        scoreTeamA.classList.toggle('active', activeTeam === 'A');
-        scoreTeamB.classList.toggle('active', activeTeam === 'B');
-        sumLabelA.textContent = teamNames.A;
-        sumLabelB.textContent = teamNames.B;
-        sumNumA.textContent = String(scores.A);
-        sumNumB.textContent = String(scores.B);
-      }
-
-      /** Render the moderator panel rosters, marking current clue-givers. */
-      function renderModPanel() {
-        rosterLabelA.textContent = teamNames.A;
-        rosterLabelB.textContent = teamNames.B;
-        rosterListA.innerHTML = '';
-        rosterListB.innerHTML = '';
-        teams.A.forEach((name, index) => {
-          const li = document.createElement('li');
-          li.textContent = name;
-          if (activeTeam === 'A' && index === cueIndex.A) li.classList.add('active');
-          rosterListA.appendChild(li);
-        });
-        teams.B.forEach((name, index) => {
-          const li = document.createElement('li');
-          li.textContent = name;
-          if (activeTeam === 'B' && index === cueIndex.B) li.classList.add('active');
-          rosterListB.appendChild(li);
-        });
-      }
-
-      /** Prepare the "ready for round" view for the active team. */
-      function setupReadyScreen() {
-        const current = teams[activeTeam][cueIndex[activeTeam]];
-        activeTeamName.textContent = teamNames[activeTeam];
-        activeTeamName.className = `team-name team-${activeTeam.toLowerCase()}-name`;
-        activePlayerName.textContent = current;
-        activePlayerLabel.textContent = current;
-        inRoundTeamName.textContent = teamNames[activeTeam];
-        inRoundPlayer.textContent = `Clue-giver: ${current}`;
-        renderScoreboard();
-        renderModPanel();
-        showScreen('ready');
-      }
-
-      /** Render the current card into the in-round view. */
-      function renderCurrentCard() {
-        if (!currentCard) return;
-        targetWord.textContent = currentCard.target;
-        tabooList.innerHTML = '';
-        currentCard.taboo.forEach((word) => {
-          const li = document.createElement('li');
-          li.textContent = word;
-          tabooList.appendChild(li);
-        });
-      }
-
-      /** Format seconds as M:SS with leading zero. */
-      function formatTime(seconds) {
-        const m = Math.floor(seconds / 60);
-        const s = seconds % 60;
-        return `${m}:${s.toString().padStart(2, '0')}`;
-      }
-
-      /** Start the countdown for a round and update the timer display. */
-      function startTimer() {
-        timeRemaining = roundLength;
-        updateTimerDisplay();
-        clearInterval(timerId);
-        timerId = setInterval(() => {
-          timeRemaining -= 1;
-          updateTimerDisplay();
-          if (timeRemaining <= 0) {
-            endRound('timeout');
-          }
-        }, 1000);
-      }
-
-      function updateTimerDisplay() {
-        timerDisplay.textContent = formatTime(Math.max(0, timeRemaining));
-        timerDisplay.classList.remove('warning', 'danger');
-        if (timeRemaining <= 10) {
-          timerDisplay.classList.add('danger');
-        } else if (timeRemaining <= 20) {
-          timerDisplay.classList.add('warning');
-        }
-      }
-
-      /** Kick off a round: draw a card, start the timer, show the round view. */
-      function beginRound() {
-        roundResultTally = { correct: 0, skipped: 0, violations: 0 };
-        currentCard = drawCard();
-        renderCurrentCard();
-        showScreen('round');
-        startTimer();
-      }
-
-      /** Player guessed correctly — +1 for active team, next card immediately. */
-      function markCorrect() {
-        scores[activeTeam] += 1;
-        roundResultTally.correct += 1;
-        currentCard = drawCard();
-        renderCurrentCard();
-      }
-
-      /** Skipped — no score change, next card. */
-      function markSkip() {
-        roundResultTally.skipped += 1;
-        currentCard = drawCard();
-        renderCurrentCard();
-      }
-
-      /** Taboo violation — −1 for active team. Score cannot go below 0. */
-      function markViolation() {
-        scores[activeTeam] = Math.max(0, scores[activeTeam] - 1);
-        roundResultTally.violations += 1;
-        currentCard = drawCard();
-        renderCurrentCard();
-      }
-
-      /** End the current round and show either summary or game-over. */
-      function endRound(reason) {
-        clearInterval(timerId);
-        timerId = null;
-        roundsPlayed += 1;
-        renderScoreboard();
-
-        if (scores.A >= targetScore || scores.B >= targetScore) {
-          finishGame();
+        if (hashRole === 'player' && hashCode && hashPid) {
+          joinAsPlayer(hashCode, hashPid);
           return;
         }
 
-        const endedWord = reason === 'timeout' ? 'ran out' : 'ended early';
+        if (hashCode) {
+          // Likely a moderator reloading an existing session.
+          const savedMod = loadModeratorRecord(hashCode);
+          if (savedMod) {
+            reconnectAsModerator(hashCode, savedMod.moderatorId);
+            return;
+          }
+          // Unknown code with no credentials — drop back to landing.
+        }
+
+        showScreen('landing');
+      }
+
+      // --- localStorage helpers ----------------------------------------
+      function saveModeratorRecord(code, id) {
+        try {
+          window.localStorage.setItem(
+            localKey(`mod:${code}`),
+            JSON.stringify({ moderatorId: id })
+          );
+        } catch {
+          // ignore
+        }
+      }
+
+      function loadModeratorRecord(code) {
+        try {
+          const raw = window.localStorage.getItem(localKey(`mod:${code}`));
+          return raw ? JSON.parse(raw) : null;
+        } catch {
+          return null;
+        }
+      }
+
+      // --- Moderator: create a new session ------------------------------
+      async function createSession() {
+        newGameBtn.disabled = true;
+        newGameBtn.textContent = 'Creating…';
+        try {
+          // Generate a code and make sure it doesn't collide with an existing session.
+          let code = '';
+          for (let attempt = 0; attempt < 8; attempt += 1) {
+            code = generateSessionCode(6);
+            // eslint-disable-next-line no-await-in-loop
+            const existing = await get(ref(db, `sessions/${code}`));
+            if (!existing.exists()) break;
+          }
+
+          moderatorId = generateId('mod');
+          sessionCode = code;
+          role = 'moderator';
+
+          const initial = {
+            appId: APP_ID,
+            appName: APP_NAME,
+            appPath: APP_PATH,
+            moderatorId,
+            createdAt: serverTimestamp(),
+            status: 'lobby',
+            settings: {
+              targetScore: 7,
+              roundLength: 60,
+            },
+          };
+          await set(ref(db, `sessions/${sessionCode}`), initial);
+
+          saveModeratorRecord(sessionCode, moderatorId);
+          window.location.hash = new URLSearchParams({
+            code: sessionCode,
+            role: 'mod',
+          }).toString();
+
+          subscribeSession();
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error('Failed to create session', err);
+          newGameBtn.disabled = false;
+          newGameBtn.textContent = 'New Game';
+          alert('Could not create a game. Check your Firebase connection and try again.');
+        }
+      }
+
+      // --- Moderator: reconnect after refresh ---------------------------
+      async function reconnectAsModerator(code, id) {
+        try {
+          const snap = await get(ref(db, `sessions/${code}`));
+          if (!snap.exists() || snap.val().moderatorId !== id) {
+            // Session no longer exists or moderatorId no longer matches: start fresh.
+            window.location.hash = '';
+            showScreen('landing');
+            return;
+          }
+          sessionCode = code;
+          moderatorId = id;
+          role = 'moderator';
+          subscribeSession();
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error('Reconnect failed', err);
+          showScreen('landing');
+        }
+      }
+
+      // --- Player: join via hash params --------------------------------
+      async function joinAsPlayer(code, pid) {
+        try {
+          const snap = await get(ref(db, `sessions/${code}`));
+          if (!snap.exists()) {
+            heroSubtitle.textContent = 'This game no longer exists.';
+            showScreen('configError');
+            document.querySelector('#configError .fatal h2').textContent =
+              'Game not found';
+            document.querySelector('#configError .fatal p').textContent =
+              'The host may have ended the session. Ask them for a new link.';
+            return;
+          }
+          const data = snap.val();
+          if (!data.players || !data.players[pid]) {
+            heroSubtitle.textContent = 'Your spot in this game was removed.';
+            showScreen('configError');
+            document.querySelector('#configError .fatal h2').textContent =
+              'Player record missing';
+            document.querySelector('#configError .fatal p').textContent =
+              'Rejoin from the /join link your host shared.';
+            return;
+          }
+          sessionCode = code;
+          playerId = pid;
+          role = 'player';
+
+          // Mark offline-removal so the roster cleans up if the player disconnects.
+          onDisconnect(ref(db, `sessions/${code}/players/${pid}/online`)).set(false);
+          await update(ref(db, `sessions/${code}/players/${pid}`), { online: true });
+
+          subscribeSession();
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error('Player connect failed', err);
+          heroSubtitle.textContent = 'Connection failed.';
+          showScreen('configError');
+        }
+      }
+
+      // --- Subscribe to session updates --------------------------------
+      function subscribeSession() {
+        if (sessionUnsubscribe) sessionUnsubscribe();
+        const sessionRef = ref(db, `sessions/${sessionCode}`);
+        sessionUnsubscribe = onValue(sessionRef, (snap) => {
+          session = snap.val();
+          if (!session) {
+            // Session was deleted out from under us.
+            if (role === 'moderator') {
+              window.location.hash = '';
+              showScreen('landing');
+            } else {
+              showScreen('configError');
+              document.querySelector('#configError .fatal h2').textContent =
+                'Game ended';
+              document.querySelector('#configError .fatal p').textContent =
+                'The host closed the game. Thanks for playing!';
+            }
+            return;
+          }
+          render();
+        });
+      }
+
+      // --- Rendering (pure, driven by `session`) -----------------------
+      function render() {
+        if (!session) return;
+
+        if (role === 'moderator') {
+          updateJoinBox();
+        }
+        updateScoreboardFromSession();
+        updateModPanel();
+        updateTimerTick();
+
+        switch (session.status) {
+          case 'lobby':
+            renderLobby();
+            break;
+          case 'playing':
+            renderPlaying();
+            break;
+          case 'ended':
+            renderEnded();
+            break;
+          default:
+            break;
+        }
+      }
+
+      function playersArray() {
+        if (!session?.players) return [];
+        return Object.values(session.players);
+      }
+
+      function renderLobby() {
+        const players = playersArray();
+        if (role === 'moderator') {
+          lobbyPlayersEl.innerHTML = '';
+          players.forEach((player) => {
+            const pill = document.createElement('span');
+            pill.className = 'player-pill';
+            pill.textContent = player.name;
+            lobbyPlayersEl.appendChild(pill);
+          });
+          const count = players.length;
+          startGameBtn.disabled = count < 4 || count % 2 !== 0;
+          if (count < 4) {
+            lobbyHint.textContent = `Need ${4 - count} more player${4 - count === 1 ? '' : 's'} (minimum 4, even total).`;
+          } else if (count % 2 !== 0) {
+            lobbyHint.textContent = 'Add 1 more to keep teams even.';
+          } else {
+            lobbyHint.textContent = `${count} players ready.`;
+          }
+          targetScoreSel.value = String(session.settings?.targetScore ?? 7);
+          roundLengthSel.value = String(session.settings?.roundLength ?? 60);
+          showScreen('lobby');
+        } else {
+          const self = session.players?.[playerId];
+          playerLobbyTitle.textContent = self ? `Welcome, ${self.name}!` : "You're in!";
+          playerLobbyPlayersEl.innerHTML = '';
+          players.forEach((player) => {
+            const pill = document.createElement('span');
+            pill.className = 'player-pill';
+            if (player.id === playerId) pill.classList.add('self');
+            pill.textContent = player.name;
+            playerLobbyPlayersEl.appendChild(pill);
+          });
+          showScreen('playerLobby');
+        }
+      }
+
+      function renderPlaying() {
+        const game = session.game;
+        if (!game) return;
+        const roundState = game.roundState;
+        if (roundState === 'ready') renderReadyScreen();
+        else if (roundState === 'playing') renderRoundScreen();
+        else if (roundState === 'summary') renderSummaryScreen();
+      }
+
+      function renderReadyScreen() {
+        const { game } = session;
+        const activeTeam = game.activeTeam;
+        const teamNames = game.teamNames || { A: 'Team A', B: 'Team B' };
+        const cuePid = game.teamOrder?.[activeTeam]?.[game.cueIndex?.[activeTeam] ?? 0];
+        const cueName = session.players?.[cuePid]?.name || '—';
+
+        activeTeamName.textContent = teamNames[activeTeam];
+        activeTeamName.className = `team-name team-${activeTeam.toLowerCase()}-name`;
+        activePlayerName.textContent = cueName;
+
+        if (role === 'moderator') {
+          readyInstructions.innerHTML = `<strong>${cueName}</strong>: you’ll see the card once I hit Begin.`;
+          beginRoundBtn.style.display = 'block';
+        } else if (playerId === cuePid) {
+          readyInstructions.innerHTML =
+            `<strong>You're up!</strong> The card appears here when the host starts the round.`;
+          beginRoundBtn.style.display = 'none';
+        } else if (session.players?.[playerId]?.team === activeTeam) {
+          readyInstructions.innerHTML =
+            `Your teammate <strong>${cueName}</strong> is the clue-giver. Get ready to guess.`;
+          beginRoundBtn.style.display = 'none';
+        } else {
+          readyInstructions.innerHTML =
+            `Watch for violations! <strong>${cueName}</strong> is giving clues to their team.`;
+          beginRoundBtn.style.display = 'none';
+        }
+        showScreen('ready');
+      }
+
+      function renderRoundScreen() {
+        const { game } = session;
+        const activeTeam = game.activeTeam;
+        const teamNames = game.teamNames || { A: 'Team A', B: 'Team B' };
+        const cuePid = game.teamOrder?.[activeTeam]?.[game.cueIndex?.[activeTeam] ?? 0];
+        const cueName = session.players?.[cuePid]?.name || '—';
+
+        inRoundTeamName.textContent = teamNames[activeTeam];
+        inRoundPlayer.textContent = `Clue-giver: ${cueName}`;
+
+        // Role-based card visibility
+        const myTeam = role === 'player' ? session.players?.[playerId]?.team : null;
+        const isClueGiver = role === 'player' && playerId === cuePid;
+        const isGuesser = role === 'player' && myTeam === activeTeam && !isClueGiver;
+        const showCard = role === 'moderator' || isClueGiver || (role === 'player' && myTeam && myTeam !== activeTeam);
+
+        if (showCard && game.currentCard) {
+          targetWord.textContent = game.currentCard.target;
+          tabooList.innerHTML = '';
+          game.currentCard.taboo.forEach((word) => {
+            const li = document.createElement('li');
+            li.textContent = word;
+            tabooList.appendChild(li);
+          });
+          tabooCard.style.display = 'block';
+          guessPlaceholder.style.display = 'none';
+        } else if (isGuesser) {
+          tabooCard.style.display = 'none';
+          guessPlaceholder.style.display = 'block';
+        } else {
+          // Player not yet assigned a team (edge case).
+          tabooCard.style.display = 'none';
+          guessPlaceholder.style.display = 'block';
+        }
+
+        if (role === 'moderator') {
+          roundActions.style.display = 'grid';
+          roundHint.textContent =
+            'Correct: +1 for the active team. Violation: −1 penalty. Skip: no change, next card.';
+        } else {
+          roundActions.style.display = 'none';
+          roundHint.textContent = '';
+        }
+        showScreen('round');
+      }
+
+      function renderSummaryScreen() {
+        const { game } = session;
+        const teamNames = game.teamNames || { A: 'Team A', B: 'Team B' };
+        const activeTeam = game.lastRoundTeam || game.activeTeam;
+        const tally = game.lastResults || { correct: 0, skipped: 0, violations: 0 };
+
+        sumLabelA.textContent = teamNames.A;
+        sumLabelB.textContent = teamNames.B;
+        sumNumA.textContent = String(game.scores?.A ?? 0);
+        sumNumB.textContent = String(game.scores?.B ?? 0);
+
+        const word = game.lastEndedReason === 'timeout' ? 'ran out' : 'ended early';
         roundResults.innerHTML = `
-          <strong>Round ${endedWord}.</strong><br />
-          ${teamNames[activeTeam]} scored <strong>${roundResultTally.correct}</strong>
-          (skipped ${roundResultTally.skipped}, violations ${roundResultTally.violations}).
+          <strong>Round ${word}.</strong><br />
+          ${teamNames[activeTeam]} scored <strong>${tally.correct}</strong>
+          (skipped ${tally.skipped}, violations ${tally.violations}).
         `;
 
-        // Advance clue-giver order, then swap teams
-        cueIndex[activeTeam] = (cueIndex[activeTeam] + 1) % teams[activeTeam].length;
-        activeTeam = activeTeam === 'A' ? 'B' : 'A';
-        renderModPanel();
+        nextRoundBtn.style.display = role === 'moderator' ? 'block' : 'none';
         showScreen('summary');
       }
 
-      /** Game complete — show winner, fire share + leaderboard hooks. */
-      function finishGame() {
-        const winner = scores.A > scores.B ? 'A' : scores.B > scores.A ? 'B' : null;
+      function renderEnded() {
+        const { game } = session;
+        if (!game) return;
+        const teamNames = game.teamNames || { A: 'Team A', B: 'Team B' };
+        const scores = game.scores || { A: 0, B: 0 };
+        const winner = game.winner;
+
         if (winner) {
           winnerBadge.textContent = `${teamNames[winner]} win!`;
           winnerBadge.className = `winner-badge team-${winner.toLowerCase()}`;
         } else {
-          winnerBadge.textContent = `Tie game!`;
-          winnerBadge.className = `winner-badge team-a`;
+          winnerBadge.textContent = 'Tie game!';
+          winnerBadge.className = 'winner-badge team-a';
         }
         finalScoreText.textContent = `${teamNames.A} ${scores.A} — ${teamNames.B} ${scores.B}`;
-        statRounds.textContent = String(roundsPlayed);
-        statCards.textContent = String(cardsRevealed);
+        statRounds.textContent = String(game.roundsPlayed ?? 0);
+        statCards.textContent = String(game.cardsRevealed ?? 0);
+        playAgainBtn.style.display = role === 'moderator' ? 'block' : 'none';
         showScreen('end');
 
-        if (window.voaShare) {
-          const shareText = winner
-            ? `${teamNames[winner]} won ${APP_NAME} ${scores[winner]}–${scores[winner === 'A' ? 'B' : 'A']}! Who’s on your team?`
-            : `We tied ${scores.A}–${scores.B} at ${APP_NAME}! Can your crew break the tie?`;
+        if (role === 'moderator' && !window._sharedOnce && window.voaShare) {
+          window._sharedOnce = true;
+          const myTeam = winner;
+          const shareText = myTeam
+            ? `${teamNames[myTeam]} won ${APP_NAME} ${scores[myTeam]}–${scores[myTeam === 'A' ? 'B' : 'A']}! Who’s on your team?`
+            : `We tied ${scores.A}–${scores.B} at ${APP_NAME}!`;
           window.voaShare({ text: shareText });
         }
       }
 
-      /** Reset everything for a new game with the same players. */
-      function resetForReplay() {
-        scores = { A: 0, B: 0 };
-        cueIndex = { A: 0, B: 0 };
-        activeTeam = 'A';
-        roundsPlayed = 0;
-        cardsRevealed = 0;
-        teamNames.A = pickTeamName();
-        teamNames.B = pickTeamName(teamNames.A);
-        assignTeams();
-        buildDeck();
-        setupReadyScreen();
-      }
-
-      /** Pick a playful team name, avoiding a collision with the other team. */
-      function pickTeamName(exclude) {
-        const options = [
-          'Sharks',
-          'Foxes',
-          'Wolves',
-          'Ravens',
-          'Tigers',
-          'Hawks',
-          'Pandas',
-          'Otters',
-          'Dragons',
-          'Lions',
-        ];
-        const filtered = options.filter((name) => name !== exclude);
-        return filtered[Math.floor(Math.random() * filtered.length)];
-      }
-
-      // --- Event wiring -------------------------------------------------
-
-      addPlayerBtn.addEventListener('click', () => addPlayer());
-      playerInput.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-          event.preventDefault();
-          addPlayer();
+      // --- UI helpers --------------------------------------------------
+      function updateJoinBox() {
+        joinCodeEl.textContent = sessionCode || '------';
+        if (sessionCode) {
+          joinUrlEl.textContent = `${window.location.origin}/join/${sessionCode}`;
         }
-      });
+      }
 
-      function addPlayer() {
-        const name = playerInput.value.trim();
-        if (!name) return;
-        if (players.length >= 16) {
-          playerHint.textContent = 'Max 16 players per game.';
+      function updateScoreboardFromSession() {
+        if (!session?.game) return;
+        const { game } = session;
+        const teamNames = game.teamNames || { A: 'Team A', B: 'Team B' };
+        labelTeamA.textContent = teamNames.A;
+        labelTeamB.textContent = teamNames.B;
+        numTeamA.textContent = String(game.scores?.A ?? 0);
+        numTeamB.textContent = String(game.scores?.B ?? 0);
+        const teamA = (game.teamOrder?.A || [])
+          .map((id) => session.players?.[id]?.name)
+          .filter(Boolean);
+        const teamB = (game.teamOrder?.B || [])
+          .map((id) => session.players?.[id]?.name)
+          .filter(Boolean);
+        membersTeamA.textContent = teamA.join(', ');
+        membersTeamB.textContent = teamB.join(', ');
+        scoreTeamA.classList.toggle('active', game.activeTeam === 'A');
+        scoreTeamB.classList.toggle('active', game.activeTeam === 'B');
+      }
+
+      function updateModPanel() {
+        if (role !== 'moderator' || !session?.game) {
+          rosterListA.innerHTML = '';
+          rosterListB.innerHTML = '';
           return;
         }
-        if (players.some((existing) => existing.toLowerCase() === name.toLowerCase())) {
-          playerHint.textContent = 'That name is already in the list.';
-          return;
-        }
-        players.push(name);
-        playerInput.value = '';
-        playerInput.focus();
-        renderPlayerList();
+        const { game } = session;
+        const teamNames = game.teamNames || { A: 'Team A', B: 'Team B' };
+        rosterLabelA.textContent = teamNames.A;
+        rosterLabelB.textContent = teamNames.B;
+        rosterListA.innerHTML = '';
+        rosterListB.innerHTML = '';
+        (game.teamOrder?.A || []).forEach((id, index) => {
+          const li = document.createElement('li');
+          li.textContent = session.players?.[id]?.name || '(gone)';
+          if (game.activeTeam === 'A' && index === (game.cueIndex?.A ?? 0)) {
+            li.classList.add('active');
+          }
+          rosterListA.appendChild(li);
+        });
+        (game.teamOrder?.B || []).forEach((id, index) => {
+          const li = document.createElement('li');
+          li.textContent = session.players?.[id]?.name || '(gone)';
+          if (game.activeTeam === 'B' && index === (game.cueIndex?.B ?? 0)) {
+            li.classList.add('active');
+          }
+          rosterListB.appendChild(li);
+        });
       }
 
-      startGameBtn.addEventListener('click', () => {
-        targetScore = parseInt(targetScoreSel.value, 10);
-        roundLength = parseInt(roundLengthSel.value, 10);
-        teamNames.A = pickTeamName();
-        teamNames.B = pickTeamName(teamNames.A);
-        assignTeams();
-        buildDeck();
-        scores = { A: 0, B: 0 };
-        cueIndex = { A: 0, B: 0 };
-        activeTeam = 'A';
-        roundsPlayed = 0;
-        cardsRevealed = 0;
-        setupReadyScreen();
-      });
+      function updateTimerTick() {
+        if (timerTickId) {
+          clearInterval(timerTickId);
+          timerTickId = null;
+        }
+        if (session?.game?.roundState !== 'playing') return;
+        const roundLength = session.settings?.roundLength ?? 60;
+        const startedAt = session.game.roundStartedAt;
+        if (!startedAt) return;
+        const tick = () => {
+          const elapsed = Math.max(0, (Date.now() - startedAt) / 1000);
+          const remaining = Math.max(0, Math.ceil(roundLength - elapsed));
+          const m = Math.floor(remaining / 60);
+          const s = remaining % 60;
+          timerDisplay.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+          timerDisplay.classList.remove('warning', 'danger');
+          if (remaining <= 10) timerDisplay.classList.add('danger');
+          else if (remaining <= 20) timerDisplay.classList.add('warning');
+          if (remaining <= 0 && role === 'moderator') {
+            clearInterval(timerTickId);
+            timerTickId = null;
+            endRound('timeout');
+          }
+        };
+        tick();
+        timerTickId = setInterval(tick, 250);
+      }
 
+      // --- Moderator: game mutations -----------------------------------
+      async function assignTeamsAndStart() {
+        const players = playersArray();
+        if (players.length < 4 || players.length % 2 !== 0) return;
+
+        const ids = shuffleInPlace(players.map((player) => player.id));
+        const teamOrder = { A: [], B: [] };
+        ids.forEach((id, index) => {
+          (index % 2 === 0 ? teamOrder.A : teamOrder.B).push(id);
+        });
+
+        // Persist team assignments back to each player's record.
+        const playerUpdates = {};
+        teamOrder.A.forEach((id) => {
+          playerUpdates[`players/${id}/team`] = 'A';
+        });
+        teamOrder.B.forEach((id) => {
+          playerUpdates[`players/${id}/team`] = 'B';
+        });
+
+        const teamNames = {
+          A: pickTeamName(),
+          B: pickTeamName(),
+        };
+        while (teamNames.A === teamNames.B) {
+          teamNames.B = pickTeamName(teamNames.A);
+        }
+
+        const settings = {
+          targetScore: parseInt(targetScoreSel.value, 10) || 7,
+          roundLength: parseInt(roundLengthSel.value, 10) || 60,
+        };
+
+        await update(ref(db, `sessions/${sessionCode}`), {
+          ...playerUpdates,
+          status: 'playing',
+          settings,
+          game: {
+            activeTeam: 'A',
+            scores: { A: 0, B: 0 },
+            teamNames,
+            teamOrder,
+            cueIndex: { A: 0, B: 0 },
+            roundState: 'ready',
+            roundsPlayed: 0,
+            cardsRevealed: 0,
+            currentCard: null,
+            deckSeed: Math.floor(Math.random() * 2 ** 31),
+            deckPointer: 0,
+          },
+        });
+      }
+
+      function drawCard() {
+        // Deterministic-ish draw: shuffle once per session using deckSeed, then
+        // walk an index. The moderator owns the deck — only their writes update
+        // currentCard, so other clients just receive what the moderator chose.
+        const seed = session.game.deckSeed ?? 1;
+        const pointer = session.game.deckPointer ?? 0;
+        const deck = [...CARDS];
+        // Mulberry32-ish PRNG for shuffle determinism.
+        let t = seed >>> 0;
+        const rand = () => {
+          t = (t + 0x6D2B79F5) >>> 0;
+          let r = Math.imul(t ^ (t >>> 15), 1 | t);
+          r ^= r + Math.imul(r ^ (r >>> 7), 61 | r);
+          return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+        };
+        for (let i = deck.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(rand() * (i + 1));
+          [deck[i], deck[j]] = [deck[j], deck[i]];
+        }
+        return { card: deck[pointer % deck.length], nextPointer: pointer + 1 };
+      }
+
+      async function beginRound() {
+        const { card, nextPointer } = drawCard();
+        await update(ref(db, `sessions/${sessionCode}/game`), {
+          roundState: 'playing',
+          roundStartedAt: serverTimestamp(),
+          currentCard: card,
+          deckPointer: nextPointer,
+          cardsRevealed: (session.game.cardsRevealed || 0) + 1,
+          lastResults: { correct: 0, skipped: 0, violations: 0 },
+        });
+      }
+
+      async function nextCard(scoreDelta, tallyField) {
+        const { card, nextPointer } = drawCard();
+        const { game } = session;
+        const activeTeam = game.activeTeam;
+        const currentScore = game.scores?.[activeTeam] ?? 0;
+        const newScore = Math.max(0, currentScore + scoreDelta);
+        const tally = { ...(game.lastResults || { correct: 0, skipped: 0, violations: 0 }) };
+        tally[tallyField] = (tally[tallyField] || 0) + 1;
+
+        await update(ref(db, `sessions/${sessionCode}/game`), {
+          currentCard: card,
+          deckPointer: nextPointer,
+          cardsRevealed: (game.cardsRevealed || 0) + 1,
+          [`scores/${activeTeam}`]: newScore,
+          lastResults: tally,
+        });
+      }
+
+      async function endRound(reason) {
+        const { game } = session;
+        const targetScore = session.settings?.targetScore ?? 7;
+        const scores = game.scores || { A: 0, B: 0 };
+
+        const winner =
+          scores.A >= targetScore ? 'A' : scores.B >= targetScore ? 'B' : null;
+
+        if (winner) {
+          await update(ref(db, `sessions/${sessionCode}`), {
+            status: 'ended',
+            'game/roundState': 'ended',
+            'game/winner': winner,
+            'game/roundsPlayed': (game.roundsPlayed || 0) + 1,
+            'game/lastEndedReason': reason,
+          });
+          return;
+        }
+
+        const activeTeam = game.activeTeam;
+        const nextTeam = activeTeam === 'A' ? 'B' : 'A';
+        const nextCue = ((game.cueIndex?.[activeTeam] ?? 0) + 1) %
+          (game.teamOrder?.[activeTeam]?.length || 1);
+
+        await update(ref(db, `sessions/${sessionCode}/game`), {
+          roundState: 'summary',
+          roundsPlayed: (game.roundsPlayed || 0) + 1,
+          lastRoundTeam: activeTeam,
+          lastEndedReason: reason,
+          activeTeam: nextTeam,
+          [`cueIndex/${activeTeam}`]: nextCue,
+          currentCard: null,
+        });
+      }
+
+      async function advanceToNextRound() {
+        await update(ref(db, `sessions/${sessionCode}/game`), {
+          roundState: 'ready',
+        });
+      }
+
+      async function playAgain() {
+        // Keep the same players; reset the game payload.
+        const players = playersArray();
+        const ids = shuffleInPlace(players.map((p) => p.id));
+        const teamOrder = { A: [], B: [] };
+        ids.forEach((id, index) => {
+          (index % 2 === 0 ? teamOrder.A : teamOrder.B).push(id);
+        });
+        const teamNames = { A: pickTeamName(), B: pickTeamName() };
+        while (teamNames.A === teamNames.B) teamNames.B = pickTeamName(teamNames.A);
+
+        const playerUpdates = {};
+        teamOrder.A.forEach((id) => {
+          playerUpdates[`players/${id}/team`] = 'A';
+        });
+        teamOrder.B.forEach((id) => {
+          playerUpdates[`players/${id}/team`] = 'B';
+        });
+
+        await update(ref(db, `sessions/${sessionCode}`), {
+          status: 'playing',
+          ...playerUpdates,
+          game: {
+            activeTeam: 'A',
+            scores: { A: 0, B: 0 },
+            teamNames,
+            teamOrder,
+            cueIndex: { A: 0, B: 0 },
+            roundState: 'ready',
+            roundsPlayed: 0,
+            cardsRevealed: 0,
+            currentCard: null,
+            deckSeed: Math.floor(Math.random() * 2 ** 31),
+            deckPointer: 0,
+          },
+        });
+        window._sharedOnce = false;
+      }
+
+      // --- Event wiring (guarded by role where relevant) ----------------
+      newGameBtn.addEventListener('click', () => createSession());
+      startGameBtn.addEventListener('click', () => assignTeamsAndStart());
       beginRoundBtn.addEventListener('click', () => beginRound());
-      correctBtn.addEventListener('click', () => markCorrect());
-      skipBtn.addEventListener('click', () => markSkip());
-      violationBtn.addEventListener('click', () => markViolation());
-      nextRoundBtn.addEventListener('click', () => setupReadyScreen());
-      playAgainBtn.addEventListener('click', () => resetForReplay());
+      correctBtn.addEventListener('click', () => nextCard(1, 'correct'));
+      skipBtn.addEventListener('click', () => nextCard(0, 'skipped'));
+      violationBtn.addEventListener('click', () => nextCard(-1, 'violations'));
+      nextRoundBtn.addEventListener('click', () => advanceToNextRound());
+      playAgainBtn.addEventListener('click', () => playAgain());
+
+      copyLinkBtn.addEventListener('click', async () => {
+        if (!sessionCode) return;
+        const url = `${window.location.origin}/join/${sessionCode}`;
+        try {
+          await navigator.clipboard.writeText(url);
+          copyLinkBtn.textContent = '✓ Copied';
+          setTimeout(() => {
+            copyLinkBtn.textContent = '📋 Copy';
+          }, 1500);
+        } catch {
+          copyLinkBtn.textContent = 'Copy failed';
+        }
+      });
+
+      targetScoreSel.addEventListener('change', () => {
+        if (role !== 'moderator') return;
+        const value = parseInt(targetScoreSel.value, 10);
+        if (Number.isFinite(value)) {
+          update(ref(db, `sessions/${sessionCode}/settings`), { targetScore: value });
+        }
+      });
+
+      roundLengthSel.addEventListener('change', () => {
+        if (role !== 'moderator') return;
+        const value = parseInt(roundLengthSel.value, 10);
+        if (Number.isFinite(value)) {
+          update(ref(db, `sessions/${sessionCode}/settings`), { roundLength: value });
+        }
+      });
 
       openPanelBtn.addEventListener('click', () => {
-        renderModPanel();
+        updateModPanel();
         modPanelOverlay.classList.add('open');
       });
       closePanelBtn.addEventListener('click', () => modPanelOverlay.classList.remove('open'));
@@ -1346,9 +1936,9 @@
         if (event.target === modPanelOverlay) modPanelOverlay.classList.remove('open');
       });
 
-      // Keyboard shortcuts for the moderator: only when not typing in a field
-      // and when no shell overlay or mod panel is open.
+      // Keyboard shortcuts — moderator only, same guards as shell requires.
       document.addEventListener('keydown', (event) => {
+        if (role !== 'moderator') return;
         const tag = document.activeElement?.tagName;
         if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
         if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
@@ -1363,13 +1953,13 @@
         if (screens.round.classList.contains('active')) {
           if (key === 'c') {
             event.preventDefault();
-            markCorrect();
+            nextCard(1, 'correct');
           } else if (key === 's') {
             event.preventDefault();
-            markSkip();
+            nextCard(0, 'skipped');
           } else if (key === 'v') {
             event.preventDefault();
-            markViolation();
+            nextCard(-1, 'violations');
           } else if (event.key === 'Enter') {
             event.preventDefault();
             endRound('early');
@@ -1377,12 +1967,9 @@
         }
         if (screens.summary.classList.contains('active') && event.key === 'Enter') {
           event.preventDefault();
-          setupReadyScreen();
+          advanceToNextRound();
         }
       });
-
-      // First render
-      renderPlayerList();
     </script>
   </body>
 </html>
