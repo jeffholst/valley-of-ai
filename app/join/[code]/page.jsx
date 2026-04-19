@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { isValidSessionCode, normalizeSessionCode } from '@/lib/firebase/sessionCodes';
+import { isValidSessionCode, normalizeSessionCode } from '@/lib/multiplayer/sessionCodes';
 import { storagePrefix } from '@/lib/siteConfig';
 
 // Reusable multiplayer join page. Any app that exposes session metadata
