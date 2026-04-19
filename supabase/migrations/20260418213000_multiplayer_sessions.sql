@@ -1,5 +1,5 @@
--- Multiplayer session storage for Team Taboo (Supabase-backed replacement
--- for Firebase Realtime Database state).
+-- Multiplayer session storage used by any app that needs a host-led
+-- session-code lobby. One row per active game, keyed by the share code.
 
 create table public.multiplayer_sessions (
   code text primary key,

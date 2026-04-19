@@ -2,7 +2,7 @@ import {
   generateSessionCode,
   isValidSessionCode,
   normalizeSessionCode,
-} from '../../../lib/firebase/sessionCodes';
+} from '../../../lib/multiplayer/sessionCodes';
 
 describe('generateSessionCode', () => {
   it('produces a string of the requested length', () => {
