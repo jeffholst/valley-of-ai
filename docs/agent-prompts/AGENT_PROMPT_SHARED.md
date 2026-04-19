@@ -475,7 +475,7 @@ A shared, app-agnostic multiplayer backend is available for any app that needs h
 3. Keep all game mutations behind the moderator PATCH gate. Players never PATCH — they only POST themselves via the join flow.
 4. Model game state inside the opaque `game` JSONB root; model lobby config inside `settings`. The backend does not enforce either shape.
 5. No realtime push is available — poll `GET /api/multiplayer/sessions/:code` on ~1 Hz and diff locally.
-6. Session-code generation must use `generateSessionCode()` from `lib/firebase/sessionCodes.js`. Do not roll your own.
+6. Session-code generation must match the shared `generateSessionCode()` format in `lib/firebase/sessionCodes.js`. If your app cannot import that helper directly (for example, a self-contained static HTML app), use the same alphabet/logic rather than inventing a different code format.
 7. Reference implementation: [apps/2026/04/18/team-taboo/index.html](../../apps/2026/04/18/team-taboo/index.html).
 
 For the detailed data model, protocol walkthrough, and common questions (popup panels, authorization edge cases, rejoining, reset semantics) see the wiki page [Multiplayer Backend FAQ](https://github.com/jeffholst/valley-of-ai/wiki/Multiplayer-Backend-FAQ).
