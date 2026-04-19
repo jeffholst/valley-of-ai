@@ -29,16 +29,6 @@
       "implementedAt": "2026-04-18T17:01:51Z",
       "agentName": "GitHub Copilot",
       "llmModel": "Claude Haiku 4.5"
-    },
-    {
-      "issueNumber": 362,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/362",
-      "runId": "run-20260419T220321Z-f36990",
-      "description": "Migrated Word Scramble to multiplayer backend sessions with moderator share-link lobby, player name join, realtime synchronized rounds/scores, and automatic first-correct score awarding.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-04-19T22:03:21Z",
-      "agentName": "Codex",
-      "llmModel": "GPT-5.4"
     }
   ],
   "generation": {
