@@ -1339,6 +1339,7 @@
       let session = null; // latest snapshot of /sessions/<code>
       let sessionUnsubscribe = null;
       let timerTickId = null;
+      let endingRound = false;
 
       // --- Screen navigation -------------------------------------------
       function showScreen(name) {
@@ -1624,20 +1625,35 @@
         activeTeamName.className = `team-name team-${activeTeam.toLowerCase()}-name`;
         activePlayerName.textContent = cueName;
 
+        const cueNameStrong = document.createElement('strong');
+        cueNameStrong.textContent = cueName;
+
+        readyInstructions.replaceChildren();
+
         if (role === 'moderator') {
-          readyInstructions.innerHTML = `<strong>${cueName}</strong>: you’ll see the card once I hit Begin.`;
+          readyInstructions.append(cueNameStrong, ': you’ll see the card once I hit Begin.');
           beginRoundBtn.style.display = 'block';
         } else if (playerId === cuePid) {
-          readyInstructions.innerHTML =
-            `<strong>You're up!</strong> The card appears here when the host starts the round.`;
+          const youAreUpStrong = document.createElement('strong');
+          youAreUpStrong.textContent = "You're up!";
+          readyInstructions.append(
+            youAreUpStrong,
+            ' The card appears here when the host starts the round.'
+          );
           beginRoundBtn.style.display = 'none';
         } else if (session.players?.[playerId]?.team === activeTeam) {
-          readyInstructions.innerHTML =
-            `Your teammate <strong>${cueName}</strong> is the clue-giver. Get ready to guess.`;
+          readyInstructions.append(
+            'Your teammate ',
+            cueNameStrong,
+            ' is the clue-giver. Get ready to guess.'
+          );
           beginRoundBtn.style.display = 'none';
         } else {
-          readyInstructions.innerHTML =
-            `Watch for violations! <strong>${cueName}</strong> is giving clues to their team.`;
+          readyInstructions.append(
+            'Watch for violations! ',
+            cueNameStrong,
+            ' is giving clues to their team.'
+          );
           beginRoundBtn.style.display = 'none';
         }
         showScreen('ready');
@@ -1804,7 +1820,12 @@
           clearInterval(timerTickId);
           timerTickId = null;
         }
-        if (session?.game?.roundState !== 'playing') return;
+        if (session?.game?.roundState !== 'playing') {
+          // Reset the guard whenever we leave the playing state so a fresh
+          // round can trigger a timeout again.
+          endingRound = false;
+          return;
+        }
         const roundLength = session.settings?.roundLength ?? 60;
         const startedAt = session.game.roundStartedAt;
         if (!startedAt) return;
@@ -1817,7 +1838,8 @@
           timerDisplay.classList.remove('warning', 'danger');
           if (remaining <= 10) timerDisplay.classList.add('danger');
           else if (remaining <= 20) timerDisplay.classList.add('warning');
-          if (remaining <= 0 && role === 'moderator') {
+          if (remaining <= 0 && role === 'moderator' && !endingRound) {
+            endingRound = true;
             clearInterval(timerTickId);
             timerTickId = null;
             endRound('timeout');
@@ -1903,6 +1925,7 @@
       }
 
       async function beginRound() {
+        endingRound = false;
         const { card, nextPointer } = drawCard();
         await update(ref(db, `sessions/${sessionCode}/game`), {
           roundState: 'playing',

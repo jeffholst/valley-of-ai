@@ -32,9 +32,10 @@ export async function POST(request, { params }) {
     return Response.json({ error: 'Name must be 1-30 characters' }, { status: 400 });
   }
 
+  // First fetch app_path (needed for redirect) and verify session exists.
   const { data: row, error: loadError } = await supabase
     .from('multiplayer_sessions')
-    .select('players, app_path')
+    .select('app_path')
     .eq('code', code)
     .maybeSingle();
 
@@ -46,24 +47,27 @@ export async function POST(request, { params }) {
     return Response.json({ error: 'Not found' }, { status: 404 });
   }
 
-  const players = structuredClone(row.players || {});
   const playerId = generatePlayerId();
-  players[playerId] = {
+  const playerRecord = {
     id: playerId,
     name,
     joinedAt: new Date().toISOString(),
     online: true,
   };
 
-  const { error: updateError } = await supabase
-    .from('multiplayer_sessions')
-    .update({ players })
-    .eq('code', code);
+  // Use an atomic JSONB merge via RPC to avoid lost-update races when two
+  // players join at the same time.
+  const { data: rpcRows, error: rpcError } = await supabase.rpc('add_multiplayer_player', {
+    p_code: code,
+    p_player_id: playerId,
+    p_player: playerRecord,
+  });
 
-  if (updateError) {
-    console.error('Failed to persist player join', updateError);
+  if (rpcError) {
+    console.error('Failed to persist player join', rpcError);
     return Response.json({ error: 'Failed to join session' }, { status: 500 });
   }
 
-  return Response.json({ playerId, appPath: row.app_path }, { status: 201 });
+  const appPath = rpcRows?.[0]?.app_path ?? row.app_path;
+  return Response.json({ playerId, appPath }, { status: 201 });
 }

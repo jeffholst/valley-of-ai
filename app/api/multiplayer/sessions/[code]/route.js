@@ -120,6 +120,12 @@ export async function PATCH(request, { params }) {
     players: structuredClone(row.players || {}),
   };
 
+  // Track which top-level JSON roots the patch actually touches so we only
+  // write back the columns that changed, preventing stale reads from
+  // overwriting concurrent updates to untouched roots (e.g. a player joining
+  // while the moderator updates game state).
+  const touchedRoots = new Set();
+
   // Patch keys are slash-delimited paths rooted at settings/game/players
   // or top-level fields used by the existing app mutation pattern.
   for (const [rawPath, value] of Object.entries(patch)) {
@@ -129,17 +135,21 @@ export async function PATCH(request, { params }) {
     }
     const root = parts[0];
     if (root === 'settings' || root === 'game' || root === 'players') {
+      touchedRoots.add(root);
       applyNestedPatch(next[root], { [parts.slice(1).join('/')]: value });
     } else {
+      // Unknown root — fall back to patching all three to stay safe.
+      touchedRoots.add('settings');
+      touchedRoots.add('game');
+      touchedRoots.add('players');
       applyNestedPatch(next, { [rawPath]: value });
     }
   }
 
-  const updateRow = {
-    settings: next.settings,
-    game: next.game,
-    players: next.players,
-  };
+  const updateRow = {};
+  for (const root of touchedRoots) {
+    updateRow[root] = next[root];
+  }
 
   if (status === 'lobby' || status === 'playing' || status === 'ended') {
     updateRow.status = status;

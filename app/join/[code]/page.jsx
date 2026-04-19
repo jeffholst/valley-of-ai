@@ -6,9 +6,10 @@ import Link from 'next/link';
 import { isValidSessionCode, normalizeSessionCode } from '@/lib/firebase/sessionCodes';
 import { storagePrefix } from '@/lib/siteConfig';
 
-// Reusable multiplayer join page. Any app that stores a session under
-// /sessions/<code> in Firebase with { appPath, appName, status } can use this
-// route — the page reads those fields and redirects the player into the app.
+// Reusable multiplayer join page. Any app that exposes session metadata
+// via the Next.js session API routes backed by Supabase, with
+// { appPath, appName, status }, can use this route — the page reads those
+// fields and redirects the player into the app.
 
 const STATUS_MESSAGES = {
   ended: 'This game has already finished. Ask the host to start a new one.',

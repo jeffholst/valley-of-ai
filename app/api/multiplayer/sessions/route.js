@@ -67,6 +67,11 @@ export async function POST(request) {
 
   const { error: insertError } = await supabase.from('multiplayer_sessions').insert(row);
   if (insertError) {
+    // 23505 = unique_violation — the code was taken in the race window between
+    // the preflight SELECT and this INSERT.
+    if (insertError.code === '23505') {
+      return Response.json({ error: 'Code already exists' }, { status: 409 });
+    }
     console.error('Failed to create multiplayer session', insertError);
     return Response.json({ error: 'Failed to create session' }, { status: 500 });
   }
