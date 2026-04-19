@@ -24,17 +24,5 @@
     "totalTokensOut": 18800,
     "runId": "run-20260418T195520Z-5e8462",
     "notes": "Static-app constraint (no backend, no cross-device sync) meant the issue's real-time multiplayer spec could not be implemented literally. Built as a single-screen moderator-run variant — the moderator runs the game on their shared Zoom screen, teammates look away during their team's clue-giving turn, and a private moderator panel holds team rosters. Preserves the core Taboo loop: auto-team split, rotating clue-givers, 60s timer, correct/skip/violation scoring, target score, end-game summary. Rejected alternatives: WebRTC P2P (signaling reliability concerns), external realtime service (exposes credentials). Matches the pattern established by word-scramble. Token counts are rough estimates."
-  },
-  "improvements": [
-    {
-      "issueNumber": 356,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/356",
-      "description": "Migrated Team Taboo multiplayer from Firebase to Supabase-backed session storage routed through Next.js API endpoints. Moderator still creates a 6-char join code; participants join via /join/<code>, pick a name, and are auto-split into teams at start. Live roster, role-based card visibility (active clue-giver + opposing team + moderator see the card; active team's other players see a guessing view), synchronized timer/scoreboard, and localStorage reconnection are preserved. Added Supabase migration for multiplayer_sessions plus API routes for session create/read/update and player joins.",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-04-18T20:27:31Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-opus-4-7",
-      "runId": "run-20260418T202731Z-3e9b28"
-    }
-  ]
+  }
 }

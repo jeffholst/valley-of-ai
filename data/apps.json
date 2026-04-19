@@ -30,10 +30,27 @@
       "prompt": "Build a web app for Taboo on a Zoom call where only the moderator screenshares. Moderator clicks \"New Game\" → app shows a URL and join code on the shared screen to paste in Zoom chat. Participants open the link, enter the code and their name; the shared screen updates with joiners live. On \"Start,\" auto-split players into two teams; each player's screen shows their team. The moderator has a private panel (hidden from screenshare) listing both teams. Each round the moderator picks a guesser from each team and starts a turn. Only the active guesser sees the target word and taboo words. Their teammates see a \"guessing...\" view with no words. The opposing team sees the full card to catch violations. \"Begin Round\" starts a 60s timer; moderator marks correct/skip/violation. Scores update live on all screens. Rotate guessers; first to the target score wins. Requirements: real-time sync, role-based views (moderator/guesser/teammate/opponent), timer, scoreboard, end-game summary.",
       "requestor": "Jeff Holst"
     },
-    "improvements": null,
+    "improvements": [
+      {
+        "issueNumber": 356,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/356",
+        "description": "Migrated Team Taboo multiplayer from Firebase to Supabase-backed session storage routed through Next.js API endpoints. Moderator still creates a 6-char join code; participants join via /join/<code>, pick a name, and are auto-split into teams at start. Live roster, role-based card visibility (active clue-giver + opposing team + moderator see the card; active team's other players see a guessing view), synchronized timer/scoreboard, and localStorage reconnection are preserved. Added Supabase migration for multiplayer_sessions plus API routes for session create/read/update and player joins.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-04-18T20:27:31Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-opus-4-7",
+        "runId": "run-20260418T202731Z-3e9b28"
+      }
+    ],
     "allowImprovements": true,
     "maxScore": null,
-    "backups": null
+    "backups": [
+      {
+        "runId": "run-20260418T202731Z-3e9b28",
+        "path": "backups/run-20260418T202731Z-3e9b28/index.html",
+        "url": "/apps/2026/04/18/team-taboo/backups/run-20260418T202731Z-3e9b28/index.html"
+      }
+    ]
   },
   {
     "id": "2026/04/17/alibi",
