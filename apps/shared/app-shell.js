@@ -95,6 +95,25 @@
     return resolveConfigUrl('turnstileSiteKey', TURNSTILE_SITE_KEY_PLACEHOLDER);
   }
 
+  function pageUsesLeaderboardHook() {
+    // Escape hatch for apps that support the shared leaderboard but do not reference
+    // window.voaLeaderboard directly in inline script code. Opt in by adding
+    // data-voa-has-leaderboard="true" to the page's <html> element.
+    if (document.documentElement?.hasAttribute('data-voa-has-leaderboard')) {
+      return document.documentElement.getAttribute('data-voa-has-leaderboard') === 'true';
+    }
+
+    const scripts = document.querySelectorAll('script:not([src])');
+    for (const script of scripts) {
+      const source = script.textContent || '';
+      if (/window\.voaLeaderboard\s*\?*\.\s*(submit|show)\s*\(/.test(source)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   function getLocalVoteRecord(appId) {
     try {
       const prefix = resolveStoragePrefix();
@@ -1614,17 +1633,19 @@
     improveLink.title = 'Suggest an improvement for this app';
     container.appendChild(improveLink);
 
-    const lbHeaderBtn = document.createElement('button');
-    lbHeaderBtn.id = 'voa-lb-btn';
-    lbHeaderBtn.type = 'button';
-    lbHeaderBtn.setAttribute('aria-label', 'Leaderboard');
-    lbHeaderBtn.textContent = '🏆';
-    lbHeaderBtn.addEventListener('click', () => {
-      if (window.voaLeaderboard) {
-        window.voaLeaderboard.show();
-      }
-    });
-    container.appendChild(lbHeaderBtn);
+    if (pageUsesLeaderboardHook()) {
+      const lbHeaderBtn = document.createElement('button');
+      lbHeaderBtn.id = 'voa-lb-btn';
+      lbHeaderBtn.type = 'button';
+      lbHeaderBtn.setAttribute('aria-label', 'Leaderboard');
+      lbHeaderBtn.textContent = '🏆';
+      lbHeaderBtn.addEventListener('click', () => {
+        if (window.voaLeaderboard) {
+          window.voaLeaderboard.show();
+        }
+      });
+      container.appendChild(lbHeaderBtn);
+    }
 
     const myVoteRecord = getLocalVoteRecord(appId);
     const myVote = myVoteRecord?.type ?? null;
