@@ -138,7 +138,8 @@ export default function JoinPage() {
           body: JSON.stringify({ name: trimmed }),
         });
         if (!response.ok) {
-          throw new Error('join-failed');
+          const body = await response.text();
+          throw new Error(`join-failed: ${response.status} ${body}`);
         }
         const payload = await response.json();
         const playerId = payload?.playerId || generatePlayerId();
