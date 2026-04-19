@@ -39,16 +39,6 @@
       "implementedAt": "2026-04-19T22:03:21Z",
       "agentName": "Codex",
       "llmModel": "GPT-5.4"
-    },
-    {
-      "issueNumber": 364,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/364",
-      "runId": "run-20260419T233454Z-4b42e6",
-      "description": "Improved player waiting and round-sync behavior so joined players cannot resubmit names, new rounds clear local letters, and winner updates refresh promptly.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-04-19T23:34:54Z",
-      "agentName": "Codex",
-      "llmModel": "GPT-5"
     }
   ],
   "generation": {

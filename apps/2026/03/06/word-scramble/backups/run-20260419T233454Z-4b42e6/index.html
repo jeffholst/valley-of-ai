@@ -572,7 +572,6 @@
     let timerHandle = null;
     let pendingAutoSubmit = false;
     let answerPanelWindow = null;
-    let activeRoundKey = null;
 
     let localAnswer = [];
     let localUsedIndices = new Set();
@@ -722,15 +721,6 @@
       return response.json();
     }
 
-    async function refreshSessionNow() {
-      if (!sessionCode) return;
-      const nextSession = await fetchSession(sessionCode);
-      if (nextSession) {
-        session = nextSession;
-        updateScreenBySession();
-      }
-    }
-
     function playersArray() {
       if (!session?.players) return [];
       return Object.values(session.players).sort((a, b) => {
@@ -823,16 +813,6 @@
       pendingAutoSubmit = false;
     }
 
-    function syncLocalAnswerToRound(game) {
-      const nextRoundKey = game
-        ? [game.roundNumber, game.word, game.roundStartedAt].filter(Boolean).join(':')
-        : null;
-      if (nextRoundKey && nextRoundKey !== activeRoundKey) {
-        resetLocalAnswer();
-      }
-      activeRoundKey = nextRoundKey;
-    }
-
     function renderTiles() {
       const game = getRoundGame();
       const scramble = Array.isArray(game?.scramble) ? game.scramble : [];
@@ -886,9 +866,6 @@
           setRoundMessage(`${result.winnerName || 'Another player'} already solved first.`, 'warn');
         } else if (result?.correct) {
           setRoundMessage('Correct! Waiting for room sync...', 'success');
-        }
-        if (result?.accepted || result?.alreadyAwarded || result?.reason === 'round-inactive') {
-          await refreshSessionNow();
         }
       } catch {
         setRoundMessage('Could not submit answer. Try again.', 'error');
@@ -1103,16 +1080,6 @@
       renderModeratorPanel();
     }
 
-    function updateJoinedPlayerWaitState() {
-      const joined = role === 'player' && Boolean(playerId);
-      playerNameInput.disabled = joined;
-      joinBtn.disabled = joined;
-      joinMessage.className = 'message info';
-      joinMessage.textContent = joined
-        ? 'You are in the room. Waiting for the moderator to start the game.'
-        : 'Enter your name once to join this room.';
-    }
-
     function updateScreenBySession() {
       const players = playersArray();
       const game = getRoundGame();
@@ -1130,10 +1097,8 @@
       playerCountStat.textContent = String(players.length);
 
       if (session.status === 'lobby' || !game) {
-        activeRoundKey = null;
         updateJoinBox();
         showScreen(role === 'moderator' ? 'lobby' : 'join');
-        updateJoinedPlayerWaitState();
         lobbyMessage.className = 'message info';
         lobbyMessage.textContent = 'Moderator: wait for players, then start.';
         moderatorControls.classList.add('hidden');
@@ -1149,7 +1114,6 @@
       }
 
       showScreen('play');
-      syncLocalAnswerToRound(game);
       moderatorControls.classList.toggle('hidden', role !== 'moderator');
 
       const roundNumber = Number(game.roundNumber || 1);
@@ -1361,10 +1325,6 @@
     }
 
     joinBtn.addEventListener('click', async () => {
-      if (playerId) {
-        updateJoinedPlayerWaitState();
-        return;
-      }
       const name = playerNameInput.value.trim();
       if (!name) {
         joinMessage.className = 'message warn';
@@ -1382,16 +1342,13 @@
           pid: playerId
         });
         setHash(params);
-        updateJoinedPlayerWaitState();
         startPolling();
         startTimerUiTick();
       } catch (error) {
         joinMessage.className = 'message error';
         joinMessage.textContent = error.message || 'Unable to join game.';
       } finally {
-        if (!playerId) {
-          joinBtn.disabled = false;
-        }
+        joinBtn.disabled = false;
       }
     });
 
