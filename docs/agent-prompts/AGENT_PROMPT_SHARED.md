@@ -368,8 +368,10 @@ Before committing any layout changes, confirm at 320px viewport width:
 ## Social Share Hook
 
 `app-shell.js` exposes `window.voaShare(options)` globally on every page that loads the shell.
-Calling it opens the 10-platform share drawer pre-loaded with a custom message. Use it at natural
-share moments: game-over with a score, challenge completed, result generated.
+Calling it opens the 10-platform share drawer pre-loaded with a custom message. **Only call it
+in response to an explicit user action — a tap on a Share button.** Never auto-open the drawer
+on game-over, round completion, or any other system event; players find an unsolicited share
+sheet intrusive.
 
 **Guard pattern** — `app-shell.js` loads with `defer`; always check before calling:
 
@@ -396,10 +398,9 @@ if (window.voaShare) {
 
 **When to call**
 
-- Game-over — pass the final score or outcome
-- Level or streak milestone
-- Creative output generated (image, composition, computed result)
-- NOT on every user action — only once per natural completion moment
+- In response to a tap on a visible Share button placed on a game-over screen, a result screen, or a milestone summary
+- Never from a system event (timer expiry, game-over handler, auto-advance, page load) — the drawer must be user-initiated
+- Only once per tap — do not retrigger if the user dismisses it
 
 ---
 
@@ -412,7 +413,7 @@ appears in the shell header automatically when an `app_id` is present.
 **Submit a score at game-over (required guard pattern):**
 
 ```js
-// Inside game-over / result handler (after voaShare):
+// Inside the game-over / result handler:
 if (window.voaLeaderboard) {
   window.voaLeaderboard.submit(score);
   // Optional: pass { label: 'points' } to customize the score unit shown in the modal
@@ -442,6 +443,24 @@ Example values: Flappy Bird → 999, Missile Command → 999999, Tetris → 9999
 **When to call:** Only at game-over, with the final score. Not during gameplay.
 **Not for utilities:** Only games have scores. Do not add `voaLeaderboard` calls to utility or
 design apps.
+
+### Rank and placement semantics (ties)
+
+Any in-app scoreboard, podium, or ranked results list must use **fair (“standard”) ranking with
+shared placements for ties** — never dense/compressed ranking.
+
+- Players with the same score share the **same rank and the same medal/placement** (e.g., two
+  Golds, three Silvers, etc.).
+- The next distinct score skips the occupied positions — it does **not** fill the gap.
+- Worked examples:
+  - Two players tie for 1st → both are **1st / Gold**; the next player is **3rd** (not 2nd).
+  - Three players tie for 2nd → all three are **2nd / Silver**; the next player is **5th** (not
+    3rd).
+- Applies to every surface that shows rank: final-score screens, mid-round standings, team
+  podiums, multiplayer summaries, and anything else visible to players.
+
+Implement the ranking in app code before rendering — do not compute ranks from array index, which
+silently produces dense ranking.
 
 ---
 
