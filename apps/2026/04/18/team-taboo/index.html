@@ -568,6 +568,146 @@
         min-height: 36px;
       }
 
+      .round-count-badge {
+        display: inline-block;
+        background: var(--accent);
+        color: #1f1302;
+        font-weight: 700;
+        font-size: 0.85rem;
+        letter-spacing: 0.04em;
+        padding: 0.3rem 0.7rem;
+        border-radius: 999px;
+        margin-bottom: 0.6rem;
+      }
+
+      .teams-strip {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.6rem;
+        margin: 0.6rem 0 0.8rem;
+      }
+
+      .teams-strip-col {
+        background: var(--surface);
+        border-radius: 10px;
+        padding: 0.5rem 0.7rem;
+      }
+
+      .teams-strip-col.team-a {
+        border-left: 4px solid var(--team-a);
+      }
+
+      .teams-strip-col.team-b {
+        border-left: 4px solid var(--team-b);
+      }
+
+      .teams-strip-title {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.25rem;
+      }
+
+      .teams-strip-members {
+        font-size: 0.88rem;
+        line-height: 1.5;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+      }
+
+      .teams-strip-member {
+        background: rgba(255, 255, 255, 0.06);
+        padding: 0.15rem 0.5rem;
+        border-radius: 999px;
+        white-space: nowrap;
+      }
+
+      .teams-strip-members .me {
+        background: var(--accent-2);
+        color: #1f1302;
+        font-weight: 700;
+      }
+
+      .teams-strip-members .cue {
+        outline: 1px solid var(--accent);
+      }
+
+      .card-role-label {
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--accent-2);
+        text-align: center;
+        margin: 0 0 0.3rem;
+      }
+
+      .card-role-instruction {
+        font-size: 0.88rem;
+        color: var(--muted);
+        text-align: center;
+        margin: 0.6rem 0 0;
+        line-height: 1.5;
+      }
+
+      .how-to-play {
+        background: var(--surface);
+        border-left: 3px solid var(--accent);
+        border-radius: 8px;
+        padding: 0.7rem 0.9rem;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-top: 0.8rem;
+      }
+
+      .final-scoreboard {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+        margin: 0.8rem 0;
+      }
+
+      .mod-round-actions-row {
+        display: flex;
+        gap: 0.6rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 0.6rem;
+      }
+
+      .mod-round-actions-row .btn {
+        flex: 0 1 auto;
+      }
+
+      .mod-round-status {
+        background: var(--surface);
+        border: 2px dashed var(--accent);
+        border-radius: 16px;
+        padding: 1.4rem 1.2rem;
+        text-align: center;
+        margin: 1rem 0;
+      }
+
+      .mod-round-status .big {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--accent-2);
+        margin-bottom: 0.6rem;
+      }
+
+      .mod-round-status p {
+        font-size: 1rem;
+        line-height: 1.5;
+        margin: 0.4rem 0;
+      }
+
+      .mod-round-status .btn {
+        margin-top: 0.8rem;
+      }
+
       .game-over {
         text-align: center;
         padding: 1.5rem 1rem;
@@ -660,6 +800,19 @@
         align-items: center;
       }
 
+      .join-share-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .join-share-row .muted {
+        margin: 0;
+        flex: 1;
+      }
+
       .join-url {
         font-family: ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
         font-size: 0.85rem;
@@ -750,23 +903,19 @@
         </div>
       </section>
 
-      <!-- Landing for moderator (no session yet) -->
-      <section id="landingScreen" class="card screen" aria-label="Start a new game">
-        <h2 class="section-title">Host a game</h2>
-        <p class="muted" style="margin-bottom: 0.8rem">
-          Click <strong>New Game</strong> to create a room. You’ll get a join link to paste into
-          Zoom chat.
-        </p>
-        <button id="newGameBtn" class="btn btn-primary btn-block">New Game</button>
-        <p class="hint">
-          Participants don’t need to be on this page. Share the join link and they’ll land on their
-          own lobby screen.
-        </p>
+      <!-- Initial loading state for moderator (before session is created) -->
+      <section id="loadingScreen" class="card screen" aria-label="Preparing game">
+        <h2 class="section-title">Creating your game room…</h2>
+        <p class="muted">Generating a join code and lobby. This takes just a moment.</p>
       </section>
 
-      <!-- Moderator lobby: waiting for players + settings -->
+      <!-- Moderator lobby: share link, settings, start -->
       <section id="lobbyScreen" class="card screen" aria-label="Moderator lobby">
         <h2 class="section-title">Invite players</h2>
+        <p class="muted" style="margin-bottom: 0.6rem">
+          Share the link below — players land on their own join screen and enter a name. New
+          players are added automatically when they join.
+        </p>
         <div class="join-box">
           <label>Game code</label>
           <div id="joinCode" class="join-code" aria-live="polite">------</div>
@@ -777,30 +926,36 @@
               📋 Copy
             </button>
           </div>
+          <div class="join-share-row">
+            <button id="shareLinkBtn" class="btn btn-secondary" style="display: none">
+              🔗 Share
+            </button>
+            <p id="lobbyHint" class="muted" aria-live="polite">
+              Waiting for participants to join…
+            </p>
+          </div>
         </div>
-
-        <h2 class="section-title" style="margin-top: 1rem">Players</h2>
-        <div id="lobbyPlayers" class="player-list" aria-live="polite"></div>
-        <p id="lobbyHint" class="muted">Waiting for participants to join…</p>
 
         <h2 class="section-title" style="margin-top: 1rem">Settings</h2>
         <div class="controls-grid">
           <div>
-            <label for="targetScore">Target score</label>
-            <select id="targetScore">
-              <option value="3">3 (quick)</option>
-              <option value="5">5</option>
-              <option value="7" selected>7</option>
-              <option value="10">10</option>
-              <option value="15">15 (long)</option>
+            <label for="roundsTotal">Total rounds</label>
+            <select id="roundsTotal">
+              <option value="2">2 (quick)</option>
+              <option value="4" selected>4 (regular)</option>
+              <option value="6">6</option>
+              <option value="8">8</option>
+              <option value="10">10 (long)</option>
             </select>
           </div>
           <div>
-            <label for="roundLength">Round length</label>
+            <label for="roundLength">Seconds per round</label>
             <select id="roundLength">
               <option value="30">30 seconds</option>
               <option value="60" selected>60 seconds</option>
               <option value="90">90 seconds</option>
+              <option value="120">120 seconds</option>
+              <option value="180">3 minutes</option>
             </select>
           </div>
         </div>
@@ -815,12 +970,20 @@
         <p class="muted" id="playerLobbySubtitle">
           Waiting for the host to start the game…
         </p>
-        <h2 class="section-title" style="margin-top: 1rem">Players</h2>
+        <div class="how-to-play">
+          <strong>How to play:</strong> When the host starts the game, you'll be split into two
+          teams. Each round, one player on the active team is the <strong>clue-giver</strong> —
+          they try to get teammates to guess a <strong>target word</strong> without saying any
+          of the forbidden <strong>taboo words</strong>. The opposing team watches the card to
+          catch violations. Highest score after all rounds wins.
+        </p>
+        <h2 class="section-title" style="margin-top: 1rem">Players in the room</h2>
         <div id="playerLobbyPlayers" class="player-list" aria-live="polite"></div>
       </section>
 
       <!-- Round-ready screen -->
       <section id="readyScreen" class="card screen" aria-label="Round ready screen">
+        <div class="round-count-badge" id="readyRoundCount">Round 1 of 4</div>
         <div class="scoreboard">
           <div id="scoreTeamA" class="team-score team-a">
             <h3 id="labelTeamA">Team A</h3>
@@ -846,11 +1009,19 @@
           <button id="beginRoundBtn" class="btn btn-primary btn-block" style="display: none">
             Begin Round <span class="kbd">Space</span>
           </button>
+          <button
+            id="readyEndGameBtn"
+            class="btn btn-danger btn-block"
+            style="display: none; margin-top: 0.6rem"
+          >
+            End Game
+          </button>
         </div>
       </section>
 
       <!-- In-round screen -->
       <section id="roundScreen" class="card screen" aria-label="In-round screen">
+        <div class="round-count-badge" id="inRoundCount">Round 1 of 4</div>
         <div class="round-header">
           <div>
             <strong id="inRoundTeamName" style="font-size: 1.1rem">Team A</strong>
@@ -859,21 +1030,69 @@
           <div id="timerDisplay" class="timer" role="timer" aria-live="polite">0:60</div>
         </div>
 
-        <!-- Card (shown to moderator, clue-giver, opposing team) -->
+        <!-- Teams strip (shown to players so they see teammates + opponents) -->
+        <div id="teamsStrip" class="teams-strip">
+          <div class="teams-strip-col team-a">
+            <div class="teams-strip-title" id="stripLabelA">Team A</div>
+            <div class="teams-strip-members" id="stripMembersA"></div>
+          </div>
+          <div class="teams-strip-col team-b">
+            <div class="teams-strip-title" id="stripLabelB">Team B</div>
+            <div class="teams-strip-members" id="stripMembersB"></div>
+          </div>
+        </div>
+
+        <!-- Card (shown to clue-giver + opposing team only) -->
         <div id="tabooCard" class="taboo-card" style="display: none">
+          <p class="card-role-label" id="cardRoleLabel">You can see this card</p>
           <div class="taboo-target" id="targetWord">—</div>
           <ul class="taboo-list" id="tabooList"></ul>
+          <p class="card-role-instruction" id="cardRoleInstruction"></p>
         </div>
 
         <!-- Placeholder (shown to active-team non-giver teammates) -->
         <div id="guessPlaceholder" class="guess-placeholder" style="display: none">
-          <div class="big">🤐 Guessing…</div>
-          <p class="muted">
-            Your teammate is giving clues. Shout your guesses out loud — no peeking at the card!
+          <div class="big">🤐 Your team is guessing</div>
+          <p>
+            <strong id="guessCueName">Your teammate</strong> is giving clues. Shout your guesses
+            out loud — <strong>don't peek at the card!</strong>
+          </p>
+          <p class="muted" id="guessRoundHint">
+            When the moderator marks Correct, you'll move on to the next word. Timer is ticking!
           </p>
         </div>
 
-        <!-- Moderator-only action buttons -->
+        <!-- Moderator shared-screen status (no words, safe to screenshare) -->
+        <div id="modRoundStatus" class="mod-round-status" style="display: none">
+          <div class="big">🎤 Round in progress</div>
+          <p>
+            <strong id="modRoundClueLine">—</strong> is giving clues to
+            <strong id="modRoundTeamLine">—</strong>. Opposing team is watching the card to catch
+            taboo violations.
+          </p>
+          <p class="muted">
+            📋 Open your Moderator Panel (private popup) to see the card and mark
+            <strong>Correct / Skip / Violation</strong>.
+          </p>
+          <div class="mod-round-actions-row">
+            <button
+              id="modRoundOpenPanelBtn"
+              class="btn btn-primary"
+              aria-label="Open moderator panel popup"
+            >
+              📋 Open Mod Panel
+            </button>
+            <button
+              id="inRoundEndGameBtn"
+              class="btn btn-danger"
+              aria-label="End game now"
+            >
+              End Game
+            </button>
+          </div>
+        </div>
+
+        <!-- Moderator-only action buttons (main screen — hidden when popup is used) -->
         <div id="roundActions" class="round-actions" style="display: none">
           <button id="correctBtn" class="btn btn-success" aria-label="Correct guess">
             ✓ Correct <span class="kbd">C</span>
@@ -890,6 +1109,7 @@
 
       <!-- Round-end screen -->
       <section id="summaryScreen" class="card screen" aria-label="Round summary screen">
+        <div class="round-count-badge" id="sumRoundCount">Round 1 of 4</div>
         <h2 class="section-title">Round summary</h2>
         <div class="scoreboard">
           <div class="team-score team-a">
@@ -905,14 +1125,33 @@
         <button id="nextRoundBtn" class="btn btn-primary btn-block" style="display: none">
           Next Round
         </button>
+        <button
+          id="summaryEndGameBtn"
+          class="btn btn-danger btn-block"
+          style="display: none; margin-top: 0.6rem"
+        >
+          End Game
+        </button>
       </section>
 
       <!-- Game-over screen -->
       <section id="endScreen" class="card screen" aria-label="End game screen">
         <div class="game-over">
-          <h2>🏆 Game Over</h2>
+          <h2>🏆 Final Score</h2>
           <div id="winnerBadge" class="winner-badge team-a">Team A wins!</div>
           <p id="finalScoreText" class="muted" style="margin: 0.4rem 0 0.8rem"></p>
+          <div class="final-scoreboard">
+            <div class="team-score team-a">
+              <h3 id="finalLabelA">Team A</h3>
+              <div class="score-num" id="finalNumA">0</div>
+              <div class="team-members" id="finalMembersA"></div>
+            </div>
+            <div class="team-score team-b">
+              <h3 id="finalLabelB">Team B</h3>
+              <div class="score-num" id="finalNumB">0</div>
+              <div class="team-members" id="finalMembersB"></div>
+            </div>
+          </div>
           <div class="final-stats">
             <div class="stat-box">
               <div class="label">Rounds played</div>
@@ -935,7 +1174,8 @@
       <div class="mod-panel">
         <h2>📋 Moderator Panel</h2>
         <div class="warning-text">
-          ⚠️ Private view — stop sharing your screen or move this window off-share before opening.
+          ⚠️ Popup was blocked — allow popups for this site and reopen so the private view stays off
+          your shared screen. Card & scoring controls only live in the popup.
         </div>
         <div class="roster">
           <div class="roster-col team-a">
@@ -1258,7 +1498,7 @@
       // --- DOM refs -----------------------------------------------------
       const screens = {
         configError: document.getElementById('configError'),
-        landing: document.getElementById('landingScreen'),
+        loading: document.getElementById('loadingScreen'),
         lobby: document.getElementById('lobbyScreen'),
         playerLobby: document.getElementById('playerLobbyScreen'),
         ready: document.getElementById('readyScreen'),
@@ -1268,14 +1508,13 @@
       };
 
       const heroSubtitle = document.getElementById('heroSubtitle');
-      const newGameBtn = document.getElementById('newGameBtn');
       const joinCodeEl = document.getElementById('joinCode');
       const joinUrlEl = document.getElementById('joinUrl');
       const copyLinkBtn = document.getElementById('copyLinkBtn');
-      const lobbyPlayersEl = document.getElementById('lobbyPlayers');
+      const shareLinkBtn = document.getElementById('shareLinkBtn');
       const lobbyHint = document.getElementById('lobbyHint');
       const startGameBtn = document.getElementById('startGameBtn');
-      const targetScoreSel = document.getElementById('targetScore');
+      const roundsTotalSel = document.getElementById('roundsTotal');
       const roundLengthSel = document.getElementById('roundLength');
 
       const playerLobbyTitle = document.getElementById('playerLobbyTitle');
@@ -1291,16 +1530,26 @@
       const membersTeamA = document.getElementById('membersTeamA');
       const membersTeamB = document.getElementById('membersTeamB');
 
+      const readyRoundCount = document.getElementById('readyRoundCount');
       const activeTeamName = document.getElementById('activeTeamName');
       const activePlayerName = document.getElementById('activePlayerName');
       const readyInstructions = document.getElementById('readyInstructions');
       const beginRoundBtn = document.getElementById('beginRoundBtn');
+      const readyEndGameBtn = document.getElementById('readyEndGameBtn');
 
+      const inRoundCount = document.getElementById('inRoundCount');
       const inRoundTeamName = document.getElementById('inRoundTeamName');
       const inRoundPlayer = document.getElementById('inRoundPlayer');
       const timerDisplay = document.getElementById('timerDisplay');
+      const stripLabelA = document.getElementById('stripLabelA');
+      const stripLabelB = document.getElementById('stripLabelB');
+      const stripMembersA = document.getElementById('stripMembersA');
+      const stripMembersB = document.getElementById('stripMembersB');
       const tabooCard = document.getElementById('tabooCard');
       const guessPlaceholder = document.getElementById('guessPlaceholder');
+      const guessCueName = document.getElementById('guessCueName');
+      const cardRoleLabel = document.getElementById('cardRoleLabel');
+      const cardRoleInstruction = document.getElementById('cardRoleInstruction');
       const targetWord = document.getElementById('targetWord');
       const tabooList = document.getElementById('tabooList');
       const roundActions = document.getElementById('roundActions');
@@ -1308,16 +1557,29 @@
       const correctBtn = document.getElementById('correctBtn');
       const skipBtn = document.getElementById('skipBtn');
       const violationBtn = document.getElementById('violationBtn');
+      const modRoundStatus = document.getElementById('modRoundStatus');
+      const modRoundClueLine = document.getElementById('modRoundClueLine');
+      const modRoundTeamLine = document.getElementById('modRoundTeamLine');
+      const modRoundOpenPanelBtn = document.getElementById('modRoundOpenPanelBtn');
+      const inRoundEndGameBtn = document.getElementById('inRoundEndGameBtn');
 
+      const sumRoundCount = document.getElementById('sumRoundCount');
       const sumLabelA = document.getElementById('sumLabelA');
       const sumLabelB = document.getElementById('sumLabelB');
       const sumNumA = document.getElementById('sumNumA');
       const sumNumB = document.getElementById('sumNumB');
       const roundResults = document.getElementById('roundResults');
       const nextRoundBtn = document.getElementById('nextRoundBtn');
+      const summaryEndGameBtn = document.getElementById('summaryEndGameBtn');
 
       const winnerBadge = document.getElementById('winnerBadge');
       const finalScoreText = document.getElementById('finalScoreText');
+      const finalLabelA = document.getElementById('finalLabelA');
+      const finalLabelB = document.getElementById('finalLabelB');
+      const finalNumA = document.getElementById('finalNumA');
+      const finalNumB = document.getElementById('finalNumB');
+      const finalMembersA = document.getElementById('finalMembersA');
+      const finalMembersB = document.getElementById('finalMembersB');
       const statRounds = document.getElementById('statRounds');
       const statCards = document.getElementById('statCards');
       const playAgainBtn = document.getElementById('playAgainBtn');
@@ -1340,6 +1602,8 @@
       let sessionUnsubscribe = null;
       let timerTickId = null;
       let endingRound = false;
+      let modPanelWindow = null;
+      let modPanelPollId = null;
 
       // --- Screen navigation -------------------------------------------
       function showScreen(name) {
@@ -1381,10 +1645,14 @@
             reconnectAsModerator(hashCode, savedMod.moderatorId);
             return;
           }
-          // Unknown code with no credentials — drop back to landing.
+          // Unknown code with no credentials — fall through to auto-create.
+          window.location.hash = '';
         }
 
-        showScreen('landing');
+        // Fresh moderator visit: create a session immediately so the share
+        // link is already on-screen when they arrive.
+        showScreen('loading');
+        createSession();
       }
 
       // --- localStorage helpers ----------------------------------------
@@ -1410,8 +1678,6 @@
 
       // --- Moderator: create a new session ------------------------------
       async function createSession() {
-        newGameBtn.disabled = true;
-        newGameBtn.textContent = 'Creating…';
         try {
           // Generate a code and make sure it doesn't collide with an existing session.
           let code = '';
@@ -1434,7 +1700,7 @@
             createdAt: serverTimestamp(),
             status: 'lobby',
             settings: {
-              targetScore: 7,
+              roundsTotal: 4,
               roundLength: 60,
             },
           };
@@ -1450,9 +1716,11 @@
         } catch (err) {
           // eslint-disable-next-line no-console
           console.error('Failed to create session', err);
-          newGameBtn.disabled = false;
-          newGameBtn.textContent = 'New Game';
-          alert('Could not create a game. Check your connection and try again.');
+          heroSubtitle.textContent = 'Could not create a game room.';
+          showScreen('configError');
+          document.querySelector('#configError .fatal h2').textContent = 'Couldn’t start the game';
+          document.querySelector('#configError .fatal p').textContent =
+            'Check your connection and refresh to try again.';
         }
       }
 
@@ -1463,7 +1731,8 @@
           if (!snap.exists() || snap.val().moderatorId !== id) {
             // Session no longer exists or moderatorId no longer matches: start fresh.
             window.location.hash = '';
-            showScreen('landing');
+            showScreen('loading');
+            createSession();
             return;
           }
           sessionCode = code;
@@ -1473,7 +1742,8 @@
         } catch (err) {
           // eslint-disable-next-line no-console
           console.error('Reconnect failed', err);
-          showScreen('landing');
+          showScreen('loading');
+          createSession();
         }
       }
 
@@ -1523,7 +1793,8 @@
             // Session was deleted out from under us.
             if (role === 'moderator') {
               window.location.hash = '';
-              showScreen('landing');
+              showScreen('loading');
+              createSession();
             } else {
               showScreen('configError');
               document.querySelector('#configError .fatal h2').textContent =
@@ -1571,23 +1842,19 @@
       function renderLobby() {
         const players = playersArray();
         if (role === 'moderator') {
-          lobbyPlayersEl.innerHTML = '';
-          players.forEach((player) => {
-            const pill = document.createElement('span');
-            pill.className = 'player-pill';
-            pill.textContent = player.name;
-            lobbyPlayersEl.appendChild(pill);
-          });
           const count = players.length;
+          const names = players.map((p) => p.name).join(', ');
           startGameBtn.disabled = count < 4 || count % 2 !== 0;
-          if (count < 4) {
-            lobbyHint.textContent = `Need ${4 - count} more player${4 - count === 1 ? '' : 's'} (minimum 4, even total).`;
+          if (count === 0) {
+            lobbyHint.textContent = 'Waiting for participants to join…';
+          } else if (count < 4) {
+            lobbyHint.textContent = `${count} joined (${names}) — need ${4 - count} more (minimum 4, even total).`;
           } else if (count % 2 !== 0) {
-            lobbyHint.textContent = 'Add 1 more to keep teams even.';
+            lobbyHint.textContent = `${count} joined (${names}) — add 1 more to keep teams even.`;
           } else {
-            lobbyHint.textContent = `${count} players ready.`;
+            lobbyHint.textContent = `${count} players ready (${names}).`;
           }
-          targetScoreSel.value = String(session.settings?.targetScore ?? 7);
+          roundsTotalSel.value = String(session.settings?.roundsTotal ?? 4);
           roundLengthSel.value = String(session.settings?.roundLength ?? 60);
           showScreen('lobby');
         } else {
@@ -1614,6 +1881,12 @@
         else if (roundState === 'summary') renderSummaryScreen();
       }
 
+      function roundCountLabel(roundsPlayed) {
+        const total = session?.settings?.roundsTotal ?? 4;
+        const current = Math.min(total, (roundsPlayed ?? 0) + 1);
+        return `Round ${current} of ${total}`;
+      }
+
       function renderReadyScreen() {
         const { game } = session;
         const activeTeam = game.activeTeam;
@@ -1621,6 +1894,7 @@
         const cuePid = game.teamOrder?.[activeTeam]?.[game.cueIndex?.[activeTeam] ?? 0];
         const cueName = session.players?.[cuePid]?.name || '—';
 
+        readyRoundCount.textContent = roundCountLabel(game.roundsPlayed);
         activeTeamName.textContent = teamNames[activeTeam];
         activeTeamName.className = `team-name team-${activeTeam.toLowerCase()}-name`;
         activePlayerName.textContent = cueName;
@@ -1633,6 +1907,7 @@
         if (role === 'moderator') {
           readyInstructions.append(cueNameStrong, ': you’ll see the card once I hit Begin.');
           beginRoundBtn.style.display = 'block';
+          readyEndGameBtn.style.display = 'block';
         } else if (playerId === cuePid) {
           const youAreUpStrong = document.createElement('strong');
           youAreUpStrong.textContent = "You're up!";
@@ -1641,6 +1916,7 @@
             ' The card appears here when the host starts the round.'
           );
           beginRoundBtn.style.display = 'none';
+          readyEndGameBtn.style.display = 'none';
         } else if (session.players?.[playerId]?.team === activeTeam) {
           readyInstructions.append(
             'Your teammate ',
@@ -1648,6 +1924,7 @@
             ' is the clue-giver. Get ready to guess.'
           );
           beginRoundBtn.style.display = 'none';
+          readyEndGameBtn.style.display = 'none';
         } else {
           readyInstructions.append(
             'Watch for violations! ',
@@ -1655,8 +1932,32 @@
             ' is giving clues to their team.'
           );
           beginRoundBtn.style.display = 'none';
+          readyEndGameBtn.style.display = 'none';
         }
         showScreen('ready');
+      }
+
+      function populateTeamsStrip(activeTeam, cuePid) {
+        if (!session?.game) return;
+        const { game } = session;
+        const teamNames = game.teamNames || { A: 'Team A', B: 'Team B' };
+        stripLabelA.textContent = teamNames.A;
+        stripLabelB.textContent = teamNames.B;
+        const renderCol = (teamKey, container) => {
+          container.innerHTML = '';
+          const ids = game.teamOrder?.[teamKey] || [];
+          ids.forEach((id) => {
+            const name = session.players?.[id]?.name || '(gone)';
+            const pill = document.createElement('span');
+            pill.className = 'teams-strip-member';
+            if (id === cuePid) pill.classList.add('cue');
+            if (id === playerId) pill.classList.add('me');
+            pill.textContent = id === cuePid ? `🎤 ${name}` : name;
+            container.appendChild(pill);
+          });
+        };
+        renderCol('A', stripMembersA);
+        renderCol('B', stripMembersB);
       }
 
       function renderRoundScreen() {
@@ -1666,16 +1967,30 @@
         const cuePid = game.teamOrder?.[activeTeam]?.[game.cueIndex?.[activeTeam] ?? 0];
         const cueName = session.players?.[cuePid]?.name || '—';
 
+        inRoundCount.textContent = roundCountLabel(game.roundsPlayed);
         inRoundTeamName.textContent = teamNames[activeTeam];
         inRoundPlayer.textContent = `Clue-giver: ${cueName}`;
+        populateTeamsStrip(activeTeam, cuePid);
 
-        // Role-based card visibility
+        // Role-based card visibility. The moderator's MAIN (shared) screen never
+        // shows the card or Correct/Skip/Violation buttons — those live in the
+        // private popup window so they aren't visible on screen share.
         const myTeam = role === 'player' ? session.players?.[playerId]?.team : null;
         const isClueGiver = role === 'player' && playerId === cuePid;
         const isGuesser = role === 'player' && myTeam === activeTeam && !isClueGiver;
-        const showCard = role === 'moderator' || isClueGiver || (role === 'player' && myTeam && myTeam !== activeTeam);
+        const isOpponent = role === 'player' && myTeam && myTeam !== activeTeam;
+        const showCard = isClueGiver || isOpponent;
 
         if (showCard && game.currentCard) {
+          if (isClueGiver) {
+            cardRoleLabel.textContent = '🎤 Your turn — you see the card';
+            cardRoleInstruction.textContent =
+              'Get your team to say the target word without using any of the taboo words.';
+          } else {
+            cardRoleLabel.textContent = '👀 Opposing team — watch for violations';
+            cardRoleInstruction.textContent =
+              'Listen to the clue-giver. If they say the target or any taboo word, tell the moderator.';
+          }
           targetWord.textContent = game.currentCard.target;
           tabooList.innerHTML = '';
           game.currentCard.taboo.forEach((word) => {
@@ -1685,24 +2000,33 @@
           });
           tabooCard.style.display = 'block';
           guessPlaceholder.style.display = 'none';
+          modRoundStatus.style.display = 'none';
+        } else if (role === 'moderator') {
+          // Shared-screen safe status — no words, no buttons.
+          tabooCard.style.display = 'none';
+          guessPlaceholder.style.display = 'none';
+          modRoundClueLine.textContent = cueName;
+          modRoundTeamLine.textContent = teamNames[activeTeam];
+          modRoundStatus.style.display = 'block';
         } else if (isGuesser) {
+          guessCueName.textContent = cueName;
           tabooCard.style.display = 'none';
           guessPlaceholder.style.display = 'block';
+          modRoundStatus.style.display = 'none';
         } else {
           // Player not yet assigned a team (edge case).
+          guessCueName.textContent = cueName;
           tabooCard.style.display = 'none';
           guessPlaceholder.style.display = 'block';
+          modRoundStatus.style.display = 'none';
         }
 
-        if (role === 'moderator') {
-          roundActions.style.display = 'grid';
-          roundHint.textContent =
-            'Correct: +1 for the active team. Violation: −1 penalty. Skip: no change, next card.';
-        } else {
-          roundActions.style.display = 'none';
-          roundHint.textContent = '';
-        }
+        // Main-screen action buttons are hidden for moderator — mirror lives in popup.
+        roundActions.style.display = 'none';
+        roundHint.textContent = '';
+
         showScreen('round');
+        updateModPanelRound();
       }
 
       function renderSummaryScreen() {
@@ -1711,6 +2035,8 @@
         const activeTeam = game.lastRoundTeam || game.activeTeam;
         const tally = game.lastResults || { correct: 0, skipped: 0, violations: 0 };
 
+        const playedSoFar = Math.max(0, (game.roundsPlayed ?? 1) - 1);
+        sumRoundCount.textContent = roundCountLabel(playedSoFar);
         sumLabelA.textContent = teamNames.A;
         sumLabelB.textContent = teamNames.B;
         sumNumA.textContent = String(game.scores?.A ?? 0);
@@ -1724,6 +2050,7 @@
         `;
 
         nextRoundBtn.style.display = role === 'moderator' ? 'block' : 'none';
+        summaryEndGameBtn.style.display = role === 'moderator' ? 'block' : 'none';
         showScreen('summary');
       }
 
@@ -1742,6 +2069,17 @@
           winnerBadge.className = 'winner-badge team-a';
         }
         finalScoreText.textContent = `${teamNames.A} ${scores.A} — ${teamNames.B} ${scores.B}`;
+        finalLabelA.textContent = teamNames.A;
+        finalLabelB.textContent = teamNames.B;
+        finalNumA.textContent = String(scores.A ?? 0);
+        finalNumB.textContent = String(scores.B ?? 0);
+        const rosterFor = (teamKey) =>
+          (game.teamOrder?.[teamKey] || [])
+            .map((id) => session.players?.[id]?.name)
+            .filter(Boolean)
+            .join(', ');
+        finalMembersA.textContent = rosterFor('A');
+        finalMembersB.textContent = rosterFor('B');
         statRounds.textContent = String(game.roundsPlayed ?? 0);
         statCards.textContent = String(game.cardsRevealed ?? 0);
         playAgainBtn.style.display = role === 'moderator' ? 'block' : 'none';
@@ -1785,33 +2123,83 @@
         scoreTeamB.classList.toggle('active', game.activeTeam === 'B');
       }
 
-      function updateModPanel() {
+      function renderRosterInto(labelAEl, labelBEl, listAEl, listBEl) {
         if (role !== 'moderator' || !session?.game) {
-          rosterListA.innerHTML = '';
-          rosterListB.innerHTML = '';
+          if (listAEl) listAEl.innerHTML = '';
+          if (listBEl) listBEl.innerHTML = '';
           return;
         }
         const { game } = session;
         const teamNames = game.teamNames || { A: 'Team A', B: 'Team B' };
-        rosterLabelA.textContent = teamNames.A;
-        rosterLabelB.textContent = teamNames.B;
-        rosterListA.innerHTML = '';
-        rosterListB.innerHTML = '';
+        if (labelAEl) labelAEl.textContent = teamNames.A;
+        if (labelBEl) labelBEl.textContent = teamNames.B;
+        if (listAEl) listAEl.innerHTML = '';
+        if (listBEl) listBEl.innerHTML = '';
         (game.teamOrder?.A || []).forEach((id, index) => {
-          const li = document.createElement('li');
+          if (!listAEl) return;
+          const li = listAEl.ownerDocument.createElement('li');
           li.textContent = session.players?.[id]?.name || '(gone)';
           if (game.activeTeam === 'A' && index === (game.cueIndex?.A ?? 0)) {
             li.classList.add('active');
           }
-          rosterListA.appendChild(li);
+          listAEl.appendChild(li);
         });
         (game.teamOrder?.B || []).forEach((id, index) => {
-          const li = document.createElement('li');
+          if (!listBEl) return;
+          const li = listBEl.ownerDocument.createElement('li');
           li.textContent = session.players?.[id]?.name || '(gone)';
           if (game.activeTeam === 'B' && index === (game.cueIndex?.B ?? 0)) {
             li.classList.add('active');
           }
-          rosterListB.appendChild(li);
+          listBEl.appendChild(li);
+        });
+      }
+
+      function updateModPanel() {
+        renderRosterInto(rosterLabelA, rosterLabelB, rosterListA, rosterListB);
+        if (modPanelWindow && !modPanelWindow.closed && modPanelWindow.document) {
+          const doc = modPanelWindow.document;
+          renderRosterInto(
+            doc.getElementById('rosterLabelA'),
+            doc.getElementById('rosterLabelB'),
+            doc.getElementById('rosterListA'),
+            doc.getElementById('rosterListB')
+          );
+          updateModPanelRound(doc);
+        }
+      }
+
+      function updateModPanelRound(docRoot) {
+        const doc = docRoot || modPanelWindow?.document;
+        if (!doc || role !== 'moderator') return;
+        const roundBlock = doc.getElementById('modRoundBlock');
+        const idleBlock = doc.getElementById('modIdleBlock');
+        if (!roundBlock || !idleBlock) return;
+
+        const game = session?.game;
+        const isPlaying = game?.roundState === 'playing';
+        if (!isPlaying || !game?.currentCard) {
+          roundBlock.style.display = 'none';
+          idleBlock.style.display = 'block';
+          return;
+        }
+        roundBlock.style.display = 'block';
+        idleBlock.style.display = 'none';
+
+        const activeTeam = game.activeTeam;
+        const teamNames = game.teamNames || { A: 'Team A', B: 'Team B' };
+        const cuePid = game.teamOrder?.[activeTeam]?.[game.cueIndex?.[activeTeam] ?? 0];
+        const cueName = session.players?.[cuePid]?.name || '—';
+
+        doc.getElementById('popupTeamName').textContent = teamNames[activeTeam];
+        doc.getElementById('popupCueName').textContent = cueName;
+        doc.getElementById('popupTarget').textContent = game.currentCard.target;
+        const list = doc.getElementById('popupTabooList');
+        list.innerHTML = '';
+        game.currentCard.taboo.forEach((word) => {
+          const li = doc.createElement('li');
+          li.textContent = word;
+          list.appendChild(li);
         });
       }
 
@@ -1834,10 +2222,20 @@
           const remaining = Math.max(0, Math.ceil(roundLength - elapsed));
           const m = Math.floor(remaining / 60);
           const s = remaining % 60;
-          timerDisplay.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+          const label = `${m}:${s.toString().padStart(2, '0')}`;
+          timerDisplay.textContent = label;
           timerDisplay.classList.remove('warning', 'danger');
           if (remaining <= 10) timerDisplay.classList.add('danger');
           else if (remaining <= 20) timerDisplay.classList.add('warning');
+          if (modPanelWindow && !modPanelWindow.closed && modPanelWindow.document) {
+            const popupTimer = modPanelWindow.document.getElementById('popupTimer');
+            if (popupTimer) {
+              popupTimer.textContent = label;
+              popupTimer.classList.remove('warning', 'danger');
+              if (remaining <= 10) popupTimer.classList.add('danger');
+              else if (remaining <= 20) popupTimer.classList.add('warning');
+            }
+          }
           if (remaining <= 0 && role === 'moderator' && !endingRound) {
             endingRound = true;
             clearInterval(timerTickId);
@@ -1878,7 +2276,7 @@
         }
 
         const settings = {
-          targetScore: parseInt(targetScoreSel.value, 10) || 7,
+          roundsTotal: parseInt(roundsTotalSel.value, 10) || 4,
           roundLength: parseInt(roundLengthSel.value, 10) || 60,
         };
 
@@ -1957,19 +2355,20 @@
 
       async function endRound(reason) {
         const { game } = session;
-        const targetScore = session.settings?.targetScore ?? 7;
+        const roundsTotal = session.settings?.roundsTotal ?? 4;
         const scores = game.scores || { A: 0, B: 0 };
+        const roundsPlayedNext = (game.roundsPlayed || 0) + 1;
 
-        const winner =
-          scores.A >= targetScore ? 'A' : scores.B >= targetScore ? 'B' : null;
-
-        if (winner) {
+        if (roundsPlayedNext >= roundsTotal) {
+          const winner =
+            scores.A > scores.B ? 'A' : scores.B > scores.A ? 'B' : null;
           await update(ref(db, `sessions/${sessionCode}`), {
             status: 'ended',
             'game/roundState': 'ended',
             'game/winner': winner,
-            'game/roundsPlayed': (game.roundsPlayed || 0) + 1,
+            'game/roundsPlayed': roundsPlayedNext,
             'game/lastEndedReason': reason,
+            'game/lastRoundTeam': game.activeTeam,
           });
           return;
         }
@@ -1981,11 +2380,30 @@
 
         await update(ref(db, `sessions/${sessionCode}/game`), {
           roundState: 'summary',
-          roundsPlayed: (game.roundsPlayed || 0) + 1,
+          roundsPlayed: roundsPlayedNext,
           lastRoundTeam: activeTeam,
           lastEndedReason: reason,
           activeTeam: nextTeam,
           [`cueIndex/${activeTeam}`]: nextCue,
+          currentCard: null,
+        });
+      }
+
+      async function endGameNow() {
+        if (role !== 'moderator' || !session?.game) return;
+        const confirmed = window.confirm(
+          'End the game now? The current scores will be used to pick the winner.'
+        );
+        if (!confirmed) return;
+        const { game } = session;
+        const scores = game.scores || { A: 0, B: 0 };
+        const winner =
+          scores.A > scores.B ? 'A' : scores.B > scores.A ? 'B' : null;
+        await update(ref(db, `sessions/${sessionCode}`), {
+          status: 'ended',
+          'game/roundState': 'ended',
+          'game/winner': winner,
+          'game/lastEndedReason': 'moderator-ended',
           currentCard: null,
         });
       }
@@ -2036,7 +2454,6 @@
       }
 
       // --- Event wiring (guarded by role where relevant) ----------------
-      newGameBtn.addEventListener('click', () => createSession());
       startGameBtn.addEventListener('click', () => assignTeamsAndStart());
       beginRoundBtn.addEventListener('click', () => beginRound());
       correctBtn.addEventListener('click', () => nextCard(1, 'correct'));
@@ -2044,6 +2461,9 @@
       violationBtn.addEventListener('click', () => nextCard(-1, 'violations'));
       nextRoundBtn.addEventListener('click', () => advanceToNextRound());
       playAgainBtn.addEventListener('click', () => playAgain());
+      readyEndGameBtn.addEventListener('click', () => endGameNow());
+      inRoundEndGameBtn.addEventListener('click', () => endGameNow());
+      summaryEndGameBtn.addEventListener('click', () => endGameNow());
 
       copyLinkBtn.addEventListener('click', async () => {
         if (!sessionCode) return;
@@ -2059,11 +2479,31 @@
         }
       });
 
-      targetScoreSel.addEventListener('change', () => {
+      // Use the native share sheet where supported (iOS, Android, some desktop
+      // Safari/Edge). Falls back silently where unavailable — copyLinkBtn handles
+      // that case.
+      if (typeof navigator.share === 'function') {
+        shareLinkBtn.style.display = 'inline-block';
+        shareLinkBtn.addEventListener('click', async () => {
+          if (!sessionCode) return;
+          const url = `${window.location.origin}/join/${sessionCode}`;
+          try {
+            await navigator.share({
+              title: `${APP_NAME} — join my game`,
+              text: `Join my ${APP_NAME} game (code ${sessionCode}):`,
+              url,
+            });
+          } catch {
+            // User dismissed the share sheet or share failed — no action needed.
+          }
+        });
+      }
+
+      roundsTotalSel.addEventListener('change', () => {
         if (role !== 'moderator') return;
-        const value = parseInt(targetScoreSel.value, 10);
+        const value = parseInt(roundsTotalSel.value, 10);
         if (Number.isFinite(value)) {
-          update(ref(db, `sessions/${sessionCode}/settings`), { targetScore: value });
+          update(ref(db, `sessions/${sessionCode}/settings`), { roundsTotal: value });
         }
       });
 
@@ -2075,13 +2515,187 @@
         }
       });
 
-      openPanelBtn.addEventListener('click', () => {
+      const MOD_PANEL_POPUP_HTML = `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Team Taboo — Moderator Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root { --bg: #0f172a; --text: #f9fafb; --surface: #1e293b; --card: #1e293b;
+              --accent: #f97316; --accent-2: #fbbf24; --team-a: #38bdf8; --team-b: #f472b6;
+              --success: #22c55e; --danger: #ef4444; --warning: #fde68a; --muted: #94a3b8; }
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 1rem; background: var(--bg); color: var(--text);
+             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+             font-size: 15px; }
+      h2 { font-size: 1.2rem; color: var(--accent); margin: 0 0 0.6rem; }
+      h3 { font-size: 0.95rem; margin: 0 0 0.4rem; }
+      h4 { font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase;
+           color: var(--muted); margin: 0 0 0.4rem; }
+      .warning-text { background: var(--warning); color: #1f1302; padding: 0.5rem 0.7rem;
+                      border-radius: 8px; font-size: 0.85rem; font-weight: 600;
+                      margin-bottom: 0.8rem; }
+      .round-head { display: flex; justify-content: space-between; align-items: center;
+                    gap: 0.6rem; background: var(--surface); border-radius: 12px;
+                    padding: 0.6rem 0.8rem; margin-bottom: 0.6rem; }
+      .round-head .who { font-size: 0.9rem; line-height: 1.3; }
+      .round-head .who strong { font-size: 1rem; }
+      .round-head .timer { font-family: ui-monospace, Menlo, monospace;
+                           font-size: 1.6rem; font-weight: 700; color: var(--accent-2); }
+      .round-head .timer.warning { color: #f59e0b; }
+      .round-head .timer.danger { color: var(--danger); }
+      .mod-card { background: #0b1322; border: 2px solid var(--accent);
+                  border-radius: 14px; padding: 0.9rem 0.9rem 1rem; margin-bottom: 0.8rem; }
+      .mod-card .target { font-size: 1.8rem; font-weight: 800; text-align: center;
+                          color: var(--accent-2); margin: 0.3rem 0 0.8rem; word-break: break-word; }
+      .mod-card ul { list-style: none; padding: 0; margin: 0; display: grid;
+                     grid-template-columns: 1fr 1fr; gap: 0.35rem; }
+      .mod-card li { background: var(--surface); padding: 0.4rem 0.6rem; border-radius: 8px;
+                     text-align: center; font-size: 0.9rem; color: #fecaca; }
+      .mod-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;
+                     margin-bottom: 0.9rem; }
+      .mod-actions button { position: relative; font-size: 0.9rem; font-weight: 700;
+                            padding: 0.7rem 0.3rem; border: 2px solid transparent;
+                            border-radius: 10px; cursor: pointer; color: #fff;
+                            transition: transform 120ms ease, box-shadow 120ms ease,
+                                        filter 120ms ease, background-color 120ms ease;
+                            -webkit-tap-highlight-color: transparent;
+                            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
+      .mod-actions button:hover:not(:disabled) { filter: brightness(1.1);
+                                                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+                                                 transform: translateY(-1px); }
+      .mod-actions button:active:not(:disabled) { filter: brightness(0.9);
+                                                  transform: translateY(1px);
+                                                  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35); }
+      .mod-actions button:focus-visible { outline: none;
+                                          border-color: var(--accent-2);
+                                          box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.45); }
+      .mod-actions button:disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(0.5);
+                                     box-shadow: none; transform: none; }
+      .mod-actions .correct { background: var(--success); }
+      .mod-actions .skip { background: #f59e0b; color: #1f1302; }
+      .mod-actions .violation { background: var(--danger); }
+      @media (prefers-reduced-motion: reduce) {
+        .mod-actions button { transition: none; }
+        .mod-actions button:hover:not(:disabled),
+        .mod-actions button:active:not(:disabled) { transform: none; }
+      }
+      .idle-note { background: var(--surface); border-radius: 10px; padding: 0.6rem 0.7rem;
+                   font-size: 0.85rem; color: var(--muted); margin-bottom: 0.8rem; text-align: center; }
+      .roster { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin: 0.6rem 0; }
+      .roster-col { background: var(--surface); border-radius: 12px; padding: 0.7rem; }
+      .roster-col.team-a { border-top: 3px solid var(--team-a); }
+      .roster-col.team-b { border-top: 3px solid var(--team-b); }
+      .roster-col ol { padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.6; margin: 0; }
+      .roster-col .active { color: var(--accent-2); font-weight: 700; }
+      .muted { color: var(--muted); font-size: 0.82rem; }
+      @media (max-width: 440px) { .roster { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <h2>📋 Moderator Panel</h2>
+    <div class="warning-text">
+      ⚠️ Private view — keep this popup off of your shared screen.
+    </div>
+
+    <div id="modRoundBlock" style="display: none">
+      <h4>Current round</h4>
+      <div class="round-head">
+        <div class="who">
+          <strong id="popupTeamName">—</strong><br />
+          Clue-giver: <span id="popupCueName">—</span>
+        </div>
+        <div class="timer" id="popupTimer">0:00</div>
+      </div>
+      <div class="mod-card">
+        <div class="target" id="popupTarget">—</div>
+        <ul id="popupTabooList"></ul>
+      </div>
+      <div class="mod-actions">
+        <button type="button" class="correct" id="popupCorrectBtn">✓ Correct</button>
+        <button type="button" class="skip" id="popupSkipBtn">↻ Skip</button>
+        <button type="button" class="violation" id="popupViolationBtn">✗ Violation</button>
+      </div>
+      <p class="muted" style="margin: 0 0 0.8rem">
+        Keyboard on the main window: <strong>C</strong> correct · <strong>S</strong> skip ·
+        <strong>V</strong> violation.
+      </p>
+    </div>
+
+    <div id="modIdleBlock" class="idle-note">
+      No round in progress. Start a round from the main window.
+    </div>
+
+    <h4>Rosters</h4>
+    <div class="roster">
+      <div class="roster-col team-a">
+        <h3 id="rosterLabelA">Team A</h3>
+        <ol id="rosterListA"></ol>
+      </div>
+      <div class="roster-col team-b">
+        <h3 id="rosterLabelB">Team B</h3>
+        <ol id="rosterListB"></ol>
+      </div>
+    </div>
+    <p class="muted">
+      Clue-giver order rotates top-to-bottom within each team. Current clue-giver is highlighted.
+    </p>
+  </body>
+</html>`;
+
+      function openModPanelPopup() {
+        if (modPanelWindow && !modPanelWindow.closed) {
+          modPanelWindow.focus();
+          return true;
+        }
+        const popup = window.open(
+          '',
+          'taboo-mod-panel',
+          'popup,width=520,height=640,menubar=no,toolbar=no,location=no,status=no'
+        );
+        if (!popup) {
+          return false;
+        }
+        popup.document.open();
+        popup.document.write(MOD_PANEL_POPUP_HTML);
+        popup.document.close();
+        modPanelWindow = popup;
+        // Wire popup action buttons back to the moderator's mutation helpers
+        // running in this window. Popup shares our origin so direct calls work.
+        const wireBtn = (id, fn) => {
+          const btn = popup.document.getElementById(id);
+          if (btn) btn.addEventListener('click', fn);
+        };
+        wireBtn('popupCorrectBtn', () => nextCard(1, 'correct'));
+        wireBtn('popupSkipBtn', () => nextCard(0, 'skipped'));
+        wireBtn('popupViolationBtn', () => nextCard(-1, 'violations'));
+        updateModPanel();
+        if (modPanelPollId) clearInterval(modPanelPollId);
+        modPanelPollId = setInterval(() => {
+          if (modPanelWindow && modPanelWindow.closed) {
+            modPanelWindow = null;
+            clearInterval(modPanelPollId);
+            modPanelPollId = null;
+          }
+        }, 500);
+        return true;
+      }
+
+      function handleOpenPanel() {
+        if (openModPanelPopup()) return;
+        // Popup blocked — fall back to in-page overlay.
         updateModPanel();
         modPanelOverlay.classList.add('open');
-      });
+      }
+      openPanelBtn.addEventListener('click', handleOpenPanel);
+      modRoundOpenPanelBtn.addEventListener('click', handleOpenPanel);
       closePanelBtn.addEventListener('click', () => modPanelOverlay.classList.remove('open'));
       modPanelOverlay.addEventListener('click', (event) => {
         if (event.target === modPanelOverlay) modPanelOverlay.classList.remove('open');
+      });
+      window.addEventListener('beforeunload', () => {
+        if (modPanelWindow && !modPanelWindow.closed) modPanelWindow.close();
       });
 
       // Keyboard shortcuts — moderator only, same guards as shell requires.

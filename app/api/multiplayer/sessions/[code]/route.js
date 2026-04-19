@@ -43,7 +43,9 @@ function applyNestedPatch(target, patch) {
 }
 
 export async function GET(_request, { params }) {
-  const code = typeof params?.code === 'string' ? params.code.trim().toUpperCase() : '';
+  const resolvedParams = await params;
+  const code =
+    typeof resolvedParams?.code === 'string' ? resolvedParams.code.trim().toUpperCase() : '';
   if (!CODE_RE.test(code)) {
     return Response.json({ error: 'Invalid code' }, { status: 400 });
   }
@@ -71,7 +73,9 @@ export async function GET(_request, { params }) {
 }
 
 export async function PATCH(request, { params }) {
-  const code = typeof params?.code === 'string' ? params.code.trim().toUpperCase() : '';
+  const resolvedParams = await params;
+  const code =
+    typeof resolvedParams?.code === 'string' ? resolvedParams.code.trim().toUpperCase() : '';
   if (!CODE_RE.test(code)) {
     return Response.json({ error: 'Invalid code' }, { status: 400 });
   }

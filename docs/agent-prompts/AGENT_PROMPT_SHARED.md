@@ -445,6 +445,43 @@ design apps.
 
 ---
 
+## Multiplayer Backend (shared infrastructure)
+
+A shared, app-agnostic multiplayer backend is available for any app that needs host-led, session-based multiplayer (lobby → playing → ended). **No app-specific backend work is required — do not add new API routes or Supabase tables for a multiplayer app.**
+
+**What's shared**
+
+- Supabase table `public.multiplayer_sessions` — one row per game; generic `settings`, `game`, and `players` JSONB columns
+- RPC `public.add_multiplayer_player` — atomic player-join merge (service-role only)
+- Route handlers under `app/api/multiplayer/`:
+  - `GET /api/multiplayer/status` — returns `{ configured: boolean }`
+  - `POST /api/multiplayer/sessions` — moderator creates a session
+  - `GET /api/multiplayer/sessions/:code` — anyone with the code reads the snapshot
+  - `PATCH /api/multiplayer/sessions/:code` — moderator-authorized JSONB patch (slash-delimited paths rooted at `settings|game|players`) plus optional `status` transitions
+  - `POST /api/multiplayer/sessions/:code/players` — any visitor with the code adds themselves as a player
+- Reusable player-join page `app/join/[code]/page.jsx` — reads `appPath`/`appName`/`status` from the session and redirects joiners into the app with hash params (`code`, `pid`, `role=player`)
+- Code generator `lib/firebase/sessionCodes.js` — 6-char unambiguous alphabet (`A-HJ-NP-Z2-9`)
+
+**Authorization model**
+
+- No per-user auth. The `moderatorId` returned at session creation is a bearer secret; store it in `localStorage` on the moderator's browser and include it in every PATCH body.
+- Players are anonymous: `POST .../players` returns a server-generated `playerId`; the `/join/[code]` page stores `{ playerId, name }` in localStorage so refreshing the tab auto-reconnects.
+- Any visitor with the session code can GET the snapshot and POST a player — knowledge of the code is the gate.
+
+**Contract for new multiplayer apps**
+
+1. Do not create new API routes or tables. Use the endpoints above as-is.
+2. At session create time, pass the app's `appId`, `appName`, and `appPath` in the POST body so `/join/[code]` can redirect correctly.
+3. Keep all game mutations behind the moderator PATCH gate. Players never PATCH — they only POST themselves via the join flow.
+4. Model game state inside the opaque `game` JSONB root; model lobby config inside `settings`. The backend does not enforce either shape.
+5. No realtime push is available — poll `GET /api/multiplayer/sessions/:code` on ~1 Hz and diff locally.
+6. Session-code generation must use `generateSessionCode()` from `lib/firebase/sessionCodes.js`. Do not roll your own.
+7. Reference implementation: [apps/2026/04/18/team-taboo/index.html](../../apps/2026/04/18/team-taboo/index.html).
+
+For the detailed data model, protocol walkthrough, and common questions (popup panels, authorization edge cases, rejoining, reset semantics) see the wiki page [Multiplayer Backend FAQ](https://github.com/jeffholst/valley-of-ai/wiki/Multiplayer-Backend-FAQ).
+
+---
+
 ## Keyboard Event Handling (Games)
 
 Game `keydown`/`keyup` listeners **must not** call `preventDefault()` or act on keys when a

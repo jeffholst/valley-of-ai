@@ -10,7 +10,9 @@ function generatePlayerId() {
 }
 
 export async function POST(request, { params }) {
-  const code = typeof params?.code === 'string' ? params.code.trim().toUpperCase() : '';
+  const resolvedParams = await params;
+  const code =
+    typeof resolvedParams?.code === 'string' ? resolvedParams.code.trim().toUpperCase() : '';
   if (!CODE_RE.test(code)) {
     return Response.json({ error: 'Invalid code' }, { status: 400 });
   }
