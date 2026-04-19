@@ -460,7 +460,7 @@ A shared, app-agnostic multiplayer backend is available for any app that needs h
   - `PATCH /api/multiplayer/sessions/:code` — moderator-authorized JSONB patch (slash-delimited paths rooted at `settings|game|players`) plus optional `status` transitions
   - `POST /api/multiplayer/sessions/:code/players` — any visitor with the code adds themselves as a player
 - Reusable player-join page `app/join/[code]/page.jsx` — reads `appPath`/`appName`/`status` from the session and redirects joiners into the app with hash params (`code`, `pid`, `role=player`)
-- Code generator `lib/firebase/sessionCodes.js` — 6-char unambiguous alphabet (`A-HJ-NP-Z2-9`)
+- Code generator `lib/multiplayer/sessionCodes.js` — 6-char unambiguous alphabet (`A-HJ-NP-Z2-9`)
 
 **Authorization model**
 
@@ -475,7 +475,7 @@ A shared, app-agnostic multiplayer backend is available for any app that needs h
 3. Keep all game mutations behind the moderator PATCH gate. Players never PATCH — they only POST themselves via the join flow.
 4. Model game state inside the opaque `game` JSONB root; model lobby config inside `settings`. The backend does not enforce either shape.
 5. No realtime push is available — poll `GET /api/multiplayer/sessions/:code` on ~1 Hz and diff locally.
-6. Session-code generation must match the shared `generateSessionCode()` format in `lib/firebase/sessionCodes.js`. If your app cannot import that helper directly (for example, a self-contained static HTML app), use the same alphabet/logic rather than inventing a different code format.
+6. Session-code generation must match the shared `generateSessionCode()` format in `lib/multiplayer/sessionCodes.js`. If your app cannot import that helper directly (for example, a self-contained static HTML app), use the same alphabet/logic rather than inventing a different code format.
 7. Reference implementation: [apps/2026/04/18/team-taboo/index.html](../../apps/2026/04/18/team-taboo/index.html).
 
 For the detailed data model, protocol walkthrough, and common questions (popup panels, authorization edge cases, rejoining, reset semantics) see the wiki page [Multiplayer Backend FAQ](https://github.com/jeffholst/valley-of-ai/wiki/Multiplayer-Backend-FAQ).
