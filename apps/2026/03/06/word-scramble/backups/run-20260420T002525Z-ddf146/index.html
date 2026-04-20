@@ -213,13 +213,6 @@
       font-size: 0.95rem;
     }
 
-    .player-instructions {
-      margin: 0.45rem 0 0.65rem;
-      color: var(--muted);
-      font-size: 0.9rem;
-      text-align: center;
-    }
-
     .scramble,
     .answer {
       display: flex;
@@ -273,14 +266,6 @@
       pointer-events: none;
     }
 
-    .tile.letter.next-match {
-      outline: 3px solid rgb(245 158 11 / 78%);
-      outline-offset: 2px;
-      box-shadow:
-        0 0 0 4px rgb(245 158 11 / 14%),
-        0 10px 18px rgb(8 145 178 / 30%);
-    }
-
     .tile.slot {
       background: var(--surface);
       border-style: dashed;
@@ -293,12 +278,6 @@
       background: rgb(8 145 178 / 14%);
       color: var(--text);
       border-color: rgb(34 211 238 / 55%);
-    }
-
-    .tile.slot.active-slot {
-      border-color: var(--warning);
-      box-shadow: 0 0 0 4px rgb(245 158 11 / 13%);
-      background: rgb(245 158 11 / 10%);
     }
 
     .tile:disabled {
@@ -338,101 +317,6 @@
     .message.error {
       background: rgb(239 68 68 / 14%);
       border-color: rgb(239 68 68 / 45%);
-    }
-
-    .round-result {
-      display: none;
-      position: relative;
-      min-height: 86px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: rgb(15 23 42 / 34%);
-      padding: 0.7rem;
-      text-align: center;
-    }
-
-    .round-result.active {
-      display: grid;
-      place-items: center;
-    }
-
-    .round-result-title {
-      position: relative;
-      z-index: 2;
-      font-weight: 800;
-    }
-
-    .confetti-piece {
-      position: absolute;
-      top: -16px;
-      width: 8px;
-      height: 14px;
-      border-radius: 2px;
-      animation: confettiFall 1100ms ease-in infinite;
-    }
-
-    .cloud {
-      position: absolute;
-      top: 14px;
-      left: 50%;
-      width: 92px;
-      height: 38px;
-      transform: translateX(-50%);
-      border-radius: 999px;
-      background: #e5e7eb;
-      box-shadow:
-        -24px 8px 0 -4px #cbd5e1,
-        24px 7px 0 -5px #cbd5e1;
-      animation: cloudBob 1500ms ease-in-out infinite;
-    }
-
-    .raindrop {
-      position: absolute;
-      top: 56px;
-      width: 6px;
-      height: 14px;
-      border-radius: 999px;
-      background: #38bdf8;
-      animation: rainDrop 850ms linear infinite;
-    }
-
-    @keyframes confettiFall {
-      0% {
-        transform: translateY(-12px) rotate(0deg);
-        opacity: 0;
-      }
-      20% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(108px) rotate(250deg);
-        opacity: 0;
-      }
-    }
-
-    @keyframes cloudBob {
-      0%,
-      100% {
-        transform: translate(-50%, 0);
-      }
-      50% {
-        transform: translate(-50%, 4px);
-      }
-    }
-
-    @keyframes rainDrop {
-      0% {
-        transform: translateY(-8px);
-        opacity: 0;
-      }
-      20% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(36px);
-        opacity: 0;
-      }
     }
 
     .grid-2 {
@@ -607,12 +491,8 @@
       <div class="grid-2">
         <div class="card" style="padding: 0.7rem">
           <h3 style="margin-bottom: 0.6rem">Scramble</h3>
-          <p id="playerInstructions" class="player-instructions">
-            When the round begins, click or type the letters to spell your answer.
-          </p>
           <div id="scramble" class="scramble" aria-label="Scrambled letters"></div>
           <div id="answer" class="answer" aria-label="Answer slots" style="margin-top: 0.65rem"></div>
-          <div id="roundResult" class="round-result" aria-live="polite"></div>
           <div class="row" style="margin-top: 0.65rem">
             <button id="clearBtn" class="btn btn-secondary" type="button">Clear Answer</button>
           </div>
@@ -708,7 +588,6 @@
     const hintBox = document.getElementById('hintBox');
     const scrambleEl = document.getElementById('scramble');
     const answerEl = document.getElementById('answer');
-    const roundResult = document.getElementById('roundResult');
     const clearBtn = document.getElementById('clearBtn');
     const playPlayers = document.getElementById('playPlayers');
 
@@ -1024,14 +903,12 @@
       const scramble = Array.isArray(game?.scramble) ? game.scramble : [];
       const answerLength = game?.word ? game.word.length : 0;
       const locked = !game || session?.status !== 'playing' || game.roundState !== 'active' || role !== 'player';
-      const nextLetter = !locked ? String(game.word || '').charAt(localAnswer.length).toLowerCase() : '';
       clearBtn.disabled = locked;
 
       scrambleEl.innerHTML = scramble
         .map((letter, index) => {
           const used = localUsedIndices.has(index) ? ' used' : '';
-          const nextMatch = nextLetter && letter === nextLetter && !localUsedIndices.has(index) ? ' next-match' : '';
-          return `<button type="button" class="tile letter${used}${nextMatch}" data-index="${index}" aria-label="Letter ${letter}">${letter}</button>`;
+          return `<button type="button" class="tile letter${used}" data-index="${index}" aria-label="Letter ${letter}">${letter}</button>`;
         })
         .join('');
 
@@ -1040,8 +917,7 @@
         const slotData = localAnswer[i];
         const slot = document.createElement('button');
         slot.type = 'button';
-        const active = !locked && !slotData && i === localAnswer.length ? ' active-slot' : '';
-        slot.className = `tile slot${slotData ? ' filled' : ''}${active}`;
+        slot.className = `tile slot${slotData ? ' filled' : ''}`;
         slot.textContent = slotData ? slotData.letter : '';
         slot.disabled = locked || !slotData;
         if (!locked && slotData) {
@@ -1059,36 +935,6 @@
           });
         }
       });
-    }
-
-    function renderRoundResult(game) {
-      const showResult = role === 'player' && game?.roundState !== 'active' && game?.roundWinnerId;
-      if (!showResult) {
-        roundResult.className = 'round-result';
-        roundResult.innerHTML = '';
-        return;
-      }
-
-      const isWinner = game.roundWinnerId === playerId;
-      roundResult.className = 'round-result active';
-      if (isWinner) {
-        roundResult.innerHTML = `
-          ${Array.from({ length: 14 }, (_, index) => {
-            const left = 10 + ((index * 6) % 82);
-            const delay = (index % 5) * 110;
-            const colors = ['#22d3ee', '#38bdf8', '#22c55e', '#f59e0b', '#ef4444'];
-            return `<span class="confetti-piece" style="left:${left}%; animation-delay:${delay}ms; background:${colors[index % colors.length]}"></span>`;
-          }).join('')}
-          <div class="round-result-title">You won this round!</div>
-        `;
-        return;
-      }
-
-      roundResult.innerHTML = `
-        <span class="cloud"></span>
-        ${[32, 44, 56, 68].map((left, index) => `<span class="raindrop" style="left:${left}%; animation-delay:${index * 140}ms"></span>`).join('')}
-        <div class="round-result-title" style="margin-top:44px">Waiting for the next round</div>
-      `;
     }
 
     async function tryAutoSubmit() {
@@ -1407,7 +1253,6 @@
       document.getElementById('openPanelBtn').disabled = role !== 'moderator';
 
       renderTiles();
-      renderRoundResult(game);
       renderModeratorPanel();
     }
 

@@ -59,16 +59,6 @@
       "implementedAt": "2026-04-20T00:08:51Z",
       "agentName": "Codex",
       "llmModel": "GPT-5"
-    },
-    {
-      "issueNumber": 368,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/368",
-      "runId": "run-20260420T002525Z-ddf146",
-      "description": "Added player typing instructions, active tile and answer-slot feedback, plus round-over confetti for winners and a blue-rain cloud for other players.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-04-20T00:25:25Z",
-      "agentName": "Codex",
-      "llmModel": "GPT-5"
     }
   ],
   "generation": {
