@@ -1,54 +1,76 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Word Scramble Party multiplayer lobby and live round">
+<svg viewBox="0 0 800 450" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Word Scramble Party live player screen with responsive letter tiles">
   <defs>
-    <linearGradient id="bg" x1="120" y1="40" x2="1080" y2="590" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0B1732"/>
-      <stop offset="1" stop-color="#102A4F"/>
+    <linearGradient id="bg" x1="80" y1="24" x2="720" y2="426" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#15213e"/>
     </linearGradient>
-    <linearGradient id="card" x1="240" y1="120" x2="980" y2="520" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#152946"/>
-      <stop offset="1" stop-color="#1B3558"/>
+    <radialGradient id="cyanGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(110 70) rotate(48) scale(210 140)">
+      <stop stop-color="#22d3ee" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="card" x1="122" y1="78" x2="680" y2="388" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#15213e"/>
+      <stop offset="1" stop-color="#1e293b"/>
     </linearGradient>
     <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#22D3EE"/>
-      <stop offset="1" stop-color="#38BDF8"/>
+      <stop stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#38bdf8"/>
     </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="150%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="0" dy="8" result="offsetblur"/>
+      <feFlood flood-color="#020617" flood-opacity="0.32"/>
+      <feComposite in2="offsetblur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="titleGlow" x="-10%" y="-30%" width="120%" height="180%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
 
-  <rect width="1200" height="630" fill="url(#bg)"/>
-  <circle cx="160" cy="120" r="120" fill="#22D3EE" fill-opacity="0.14"/>
-  <circle cx="1060" cy="90" r="140" fill="#38BDF8" fill-opacity="0.12"/>
+  <rect x="0" y="0" width="800" height="450" fill="url(#bg)"/>
+  <rect x="0" y="0" width="800" height="450" fill="url(#cyanGlow)"/>
+  <circle cx="700" cy="48" r="112" fill="#38bdf8" fill-opacity="0.12"/>
 
-  <rect x="118" y="82" width="964" height="466" rx="28" fill="url(#card)" stroke="#2E4A70" stroke-width="2"/>
+  <rect x="74" y="46" width="652" height="356" rx="18" fill="url(#card)" stroke="#334155" stroke-width="2" filter="url(#softShadow)"/>
+  <text x="108" y="96" fill="#f9fafb" font-size="38" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="800" filter="url(#titleGlow)">Word Scramble Party</text>
+  <text x="110" y="124" fill="#9ca3af" font-size="16" font-family="Trebuchet MS, Segoe UI, sans-serif">Player screen: winner locked, waiting for moderator</text>
 
-  <text x="164" y="152" fill="#F8FAFC" font-size="56" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">Word Scramble Party</text>
-  <text x="164" y="190" fill="#A5B4CF" font-size="24" font-family="Trebuchet MS, Segoe UI, sans-serif">Multiplayer host link + realtime first-correct scoring</text>
+  <rect x="108" y="150" width="584" height="42" rx="10" fill="#22c55e" fill-opacity="0.14" stroke="#22c55e" stroke-opacity="0.55"/>
+  <text x="130" y="177" fill="#a7f3d0" font-size="18" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">Alex answered correctly first. Next round starts soon.</text>
 
-  <rect x="164" y="230" width="430" height="278" rx="18" fill="#0E223C" stroke="#2F4F75"/>
-  <text x="192" y="270" fill="#67E8F9" font-size="26" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">Lobby</text>
-  <text x="192" y="307" fill="#E2E8F0" font-size="20" font-family="Trebuchet MS, Segoe UI, sans-serif">Join URL: ...#join=AB3K9Q</text>
-  <rect x="192" y="330" width="182" height="46" rx="10" fill="url(#accent)"/>
-  <text x="224" y="360" fill="#042035" font-size="22" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">Start Game</text>
-  <text x="192" y="407" fill="#A5B4CF" font-size="20" font-family="Trebuchet MS, Segoe UI, sans-serif">Players: Alex, Kim, Sam</text>
-  <text x="192" y="439" fill="#A5B4CF" font-size="20" font-family="Trebuchet MS, Segoe UI, sans-serif">Rounds: 6</text>
+  <rect x="108" y="214" width="364" height="128" rx="14" fill="#0f172a" fill-opacity="0.48" stroke="#334155"/>
+  <text x="130" y="245" fill="#67e8f9" font-size="19" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">Scramble</text>
+  <text x="130" y="270" fill="#9ca3af" font-size="14" font-family="Trebuchet MS, Segoe UI, sans-serif">Disabled tiles clearly show the round is paused.</text>
 
-  <rect x="618" y="230" width="420" height="278" rx="18" fill="#0E223C" stroke="#2F4F75"/>
-  <text x="646" y="270" fill="#67E8F9" font-size="26" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">Live Round</text>
-  <text x="646" y="306" fill="#E2E8F0" font-size="20" font-family="Trebuchet MS, Segoe UI, sans-serif">Hint: Earth is one of these</text>
+  <g filter="url(#softShadow)">
+    <rect x="130" y="290" width="44" height="52" rx="10" fill="url(#accent)" opacity="0.42"/>
+    <rect x="184" y="290" width="44" height="52" rx="10" fill="url(#accent)" opacity="0.42"/>
+    <rect x="238" y="290" width="44" height="52" rx="10" fill="#1e293b" stroke="#22d3ee" stroke-opacity="0.55"/>
+    <rect x="292" y="290" width="44" height="52" rx="10" fill="url(#accent)" opacity="0.42"/>
+    <rect x="346" y="290" width="44" height="52" rx="10" fill="#1e293b" stroke="#334155" stroke-dasharray="6 5" opacity="0.72"/>
+    <rect x="400" y="290" width="44" height="52" rx="10" fill="url(#accent)" opacity="0.42"/>
+  </g>
+  <text x="145" y="324" fill="#06223a" font-size="23" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="800" opacity="0.65">P</text>
+  <text x="199" y="324" fill="#06223a" font-size="23" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="800" opacity="0.65">L</text>
+  <text x="253" y="324" fill="#f9fafb" font-size="23" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="800">A</text>
+  <text x="307" y="324" fill="#06223a" font-size="23" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="800" opacity="0.65">N</text>
+  <text x="415" y="324" fill="#06223a" font-size="23" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="800" opacity="0.65">T</text>
 
-  <rect x="646" y="330" width="50" height="58" rx="10" fill="url(#accent)"/>
-  <rect x="703" y="330" width="50" height="58" rx="10" fill="url(#accent)"/>
-  <rect x="760" y="330" width="50" height="58" rx="10" fill="url(#accent)"/>
-  <rect x="817" y="330" width="50" height="58" rx="10" fill="url(#accent)"/>
-  <rect x="874" y="330" width="50" height="58" rx="10" fill="url(#accent)"/>
-  <rect x="931" y="330" width="50" height="58" rx="10" fill="url(#accent)"/>
+  <rect x="500" y="214" width="192" height="128" rx="14" fill="#0f172a" fill-opacity="0.48" stroke="#334155"/>
+  <text x="522" y="245" fill="#67e8f9" font-size="19" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">Players</text>
+  <rect x="522" y="266" width="148" height="28" rx="8" fill="#1e293b" stroke="#22d3ee" stroke-opacity="0.45"/>
+  <text x="538" y="286" fill="#f9fafb" font-size="15" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">1 Alex  4 pts</text>
+  <rect x="522" y="304" width="148" height="28" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="538" y="324" fill="#9ca3af" font-size="15" font-family="Trebuchet MS, Segoe UI, sans-serif">2 Kim  3 pts</text>
 
-  <text x="661" y="368" fill="#06223A" font-size="28" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">P</text>
-  <text x="718" y="368" fill="#06223A" font-size="28" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">A</text>
-  <text x="775" y="368" fill="#06223A" font-size="28" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">T</text>
-  <text x="832" y="368" fill="#06223A" font-size="28" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">N</text>
-  <text x="889" y="368" fill="#06223A" font-size="28" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">L</text>
-  <text x="946" y="368" fill="#06223A" font-size="28" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">E</text>
-
-  <text x="646" y="430" fill="#A7F3D0" font-size="22" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">Alex answered correctly first!</text>
-  <text x="646" y="463" fill="#A5B4CF" font-size="20" font-family="Trebuchet MS, Segoe UI, sans-serif">Score auto-awarded +1</text>
+  <path d="M88 70H60V98" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+  <path d="M712 380H740V352" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
 </svg>
