@@ -1,213 +1,68 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="2 Truths and a Lie multiplayer thumbnail">
   <defs>
-    <!-- Background gradient -->
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0f172a"/>
-      <stop offset="100%" stop-color="#1e1040"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
     </linearGradient>
-    <!-- Title gradient -->
-    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#a78bfa"/>
-      <stop offset="100%" stop-color="#818cf8"/>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1f2f4a" />
+      <stop offset="100%" stop-color="#0f1f33" />
     </linearGradient>
-    <!-- Card surface gradient -->
-    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#1e293b"/>
-      <stop offset="100%" stop-color="#172033"/>
-    </linearGradient>
-    <!-- Glow filter for title -->
-    <filter id="titleGlow" x="-20%" y="-50%" width="140%" height="200%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+    <radialGradient id="wheelGlow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0" />
+    </radialGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
       <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
       </feMerge>
     </filter>
-    <!-- Drop shadow for wheel -->
-    <filter id="wheelShadow" x="-15%" y="-15%" width="130%" height="130%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/>
-      <feOffset dx="0" dy="4" result="shadow"/>
-      <feFlood flood-color="#8b5cf6" flood-opacity="0.4" result="color"/>
-      <feComposite in="color" in2="shadow" operator="in" result="coloredShadow"/>
-      <feMerge>
-        <feMergeNode in="coloredShadow"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-    <!-- Card shadow -->
-    <filter id="cardShadow" x="-5%" y="-5%" width="110%" height="120%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
-      <feOffset dx="0" dy="3"/>
-      <feMerge>
-        <feMergeNode/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-    <!-- Clip to enforce perfectly circular wheel boundary -->
-    <clipPath id="wheelClip">
-      <circle cx="230" cy="250" r="135"/>
-    </clipPath>
   </defs>
 
-  <!-- Background -->
-  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)"/>
+  <rect width="512" height="512" fill="url(#bg)" />
+  <circle cx="356" cy="194" r="118" fill="url(#wheelGlow)" />
 
-  <!-- Subtle grid texture -->
-  <g opacity="0.06">
-    <line x1="0" y1="75" x2="800" y2="75" stroke="#a78bfa" stroke-width="1"/>
-    <line x1="0" y1="150" x2="800" y2="150" stroke="#a78bfa" stroke-width="1"/>
-    <line x1="0" y1="225" x2="800" y2="225" stroke="#a78bfa" stroke-width="1"/>
-    <line x1="0" y1="300" x2="800" y2="300" stroke="#a78bfa" stroke-width="1"/>
-    <line x1="0" y1="375" x2="800" y2="375" stroke="#a78bfa" stroke-width="1"/>
-    <line x1="100" y1="0" x2="100" y2="450" stroke="#a78bfa" stroke-width="1"/>
-    <line x1="200" y1="0" x2="200" y2="450" stroke="#a78bfa" stroke-width="1"/>
-    <line x1="300" y1="0" x2="300" y2="450" stroke="#a78bfa" stroke-width="1"/>
-    <line x1="400" y1="0" x2="400" y2="450" stroke="#a78bfa" stroke-width="1"/>
-    <line x1="500" y1="0" x2="500" y2="450" stroke="#a78bfa" stroke-width="1"/>
-    <line x1="600" y1="0" x2="600" y2="450" stroke="#a78bfa" stroke-width="1"/>
-    <line x1="700" y1="0" x2="700" y2="450" stroke="#a78bfa" stroke-width="1"/>
-  </g>
+  <rect x="34" y="58" width="444" height="396" rx="26" fill="url(#panel)" stroke="#334155" stroke-width="3" />
 
-  <!-- Edge glow frame -->
-  <rect x="0" y="0" width="800" height="450" fill="none" stroke="#8b5cf6" stroke-width="3" opacity="0.5"/>
-  <rect x="4" y="4" width="792" height="442" fill="none" stroke="#a78bfa" stroke-width="1" opacity="0.2"/>
+  <text x="56" y="104" fill="#c4b5fd" font-family="Segoe UI, sans-serif" font-size="28" font-weight="700" filter="url(#softGlow)">
+    2 Truths and a Lie
+  </text>
+  <text x="56" y="132" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="16">
+    Multiplayer Lobby + Live Voting
+  </text>
 
-  <!-- ── Spinner wheel ── -->
-  <!-- Glow halo behind wheel -->
-  <circle cx="230" cy="250" r="145" fill="#8b5cf6" opacity="0.07"/>
+  <rect x="56" y="156" width="220" height="174" rx="14" fill="#111d31" stroke="#334155" />
+  <text x="72" y="184" fill="#a78bfa" font-family="Segoe UI, sans-serif" font-size="15" font-weight="700">Players</text>
 
-  <!--
-    8 equal segments, 45deg each, clockwise from top.
-    All arcs use rx=135 ry=135 (perfect circle), large-arc-flag=0, sweep=1 (CW).
-    Segment endpoints computed from cx=230 cy=250 r=135:
-      P0 (  0deg top):    (230,   115)
-      P1 ( 45deg):        (325.5, 154.5)
-      P2 ( 90deg right):  (365,   250)
-      P3 (135deg):        (325.5, 345.5)
-      P4 (180deg bottom): (230,   385)
-      P5 (225deg):        (134.5, 345.5)
-      P6 (270deg left):   (95,    250)
-      P7 (315deg):        (134.5, 154.5)
-  -->
-  <g filter="url(#wheelShadow)" clip-path="url(#wheelClip)">
-    <!-- Seg 0: purple  0-45deg -->
-    <path d="M230,250 L230,115 A135,135 0 0,1 325.5,154.5 Z" fill="#7c3aed"/>
-    <!-- Seg 1: blue   45-90deg -->
-    <path d="M230,250 L325.5,154.5 A135,135 0 0,1 365,250 Z" fill="#2563eb"/>
-    <!-- Seg 2: green  90-135deg -->
-    <path d="M230,250 L365,250 A135,135 0 0,1 325.5,345.5 Z" fill="#059669"/>
-    <!-- Seg 3: orange 135-180deg -->
-    <path d="M230,250 L325.5,345.5 A135,135 0 0,1 230,385 Z" fill="#d97706"/>
-    <!-- Seg 4: red    180-225deg -->
-    <path d="M230,250 L230,385 A135,135 0 0,1 134.5,345.5 Z" fill="#dc2626"/>
-    <!-- Seg 5: teal   225-270deg -->
-    <path d="M230,250 L134.5,345.5 A135,135 0 0,1 95,250 Z" fill="#0891b2"/>
-    <!-- Seg 6: lime   270-315deg -->
-    <path d="M230,250 L95,250 A135,135 0 0,1 134.5,154.5 Z" fill="#65a30d"/>
-    <!-- Seg 7: violet 315-360deg -->
-    <path d="M230,250 L134.5,154.5 A135,135 0 0,1 230,115 Z" fill="#9333ea"/>
-  </g>
+  <rect x="72" y="198" width="188" height="30" rx="8" fill="#1e293b" stroke="#334155" />
+  <text x="84" y="218" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="13">Alex</text>
+  <text x="210" y="218" fill="#10b981" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700">READY</text>
 
-  <!-- Spoke lines (inside the clip) -->
-  <g clip-path="url(#wheelClip)" stroke="rgba(0,0,0,0.3)" stroke-width="1.5">
-    <line x1="230" y1="250" x2="230" y2="115"/>
-    <line x1="230" y1="250" x2="325.5" y2="154.5"/>
-    <line x1="230" y1="250" x2="365" y2="250"/>
-    <line x1="230" y1="250" x2="325.5" y2="345.5"/>
-    <line x1="230" y1="250" x2="230" y2="385"/>
-    <line x1="230" y1="250" x2="134.5" y2="345.5"/>
-    <line x1="230" y1="250" x2="95" y2="250"/>
-    <line x1="230" y1="250" x2="134.5" y2="154.5"/>
-  </g>
+  <rect x="72" y="236" width="188" height="30" rx="8" fill="#1e293b" stroke="#334155" />
+  <text x="84" y="256" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="13">Jordan</text>
+  <text x="199" y="256" fill="#10b981" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700">READY</text>
 
-  <!-- Outer ring border -->
-  <circle cx="230" cy="250" r="135" fill="none" stroke="rgba(0,0,0,0.4)" stroke-width="2"/>
+  <rect x="72" y="274" width="188" height="30" rx="8" fill="#1e293b" stroke="#334155" />
+  <text x="84" y="294" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="13">Taylor</text>
+  <text x="205" y="294" fill="#f59e0b" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700">VOTING</text>
 
-  <!--
-    Segment labels at 65% radius (r=88) at each segment midpoint angle.
-    Midpoint angles (clockwise from top): 22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5
-    Label positions:
-      22.5:  (264, 169)   67.5:  (311, 216)   112.5: (311, 284)   157.5: (264, 331)
-      202.5: (196, 331)   247.5: (149, 284)   292.5: (149, 216)   337.5: (196, 169)
-  -->
-  <g font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="white" text-anchor="middle" dominant-baseline="central">
-    <text x="264" y="169" transform="rotate(22.5,264,169)">Alex</text>
-    <text x="311" y="216" transform="rotate(67.5,311,216)">Sam</text>
-    <text x="311" y="284" transform="rotate(112.5,311,284)">Jordan</text>
-    <text x="264" y="331" transform="rotate(157.5,264,331)">Taylor</text>
-    <text x="196" y="331" transform="rotate(202.5,196,331)">Morgan</text>
-    <text x="149" y="284" transform="rotate(247.5,149,284)">Casey</text>
-    <text x="149" y="216" transform="rotate(292.5,149,216)">Riley</text>
-    <text x="196" y="169" transform="rotate(337.5,196,169)">Jamie</text>
-  </g>
+  <circle cx="356" cy="226" r="92" fill="#0f172a" stroke="#334155" stroke-width="4" />
+  <path d="M356 226 L356 134 A92 92 0 0 1 435 184 Z" fill="#7c3aed" />
+  <path d="M356 226 L435 184 A92 92 0 0 1 434 269 Z" fill="#2563eb" />
+  <path d="M356 226 L434 269 A92 92 0 0 1 356 318 Z" fill="#059669" />
+  <path d="M356 226 L356 318 A92 92 0 0 1 279 268 Z" fill="#d97706" />
+  <path d="M356 226 L279 268 A92 92 0 0 1 279 183 Z" fill="#dc2626" />
+  <path d="M356 226 L279 183 A92 92 0 0 1 356 134 Z" fill="#0891b2" />
+  <circle cx="356" cy="226" r="14" fill="#1e293b" stroke="#c4b5fd" stroke-width="2" />
+  <polygon points="463,226 438,214 438,238" fill="#a78bfa" filter="url(#softGlow)" />
 
-  <!-- Center hub -->
-  <circle cx="230" cy="250" r="20" fill="#1e293b"/>
-  <circle cx="230" cy="250" r="20" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>
-
-  <!-- Pointer arrow pointing left, tip at wheel right edge -->
-  <polygon points="375,250 362,238 362,262" fill="#a78bfa" filter="url(#titleGlow)"/>
-
-  <!-- Spin result label -->
-  <text x="230" y="425" fill="#a78bfa" font-size="15" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle" filter="url(#titleGlow)">🎉 Sam!</text>
-
-  <!-- ── Right panel: Guess recording ── -->
-  <rect x="420" y="100" width="355" height="330" rx="14" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" filter="url(#cardShadow)"/>
-
-  <!-- Panel header -->
-  <text x="597" y="133" fill="#94a3b8" font-size="11" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle" letter-spacing="0.08em">NOW SPEAKING</text>
-  <text x="597" y="162" fill="#a78bfa" font-size="22" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle" filter="url(#titleGlow)">Sam</text>
-  <text x="597" y="180" fill="#64748b" font-size="11" font-family="system-ui,sans-serif" text-anchor="middle">Round 2</text>
-
-  <!-- Divider -->
-  <line x1="436" y1="190" x2="758" y2="190" stroke="#334155" stroke-width="1"/>
-
-  <!-- Statements section label -->
-  <text x="436" y="208" fill="#94a3b8" font-size="10" font-weight="700" font-family="system-ui,sans-serif" letter-spacing="0.07em">STATEMENTS</text>
-
-  <!-- Statement 1 -->
-  <rect x="434" y="213" width="322" height="34" rx="7" fill="#172033" stroke="#6d28d9" stroke-width="1.2"/>
-  <circle cx="452" cy="230" r="10" fill="#8b5cf6"/>
-  <text x="452" y="230" fill="white" font-size="10" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle" dominant-baseline="central">1</text>
-  <text x="468" y="230" fill="#f9fafb" font-size="11" font-family="system-ui,sans-serif" dominant-baseline="central">I once swam with sharks</text>
-
-  <!-- Statement 2 -->
-  <rect x="434" y="251" width="322" height="34" rx="7" fill="#172033" stroke="#6d28d9" stroke-width="1.2"/>
-  <circle cx="452" cy="268" r="10" fill="#8b5cf6"/>
-  <text x="452" y="268" fill="white" font-size="10" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle" dominant-baseline="central">2</text>
-  <text x="468" y="268" fill="#f9fafb" font-size="11" font-family="system-ui,sans-serif" dominant-baseline="central">I speak four languages</text>
-
-  <!-- Statement 3 -->
-  <rect x="434" y="289" width="322" height="34" rx="7" fill="#172033" stroke="#6d28d9" stroke-width="1.2"/>
-  <circle cx="452" cy="306" r="10" fill="#8b5cf6"/>
-  <text x="452" y="306" fill="white" font-size="10" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle" dominant-baseline="central">3</text>
-  <text x="468" y="306" fill="#f9fafb" font-size="11" font-family="system-ui,sans-serif" dominant-baseline="central">I've climbed Mt. Rainier</text>
-
-  <!-- Divider -->
-  <line x1="436" y1="332" x2="758" y2="332" stroke="#334155" stroke-width="1"/>
-  <text x="436" y="348" fill="#94a3b8" font-size="10" font-weight="700" font-family="system-ui,sans-serif" letter-spacing="0.07em">PLAYER GUESSES</text>
-
-  <!-- Guess row: Alex → 2 -->
-  <rect x="434" y="354" width="322" height="34" rx="7" fill="#172033" stroke="#334155" stroke-width="1.2"/>
-  <text x="450" y="371" fill="#f9fafb" font-size="12" font-weight="600" font-family="system-ui,sans-serif" dominant-baseline="central">Alex</text>
-  <rect x="683" y="359" width="28" height="24" rx="5" fill="#8b5cf6" stroke="#8b5cf6" stroke-width="1"/>
-  <text x="697" y="371" fill="white" font-size="12" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle" dominant-baseline="central">2</text>
-  <rect x="715" y="359" width="28" height="24" rx="5" fill="#0f172a" stroke="#334155" stroke-width="1.2"/>
-  <text x="729" y="371" fill="#94a3b8" font-size="12" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle" dominant-baseline="central">3</text>
-  <rect x="747" y="359" width="28" height="24" rx="5" fill="#0f172a" stroke="#334155" stroke-width="1.2"/>
-  <text x="761" y="371" fill="#94a3b8" font-size="12" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle" dominant-baseline="central">1</text>
-
-  <!-- ── Title ── -->
-  <text x="400" y="55" fill="url(#titleGrad)" font-size="36" font-weight="700" font-family="system-ui,sans-serif" text-anchor="middle" filter="url(#titleGlow)">2 Truths and a Lie</text>
-  <text x="400" y="80" fill="#64748b" font-size="14" font-family="system-ui,sans-serif" text-anchor="middle">party game for Zoom</text>
-
-  <!-- Corner accents -->
-  <line x1="0" y1="0" x2="40" y2="0" stroke="#8b5cf6" stroke-width="3"/>
-  <line x1="0" y1="0" x2="0" y2="40" stroke="#8b5cf6" stroke-width="3"/>
-  <line x1="800" y1="0" x2="760" y2="0" stroke="#8b5cf6" stroke-width="3"/>
-  <line x1="800" y1="0" x2="800" y2="40" stroke="#8b5cf6" stroke-width="3"/>
-  <line x1="0" y1="450" x2="40" y2="450" stroke="#8b5cf6" stroke-width="3"/>
-  <line x1="0" y1="450" x2="0" y2="410" stroke="#8b5cf6" stroke-width="3"/>
-  <line x1="800" y1="450" x2="760" y2="450" stroke="#8b5cf6" stroke-width="3"/>
-  <line x1="800" y1="450" x2="800" y2="410" stroke="#8b5cf6" stroke-width="3"/>
+  <rect x="56" y="348" width="400" height="86" rx="14" fill="#111d31" stroke="#334155" />
+  <text x="72" y="378" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="14" font-weight="700">
+    Results Board
+  </text>
+  <text x="72" y="404" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="13">
+    Lie was statement #2 • Continue to next participant
+  </text>
 </svg>
