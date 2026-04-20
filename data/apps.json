@@ -732,6 +732,16 @@
         "implementedAt": "2026-04-20T12:59:14Z",
         "agentName": "Codex",
         "llmModel": "gpt-5.4"
+      },
+      {
+        "issueNumber": 377,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/377",
+        "runId": "run-20260420T132957Z-2fd4a8",
+        "description": "Added speaking-screen statement visibility, per-statement vote breakdown, moderator score visibility, final leaderboard on all screens, and moderator new-game reset requiring fresh submissions.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-20T13:29:57Z",
+        "agentName": "Codex",
+        "llmModel": "gpt-5.4"
       }
     ],
     "allowImprovements": true,
@@ -771,6 +781,11 @@
         "runId": "run-20260420T125914Z-8ff7c0",
         "path": "backups/run-20260420T125914Z-8ff7c0/index.html",
         "url": "/apps/2026/03/31/two-truths-lie-game/backups/run-20260420T125914Z-8ff7c0/index.html"
+      },
+      {
+        "runId": "run-20260420T132957Z-2fd4a8",
+        "path": "backups/run-20260420T132957Z-2fd4a8/index.html",
+        "url": "/apps/2026/03/31/two-truths-lie-game/backups/run-20260420T132957Z-2fd4a8/index.html"
       }
     ]
   },

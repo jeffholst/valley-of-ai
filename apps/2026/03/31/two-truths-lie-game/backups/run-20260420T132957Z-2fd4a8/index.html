@@ -210,18 +210,13 @@
       }
       .player-row {
         display: grid;
-        grid-template-columns: 1fr auto auto auto;
+        grid-template-columns: 1fr auto auto;
         gap: 10px;
         align-items: center;
         background: var(--surface);
         border: 1.5px solid var(--card-border);
         border-radius: 10px;
         padding: 10px 12px;
-      }
-      .score-chip {
-        font-size: 0.8rem;
-        font-weight: 700;
-        color: var(--accent-bright);
       }
       .status-ready {
         color: var(--success);
@@ -317,40 +312,9 @@
         display: none !important;
       }
 
-      .leaderboard-list {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-      .leaderboard-row {
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        gap: 10px;
-        align-items: center;
-        background: var(--surface);
-        border: 1.5px solid var(--card-border);
-        border-radius: 10px;
-        padding: 10px 12px;
-      }
-      .leaderboard-rank {
-        width: 30px;
-        text-align: center;
-        font-weight: 700;
-      }
-      .leaderboard-score {
-        color: var(--accent-bright);
-        font-weight: 700;
-      }
-      .statement-breakdown-card {
-        border: 1.5px solid var(--card-border);
-        border-radius: 10px;
-        padding: 10px 12px;
-        background: var(--surface);
-      }
-
       @media (max-width: 640px) {
         .player-row {
-          grid-template-columns: 1fr auto;
+          grid-template-columns: 1fr;
         }
         .vote-buttons {
           grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -446,19 +410,9 @@
         <div id="modResultsPanel" class="card full hidden">
           <h2>Round Results</h2>
           <p id="modResultSummary" class="muted" style="margin: 6px 0 10px"></p>
-          <div id="modStatementBreakdown" class="statement-list" style="margin-bottom: 10px"></div>
           <div id="modResultsRows" class="result-list"></div>
           <button id="modContinueBtn" class="btn btn-success full" style="margin-top: 12px">
             Continue
-          </button>
-        </div>
-
-        <div id="modLeaderboardPanel" class="card full hidden">
-          <h2>Leaderboard</h2>
-          <p class="muted" style="margin: 6px 0 10px">Final standings for this game.</p>
-          <div id="modLeaderboardRows" class="leaderboard-list"></div>
-          <button id="modNewGameBtn" class="btn btn-primary full" style="margin-top: 12px">
-            Start New Game
           </button>
         </div>
 
@@ -479,42 +433,6 @@
         <div id="playerWaitingPanel" class="card full">
           <h2 id="playerWaitingTitle">Waiting for moderator</h2>
           <p id="playerWaitingText" class="muted" style="margin-top: 6px"></p>
-          <div id="playerSpeakerStatements" class="statement-list" style="margin-top: 10px"></div>
-        </div>
-
-        <div id="playerSubmissionPanel" class="card full hidden">
-          <h2>Submit Statements</h2>
-          <p class="muted" style="margin: 6px 0 8px">Enter two truths and one lie for this game.</p>
-          <div class="statement-list" style="margin-bottom: 10px">
-            <textarea
-              id="playerStatement1"
-              class="textarea"
-              maxlength="180"
-              placeholder="Statement 1"
-            ></textarea>
-            <textarea
-              id="playerStatement2"
-              class="textarea"
-              maxlength="180"
-              placeholder="Statement 2"
-            ></textarea>
-            <textarea
-              id="playerStatement3"
-              class="textarea"
-              maxlength="180"
-              placeholder="Statement 3"
-            ></textarea>
-          </div>
-          <label class="muted" for="playerLieSelect" style="display: block; margin-bottom: 6px"
-            >Which statement is the lie?</label
-          >
-          <select id="playerLieSelect" class="select" style="margin-bottom: 12px">
-            <option value="0">Statement 1</option>
-            <option value="1">Statement 2</option>
-            <option value="2">Statement 3</option>
-          </select>
-          <button id="playerSubmitStatementsBtn" class="btn btn-primary full">Submit Statements</button>
-          <p id="playerSubmitMessage" class="muted" style="margin-top: 8px"></p>
         </div>
 
         <div id="playerVotePanel" class="card full hidden">
@@ -531,14 +449,7 @@
         <div id="playerResultsPanel" class="card full hidden">
           <h2>Results Board</h2>
           <p id="playerResultSummary" class="muted" style="margin: 6px 0 10px"></p>
-          <div id="playerStatementBreakdown" class="statement-list" style="margin-bottom: 10px"></div>
           <div id="playerResultsRows" class="result-list"></div>
-        </div>
-
-        <div id="playerLeaderboardPanel" class="card full hidden">
-          <h2>Leaderboard</h2>
-          <p class="muted" style="margin: 6px 0 10px">Final standings for this game.</p>
-          <div id="playerLeaderboardRows" class="leaderboard-list"></div>
         </div>
       </div>
     </div>
@@ -805,58 +716,10 @@
         }
         container.innerHTML = players
           .map(
-            (entry) =>
-              `<div class="player-row"><div>${esc(entry.name)}</div><div>${playerStatusLabel(entry)}</div><div class="score-chip">${Number(entry.score || 0)} pts</div><div>${kickButtonHtml(entry)}</div></div>`,
+            (entry) => `<div class="player-row"><div>${esc(entry.name)}</div><div>${playerStatusLabel(entry)}</div><div>${kickButtonHtml(entry)}</div></div>`,
           )
           .join('');
         bindKickButtons(container);
-      }
-
-      function getLeaderboardRows() {
-        const sorted = [...activePlayers()].sort((a, b) => {
-          const scoreDiff = Number(b.score || 0) - Number(a.score || 0);
-          if (scoreDiff !== 0) return scoreDiff;
-          return String(a.name || '').localeCompare(String(b.name || ''));
-        });
-
-        let lastScore = null;
-        let lastRank = 0;
-        return sorted.map((entry, index) => {
-          const score = Number(entry.score || 0);
-          const rank = score === lastScore ? lastRank : index + 1;
-          lastScore = score;
-          lastRank = rank;
-          return { rank, name: entry.name || 'Player', score };
-        });
-      }
-
-      function renderLeaderboard(containerId) {
-        const container = document.getElementById(containerId);
-        const rows = getLeaderboardRows();
-        container.innerHTML = rows
-          .map(
-            (row) =>
-              `<div class="leaderboard-row"><div class="leaderboard-rank">#${row.rank}</div><div>${esc(row.name)}</div><div class="leaderboard-score">${row.score} pts</div></div>`,
-          )
-          .join('');
-      }
-
-      function renderStatementBreakdown(containerId, game) {
-        const container = document.getElementById(containerId);
-        const breakdown = Array.isArray(game?.statementBreakdown) ? game.statementBreakdown : [];
-        if (!breakdown.length) {
-          container.innerHTML = '';
-          return;
-        }
-        container.innerHTML = breakdown
-          .map((entry, index) => {
-            const voters = Array.isArray(entry.voters) ? entry.voters : [];
-            return `<div class="statement-breakdown-card">
-              <div><strong>${index + 1}.</strong> ${esc(entry.text || '')}</div>
-              <div class="muted" style="margin-top:6px">${entry.isLie ? 'Lie' : 'Truth'} • Votes: ${voters.length ? voters.map(esc).join(', ') : 'none'}</div>
-            </div>`;
-          })
-          .join('');
       }
 
       function renderWheel(names, angle = 0) {
@@ -982,7 +845,6 @@
         document.getElementById('modSpinPanel').classList.toggle('hidden', phase !== 'spin');
         document.getElementById('modVotePanel').classList.toggle('hidden', phase !== 'vote');
         document.getElementById('modResultsPanel').classList.toggle('hidden', phase !== 'results');
-        document.getElementById('modLeaderboardPanel').classList.toggle('hidden', phase !== 'leaderboard');
 
         const players = activePlayers();
         const readyCount = players.filter((p) => p?.submission?.ready).length;
@@ -1024,7 +886,6 @@
         document.getElementById('modShowResultsBtn').disabled = !allVotesIn(game);
 
         const results = Array.isArray(game?.results) ? game.results : [];
-        renderStatementBreakdown('modStatementBreakdown', game);
         document.getElementById('modResultsRows').innerHTML = results
           .map(
             (row) => `<div class="result-row ${row.correct ? 'result-good' : 'result-bad'}"><strong>${esc(row.name)}</strong><span class="muted">voted #${Number(row.voteIndex) + 1}</span><span>${row.correct ? 'Correct' : 'Wrong'}</span></div>`,
@@ -1034,10 +895,6 @@
         document.getElementById('modResultSummary').textContent = Number.isFinite(answerIndex)
           ? `Lie was statement #${answerIndex + 1}.`
           : '';
-
-        if (phase === 'leaderboard') {
-          renderLeaderboard('modLeaderboardRows');
-        }
       }
 
       function updatePlayerUi() {
@@ -1055,34 +912,22 @@
         document.getElementById('playerPhasePill').textContent = phase[0].toUpperCase() + phase.slice(1);
 
         const waitingPanel = document.getElementById('playerWaitingPanel');
-        const submissionPanel = document.getElementById('playerSubmissionPanel');
         const votePanel = document.getElementById('playerVotePanel');
         const resultsPanel = document.getElementById('playerResultsPanel');
-        const leaderboardPanel = document.getElementById('playerLeaderboardPanel');
-        const speakerStatements = document.getElementById('playerSpeakerStatements');
 
         waitingPanel.classList.add('hidden');
-        submissionPanel.classList.add('hidden');
         votePanel.classList.add('hidden');
         resultsPanel.classList.add('hidden');
-        leaderboardPanel.classList.add('hidden');
-        speakerStatements.innerHTML = '';
 
         if (phase === 'lobby' || phase === 'spin') {
-          if (phase === 'lobby' && !player?.submission?.ready) {
-            submissionPanel.classList.remove('hidden');
-            document.getElementById('playerSubmitMessage').textContent =
-              'Submit your statements to be marked ready.';
-          } else {
-            waitingPanel.classList.remove('hidden');
-            const title = document.getElementById('playerWaitingTitle');
-            const text = document.getElementById('playerWaitingText');
-            title.textContent = phase === 'lobby' ? 'Waiting in lobby' : 'Moderator is selecting speaker';
-            text.textContent =
-              phase === 'lobby'
-                ? 'Your statements are submitted. Waiting for the moderator to start.'
-                : 'The moderator is spinning for the next speaker.';
-          }
+          waitingPanel.classList.remove('hidden');
+          const title = document.getElementById('playerWaitingTitle');
+          const text = document.getElementById('playerWaitingText');
+          title.textContent = phase === 'lobby' ? 'Waiting in lobby' : 'Moderator is selecting speaker';
+          text.textContent =
+            phase === 'lobby'
+              ? 'Your statements are submitted. Waiting for the moderator to start.'
+              : 'The moderator is spinning for the next speaker.';
           return;
         }
 
@@ -1094,14 +939,6 @@
             document.getElementById('playerWaitingTitle').textContent = 'You are speaking';
             document.getElementById('playerWaitingText').textContent =
               'Tell everyone your statements while players vote for the lie.';
-            const ownStatements = Array.isArray(player?.submission?.statements)
-              ? player.submission.statements
-              : [];
-            speakerStatements.innerHTML = ownStatements
-              .map(
-                (text, index) => `<div class="statement-item"><strong>${index + 1}.</strong><span>${esc(text)}</span></div>`,
-              )
-              .join('');
             return;
           }
 
@@ -1138,18 +975,11 @@
             ? `Lie was statement #${answerIndex + 1}.`
             : '';
           const rows = Array.isArray(game?.results) ? game.results : [];
-          renderStatementBreakdown('playerStatementBreakdown', game);
           document.getElementById('playerResultsRows').innerHTML = rows
             .map(
               (row) => `<div class="result-row ${row.correct ? 'result-good' : 'result-bad'}"><strong>${esc(row.name)}</strong><span class="muted">voted #${Number(row.voteIndex) + 1}</span><span>${row.correct ? 'Correct' : 'Wrong'}</span></div>`,
             )
             .join('');
-          return;
-        }
-
-        if (phase === 'leaderboard') {
-          leaderboardPanel.classList.remove('hidden');
-          renderLeaderboard('playerLeaderboardRows');
         }
       }
 
@@ -1354,13 +1184,6 @@
 
         const answer = Number(game.answerIndexInPresented);
         const rows = [];
-        const statementBreakdown = Array.isArray(game?.presentedStatements)
-          ? game.presentedStatements.map((entry, index) => ({
-              text: entry?.text || '',
-              isLie: index === answer,
-              voters: [],
-            }))
-          : [];
         const patch = {};
 
         eligibleVoterIds(game).forEach((pid) => {
@@ -1370,9 +1193,6 @@
           const currentScore = Number(entry?.score || 0);
           patch[`players/${pid}/score`] = correct ? currentScore + 1 : currentScore;
           rows.push({ name: entry?.name || 'Player', voteIndex, correct });
-          if (statementBreakdown[voteIndex]) {
-            statementBreakdown[voteIndex].voters.push(entry?.name || 'Player');
-          }
         });
 
         const remaining = Array.isArray(game.remainingSpeakerIds)
@@ -1380,7 +1200,6 @@
           : [];
 
         patch['game/results'] = rows;
-        patch['game/statementBreakdown'] = statementBreakdown;
         patch['game/remainingSpeakerIds'] = remaining;
         patch['game/phase'] = 'results';
 
@@ -1397,10 +1216,14 @@
         if (!remaining.length) {
           await patchSession({
             patch: {
-              'game/phase': 'leaderboard',
+              'game/roundNumber': Number(game?.roundNumber || 1) + 1,
+              'game/remainingSpeakerIds': activeIds,
               'game/currentSpeakerId': null,
               'game/currentRoundId': null,
-              'game/remainingSpeakerIds': [],
+              'game/presentedStatements': [],
+              'game/answerIndexInPresented': null,
+              'game/results': [],
+              'game/phase': 'spin',
             },
           });
           await refreshSessionNow();
@@ -1414,34 +1237,9 @@
             'game/presentedStatements': [],
             'game/answerIndexInPresented': null,
             'game/results': [],
-            'game/statementBreakdown': [],
             'game/phase': 'spin',
           },
         });
-        await refreshSessionNow();
-      }
-
-      async function moderatorStartNewGame() {
-        if (role !== 'moderator') return;
-        const patch = {
-          game: {
-            phase: 'lobby',
-            roundNumber: 1,
-            remainingSpeakerIds: [],
-            currentSpeakerId: null,
-            currentRoundId: null,
-            presentedStatements: [],
-            answerIndexInPresented: null,
-            results: [],
-            statementBreakdown: [],
-          },
-        };
-        activePlayers().forEach((entry) => {
-          patch[`players/${entry.id}/submission`] = null;
-          patch[`players/${entry.id}/vote`] = null;
-          patch[`players/${entry.id}/score`] = 0;
-        });
-        await patchSession({ status: 'lobby', patch });
         await refreshSessionNow();
       }
 
@@ -1510,9 +1308,6 @@
       document.getElementById('modContinueBtn').addEventListener('click', () => {
         moderatorContinue().catch(() => setError('Could not continue game.'));
       });
-      document.getElementById('modNewGameBtn').addEventListener('click', () => {
-        moderatorStartNewGame().catch(() => setError('Could not start a new game.'));
-      });
 
       document.querySelectorAll('[data-vote-index]').forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -1569,37 +1364,6 @@
         if (event.key === 'Enter') {
           event.preventDefault();
           document.getElementById('joinSubmitBtn').click();
-        }
-      });
-
-      document.getElementById('playerSubmitStatementsBtn').addEventListener('click', async () => {
-        const statements = [
-          document.getElementById('playerStatement1').value.trim(),
-          document.getElementById('playerStatement2').value.trim(),
-          document.getElementById('playerStatement3').value.trim(),
-        ];
-        const lieIndex = Number(document.getElementById('playerLieSelect').value);
-        const messageEl = document.getElementById('playerSubmitMessage');
-        const button = document.getElementById('playerSubmitStatementsBtn');
-
-        if (statements.some((entry) => !entry)) {
-          messageEl.textContent = 'Please fill in all three statements.';
-          return;
-        }
-
-        button.disabled = true;
-        messageEl.textContent = 'Submitting...';
-        try {
-          await updatePlayer({ action: 'submitStatements', statements, lieIndex });
-          document.getElementById('playerStatement1').value = '';
-          document.getElementById('playerStatement2').value = '';
-          document.getElementById('playerStatement3').value = '';
-          messageEl.textContent = 'Submitted. Waiting for moderator to start.';
-          await refreshSessionNow();
-        } catch (error) {
-          messageEl.textContent = error.message || 'Unable to submit statements.';
-        } finally {
-          button.disabled = false;
         }
       });
 
