@@ -1,4 +1,4 @@
-<svg viewBox="0 0 800 450" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Word Scramble Party round over player screen with confetti and rain cloud">
+<svg viewBox="0 0 800 450" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Word Scramble Party live player screen with responsive letter tiles">
   <defs>
     <linearGradient id="bg" x1="80" y1="24" x2="720" y2="426" gradientUnits="userSpaceOnUse">
       <stop stop-color="#0f172a"/>
@@ -41,19 +41,19 @@
 
   <rect x="74" y="46" width="652" height="356" rx="18" fill="url(#card)" stroke="#334155" stroke-width="2" filter="url(#softShadow)"/>
   <text x="108" y="96" fill="#f9fafb" font-size="38" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="800" filter="url(#titleGlow)">Word Scramble Party</text>
-  <text x="110" y="124" fill="#9ca3af" font-size="16" font-family="Trebuchet MS, Segoe UI, sans-serif">Player screen: active tile hints and round-over animations</text>
+  <text x="110" y="124" fill="#9ca3af" font-size="16" font-family="Trebuchet MS, Segoe UI, sans-serif">Player screen: winner locked, waiting for moderator</text>
 
   <rect x="108" y="150" width="584" height="42" rx="10" fill="#22c55e" fill-opacity="0.14" stroke="#22c55e" stroke-opacity="0.55"/>
-  <text x="130" y="177" fill="#a7f3d0" font-size="18" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">You won this round! Confetti time.</text>
+  <text x="130" y="177" fill="#a7f3d0" font-size="18" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">Alex answered correctly first. Next round starts soon.</text>
 
   <rect x="108" y="214" width="364" height="128" rx="14" fill="#0f172a" fill-opacity="0.48" stroke="#334155"/>
   <text x="130" y="245" fill="#67e8f9" font-size="19" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">Scramble</text>
-  <text x="130" y="270" fill="#9ca3af" font-size="14" font-family="Trebuchet MS, Segoe UI, sans-serif">Type or tap letters when the round begins.</text>
+  <text x="130" y="270" fill="#9ca3af" font-size="14" font-family="Trebuchet MS, Segoe UI, sans-serif">Disabled tiles clearly show the round is paused.</text>
 
   <g filter="url(#softShadow)">
     <rect x="130" y="290" width="44" height="52" rx="10" fill="url(#accent)" opacity="0.42"/>
     <rect x="184" y="290" width="44" height="52" rx="10" fill="url(#accent)" opacity="0.42"/>
-    <rect x="238" y="290" width="44" height="52" rx="10" fill="#1e293b" stroke="#f59e0b" stroke-width="3"/>
+    <rect x="238" y="290" width="44" height="52" rx="10" fill="#1e293b" stroke="#22d3ee" stroke-opacity="0.55"/>
     <rect x="292" y="290" width="44" height="52" rx="10" fill="url(#accent)" opacity="0.42"/>
     <rect x="346" y="290" width="44" height="52" rx="10" fill="#1e293b" stroke="#334155" stroke-dasharray="6 5" opacity="0.72"/>
     <rect x="400" y="290" width="44" height="52" rx="10" fill="url(#accent)" opacity="0.42"/>
@@ -65,16 +65,11 @@
   <text x="415" y="324" fill="#06223a" font-size="23" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="800" opacity="0.65">T</text>
 
   <rect x="500" y="214" width="192" height="128" rx="14" fill="#0f172a" fill-opacity="0.48" stroke="#334155"/>
-  <text x="522" y="245" fill="#67e8f9" font-size="19" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">Round Over</text>
-  <circle cx="552" cy="288" r="5" fill="#22d3ee"/>
-  <circle cx="618" cy="275" r="5" fill="#22c55e"/>
-  <circle cx="652" cy="308" r="5" fill="#f59e0b"/>
-  <rect x="538" y="264" width="7" height="16" rx="2" fill="#ef4444" transform="rotate(-18 538 264)"/>
-  <rect x="586" y="294" width="7" height="16" rx="2" fill="#38bdf8" transform="rotate(24 586 294)"/>
-  <rect x="620" y="316" width="7" height="16" rx="2" fill="#22c55e" transform="rotate(-28 620 316)"/>
-  <path d="M540 338C560 312 586 312 606 338" stroke="#a7f3d0" stroke-width="4" stroke-linecap="round"/>
-  <path d="M640 278c12-20 34-20 45 0" stroke="#e5e7eb" stroke-width="14" stroke-linecap="round"/>
-  <path d="M646 306v20M664 306v20M682 306v20" stroke="#38bdf8" stroke-width="5" stroke-linecap="round"/>
+  <text x="522" y="245" fill="#67e8f9" font-size="19" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">Players</text>
+  <rect x="522" y="266" width="148" height="28" rx="8" fill="#1e293b" stroke="#22d3ee" stroke-opacity="0.45"/>
+  <text x="538" y="286" fill="#f9fafb" font-size="15" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">1 Alex  4 pts</text>
+  <rect x="522" y="304" width="148" height="28" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="538" y="324" fill="#9ca3af" font-size="15" font-family="Trebuchet MS, Segoe UI, sans-serif">2 Kim  3 pts</text>
 
   <path d="M88 70H60V98" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
   <path d="M712 380H740V352" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
