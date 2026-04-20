@@ -867,49 +867,18 @@
         });
       }
 
-      function playerGameStatusHtml(entry, phase, game) {
-        const speakerId = game?.currentSpeakerId;
-        if (phase === 'spin') {
-          if (entry.id === speakerId) return '<span class="status-ready">🎤 Speaking</span>';
-          return '<span class="muted">Waiting</span>';
-        }
-        if (phase === 'vote') {
-          if (entry.id === speakerId) return '<span class="status-ready">🎤 Speaking</span>';
-          const hasVoted = entry?.vote?.roundId === game?.currentRoundId;
-          return hasVoted
-            ? '<span class="voted-yes">✓ Voted</span>'
-            : '<span class="voted-no">⋯ Voting</span>';
-        }
-        if (phase === 'results') {
-          if (entry.id === speakerId) return '<span class="muted">Speaker</span>';
-          const result = Array.isArray(game?.results)
-            ? game.results.find((r) => r.playerId === entry.id)
-            : null;
-          if (result) {
-            return result.correct
-              ? '<span class="status-ready">✓ Correct</span>'
-              : '<span class="status-waiting">✗ Wrong</span>';
-          }
-          return '<span class="muted">—</span>';
-        }
-        return playerStatusLabel(entry);
-      }
-
-      function renderModeratorPlayers(containerId, gameCtx) {
+      function renderModeratorPlayers(containerId) {
         const container = document.getElementById(containerId);
         const players = activePlayers();
         if (!players.length) {
           container.innerHTML = '<p class="muted">No players joined yet.</p>';
           return;
         }
-        const { phase, game } = gameCtx || {};
         container.innerHTML = players
-          .map((entry) => {
-            const statusHtml = gameCtx
-              ? playerGameStatusHtml(entry, phase, game)
-              : playerStatusLabel(entry);
-            return `<div class="player-row"><div>${esc(entry.name)}</div><div>${statusHtml}</div><div class="score-chip">${Number(entry.score || 0)} pts</div><div>${kickButtonHtml(entry)}</div></div>`;
-          })
+          .map(
+            (entry) =>
+              `<div class="player-row"><div>${esc(entry.name)}</div><div>${playerStatusLabel(entry)}</div><div class="score-chip">${Number(entry.score || 0)} pts</div><div>${kickButtonHtml(entry)}</div></div>`,
+          )
           .join('');
         bindKickButtons(container);
       }
@@ -1132,7 +1101,7 @@
         document.getElementById('modPhasePill').textContent = phase[0].toUpperCase() + phase.slice(1);
         updateJoinLink();
         renderModeratorPlayers('modLobbyPlayers');
-        renderModeratorPlayers('modRosterPlayers', { phase, game });
+        renderModeratorPlayers('modRosterPlayers');
 
         document.getElementById('modLobbyPanel').classList.toggle('hidden', phase !== 'lobby');
         document.getElementById('modSpinPanel').classList.toggle('hidden', phase !== 'spin');
@@ -1234,7 +1203,7 @@
         resultsPanel.classList.add('hidden');
         leaderboardPanel.classList.add('hidden');
         speakerStatements.innerHTML = '';
-        if (phase !== 'results' && phase !== 'leaderboard') clearAnimation();
+        if (phase !== 'results') clearAnimation();
 
         if (phase === 'lobby' || phase === 'spin') {
           if (phase === 'lobby' && !player?.submission?.ready) {
@@ -1328,18 +1297,6 @@
         if (phase === 'leaderboard') {
           leaderboardPanel.classList.remove('hidden');
           renderLeaderboard('playerLeaderboardRows');
-          const myPlayer = session?.players?.[playerId];
-          if (myPlayer) {
-            const lbRows = getLeaderboardRows();
-            const myRow = lbRows.find((r) => r.name === (myPlayer.name || ''));
-            if (myRow) {
-              if (myRow.rank === 1) {
-                startConfetti('leaderboard');
-              } else {
-                startBlueRain('leaderboard');
-              }
-            }
-          }
         }
       }
 
