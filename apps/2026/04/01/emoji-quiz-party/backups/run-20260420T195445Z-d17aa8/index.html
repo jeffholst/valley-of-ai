@@ -263,86 +263,6 @@
       min-height: 44px;
     }
 
-    .multiplayer-lobby {
-      width: 100%;
-      background: var(--surface);
-      border: 1px solid rgba(245, 158, 11, 0.35);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 16px;
-    }
-
-    .multiplayer-lobby-title {
-      font-size: 0.92rem;
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      margin-bottom: 6px;
-      color: var(--accent);
-    }
-
-    .multiplayer-lobby-hint {
-      font-size: 0.78rem;
-      opacity: 0.68;
-      margin-bottom: 10px;
-    }
-
-    .multiplayer-link-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .multiplayer-link {
-      flex: 1;
-      min-width: 220px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      word-break: break-all;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: rgba(15, 23, 42, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      color: var(--text);
-    }
-
-    .multiplayer-status {
-      margin-top: 8px;
-      min-height: 18px;
-      font-size: 0.78rem;
-      opacity: 0.72;
-    }
-
-    .player-chip.remote {
-      border: 1px solid rgba(245, 158, 11, 0.4);
-    }
-
-    .chip-name {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
-    }
-
-    .chip-label {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .chip-badge {
-      font-size: 0.64rem;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: #fff;
-      background: var(--accent);
-      border-radius: 999px;
-      padding: 2px 8px;
-      line-height: 1.4;
-      flex-shrink: 0;
-    }
-
     /* Game Screen */
     .game-header {
       width: 100%;
@@ -641,7 +561,7 @@
       z-index: 100;
     }
 
-    /* Host Answer Actions */
+    /* Host Answer Options */
     .answer-options {
       width: 100%;
       margin-bottom: 20px;
@@ -650,7 +570,7 @@
     .answer-options-label {
       font-weight: 700;
       font-size: 0.95rem;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       text-align: center;
     }
 
@@ -661,71 +581,38 @@
       margin-bottom: 10px;
     }
 
-    .answer-option-actions {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      width: 100%;
-    }
-
-    .answer-option-btn {
-      min-height: 52px;
-      padding: 8px;
+    .answer-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
       background: var(--surface);
-      color: var(--text);
-      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 10px;
+      margin-bottom: 6px;
       cursor: pointer;
-      font-size: 0.78rem;
-      font-weight: 700;
-      text-align: center;
-      transition: transform 0.15s, background 0.15s, border-color 0.15s;
+      transition: background 0.15s;
     }
 
-    .answer-option-btn:hover {
-      filter: brightness(1.06);
-      border-color: rgba(245, 158, 11, 0.6);
-    }
-
-    .answer-option-btn:active {
-      transform: scale(0.97);
-    }
-
-    .answer-options-status {
-      min-height: 18px;
-      font-size: 0.78rem;
-      margin-top: 8px;
-      text-align: center;
-      opacity: 0.72;
-    }
-
-    .participant-card {
-      width: 100%;
-      max-width: 460px;
+    .answer-option:hover {
       background: var(--surface);
-      border-radius: 16px;
-      border: 1px solid rgba(245, 158, 11, 0.35);
-      padding: 24px 20px;
-      text-align: center;
-      box-shadow: 0 12px 38px rgba(0, 0, 0, 0.3);
+      filter: brightness(1.1);
     }
 
-    .participant-card h1 {
-      margin: 0 0 8px;
-      font-size: 1.35rem;
-      font-weight: 800;
+    .answer-option input[type='checkbox'] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent);
+      cursor: pointer;
     }
 
-    .participant-card p {
-      margin: 6px 0;
-      line-height: 1.5;
-      opacity: 0.86;
+    .answer-option-text {
+      font-size: 0.9rem;
+      font-weight: 600;
     }
 
-    .participant-name {
-      color: var(--accent);
-      font-weight: 800;
-      word-break: break-word;
+    .answer-option-desc {
+      font-size: 0.75rem;
+      opacity: 0.6;
     }
 
     /* Responsive tweaks */
@@ -741,10 +628,6 @@
 
       .player-buttons {
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-      }
-
-      .answer-option-actions {
-        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -782,16 +665,38 @@
         </select>
       </div>
 
-      <div class="multiplayer-lobby">
-        <div class="multiplayer-lobby-title">Multiplayer Share Link</div>
-        <div class="multiplayer-lobby-hint">
-          Share this link so participants can register their own names.
+      <div class="answer-options">
+        <div class="answer-options-label">Host Answer Display</div>
+        <div class="answer-options-hint">
+          Choose how you see answers (hidden from screen-shared players)
         </div>
-        <div class="multiplayer-link-row">
-          <div class="multiplayer-link" id="multiplayerLink">Preparing link…</div>
-          <button class="btn btn-info btn-sm" id="copyLinkBtn" type="button">Copy Link</button>
-        </div>
-        <div class="multiplayer-status" id="multiplayerStatus"></div>
+        <label class="answer-option">
+          <input type="checkbox" id="optPopup" checked />
+          <div>
+            <div class="answer-option-text">Separate popup window</div>
+            <div class="answer-option-desc">
+              Opens a small window — don't share it on Zoom
+            </div>
+          </div>
+        </label>
+        <label class="answer-option">
+          <input type="checkbox" id="optNotification" />
+          <div>
+            <div class="answer-option-text">Browser notification</div>
+            <div class="answer-option-desc">
+              OS notification — invisible on most screen shares
+            </div>
+          </div>
+        </label>
+        <label class="answer-option">
+          <input type="checkbox" id="optConsole" />
+          <div>
+            <div class="answer-option-text">Developer console</div>
+            <div class="answer-option-desc">
+              Prints answer to browser console (F12)
+            </div>
+          </div>
+        </label>
       </div>
 
       <button class="btn btn-accent" id="startGameBtn" disabled>
@@ -829,19 +734,6 @@
       </div>
 
       <div class="answer-reveal" id="answerReveal"></div>
-
-      <div class="answer-options">
-        <div class="answer-options-label">Host Answer Display</div>
-        <div class="answer-options-hint">
-          These actions stay hidden from your screen-shared players.
-        </div>
-        <div class="answer-option-actions">
-          <button type="button" class="answer-option-btn" id="hostPopupBtn">Open Popup</button>
-          <button type="button" class="answer-option-btn" id="hostNotifyBtn">Send Notification</button>
-          <button type="button" class="answer-option-btn" id="hostConsoleBtn">Log to Console</button>
-        </div>
-        <div class="answer-options-status" id="hostActionStatus"></div>
-      </div>
 
       <div class="player-buttons" id="playerButtons"></div>
 
@@ -1335,13 +1227,6 @@
     ];
 
     // --- State ---
-    const APP_ID = 'emoji-quiz-party';
-    const APP_NAME = 'Emoji Quiz Party';
-    const APP_PATH = '2026/04/01/emoji-quiz-party';
-    const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    const PLAYER_STORAGE_KEY = 'emoji-quiz-party:players';
-    const MODERATOR_STORAGE_KEY = 'emoji-quiz-party:moderator-id';
-
     let players = [];
     let scores = {};
     let currentRound = 0;
@@ -1352,12 +1237,12 @@
     let timeLeft = ROUND_DURATION_SECONDS;
     let roundSelections = new Set();
 
+    // Host answer display settings
     let hostPopupWindow = null;
-    let sessionCode = '';
-    let moderatorId = '';
-    let sessionPollTimer = null;
-    let remotePlayerNames = new Set();
-    let multiplayerEnabled = false;
+    let usePopup = true;
+    let useNotification = false;
+    let useConsole = false;
+    const PLAYER_STORAGE_KEY = 'emoji-quiz-party:players';
 
     // --- DOM refs ---
     const $ = (id) => document.getElementById(id);
@@ -1369,9 +1254,6 @@
     const playerCount = $('playerCount');
     const roundSelect = $('roundSelect');
     const startGameBtn = $('startGameBtn');
-    const multiplayerLink = $('multiplayerLink');
-    const copyLinkBtn = $('copyLinkBtn');
-    const multiplayerStatus = $('multiplayerStatus');
 
     const setupScreen = $('setupScreen');
     const gameScreen = $('gameScreen');
@@ -1392,53 +1274,17 @@
     const playerButtons = $('playerButtons');
     const nextRoundBtn = $('nextRoundBtn');
     const endGameBtn = $('endGameBtn');
-    const hostPopupBtn = $('hostPopupBtn');
-    const hostNotifyBtn = $('hostNotifyBtn');
-    const hostConsoleBtn = $('hostConsoleBtn');
-    const hostActionStatus = $('hostActionStatus');
 
     const scoreboardList = $('scoreboardList');
     const scoreboardSubtitle = $('scoreboardSubtitle');
     const playAgainBtn = $('playAgainBtn');
     const confettiCanvas = $('confettiCanvas');
-    const appWrapper = $('appWrapper');
 
-    // --- Helpers ---
+    const optPopup = $('optPopup');
+    const optNotification = $('optNotification');
+    const optConsole = $('optConsole');
 
-    function hashParams() {
-      return new URLSearchParams(window.location.hash.replace(/^#/, ''));
-    }
-
-    function generateSessionCode(length = 6) {
-      let code = '';
-      for (let i = 0; i < length; i++) {
-        code += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
-      }
-      return code;
-    }
-
-    function generateId(prefix = 'id') {
-      if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-        return `${prefix}-${crypto.randomUUID()}`;
-      }
-      return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-    }
-
-    function normalizedName(name) {
-      return String(name || '').trim().toLowerCase();
-    }
-
-    function setLobbyStatus(message) {
-      multiplayerStatus.textContent = message;
-    }
-
-    function setHostActionStatus(message) {
-      hostActionStatus.textContent = message;
-    }
-
-    function currentRoundData() {
-      return roundOrder[currentRound] || null;
-    }
+    // --- Host Answer Delivery ---
 
     /** Ensure browser notification permission is granted when enabled */
     async function ensureNotificationPermission() {
@@ -1454,29 +1300,57 @@
       }
     }
 
-    function updateHostPopup(data) {
-      if (!hostPopupWindow || hostPopupWindow.closed) return false;
-      const doc = hostPopupWindow.document;
-      if (!doc) return false;
-      const roundEl = doc.getElementById('hostRound');
-      const typeEl = doc.getElementById('hostType');
-      if (!roundEl || !typeEl) return false;
-      roundEl.textContent = `Round ${currentRound + 1} / ${totalRounds}`;
-      typeEl.textContent = data.type;
-      typeEl.style.display = 'inline-block';
-      doc.getElementById('hostAnswer').textContent = data.title;
-      doc.getElementById('hostClueHard').textContent = data.clue_hard;
-      doc.getElementById('hostClueMedium').textContent = data.clue_medium;
-      doc.getElementById('hostClueEasy').textContent = data.clue_easy;
-      return true;
+    /** Request notification permission when that option is checked */
+    optNotification.addEventListener('change', function () {
+      if (this.checked) {
+        ensureNotificationPermission();
+      }
+    });
+
+    /** Read answer display preferences from the setup checkboxes */
+    function readAnswerPrefs() {
+      usePopup = optPopup.checked;
+      useNotification = optNotification.checked;
+      useConsole = optConsole.checked;
     }
 
-    function logAnswerToConsole(data) {
+    /** Send the answer for the current round to the host via selected channels */
+    function deliverAnswerToHost(data) {
       const msg = `Round ${currentRound + 1}: ${data.title} (${data.type})`;
-      console.log(`%c${msg}`, 'color: #f59e0b; font-size: 16px; font-weight: bold;');
-      console.log(`  Hard clue: ${data.clue_hard}`);
-      console.log(`  Medium clue: ${data.clue_medium}`);
-      console.log(`  Easy clue: ${data.clue_easy}`);
+
+      if (usePopup && hostPopupWindow && !hostPopupWindow.closed) {
+        const doc = hostPopupWindow.document;
+        doc.getElementById('hostRound').textContent = `Round ${currentRound + 1} / ${totalRounds}`;
+        const typeEl = doc.getElementById('hostType');
+        typeEl.textContent = data.type;
+        typeEl.style.display = 'inline-block';
+        doc.getElementById('hostAnswer').textContent = data.title;
+        doc.getElementById('hostClueHard').textContent = data.clue_hard;
+        doc.getElementById('hostClueMedium').textContent = data.clue_medium;
+        doc.getElementById('hostClueEasy').textContent = data.clue_easy;
+      }
+
+      if (useNotification && 'Notification' in window && Notification.permission === 'granted') {
+        try {
+          new Notification('Emoji Quiz Party', {
+            body: msg,
+            requireInteraction: true,
+            tag: `emoji-quiz-party-round-${currentRound + 1}`,
+          });
+        } catch (err) {
+          console.warn('Browser notification failed:', err);
+        }
+      }
+
+      if (useConsole) {
+        console.log(
+          `%c${msg}`,
+          'color: #f59e0b; font-size: 16px; font-weight: bold;'
+        );
+        console.log(`  Hard clue: ${data.clue_hard}`);
+        console.log(`  Medium clue: ${data.clue_medium}`);
+        console.log(`  Easy clue: ${data.clue_easy}`);
+      }
     }
 
     /** Open the host answer popup window with a styled display */
@@ -1513,247 +1387,12 @@
       hostPopupWindow.document.close();
     }
 
-    async function sendAnswerNotification(data) {
-      const allowed = await ensureNotificationPermission();
-      if (!allowed) {
-        setHostActionStatus('Notifications are blocked in this browser.');
-        return;
-      }
-      const msg = `Round ${currentRound + 1}: ${data.title} (${data.type})`;
-      try {
-        new Notification('Emoji Quiz Party', {
-          body: msg,
-          requireInteraction: true,
-          tag: `emoji-quiz-party-round-${currentRound + 1}`,
-        });
-        setHostActionStatus('Sent answer via browser notification.');
-      } catch (err) {
-        console.warn('Browser notification failed:', err);
-        setHostActionStatus('Unable to send browser notification.');
-      }
-    }
-
-    async function runHostAnswerAction(mode) {
-      const data = currentRoundData();
-      if (!data || !gameScreen.classList.contains('active')) {
-        setHostActionStatus('Start the game to use host answer actions.');
-        return;
-      }
-
-      if (mode === 'popup') {
-        openHostPopup();
-        if (!hostPopupWindow) {
-          setHostActionStatus('Popup blocked. Allow popups for this site.');
-          return;
-        }
-        updateHostPopup(data);
-        setHostActionStatus('Opened host popup for this round.');
-        return;
-      }
-
-      if (mode === 'notify') {
-        await sendAnswerNotification(data);
-        return;
-      }
-
-      if (mode === 'console') {
-        logAnswerToConsole(data);
-        setHostActionStatus('Logged answer details to browser console.');
-      }
-    }
-
-    // --- Multiplayer Setup ---
-
-    async function isMultiplayerConfigured() {
-      const response = await fetch('/api/multiplayer/status', { cache: 'no-store' });
-      if (!response.ok) return false;
-      const payload = await response.json();
-      return Boolean(payload?.configured);
-    }
-
-    async function fetchSession(code) {
-      const response = await fetch(`/api/multiplayer/sessions/${code}`, { cache: 'no-store' });
-      if (response.status === 404) return null;
-      if (!response.ok) throw new Error('Failed to fetch session');
-      const payload = await response.json();
-      return payload?.session || null;
-    }
-
-    async function createSession(code, modId) {
-      const response = await fetch('/api/multiplayer/sessions', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          code,
-          appId: APP_ID,
-          appName: APP_NAME,
-          appPath: APP_PATH,
-          moderatorId: modId,
-          settings: {},
-        }),
-      });
-      if (response.status === 409) return false;
-      if (!response.ok) throw new Error('Failed to create session');
-      return true;
-    }
-
-    function buildJoinLink(code) {
-      return `${window.location.origin}/join/${code}`;
-    }
-
-    async function copyJoinLink() {
-      if (!sessionCode) return;
-      try {
-        await navigator.clipboard.writeText(buildJoinLink(sessionCode));
-        setLobbyStatus('Join link copied to clipboard.');
-      } catch (err) {
-        console.warn('Copy failed:', err);
-        setLobbyStatus('Could not copy link. Copy it manually.');
-      }
-    }
-
-    function mergeRemotePlayers(session) {
-      if (!session || !session.players) return;
-      const remoteEntries = Object.values(session.players)
-        .map((entry) => String(entry?.name || '').trim())
-        .filter(Boolean);
-
-      let added = 0;
-      remoteEntries.forEach((name) => {
-        const key = normalizedName(name);
-        if (!key) return;
-        if (players.some((player) => normalizedName(player) === key)) {
-          remotePlayerNames.add(key);
-          return;
-        }
-        if (players.length >= 12) return;
-        players.push(name);
-        scores[name] = scores[name] || 0;
-        remotePlayerNames.add(key);
-        added += 1;
-      });
-
-      if (added > 0) {
-        renderPlayerList();
-      }
-      setLobbyStatus(`${remoteEntries.length} participant${remoteEntries.length === 1 ? '' : 's'} registered via link.`);
-    }
-
-    async function refreshSessionRoster() {
-      if (!sessionCode || !multiplayerEnabled) return;
-      try {
-        const session = await fetchSession(sessionCode);
-        if (!session) return;
-        mergeRemotePlayers(session);
-      } catch (err) {
-        console.warn('Session refresh failed:', err);
-      }
-    }
-
-    async function initializeMultiplayerLobby() {
-      moderatorId = localStorage.getItem(MODERATOR_STORAGE_KEY) || '';
-      if (!moderatorId) {
-        moderatorId = generateId('mod');
-        localStorage.setItem(MODERATOR_STORAGE_KEY, moderatorId);
-      }
-
-      try {
-        multiplayerEnabled = await isMultiplayerConfigured();
-      } catch (err) {
-        console.warn('Multiplayer status check failed:', err);
-        multiplayerEnabled = false;
-      }
-
-      if (!multiplayerEnabled) {
-        multiplayerLink.textContent = 'Multiplayer backend unavailable on this deployment.';
-        copyLinkBtn.disabled = true;
-        setLobbyStatus('Manual player entry is still available.');
-        return;
-      }
-
-      let created = false;
-      for (let attempt = 0; attempt < 8 && !created; attempt++) {
-        const candidate = generateSessionCode(6);
-        try {
-          created = await createSession(candidate, moderatorId);
-          if (created) {
-            sessionCode = candidate;
-          }
-        } catch (err) {
-          console.warn('Session creation failed:', err);
-          break;
-        }
-      }
-
-      if (!sessionCode) {
-        multiplayerLink.textContent = 'Unable to create join link right now.';
-        copyLinkBtn.disabled = true;
-        setLobbyStatus('Manual player entry is still available.');
-        return;
-      }
-
-      multiplayerLink.textContent = buildJoinLink(sessionCode);
-      copyLinkBtn.disabled = false;
-      setLobbyStatus('Share this link so participants can self-register.');
-      clearInterval(sessionPollTimer);
-      sessionPollTimer = setInterval(refreshSessionRoster, 3000);
-      refreshSessionRoster();
-    }
-
-    async function showParticipantRegisteredState() {
-      const params = hashParams();
-      if (params.get('role') !== 'player') return false;
-      const code = String(params.get('code') || '').toUpperCase().trim();
-      const playerId = String(params.get('pid') || '').trim();
-      appWrapper.innerHTML = `
-        <div class="screen active">
-          <div class="participant-card">
-            <h1>Checking your registration…</h1>
-            <p>Hang tight while we confirm your game entry.</p>
-          </div>
-        </div>
-      `;
-      if (!code || !playerId) {
-        appWrapper.innerHTML = `
-          <div class="screen active">
-            <div class="participant-card">
-              <h1>Registration link incomplete</h1>
-              <p>Ask the host for a fresh join link and try again.</p>
-            </div>
-          </div>
-        `;
-        return true;
-      }
-
-      let registeredName = '';
-      try {
-        const session = await fetchSession(code);
-        const playersMap = session?.players || {};
-        const player = playersMap[playerId];
-        registeredName = String(player?.name || '').trim();
-      } catch (err) {
-        console.warn('Participant lookup failed:', err);
-      }
-
-      appWrapper.innerHTML = `
-        <div class="screen active">
-          <div class="participant-card">
-            <h1>You are registered${registeredName ? `, <span class="participant-name">${escapeHtml(registeredName)}</span>` : ''}.</h1>
-            <p>You're all set for this Emoji Quiz Party room.</p>
-            <p>You can close this window and return to the host call.</p>
-          </div>
-        </div>
-      `;
-      return true;
-    }
-
     // --- Setup Screen Logic ---
 
     /** Save the current player list so hosts do not need to re-enter names each session */
     function persistPlayers() {
       try {
-        const localPlayers = players.filter((name) => !remotePlayerNames.has(normalizedName(name)));
-        localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(localPlayers));
+        localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(players));
       } catch (err) {
         console.warn('Unable to save players to localStorage:', err);
       }
@@ -1770,9 +1409,8 @@
           .map((name) => (typeof name === 'string' ? name.trim() : ''))
           .filter(Boolean)
           .slice(0, 12)
-          .filter((name, i, arr) => arr.findIndex((item) => normalizedName(item) === normalizedName(name)) === i);
+          .filter((name, i, arr) => arr.indexOf(name) === i);
         scores = {};
-        remotePlayerNames = new Set();
         players.forEach((name) => {
           scores[name] = 0;
         });
@@ -1781,40 +1419,25 @@
       }
     }
 
-    /** Add a player name with optional source metadata */
-    function addPlayerName(rawName, options = {}) {
-      const { source = 'manual', focusInput = false } = options;
-      const name = String(rawName || '').trim();
-      if (!name || players.length >= 12) return false;
-      const key = normalizedName(name);
-      if (players.some((player) => normalizedName(player) === key)) return false;
-      players.push(name);
-      scores[name] = scores[name] || 0;
-      if (source === 'remote') {
-        remotePlayerNames.add(key);
-      } else {
-        persistPlayers();
-      }
-      renderPlayerList();
-      if (focusInput) {
-        playerNameInput.focus();
-      }
-      return true;
-    }
-
     /** Add a player to the list */
     function addPlayer() {
-      addPlayerName(playerNameInput.value, { source: 'manual', focusInput: true });
+      const name = playerNameInput.value.trim();
+      if (!name || players.length >= 12) return;
+      if (players.includes(name)) {
+        playerNameInput.value = '';
+        return;
+      }
+      players.push(name);
+      scores[name] = 0;
       playerNameInput.value = '';
+      persistPlayers();
+      renderPlayerList();
+      playerNameInput.focus();
     }
 
     /** Remove a player by index */
     function removePlayer(index) {
       const name = players[index];
-      if (!name) return;
-      if (remotePlayerNames.has(normalizedName(name))) {
-        return;
-      }
       players.splice(index, 1);
       delete scores[name];
       persistPlayers();
@@ -1823,12 +1446,8 @@
 
     /** Remove all players from setup and clear the saved localStorage roster */
     function clearAllPlayers() {
-      const preservedRemote = players.filter((name) => remotePlayerNames.has(normalizedName(name)));
-      players = preservedRemote;
+      players = [];
       scores = {};
-      players.forEach((name) => {
-        scores[name] = 0;
-      });
       try {
         localStorage.removeItem(PLAYER_STORAGE_KEY);
       } catch (err) {
@@ -1842,14 +1461,9 @@
       playerList.innerHTML = players
         .map(
           (name, i) => `
-          <div class="player-chip ${remotePlayerNames.has(normalizedName(name)) ? 'remote' : ''}">
-            <span class="chip-name">
-              <span class="chip-label">${escapeHtml(name)}</span>
-              ${remotePlayerNames.has(normalizedName(name)) ? '<span class="chip-badge">link</span>' : ''}
-            </span>
-            ${remotePlayerNames.has(normalizedName(name))
-      ? ''
-      : `<button class="remove-btn" onclick="removePlayer(${i})" title="Remove ${escapeHtml(name)}" aria-label="Remove ${escapeHtml(name)}">&#10005;</button>`}
+          <div class="player-chip">
+            <span>${escapeHtml(name)}</span>
+            <button class="remove-btn" onclick="removePlayer(${i})" title="Remove ${escapeHtml(name)}" aria-label="Remove ${escapeHtml(name)}">&#10005;</button>
           </div>
         `
         )
@@ -1867,29 +1481,11 @@
 
     addPlayerBtn.addEventListener('click', addPlayer);
     clearPlayersBtn.addEventListener('click', clearAllPlayers);
-    copyLinkBtn.addEventListener('click', copyJoinLink);
     playerNameInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') addPlayer();
     });
-    hostPopupBtn.addEventListener('click', () => {
-      runHostAnswerAction('popup');
-    });
-    hostNotifyBtn.addEventListener('click', () => {
-      runHostAnswerAction('notify');
-    });
-    hostConsoleBtn.addEventListener('click', () => {
-      runHostAnswerAction('console');
-    });
-
-    async function initializeApp() {
-      const participantMode = await showParticipantRegisteredState();
-      if (participantMode) return;
-      loadPersistedPlayers();
-      renderPlayerList();
-      initializeMultiplayerLobby();
-    }
-
-    initializeApp();
+    loadPersistedPlayers();
+    renderPlayerList();
 
     // --- Game Logic ---
 
@@ -1909,9 +1505,12 @@
       currentRound = 0;
       players.forEach((p) => (scores[p] = 0));
       roundOrder = shuffle(QUIZ_DATA).slice(0, totalRounds);
-      clearInterval(sessionPollTimer);
+      readAnswerPrefs();
+      if (useNotification) {
+        await ensureNotificationPermission();
+      }
+      if (usePopup) openHostPopup();
       showScreen('game');
-      setHostActionStatus('Use the buttons below to reveal answers privately.');
       startRound();
     }
 
@@ -1921,6 +1520,9 @@
       roundLabel.textContent = `Round ${currentRound + 1} / ${totalRounds}`;
       typeBadge.textContent = `Type: ${data.type}`;
       emojiDisplay.textContent = data.emojis;
+
+      // Deliver answer to host via selected channels
+      deliverAnswerToHost(data);
 
       // Reset clues
       clueHard.classList.remove('visible');
@@ -2096,11 +1698,6 @@
       if (name === 'setup') setupScreen.classList.add('active');
       if (name === 'game') gameScreen.classList.add('active');
       if (name === 'scoreboard') scoreboardScreen.classList.add('active');
-      if (name === 'setup' && multiplayerEnabled && sessionCode) {
-        clearInterval(sessionPollTimer);
-        sessionPollTimer = setInterval(refreshSessionRoster, 3000);
-        refreshSessionRoster();
-      }
     }
 
     // --- Confetti Animation ---
