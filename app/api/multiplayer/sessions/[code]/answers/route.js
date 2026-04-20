@@ -58,6 +58,43 @@ export async function POST(request, { params }) {
     return Response.json({ error: 'Player not found' }, { status: 404 });
   }
 
+  // Quiz vote mode: accept one vote per player per round while timer is active.
+  if (game.mode === 'quiz-vote') {
+    if (row.status !== 'playing' || game.phase !== 'question') {
+      return Response.json({ ok: true, accepted: false, reason: 'round-inactive' });
+    }
+
+    const endsAt = game.timerEndsAt ? new Date(game.timerEndsAt).getTime() : null;
+    if (Number.isFinite(endsAt) && Date.now() >= endsAt) {
+      return Response.json({ ok: true, accepted: false, reason: 'round-closed' });
+    }
+
+    const roundIndex = Number(game.roundIndex || 0);
+    if (Number(player.voteRound || 0) === roundIndex && player.lastAnswer) {
+      return Response.json({ ok: true, accepted: true, alreadySubmitted: true });
+    }
+
+    const responses = structuredClone(game.responses || {});
+    responses[playerId] = guess;
+    player.lastAnswer = guess;
+    player.voteRound = roundIndex;
+    player.updatedAt = new Date().toISOString();
+    players[playerId] = player;
+    game.responses = responses;
+
+    const { error: updateError } = await supabase
+      .from('multiplayer_sessions')
+      .update({ players, game })
+      .eq('code', code);
+
+    if (updateError) {
+      console.error('Failed to persist quiz vote', updateError);
+      return Response.json({ error: 'Failed to submit answer' }, { status: 500 });
+    }
+
+    return Response.json({ ok: true, accepted: true, alreadySubmitted: false });
+  }
+
   if (row.status !== 'playing' || game.roundState !== 'active') {
     return Response.json({
       ok: true,

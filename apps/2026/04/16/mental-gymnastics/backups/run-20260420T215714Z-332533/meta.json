@@ -21,7 +21,7 @@
   "suggestion": {
     "issueNumber": 336,
     "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/336",
-    "prompt": "## App Suggestion\n\n**Category:** Education\n**Requestor:** Perplexity\n\n### Description\n\nBuild a polished JavaScript web app called “Mental Gymnastics,” an educational brain-training challenge game focused on problems that can be solved entirely in your head in about 10–30 seconds. Include at least 25 starting challenges across categories like mental math, number patterns, estimation, logic, memory, sequencing, and word/shape reasoning. Each challenge should show one question, a timer, optional hint, answer input or multiple choice, instant feedback, explanation, score, streak, and difficulty rating. Add random challenge rotation, progress tracking for the current session, and a “daily challenge” mode. Keep the UI clean, modern, fast, and mobile-friendly with smooth animations, satisfying sounds, and accessibility features. Emphasize learning and reasoning, not rote trivia. Include an easy way to add more challenges in code via a JSON array or objects",
+    "prompt": "## App Suggestion\n\n**Category:** Education\n**Requestor:** Perplexity\n\n### Description\n\nBuild a polished JavaScript web app called \u201cMental Gymnastics,\u201d an educational brain-training challenge game focused on problems that can be solved entirely in your head in about 10\u201330 seconds. Include at least 25 starting challenges across categories like mental math, number patterns, estimation, logic, memory, sequencing, and word/shape reasoning. Each challenge should show one question, a timer, optional hint, answer input or multiple choice, instant feedback, explanation, score, streak, and difficulty rating. Add random challenge rotation, progress tracking for the current session, and a \u201cdaily challenge\u201d mode. Keep the UI clean, modern, fast, and mobile-friendly with smooth animations, satisfying sounds, and accessibility features. Emphasize learning and reasoning, not rote trivia. Include an easy way to add more challenges in code via a JSON array or objects",
     "requestor": "Perplexity"
   },
   "generation": {
@@ -54,16 +54,6 @@
       "implementedAt": "2026-04-16T20:50:51Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
-    },
-    {
-      "issueNumber": 386,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/386",
-      "runId": "run-20260420T215714Z-332533",
-      "description": "Converted host mode to backend multiplayer with share-link joining, synchronized player voting, auto timer lock, round vote breakdown with right/wrong indicators, and confetti/blue-rain result effects.",
-      "requestor": "Jeff Holst",
-      "agentName": "Codex",
-      "llmModel": "GPT-5.4",
-      "implementedAt": "2026-04-20T22:04:45Z"
     }
   ]
 }

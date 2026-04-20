@@ -1,0 +1,190 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a1628"/>
+      <stop offset="100%" stop-color="#0f2040"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e2d45"/>
+      <stop offset="100%" stop-color="#172035"/>
+    </linearGradient>
+    <linearGradient id="accentLine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+    <linearGradient id="correctGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#166534"/>
+      <stop offset="100%" stop-color="#15803d"/>
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f1f5f9"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="cardShadow" x="-5%" y="-5%" width="110%" height="120%">
+      <feGaussianBlur stdDeviation="8" in="SourceAlpha" result="shadow"/>
+      <feOffset dx="0" dy="4" result="offsetShadow"/>
+      <feMerge>
+        <feMergeNode in="offsetShadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bg)"/>
+
+  <!-- Subtle grid texture -->
+  <line x1="0" y1="112" x2="800" y2="112" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="0" y1="224" x2="800" y2="224" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="0" y1="336" x2="800" y2="336" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="200" y1="0" x2="200" y2="450" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="400" y1="0" x2="400" y2="450" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="600" y1="0" x2="600" y2="450" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+
+  <!-- Top accent bar -->
+  <rect x="0" y="0" width="800" height="3" fill="url(#accentLine)"/>
+
+  <!-- App title + subtitle -->
+  <text x="40" y="44" font-family="system-ui, sans-serif" font-size="26" font-weight="800"
+        fill="url(#titleGrad)" filter="url(#softGlow)" letter-spacing="-0.5">Mental Gymnastics</text>
+  <text x="40" y="64" font-family="system-ui, sans-serif" font-size="13" fill="#64748b">
+    Host-facilitated brain challenges for teams
+  </text>
+
+  <!-- Round badge -->
+  <rect x="40" y="78" width="110" height="26" rx="13" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="95" y="95" font-family="system-ui, sans-serif" font-size="12" font-weight="700"
+        fill="#f1f5f9" text-anchor="middle">Round 3 of 5</text>
+
+  <!-- Category badge -->
+  <text x="165" y="95" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#64748b">Logic</text>
+
+  <!-- Timer -->
+  <text x="750" y="95" font-family="system-ui, sans-serif" font-size="18" font-weight="800"
+        fill="#f59e0b" text-anchor="end" filter="url(#softGlow)">0:14</text>
+
+  <!-- Main game card -->
+  <rect x="40" y="108" width="490" height="310" rx="18" fill="url(#cardGrad)"
+        stroke="#2d3f5a" stroke-width="1" filter="url(#cardShadow)"/>
+
+  <!-- Question text -->
+  <text x="62" y="142" font-family="system-ui, sans-serif" font-size="15.5" font-weight="700"
+        fill="#f1f5f9" dominant-baseline="middle">All bloops are razzies. All razzies are</text>
+  <text x="62" y="163" font-family="system-ui, sans-serif" font-size="15.5" font-weight="700"
+        fill="#f1f5f9" dominant-baseline="middle">lazzies. Are all bloops lazzies?</text>
+
+  <!-- Choice A - correct answer highlighted green -->
+  <rect x="62" y="184" width="200" height="46" rx="12" fill="url(#correctGrad)" fill-opacity="0.85"
+        stroke="#22c55e" stroke-width="2"/>
+  <text x="82" y="212" font-family="system-ui, sans-serif" font-size="13" font-weight="800"
+        fill="#86efac">A.</text>
+  <text x="102" y="212" font-family="system-ui, sans-serif" font-size="13" font-weight="700"
+        fill="#86efac">Yes</text>
+
+  <!-- Choice B -->
+  <rect x="278" y="184" width="200" height="46" rx="12" fill="#293548" stroke="#334155" stroke-width="1"/>
+  <text x="298" y="212" font-family="system-ui, sans-serif" font-size="13" font-weight="800"
+        fill="#f472b6">B.</text>
+  <text x="318" y="212" font-family="system-ui, sans-serif" font-size="13" font-weight="500" fill="#94a3b8">No</text>
+
+  <!-- Choice C -->
+  <rect x="62" y="240" width="200" height="46" rx="12" fill="#293548" stroke="#334155" stroke-width="1"/>
+  <text x="82" y="268" font-family="system-ui, sans-serif" font-size="13" font-weight="800"
+        fill="#34d399">C.</text>
+  <text x="102" y="268" font-family="system-ui, sans-serif" font-size="13" font-weight="500"
+        fill="#94a3b8">Only some</text>
+
+  <!-- Choice D -->
+  <rect x="278" y="240" width="200" height="46" rx="12" fill="#293548" stroke="#334155" stroke-width="1"/>
+  <text x="298" y="268" font-family="system-ui, sans-serif" font-size="13" font-weight="800"
+        fill="#fb923c">D.</text>
+  <text x="318" y="268" font-family="system-ui, sans-serif" font-size="13" font-weight="500"
+        fill="#94a3b8">Cannot determine</text>
+
+  <!-- Divider -->
+  <line x1="62" y1="302" x2="508" y2="302" stroke="#334155" stroke-width="1"/>
+
+  <!-- Award point label -->
+  <text x="62" y="322" font-family="system-ui, sans-serif" font-size="10" font-weight="700"
+        fill="#64748b" letter-spacing="0.08em">AWARD POINT TO:</text>
+
+  <!-- Player buttons -->
+  <rect x="62" y="332" width="90" height="36" rx="10" fill="#1a3a28" stroke="#22c55e" stroke-width="2"/>
+  <text x="107" y="355" font-family="system-ui, sans-serif" font-size="12" font-weight="700"
+        fill="#22c55e" text-anchor="middle">Alice</text>
+
+  <rect x="164" y="332" width="72" height="36" rx="10" fill="#293548" stroke="#334155" stroke-width="1"/>
+  <text x="200" y="355" font-family="system-ui, sans-serif" font-size="12" font-weight="600"
+        fill="#f1f5f9" text-anchor="middle">Bob</text>
+
+  <rect x="248" y="332" width="76" height="36" rx="10" fill="#293548" stroke="#334155" stroke-width="1"/>
+  <text x="286" y="355" font-family="system-ui, sans-serif" font-size="12" font-weight="600"
+        fill="#f1f5f9" text-anchor="middle">Carol</text>
+
+  <rect x="336" y="332" width="130" height="36" rx="10" fill="#293548" stroke="#334155" stroke-width="1"/>
+  <text x="401" y="355" font-family="system-ui, sans-serif" font-size="11" font-weight="600"
+        fill="#64748b" text-anchor="middle">No one got it</text>
+
+  <!-- Moderator window panel (right side) -->
+  <rect x="550" y="108" width="212" height="310" rx="16" fill="#0d1a2e" stroke="#1e3a5f" stroke-width="1.5"/>
+  <rect x="550" y="108" width="212" height="3" rx="1.5" fill="#38bdf8"/>
+
+  <!-- Moderator window header -->
+  <text x="565" y="130" font-family="system-ui, sans-serif" font-size="10" font-weight="700"
+        fill="#475569" letter-spacing="0.1em">MODERATOR VIEW</text>
+  <rect x="740" y="116" width="10" height="10" rx="5" fill="#334155"/>
+
+  <!-- Moderator content -->
+  <text x="565" y="152" font-family="system-ui, sans-serif" font-size="10" fill="#475569" font-weight="700"
+        letter-spacing="0.06em">QUESTION</text>
+  <text x="565" y="168" font-family="system-ui, sans-serif" font-size="12" font-weight="600"
+        fill="#94a3b8">All bloops are razzies...</text>
+
+  <text x="565" y="196" font-family="system-ui, sans-serif" font-size="10" fill="#475569" font-weight="700"
+        letter-spacing="0.06em">CORRECT ANSWER</text>
+  <text x="565" y="216" font-family="system-ui, sans-serif" font-size="20" font-weight="800"
+        fill="#22c55e" filter="url(#softGlow)">A. Yes</text>
+
+  <text x="565" y="244" font-family="system-ui, sans-serif" font-size="10" fill="#475569" font-weight="700"
+        letter-spacing="0.06em">EXPLANATION</text>
+  <text x="565" y="260" font-family="system-ui, sans-serif" font-size="11" fill="#64748b">Chain: bloops</text>
+  <text x="565" y="276" font-family="system-ui, sans-serif" font-size="11" fill="#64748b">to razzies to lazzies.</text>
+
+  <!-- Scoreboard section in moderator pane -->
+  <line x1="565" y1="300" x2="748" y2="300" stroke="#1e3a5f" stroke-width="1"/>
+  <text x="565" y="320" font-family="system-ui, sans-serif" font-size="10" fill="#475569" font-weight="700"
+        letter-spacing="0.06em">SCORES</text>
+
+  <text x="565" y="340" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#22c55e">Alice</text>
+  <text x="735" y="340" font-family="system-ui, sans-serif" font-size="12" font-weight="800"
+        fill="#22c55e" text-anchor="end">2 pts</text>
+
+  <text x="565" y="358" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#94a3b8">Bob</text>
+  <text x="735" y="358" font-family="system-ui, sans-serif" font-size="12" font-weight="700"
+        fill="#64748b" text-anchor="end">1 pt</text>
+
+  <text x="565" y="376" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#94a3b8">Carol</text>
+  <text x="735" y="376" font-family="system-ui, sans-serif" font-size="12" font-weight="700"
+        fill="#64748b" text-anchor="end">0 pts</text>
+
+  <!-- Bottom edge glow -->
+  <rect x="0" y="440" width="800" height="10" fill="url(#accentLine)" fill-opacity="0.15"/>
+
+  <!-- Corner accents -->
+  <rect x="0" y="0" width="3" height="80" fill="url(#accentLine)" fill-opacity="0.5"/>
+  <rect x="797" y="0" width="3" height="80" fill="url(#accentLine)" fill-opacity="0.5"/>
+</svg>
