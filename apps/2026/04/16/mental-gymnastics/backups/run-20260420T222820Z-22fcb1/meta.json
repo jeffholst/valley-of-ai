@@ -64,16 +64,6 @@
       "agentName": "Codex",
       "llmModel": "GPT-5.4",
       "implementedAt": "2026-04-20T22:04:45Z"
-    },
-    {
-      "issueNumber": 387,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/387",
-      "runId": "run-20260420T222820Z-22fcb1",
-      "description": "Player answers now submit on click — no submit button needed. Selection is locked and highlighted until round ends. Fixed confetti and rain animation travel distances so effects fill the full safe-zone overlay.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-04-20T22:28:20Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6"
     }
   ]
 }

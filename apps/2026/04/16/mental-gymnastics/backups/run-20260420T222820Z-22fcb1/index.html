@@ -723,7 +723,7 @@
       }
       @keyframes confettiFall {
         to {
-          transform: translateY(calc(100dvh - 100px)) rotate(480deg);
+          transform: translateY(calc(100dvh - 120px)) rotate(480deg);
           opacity: 0;
         }
       }
@@ -736,7 +736,7 @@
       }
       @keyframes rainFall {
         to {
-          transform: translateY(calc(100dvh - 60px));
+          transform: translateY(calc(100dvh - 100px));
         }
       }
 
@@ -1754,15 +1754,16 @@
 
         const responses = game.responses || {};
         const myAnswer = responses[playerId] || null;
+        const canSubmit = role === 'player' && game.phase === 'question' && left > 0 && !myAnswer;
+
         if (session.status === 'lobby') {
           statusEl.textContent = 'Waiting for moderator to start game.';
         } else if (game.phase === 'question') {
-          statusEl.textContent =
-            role === 'player' && !myAnswer && left > 0
-              ? 'Tap your answer to lock it in.'
-              : myAnswer
-                ? 'Answer locked. Waiting for round to finish.'
-                : 'Question is active.';
+          statusEl.textContent = canSubmit
+            ? 'Choose your answer and submit before the timer ends.'
+            : myAnswer
+              ? 'Vote submitted. Waiting for timer to finish.'
+              : 'Question is active.';
         } else if (game.phase === 'results') {
           statusEl.textContent = 'Round complete — review votes and results.';
         } else {
@@ -1775,20 +1776,13 @@
           tile.className = 'choice-tile';
           if (game.phase === 'question' && role === 'player' && !myAnswer && left > 0) {
             tile.classList.add('selectable');
-            tile.addEventListener('click', async () => {
-              if (selectedChoice) return;
+            tile.addEventListener('click', () => {
               selectedChoice = opt;
               document.querySelectorAll('#gameChoices .choice-tile').forEach((node) =>
-                node.classList.remove('selectable', 'selected')
+                node.classList.remove('selected')
               );
               tile.classList.add('selected');
-              try {
-                await submitVote(opt);
-                playTone(640, 90);
-                await refreshSessionLoop();
-              } catch (_) {
-                selectedChoice = null;
-              }
+              submitBtn.disabled = false;
             });
           }
           if (myAnswer && myAnswer === opt) {
@@ -1802,7 +1796,8 @@
           choicesEl.appendChild(tile);
         });
 
-        submitBtn.style.display = 'none';
+        submitBtn.style.display = role === 'player' ? 'inline-flex' : 'none';
+        submitBtn.disabled = !canSubmit || !selectedChoice;
         nextRoundBtn.style.display = isModerator && game.phase === 'results' ? 'inline-flex' : 'none';
         showResultsBtn.style.display =
           isModerator &&
