@@ -347,74 +347,6 @@
         padding: 10px 12px;
         background: var(--surface);
       }
-      .statement-breakdown-lie {
-        border-color: var(--danger);
-        background: rgba(239, 68, 68, 0.12);
-      }
-      .lie-badge {
-        display: inline-block;
-        background: var(--danger);
-        color: #fff;
-        font-size: 0.72rem;
-        font-weight: 700;
-        padding: 1px 6px;
-        border-radius: 4px;
-        margin-left: 6px;
-        vertical-align: middle;
-      }
-      .vote-status-list {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        margin-top: 6px;
-      }
-      .vote-status-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 0.88rem;
-        padding: 3px 0;
-      }
-      .voted-yes {
-        color: var(--success);
-        font-weight: 600;
-      }
-      .voted-no {
-        color: var(--warning);
-      }
-      #animOverlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        pointer-events: none;
-        overflow: hidden;
-        z-index: 100;
-      }
-      .confetti-piece {
-        position: absolute;
-        top: -20px;
-        animation: confettiFall linear forwards;
-        border-radius: 2px;
-      }
-      @keyframes confettiFall {
-        to {
-          transform: translateY(110vh) rotate(720deg);
-        }
-      }
-      .rain-drop {
-        position: absolute;
-        top: -60px;
-        width: 2px;
-        border-radius: 2px;
-        animation: rainFall linear infinite;
-      }
-      @keyframes rainFall {
-        to {
-          transform: translateY(110vh);
-        }
-      }
 
       @media (max-width: 640px) {
         .player-row {
@@ -428,7 +360,6 @@
   </head>
   <body>
     <div id="app">
-      <div id="animOverlay"></div>
       <div id="screenLoading" class="screen active">
         <h1>2 Truths and a Lie</h1>
         <p class="muted">Connecting to multiplayer room...</p>
@@ -531,7 +462,7 @@
           </button>
         </div>
 
-        <div id="modRosterCard" class="card full">
+        <div class="card full">
           <h2>Players</h2>
           <div id="modRosterPlayers" class="players"></div>
         </div>
@@ -638,8 +569,6 @@
       let spinning = false;
       let spinAngle = 0;
       let selectedSpeakerId = null;
-      let animState = null;
-      let animForRound = null;
 
       function showScreen(name) {
         Object.entries(screens).forEach(([key, el]) => {
@@ -922,10 +851,8 @@
         container.innerHTML = breakdown
           .map((entry, index) => {
             const voters = Array.isArray(entry.voters) ? entry.voters : [];
-            const lieClass = entry.isLie ? ' statement-breakdown-lie' : '';
-            const lieBadge = entry.isLie ? '<span class="lie-badge">LIE</span>' : '';
-            return `<div class="statement-breakdown-card${lieClass}">
-              <div><strong>${index + 1}.</strong> ${esc(entry.text || '')}${lieBadge}</div>
+            return `<div class="statement-breakdown-card">
+              <div><strong>${index + 1}.</strong> ${esc(entry.text || '')}</div>
               <div class="muted" style="margin-top:6px">${entry.isLie ? 'Lie' : 'Truth'} • Votes: ${voters.length ? voters.map(esc).join(', ') : 'none'}</div>
             </div>`;
           })
@@ -1040,58 +967,6 @@
         showScreen('join');
       }
 
-      function clearAnimation() {
-        if (!animState) return;
-        const overlay = document.getElementById('animOverlay');
-        if (overlay) overlay.innerHTML = '';
-        animState = null;
-        animForRound = null;
-      }
-
-      function startConfetti(roundId) {
-        if (animState === 'confetti' && animForRound === roundId) return;
-        clearAnimation();
-        animState = 'confetti';
-        animForRound = roundId;
-        const overlay = document.getElementById('animOverlay');
-        if (!overlay) return;
-        const colors = ['#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#ec4899', '#a78bfa', '#34d399'];
-        const pieces = [];
-        for (let i = 0; i < 80; i += 1) {
-          const color = colors[Math.floor(Math.random() * colors.length)];
-          const left = Math.random() * 100;
-          const delay = Math.random() * 3;
-          const duration = 2.5 + Math.random() * 2;
-          const size = 7 + Math.floor(Math.random() * 10);
-          const round = Math.random() > 0.5 ? '50%' : '2px';
-          pieces.push(
-            `<div class="confetti-piece" style="left:${left}%;width:${size}px;height:${size}px;background:${color};border-radius:${round};animation-duration:${duration}s;animation-delay:${delay}s"></div>`,
-          );
-        }
-        overlay.innerHTML = pieces.join('');
-      }
-
-      function startBlueRain(roundId) {
-        if (animState === 'rain' && animForRound === roundId) return;
-        clearAnimation();
-        animState = 'rain';
-        animForRound = roundId;
-        const overlay = document.getElementById('animOverlay');
-        if (!overlay) return;
-        const drops = [];
-        for (let i = 0; i < 70; i += 1) {
-          const left = Math.random() * 100;
-          const delay = Math.random() * 2;
-          const duration = 0.7 + Math.random() * 0.8;
-          const height = 20 + Math.floor(Math.random() * 35);
-          const alpha = (0.3 + Math.random() * 0.5).toFixed(2);
-          drops.push(
-            `<div class="rain-drop" style="left:${left}%;height:${height}px;background:linear-gradient(to bottom,rgba(59,130,246,0),rgba(59,130,246,${alpha}),rgba(147,197,253,${alpha}));animation-duration:${duration}s;animation-delay:${delay}s"></div>`,
-          );
-        }
-        overlay.innerHTML = drops.join('');
-      }
-
       function updateModeratorUi() {
         showScreen('moderator');
         const game = gameState();
@@ -1108,7 +983,6 @@
         document.getElementById('modVotePanel').classList.toggle('hidden', phase !== 'vote');
         document.getElementById('modResultsPanel').classList.toggle('hidden', phase !== 'results');
         document.getElementById('modLeaderboardPanel').classList.toggle('hidden', phase !== 'leaderboard');
-        document.getElementById('modRosterCard').classList.toggle('hidden', phase === 'lobby');
 
         const players = activePlayers();
         const readyCount = players.filter((p) => p?.submission?.ready).length;
@@ -1146,24 +1020,14 @@
         const voted = voters.filter((pid) => session?.players?.[pid]?.vote?.roundId === game?.currentRoundId).length;
         document.getElementById('modVoteHint').textContent =
           selectedSpeaker ? `${selectedSpeaker.name} is speaking. Players are voting now.` : 'Waiting for speaker.';
-        const voteStatusHtml = voters.length
-          ? `<div class="vote-status-list">${voters
-              .map((pid) => {
-                const p = session?.players?.[pid];
-                const hasVoted = p?.vote?.roundId === game?.currentRoundId;
-                return `<div class="vote-status-row"><span>${esc(p?.name || 'Player')}</span><span class="${hasVoted ? 'voted-yes' : 'voted-no'}">${hasVoted ? '✓ Voted' : '⋯ Waiting'}</span></div>`;
-              })
-              .join('')}</div>`
-          : '';
-        document.getElementById('modVoteProgress').innerHTML = voteStatusHtml;
+        document.getElementById('modVoteProgress').textContent = `Votes: ${voted}/${voters.length}`;
         document.getElementById('modShowResultsBtn').disabled = !allVotesIn(game);
 
         const results = Array.isArray(game?.results) ? game.results : [];
         renderStatementBreakdown('modStatementBreakdown', game);
         document.getElementById('modResultsRows').innerHTML = results
           .map(
-            (row) =>
-              `<div class="result-row ${row.correct ? 'result-good' : 'result-bad'}"><strong>${esc(row.name)}</strong><span class="muted">voted #${Number(row.voteIndex) + 1}</span><span>${row.correct ? 'Correct' : 'Wrong'}</span>${row.score != null ? `<span class="score-chip">${row.score} pts</span>` : ''}</div>`,
+            (row) => `<div class="result-row ${row.correct ? 'result-good' : 'result-bad'}"><strong>${esc(row.name)}</strong><span class="muted">voted #${Number(row.voteIndex) + 1}</span><span>${row.correct ? 'Correct' : 'Wrong'}</span></div>`,
           )
           .join('');
         const answerIndex = Number(game?.answerIndexInPresented);
@@ -1203,7 +1067,6 @@
         resultsPanel.classList.add('hidden');
         leaderboardPanel.classList.add('hidden');
         speakerStatements.innerHTML = '';
-        if (phase !== 'results') clearAnimation();
 
         if (phase === 'lobby' || phase === 'spin') {
           if (phase === 'lobby' && !player?.submission?.ready) {
@@ -1281,16 +1144,6 @@
               (row) => `<div class="result-row ${row.correct ? 'result-good' : 'result-bad'}"><strong>${esc(row.name)}</strong><span class="muted">voted #${Number(row.voteIndex) + 1}</span><span>${row.correct ? 'Correct' : 'Wrong'}</span></div>`,
             )
             .join('');
-          // Show win/lose animation for eligible voters
-          const myResult = rows.find((r) => r.playerId === playerId);
-          const roundId = game?.currentRoundId || 'results';
-          if (myResult) {
-            if (myResult.correct) {
-              startConfetti(roundId);
-            } else {
-              startBlueRain(roundId);
-            }
-          }
           return;
         }
 
@@ -1515,9 +1368,8 @@
           const voteIndex = Number(entry?.vote?.statementIndex);
           const correct = voteIndex === answer;
           const currentScore = Number(entry?.score || 0);
-          const newScore = correct ? currentScore + 1 : currentScore;
-          patch[`players/${pid}/score`] = newScore;
-          rows.push({ name: entry?.name || 'Player', voteIndex, correct, score: newScore, playerId: pid });
+          patch[`players/${pid}/score`] = correct ? currentScore + 1 : currentScore;
+          rows.push({ name: entry?.name || 'Player', voteIndex, correct });
           if (statementBreakdown[voteIndex]) {
             statementBreakdown[voteIndex].voters.push(entry?.name || 'Player');
           }

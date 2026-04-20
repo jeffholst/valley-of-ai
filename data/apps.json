@@ -742,6 +742,16 @@
         "implementedAt": "2026-04-20T13:29:57Z",
         "agentName": "Codex",
         "llmModel": "gpt-5.4"
+      },
+      {
+        "issueNumber": 380,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/380",
+        "runId": "run-20260420T150902Z-931007",
+        "description": "Simplified moderator lobby to single player panel, added per-player vote status during voting, highlighted lie in all results boards, added score display in moderator round results, and added CSS confetti/rain animations for winners and losers on player screens.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-20T15:09:02Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
       }
     ],
     "allowImprovements": true,
@@ -786,6 +796,11 @@
         "runId": "run-20260420T132957Z-2fd4a8",
         "path": "backups/run-20260420T132957Z-2fd4a8/index.html",
         "url": "/apps/2026/03/31/two-truths-lie-game/backups/run-20260420T132957Z-2fd4a8/index.html"
+      },
+      {
+        "runId": "run-20260420T150902Z-931007",
+        "path": "backups/run-20260420T150902Z-931007/index.html",
+        "url": "/apps/2026/03/31/two-truths-lie-game/backups/run-20260420T150902Z-931007/index.html"
       }
     ]
   },
