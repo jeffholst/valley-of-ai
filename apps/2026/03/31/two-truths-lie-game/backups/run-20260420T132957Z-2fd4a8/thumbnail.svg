@@ -30,7 +30,7 @@
     2 Truths and a Lie
   </text>
   <text x="56" y="132" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="16">
-    Multiplayer Lobby + Voting + Leaderboard
+    Multiplayer Lobby + Live Voting
   </text>
 
   <rect x="56" y="156" width="220" height="174" rx="14" fill="#111d31" stroke="#334155" />
@@ -58,11 +58,11 @@
   <circle cx="356" cy="226" r="14" fill="#1e293b" stroke="#c4b5fd" stroke-width="2" />
   <polygon points="463,226 438,214 438,238" fill="#a78bfa" filter="url(#softGlow)" />
 
-  <rect x="56" y="338" width="400" height="96" rx="14" fill="#111d31" stroke="#334155" />
+  <rect x="56" y="348" width="400" height="86" rx="14" fill="#111d31" stroke="#334155" />
   <text x="72" y="378" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="14" font-weight="700">
     Results Board
   </text>
-  <text x="72" y="402" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="13">
-    Lie #2 • votes by statement • scored leaderboard
+  <text x="72" y="404" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="13">
+    Lie was statement #2 • Continue to next participant
   </text>
 </svg>
