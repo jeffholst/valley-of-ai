@@ -49,16 +49,6 @@
       "implementedAt": "2026-04-19T23:34:54Z",
       "agentName": "Codex",
       "llmModel": "GPT-5"
-    },
-    {
-      "issueNumber": 366,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/366",
-      "runId": "run-20260420T000851Z-4f89b2",
-      "description": "Improved player letter tile states, disabled between-round controls after a winner, and prefilled returning player names on new join links.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-04-20T00:08:51Z",
-      "agentName": "Codex",
-      "llmModel": "GPT-5"
     }
   ],
   "generation": {

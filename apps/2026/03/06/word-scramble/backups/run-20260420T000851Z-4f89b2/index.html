@@ -222,8 +222,7 @@
     }
 
     .tile {
-      width: clamp(42px, 11vw, 52px);
-      min-width: 42px;
+      width: 48px;
       height: 56px;
       display: inline-flex;
       align-items: center;
@@ -234,11 +233,6 @@
       border: 1px solid var(--border);
       user-select: none;
       text-transform: uppercase;
-      transition:
-        transform 120ms ease,
-        border-color 120ms ease,
-        box-shadow 120ms ease,
-        opacity 120ms ease;
     }
 
     .tile.letter {
@@ -246,19 +240,6 @@
       color: #fff;
       border: none;
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: 0 8px 16px rgb(8 145 178 / 22%);
-    }
-
-    .tile.letter:not(:disabled):hover,
-    .tile.slot.filled:not(:disabled):hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 18px rgb(8 145 178 / 30%);
-    }
-
-    .tile.letter:not(:disabled):active,
-    .tile.slot.filled:not(:disabled):active {
-      transform: translateY(1px) scale(0.98);
-      box-shadow: 0 4px 10px rgb(8 145 178 / 22%);
     }
 
     .tile.letter.used {
@@ -269,26 +250,12 @@
     .tile.slot {
       background: var(--surface);
       border-style: dashed;
-      color: var(--muted);
     }
 
     .tile.slot.filled {
       border-style: solid;
       cursor: pointer;
       background: rgb(8 145 178 / 14%);
-      color: var(--text);
-      border-color: rgb(34 211 238 / 55%);
-    }
-
-    .tile:disabled {
-      cursor: not-allowed;
-      opacity: 0.42;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .tile.slot:disabled:not(.filled) {
-      background: rgb(148 163 184 / 8%);
     }
 
     .message {
@@ -588,7 +555,6 @@
     const hintBox = document.getElementById('hintBox');
     const scrambleEl = document.getElementById('scramble');
     const answerEl = document.getElementById('answer');
-    const clearBtn = document.getElementById('clearBtn');
     const playPlayers = document.getElementById('playPlayers');
 
     const moderatorControls = document.getElementById('moderatorControls');
@@ -653,37 +619,6 @@
 
     function setHash(params) {
       window.location.hash = params.toString();
-    }
-
-    function savePlayerName(name) {
-      try {
-        window.localStorage.setItem(localKey('playerName'), name);
-      } catch {
-        // ignore
-      }
-    }
-
-    function loadPlayerName() {
-      try {
-        return window.localStorage.getItem(localKey('playerName')) || '';
-      } catch {
-        return '';
-      }
-    }
-
-    function prepareJoinScreen(code) {
-      role = 'player';
-      sessionCode = code.toUpperCase();
-      playerId = null;
-      session = null;
-      activeRoundKey = null;
-      resetLocalAnswer();
-      playerNameInput.disabled = false;
-      joinBtn.disabled = false;
-      playerNameInput.value = loadPlayerName();
-      showScreen('join');
-      updateJoinedPlayerWaitState();
-      window.setTimeout(() => playerNameInput.focus(), 0);
     }
 
     async function isMultiplayerConfigured() {
@@ -903,7 +838,6 @@
       const scramble = Array.isArray(game?.scramble) ? game.scramble : [];
       const answerLength = game?.word ? game.word.length : 0;
       const locked = !game || session?.status !== 'playing' || game.roundState !== 'active' || role !== 'player';
-      clearBtn.disabled = locked;
 
       scrambleEl.innerHTML = scramble
         .map((letter, index) => {
@@ -1239,11 +1173,6 @@
         } else {
           setRoundMessage(game.announcement || 'Round is live.', 'info');
         }
-      } else if (role === 'player' && winnerName) {
-        setRoundMessage(
-          `${winnerName} answered correctly first. Waiting for the moderator to start the next round.`,
-          'success'
-        );
       } else {
         setRoundMessage(game.announcement || 'Round complete.', winnerName ? 'success' : 'warn');
       }
@@ -1350,7 +1279,10 @@
       if (!existing || !existing.players?.[pid]) {
         const params = new URLSearchParams({ join: code });
         setHash(params);
-        prepareJoinScreen(code);
+        showScreen('join');
+        role = 'player';
+        sessionCode = code;
+        playerId = null;
         return;
       }
       role = 'player';
@@ -1380,7 +1312,9 @@
       }
 
       if (joinCode) {
-        prepareJoinScreen(joinCode);
+        role = 'player';
+        sessionCode = joinCode.toUpperCase();
+        showScreen('join');
         return;
       }
 
@@ -1439,7 +1373,6 @@
       }
       joinBtn.disabled = true;
       try {
-        savePlayerName(name);
         const response = await joinSession(sessionCode, name);
         playerId = response.playerId;
         role = 'player';
@@ -1493,14 +1426,6 @@
     });
     document.getElementById('endGameBtn').addEventListener('click', () => {
       endGameNow();
-    });
-
-    window.addEventListener('hashchange', () => {
-      const params = hashParams();
-      const joinCode = params.get('join');
-      if (joinCode) {
-        prepareJoinScreen(joinCode);
-      }
     });
 
     document.addEventListener('keydown', (event) => {
