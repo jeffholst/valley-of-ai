@@ -722,6 +722,16 @@
         "implementedAt": "2026-04-18T16:14:49Z",
         "agentName": "Claude Code",
         "llmModel": "claude-opus-4-7"
+      },
+      {
+        "issueNumber": 375,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/375",
+        "runId": "run-20260420T125914Z-8ff7c0",
+        "description": "Upgraded the app to a backend-powered multiplayer flow with moderator lobby/share link, player statement submission, kicking, synced voting, and shared results progression.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-20T12:59:14Z",
+        "agentName": "Codex",
+        "llmModel": "gpt-5.4"
       }
     ],
     "allowImprovements": true,
@@ -756,6 +766,11 @@
         "runId": "run-20260418T161449Z-b2be10",
         "path": "backups/run-20260418T161449Z-b2be10/index.html",
         "url": "/apps/2026/03/31/two-truths-lie-game/backups/run-20260418T161449Z-b2be10/index.html"
+      },
+      {
+        "runId": "run-20260420T125914Z-8ff7c0",
+        "path": "backups/run-20260420T125914Z-8ff7c0/index.html",
+        "url": "/apps/2026/03/31/two-truths-lie-game/backups/run-20260420T125914Z-8ff7c0/index.html"
       }
     ]
   },
