@@ -172,6 +172,16 @@
         "implementedAt": "2026-04-16T20:50:51Z",
         "agentName": "Claude Code",
         "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 386,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/386",
+        "runId": "run-20260420T215714Z-332533",
+        "description": "Converted host mode to backend multiplayer with share-link joining, synchronized player voting, auto timer lock, round vote breakdown with right/wrong indicators, and confetti/blue-rain result effects.",
+        "requestor": "Jeff Holst",
+        "agentName": "Codex",
+        "llmModel": "GPT-5.4",
+        "implementedAt": "2026-04-20T22:04:45Z"
       }
     ],
     "allowImprovements": true,
@@ -186,6 +196,11 @@
         "runId": "run-20260416T205051Z-b7e4a9",
         "path": "backups/run-20260416T205051Z-b7e4a9/index.html",
         "url": "/apps/2026/04/16/mental-gymnastics/backups/run-20260416T205051Z-b7e4a9/index.html"
+      },
+      {
+        "runId": "run-20260420T215714Z-332533",
+        "path": "backups/run-20260420T215714Z-332533/index.html",
+        "url": "/apps/2026/04/16/mental-gymnastics/backups/run-20260420T215714Z-332533/index.html"
       }
     ]
   },
