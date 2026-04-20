@@ -1,12 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@config "../tailwind.config.mjs";
 
 @layer base {
   html {
     @apply scroll-smooth;
   }
-  
+
   body {
     @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-200;
   }
@@ -29,16 +28,31 @@
   }
 
   @keyframes gradient-shift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 
   @keyframes heart-beat {
-    0%, 100% { transform: scale(1); }
-    25% { transform: scale(1.2); }
-    50% { transform: scale(1); }
-    75% { transform: scale(1.1); }
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    25% {
+      transform: scale(1.2);
+    }
+    50% {
+      transform: scale(1);
+    }
+    75% {
+      transform: scale(1.1);
+    }
   }
 
   .heart-pulse {
@@ -59,31 +73,43 @@
   .btn {
     @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
   }
-  
+
   .btn-primary {
     @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 dark:focus:ring-offset-gray-900;
   }
-  
+
   .btn-secondary {
     @apply btn bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-indigo-600 dark:text-white dark:hover:bg-indigo-700 focus:ring-gray-500;
   }
-  
+
   .card {
     @apply bg-white/70 dark:bg-gray-800/70 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 backdrop-blur-sm border border-white/40 dark:border-white/10;
   }
-  
+
   .input {
     @apply w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200;
   }
-  
+
   .label {
     @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1;
   }
 
   @keyframes pulse-ring {
-    0%   { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.55), 0 0 0 0 rgba(34, 211, 238, 0.35); }
-    70%  { box-shadow: 0 0 0 8px rgba(139, 92, 246, 0),  0 0 0 14px rgba(34, 211, 238, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0),   0 0 0 0 rgba(34, 211, 238, 0); }
+    0% {
+      box-shadow:
+        0 0 0 0 rgba(139, 92, 246, 0.55),
+        0 0 0 0 rgba(34, 211, 238, 0.35);
+    }
+    70% {
+      box-shadow:
+        0 0 0 8px rgba(139, 92, 246, 0),
+        0 0 0 14px rgba(34, 211, 238, 0);
+    }
+    100% {
+      box-shadow:
+        0 0 0 0 rgba(139, 92, 246, 0),
+        0 0 0 0 rgba(34, 211, 238, 0);
+    }
   }
 
   .animate-pulse-ring {
@@ -95,8 +121,14 @@
   }
 
   @keyframes fade-in-up {
-    from { opacity: 0; transform: translateX(-50%) translateY(12px); }
-    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateX(-50%) translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
   }
 
   .animate-fade-in-up {
@@ -104,12 +136,24 @@
   }
 
   @keyframes robot-dance {
-    0%   { transform: translateY(0)    rotate(0deg)  scale(1);    }
-    20%  { transform: translateY(-14px) rotate(-12deg) scale(1.15); }
-    40%  { transform: translateY(-4px)  rotate(6deg)  scale(1.05); }
-    60%  { transform: translateY(-14px) rotate(12deg) scale(1.15); }
-    80%  { transform: translateY(-4px)  rotate(-6deg) scale(1.05); }
-    100% { transform: translateY(0)    rotate(0deg)  scale(1);    }
+    0% {
+      transform: translateY(0) rotate(0deg) scale(1);
+    }
+    20% {
+      transform: translateY(-14px) rotate(-12deg) scale(1.15);
+    }
+    40% {
+      transform: translateY(-4px) rotate(6deg) scale(1.05);
+    }
+    60% {
+      transform: translateY(-14px) rotate(12deg) scale(1.15);
+    }
+    80% {
+      transform: translateY(-4px) rotate(-6deg) scale(1.05);
+    }
+    100% {
+      transform: translateY(0) rotate(0deg) scale(1);
+    }
   }
 
   .robot-dance {
@@ -118,9 +162,17 @@
   }
 
   @keyframes robot-confetti {
-    0%   { transform: translateY(0)   scale(0.5); opacity: 0; }
-    30%  { opacity: 1; }
-    100% { transform: translateY(60px) scale(1.2); opacity: 0; }
+    0% {
+      transform: translateY(0) scale(0.5);
+      opacity: 0;
+    }
+    30% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(60px) scale(1.2);
+      opacity: 0;
+    }
   }
 
   .robot-confetti {
@@ -128,21 +180,42 @@
   }
 
   @keyframes pterodactyl-fly-right {
-    0% { transform: translate3d(-18vw, 0, 0); }
-    40% { transform: translate3d(40vw, -10px, 0); }
-    100% { transform: translate3d(120vw, 0, 0); }
+    0% {
+      transform: translate3d(-18vw, 0, 0);
+    }
+    40% {
+      transform: translate3d(40vw, -10px, 0);
+    }
+    100% {
+      transform: translate3d(120vw, 0, 0);
+    }
   }
 
   @keyframes pterodactyl-fly-left {
-    0% { transform: translate3d(120vw, 0, 0); }
-    40% { transform: translate3d(45vw, -10px, 0); }
-    100% { transform: translate3d(-22vw, 0, 0); }
+    0% {
+      transform: translate3d(120vw, 0, 0);
+    }
+    40% {
+      transform: translate3d(45vw, -10px, 0);
+    }
+    100% {
+      transform: translate3d(-22vw, 0, 0);
+    }
   }
 
   @keyframes pterodactyl-kill {
-    0% { opacity: 1; transform: scale(1) rotate(0deg); }
-    35% { opacity: 1; transform: scale(1.2) rotate(18deg); }
-    100% { opacity: 0; transform: scale(0.08) rotate(250deg); }
+    0% {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+    }
+    35% {
+      opacity: 1;
+      transform: scale(1.2) rotate(18deg);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.08) rotate(250deg);
+    }
   }
 
   .pterodactyl-sky {
@@ -157,13 +230,23 @@
   }
 
   @keyframes valley-star-shimmer {
-    0%, 100% { opacity: 0.45; }
-    50% { opacity: 0.95; }
+    0%,
+    100% {
+      opacity: 0.45;
+    }
+    50% {
+      opacity: 0.95;
+    }
   }
 
   @keyframes valley-moon-glow {
-    0%, 100% { filter: drop-shadow(0 0 5px rgba(246, 240, 223, 0.16)); }
-    50% { filter: drop-shadow(0 0 7px rgba(246, 240, 223, 0.22)); }
+    0%,
+    100% {
+      filter: drop-shadow(0 0 5px rgba(246, 240, 223, 0.16));
+    }
+    50% {
+      filter: drop-shadow(0 0 7px rgba(246, 240, 223, 0.22));
+    }
   }
 
   /* ── Shooting star keyframes ──
@@ -173,34 +256,86 @@
 
   /* Right-to-left, steep angle */
   @keyframes valley-star-rtl-a {
-    0%, 72% { opacity: 0; transform: translate3d(12vw, -4vh, 0) rotate(-25deg) scaleX(0.2); }
-    74% { opacity: 0.95; transform: translate3d(6vw, -1vh, 0) rotate(-25deg) scaleX(0.6); }
-    88% { opacity: 0.7; transform: translate3d(-20vw, 14vh, 0) rotate(-25deg) scaleX(1); }
-    100% { opacity: 0; transform: translate3d(-34vw, 22vh, 0) rotate(-25deg) scaleX(1.2); }
+    0%,
+    72% {
+      opacity: 0;
+      transform: translate3d(12vw, -4vh, 0) rotate(-25deg) scaleX(0.2);
+    }
+    74% {
+      opacity: 0.95;
+      transform: translate3d(6vw, -1vh, 0) rotate(-25deg) scaleX(0.6);
+    }
+    88% {
+      opacity: 0.7;
+      transform: translate3d(-20vw, 14vh, 0) rotate(-25deg) scaleX(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(-34vw, 22vh, 0) rotate(-25deg) scaleX(1.2);
+    }
   }
 
   /* Right-to-left, shallow angle */
   @keyframes valley-star-rtl-b {
-    0%, 55% { opacity: 0; transform: translate3d(10vw, -3vh, 0) rotate(-18deg) scaleX(0.25); }
-    58% { opacity: 0.9; transform: translate3d(5vw, 0vh, 0) rotate(-18deg) scaleX(0.5); }
-    76% { opacity: 0.65; transform: translate3d(-25vw, 12vh, 0) rotate(-18deg) scaleX(1); }
-    100% { opacity: 0; transform: translate3d(-38vw, 20vh, 0) rotate(-18deg) scaleX(1.15); }
+    0%,
+    55% {
+      opacity: 0;
+      transform: translate3d(10vw, -3vh, 0) rotate(-18deg) scaleX(0.25);
+    }
+    58% {
+      opacity: 0.9;
+      transform: translate3d(5vw, 0vh, 0) rotate(-18deg) scaleX(0.5);
+    }
+    76% {
+      opacity: 0.65;
+      transform: translate3d(-25vw, 12vh, 0) rotate(-18deg) scaleX(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(-38vw, 20vh, 0) rotate(-18deg) scaleX(1.15);
+    }
   }
 
   /* Left-to-right, steep angle */
   @keyframes valley-star-ltr-a {
-    0%, 65% { opacity: 0; transform: translate3d(-12vw, -4vh, 0) rotate(25deg) scaleX(0.2); }
-    68% { opacity: 0.92; transform: translate3d(-6vw, -1vh, 0) rotate(25deg) scaleX(0.6); }
-    84% { opacity: 0.7; transform: translate3d(22vw, 16vh, 0) rotate(25deg) scaleX(1); }
-    100% { opacity: 0; transform: translate3d(36vw, 24vh, 0) rotate(25deg) scaleX(1.2); }
+    0%,
+    65% {
+      opacity: 0;
+      transform: translate3d(-12vw, -4vh, 0) rotate(25deg) scaleX(0.2);
+    }
+    68% {
+      opacity: 0.92;
+      transform: translate3d(-6vw, -1vh, 0) rotate(25deg) scaleX(0.6);
+    }
+    84% {
+      opacity: 0.7;
+      transform: translate3d(22vw, 16vh, 0) rotate(25deg) scaleX(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(36vw, 24vh, 0) rotate(25deg) scaleX(1.2);
+    }
   }
 
   /* Left-to-right, shallow angle */
   @keyframes valley-star-ltr-b {
-    0%, 48% { opacity: 0; transform: translate3d(-10vw, -3vh, 0) rotate(20deg) scaleX(0.25); }
-    51% { opacity: 0.88; transform: translate3d(-5vw, 0vh, 0) rotate(20deg) scaleX(0.5); }
-    70% { opacity: 0.65; transform: translate3d(28vw, 14vh, 0) rotate(20deg) scaleX(1.1); }
-    100% { opacity: 0; transform: translate3d(40vw, 20vh, 0) rotate(20deg) scaleX(1.25); }
+    0%,
+    48% {
+      opacity: 0;
+      transform: translate3d(-10vw, -3vh, 0) rotate(20deg) scaleX(0.25);
+    }
+    51% {
+      opacity: 0.88;
+      transform: translate3d(-5vw, 0vh, 0) rotate(20deg) scaleX(0.5);
+    }
+    70% {
+      opacity: 0.65;
+      transform: translate3d(28vw, 14vh, 0) rotate(20deg) scaleX(1.1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(40vw, 20vh, 0) rotate(20deg) scaleX(1.25);
+    }
   }
 
   .valley-cinematic-bg {
@@ -210,7 +345,12 @@
     z-index: 0;
     isolation: isolate;
     background:
-      radial-gradient(1200px 680px at 50% 120%, rgba(160, 55, 255, 0.42) 0%, rgba(75, 20, 125, 0.14) 50%, rgba(6, 7, 20, 0) 74%),
+      radial-gradient(
+        1200px 680px at 50% 120%,
+        rgba(160, 55, 255, 0.42) 0%,
+        rgba(75, 20, 125, 0.14) 50%,
+        rgba(6, 7, 20, 0) 74%
+      ),
       linear-gradient(180deg, #040513 0%, #0b1230 45%, #140a2f 68%, #1b0938 100%);
     overflow: hidden;
   }
@@ -223,7 +363,12 @@
     height: 88%;
     z-index: 1;
     background:
-      radial-gradient(62% 48% at 50% 100%, rgba(83, 62, 128, 0.28) 0%, rgba(44, 31, 78, 0.22) 45%, rgba(20, 14, 38, 0) 80%),
+      radial-gradient(
+        62% 48% at 50% 100%,
+        rgba(83, 62, 128, 0.28) 0%,
+        rgba(44, 31, 78, 0.22) 45%,
+        rgba(20, 14, 38, 0) 80%
+      ),
       linear-gradient(180deg, #403061 0%, #2b1f47 54%, #1a122f 100%);
     clip-path: polygon(
       0% 100%,
@@ -255,7 +400,12 @@
     z-index: 2;
     transform: translateX(2.8%);
     background:
-      radial-gradient(58% 46% at 50% 100%, rgba(170, 118, 225, 0.33) 0%, rgba(104, 64, 157, 0.22) 44%, rgba(38, 18, 63, 0) 78%),
+      radial-gradient(
+        58% 46% at 50% 100%,
+        rgba(170, 118, 225, 0.33) 0%,
+        rgba(104, 64, 157, 0.22) 44%,
+        rgba(38, 18, 63, 0) 78%
+      ),
       linear-gradient(180deg, #664194 0%, #482d6f 53%, #2a1843 100%);
     clip-path: polygon(
       0% 100%,
@@ -285,13 +435,43 @@
     -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 72%, transparent 94%);
     mask-image: linear-gradient(180deg, #000 0%, #000 72%, transparent 94%);
     background:
-      radial-gradient(circle at 78% 18%, rgba(244, 240, 228, 0.15) 0 76px, rgba(244, 240, 228, 0) 77px),
-      radial-gradient(circle at 78% 18%, rgba(241, 236, 220, 0.98) 0 34px, rgba(227, 221, 203, 0.97) 35px 39px, rgba(210, 202, 184, 0.94) 40px 42px, rgba(181, 171, 152, 0) 43px),
-      radial-gradient(circle at 76.9% 16.9%, rgba(142, 136, 124, 0.22) 0 6.6px, rgba(142, 136, 124, 0) 6.8px),
-      radial-gradient(circle at 80.4% 20.2%, rgba(128, 122, 111, 0.18) 0 5.4px, rgba(128, 122, 111, 0) 5.6px),
-      radial-gradient(circle at 78.5% 17.5%, rgba(154, 148, 136, 0.16) 0 8.8px, rgba(154, 148, 136, 0) 9px),
-      radial-gradient(circle at 77.1% 19.4%, rgba(114, 109, 100, 0.14) 0 3.8px, rgba(114, 109, 100, 0) 4px),
-      radial-gradient(circle at 79.9% 15.7%, rgba(106, 101, 93, 0.13) 0 2.9px, rgba(106, 101, 93, 0) 3.1px),
+      radial-gradient(
+        circle at 78% 18%,
+        rgba(244, 240, 228, 0.15) 0 76px,
+        rgba(244, 240, 228, 0) 77px
+      ),
+      radial-gradient(
+        circle at 78% 18%,
+        rgba(241, 236, 220, 0.98) 0 34px,
+        rgba(227, 221, 203, 0.97) 35px 39px,
+        rgba(210, 202, 184, 0.94) 40px 42px,
+        rgba(181, 171, 152, 0) 43px
+      ),
+      radial-gradient(
+        circle at 76.9% 16.9%,
+        rgba(142, 136, 124, 0.22) 0 6.6px,
+        rgba(142, 136, 124, 0) 6.8px
+      ),
+      radial-gradient(
+        circle at 80.4% 20.2%,
+        rgba(128, 122, 111, 0.18) 0 5.4px,
+        rgba(128, 122, 111, 0) 5.6px
+      ),
+      radial-gradient(
+        circle at 78.5% 17.5%,
+        rgba(154, 148, 136, 0.16) 0 8.8px,
+        rgba(154, 148, 136, 0) 9px
+      ),
+      radial-gradient(
+        circle at 77.1% 19.4%,
+        rgba(114, 109, 100, 0.14) 0 3.8px,
+        rgba(114, 109, 100, 0) 4px
+      ),
+      radial-gradient(
+        circle at 79.9% 15.7%,
+        rgba(106, 101, 93, 0.13) 0 2.9px,
+        rgba(106, 101, 93, 0) 3.1px
+      ),
       radial-gradient(circle at 12% 15%, rgba(255, 255, 255, 0.98) 0 1.2px, transparent 1.3px),
       radial-gradient(circle at 18% 27%, rgba(255, 255, 255, 0.9) 0 1.1px, transparent 1.2px),
       radial-gradient(circle at 24% 8%, rgba(209, 228, 255, 0.95) 0 1.4px, transparent 1.5px),
@@ -322,7 +502,12 @@
     height: 70%;
     z-index: 3;
     background:
-      radial-gradient(56% 44% at 50% 100%, rgba(224, 170, 255, 0.54) 0%, rgba(177, 109, 238, 0.27) 40%, rgba(62, 31, 98, 0) 78%),
+      radial-gradient(
+        56% 44% at 50% 100%,
+        rgba(224, 170, 255, 0.54) 0%,
+        rgba(177, 109, 238, 0.27) 40%,
+        rgba(62, 31, 98, 0) 78%
+      ),
       linear-gradient(180deg, #9360c5 0%, #6f45a5 52%, #4b2b78 100%);
     clip-path: polygon(
       0% 100%,
@@ -346,7 +531,9 @@
   }
 
   .valley-cinematic-bg::before {
-    animation: valley-star-shimmer 8.2s ease-in-out infinite, valley-moon-glow 14s ease-in-out infinite;
+    animation:
+      valley-star-shimmer 8.2s ease-in-out infinite,
+      valley-moon-glow 14s ease-in-out infinite;
   }
 
   .valley-shooting-stars {
@@ -376,16 +563,30 @@
   .valley-shooting-stars::before,
   .valley-shooting-stars-mid::before,
   .valley-shooting-stars-low::before {
-    background: linear-gradient(90deg, rgba(255, 255, 255, 1), rgba(185, 219, 255, 0.82) 44%, rgba(98, 146, 228, 0));
-    box-shadow: 0 0 11px rgba(186, 216, 255, 0.75), -6px 0 12px rgba(255, 255, 255, 0.2);
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 1),
+      rgba(185, 219, 255, 0.82) 44%,
+      rgba(98, 146, 228, 0)
+    );
+    box-shadow:
+      0 0 11px rgba(186, 216, 255, 0.75),
+      -6px 0 12px rgba(255, 255, 255, 0.2);
   }
 
   /* ── Gradient for left-to-right stars (head right, tail left) ── */
   .valley-shooting-stars::after,
   .valley-shooting-stars-mid::after,
   .valley-shooting-stars-low::after {
-    background: linear-gradient(90deg, rgba(98, 146, 228, 0), rgba(185, 219, 255, 0.82) 56%, rgba(255, 255, 255, 1));
-    box-shadow: 0 0 11px rgba(186, 216, 255, 0.75), 6px 0 12px rgba(255, 255, 255, 0.2);
+    background: linear-gradient(
+      90deg,
+      rgba(98, 146, 228, 0),
+      rgba(185, 219, 255, 0.82) 56%,
+      rgba(255, 255, 255, 1)
+    );
+    box-shadow:
+      0 0 11px rgba(186, 216, 255, 0.75),
+      6px 0 12px rgba(255, 255, 255, 0.2);
   }
 
   /* ── High altitude stars (top 8-18%) ── */
@@ -451,25 +652,21 @@
     animation: valley-star-ltr-b 14.6s linear infinite 5.8s;
   }
 
-.valley-light-veil {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(249, 250, 255, 0.8) 0%,
-      rgba(245, 246, 255, 0.7) 36%,
-      rgba(240, 242, 255, 0.6) 62%,
-      rgba(236, 238, 255, 0.5) 100%
-    ),
-    radial-gradient(
-      1100px 560px at 50% 100%,
-      rgba(255, 255, 255, 0.4),
-      rgba(255, 255, 255, 0)
-    );
-}
+  .valley-light-veil {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(249, 250, 255, 0.8) 0%,
+        rgba(245, 246, 255, 0.7) 36%,
+        rgba(240, 242, 255, 0.6) 62%,
+        rgba(236, 238, 255, 0.5) 100%
+      ),
+      radial-gradient(1100px 560px at 50% 100%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+  }
 
   .dark .valley-light-veil {
     display: none;
@@ -698,8 +895,12 @@
   }
 
   @keyframes options-fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   /* Mobile: wider relative to viewport */
@@ -746,24 +947,40 @@
     top: -120px;
     bottom: 0;
     background-image:
-      radial-gradient(1.5px 12px at 50% 50%, rgba(150, 180, 220, 0.50), transparent),
+      radial-gradient(1.5px 12px at 50% 50%, rgba(150, 180, 220, 0.5), transparent),
       radial-gradient(1px 9px at 50% 50%, rgba(150, 180, 220, 0.35), transparent),
-      radial-gradient(1px 7px at 50% 50%, rgba(150, 180, 220, 0.40), transparent);
-    background-size: 80px 120px, 55px 120px, 95px 120px;
-    background-position: 0 0, 28px 40px, 60px 70px;
+      radial-gradient(1px 7px at 50% 50%, rgba(150, 180, 220, 0.4), transparent);
+    background-size:
+      80px 120px,
+      55px 120px,
+      95px 120px;
+    background-position:
+      0 0,
+      28px 40px,
+      60px 70px;
     animation: weather-rain-fall 0.65s linear infinite;
   }
 
   .weather-rain::after {
-    background-size: 65px 120px, 90px 120px, 50px 120px;
-    background-position: 15px 20px, 45px 55px, 70px 10px;
+    background-size:
+      65px 120px,
+      90px 120px,
+      50px 120px;
+    background-position:
+      15px 20px,
+      45px 55px,
+      70px 10px;
     animation-duration: 0.5s;
     animation-delay: -0.2s;
   }
 
   @keyframes weather-rain-fall {
-    from { transform: translateY(0); }
-    to { transform: translateY(120px); }
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(120px);
+    }
   }
 
   /* ── Snow: round flakes drifting gently with horizontal sway ──
@@ -789,21 +1006,37 @@
       radial-gradient(3px 3px at 50% 50%, rgba(255, 255, 255, 0.85), transparent 70%),
       radial-gradient(2px 2px at 50% 50%, rgba(255, 255, 255, 0.65), transparent 70%),
       radial-gradient(4px 4px at 50% 50%, rgba(255, 255, 255, 0.55), transparent 70%);
-    background-size: 120px 160px, 80px 110px, 150px 200px;
-    background-position: 0 0, 40px 80px, 80px 40px;
+    background-size:
+      120px 160px,
+      80px 110px,
+      150px 200px;
+    background-position:
+      0 0,
+      40px 80px,
+      80px 40px;
     animation: weather-snow-fall 4s linear infinite;
   }
 
   .weather-snow::after {
-    background-size: 100px 140px, 130px 180px, 70px 120px;
-    background-position: 60px 20px, 20px 60px, 100px 100px;
+    background-size:
+      100px 140px,
+      130px 180px,
+      70px 120px;
+    background-position:
+      60px 20px,
+      20px 60px,
+      100px 100px;
     animation-duration: 5.5s;
     animation-delay: -2s;
   }
 
   @keyframes weather-snow-fall {
-    from { transform: translate(0, 0); }
-    to { transform: translate(30px, 50%); }
+    from {
+      transform: translate(0, 0);
+    }
+    to {
+      transform: translate(30px, 50%);
+    }
   }
 
   /* ── Wind: thin horizontal streaks rushing across ──
@@ -828,22 +1061,38 @@
     background-image:
       radial-gradient(120px 1px at 50% 50%, rgba(255, 255, 255, 0.12), transparent),
       radial-gradient(80px 1px at 50% 50%, rgba(255, 255, 255, 0.08), transparent),
-      radial-gradient(160px 1px at 50% 50%, rgba(255, 255, 255, 0.10), transparent);
-    background-size: 300px 60px, 250px 45px, 350px 80px;
-    background-position: 0 0, 100px 25px, 50px 50px;
+      radial-gradient(160px 1px at 50% 50%, rgba(255, 255, 255, 0.1), transparent);
+    background-size:
+      300px 60px,
+      250px 45px,
+      350px 80px;
+    background-position:
+      0 0,
+      100px 25px,
+      50px 50px;
     animation: weather-wind-blow 2.5s linear infinite;
   }
 
   .weather-wind::after {
-    background-size: 280px 70px, 200px 50px, 320px 55px;
-    background-position: 140px 10px, 50px 35px, 200px 60px;
+    background-size:
+      280px 70px,
+      200px 50px,
+      320px 55px;
+    background-position:
+      140px 10px,
+      50px 35px,
+      200px 60px;
     animation-duration: 1.8s;
     animation-delay: -0.9s;
   }
 
   @keyframes weather-wind-blow {
-    from { transform: translateX(0); }
-    to { transform: translateX(66.67%); }
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(66.67%);
+    }
   }
 
   /* ── Clouds: large soft shapes drifting slowly ──
@@ -869,23 +1118,39 @@
       radial-gradient(180px 80px at 50% 50%, rgba(255, 255, 255, 0.12), transparent 70%),
       radial-gradient(120px 55px at 50% 50%, rgba(255, 255, 255, 0.09), transparent 70%),
       radial-gradient(220px 90px at 50% 50%, rgba(255, 255, 255, 0.08), transparent 70%);
-    background-size: 500px 250px, 400px 200px, 600px 300px;
-    background-position: 0 0, 200px 100px, 100px 50px;
+    background-size:
+      500px 250px,
+      400px 200px,
+      600px 300px;
+    background-position:
+      0 0,
+      200px 100px,
+      100px 50px;
     animation: weather-cloud-drift 25s linear infinite;
   }
 
   .weather-clouds::after {
     top: 5%;
     bottom: 50%;
-    background-size: 450px 220px, 550px 280px, 380px 190px;
-    background-position: 250px 30px, 100px 80px, 350px 120px;
+    background-size:
+      450px 220px,
+      550px 280px,
+      380px 190px;
+    background-position:
+      250px 30px,
+      100px 80px,
+      350px 120px;
     animation-duration: 35s;
     animation-delay: -12s;
   }
 
   @keyframes weather-cloud-drift {
-    from { transform: translateX(0); }
-    to { transform: translateX(66.67%); }
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(66.67%);
+    }
   }
 
   /* ── Lightning: brief white-out flashes with unpredictable cadence ──
@@ -917,19 +1182,43 @@
   }
 
   @keyframes weather-lightning-a {
-    0%, 88%, 100% { opacity: 0; }
-    89%  { opacity: 0.7; }
-    90%  { opacity: 0; }
-    92%  { opacity: 0.5; }
-    93%  { opacity: 0; }
+    0%,
+    88%,
+    100% {
+      opacity: 0;
+    }
+    89% {
+      opacity: 0.7;
+    }
+    90% {
+      opacity: 0;
+    }
+    92% {
+      opacity: 0.5;
+    }
+    93% {
+      opacity: 0;
+    }
   }
 
   @keyframes weather-lightning-b {
-    0%, 83%, 100% { opacity: 0; }
-    84%  { opacity: 0.6; }
-    85%  { opacity: 0; }
-    86.5% { opacity: 0.4; }
-    87%  { opacity: 0; }
+    0%,
+    83%,
+    100% {
+      opacity: 0;
+    }
+    84% {
+      opacity: 0.6;
+    }
+    85% {
+      opacity: 0;
+    }
+    86.5% {
+      opacity: 0.4;
+    }
+    87% {
+      opacity: 0;
+    }
   }
 
   /* ── Earthquake: periodic shake bursts on app cards ──
@@ -938,24 +1227,59 @@
      then rest together for ~4s (33–100%). */
   @keyframes earthquake-shake {
     /* Shake burst: 0–33% of cycle (~2s) — intense, high-frequency motion */
-    0%   { transform: translate(0, 0) rotate(0deg); }
-    2%   { transform: translate(-12px, 5px) rotate(-2deg); }
-    4%   { transform: translate(14px, -6px) rotate(2.2deg); }
-    6%   { transform: translate(-10px, 9px) rotate(-1.8deg); }
-    8%   { transform: translate(13px, 4px) rotate(2deg); }
-    10%  { transform: translate(-14px, -6px) rotate(-2.3deg); }
-    12%  { transform: translate(11px, 8px) rotate(1.9deg); }
-    14%  { transform: translate(-13px, -4px) rotate(-2.1deg); }
-    16%  { transform: translate(15px, 6px) rotate(2.4deg); }
-    18%  { transform: translate(-9px, 10px) rotate(-1.8deg); }
-    20%  { transform: translate(12px, -6px) rotate(2deg); }
-    22%  { transform: translate(-14px, 4px) rotate(-2.2deg); }
-    24%  { transform: translate(10px, -8px) rotate(1.9deg); }
-    26%  { transform: translate(-10px, 6px) rotate(-1.6deg); }
-    28%  { transform: translate(7px, -4px) rotate(1.3deg); }
-    30%  { transform: translate(-5px, 3px) rotate(-0.9deg); }
+    0% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+    2% {
+      transform: translate(-12px, 5px) rotate(-2deg);
+    }
+    4% {
+      transform: translate(14px, -6px) rotate(2.2deg);
+    }
+    6% {
+      transform: translate(-10px, 9px) rotate(-1.8deg);
+    }
+    8% {
+      transform: translate(13px, 4px) rotate(2deg);
+    }
+    10% {
+      transform: translate(-14px, -6px) rotate(-2.3deg);
+    }
+    12% {
+      transform: translate(11px, 8px) rotate(1.9deg);
+    }
+    14% {
+      transform: translate(-13px, -4px) rotate(-2.1deg);
+    }
+    16% {
+      transform: translate(15px, 6px) rotate(2.4deg);
+    }
+    18% {
+      transform: translate(-9px, 10px) rotate(-1.8deg);
+    }
+    20% {
+      transform: translate(12px, -6px) rotate(2deg);
+    }
+    22% {
+      transform: translate(-14px, 4px) rotate(-2.2deg);
+    }
+    24% {
+      transform: translate(10px, -8px) rotate(1.9deg);
+    }
+    26% {
+      transform: translate(-10px, 6px) rotate(-1.6deg);
+    }
+    28% {
+      transform: translate(7px, -4px) rotate(1.3deg);
+    }
+    30% {
+      transform: translate(-5px, 3px) rotate(-0.9deg);
+    }
     /* Settle back and rest for the remaining 67% */
-    33%, 100% { transform: translate(0, 0) rotate(0deg); }
+    33%,
+    100% {
+      transform: translate(0, 0) rotate(0deg);
+    }
   }
 
   .earthquake-cards .card {
@@ -965,7 +1289,9 @@
 
   /* ─── Reduced motion ──────────────────────────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
