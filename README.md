@@ -146,13 +146,14 @@ See [Supabase Setup Guide](wiki/Supabase-Setup-Guide.md) for the full install, l
 
 ### Commands
 
-| Command           | Description                                   |
-| ----------------- | --------------------------------------------- |
-| `npm run dev`     | Run `sync`, then start the Next.js dev server |
-| `npm run build`   | Run `sync`, then build the production app     |
-| `npm run lint`    | Run ESLint with 0 warnings allowed            |
-| `npm test`        | Run the Jest test suite                       |
-| `npm run db:push` | Apply pending Supabase migrations             |
+| Command                 | Description                                                                                     |
+| ----------------------- | ----------------------------------------------------------------------------------------------- |
+| `npm run dev`           | Run `sync`, then start the Next.js dev server                                                   |
+| `npm run build`         | Run `sync`, then build the production app                                                       |
+| `npm run lint`          | Run ESLint with 0 warnings allowed                                                              |
+| `npm test`              | Run the Jest test suite                                                                         |
+| `npm run db:push`       | Apply pending Supabase migrations                                                               |
+| `npm run deploy:latest` | Push an empty `chore: deploy latest` commit to force a Vercel deploy after `[skip deploy]` runs |
 
 See [Commands Reference](wiki/Commands-Reference.md) for the full script inventory, grouped by development, testing, validation, data, issue workflow, and agent-pipeline usage.
 

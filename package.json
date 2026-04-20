@@ -30,6 +30,7 @@
     "select:app:improvement": "node scripts/issues/select-app-improvement.mjs",
     "issues:pending": "node scripts/issues/retrieve-pending-issues.mjs",
     "issues:decide": "node scripts/issues/decide-issue.mjs",
+    "deploy:latest": "git commit --allow-empty -m \"chore: deploy latest\" && git push",
     "db:push": "npx supabase db push",
     "db:diff": "npx supabase db diff",
     "migration:new": "npx supabase migration new",
