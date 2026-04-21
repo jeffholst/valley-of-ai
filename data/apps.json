@@ -232,6 +232,16 @@
         "agentName": "Codex",
         "llmModel": "GPT-5.4",
         "implementedAt": "2026-04-21T18:54:21Z"
+      },
+      {
+        "issueNumber": 398,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/398",
+        "runId": "run-20260421T202948Z-26cbd9",
+        "description": "Removed hint visibility from moderator main game screen so Zoom-visible host UI no longer reveals hints; player hint remains per-player with 0.5-point credit for correct answers.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-21T20:30:56Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5.4"
       }
     ],
     "allowImprovements": true,
@@ -271,6 +281,11 @@
         "runId": "run-20260421T184938Z-cc5d9b",
         "path": "backups/run-20260421T184938Z-cc5d9b/index.html",
         "url": "/apps/2026/04/16/mental-gymnastics/backups/run-20260421T184938Z-cc5d9b/index.html"
+      },
+      {
+        "runId": "run-20260421T202948Z-26cbd9",
+        "path": "backups/run-20260421T202948Z-26cbd9/index.html",
+        "url": "/apps/2026/04/16/mental-gymnastics/backups/run-20260421T202948Z-26cbd9/index.html"
       }
     ]
   },
