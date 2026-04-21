@@ -722,6 +722,30 @@
         color: #60a5fa;
         font-weight: 700;
       }
+      .mod-vote-status {
+        margin-top: 10px;
+        padding: 10px 13px;
+        background: rgba(56, 189, 248, 0.07);
+        border: 1px solid rgba(56, 189, 248, 0.2);
+        border-radius: 10px;
+        font-size: 0.88rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+      }
+      .mod-vote-label {
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 2px;
+      }
+      .mod-hint-panel {
+        margin-top: 8px;
+        padding: 10px 13px;
+        background: rgba(167, 139, 250, 0.1);
+        border: 1px solid rgba(167, 139, 250, 0.25);
+        border-radius: 10px;
+        font-size: 0.9rem;
+        color: var(--text);
+      }
       .join-card {
         width: min(560px, 100%);
       }
@@ -806,10 +830,6 @@
             <ul class="player-list" id="playerList">
               <li class="player-empty" id="playerEmpty">No players joined yet.</li>
             </ul>
-            <div class="player-input-row" id="addPlayerRow" style="display:none;margin-top:8px">
-              <input type="text" id="addPlayerNameInput" maxlength="30" placeholder="Add player name" autocomplete="off" />
-              <button class="btn primary" id="addPlayerBtn">Add</button>
-            </div>
           </div>
 
           <div class="card">
@@ -877,7 +897,11 @@
             <button class="btn primary" id="submitVoteBtn" disabled>Submit Vote</button>
             <button class="btn" id="nextRoundBtn" style="display: none">Next Round</button>
             <button class="btn" id="showResultsBtn" style="display: none">Show Results</button>
+            <button class="btn" id="modHintBtn" style="display: none">Show Hint</button>
           </div>
+
+          <div class="mod-vote-status" id="modVoteStatus" style="display:none"></div>
+          <div class="mod-hint-panel" id="modHintPanel" style="display:none"></div>
 
           <div class="round-votes" id="roundVotes">
             <div class="award-label">Round Votes</div>
@@ -1481,6 +1505,7 @@
       const NAME_KEY_PREFIX = 'mg-player-name';
 
       const TIMER_PRESETS = { short: 30, medium: 45, long: 60 };
+      const triggeredAnimations = new Set();
       let timerPreset = 'medium';
       let lastKnownRoundIndex = -1;
 
@@ -1674,7 +1699,6 @@
 
       function renderLobbyPlayers() {
         const list = document.getElementById('playerList');
-        const addRow = document.getElementById('addPlayerRow');
         const players = currentPlayers();
         list.innerHTML = '';
         if (!players.length) {
@@ -1684,18 +1708,9 @@
             const li = document.createElement('li');
             li.className = 'player-item';
             li.innerHTML = `<span class="player-item-name">${escHtml(p.name)}</span>`;
-            if (role === 'moderator') {
-              const kickBtn = document.createElement('button');
-              kickBtn.className = 'player-remove';
-              kickBtn.title = 'Remove player';
-              kickBtn.textContent = '×';
-              kickBtn.addEventListener('click', () => kickPlayer(p.id));
-              li.appendChild(kickBtn);
-            }
             list.appendChild(li);
           });
         }
-        if (addRow) addRow.style.display = role === 'moderator' ? 'flex' : 'none';
         document.getElementById('startHostBtn').disabled = players.length === 0;
       }
 
@@ -1712,12 +1727,6 @@
           btn.dataset.preset = key;
           row.appendChild(btn);
         });
-      }
-
-      async function kickPlayer(pid) {
-        if (role !== 'moderator' || !session) return;
-        await patchSession({ patch: { [`players/${pid}`]: null } });
-        await refreshSessionLoop();
       }
 
       function renderTurnSelector() {
@@ -1767,12 +1776,16 @@
           subtitle.textContent = 'Game complete!';
         }
 
-        if (role === 'player') {
-          const me = winners.some((p) => p.id === playerId);
-          if (me) runConfetti(`final-${sessionCode}`);
-          else runBlueRain(`final-${sessionCode}`);
-        } else {
-          runConfetti(`final-${sessionCode}`);
+        const finalKey = `final-${sessionCode}`;
+        if (!triggeredAnimations.has(finalKey)) {
+          triggeredAnimations.add(finalKey);
+          if (role === 'player') {
+            const me = winners.some((p) => p.id === playerId);
+            if (me) runConfetti(finalKey);
+            else runBlueRain(finalKey);
+          } else {
+            runConfetti(finalKey);
+          }
         }
       }
 
@@ -1798,6 +1811,7 @@
         if (roundIndex !== lastKnownRoundIndex) {
           lastKnownRoundIndex = roundIndex;
           selectedChoice = null;
+          triggeredAnimations.clear();
         }
         const timerEl = document.getElementById('gameTimer');
         const questionEl = document.getElementById('gameQuestion');
@@ -1879,6 +1893,22 @@
           Number(game.roundIndex || 0) >= Number(game.roundsTotal || 0)
             ? 'inline-flex'
             : 'none';
+        const modHintBtn = document.getElementById('modHintBtn');
+        modHintBtn.style.display =
+          isModerator && game.phase === 'question' && challenge?.hint ? 'inline-flex' : 'none';
+
+        const modVoteStatus = document.getElementById('modVoteStatus');
+        const modHintPanel = document.getElementById('modHintPanel');
+        if (isModerator && game.phase === 'question') {
+          const allPlayers = currentPlayers();
+          const voted = allPlayers.filter((p) => responses[p.id]);
+          const waiting = allPlayers.filter((p) => !responses[p.id]);
+          modVoteStatus.style.display = 'block';
+          modVoteStatus.innerHTML = `<div class="mod-vote-label">Votes: ${voted.length} / ${allPlayers.length}</div><div>${waiting.length ? 'Waiting: ' + waiting.map((p) => escHtml(p.name)).join(', ') : 'All players have voted!'}</div>`;
+        } else {
+          modVoteStatus.style.display = 'none';
+          if (game.phase !== 'question') modHintPanel.style.display = 'none';
+        }
 
         const votesWrap = document.getElementById('roundVotes');
         votesWrap.classList.remove('visible');
@@ -1886,8 +1916,12 @@
           renderRoundVotes(challenge, responses, game.roundSummary || []);
           const summaryMine = (game.roundSummary || []).find((row) => row.playerId === playerId);
           if (role === 'player' && summaryMine) {
-            if (summaryMine.correct) runConfetti(`round-${game.roundIndex}-${playerId}`);
-            else runBlueRain(`round-${game.roundIndex}-${playerId}`);
+            const roundKey = `round-${game.roundIndex}-${playerId}`;
+            if (!triggeredAnimations.has(roundKey)) {
+              triggeredAnimations.add(roundKey);
+              if (summaryMine.correct) runConfetti(roundKey);
+              else runBlueRain(roundKey);
+            }
           }
         }
       }
@@ -2042,6 +2076,7 @@
         });
         selectedChoice = null;
         lastKnownRoundIndex = -1;
+        triggeredAnimations.clear();
         await refreshSessionLoop();
       }
 
@@ -2092,7 +2127,6 @@
         const joinLink = `${window.location.origin}${window.location.pathname}#join=${sessionCode}`;
         document.getElementById('joinLinkInput').value = joinLink;
         document.getElementById('hostLobbyMessage').textContent = 'Share this link so players can join.';
-        document.getElementById('addPlayerRow').style.display = 'flex';
         setHash(new URLSearchParams({ code: sessionCode, role: 'moderator' }));
         await startPolling();
       }
@@ -2153,7 +2187,6 @@
             showScreen('screen-setup');
             return;
           }
-          document.getElementById('addPlayerRow').style.display = 'flex';
           await startPolling();
           return;
         }
@@ -2202,6 +2235,15 @@
         } catch (_) {}
       });
 
+      document.getElementById('modHintBtn').addEventListener('click', () => {
+        const challenge = challengeById(session?.game?.currentChallengeId);
+        const panel = document.getElementById('modHintPanel');
+        if (!challenge?.hint) return;
+        panel.textContent = `Hint: ${challenge.hint}`;
+        panel.style.display = 'block';
+        document.getElementById('modHintBtn').style.display = 'none';
+      });
+
       document.getElementById('nextRoundBtn').addEventListener('click', () => {
         nextRound().catch(() => {});
       });
@@ -2231,30 +2273,6 @@
         if (event.key === 'Enter') {
           event.preventDefault();
           document.getElementById('joinSubmitBtn').click();
-        }
-      });
-
-      document.getElementById('addPlayerBtn').addEventListener('click', async () => {
-        const input = document.getElementById('addPlayerNameInput');
-        const name = input.value.trim();
-        if (!name) return;
-        const btn = document.getElementById('addPlayerBtn');
-        btn.disabled = true;
-        try {
-          await joinSession(sessionCode, name);
-          input.value = '';
-          await refreshSessionLoop();
-        } catch (err) {
-          document.getElementById('hostLobbyMessage').textContent = err.message || 'Could not add player.';
-        } finally {
-          btn.disabled = false;
-        }
-      });
-
-      document.getElementById('addPlayerNameInput').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          document.getElementById('addPlayerBtn').click();
         }
       });
 
