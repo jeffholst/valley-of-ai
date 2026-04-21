@@ -414,6 +414,9 @@
       }
 
       /* ── Award section ─────────────────────────── */
+      .reveal-row {
+        margin-bottom: 16px;
+      }
       .award-section {
         border-top: 1px solid var(--border);
         padding-top: 14px;
@@ -734,7 +737,7 @@
         color: var(--text);
         margin-bottom: 2px;
       }
-      .hint-panel {
+      .mod-hint-panel {
         margin-top: 8px;
         padding: 10px 13px;
         background: rgba(167, 139, 250, 0.1);
@@ -742,27 +745,6 @@
         border-radius: 10px;
         font-size: 0.9rem;
         color: var(--text);
-      }
-      .half-credit-notice {
-        font-size: 0.78rem;
-        color: var(--warn);
-        font-weight: 700;
-        margin-top: 5px;
-      }
-      .btn.danger {
-        background: var(--bad);
-        color: #fff;
-        border-color: var(--bad);
-      }
-      .btn.danger:hover:not(:disabled) {
-        background: #dc2626;
-        border-color: #dc2626;
-      }
-      .reveal-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 16px;
       }
       .join-card {
         width: min(560px, 100%);
@@ -915,14 +897,11 @@
             <button class="btn primary" id="submitVoteBtn" disabled>Submit Vote</button>
             <button class="btn" id="nextRoundBtn" style="display: none">Next Round</button>
             <button class="btn" id="showResultsBtn" style="display: none">Show Results</button>
-            <button class="btn" id="broadcastHintBtn" style="display: none">📢 Show Hint</button>
-            <button class="btn" id="endRoundBtn" style="display: none">End Round</button>
-            <button class="btn danger" id="endGameBtn" style="display: none">End Game</button>
-            <button class="btn" id="playerHintBtn" style="display: none">💡 Hint (½ credit)</button>
+            <button class="btn" id="modHintBtn" style="display: none">Show Hint</button>
           </div>
 
           <div class="mod-vote-status" id="modVoteStatus" style="display:none"></div>
-          <div class="hint-panel" id="hintPanel" style="display:none"></div>
+          <div class="mod-hint-panel" id="modHintPanel" style="display:none"></div>
 
           <div class="round-votes" id="roundVotes">
             <div class="award-label">Round Votes</div>
@@ -1817,10 +1796,9 @@
         list.innerHTML = (summary || [])
           .map((entry) => {
             const answer = entry.answer || 'No answer';
-            const badgeText = entry.correct ? (entry.usedHint ? 'Correct (½)' : 'Correct') : 'Wrong';
             return `<div class="vote-row">
               <span>${escHtml(entry.name)} — ${escHtml(answer)}</span>
-              <span class="vote-badge ${entry.correct ? 'good' : 'bad'}">${badgeText}</span>
+              <span class="vote-badge ${entry.correct ? 'good' : 'bad'}">${entry.correct ? 'Correct' : 'Wrong'}</span>
             </div>`;
           })
           .join('');
@@ -1907,12 +1885,6 @@
           choicesEl.appendChild(tile);
         });
 
-        const broadcastHintBtn = document.getElementById('broadcastHintBtn');
-        const endRoundBtn = document.getElementById('endRoundBtn');
-        const endGameBtn = document.getElementById('endGameBtn');
-        const playerHintBtn = document.getElementById('playerHintBtn');
-        const hintPanel = document.getElementById('hintPanel');
-
         submitBtn.style.display = 'none';
         nextRoundBtn.style.display = isModerator && game.phase === 'results' ? 'inline-flex' : 'none';
         showResultsBtn.style.display =
@@ -1921,20 +1893,12 @@
           Number(game.roundIndex || 0) >= Number(game.roundsTotal || 0)
             ? 'inline-flex'
             : 'none';
-        broadcastHintBtn.style.display =
-          isModerator && game.phase === 'question' && challenge?.hint && !game.hintVisible
-            ? 'inline-flex'
-            : 'none';
-        endRoundBtn.style.display = isModerator && game.phase === 'question' ? 'inline-flex' : 'none';
-        endGameBtn.style.display = isModerator && session.status === 'playing' ? 'inline-flex' : 'none';
-
-        const playerUsedHint = !!(game.hintUsedBy || {})[playerId];
-        playerHintBtn.style.display =
-          role === 'player' && game.phase === 'question' && challenge?.hint && !playerUsedHint && !game.hintVisible
-            ? 'inline-flex'
-            : 'none';
+        const modHintBtn = document.getElementById('modHintBtn');
+        modHintBtn.style.display =
+          isModerator && game.phase === 'question' && challenge?.hint ? 'inline-flex' : 'none';
 
         const modVoteStatus = document.getElementById('modVoteStatus');
+        const modHintPanel = document.getElementById('modHintPanel');
         if (isModerator && game.phase === 'question') {
           const allPlayers = currentPlayers();
           const voted = allPlayers.filter((p) => responses[p.id]);
@@ -1943,16 +1907,7 @@
           modVoteStatus.innerHTML = `<div class="mod-vote-label">Votes: ${voted.length} / ${allPlayers.length}</div><div>${waiting.length ? 'Waiting: ' + waiting.map((p) => escHtml(p.name)).join(', ') : 'All players have voted!'}</div>`;
         } else {
           modVoteStatus.style.display = 'none';
-        }
-
-        if (isModerator && game.phase === 'question' && challenge?.hint) {
-          hintPanel.innerHTML = `<strong>Hint:</strong> ${escHtml(challenge.hint)}`;
-          hintPanel.style.display = 'block';
-        } else if (role === 'player' && game.phase === 'question' && (game.hintVisible || playerUsedHint) && challenge?.hint) {
-          hintPanel.innerHTML = `<strong>💡 Hint:</strong> ${escHtml(challenge.hint)}<div class="half-credit-notice">⚠️ Half credit awarded for correct answers</div>`;
-          hintPanel.style.display = 'block';
-        } else {
-          hintPanel.style.display = 'none';
+          if (game.phase !== 'question') modHintPanel.style.display = 'none';
         }
 
         const votesWrap = document.getElementById('roundVotes');
@@ -1997,22 +1952,6 @@
         renderGameScreen();
       }
 
-      function computeRoundResults(game, challenge) {
-        const players = currentPlayers();
-        const responses = game.responses || {};
-        const hintUsedBy = game.hintUsedBy || {};
-        const hintVisible = !!game.hintVisible;
-        const nextScores = { ...(game.scores || {}) };
-        const summary = players.map((p) => {
-          const answer = responses[p.id] || null;
-          const correct = answer === challenge.answer;
-          const usedHint = hintVisible || !!hintUsedBy[p.id];
-          if (correct) nextScores[p.id] = Number(nextScores[p.id] || 0) + (usedHint ? 0.5 : 1);
-          return { playerId: p.id, name: p.name, answer, correct, usedHint };
-        });
-        return { nextScores, summary };
-      }
-
       async function maybeAutoAdvanceToResults() {
         if (role !== 'moderator' || !session) return;
         if (session.status !== 'playing') return;
@@ -2022,7 +1961,15 @@
 
         const challenge = challengeById(game.currentChallengeId);
         if (!challenge) return;
-        const { nextScores, summary } = computeRoundResults(game, challenge);
+        const players = currentPlayers();
+        const responses = game.responses || {};
+        const nextScores = { ...(game.scores || {}) };
+        const summary = players.map((p) => {
+          const answer = responses[p.id] || null;
+          const correct = answer === challenge.answer;
+          if (correct) nextScores[p.id] = Number(nextScores[p.id] || 0) + 1;
+          return { playerId: p.id, name: p.name, answer, correct };
+        });
         await patchSession({
           patch: {
             game: {
@@ -2053,8 +2000,6 @@
               timerEndsAt: new Date(Date.now() + TIMER_PRESETS[timerPreset] * 1000).toISOString(),
               scores,
               announcement: `Round ${roundIndex} started`,
-              hintVisible: false,
-              hintUsedBy: {},
             },
           },
         });
@@ -2109,44 +2054,6 @@
       async function showFinalResultsNow() {
         if (role !== 'moderator') return;
         await patchSession({ status: 'ended', patch: { game: { phase: 'final' } } });
-      }
-
-      async function broadcastHint() {
-        if (role !== 'moderator' || !session) return;
-        await patchSession({ patch: { game: { hintVisible: true } } });
-        await refreshSessionLoop();
-      }
-
-      async function endRoundNow() {
-        if (role !== 'moderator' || !session) return;
-        const game = session.game || {};
-        if (game.phase !== 'question') return;
-        const challenge = challengeById(game.currentChallengeId);
-        if (!challenge) return;
-        const { nextScores, summary } = computeRoundResults(game, challenge);
-        await patchSession({
-          patch: {
-            game: {
-              phase: 'results',
-              scores: nextScores,
-              roundSummary: summary,
-              announcement: 'Round ended by moderator.',
-            },
-          },
-        });
-        await refreshSessionLoop();
-      }
-
-      async function endGame() {
-        if (role !== 'moderator') return;
-        await patchSession({ status: 'ended', patch: { game: { phase: 'final' } } });
-        await refreshSessionLoop();
-      }
-
-      async function requestPlayerHint() {
-        if (role !== 'player' || !session || !playerId) return;
-        await patchSession({ patch: { [`game/hintUsedBy/${playerId}`]: true } });
-        await refreshSessionLoop();
       }
 
       async function resetToLobby() {
@@ -2328,17 +2235,13 @@
         } catch (_) {}
       });
 
-      document.getElementById('broadcastHintBtn').addEventListener('click', () => {
-        broadcastHint().catch(() => {});
-      });
-      document.getElementById('endRoundBtn').addEventListener('click', () => {
-        endRoundNow().catch(() => {});
-      });
-      document.getElementById('endGameBtn').addEventListener('click', () => {
-        endGame().catch(() => {});
-      });
-      document.getElementById('playerHintBtn').addEventListener('click', () => {
-        requestPlayerHint().catch(() => {});
+      document.getElementById('modHintBtn').addEventListener('click', () => {
+        const challenge = challengeById(session?.game?.currentChallengeId);
+        const panel = document.getElementById('modHintPanel');
+        if (!challenge?.hint) return;
+        panel.textContent = `Hint: ${challenge.hint}`;
+        panel.style.display = 'block';
+        document.getElementById('modHintBtn').style.display = 'none';
       });
 
       document.getElementById('nextRoundBtn').addEventListener('click', () => {
