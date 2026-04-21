@@ -84,6 +84,16 @@
       "implementedAt": "2026-04-21T11:36:13Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
+    },
+    {
+      "issueNumber": 392,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/392",
+      "runId": "run-20260421T115711Z-64b6ac",
+      "description": "Fixed animation root cause: triggeredAnimations Set prevents runConfetti/runBlueRain from re-firing every poll cycle. Removed moderator add/kick player UI from lobby. Added real-time vote status panel for moderator during question phase. Added Show Hint button for moderator game screen.",
+      "requestor": "Jeff Holst",
+      "implementedAt": "2026-04-21T12:00:24Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
     }
   ]
 }
