@@ -915,7 +915,7 @@
             <button class="btn primary" id="submitVoteBtn" disabled>Submit Vote</button>
             <button class="btn" id="nextRoundBtn" style="display: none">Next Round</button>
             <button class="btn" id="showResultsBtn" style="display: none">Show Results</button>
-            <button class="btn" id="openModPopupBtn" style="display: none">🪟 Moderator Popup</button>
+            <button class="btn" id="broadcastHintBtn" style="display: none">📢 Show Hint</button>
             <button class="btn" id="endRoundBtn" style="display: none">End Round</button>
             <button class="btn danger" id="endGameBtn" style="display: none">End Game</button>
             <button class="btn" id="playerHintBtn" style="display: none">💡 Hint (½ credit)</button>
@@ -1493,11 +1493,6 @@
           .replace(/"/g, '&quot;');
       }
 
-      function toNumericScore(value) {
-        const numeric = Number(value);
-        return Number.isFinite(numeric) ? numeric : 0;
-      }
-
       function playTone(freq, dur) {
         const soundEl = document.getElementById('soundToggle');
         if (soundEl && !soundEl.checked) return;
@@ -1540,7 +1535,6 @@
       let sessionCode = '';
       let moderatorId = null;
       let playerId = null;
-      let moderatorPopupRef = null;
       let session = null;
       let pollingTimer = null;
       let selectedChoice = null;
@@ -1775,8 +1769,8 @@
         const scores = session?.game?.scores || {};
         const players = currentPlayers();
         const sorted = players
-          .map((p) => ({ ...p, score: toNumericScore(scores[p.id]) }))
-          .sort((a, b) => b.score - a.score || String(a.name || '').localeCompare(String(b.name || '')));
+          .map((p) => ({ ...p, score: Number(scores[p.id] || 0) }))
+          .sort((a, b) => b.score - a.score);
         const MEDAL = { 1: '🥇', 2: '🥈', 3: '🥉' };
         let rankCursor = 1;
         sorted.forEach((entry, idx) => {
@@ -1851,7 +1845,6 @@
         const nextRoundBtn = document.getElementById('nextRoundBtn');
         const showResultsBtn = document.getElementById('showResultsBtn');
         const isModerator = role === 'moderator';
-        const isModeratorView = role === 'moderator-view';
 
         roundLabel.textContent = `Round ${Number(game.roundIndex || 0)} of ${Number(game.roundsTotal || 0)}`;
         categoryBadge.textContent = challenge?.category || 'Category';
@@ -1914,7 +1907,7 @@
           choicesEl.appendChild(tile);
         });
 
-        const openModPopupBtn = document.getElementById('openModPopupBtn');
+        const broadcastHintBtn = document.getElementById('broadcastHintBtn');
         const endRoundBtn = document.getElementById('endRoundBtn');
         const endGameBtn = document.getElementById('endGameBtn');
         const playerHintBtn = document.getElementById('playerHintBtn');
@@ -1928,13 +1921,16 @@
           Number(game.roundIndex || 0) >= Number(game.roundsTotal || 0)
             ? 'inline-flex'
             : 'none';
-        openModPopupBtn.style.display = isModerator && session.status === 'playing' ? 'inline-flex' : 'none';
+        broadcastHintBtn.style.display =
+          isModerator && game.phase === 'question' && challenge?.hint && !game.hintVisible
+            ? 'inline-flex'
+            : 'none';
         endRoundBtn.style.display = isModerator && game.phase === 'question' ? 'inline-flex' : 'none';
         endGameBtn.style.display = isModerator && session.status === 'playing' ? 'inline-flex' : 'none';
 
         const playerUsedHint = !!(game.hintUsedBy || {})[playerId];
         playerHintBtn.style.display =
-          role === 'player' && game.phase === 'question' && challenge?.hint && !playerUsedHint
+          role === 'player' && game.phase === 'question' && challenge?.hint && !playerUsedHint && !game.hintVisible
             ? 'inline-flex'
             : 'none';
 
@@ -1949,13 +1945,10 @@
           modVoteStatus.style.display = 'none';
         }
 
-        if (isModeratorView && challenge) {
-          hintPanel.innerHTML = `<strong>Answer:</strong> ${escHtml(challenge.answer)}<br /><strong>Hint:</strong> ${escHtml(challenge.hint || 'No hint for this question.')}`;
-          hintPanel.style.display = 'block';
-        } else if (isModerator && game.phase === 'question' && challenge?.hint) {
+        if (isModerator && game.phase === 'question' && challenge?.hint) {
           hintPanel.innerHTML = `<strong>Hint:</strong> ${escHtml(challenge.hint)}`;
           hintPanel.style.display = 'block';
-        } else if (role === 'player' && game.phase === 'question' && playerUsedHint && challenge?.hint) {
+        } else if (role === 'player' && game.phase === 'question' && (game.hintVisible || playerUsedHint) && challenge?.hint) {
           hintPanel.innerHTML = `<strong>💡 Hint:</strong> ${escHtml(challenge.hint)}<div class="half-credit-notice">⚠️ Half credit awarded for correct answers</div>`;
           hintPanel.style.display = 'block';
         } else {
@@ -2008,11 +2001,12 @@
         const players = currentPlayers();
         const responses = game.responses || {};
         const hintUsedBy = game.hintUsedBy || {};
+        const hintVisible = !!game.hintVisible;
         const nextScores = { ...(game.scores || {}) };
         const summary = players.map((p) => {
           const answer = responses[p.id] || null;
           const correct = answer === challenge.answer;
-          const usedHint = !!hintUsedBy[p.id];
+          const usedHint = hintVisible || !!hintUsedBy[p.id];
           if (correct) nextScores[p.id] = Number(nextScores[p.id] || 0) + (usedHint ? 0.5 : 1);
           return { playerId: p.id, name: p.name, answer, correct, usedHint };
         });
@@ -2059,6 +2053,7 @@
               timerEndsAt: new Date(Date.now() + TIMER_PRESETS[timerPreset] * 1000).toISOString(),
               scores,
               announcement: `Round ${roundIndex} started`,
+              hintVisible: false,
               hintUsedBy: {},
             },
           },
@@ -2093,7 +2088,8 @@
         await startRound(1, turns, queue, scores);
 
         if (document.getElementById('moderatorOnlyToggle').checked) {
-          openModeratorPopup();
+          const url = `${window.location.origin}${window.location.pathname}#code=${sessionCode}&role=moderator`;
+          window.open(url, 'mg-moderator-only', 'width=980,height=760,toolbar=no,menubar=no');
         }
       }
 
@@ -2113,6 +2109,12 @@
       async function showFinalResultsNow() {
         if (role !== 'moderator') return;
         await patchSession({ status: 'ended', patch: { game: { phase: 'final' } } });
+      }
+
+      async function broadcastHint() {
+        if (role !== 'moderator' || !session) return;
+        await patchSession({ patch: { game: { hintVisible: true } } });
+        await refreshSessionLoop();
       }
 
       async function endRoundNow() {
@@ -2145,20 +2147,6 @@
         if (role !== 'player' || !session || !playerId) return;
         await patchSession({ patch: { [`game/hintUsedBy/${playerId}`]: true } });
         await refreshSessionLoop();
-      }
-
-      function openModeratorPopup() {
-        if (!sessionCode) return;
-        const params = new URLSearchParams({ code: sessionCode, role: 'moderator-view' });
-        const url = `${window.location.origin}${window.location.pathname}#${params.toString()}`;
-        moderatorPopupRef = window.open(
-          url,
-          'mg-moderator-popup',
-          'width=980,height=760,toolbar=no,menubar=no'
-        );
-        if (moderatorPopupRef) {
-          moderatorPopupRef.focus();
-        }
       }
 
       async function resetToLobby() {
@@ -2296,13 +2284,6 @@
           return;
         }
 
-        if (hashRole === 'moderator-view' && code) {
-          role = 'moderator-view';
-          sessionCode = code;
-          await startPolling();
-          return;
-        }
-
         await createLobbyForModerator();
       }
 
@@ -2347,8 +2328,8 @@
         } catch (_) {}
       });
 
-      document.getElementById('openModPopupBtn').addEventListener('click', () => {
-        openModeratorPopup();
+      document.getElementById('broadcastHintBtn').addEventListener('click', () => {
+        broadcastHint().catch(() => {});
       });
       document.getElementById('endRoundBtn').addEventListener('click', () => {
         endRoundNow().catch(() => {});
