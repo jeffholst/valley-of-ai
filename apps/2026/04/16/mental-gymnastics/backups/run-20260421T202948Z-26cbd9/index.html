@@ -1952,6 +1952,9 @@
         if (isModeratorView && challenge) {
           hintPanel.innerHTML = `<strong>Answer:</strong> ${escHtml(challenge.answer)}<br /><strong>Hint:</strong> ${escHtml(challenge.hint || 'No hint for this question.')}`;
           hintPanel.style.display = 'block';
+        } else if (isModerator && game.phase === 'question' && challenge?.hint) {
+          hintPanel.innerHTML = `<strong>Hint:</strong> ${escHtml(challenge.hint)}`;
+          hintPanel.style.display = 'block';
         } else if (role === 'player' && game.phase === 'question' && playerUsedHint && challenge?.hint) {
           hintPanel.innerHTML = `<strong>💡 Hint:</strong> ${escHtml(challenge.hint)}<div class="half-credit-notice">⚠️ Half credit awarded for correct answers</div>`;
           hintPanel.style.display = 'block';
