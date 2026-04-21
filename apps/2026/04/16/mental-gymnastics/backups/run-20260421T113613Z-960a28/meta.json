@@ -74,16 +74,6 @@
       "implementedAt": "2026-04-20T22:28:20Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
-    },
-    {
-      "issueNumber": 390,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/390",
-      "runId": "run-20260421T113613Z-960a28",
-      "description": "Fixed confetti/rain to use measured overlay height (CSS variable) for reliable full-screen animation. Play Again for moderator now resets session to lobby. Lobby adds manual add-player input and per-player kick button. New Round Timer card lets moderator choose 30s/45s/60s per round. Fixed selectedChoice not resetting between rounds.",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-04-21T11:36:13Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6"
     }
   ]
 }

@@ -294,23 +294,6 @@
         color: #fff;
         border-color: var(--accent);
       }
-      .preset-btn {
-        height: 44px;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        background: var(--surface-soft);
-        color: var(--text);
-        font-size: 0.9rem;
-        font-weight: 700;
-        cursor: pointer;
-        padding: 0 16px;
-        transition: background 0.15s, color 0.15s, border-color 0.15s;
-      }
-      .preset-btn.selected {
-        background: var(--accent);
-        color: #fff;
-        border-color: var(--accent);
-      }
 
       /* ── Toggle row ─────────────────────────────── */
       .toggle-row {
@@ -740,7 +723,7 @@
       }
       @keyframes confettiFall {
         to {
-          transform: translateY(calc(var(--overlay-h, 100vh) + 50px)) rotate(480deg);
+          transform: translateY(calc(100dvh - 100px)) rotate(480deg);
           opacity: 0;
         }
       }
@@ -753,7 +736,7 @@
       }
       @keyframes rainFall {
         to {
-          transform: translateY(calc(var(--overlay-h, 100vh) + 80px));
+          transform: translateY(calc(100dvh - 60px));
         }
       }
 
@@ -806,20 +789,11 @@
             <ul class="player-list" id="playerList">
               <li class="player-empty" id="playerEmpty">No players joined yet.</li>
             </ul>
-            <div class="player-input-row" id="addPlayerRow" style="display:none;margin-top:8px">
-              <input type="text" id="addPlayerNameInput" maxlength="30" placeholder="Add player name" autocomplete="off" />
-              <button class="btn primary" id="addPlayerBtn">Add</button>
-            </div>
           </div>
 
           <div class="card">
             <h2>Rounds</h2>
             <div class="turn-selector" id="turnSelector"></div>
-          </div>
-
-          <div class="card">
-            <h2>Round Timer</h2>
-            <div class="turn-selector" id="timerPresetRow"></div>
           </div>
 
           <div class="card">
@@ -1480,10 +1454,6 @@
       const MOD_KEY_PREFIX = 'mg-mod';
       const NAME_KEY_PREFIX = 'mg-player-name';
 
-      const TIMER_PRESETS = { short: 30, medium: 45, long: 60 };
-      let timerPreset = 'medium';
-      let lastKnownRoundIndex = -1;
-
       let selectedTurns = 5;
       let role = null;
       let sessionCode = '';
@@ -1634,7 +1604,6 @@
 
       function runConfetti(roundId) {
         const overlay = document.getElementById('fxOverlay');
-        overlay.style.setProperty('--overlay-h', overlay.clientHeight + 'px');
         const colors = ['#22c55e', '#f59e0b', '#38bdf8', '#a78bfa', '#f43f5e'];
         const pieces = [];
         for (let i = 0; i < 70; i += 1) {
@@ -1655,7 +1624,6 @@
 
       function runBlueRain(roundId) {
         const overlay = document.getElementById('fxOverlay');
-        overlay.style.setProperty('--overlay-h', overlay.clientHeight + 'px');
         const drops = [];
         for (let i = 0; i < 85; i += 1) {
           const left = Math.random() * 100;
@@ -1674,50 +1642,18 @@
 
       function renderLobbyPlayers() {
         const list = document.getElementById('playerList');
-        const addRow = document.getElementById('addPlayerRow');
         const players = currentPlayers();
-        list.innerHTML = '';
         if (!players.length) {
           list.innerHTML = '<li class="player-empty">No players joined yet.</li>';
         } else {
-          players.forEach((p) => {
-            const li = document.createElement('li');
-            li.className = 'player-item';
-            li.innerHTML = `<span class="player-item-name">${escHtml(p.name)}</span>`;
-            if (role === 'moderator') {
-              const kickBtn = document.createElement('button');
-              kickBtn.className = 'player-remove';
-              kickBtn.title = 'Remove player';
-              kickBtn.textContent = '×';
-              kickBtn.addEventListener('click', () => kickPlayer(p.id));
-              li.appendChild(kickBtn);
-            }
-            list.appendChild(li);
-          });
+          list.innerHTML = players
+            .map(
+              (p) =>
+                `<li class="player-item"><span class="player-item-name">${escHtml(p.name)}</span></li>`
+            )
+            .join('');
         }
-        if (addRow) addRow.style.display = role === 'moderator' ? 'flex' : 'none';
         document.getElementById('startHostBtn').disabled = players.length === 0;
-      }
-
-      function renderTimerPreset() {
-        const row = document.getElementById('timerPresetRow');
-        if (!row) return;
-        const labels = { short: 'Short (30s)', medium: 'Medium (45s)', long: 'Long (60s)' };
-        row.innerHTML = '';
-        Object.keys(TIMER_PRESETS).forEach((key) => {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'preset-btn' + (key === timerPreset ? ' selected' : '');
-          btn.textContent = labels[key];
-          btn.dataset.preset = key;
-          row.appendChild(btn);
-        });
-      }
-
-      async function kickPlayer(pid) {
-        if (role !== 'moderator' || !session) return;
-        await patchSession({ patch: { [`players/${pid}`]: null } });
-        await refreshSessionLoop();
       }
 
       function renderTurnSelector() {
@@ -1794,11 +1730,6 @@
       function renderGameScreen() {
         const game = session?.game || {};
         const challenge = challengeById(game.currentChallengeId);
-        const roundIndex = Number(game.roundIndex || 0);
-        if (roundIndex !== lastKnownRoundIndex) {
-          lastKnownRoundIndex = roundIndex;
-          selectedChoice = null;
-        }
         const timerEl = document.getElementById('gameTimer');
         const questionEl = document.getElementById('gameQuestion');
         const statusEl = document.getElementById('gameStatus');
@@ -1963,7 +1894,7 @@
               phase: 'question',
               responses: {},
               roundSummary: [],
-              timerEndsAt: new Date(Date.now() + TIMER_PRESETS[timerPreset] * 1000).toISOString(),
+              timerEndsAt: new Date(Date.now() + challenge.timeLimit * 1000).toISOString(),
               scores,
               announcement: `Round ${roundIndex} started`,
             },
@@ -2022,29 +1953,6 @@
         await patchSession({ status: 'ended', patch: { game: { phase: 'final' } } });
       }
 
-      async function resetToLobby() {
-        if (role !== 'moderator' || !session) return;
-        await patchSession({
-          status: 'lobby',
-          patch: {
-            game: {
-              phase: null,
-              roundIndex: 0,
-              roundsTotal: 0,
-              responses: {},
-              scores: {},
-              roundSummary: [],
-              queue: [],
-              currentChallengeId: null,
-              timerEndsAt: null,
-            },
-          },
-        });
-        selectedChoice = null;
-        lastKnownRoundIndex = -1;
-        await refreshSessionLoop();
-      }
-
       async function refreshSessionLoop() {
         if (!sessionCode) return;
         const next = await fetchSession(sessionCode);
@@ -2092,7 +2000,6 @@
         const joinLink = `${window.location.origin}${window.location.pathname}#join=${sessionCode}`;
         document.getElementById('joinLinkInput').value = joinLink;
         document.getElementById('hostLobbyMessage').textContent = 'Share this link so players can join.';
-        document.getElementById('addPlayerRow').style.display = 'flex';
         setHash(new URLSearchParams({ code: sessionCode, role: 'moderator' }));
         await startPolling();
       }
@@ -2122,14 +2029,6 @@
           renderTurnSelector();
         });
 
-        renderTimerPreset();
-        document.getElementById('timerPresetRow').addEventListener('click', (e) => {
-          const btn = e.target.closest('[data-preset]');
-          if (!btn) return;
-          timerPreset = btn.dataset.preset;
-          renderTimerPreset();
-        });
-
         if (joinCode) {
           prepareJoin(joinCode);
           return;
@@ -2153,7 +2052,6 @@
             showScreen('screen-setup');
             return;
           }
-          document.getElementById('addPlayerRow').style.display = 'flex';
           await startPolling();
           return;
         }
@@ -2234,37 +2132,15 @@
         }
       });
 
-      document.getElementById('addPlayerBtn').addEventListener('click', async () => {
-        const input = document.getElementById('addPlayerNameInput');
-        const name = input.value.trim();
-        if (!name) return;
-        const btn = document.getElementById('addPlayerBtn');
-        btn.disabled = true;
-        try {
-          await joinSession(sessionCode, name);
-          input.value = '';
-          await refreshSessionLoop();
-        } catch (err) {
-          document.getElementById('hostLobbyMessage').textContent = err.message || 'Could not add player.';
-        } finally {
-          btn.disabled = false;
-        }
-      });
-
-      document.getElementById('addPlayerNameInput').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          document.getElementById('addPlayerBtn').click();
-        }
-      });
-
       document.getElementById('playAgainBtn').addEventListener('click', () => {
-        if (role === 'moderator') {
-          resetToLobby().catch(() => {});
-        } else if (!role || !session) {
-          showScreen('screen-setup');
+        if (role === 'moderator' && session?.status === 'playing') {
+          nextRound().catch(() => {});
+        } else {
+          showScreen('screen-game');
+          if (!session || role !== 'player') {
+            showScreen('screen-setup');
+          }
         }
-        // Players: do nothing — polling handles navigation when moderator resets
       });
 
       resumeFromHash().catch(() => {
