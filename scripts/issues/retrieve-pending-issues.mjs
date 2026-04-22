@@ -37,7 +37,7 @@ function normalizeLabels(labels = []) {
 export function normalizeIssue(issue) {
   const rawBody = issue.body ?? '';
   const TRUNCATION_MARKER = ' [truncated]';
-  const BODY_LIMIT = 1000;
+  const BODY_LIMIT = 1500;
   const body =
     rawBody.length > BODY_LIMIT
       ? rawBody.slice(0, BODY_LIMIT - TRUNCATION_MARKER.length) + TRUNCATION_MARKER
