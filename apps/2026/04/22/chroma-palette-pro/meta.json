@@ -1,0 +1,29 @@
+{
+  "id": "chroma-palette-pro",
+  "name": "Chroma Palette Pro",
+  "shortDescription": "Dynamic palette generator with generative harmony anchors and live CSS export.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-04-22T07:04:19Z",
+  "category": "Design",
+  "status": "active",
+  "tags": [
+    "color-palette",
+    "design-tool",
+    "css-generator",
+    "generative-art",
+    "ui-design",
+    "responsive"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "Dev",
+    "llmModel": "ollama/gemma4:31b",
+    "startTime": "2026-04-22T07:04:19Z",
+    "endTime": "2026-04-22T07:20:00Z",
+    "totalTokensIn": 15000,
+    "totalTokensOut": 15000,
+    "runId": "run-20260422T070419Z-a1b2c3",
+    "notes": "Built as a high-fidelity color tool for designers, focusing on generative harmony."
+  }
+}

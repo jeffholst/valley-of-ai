@@ -1,5 +1,42 @@
 [
   {
+    "id": "2026/04/22/chroma-palette-pro",
+    "name": "Chroma Palette Pro",
+    "shortDescription": "Dynamic palette generator with generative harmony anchors and live CSS export.",
+    "thumbnailUrl": "/apps/2026/04/22/chroma-palette-pro/thumbnail.svg",
+    "createdAt": "2026-04-22T07:04:19Z",
+    "year": 2026,
+    "month": 4,
+    "day": 22,
+    "category": "Design",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "color-palette",
+      "design-tool",
+      "css-generator",
+      "generative-art",
+      "ui-design",
+      "responsive"
+    ],
+    "route": "/apps/2026/04/22/chroma-palette-pro",
+    "appPath": "/apps/2026/04/22/chroma-palette-pro/index.html",
+    "generation": {
+      "agentName": "Dev",
+      "llmModel": "ollama/gemma4:31b",
+      "startTime": "2026-04-22T07:04:19Z",
+      "endTime": "2026-04-22T07:20:00Z",
+      "totalTokensIn": 15000,
+      "totalTokensOut": 15000,
+      "runId": "run-20260422T070419Z-a1b2c3",
+      "notes": "Built as a high-fidelity color tool for designers, focusing on generative harmony."
+    },
+    "suggestion": null,
+    "improvements": null,
+    "allowImprovements": true,
+    "backups": null
+  },
+  {
     "id": "2026/04/21/chroma-flow-designer",
     "name": "Chroma Flow Designer",
     "shortDescription": "Create mesmerizing generative fluid art using dynamic flow fields and customizable particle systems.",

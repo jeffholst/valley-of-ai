@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Chroma Palette Pro - __MAIN_SITE_NAME__</title>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', '__GA_MEASUREMENT_ID__');
+  </script>
+
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+  <meta name="voa-github-url" content="__GITHUB_URL__" />
+  <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+  <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+  <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+  <meta name="application-name" content="Chroma Palette Pro" />
+  <meta name="voa-app-id" content="2026/04/22/chroma-palette-pro" />
+  <script src="/apps/shared/app-shell.js" defer></script>
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --text: #f9fafb;
+      --surface: #1e293b;
+      --accent: #38bdf8;
+      --border: #334155;
+    }
+    [data-theme='light'] {
+      --bg: #f8fafc;
+      --text: #0f172a;
+      --surface: #ffffff;
+      --accent: #0284c7;
+      --border: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      transition: background-color 0.3s ease;
+      overflow: hidden;
+    }
+
+    #appWrapper {
+      position: fixed;
+      top: 64px;
+      bottom: 56px;
+      left: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      gap: 20px;
+      overflow-y: auto;
+    }
+
+    .header-section {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 8px 0;
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+    }
+
+    .subtitle {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      margin-bottom: 16px;
+    }
+
+    .palette-container {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      height: 120px;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .color-swatch {
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+      display: flex;
+      align-items: flex-end;
+      padding: 8px;
+    }
+
+    .color-swatch:active {
+      transform: scale(0.95);
+    }
+
+    .swatch-label {
+      font-family: monospace;
+      font-size: 0.7rem;
+      background: rgba(0,0,0,0.4);
+      color: white;
+      padding: 2px 4px;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+
+    .color-swatch:hover .swatch-label {
+      opacity: 1;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 44px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn:hover {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      background: var(--accent);
+    }
+
+    .css-export {
+      margin-top: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+    }
+
+    .css-export h3 {
+      margin: 0 0 12px 0;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.6;
+    }
+
+    pre {
+      margin: 0;
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #10b981;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    @media (max-width: 400px) {
+      .palette-container {
+        height: 80px;
+      }
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="appWrapper">
+    <div class="header-section">
+      <h1>Chroma Palette Pro</h1>
+      <p class="subtitle">Generative Harmony & CSS Architect</p>
+    </div>
+
+    <div class="palette-container" id="palette">
+      <!-- Swatches generated by JS -->
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-primary" id="generateBtn">Generate New</button>
+      <button class="btn" id="harmonyBtn">Shift Harmony</button>
+      <button class="btn" id="lockBtn">Lock Anchors</button>
+      <button class="btn" id="copyBtn">Copy CSS</button>
+    </div>
+
+    <div class="css-export">
+      <h3>CSS Variables</h3>
+      <pre id="cssCode"></pre>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Copied to clipboard!</div>
+
+  <script>
+    const paletteEl = document.getElementById('palette');
+    const cssCodeEl = document.getElementById('cssCode');
+    const generateBtn = document.getElementById('generateBtn');
+    const harmonyBtn = document.getElementById('harmonyBtn');
+    const lockBtn = document.getElementById('lockBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const toast = document.getElementById('toast');
+
+    let currentColors = [];
+    let isLocked = false;
+
+    function generateRandomColor() {
+      const h = Math.floor(Math.random() * 360);
+      const s = Math.floor(Math.random() * 30) + 60; // 60-90%
+      const l = Math.floor(Math.random() * 40) + 40; // 40-80%
+      return `hsl(${h}, ${s}%, ${l}%)`;
+    }
+
+    function hslToHex(hsl) {
+      let [h, s, l] = hsl.match(/\d+/g).map(Number);
+      s /= 100; l /= 100;
+      const a = s * Math.min(l, 1 - l);
+      const f = n => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0');
+      };
+      return `#${f(0)}${f(8)}${f(4)}`;
+    }
+
+    function createPalette() {
+      const baseHue = Math.floor(Math.random() * 360);
+      const colors = [];
+      
+      // Generate a complementary-adjacent palette
+      const steps = [0, 30, 150, 180, 210];
+      steps.forEach((offset, i) => {
+        const hue = (baseHue + offset) % 360;
+        const sat = 70 + Math.random() * 20;
+        const light = 40 + Math.random() * 30;
+        colors.push(`hsl(${Math.round(hue)}, ${Math.round(sat)}%, ${Math.round(light)}%)`);
+      });
+
+      return colors;
+    }
+
+    function updateUI() {
+      paletteEl.innerHTML = '';
+      let cssText = ':root {\n';
+      
+      currentColors.forEach((color, i) => {
+        const hex = hslToHex(color);
+        const swatch = document.createElement('div');
+        swatch.className = 'color-swatch';
+        swatch.style.backgroundColor = color;
+        
+        const label = document.createElement('span');
+        label.className = 'swatch-label';
+        label.textContent = hex.toUpperCase();
+        
+        swatch.appendChild(label);
+        swatch.onclick = () => copyToClipboard(hex);
+        paletteEl.appendChild(swatch);
+        
+        cssText += `  --color-${i+1}: ${hex};\n`;
+      });
+      
+      cssText += '}';
+      cssCodeEl.textContent = cssText;
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        toast.style.opacity = '1';
+        setTimeout(() => toast.style.opacity = '0', 2000);
+      });
+    }
+
+    function rotateHarmony() {
+      const baseHue = parseInt(currentColors[0].match(/\d+/)[0]);
+      const shift = 30;
+      currentColors = currentColors.map(c => {
+        const parts = c.match(/\d+/g).map(Number);
+        return `hsl(${(parts[0] + shift) % 360}, ${parts[1]}%, ${parts[2]}%)`;
+      });
+      updateUI();
+    }
+
+    generateBtn.onclick = () => {
+      currentColors = createPalette();
+      updateUI();
+    };
+
+    harmonyBtn.onclick = rotateHarmony;
+
+    lockBtn.onclick = () => {
+      isLocked = !isLocked;
+      lockBtn.textContent = isLocked ? 'Unlock Anchors' : 'Lock Anchors';
+      lockBtn.classList.toggle('btn-primary');
+    };
+
+    copyBtn.onclick = () => {
+      copyToClipboard(cssCodeEl.textContent);
+    };
+
+    // Init
+    currentColors = createPalette();
+    updateUI();
+  </script>
+</body>
+</html>
