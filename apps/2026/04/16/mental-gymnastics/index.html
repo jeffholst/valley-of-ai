@@ -734,6 +734,40 @@
         color: var(--text);
         margin-bottom: 2px;
       }
+      .mod-player-grid {
+        margin-top: 10px;
+        padding: 10px 12px;
+        background: rgba(56, 189, 248, 0.05);
+        border: 1px solid rgba(56, 189, 248, 0.2);
+        border-radius: 10px;
+      }
+      .mod-player-grid-title {
+        font-size: 0.9rem;
+        font-weight: 800;
+        margin-bottom: 8px;
+      }
+      .mod-player-grid-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.84rem;
+      }
+      .mod-player-grid-table th,
+      .mod-player-grid-table td {
+        text-align: left;
+        padding: 6px 5px;
+        border-bottom: 1px solid var(--line);
+      }
+      .mod-player-grid-table th {
+        color: var(--text-muted);
+        font-weight: 700;
+      }
+      .mod-player-grid-table tr:last-child td {
+        border-bottom: 0;
+      }
+      .mod-player-status {
+        text-transform: capitalize;
+        font-weight: 700;
+      }
       .hint-panel {
         margin-top: 8px;
         padding: 10px 13px;
@@ -922,6 +956,10 @@
           </div>
 
           <div class="mod-vote-status" id="modVoteStatus" style="display:none"></div>
+          <div class="mod-player-grid" id="modPlayerGrid" style="display:none">
+            <div class="mod-player-grid-title">Player Grid</div>
+            <div id="modPlayerGridBody"></div>
+          </div>
           <div class="hint-panel" id="hintPanel" style="display:none"></div>
 
           <div class="round-votes" id="roundVotes">
@@ -1028,7 +1066,7 @@
          CHALLENGE BANK — 33 challenges, all MCQ-compatible
       ══════════════════════════════════════════════ */
       const CHALLENGES = [
-        {
+       {
           id: 'math-1',
           category: 'Mental Math',
           type: 'mcq',
@@ -1448,7 +1486,7 @@
           explanation: 'The first word was Orbit.',
           difficulty: 1,
           timeLimit: 20,
-        },
+        }, 
       ];
 
       /* ══════════════════════════════════════════════
@@ -1531,6 +1569,8 @@
       const NAME_KEY_PREFIX = 'mg-player-name';
 
       const TIMER_PRESETS = { short: 30, medium: 45, long: 60 };
+      const MEMORY_MEMORIZE_SECONDS = 6;
+      const MEMORY_INSTRUCTION_SECONDS = 3;
       const triggeredAnimations = new Set();
       let timerPreset = 'medium';
       let lastKnownRoundIndex = -1;
@@ -1580,6 +1620,44 @@
 
       function challengeById(id) {
         return CHALLENGES.find((c) => c.id === id) || null;
+      }
+
+      function parseMemorizeItems(challenge) {
+        if (!challenge?.memorize) return [];
+        const raw = String(challenge.memorize);
+        const parts = raw.includes('·') ? raw.split('·') : raw.split(',');
+        return parts.map((entry) => entry.trim()).filter(Boolean);
+      }
+
+      function memoryMemorizeConfig(challenge) {
+        const items = parseMemorizeItems(challenge);
+        const baseItemMs = items.length
+          ? (MEMORY_MEMORIZE_SECONDS * 1000) / items.length
+          : MEMORY_MEMORIZE_SECONDS * 1000;
+        const itemMs = baseItemMs + 1000;
+        const instructionMs = MEMORY_INSTRUCTION_SECONDS * 1000;
+        const totalMs = instructionMs + itemMs * items.length;
+        return { items, itemMs, instructionMs, totalMs };
+      }
+
+      function currentMemorizeStep(challenge, game) {
+        const { items, itemMs, instructionMs, totalMs } = memoryMemorizeConfig(challenge);
+        if (!items.length) {
+          return { stage: 'instructions', item: '', index: 0, total: 0 };
+        }
+
+        if (game?.phase !== 'memorize' || !game.timerEndsAt) {
+          return { stage: 'item', item: items[0], index: 0, total: items.length };
+        }
+
+        const remainingMs = Math.max(0, new Date(game.timerEndsAt).getTime() - Date.now());
+        const elapsedMs = Math.min(totalMs, Math.max(0, totalMs - remainingMs));
+        if (elapsedMs < instructionMs) {
+          return { stage: 'instructions', item: '', index: 0, total: items.length };
+        }
+        const cycleElapsedMs = elapsedMs - instructionMs;
+        const index = Math.min(items.length - 1, Math.floor(cycleElapsedMs / itemMs));
+        return { stage: 'item', item: items[index], index, total: items.length };
       }
 
       function currentPlayers() {
@@ -1835,6 +1913,8 @@
       function renderGameScreen() {
         const game = session?.game || {};
         const challenge = challengeById(game.currentChallengeId);
+        const isMemoryChallenge = challenge?.type === 'memory';
+        const memoryStep = isMemoryChallenge ? currentMemorizeStep(challenge, game) : null;
         const roundIndex = Number(game.roundIndex || 0);
         if (roundIndex !== lastKnownRoundIndex) {
           lastKnownRoundIndex = roundIndex;
@@ -1853,9 +1933,27 @@
         const isModerator = role === 'moderator';
         const isModeratorView = role === 'moderator-view';
 
+        if (isModeratorView) {
+          document.getElementById('gameStatus').style.display = 'none';
+          document.getElementById('gameQuestion').style.display = 'none';
+          document.getElementById('gameChoices').style.display = 'none';
+        } else {
+          document.getElementById('gameStatus').style.display = '';
+          document.getElementById('gameQuestion').style.display = '';
+          document.getElementById('gameChoices').style.display = '';
+        }
+
         roundLabel.textContent = `Round ${Number(game.roundIndex || 0)} of ${Number(game.roundsTotal || 0)}`;
         categoryBadge.textContent = challenge?.category || 'Category';
-        questionEl.textContent = challenge?.question || 'Waiting for moderator...';
+        if (isMemoryChallenge && game.phase === 'memorize') {
+          if (memoryStep.stage === 'instructions') {
+            questionEl.textContent = 'Memory Challenge: Get ready to memorize the next sequence.';
+          } else {
+            questionEl.textContent = `Memory Challenge: Memorize item ${memoryStep.index + 1} of ${memoryStep.total}.`;
+          }
+        } else {
+          questionEl.textContent = challenge?.question || 'Waiting for moderator...';
+        }
 
         const now = Date.now();
         const ends = game.timerEndsAt ? new Date(game.timerEndsAt).getTime() : now;
@@ -1868,6 +1966,15 @@
         const myAnswer = responses[playerId] || null;
         if (session.status === 'lobby') {
           statusEl.textContent = 'Waiting for moderator to start game.';
+        } else if (game.phase === 'memorize') {
+          if (memoryStep.stage === 'instructions') {
+            statusEl.textContent = 'Memory round starts in 3 seconds.';
+          } else {
+            statusEl.textContent =
+              role === 'player'
+                ? 'Memory round: focus on the current item.'
+                : 'Memory round in progress.';
+          }
         } else if (game.phase === 'question') {
           statusEl.textContent =
             role === 'player' && !myAnswer && left > 0
@@ -1882,7 +1989,27 @@
         }
 
         choicesEl.innerHTML = '';
-        (challenge?.options || []).forEach((opt, idx) => {
+        const revealOnly = isMemoryChallenge && game.phase === 'memorize';
+        if (revealOnly) {
+          const revealCard = document.createElement('div');
+          revealCard.className = 'game-status';
+          revealCard.style.margin = '0';
+          revealCard.style.padding = '14px';
+          revealCard.style.border = '1px dashed var(--border)';
+          revealCard.style.borderRadius = '12px';
+          revealCard.style.textAlign = 'center';
+          if (memoryStep.stage === 'instructions') {
+            revealCard.innerHTML =
+              '<strong>Memory Challenge</strong><div style="margin-top:8px">Get ready. Memorize items will appear one at a time.</div>';
+          } else {
+            revealCard.innerHTML =
+              `<div style="font-size:0.9rem;opacity:0.9;margin-bottom:8px">Memorize Item ${memoryStep.index + 1}/${memoryStep.total}</div>` +
+              `<div style="font-size:clamp(2.2rem,8vw,4.8rem);font-weight:900;line-height:1.05;letter-spacing:0.03em">${escHtml(memoryStep.item)}</div>`;
+          }
+          choicesEl.appendChild(revealCard);
+        }
+
+        (revealOnly ? [] : challenge?.options || []).forEach((opt, idx) => {
           const tile = document.createElement('div');
           tile.className = 'choice-tile';
           if (game.phase === 'question' && role === 'player' && !myAnswer && left > 0) {
@@ -1939,6 +2066,8 @@
             : 'none';
 
         const modVoteStatus = document.getElementById('modVoteStatus');
+        const modPlayerGrid = document.getElementById('modPlayerGrid');
+        const modPlayerGridBody = document.getElementById('modPlayerGridBody');
         if (isModerator && game.phase === 'question') {
           const allPlayers = currentPlayers();
           const voted = allPlayers.filter((p) => responses[p.id]);
@@ -1949,8 +2078,78 @@
           modVoteStatus.style.display = 'none';
         }
 
+        if (isModerator) {
+          const allPlayers = currentPlayers();
+          const scores = game.scores || {};
+          const summaryByPlayer = new Map((game.roundSummary || []).map((row) => [row.playerId, row]));
+          const statusFor = (playerIdToCheck) => {
+            if (session.status === 'lobby') return 'waiting';
+            if (game.phase === 'memorize') return 'memorizing';
+            if (game.phase === 'question') return responses[playerIdToCheck] ? 'voted' : 'waiting';
+            if (game.phase === 'results') {
+              const row = summaryByPlayer.get(playerIdToCheck);
+              if (!row) return 'no answer';
+              return row.correct ? 'right' : 'wrong';
+            }
+            if (game.phase === 'final') return 'final';
+            return 'waiting';
+          };
+
+          if (!allPlayers.length) {
+            modPlayerGridBody.innerHTML = '<div style="font-size:0.84rem;color:var(--text-muted)">No players yet.</div>';
+          } else {
+            modPlayerGridBody.innerHTML = `
+              <table class="mod-player-grid-table">
+                <thead>
+                  <tr>
+                    <th>Player</th>
+                    <th>Status</th>
+                    <th>Answer</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${allPlayers
+                    .map((p) => {
+                      const roundOver = game.phase === 'results' || game.phase === 'final';
+                      const usedHint = !!(game.hintUsedBy || {})[p.id];
+                      const rawAnswer = responses[p.id] || '\u2014';
+                      const answer = roundOver
+                        ? rawAnswer !== '\u2014' && usedHint
+                          ? `${rawAnswer} (hint)`
+                          : rawAnswer
+                        : 'Hidden';
+                      const totalScore = Number(scores[p.id] || 0);
+                      return `<tr>
+                        <td>${escHtml(p.name)}</td>
+                        <td><span class="mod-player-status">${escHtml(statusFor(p.id))}</span></td>
+                        <td>${escHtml(answer)}</td>
+                        <td>${Number.isInteger(totalScore) ? totalScore : totalScore.toFixed(1)}</td>
+                      </tr>`;
+                    })
+                    .join('')}
+                </tbody>
+              </table>
+            `;
+          }
+          modPlayerGrid.style.display = 'block';
+        } else {
+          modPlayerGrid.style.display = 'none';
+        }
+
         if (isModeratorView && challenge) {
-          hintPanel.innerHTML = `<strong>Answer:</strong> ${escHtml(challenge.answer)}<br /><strong>Hint:</strong> ${escHtml(challenge.hint || 'No hint for this question.')}`;
+          const memoryLine =
+            challenge.type === 'memory'
+              ? `<strong>Memorize:</strong> ${escHtml(challenge.memorize || '')}<br />`
+              : '';
+          hintPanel.innerHTML = `${memoryLine}<strong>Answer:</strong> ${escHtml(challenge.answer)}<br /><strong>Hint:</strong> ${escHtml(challenge.hint || 'No hint for this question.')}`;
+          hintPanel.style.display = 'block';
+        } else if (role === 'player' && game.phase === 'memorize' && challenge?.type === 'memory') {
+          if (memoryStep.stage === 'instructions') {
+            hintPanel.innerHTML = '<strong>Memory Challenge</strong><div>Memorize items will start in 3 seconds.</div>';
+          } else {
+            hintPanel.innerHTML = `<strong>Memory Challenge</strong><div>Item ${memoryStep.index + 1}/${memoryStep.total}: ${escHtml(memoryStep.item)}</div>`;
+          }
           hintPanel.style.display = 'block';
         } else if (role === 'player' && game.phase === 'question' && playerUsedHint && challenge?.hint) {
           hintPanel.innerHTML = `<strong>💡 Hint:</strong> ${escHtml(challenge.hint)}<div class="half-credit-notice">⚠️ Half credit awarded for correct answers</div>`;
@@ -1961,7 +2160,7 @@
 
         const votesWrap = document.getElementById('roundVotes');
         votesWrap.classList.remove('visible');
-        if (game.phase === 'results') {
+        if (game.phase === 'results' && role === 'player') {
           renderRoundVotes(challenge, responses, game.roundSummary || []);
           const summaryMine = (game.roundSummary || []).find((row) => row.playerId === playerId);
           if (role === 'player' && summaryMine) {
@@ -1972,6 +2171,11 @@
               else runBlueRain(roundKey);
             }
           }
+        } else if (isModeratorView) {
+          votesWrap.classList.remove('visible');
+          votesWrap.style.display = 'none';
+        } else {
+          votesWrap.style.display = '';
         }
       }
 
@@ -2020,11 +2224,24 @@
         if (role !== 'moderator' || !session) return;
         if (session.status !== 'playing') return;
         const game = session.game || {};
-        if (game.phase !== 'question' || !game.timerEndsAt) return;
+        if (!game.timerEndsAt) return;
         if (Date.now() < new Date(game.timerEndsAt).getTime()) return;
 
         const challenge = challengeById(game.currentChallengeId);
         if (!challenge) return;
+        if (game.phase === 'memorize') {
+          await patchSession({
+            patch: {
+              game: {
+                phase: 'question',
+                timerEndsAt: new Date(Date.now() + TIMER_PRESETS[timerPreset] * 1000).toISOString(),
+                announcement: 'Memorize phase complete — answer now.',
+              },
+            },
+          });
+          return;
+        }
+        if (game.phase !== 'question') return;
         const { nextScores, summary } = computeRoundResults(game, challenge);
         await patchSession({
           patch: {
@@ -2042,6 +2259,11 @@
         const challengeId = queue[roundIndex - 1];
         const challenge = challengeById(challengeId);
         if (!challenge) return;
+        const isMemoryChallenge = challenge.type === 'memory';
+        const phase = isMemoryChallenge ? 'memorize' : 'question';
+        const durationMs = isMemoryChallenge
+          ? memoryMemorizeConfig(challenge).totalMs
+          : TIMER_PRESETS[timerPreset] * 1000;
         await patchSession({
           patch: {
             game: {
@@ -2050,12 +2272,14 @@
               roundIndex,
               queue,
               currentChallengeId: challengeId,
-              phase: 'question',
+              phase,
               responses: {},
               roundSummary: [],
-              timerEndsAt: new Date(Date.now() + TIMER_PRESETS[timerPreset] * 1000).toISOString(),
+              timerEndsAt: new Date(Date.now() + durationMs).toISOString(),
               scores,
-              announcement: `Round ${roundIndex} started`,
+              announcement: isMemoryChallenge
+                ? `Round ${roundIndex} started — memorize now.`
+                : `Round ${roundIndex} started`,
               hintUsedBy: {},
             },
           },
@@ -2140,7 +2364,12 @@
 
       async function requestPlayerHint() {
         if (role !== 'player' || !session || !playerId) return;
-        await patchSession({ patch: { [`game/hintUsedBy/${playerId}`]: true } });
+        const response = await fetch(`/api/multiplayer/sessions/${sessionCode}/players/${playerId}`, {
+          method: 'PATCH',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ action: 'requestHint' }),
+        });
+        if (!response.ok) throw new Error('Failed to request hint');
         await refreshSessionLoop();
       }
 

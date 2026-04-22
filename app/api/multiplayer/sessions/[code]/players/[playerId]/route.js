@@ -106,6 +106,17 @@ export async function PATCH(request, { params }) {
       votedAt: new Date().toISOString(),
     };
     players[playerId] = player;
+  } else if (action === 'requestHint') {
+    if (game.mode !== 'quiz-vote') {
+      return Response.json({ ok: true, accepted: false, reason: 'unsupported-mode' });
+    }
+    if (game.phase !== 'question') {
+      return Response.json({ ok: true, accepted: false, reason: 'round-inactive' });
+    }
+
+    const hintUsedBy = structuredClone(game.hintUsedBy || {});
+    hintUsedBy[playerId] = true;
+    game.hintUsedBy = hintUsedBy;
   } else {
     return Response.json({ error: 'Unsupported action' }, { status: 400 });
   }
