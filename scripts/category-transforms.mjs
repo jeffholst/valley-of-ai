@@ -59,7 +59,7 @@ export function transformIssueTemplate(content, categories) {
  * Replaces the inline category list in the shared agent-prompt markdown string.
  * Throws when the expected category line is not found.
  *
- * @param {string} content - Raw content of docs/agent-prompts/AGENT_PROMPT_SHARED.md
+ * @param {string} content - Raw content of pipelines/prompts/shared.md
  * @param {string[]} categories - Ordered list of canonical category values
  * @returns {string} Updated file content
  */
@@ -69,9 +69,7 @@ export function transformSharedPrompt(content, categories) {
   const replacement = `- \`category\`: one of ${categoryList}`;
 
   if (!categoryLinePattern.test(content)) {
-    throw new Error(
-      'Could not find the category line in docs/agent-prompts/AGENT_PROMPT_SHARED.md'
-    );
+    throw new Error('Could not find the category line in pipelines/prompts/shared.md');
   }
 
   return content.replace(categoryLinePattern, replacement);

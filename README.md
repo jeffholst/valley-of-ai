@@ -179,15 +179,15 @@ See [App Metadata Reference](wiki/App-Metadata-Reference.md) for the annotated e
 
 ## 🤖 AI Agent Pipelines
 
-The gallery is built and maintained by AI agents following structured prompt files. Each run reads `AGENT_PROMPT_SHARED.md` first (logging rules, HTML contracts, thumbnail spec), then the flow-specific prompt:
+The gallery is built and maintained by AI agents following structured prompt files. Each run reads `shared.md` first (logging rules, HTML contracts, thumbnail spec), then the flow-specific prompt:
 
-| Prompt file                                                                       | When to use                                                                       |
-| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| [`AGENT_PROMPT_ISSUE_REVIEW.md`](docs/agent-prompts/AGENT_PROMPT_ISSUE_REVIEW.md) | Review pending GitHub issues for legitimacy and prompt injection before approving |
-| [`AGENT_PROMPT_NEW_APP.md`](docs/agent-prompts/AGENT_PROMPT_NEW_APP.md)           | Build a new app from scratch using an approved suggestion                         |
-| [`AGENT_PROMPT_IMPROVEMENT.md`](docs/agent-prompts/AGENT_PROMPT_IMPROVEMENT.md)   | Apply an approved improvement to an existing app                                  |
+| Prompt file                                  | When to use                                                                       |
+| -------------------------------------------- | --------------------------------------------------------------------------------- |
+| [`review.md`](pipelines/prompts/review.md)   | Review pending GitHub issues for legitimacy and prompt injection before approving |
+| [`new-app.md`](pipelines/prompts/new-app.md) | Build a new app from scratch using an approved suggestion                         |
+| [`improve.md`](pipelines/prompts/improve.md) | Apply an approved improvement to an existing app                                  |
 
-To run a pipeline, give your AI agent both files as context: start with `AGENT_PROMPT_SHARED.md`, then add the flow-specific prompt. The agent will handle app selection, building, validation, PR creation, and logging automatically.
+To run a pipeline, give your AI agent both files as context: start with `shared.md`, then add the flow-specific prompt. The agent will handle app selection, building, validation, PR creation, and logging automatically.
 
 See [AI Agent Pipelines](wiki/AI-Agent-Pipelines.md) for the full seven-step walkthrough, the issue-review workflow, Vercel integration notes, and the `guardrails.production` customization guide.
 

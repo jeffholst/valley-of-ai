@@ -26,7 +26,7 @@ const versusRegistryPath = path.join(root, 'data', 'versus-registry.json');
 const schemaPath = path.join(root, 'schemas', 'meta.json');
 const versusSchemaPath = path.join(root, 'schemas', 'versus.json');
 const issueTemplatePath = path.join(root, '.github', 'ISSUE_TEMPLATE', 'app_suggestion.yml');
-const sharedPromptPath = path.join(root, 'docs', 'agent-prompts', 'AGENT_PROMPT_SHARED.md');
+const sharedPromptPath = path.join(root, 'pipelines', 'prompts', 'shared.md');
 
 const REQUIRED_CHECKS = [
   {
@@ -427,16 +427,16 @@ function validateCategorySynchronization(schema) {
   try {
     sharedPrompt = fs.readFileSync(sharedPromptPath, 'utf8');
   } catch (error) {
-    errors.push(`cannot validate docs/agent-prompts/AGENT_PROMPT_SHARED.md: ${error.message}`);
+    errors.push(`cannot validate pipelines/prompts/shared.md: ${error.message}`);
     return errors;
   }
 
   const promptCategories = parseSharedPromptCategories(sharedPrompt);
   if (!promptCategories) {
-    errors.push('could not parse category line in docs/agent-prompts/AGENT_PROMPT_SHARED.md');
+    errors.push('could not parse category line in pipelines/prompts/shared.md');
   } else if (!arraysEqual(schemaCategories, promptCategories)) {
     errors.push(
-      'docs/agent-prompts/AGENT_PROMPT_SHARED.md category list is out of sync with schemas/meta.json; run `npm run sync:categories`'
+      'pipelines/prompts/shared.md category list is out of sync with schemas/meta.json; run `npm run sync:categories`'
     );
   }
 

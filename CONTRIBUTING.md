@@ -14,16 +14,16 @@ npm run dev                   # starts at http://localhost:3000
 
 ## Project Structure (30 seconds)
 
-| Path                  | What lives here                                                 |
-| --------------------- | --------------------------------------------------------------- |
-| `app/`                | Next.js pages and routes                                        |
-| `components/`         | Reusable React components                                       |
-| `hooks/`              | Custom React hooks                                              |
-| `scripts/`            | Build, sync, logging, and issue-pipeline scripts                |
-| `data/`               | Committed JSON registries (`apps.json`, `versus-registry.json`) |
-| `apps/`               | Source files for every AI-built app (`YYYY/MM/DD/<app-id>/`)    |
-| `docs/agent-prompts/` | Prompt files read by AI agents at runtime — not for humans      |
-| `__tests__/`          | Jest test files mirroring the source structure                  |
+| Path                 | What lives here                                                 |
+| -------------------- | --------------------------------------------------------------- |
+| `app/`               | Next.js pages and routes                                        |
+| `components/`        | Reusable React components                                       |
+| `hooks/`             | Custom React hooks                                              |
+| `scripts/`           | Build, sync, logging, and issue-pipeline scripts                |
+| `data/`              | Committed JSON registries (`apps.json`, `versus-registry.json`) |
+| `apps/`              | Source files for every AI-built app (`YYYY/MM/DD/<app-id>/`)    |
+| `pipelines/prompts/` | Prompt files read by AI agents at runtime — not for humans      |
+| `__tests__/`         | Jest test files mirroring the source structure                  |
 
 ## Ways to Contribute
 

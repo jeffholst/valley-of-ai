@@ -39,7 +39,7 @@ Read `improvementSanity.overallRisk` from the selection output. If `isBoosted` i
 
 ---
 
-## Agent Behavior (AGENT_PROMPT_IMPROVEMENT.md)
+## Agent Behavior (improve.md)
 
 After the guardrail check passes, the agent reads `improvementSanity.overallRisk` from the selection output:
 
@@ -183,5 +183,5 @@ All thresholds are defined in `SANITY_DEFAULTS` (exported from `scripts/issues/l
 | ----------------------------------------------------------------- | -------------------------------------------------------------- |
 | `scripts/issues/lib/issue-selection-heuristics.js`                | `computeImprovementSanity` function + `SANITY_DEFAULTS` export |
 | `scripts/issues/select-app-improvement.js`                        | Calls the check; adds `improvementSanity` to selection output  |
-| `docs/agent-prompts/AGENT_PROMPT_IMPROVEMENT.md`                  | Agent instructions for reading and acting on the sanity result |
+| `pipelines/prompts/improve.md`                                    | Agent instructions for reading and acting on the sanity result |
 | `__tests__/scripts/issues/lib/issue-selection-heuristics.test.js` | Unit tests for all signals, boost behavior, and edge cases     |

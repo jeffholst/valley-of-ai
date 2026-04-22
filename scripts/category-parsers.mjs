@@ -31,7 +31,7 @@ export function parseIssueTemplateCategories(content) {
  * category line (e.g. "- `category`: one of `Games` | `Productivity`").
  * Returns null when the expected line is not found.
  *
- * @param {string} content - Raw file content of AGENT_PROMPT_SHARED.md
+ * @param {string} content - Raw file content of pipelines/prompts/shared.md
  * @returns {string[] | null}
  */
 export function parseSharedPromptCategories(content) {

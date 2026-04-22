@@ -1,7 +1,7 @@
 # Shared Agent Contracts
 
 > **This file is required reading for every pipeline run.**
-> It is referenced by `AGENT_PROMPT_NEW_APP.md`, `AGENT_PROMPT_IMPROVEMENT.md` and `AGENT_PROMPT_ISSUE_REVIEW.md`.
+> It is referenced by `new-app.md`, `improve.md` and `review.md`.
 > All rules here apply unconditionally regardless of which flow is being executed.
 
 ---
@@ -128,7 +128,7 @@ If you cannot state a concrete check, the step is not done.
 
 Pending GitHub issues labeled `status:pending` must go through the issue-review workflow before they enter either build pipeline.
 
-- `AGENT_PROMPT_ISSUE_REVIEW.md` is the only prompt that may review pending `suggestion` or `improvement` issues.
+- `review.md` is the only prompt that may review pending `suggestion` or `improvement` issues.
 - `scripts/issues/select-app-suggestion.js` only consumes approved `suggestion` issues.
 - `scripts/issues/select-app-improvement.js` only consumes approved `improvement` issues.
 - If an issue needs escalation, use the `needs-human-review` decision, keep `status:pending` in place, and add the `status:needs-human-review` label.
