@@ -65,7 +65,9 @@ export async function POST(request, { params }) {
     }
 
     const endsAt = game.timerEndsAt ? new Date(game.timerEndsAt).getTime() : null;
-    if (Number.isFinite(endsAt) && Date.now() >= endsAt) {
+    const hasStage = typeof game.stage === 'string' && game.stage.length > 0;
+    const shouldEnforceTimer = !hasStage || game.stage !== 'answer';
+    if (shouldEnforceTimer && Number.isFinite(endsAt) && Date.now() >= endsAt) {
       return Response.json({ ok: true, accepted: false, reason: 'round-closed' });
     }
 
