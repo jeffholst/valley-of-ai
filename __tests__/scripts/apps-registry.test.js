@@ -60,6 +60,16 @@ describe('apps-registry leaderboard detection', () => {
     expect(detectLeaderboardUsageFromHtml(html)).toBe(false);
   });
 
+  it('ignores usage strings that only appear in inline comments', () => {
+    const html = `
+      <script>
+        doSomething(); // fetch('/api/scores', { method: 'POST' });
+        doOther(); // window.voaLeaderboard.submit(score);
+      </script>
+    `;
+    expect(detectLeaderboardUsageFromHtml(html)).toBe(false);
+  });
+
   it('detects usage from app directory index.html', () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'voa-leaderboard-'));
     try {
@@ -76,8 +86,8 @@ describe('apps-registry leaderboard detection', () => {
 });
 
 describe('transformMeta leaderboard projection', () => {
-  const appsDir = '/tmp/apps';
-  const filePath = '/tmp/apps/2026/04/23/example-app/meta.json';
+  const appsDir = path.join(os.tmpdir(), 'apps');
+  const filePath = path.join(os.tmpdir(), 'apps', '2026', '04', '23', 'example-app', 'meta.json');
   const dateInfo = { year: 2026, month: 4, day: 23 };
 
   it('defaults leaderboard to false when missing', () => {

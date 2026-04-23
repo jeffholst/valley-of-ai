@@ -21,7 +21,7 @@ function stripCommentsForDetection(text) {
   return text
     .replace(/<!--[\s\S]*?-->/g, ' ')
     .replace(/\/\*[\s\S]*?\*\//g, ' ')
-    .replace(/^\s*\/\/.*$/gm, ' ');
+    .replace(/\/\/.*$/gm, ' ');
 }
 
 export function detectLeaderboardUsageFromHtml(html) {
@@ -40,7 +40,8 @@ export function detectLeaderboardUsageFromAppDir(appDir) {
   try {
     const html = fs.readFileSync(indexPath, 'utf8');
     return detectLeaderboardUsageFromHtml(html);
-  } catch {
+  } catch (err) {
+    console.warn(`[apps-registry] Could not read ${indexPath}: ${err.message}`);
     return false;
   }
 }
