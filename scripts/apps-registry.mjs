@@ -8,6 +8,43 @@
 import fs from 'fs';
 import path from 'path';
 
+const LEADERBOARD_USAGE_PATTERNS = [
+  // Preferred shared integration helper.
+  /\b(?:window\s*\.\s*)?voaLeaderboard\s*\.\s*submit\s*\(/i,
+  // Manual score API submission via fetch.
+  /\bfetch\s*\(\s*['"`]\/api\/scores(?:[/?'"`]|\\?)/i,
+  // Manual score API submission via XHR open('POST', '/api/scores').
+  /\bopen\s*\(\s*['"`]POST['"`]\s*,\s*['"`]\/api\/scores(?:[/?'"`]|\\?)/i,
+];
+
+function stripCommentsForDetection(text) {
+  return text
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')
+    .replace(/^\s*\/\/.*$/gm, ' ');
+}
+
+export function detectLeaderboardUsageFromHtml(html) {
+  if (typeof html !== 'string' || html.length === 0) {
+    return false;
+  }
+  const searchable = stripCommentsForDetection(html);
+  return LEADERBOARD_USAGE_PATTERNS.some((pattern) => pattern.test(searchable));
+}
+
+export function detectLeaderboardUsageFromAppDir(appDir) {
+  const indexPath = path.join(appDir, 'index.html');
+  if (!fs.existsSync(indexPath)) {
+    return false;
+  }
+  try {
+    const html = fs.readFileSync(indexPath, 'utf8');
+    return detectLeaderboardUsageFromHtml(html);
+  } catch {
+    return false;
+  }
+}
+
 export function findMetaFiles(dir, files = []) {
   if (!fs.existsSync(dir)) {
     return files;
@@ -95,6 +132,7 @@ export function transformMeta(appsDir, meta, filePath, dateInfo, basePath = '', 
     suggestion: meta.suggestion || null,
     improvements: meta.improvements || null,
     allowImprovements: meta.allowImprovements ?? true,
+    leaderboard: meta.leaderboard === true,
     maxScore: meta.maxScore ?? null,
     backups:
       backups.length > 0

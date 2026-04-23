@@ -46,6 +46,7 @@ describe('Apps Registry', () => {
         'thumbnailUrl',
         'createdAt',
         'route',
+        'leaderboard',
       ];
       appsData.forEach((app) => {
         for (const field of requiredFields) {
@@ -72,6 +73,12 @@ describe('Apps Registry', () => {
         const date = new Date(app.createdAt);
         expect(date.toString()).not.toBe('Invalid Date');
         expect(app.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
+      });
+    });
+
+    it('apps should have a boolean leaderboard capability flag', () => {
+      appsData.forEach((app) => {
+        expect(typeof app.leaderboard).toBe('boolean');
       });
     });
   }

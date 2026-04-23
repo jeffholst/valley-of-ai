@@ -20,5 +20,6 @@
     "totalTokensOut": 3890,
     "runId": "run-20260313T070113Z-9f2be5",
     "notes": "Built a mobile-first interval breathing coach with presets, keyboard shortcuts, animated radial guide, progress timeline, and shared shell/theme compatibility."
-  }
+  },
+  "leaderboard": false
 }

@@ -92,6 +92,11 @@
       "enum": ["desktop", "mobile", "responsive"],
       "description": "Dominant input style: desktop (keyboard/mouse), mobile (touch/gestures), or responsive for both."
     },
+    "leaderboard": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the app implements global leaderboard integration (e.g., submits scores via the shared leaderboard API)."
+    },
     "suggestion": {
       "type": "object",
       "description": "GitHub Issue that originated this app, if generated from a user suggestion.",

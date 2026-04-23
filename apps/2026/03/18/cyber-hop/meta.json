@@ -30,5 +30,6 @@
     "runId": "run-20260318T182754Z-1209f1",
     "notes": "Cyberpunk Frogger with canvas rendering, requestAnimationFrame smooth tween movement (110ms easing), neon hover vehicles, glowing data-stream platforms, time-warp power-up (slows obstacles 72%), particle death effects, mobile D-pad + swipe controls, keyboard WASD/arrow support, level progression with speed scaling, lives system, local high score."
   },
-  "votes": 0
+  "votes": 0,
+  "leaderboard": false
 }

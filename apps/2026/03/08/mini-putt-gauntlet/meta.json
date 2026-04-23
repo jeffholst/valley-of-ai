@@ -20,5 +20,6 @@
     "totalTokensOut": 5200,
     "runId": "run-20260308T175600Z-c4f9a1",
     "notes": "Built a responsive 3-hole mini putt experience with obstacle-specific mechanics per hole and fixed par 3 scoring. Token counts are estimated for this autonomous run."
-  }
+  },
+  "leaderboard": false
 }

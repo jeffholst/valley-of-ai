@@ -20,5 +20,6 @@
     "totalTokensOut": 5000,
     "runId": "run-20260307T080041Z-a1b2c3",
     "notes": "Built a responsive no-dependency accessibility tool with live contrast metrics, dark/light theme toggle, and one-click AA/AAA correction nudges."
-  }
+  },
+  "leaderboard": false
 }

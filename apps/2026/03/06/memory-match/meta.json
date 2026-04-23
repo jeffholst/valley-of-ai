@@ -20,5 +20,6 @@
     "totalTokensOut": 4500,
     "runId": "run-20260306T213500Z-4484c3",
     "notes": "Classic memory card matching game with CSS 3D flip animations and multiple difficulty levels."
-  }
+  },
+  "leaderboard": false
 }

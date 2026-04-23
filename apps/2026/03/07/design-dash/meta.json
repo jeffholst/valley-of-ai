@@ -20,5 +20,6 @@
     "totalTokensOut": 10000,
     "runId": "run-20260307T221300Z-dd5c7f",
     "notes": "Speed-based arcade game themed around graphic design. Players match design elements (colors, fonts, icons) to client briefs under time pressure with combo system."
-  }
+  },
+  "leaderboard": false
 }

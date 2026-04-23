@@ -45,5 +45,6 @@
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
     }
-  ]
+  ],
+  "leaderboard": true
 }

@@ -36,5 +36,6 @@
     "runId": "run-20260321T175153Z-a3f9c2",
     "notes": "Demo app using 14 realistic mock MLS listings in Austin TX metro area. Weighted venue category scoring across 7 categories (restaurants, bars, coffee, grocery, parks, schools, health). Adjustable search radius (0.25-5mi), price/beds/baths/sqft filters, sort options, SVG house illustrations, detail modal with full venue breakdown. Mock data shows how real MLS + Google Places API integration would work."
   },
-  "votes": 0
+  "votes": 0,
+  "leaderboard": false
 }

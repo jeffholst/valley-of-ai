@@ -27,5 +27,6 @@
     "runId": "run-20260322T070033Z-7511ad",
     "notes": "Implemented a static FreeCell game with 8 tableau columns, 4 free cells, 4 foundations, move validation, undo support, and auto-move assistance."
   },
-  "votes": 0
+  "votes": 0,
+  "leaderboard": false
 }

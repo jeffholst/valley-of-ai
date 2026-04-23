@@ -20,5 +20,6 @@
     "totalTokensOut": 10000,
     "runId": "run-20260312T204701Z-c7a3f9",
     "notes": "Original concept: Educational constellation explorer filling the gap in the gallery (no Education apps existed). Features a full-canvas starfield with 10 major constellations (Orion, Ursa Major, Ursa Minor, Cassiopeia, Leo, Scorpius, Cygnus, Canis Major, Gemini, Lyra). Click/tap hit detection selects nearest constellation; animated glow, info panel with mythology and star data, show/hide lines and labels controls, shooting star animation, twinkling background stars. Token counts are estimates."
-  }
+  },
+  "leaderboard": false
 }

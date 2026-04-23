@@ -76,5 +76,6 @@
     "totalTokensOut": 30000,
     "runId": "run-20260401T140448Z-e3970d",
     "notes": "Built from community suggestion #259. Emoji quiz party game with setup/game/scoreboard screens, 20 preloaded quiz rounds, progressive clue timer, and confetti celebration. Token counts are estimates."
-  }
+  },
+  "leaderboard": false
 }

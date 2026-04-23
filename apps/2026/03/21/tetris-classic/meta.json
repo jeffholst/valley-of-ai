@@ -27,5 +27,6 @@
     "runId": "run-20260321T145539Z-66db0e",
     "notes": "Tetris clone with 7 tetrominoes, SRS wall kicks, ghost piece, touch swipe + button controls, keyboard support, level progression, and line scoring."
   },
-  "votes": 0
+  "votes": 0,
+  "leaderboard": false
 }
