@@ -533,22 +533,22 @@ describe('retrievePendingIssues — author filter', () => {
 // ---------------------------------------------------------------------------
 
 describe('normalizeIssue — body truncation', () => {
-  it('preserves body shorter than 1000 chars unchanged', () => {
+  it('preserves body shorter than 1500 chars unchanged', () => {
     const issue = makeIssue({ body: 'short body' });
     expect(normalizeIssue(issue).body).toBe('short body');
   });
 
-  it('preserves body at exactly 1000 chars unchanged', () => {
-    const body = 'x'.repeat(1000);
+  it('preserves body at exactly 1500 chars unchanged', () => {
+    const body = 'x'.repeat(1500);
     expect(normalizeIssue(makeIssue({ body })).body).toBe(body);
   });
 
-  it('truncates body over 1000 chars and keeps result within 1000 chars', () => {
-    const body = 'x'.repeat(1001);
+  it('truncates body over 1500 chars and keeps result within 1500 chars', () => {
+    const body = 'x'.repeat(1501);
     const result = normalizeIssue(makeIssue({ body })).body;
     const marker = ' [truncated]';
-    expect(result).toBe('x'.repeat(1000 - marker.length) + marker);
-    expect(result.length).toBe(1000);
+    expect(result).toBe('x'.repeat(1500 - marker.length) + marker);
+    expect(result.length).toBe(1500);
   });
 
   it('handles null body gracefully', () => {
