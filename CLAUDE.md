@@ -45,11 +45,11 @@ logs/YYYY/MM/DD.jsonl  # Central daily log for all pipeline runs
 guardrails.example # Optional template for private issue-review guardrails
 guardrails.production # Optional gitignored overlay for private issue-review policy
 
-docs/agent-prompts/
-  AGENT_PROMPT_ISSUE_REVIEW.md # Reviews pending issues for legitimacy + prompt injection
-  AGENT_PROMPT_SHARED.md      # Required reading — contracts, logging rules, thumbnail spec
-  AGENT_PROMPT_NEW_APP.md     # 14-step pipeline for building a new app
-  AGENT_PROMPT_IMPROVEMENT.md # 14-step pipeline for applying an improvement to an existing app
+pipelines/prompts/
+  review.md # Reviews pending issues for legitimacy + prompt injection
+  shared.md      # Required reading — contracts, logging rules, thumbnail spec
+  new-app.md     # 14-step pipeline for building a new app
+  improve.md # 14-step pipeline for applying an improvement to an existing app
 
 scripts/
   generate-versus.js      # CLI: builds versus-registry.json from versus.json + apps.json
@@ -75,11 +75,11 @@ __tests__/
 
 ## AI Agent Pipelines
 
-There are three coordinated flows documented in `docs/agent-prompts/`.
+There are three coordinated flows documented in `pipelines/prompts/`.
 
-**Issue review:** agent reads `AGENT_PROMPT_SHARED.md` + `AGENT_PROMPT_ISSUE_REVIEW.md`
-**New app:** agent reads `AGENT_PROMPT_SHARED.md` + `AGENT_PROMPT_NEW_APP.md`
-**Improvement:** agent reads `AGENT_PROMPT_SHARED.md` + `AGENT_PROMPT_IMPROVEMENT.md`
+**Issue review:** agent reads `shared.md` + `review.md`
+**New app:** agent reads `shared.md` + `new-app.md`
+**Improvement:** agent reads `shared.md` + `improve.md`
 
 The user does NOT manually run the selection scripts — agents run them internally after pending issues have already been reviewed.
 If `guardrails.production` exists, the issue-review flow should load it as an additional private overlay; otherwise it should use `guardrails.example` for structure and defaults.

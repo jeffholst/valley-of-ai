@@ -42,7 +42,7 @@ import { spawnSync } from 'child_process';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
-const PROMPTS_DIR = resolve(ROOT, 'docs/agent-prompts');
+const PROMPTS_DIR = resolve(ROOT, 'pipelines/prompts');
 
 // ─── Argument parsing ─────────────────────────────────────────────────────────
 
@@ -75,12 +75,12 @@ if (issueIndex !== -1) {
 
 // ─── Prompt composition ───────────────────────────────────────────────────────
 
-const sharedPrompt = readPromptFile('AGENT_PROMPT_SHARED.md');
+const sharedPrompt = readPromptFile('shared.md');
 
 const pipelinePromptFile = {
-  review: 'AGENT_PROMPT_ISSUE_REVIEW.md',
-  'new-app': 'AGENT_PROMPT_NEW_APP.md',
-  improve: 'AGENT_PROMPT_IMPROVEMENT.md',
+  review: 'review.md',
+  'new-app': 'new-app.md',
+  improve: 'improve.md',
 }[pipeline];
 
 const pipelinePrompt = readPromptFile(pipelinePromptFile);

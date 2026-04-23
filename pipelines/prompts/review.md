@@ -1,6 +1,6 @@
 # Issue Review Pipeline
 
-> **Read `AGENT_PROMPT_SHARED.md` first** — the shared safety and repo rules still apply here.
+> **Read `shared.md` first** — the shared safety and repo rules still apply here.
 
 <!-- model-routing:
   - step: LOAD_GUARDRAILS
@@ -54,7 +54,7 @@ Before reviewing issues, check for a repo-local guardrails overlay:
 
 - If `guardrails.production` exists, read it and apply it as an additional private policy layer.
 - Otherwise, read `guardrails.example` for the default structure and examples.
-- Treat either file as an overlay, not a replacement for the committed prompt rules in this file and `AGENT_PROMPT_SHARED.md`.
+- Treat either file as an overlay, not a replacement for the committed prompt rules in this file and `shared.md`.
 - If an overlay conflicts with higher-level instructions, follow the higher-level instructions.
 
 ---

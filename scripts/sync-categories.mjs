@@ -22,7 +22,7 @@ const root = path.resolve(__dirname, '..');
 const metaSchemaPath = path.join(root, 'schemas', 'meta.json');
 const versusSchemaPath = path.join(root, 'schemas', 'versus.json');
 const issueTemplatePath = path.join(root, '.github', 'ISSUE_TEMPLATE', 'app_suggestion.yml');
-const sharedPromptPath = path.join(root, 'docs', 'agent-prompts', 'AGENT_PROMPT_SHARED.md');
+const sharedPromptPath = path.join(root, 'pipelines', 'prompts', 'shared.md');
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
