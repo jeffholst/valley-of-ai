@@ -38,10 +38,27 @@
       "prompt": "## App Suggestion\n\n**Category:** Icebreakers\n**Requestor:** Jeff Holst\n\n### Description\n\nMultiplayer Zoom icebreaker called \"Guess Who Said It\". Moderator shares screen; players join from their own devices via a shared link. Flow: moderator join screen → waiting room → answer round → guessing round → round results → final leaderboard. Use fun, safe, office-appropriate prompts. Moderator screen should show join link + copy button, round count selector, persistent player board (name, status, score), round controls, timer, and a hidden reveal-author panel with submitted answers. Player flow: enter name, wait for moderator, answer each prompt, submit, then guess which player wrote a shown answer from a grid of names; disable controls after voting until round ends. Include subtle motion, confetti for winners, gentle comic-deflate for non-winners, and no social sharing UI.",
       "requestor": "Jeff Holst"
     },
-    "improvements": null,
+    "improvements": [
+      {
+        "issueNumber": 403,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/403",
+        "runId": "run-20260423T114017Z-90899c",
+        "description": "Added moderator kick controls, round continue/end controls, persistent prompt visibility, vote-lock waiting feedback, and support for late answer submission after timer expiry.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-23T11:48:03Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5.4"
+      }
+    ],
     "allowImprovements": true,
     "maxScore": 200,
-    "backups": null
+    "backups": [
+      {
+        "runId": "run-20260423T114017Z-90899c",
+        "path": "backups/run-20260423T114017Z-90899c/index.html",
+        "url": "/apps/2026/04/23/guess-who-said-it/backups/run-20260423T114017Z-90899c/index.html"
+      }
+    ]
   },
   {
     "id": "2026/04/18/team-taboo",

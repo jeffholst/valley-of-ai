@@ -36,47 +36,44 @@
   <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)" />
   <rect x="0" y="0" width="800" height="450" fill="url(#glowOne)" />
   <rect x="0" y="0" width="800" height="450" fill="url(#glowTwo)" />
+
   <rect x="12" y="12" width="776" height="426" rx="22" fill="none" stroke="#355186" stroke-width="2" opacity="0.9" />
 
   <rect x="28" y="28" width="744" height="64" rx="16" fill="#152441" stroke="#355186" filter="url(#softShadow)" />
   <text x="48" y="66" fill="#f4f7ff" font-family="Trebuchet MS, Avenir Next, sans-serif" font-size="30" font-weight="700" filter="url(#titleGlow)">
     Guess Who Said It
   </text>
-  <rect x="620" y="44" width="132" height="32" rx="16" fill="#22345d" stroke="#355186" />
-  <text x="686" y="65" text-anchor="middle" fill="#abc2ea" font-family="Trebuchet MS, sans-serif" font-size="14" font-weight="700" letter-spacing="1.1">
+  <rect x="624" y="44" width="128" height="32" rx="16" fill="#22345d" stroke="#355186" />
+  <text x="688" y="65" text-anchor="middle" fill="#abc2ea" font-family="Trebuchet MS, sans-serif" font-size="14" font-weight="700" letter-spacing="1.1">
     GUESSING
   </text>
 
   <rect x="28" y="104" width="516" height="318" rx="16" fill="#152441" stroke="#355186" filter="url(#softShadow)" />
   <text x="48" y="138" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="24" font-weight="700">Who wrote this?</text>
+
   <rect x="420" y="122" width="104" height="34" rx="17" fill="#22345d" stroke="#355186" />
-  <text x="472" y="145" text-anchor="middle" fill="#ffba49" font-family="Trebuchet MS, sans-serif" font-size="19" font-weight="800">00:11</text>
+  <text x="472" y="145" text-anchor="middle" fill="#ffba49" font-family="Trebuchet MS, sans-serif" font-size="19" font-weight="800">00:12</text>
 
-  <rect x="48" y="160" width="476" height="56" rx="12" fill="#22345d" stroke="#355186" />
-  <text x="66" y="184" fill="#abc2ea" font-family="Trebuchet MS, sans-serif" font-size="14" font-weight="700">Prompt</text>
-  <text x="66" y="205" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="17" font-weight="700">
-    What is your low-stakes superpower at work?
+  <rect x="48" y="162" width="476" height="88" rx="14" fill="#22345d" stroke="#355186" />
+  <text x="66" y="190" fill="#abc2ea" font-family="Trebuchet MS, sans-serif" font-size="15" font-weight="700">Anonymous answer</text>
+  <text x="66" y="222" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="24" font-weight="700">
+    "My warning label would be: do not
+  </text>
+  <text x="66" y="246" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="24" font-weight="700">
+    ask me to estimate time on Fridays."
   </text>
 
-  <rect x="48" y="226" width="476" height="80" rx="12" fill="#22345d" stroke="#355186" />
-  <text x="66" y="250" fill="#abc2ea" font-family="Trebuchet MS, sans-serif" font-size="14" font-weight="700">Anonymous answer</text>
-  <text x="66" y="278" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="20" font-weight="700">
-    "I can spot broken links from
-  </text>
-  <text x="66" y="302" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="20" font-weight="700">
-    pure stress vibrations."
-  </text>
+  <rect x="48" y="268" width="226" height="54" rx="10" fill="#22345d" stroke="#355186" />
+  <text x="66" y="302" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="22" font-weight="700">Nina</text>
 
-  <rect x="48" y="318" width="226" height="42" rx="10" fill="#22345d" stroke="#355186" />
-  <text x="66" y="345" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="18" font-weight="700">Nina</text>
+  <rect x="298" y="268" width="226" height="54" rx="10" fill="url(#accentGrad)" stroke="#ffcf73" />
+  <text x="316" y="302" fill="#241802" font-family="Trebuchet MS, sans-serif" font-size="22" font-weight="800">Sam ✓</text>
 
-  <rect x="298" y="318" width="226" height="42" rx="10" fill="url(#accentGrad)" stroke="#ffcf73" />
-  <text x="316" y="345" fill="#241802" font-family="Trebuchet MS, sans-serif" font-size="18" font-weight="800">Sam ✓</text>
+  <rect x="48" y="334" width="226" height="54" rx="10" fill="#22345d" stroke="#355186" />
+  <text x="66" y="368" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="22" font-weight="700">Lara</text>
 
-  <rect x="48" y="366" width="476" height="40" rx="10" fill="#22345d" stroke="#355186" />
-  <text x="66" y="391" fill="#abc2ea" font-family="Trebuchet MS, sans-serif" font-size="15" font-weight="700">
-    Vote locked: Sam. Waiting for other players...
-  </text>
+  <rect x="298" y="334" width="226" height="54" rx="10" fill="#22345d" stroke="#355186" />
+  <text x="316" y="368" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="22" font-weight="700">Diego</text>
 
   <rect x="560" y="104" width="212" height="318" rx="16" fill="#152441" stroke="#355186" filter="url(#softShadow)" />
   <text x="578" y="138" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="22" font-weight="700">Player Board</text>
@@ -95,9 +92,7 @@
 
   <rect x="578" y="274" width="176" height="50" rx="10" fill="#22345d" stroke="#355186" />
   <text x="592" y="300" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="17" font-weight="700">Lara</text>
-  <text x="592" y="318" fill="#abc2ea" font-family="Trebuchet MS, sans-serif" font-size="12" font-weight="700" letter-spacing="0.7">THINKING</text>
-  <rect x="678" y="286" width="36" height="24" rx="8" fill="#ff6d6d" />
-  <text x="696" y="302" text-anchor="middle" fill="#fff" font-family="Trebuchet MS, sans-serif" font-size="12" font-weight="800">KICK</text>
+  <text x="592" y="318" fill="#abc2ea" font-family="Trebuchet MS, sans-serif" font-size="12" font-weight="700" letter-spacing="0.7">LOCKED</text>
   <rect x="715" y="287" width="31" height="24" rx="12" fill="#1a2a4c" stroke="#355186" />
   <text x="730" y="304" text-anchor="middle" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="13" font-weight="800">5</text>
 

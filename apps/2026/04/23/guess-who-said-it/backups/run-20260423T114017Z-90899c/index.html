@@ -370,10 +370,6 @@
         min-height: 44px;
       }
 
-      .guess-grid.locked .guess-choice:not(.selected) {
-        opacity: 0.62;
-      }
-
       .guess-choice.selected {
         border-color: var(--accent);
         background: rgb(255 200 87 / 18%);
@@ -394,7 +390,7 @@
 
       .player-row {
         display: grid;
-        grid-template-columns: 1fr auto auto auto;
+        grid-template-columns: 1fr auto auto;
         gap: 8px;
         border: 1px solid var(--border);
         border-radius: 10px;
@@ -420,13 +416,6 @@
         border: 1px solid var(--border);
         padding: 2px 8px;
         background: var(--surface);
-      }
-
-      .kick-btn {
-        padding: 6px 8px;
-        min-height: 32px;
-        border-radius: 8px;
-        font-size: 0.76rem;
       }
 
       .results-list {
@@ -636,8 +625,7 @@
                 <div class="answers-grid" id="answerList"></div>
                 <div class="row">
                   <button class="btn primary" id="openGuessBtn">Open Guessing Round</button>
-                  <button class="btn" id="forceAnswerEndBtn">Continue Without All Answers</button>
-                  <button class="btn bad" id="answerEndGameBtn">End Game Now</button>
+                  <button class="btn" id="forceAnswerEndBtn">End Answer Timer</button>
                 </div>
               </div>
 
@@ -664,10 +652,6 @@
                 <div class="timer" id="guessTimer">00:30</div>
               </div>
               <div class="prompt-card">
-                <p class="muted" style="margin: 0">Prompt</p>
-                <p class="prompt-text" id="guessPromptText">Loading prompt...</p>
-              </div>
-              <div class="prompt-card">
                 <p class="muted" style="margin: 0">Anonymous answer</p>
                 <p class="prompt-text" id="guessAnswerText">...</p>
               </div>
@@ -677,7 +661,6 @@
                 <div class="row">
                   <button class="btn primary" id="finishRoundBtn">Finish Round</button>
                   <button class="btn" id="forceGuessEndBtn">End Guess Timer</button>
-                  <button class="btn bad" id="guessEndGameBtn">End Game Now</button>
                 </div>
               </div>
 
@@ -690,10 +673,6 @@
 
             <section id="roundResultsScreen" class="screen" aria-label="Round results">
               <h2 class="section-title" id="resultsTitle">Round results</h2>
-              <div class="prompt-card">
-                <p class="muted" style="margin: 0">Prompt</p>
-                <p class="prompt-text" id="resultsPromptText">Loading prompt...</p>
-              </div>
               <div class="status-banner" id="resultsSummary"></div>
               <div class="results-list" id="resultsList"></div>
               <div class="row" id="resultsControls">
@@ -776,25 +755,21 @@
           answerList: document.getElementById('answerList'),
           openGuessBtn: document.getElementById('openGuessBtn'),
           forceAnswerEndBtn: document.getElementById('forceAnswerEndBtn'),
-          answerEndGameBtn: document.getElementById('answerEndGameBtn'),
           answerForm: document.getElementById('answerForm'),
           answerInput: document.getElementById('answerInput'),
           submitAnswerBtn: document.getElementById('submitAnswerBtn'),
           answerStatus: document.getElementById('answerStatus'),
           guessTimer: document.getElementById('guessTimer'),
-          guessPromptText: document.getElementById('guessPromptText'),
           guessAnswerText: document.getElementById('guessAnswerText'),
           guessModeratorView: document.getElementById('guessModeratorView'),
           guessProgress: document.getElementById('guessProgress'),
           finishRoundBtn: document.getElementById('finishRoundBtn'),
           forceGuessEndBtn: document.getElementById('forceGuessEndBtn'),
-          guessEndGameBtn: document.getElementById('guessEndGameBtn'),
           guessPlayerView: document.getElementById('guessPlayerView'),
           guessHelp: document.getElementById('guessHelp'),
           guessChoices: document.getElementById('guessChoices'),
           guessStatus: document.getElementById('guessStatus'),
           resultsTitle: document.getElementById('resultsTitle'),
-          resultsPromptText: document.getElementById('resultsPromptText'),
           resultsSummary: document.getElementById('resultsSummary'),
           resultsList: document.getElementById('resultsList'),
           nextRoundBtn: document.getElementById('nextRoundBtn'),
@@ -975,22 +950,9 @@
         }
 
         function sortedPlayers() {
-          const items = Object.values(session?.players || {}).filter((player) => player && !player.kicked);
+          const items = Object.values(session?.players || {});
           items.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
           return items;
-        }
-
-        function getActivePlayerIds() {
-          return sortedPlayers().map((player) => player.id);
-        }
-
-        function getStageResponses() {
-          const responses = session?.game?.responses || {};
-          const active = new Set(getActivePlayerIds());
-          return Object.entries(responses).filter(([pid, value]) => {
-            if (!active.has(pid)) return false;
-            return typeof value === 'string' && value.trim().length > 0;
-          });
         }
 
         function getScoreMap() {
@@ -1026,10 +988,6 @@
               const status = getPlayerStatusLabel(p.id);
               const score = scores[p.id] || 0;
               const me = role === 'player' && p.id === playerId ? ' (you)' : '';
-              const kickButton =
-                role === 'moderator'
-                  ? `<button class="btn bad kick-btn" data-kick-player="${escapeHtml(p.id)}">Kick</button>`
-                  : '<span></span>';
               return `
                 <div class="player-row">
                   <div>
@@ -1038,7 +996,6 @@
                   </div>
                   <div class="score">${score}</div>
                   <div class="muted">pts</div>
-                  ${kickButton}
                 </div>
               `;
             })
@@ -1095,22 +1052,14 @@
           if (!panel) return;
           const players = session.players || {};
           const stage = session.game?.stage || 'lobby';
-          const answers = stage === 'answer' ? getStageResponses() : [];
-          const guesses =
-            stage === 'guess'
-              ? Object.entries(session.game?.responses || {}).filter(
-                  ([pid, targetId]) =>
-                    getActivePlayerIds().includes(pid) &&
-                    typeof targetId === 'string' &&
-                    targetId.trim().length > 0
-                )
-              : [];
-          const answerItems = answers
+          const answers = stage === 'answer' ? session.game?.responses || {} : {};
+          const guesses = stage === 'guess' ? session.game?.responses || {} : {};
+          const answerItems = Object.entries(answers)
             .map(([pid, text]) => {
               return `<div class="answer"><strong>${escapeHtml(players[pid]?.name || pid)}</strong>: ${escapeHtml(text)}</div>`;
             })
             .join('');
-          const guessItems = guesses
+          const guessItems = Object.entries(guesses)
             .map(([pid, targetId]) => {
               const voter = players[pid]?.name || pid;
               const target = players[targetId]?.name || targetId;
@@ -1124,11 +1073,11 @@
               <div class="muted">This panel is private to the moderator window.</div>
             </div>
             <div class="box">
-              <strong>Submitted answers (${answers.length})</strong>
+              <strong>Submitted answers (${Object.keys(answers).length})</strong>
               ${answerItems || '<div class="muted">No answers yet.</div>'}
             </div>
             <div class="box">
-              <strong>Guess votes (${guesses.length})</strong>
+              <strong>Guess votes (${Object.keys(guesses).length})</strong>
               ${guessItems || '<div class="muted">No guesses locked yet.</div>'}
             </div>
           `;
@@ -1164,11 +1113,9 @@
           const game = session?.game || {};
           const players = session?.players || {};
           const answers = game.responses || {};
-          const answerEntries = getStageResponses();
           const allPlayers = sortedPlayers();
           const roundIndex = Number(game.logicalRound || 0) + 1;
           const totalRounds = Number(session?.settings?.roundsTotal || 5);
-          const timerSeconds = readTimerSeconds();
 
           updatePhasePill('Answer');
           toScreen('answerScreen');
@@ -1179,20 +1126,16 @@
           if (role === 'moderator') {
             els.answerModeratorView.style.display = 'grid';
             els.answerForm.style.display = 'none';
-            const submitted = answerEntries.length;
+            const submitted = Object.keys(answers).length;
             const total = allPlayers.length;
-            const lateNote =
-              timerSeconds <= 0
-                ? ' Timer expired, but late submissions are still accepted until you continue.'
-                : '';
-            els.answerProgress.textContent = `${submitted} / ${total} answers received.${lateNote}`;
+            els.answerProgress.textContent = `${submitted} / ${total} answers received`;
             els.answerList.innerHTML = allPlayers
               .map((p) => {
                 const has = Boolean(answers[p.id]);
                 return `<div class="answer-item"><strong>${escapeHtml(p.name)}</strong> - ${has ? 'submitted' : 'pending'}</div>`;
               })
               .join('');
-            els.openGuessBtn.disabled = false;
+            els.openGuessBtn.disabled = submitted < 2;
             return;
           }
 
@@ -1206,10 +1149,7 @@
             els.answerInput.value = myAnswer;
             els.answerStatus.textContent = 'Answer submitted. Waiting for others...';
           } else {
-            els.answerStatus.textContent =
-              timerSeconds <= 0
-                ? 'Timer expired, but you can still submit until the moderator continues.'
-                : 'Write your answer before the timer ends.';
+            els.answerStatus.textContent = 'Write your answer before the timer ends.';
           }
           const myName = players[playerId]?.name || 'Player';
           els.heroSubtitle.textContent = `${myName}, keep it fun and office-safe.`;
@@ -1219,23 +1159,17 @@
           const game = session?.game || {};
           const players = sortedPlayers();
           const guesses = game.responses || {};
-          const activeIds = new Set(getActivePlayerIds());
-          const lockedGuesses = Object.entries(guesses).filter(([pid, value]) => {
-            return activeIds.has(pid) && typeof value === 'string' && value.trim().length > 0;
-          });
           updatePhasePill('Guessing');
           toScreen('guessScreen');
           updateTimer(els.guessTimer);
-          els.guessPromptText.textContent = game.promptText || 'Waiting for prompt...';
           els.guessAnswerText.textContent = game.selectedAnswerText || '...';
 
           if (role === 'moderator') {
             els.guessModeratorView.style.display = 'grid';
             els.guessPlayerView.style.display = 'none';
-            els.guessChoices.classList.remove('locked');
             const authorId = game.selectedAuthorId;
             const totalEligible = players.filter((p) => p.id !== authorId).length;
-            const locked = lockedGuesses.length;
+            const locked = Object.keys(guesses).length;
             const authorName = session.players?.[authorId]?.name || 'Unknown';
             els.guessProgress.textContent = `${locked} / ${totalEligible} guesses locked. Real author: ${authorName}`;
             return;
@@ -1248,14 +1182,12 @@
 
           if (amAuthor) {
             els.guessHelp.textContent = 'This answer is yours. Sit this vote out and enjoy the reveal.';
-            els.guessChoices.classList.remove('locked');
             els.guessChoices.innerHTML = '<div class="status-banner muted">You cannot vote on your own answer.</div>';
             els.guessStatus.textContent = 'Waiting for other players to vote.';
             return;
           }
 
           els.guessHelp.textContent = 'Choose the player you think wrote the answer. Your vote locks instantly.';
-          els.guessChoices.classList.toggle('locked', Boolean(lockedGuess));
           els.guessChoices.innerHTML = players
             .map((p) => {
               const selectedClass = lockedGuess === p.id ? 'selected' : '';
@@ -1265,7 +1197,7 @@
             .join('');
 
           els.guessStatus.textContent = lockedGuess
-            ? `Vote locked: ${session.players?.[lockedGuess]?.name || 'Unknown'}. Waiting for other players...`
+            ? `Vote locked: ${session.players?.[lockedGuess]?.name || 'Unknown'}.`
             : 'Choose one name.';
         }
 
@@ -1286,14 +1218,13 @@
           const players = session?.players || {};
           const gains = game.roundGains || {};
           const authorId = game.selectedAuthorId;
-          const author = authorId ? players[authorId]?.name || 'Unknown' : 'None';
-          const answer = game.selectedAnswerText || 'No answer was selected for this round.';
+          const author = players[authorId]?.name || 'Unknown';
+          const answer = game.selectedAnswerText || '';
           const totalRounds = Number(session?.settings?.roundsTotal || 5);
           updatePhasePill('Results');
           toScreen('roundResultsScreen');
 
           els.resultsTitle.textContent = `Round ${Number(game.logicalRound || 0) + 1} results`;
-          els.resultsPromptText.textContent = game.promptText || 'Waiting for prompt...';
           els.resultsSummary.innerHTML = `<strong>Answer:</strong> ${escapeHtml(answer)}<br/><strong>Author:</strong> ${escapeHtml(author)}`;
 
           const rows = sortedPlayers().map((p) => {
@@ -1383,17 +1314,6 @@
           renderPlayerBoard();
           renderModeratorPanel();
 
-          if (role === 'player') {
-            const self = session?.players?.[playerId];
-            if (!self || self.kicked) {
-              updatePhasePill('Removed');
-              toScreen('playerLobbyScreen');
-              els.playerLobbyHint.textContent =
-                'The moderator removed you from this game. Ask for a new join link if needed.';
-              return;
-            }
-          }
-
           const stage = session?.game?.stage || session?.status || 'lobby';
           if (stage === 'lobby') {
             renderLobby();
@@ -1468,19 +1388,8 @@
 
         async function openGuessPhase() {
           const game = session?.game || {};
-          const answers = getStageResponses();
-          if (answers.length === 0) {
-            await patchSession({
-              'game/stage': 'results',
-              'game/phase': 'results',
-              'game/selectedAuthorId': null,
-              'game/selectedAnswerText': 'No answer was submitted for this round.',
-              'game/responses': {},
-              'game/roundGains': {},
-              'game/timerEndsAt': 0
-            });
-            return;
-          }
+          const answers = Object.entries(game.responses || {});
+          if (answers.length < 2) return;
 
           const [authorId, answerText] = answers[Math.floor(Math.random() * answers.length)];
           const guessSeconds = Number(session?.settings?.guessSeconds || 30);
@@ -1510,20 +1419,17 @@
           const authorId = game.selectedAuthorId;
           const guesses = game.responses || {};
           const gains = {};
-          const players = getActivePlayerIds();
+          const players = Object.keys(session?.players || {});
           players.forEach((pid) => {
             gains[pid] = 0;
           });
 
           for (const [pid, picked] of Object.entries(guesses)) {
-            if (!players.includes(pid)) continue;
             if (pid === authorId) continue;
             if (picked === authorId) {
               gains[pid] += 2;
             } else {
-              if (authorId && players.includes(authorId)) {
-                gains[authorId] += 1;
-              }
+              gains[authorId] += 1;
             }
           }
           return gains;
@@ -1579,7 +1485,6 @@
           await patchSession(
             {
               'game/phase': 'lobby',
-              'game/stage': 'lobby',
               'game/roundIndex': 0,
               'game/submissionRound': 0,
               'game/logicalRound': 0,
@@ -1597,16 +1502,6 @@
           );
         }
 
-        async function kickPlayer(targetPlayerId) {
-          if (role !== 'moderator' || !targetPlayerId) return;
-          if (!session?.players?.[targetPlayerId]) return;
-          await patchSession({
-            [`players/${targetPlayerId}/kicked`]: true,
-            [`players/${targetPlayerId}/kickedAt`]: new Date().toISOString(),
-            [`game/responses/${targetPlayerId}`]: null
-          });
-        }
-
         function bindEvents() {
           els.copyLinkBtn.addEventListener('click', async () => {
             if (!sessionCode) return;
@@ -1620,14 +1515,6 @@
           });
 
           els.openPanelBtn.addEventListener('click', ensureModeratorPanel);
-          els.playerBoard.addEventListener('click', (event) => {
-            const button = event.target.closest('[data-kick-player]');
-            if (!button) return;
-            const targetPlayerId = button.getAttribute('data-kick-player');
-            kickPlayer(targetPlayerId).catch((error) => {
-              console.error('Failed to kick player', error);
-            });
-          });
 
           els.startBtn.addEventListener('click', () => {
             if (role !== 'moderator') return;
@@ -1673,12 +1560,6 @@
             if (role !== 'moderator') return;
             openGuessPhase().catch(() => {});
           });
-          els.answerEndGameBtn.addEventListener('click', () => {
-            if (role !== 'moderator') return;
-            endGame().catch((error) => {
-              console.error('Failed to end game', error);
-            });
-          });
 
           els.guessChoices.addEventListener('click', (event) => {
             const target = event.target.closest('[data-guess]');
@@ -1698,12 +1579,6 @@
           els.forceGuessEndBtn.addEventListener('click', () => {
             if (role !== 'moderator') return;
             finishRound().catch(() => {});
-          });
-          els.guessEndGameBtn.addEventListener('click', () => {
-            if (role !== 'moderator') return;
-            endGame().catch((error) => {
-              console.error('Failed to end game', error);
-            });
           });
 
           els.nextRoundBtn.addEventListener('click', () => {
@@ -1731,9 +1606,13 @@
         async function applyTimerTransitions() {
           if (!session || role !== 'moderator') return;
           const stage = session?.game?.stage;
-          if (stage !== 'guess') return;
+          if (stage !== 'answer' && stage !== 'guess') return;
           if (readTimerSeconds() > 0) return;
-          await finishRound();
+          if (stage === 'answer') {
+            await openGuessPhase();
+          } else if (stage === 'guess') {
+            await finishRound();
+          }
         }
 
         async function refreshSession() {
