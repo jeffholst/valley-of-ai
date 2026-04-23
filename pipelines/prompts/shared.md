@@ -478,6 +478,8 @@ A shared, app-agnostic multiplayer backend is available for any app that needs h
   - `GET /api/multiplayer/sessions/:code` — anyone with the code reads the snapshot
   - `PATCH /api/multiplayer/sessions/:code` — moderator-authorized JSONB patch (slash-delimited paths rooted at `settings|game|players`) plus optional `status` transitions
   - `POST /api/multiplayer/sessions/:code/players` — any visitor with the code adds themselves as a player
+  - `POST /api/multiplayer/sessions/:code/answers` — player-scoped response/answer submit endpoint used by shared quiz-vote/first-correct flows
+  - `PATCH /api/multiplayer/sessions/:code/players/:playerId` — player-scoped action endpoint (`submitStatements`, `vote`, `requestHint`) for supported modes
 - Reusable player-join page `app/join/[code]/page.jsx` — reads `appPath`/`appName`/`status` from the session and redirects joiners into the app with hash params (`code`, `pid`, `role=player`)
 - Code generator `lib/multiplayer/sessionCodes.js` — 6-char unambiguous alphabet (`A-HJ-NP-Z2-9`)
 
@@ -491,7 +493,8 @@ A shared, app-agnostic multiplayer backend is available for any app that needs h
 
 1. Do not create new API routes or tables. Use the endpoints above as-is.
 2. At session create time, pass the app's `appId`, `appName`, and `appPath` in the POST body so `/join/[code]` can redirect correctly.
-3. Keep all game mutations behind the moderator PATCH gate. Players never PATCH — they only POST themselves via the join flow.
+3. Keep canonical game-state mutations behind the moderator PATCH gate (`PATCH /sessions/:code`).
+   Player-originated writes must use the dedicated shared player endpoints (`POST /sessions/:code/answers` and `PATCH /sessions/:code/players/:playerId`) instead of adding new routes.
 4. Model game state inside the opaque `game` JSONB root; model lobby config inside `settings`. The backend does not enforce either shape.
 5. No realtime push is available — poll `GET /api/multiplayer/sessions/:code` on ~1 Hz and diff locally.
 6. Session-code generation must match the shared `generateSessionCode()` format in `lib/multiplayer/sessionCodes.js`. If your app cannot import that helper directly (for example, a self-contained static HTML app), use the same alphabet/logic rather than inventing a different code format.
