@@ -518,8 +518,28 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
 2. Execute: Create PR:
 
+   ⚠️ **Shell-safety rule (required):** build the PR body in a file and pass `--body-file`.
+   Do **not** inline large markdown in `--body "..."` because backticks or command
+   substitution characters can be interpreted by the shell and mutate the working tree.
+
    ```bash
-   gh pr create --title "improve: <app-id> — <one-line description>" --body "..."
+   cat > /tmp/pr-improve-<app-id>-<runId>.md <<'EOF'
+   Closes #<issueNumber>
+
+   ## What changed
+   - ...
+
+   ## Why
+   - ...
+
+   ## Verification
+   - backup snapshot included at apps/<app-path>/backups/<runId>/
+   - all validation commands passed
+   EOF
+
+   gh pr create \
+     --title "improve: <app-id> — <one-line description>" \
+     --body-file /tmp/pr-improve-<app-id>-<runId>.md
    ```
 
    PR body should include:
@@ -577,9 +597,22 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
    - Wait ~2–3 minutes for Vercel auto-deployment to complete.
 
-6. Verify merge on main: `git checkout main && git pull origin main`
-7. Verify the modified files are present in the working tree.
-8. Execute: Delete the improvement branch:
+6. **Before switching branches, enforce a clean safety gate.**
+   At this point, the only allowed local modifications are the two log files for this run:
+   `apps/<app-path>/log.jsonl` and `logs/YYYY/MM/DD.jsonl`.
+   Any other modified file means something unexpected changed (often shell interpolation side effects)
+   and must be fixed before proceeding.
+
+   ```bash
+   UNEXPECTED=$(git status --porcelain \
+     | grep -v "apps/<app-path>/log.jsonl" \
+     | grep -v "logs/YYYY/MM/DD.jsonl" || true)
+   [ -z "$UNEXPECTED" ] || { echo "ERROR: unexpected local changes before checkout"; echo "$UNEXPECTED"; exit 1; }
+   ```
+
+7. Verify merge on main: `git checkout main && git pull origin main`
+8. Verify the modified files are present in the working tree.
+9. Execute: Delete the improvement branch:
 
    ```bash
    git branch -d improve/<app-id>

@@ -632,6 +632,25 @@ For every numbered pipeline step:
 
 Never batch logs at the end. Never skip a log entry for a completed step. Log entries must be written within seconds of the step completing — this is what creates the real-time audit trail.
 
+### Shell Safety (Quoting and PR Bodies)
+
+When a step needs multi-line markdown (especially PR bodies), never inline it in a quoted
+`--body "..."` argument. Backticks and command-substitution characters can be interpreted by the
+shell and unintentionally execute commands or mutate files.
+
+Use this safe pattern instead:
+
+```bash
+cat > /tmp/<name>.md <<'EOF'
+...literal markdown...
+EOF
+
+gh pr create --title "..." --body-file /tmp/<name>.md
+```
+
+Always run `git status --short` after any shell-heavy step (PR creation, scripted text assembly,
+or complex one-liners). If unexpected files changed, stop and fix before continuing.
+
 ---
 
 ### Standard Validation Sequence
