@@ -70,6 +70,16 @@ describe('apps-registry leaderboard detection', () => {
     expect(detectLeaderboardUsageFromHtml(html)).toBe(false);
   });
 
+  it('still detects usage when it appears after an unrelated inline comment', () => {
+    const html = `
+      <script>
+        doSomething(); // just a regular comment
+        window.voaLeaderboard.submit(score);
+      </script>
+    `;
+    expect(detectLeaderboardUsageFromHtml(html)).toBe(true);
+  });
+
   it('detects usage from app directory index.html', () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'voa-leaderboard-'));
     try {

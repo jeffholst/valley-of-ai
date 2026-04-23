@@ -18,6 +18,9 @@ const LEADERBOARD_USAGE_PATTERNS = [
 ];
 
 function stripCommentsForDetection(text) {
+  // Note: the // line-comment replacement also strips '//' inside string
+  // literals (e.g. 'https://…'), but this is acceptable for pattern-matching
+  // purposes — none of the LEADERBOARD_USAGE_PATTERNS contain '//'.
   return text
     .replace(/<!--[\s\S]*?-->/g, ' ')
     .replace(/\/\*[\s\S]*?\*\//g, ' ')
