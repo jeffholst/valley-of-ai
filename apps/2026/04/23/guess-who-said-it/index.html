@@ -1,0 +1,1689 @@
+<!doctype html>
+<html lang="en" data-theme="auto">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Guess Who Said It - __MAIN_SITE_NAME__</title>
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Guess Who Said It" />
+    <meta name="voa-app-id" content="2026/04/23/guess-who-said-it" />
+    <link rel="icon" href="/favicon.ico" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #101a33;
+        --text: #f4f7ff;
+        --surface: #1a2a4c;
+        --surface-soft: #22345d;
+        --card: #152441;
+        --border: #355186;
+        --muted: #abc2ea;
+        --accent: #ffc857;
+        --accent-strong: #ff9f1c;
+        --good: #49c96d;
+        --warn: #ffba49;
+        --bad: #ff6d6d;
+        --shadow: 0 16px 30px rgb(9 18 37 / 36%);
+      }
+
+      [data-theme='light'] {
+        --bg: #eff4ff;
+        --text: #10213f;
+        --surface: #ffffff;
+        --surface-soft: #e8f0ff;
+        --card: #ffffff;
+        --border: #c4d6f5;
+        --muted: #5f7399;
+        --accent: #ffb703;
+        --accent-strong: #fb8500;
+        --good: #1f9d55;
+        --warn: #cc8e00;
+        --bad: #d94f4f;
+        --shadow: 0 10px 22px rgb(19 47 98 / 12%);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background:
+          radial-gradient(circle at 15% 10%, rgb(255 200 87 / 16%), transparent 45%),
+          radial-gradient(circle at 85% 0%, rgb(115 166 255 / 28%), transparent 35%),
+          var(--bg);
+        color: var(--text);
+        font-family: 'Trebuchet MS', 'Avenir Next', 'Segoe UI', sans-serif;
+        line-height: 1.4;
+      }
+
+      #app {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        overflow: auto;
+      }
+
+      .app-shell {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 14px 12px 20px;
+        display: grid;
+        gap: 12px;
+      }
+
+      .hero,
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+      }
+
+      .hero {
+        padding: 14px 16px;
+      }
+
+      .hero-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.45rem, 4.8vw, 2rem);
+      }
+
+      .subtitle {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 0.94rem;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--surface-soft);
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 6px 10px;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 12px;
+      }
+
+      .card {
+        padding: 14px;
+      }
+
+      .screen {
+        display: none;
+        animation: fade-in 200ms ease-out;
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .section-title {
+        margin: 0 0 10px;
+        font-size: 1.05rem;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .stack {
+        display: grid;
+        gap: 10px;
+      }
+
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        appearance: none;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface);
+        color: var(--text);
+        font: inherit;
+        font-weight: 700;
+        padding: 10px 14px;
+        min-height: 44px;
+        cursor: pointer;
+        transition:
+          transform 90ms ease,
+          filter 140ms ease,
+          background 140ms ease;
+      }
+
+      .btn:hover:not(:disabled) {
+        filter: brightness(1.06);
+      }
+
+      .btn:active:not(:disabled) {
+        transform: translateY(1px);
+      }
+
+      .btn:disabled {
+        opacity: 0.48;
+        cursor: not-allowed;
+      }
+
+      .btn.primary {
+        border-color: transparent;
+        background: linear-gradient(130deg, var(--accent), var(--accent-strong));
+        color: #241802;
+      }
+
+      .btn.good {
+        background: var(--good);
+        border-color: transparent;
+        color: #052613;
+      }
+
+      .btn.bad {
+        background: var(--bad);
+        border-color: transparent;
+        color: #fff;
+      }
+
+      .btn.block {
+        width: 100%;
+      }
+
+      .field {
+        display: grid;
+        gap: 5px;
+      }
+
+      label {
+        color: var(--muted);
+        font-size: 0.88rem;
+        font-weight: 700;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+        font: inherit;
+        padding: 10px 11px;
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 90px;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus,
+      .btn:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+      }
+
+      .join-code {
+        text-align: center;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: 0.18em;
+        font-size: clamp(1.4rem, 7vw, 2rem);
+        font-weight: 900;
+        background: var(--surface-soft);
+        border: 2px dashed var(--accent);
+        border-radius: 12px;
+        padding: 8px;
+        user-select: all;
+      }
+
+      .join-url {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.82rem;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 8px;
+        background: var(--surface-soft);
+        word-break: break-all;
+      }
+
+      .status-banner {
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--surface-soft);
+        font-size: 0.92rem;
+      }
+
+      .prompt-card {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: linear-gradient(160deg, rgb(255 200 87 / 20%), rgb(255 159 28 / 12%));
+        padding: 12px;
+      }
+
+      .prompt-text {
+        font-size: clamp(1.03rem, 4vw, 1.25rem);
+        font-weight: 700;
+        margin: 4px 0;
+      }
+
+      .timer {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 96px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--surface-soft);
+        font-weight: 800;
+        padding: 8px 12px;
+      }
+
+      .timer.warn {
+        color: var(--warn);
+      }
+
+      .timer.bad {
+        color: var(--bad);
+      }
+
+      .answers-grid,
+      .guess-grid {
+        display: grid;
+        gap: 8px;
+      }
+
+      .answers-grid {
+        max-height: 220px;
+        overflow: auto;
+        padding-right: 2px;
+      }
+
+      .answer-item,
+      .guess-choice {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface-soft);
+        padding: 10px;
+      }
+
+      .guess-choice {
+        text-align: left;
+        cursor: pointer;
+        min-height: 44px;
+      }
+
+      .guess-choice.selected {
+        border-color: var(--accent);
+        background: rgb(255 200 87 / 18%);
+      }
+
+      .guess-choice.correct {
+        border-color: var(--good);
+      }
+
+      .guess-choice.wrong {
+        border-color: var(--bad);
+      }
+
+      .board {
+        display: grid;
+        gap: 8px;
+      }
+
+      .player-row {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 8px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface-soft);
+        padding: 8px;
+        align-items: center;
+      }
+
+      .player-name {
+        font-weight: 700;
+      }
+
+      .player-state {
+        font-size: 0.75rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .score {
+        font-weight: 800;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        padding: 2px 8px;
+        background: var(--surface);
+      }
+
+      .results-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .result-item {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface-soft);
+        padding: 10px;
+      }
+
+      .result-item.winner {
+        border-color: var(--accent);
+      }
+
+      .final-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .final-item {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 10px;
+        align-items: center;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface-soft);
+        padding: 10px;
+      }
+
+      .rank-badge {
+        min-width: 40px;
+        text-align: center;
+        border-radius: 999px;
+        padding: 4px 8px;
+        font-weight: 800;
+        background: var(--surface);
+      }
+
+      .deflate {
+        animation: deflate 560ms ease-in forwards;
+      }
+
+      @keyframes deflate {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        70% {
+          transform: scale(0.9);
+          opacity: 0.8;
+        }
+        100% {
+          transform: scale(0.8);
+          opacity: 0.65;
+        }
+      }
+
+      .confetti {
+        position: fixed;
+        top: 64px;
+        left: 0;
+        right: 0;
+        bottom: 56px;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .confetti-piece {
+        position: absolute;
+        width: 10px;
+        height: 14px;
+        border-radius: 2px;
+        animation: fall linear forwards;
+      }
+
+      @keyframes fall {
+        from {
+          transform: translateY(-10%) rotate(0deg);
+          opacity: 1;
+        }
+        to {
+          transform: translateY(120dvh) rotate(640deg);
+          opacity: 0;
+        }
+      }
+
+      .fatal {
+        border: 1px solid var(--bad);
+        background: rgb(255 109 109 / 14%);
+        border-radius: 12px;
+        padding: 12px;
+      }
+
+      @media (max-width: 860px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <main class="app-shell">
+        <header class="hero">
+          <div class="hero-row">
+            <div>
+              <h1>Guess Who Said It</h1>
+              <p class="subtitle" id="heroSubtitle">
+                Players write a secret answer, then everyone guesses the author.
+              </p>
+            </div>
+            <span class="pill" id="phasePill">Lobby</span>
+          </div>
+        </header>
+
+        <div class="layout">
+          <section class="card" id="mainPanel">
+            <section id="configErrorScreen" class="screen" aria-label="Configuration error">
+              <div class="fatal">
+                <h2 class="section-title">Multiplayer is unavailable</h2>
+                <p class="muted">
+                  Supabase multiplayer is not configured. Ask the site owner to configure
+                  multiplayer variables.
+                </p>
+              </div>
+            </section>
+
+            <section id="loadingScreen" class="screen" aria-label="Loading room">
+              <h2 class="section-title">Preparing your room...</h2>
+              <p class="muted">Creating a join code and waiting room.</p>
+            </section>
+
+            <section id="lobbyScreen" class="screen" aria-label="Moderator lobby">
+              <div class="stack">
+                <h2 class="section-title">Invite players</h2>
+                <div class="join-code" id="joinCode">------</div>
+                <div class="join-url" id="joinUrl">/join/------</div>
+                <div class="row">
+                  <button class="btn" id="copyLinkBtn">Copy Link</button>
+                  <button class="btn" id="openPanelBtn" style="display: none">
+                    Open Moderator Panel
+                  </button>
+                </div>
+                <p class="status-banner muted" id="lobbyHint">Waiting for players...</p>
+
+                <div class="row">
+                  <div class="field" style="min-width: 140px; flex: 1">
+                    <label for="roundCountSel">Rounds</label>
+                    <select id="roundCountSel">
+                      <option value="3">3</option>
+                      <option value="5" selected>5</option>
+                      <option value="7">7</option>
+                    </select>
+                  </div>
+                  <div class="field" style="min-width: 140px; flex: 1">
+                    <label for="answerTimeSel">Answer timer</label>
+                    <select id="answerTimeSel">
+                      <option value="30">30s</option>
+                      <option value="45" selected>45s</option>
+                      <option value="60">60s</option>
+                    </select>
+                  </div>
+                  <div class="field" style="min-width: 140px; flex: 1">
+                    <label for="guessTimeSel">Guess timer</label>
+                    <select id="guessTimeSel">
+                      <option value="20">20s</option>
+                      <option value="30" selected>30s</option>
+                      <option value="45">45s</option>
+                    </select>
+                  </div>
+                </div>
+
+                <button class="btn primary block" id="startBtn" disabled>Start Game</button>
+              </div>
+            </section>
+
+            <section id="playerLobbyScreen" class="screen" aria-label="Player lobby">
+              <h2 class="section-title">You are in the room</h2>
+              <p class="status-banner muted" id="playerLobbyHint">
+                Waiting for the moderator to start the game.
+              </p>
+              <div class="prompt-card">
+                <p class="muted" style="margin: 0">
+                  Each round: answer a light prompt, then guess who wrote one anonymous response.
+                  Correct guess: <strong>+2</strong>. If others miss your answer: <strong>+1 each</strong>.
+                </p>
+              </div>
+            </section>
+
+            <section id="answerScreen" class="screen" aria-label="Answer round">
+              <div class="row" style="justify-content: space-between">
+                <h2 class="section-title" style="margin: 0" id="answerRoundTitle">Round 1</h2>
+                <div class="timer" id="answerTimer">00:45</div>
+              </div>
+              <div class="prompt-card">
+                <p class="muted" style="margin: 0">Prompt</p>
+                <p class="prompt-text" id="promptText">Loading prompt...</p>
+              </div>
+
+              <div id="answerModeratorView" class="stack" style="display: none">
+                <p class="status-banner" id="answerProgress">0 / 0 answers received</p>
+                <div class="answers-grid" id="answerList"></div>
+                <div class="row">
+                  <button class="btn primary" id="openGuessBtn">Open Guessing Round</button>
+                  <button class="btn" id="forceAnswerEndBtn">End Answer Timer</button>
+                </div>
+              </div>
+
+              <form id="answerForm" class="stack" style="display: none">
+                <div class="field">
+                  <label for="answerInput">Your response</label>
+                  <textarea
+                    id="answerInput"
+                    maxlength="160"
+                    placeholder="Write a short answer that sounds like you."
+                    required
+                  ></textarea>
+                </div>
+                <button class="btn primary block" type="submit" id="submitAnswerBtn">
+                  Submit Answer
+                </button>
+                <p id="answerStatus" class="status-banner muted">You have not submitted yet.</p>
+              </form>
+            </section>
+
+            <section id="guessScreen" class="screen" aria-label="Guessing round">
+              <div class="row" style="justify-content: space-between">
+                <h2 class="section-title" style="margin: 0">Who wrote this?</h2>
+                <div class="timer" id="guessTimer">00:30</div>
+              </div>
+              <div class="prompt-card">
+                <p class="muted" style="margin: 0">Anonymous answer</p>
+                <p class="prompt-text" id="guessAnswerText">...</p>
+              </div>
+
+              <div id="guessModeratorView" class="stack" style="display: none">
+                <p class="status-banner" id="guessProgress">Waiting for guesses...</p>
+                <div class="row">
+                  <button class="btn primary" id="finishRoundBtn">Finish Round</button>
+                  <button class="btn" id="forceGuessEndBtn">End Guess Timer</button>
+                </div>
+              </div>
+
+              <div id="guessPlayerView" class="stack" style="display: none">
+                <p class="status-banner muted" id="guessHelp"></p>
+                <div class="guess-grid" id="guessChoices"></div>
+                <p id="guessStatus" class="status-banner muted">Choose one name.</p>
+              </div>
+            </section>
+
+            <section id="roundResultsScreen" class="screen" aria-label="Round results">
+              <h2 class="section-title" id="resultsTitle">Round results</h2>
+              <div class="status-banner" id="resultsSummary"></div>
+              <div class="results-list" id="resultsList"></div>
+              <div class="row" id="resultsControls">
+                <button class="btn primary" id="nextRoundBtn" style="display: none">Next Round</button>
+                <button class="btn primary" id="showFinalBtn" style="display: none">
+                  Show Final Leaderboard
+                </button>
+              </div>
+            </section>
+
+            <section id="finalScreen" class="screen" aria-label="Final leaderboard">
+              <h2 class="section-title">Final leaderboard</h2>
+              <p class="status-banner" id="winnerLine"></p>
+              <div class="final-list" id="finalList"></div>
+              <button class="btn primary block" id="playAgainBtn" style="display: none">
+                New Game
+              </button>
+            </section>
+          </section>
+
+          <aside class="card">
+            <h2 class="section-title">Player board</h2>
+            <div class="board" id="playerBoard"></div>
+          </aside>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      (() => {
+        'use strict';
+
+        const APP_NAME = 'Guess Who Said It';
+        const APP_ID = '2026/04/23/guess-who-said-it';
+        const APP_PATH = APP_ID;
+        const STORAGE_PREFIX = 'voa:guess-who-said-it';
+        const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+        const PROMPTS = [
+          'What is your most questionable snack combo?',
+          'What tiny thing instantly makes your day better?',
+          'What would your warning label say?',
+          'What is a fake job title that still sounds believable for you?',
+          'What is your low-stakes superpower at work?',
+          'What is a harmless hill you will die on?',
+          'What is your secret talent that nobody asks about?',
+          'What is the most dramatic way you have ever solved a minor problem?',
+          'What phrase do you overuse in meetings?',
+          'What would be in your personal emergency comfort kit?',
+          'What would your autobiography be called today?',
+          'What is your funniest "I meant well" moment?'
+        ];
+
+        const els = {
+          phasePill: document.getElementById('phasePill'),
+          heroSubtitle: document.getElementById('heroSubtitle'),
+          configErrorScreen: document.getElementById('configErrorScreen'),
+          loadingScreen: document.getElementById('loadingScreen'),
+          lobbyScreen: document.getElementById('lobbyScreen'),
+          playerLobbyScreen: document.getElementById('playerLobbyScreen'),
+          answerScreen: document.getElementById('answerScreen'),
+          guessScreen: document.getElementById('guessScreen'),
+          roundResultsScreen: document.getElementById('roundResultsScreen'),
+          finalScreen: document.getElementById('finalScreen'),
+          joinCode: document.getElementById('joinCode'),
+          joinUrl: document.getElementById('joinUrl'),
+          copyLinkBtn: document.getElementById('copyLinkBtn'),
+          openPanelBtn: document.getElementById('openPanelBtn'),
+          lobbyHint: document.getElementById('lobbyHint'),
+          startBtn: document.getElementById('startBtn'),
+          roundCountSel: document.getElementById('roundCountSel'),
+          answerTimeSel: document.getElementById('answerTimeSel'),
+          guessTimeSel: document.getElementById('guessTimeSel'),
+          playerLobbyHint: document.getElementById('playerLobbyHint'),
+          answerRoundTitle: document.getElementById('answerRoundTitle'),
+          answerTimer: document.getElementById('answerTimer'),
+          promptText: document.getElementById('promptText'),
+          answerModeratorView: document.getElementById('answerModeratorView'),
+          answerProgress: document.getElementById('answerProgress'),
+          answerList: document.getElementById('answerList'),
+          openGuessBtn: document.getElementById('openGuessBtn'),
+          forceAnswerEndBtn: document.getElementById('forceAnswerEndBtn'),
+          answerForm: document.getElementById('answerForm'),
+          answerInput: document.getElementById('answerInput'),
+          submitAnswerBtn: document.getElementById('submitAnswerBtn'),
+          answerStatus: document.getElementById('answerStatus'),
+          guessTimer: document.getElementById('guessTimer'),
+          guessAnswerText: document.getElementById('guessAnswerText'),
+          guessModeratorView: document.getElementById('guessModeratorView'),
+          guessProgress: document.getElementById('guessProgress'),
+          finishRoundBtn: document.getElementById('finishRoundBtn'),
+          forceGuessEndBtn: document.getElementById('forceGuessEndBtn'),
+          guessPlayerView: document.getElementById('guessPlayerView'),
+          guessHelp: document.getElementById('guessHelp'),
+          guessChoices: document.getElementById('guessChoices'),
+          guessStatus: document.getElementById('guessStatus'),
+          resultsTitle: document.getElementById('resultsTitle'),
+          resultsSummary: document.getElementById('resultsSummary'),
+          resultsList: document.getElementById('resultsList'),
+          nextRoundBtn: document.getElementById('nextRoundBtn'),
+          showFinalBtn: document.getElementById('showFinalBtn'),
+          winnerLine: document.getElementById('winnerLine'),
+          finalList: document.getElementById('finalList'),
+          playAgainBtn: document.getElementById('playAgainBtn'),
+          playerBoard: document.getElementById('playerBoard')
+        };
+
+        let role = 'moderator';
+        let playerId = null;
+        let sessionCode = null;
+        let moderatorId = null;
+        let session = null;
+        let pollHandle = null;
+        let statusReady = false;
+        let panelWindow = null;
+
+        const toScreen = (name) => {
+          [
+            'configErrorScreen',
+            'loadingScreen',
+            'lobbyScreen',
+            'playerLobbyScreen',
+            'answerScreen',
+            'guessScreen',
+            'roundResultsScreen',
+            'finalScreen'
+          ].forEach((id) => {
+            els[id].classList.toggle('active', id === name);
+          });
+        };
+
+        function escapeHtml(value) {
+          return String(value)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
+        }
+
+        function parseHash() {
+          const raw = window.location.hash.startsWith('#')
+            ? window.location.hash.slice(1)
+            : window.location.hash;
+          const params = new URLSearchParams(raw);
+          return {
+            code: (params.get('code') || '').trim().toUpperCase(),
+            pid: (params.get('pid') || '').trim(),
+            role: (params.get('role') || '').trim()
+          };
+        }
+
+        function formatTime(seconds) {
+          const safe = Math.max(0, Math.floor(seconds));
+          const mm = Math.floor(safe / 60)
+            .toString()
+            .padStart(2, '0');
+          const ss = (safe % 60).toString().padStart(2, '0');
+          return `${mm}:${ss}`;
+        }
+
+        function generateCode(length = 6) {
+          let out = '';
+          for (let i = 0; i < length; i += 1) {
+            out += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
+          }
+          return out;
+        }
+
+        function generateModeratorId() {
+          if (crypto?.randomUUID) {
+            return `mod_${crypto.randomUUID().replaceAll('-', '')}`;
+          }
+          return `mod_${Date.now()}_${Math.random().toString(36).slice(2, 12)}`;
+        }
+
+        function moderatorStorageKey(code) {
+          return `${STORAGE_PREFIX}:moderator:${code}`;
+        }
+
+        function saveModeratorRecord(code, id) {
+          try {
+            localStorage.setItem(moderatorStorageKey(code), JSON.stringify({ moderatorId: id }));
+          } catch {
+            // Best-effort local persistence; game still works without it.
+          }
+        }
+
+        function loadModeratorRecord(code) {
+          try {
+            const raw = localStorage.getItem(moderatorStorageKey(code));
+            return raw ? JSON.parse(raw) : null;
+          } catch {
+            return null;
+          }
+        }
+
+        async function fetchJson(url, options) {
+          const response = await fetch(url, options);
+          let payload = null;
+          try {
+            payload = await response.json();
+          } catch {
+            payload = null;
+          }
+          if (!response.ok) {
+            const message = payload?.error || `Request failed (${response.status})`;
+            throw new Error(message);
+          }
+          return payload;
+        }
+
+        async function checkStatus() {
+          try {
+            const result = await fetchJson('/api/multiplayer/status', { cache: 'no-store' });
+            return Boolean(result?.configured);
+          } catch {
+            return false;
+          }
+        }
+
+        async function loadSession(code) {
+          const payload = await fetchJson(`/api/multiplayer/sessions/${code}`, {
+            cache: 'no-store'
+          });
+          return payload?.session || null;
+        }
+
+        async function patchSession(patch, nextStatus = null) {
+          if (!sessionCode || !moderatorId) return;
+          const body = {
+            moderatorId,
+            patch
+          };
+          if (nextStatus) {
+            body.status = nextStatus;
+          }
+          await fetchJson(`/api/multiplayer/sessions/${sessionCode}`, {
+            method: 'PATCH',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+        }
+
+        async function createSession() {
+          const maxAttempts = 8;
+          for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+            const code = generateCode();
+            const modId = generateModeratorId();
+            try {
+              await fetchJson('/api/multiplayer/sessions', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({
+                  code,
+                  moderatorId: modId,
+                  appId: APP_ID,
+                  appName: APP_NAME,
+                  appPath: APP_PATH,
+                  settings: {
+                    roundsTotal: Number.parseInt(els.roundCountSel.value, 10) || 5,
+                    answerSeconds: Number.parseInt(els.answerTimeSel.value, 10) || 45,
+                    guessSeconds: Number.parseInt(els.guessTimeSel.value, 10) || 30
+                  }
+                })
+              });
+              return { code, moderatorId: modId };
+            } catch (error) {
+              if (!String(error.message).toLowerCase().includes('already exists')) {
+                throw error;
+              }
+            }
+          }
+          throw new Error('Could not allocate unique room code');
+        }
+
+        function sortedPlayers() {
+          const items = Object.values(session?.players || {});
+          items.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+          return items;
+        }
+
+        function getScoreMap() {
+          return session?.game?.scores || {};
+        }
+
+        function getPlayerStatusLabel(pid) {
+          const game = session?.game;
+          const stage = game?.stage || 'lobby';
+          if (stage === 'lobby') return 'waiting';
+          if (stage === 'answer') {
+            return game.responses?.[pid] ? 'answered' : 'thinking';
+          }
+          if (stage === 'guess') {
+            if (pid === game.selectedAuthorId) return 'author';
+            return game.responses?.[pid] ? 'locked' : 'guessing';
+          }
+          if (stage === 'results') return 'results';
+          if (stage === 'ended') return 'finished';
+          return stage;
+        }
+
+        function renderPlayerBoard() {
+          const players = sortedPlayers();
+          const scores = getScoreMap();
+          if (!players.length) {
+            els.playerBoard.innerHTML = '<p class="muted">No players yet.</p>';
+            return;
+          }
+
+          els.playerBoard.innerHTML = players
+            .map((p) => {
+              const status = getPlayerStatusLabel(p.id);
+              const score = scores[p.id] || 0;
+              const me = role === 'player' && p.id === playerId ? ' (you)' : '';
+              return `
+                <div class="player-row">
+                  <div>
+                    <div class="player-name">${escapeHtml(p.name || 'Player')}${escapeHtml(me)}</div>
+                    <div class="player-state">${escapeHtml(status)}</div>
+                  </div>
+                  <div class="score">${score}</div>
+                  <div class="muted">pts</div>
+                </div>
+              `;
+            })
+            .join('');
+        }
+
+        function readTimerSeconds() {
+          const endsAt = Number(session?.game?.timerEndsAt || 0);
+          if (!endsAt) return 0;
+          return Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
+        }
+
+        function updateTimer(el) {
+          const seconds = readTimerSeconds();
+          el.textContent = formatTime(seconds);
+          el.classList.toggle('warn', seconds <= 10 && seconds > 4);
+          el.classList.toggle('bad', seconds <= 4);
+        }
+
+        function updatePhasePill(label) {
+          els.phasePill.textContent = label;
+        }
+
+        function ensureModeratorPanel() {
+          if (role !== 'moderator') return;
+          if (!panelWindow || panelWindow.closed) {
+            panelWindow = window.open('', 'guess-who-panel', 'width=600,height=700');
+            if (!panelWindow) return;
+            panelWindow.document.write(`
+              <!doctype html>
+              <html>
+                <head>
+                  <meta charset="UTF-8" />
+                  <title>Moderator Panel</title>
+                  <style>
+                    body { font-family: 'Trebuchet MS', sans-serif; margin: 0; padding: 14px; background: #101a33; color: #f4f7ff; }
+                    h1 { margin: 0 0 8px; font-size: 1.15rem; }
+                    .box { border: 1px solid #355186; border-radius: 10px; padding: 10px; background: #1a2a4c; margin-bottom: 8px; }
+                    .muted { color: #abc2ea; font-size: 0.9rem; }
+                    .answer { border: 1px solid #355186; border-radius: 8px; padding: 8px; margin-top: 6px; background: #22345d; }
+                  </style>
+                </head>
+                <body><h1>Moderator Panel</h1><div id="panel"></div></body>
+              </html>
+            `);
+            panelWindow.document.close();
+          }
+          renderModeratorPanel();
+        }
+
+        function renderModeratorPanel() {
+          if (!panelWindow || panelWindow.closed || !session) return;
+          const panel = panelWindow.document.getElementById('panel');
+          if (!panel) return;
+          const players = session.players || {};
+          const stage = session.game?.stage || 'lobby';
+          const answers = stage === 'answer' ? session.game?.responses || {} : {};
+          const guesses = stage === 'guess' ? session.game?.responses || {} : {};
+          const answerItems = Object.entries(answers)
+            .map(([pid, text]) => {
+              return `<div class="answer"><strong>${escapeHtml(players[pid]?.name || pid)}</strong>: ${escapeHtml(text)}</div>`;
+            })
+            .join('');
+          const guessItems = Object.entries(guesses)
+            .map(([pid, targetId]) => {
+              const voter = players[pid]?.name || pid;
+              const target = players[targetId]?.name || targetId;
+              return `<div class="answer"><strong>${escapeHtml(voter)}</strong> guessed <strong>${escapeHtml(target)}</strong></div>`;
+            })
+            .join('');
+          panel.innerHTML = `
+            <div class="box">
+              <div><strong>Code:</strong> ${escapeHtml(sessionCode || '------')}</div>
+              <div><strong>Phase:</strong> ${escapeHtml(stage)}</div>
+              <div class="muted">This panel is private to the moderator window.</div>
+            </div>
+            <div class="box">
+              <strong>Submitted answers (${Object.keys(answers).length})</strong>
+              ${answerItems || '<div class="muted">No answers yet.</div>'}
+            </div>
+            <div class="box">
+              <strong>Guess votes (${Object.keys(guesses).length})</strong>
+              ${guessItems || '<div class="muted">No guesses locked yet.</div>'}
+            </div>
+          `;
+        }
+
+        function renderLobby() {
+          const players = sortedPlayers();
+          const joinUrl = `${window.location.origin}/join/${sessionCode}`;
+          els.joinCode.textContent = sessionCode || '------';
+          els.joinUrl.textContent = joinUrl;
+          els.startBtn.disabled = players.length < 3;
+          els.lobbyHint.textContent =
+            players.length < 3
+              ? 'At least 3 players are needed. Keep sharing the link.'
+              : `${players.length} players ready.`;
+          els.openPanelBtn.style.display = 'inline-flex';
+
+          if (role === 'player') {
+            toScreen('playerLobbyScreen');
+            updatePhasePill('Lobby');
+            els.playerLobbyHint.textContent =
+              players.length < 3
+                ? `Players joined: ${players.length}. Waiting for at least 3 and a moderator start.`
+                : `Players joined: ${players.length}. Waiting for moderator start.`;
+            return;
+          }
+
+          toScreen('lobbyScreen');
+          updatePhasePill('Lobby');
+        }
+
+        function renderAnswerPhase() {
+          const game = session?.game || {};
+          const players = session?.players || {};
+          const answers = game.responses || {};
+          const allPlayers = sortedPlayers();
+          const roundIndex = Number(game.logicalRound || 0) + 1;
+          const totalRounds = Number(session?.settings?.roundsTotal || 5);
+
+          updatePhasePill('Answer');
+          toScreen('answerScreen');
+          els.answerRoundTitle.textContent = `Round ${roundIndex} of ${totalRounds}`;
+          els.promptText.textContent = game.promptText || 'Waiting for prompt...';
+          updateTimer(els.answerTimer);
+
+          if (role === 'moderator') {
+            els.answerModeratorView.style.display = 'grid';
+            els.answerForm.style.display = 'none';
+            const submitted = Object.keys(answers).length;
+            const total = allPlayers.length;
+            els.answerProgress.textContent = `${submitted} / ${total} answers received`;
+            els.answerList.innerHTML = allPlayers
+              .map((p) => {
+                const has = Boolean(answers[p.id]);
+                return `<div class="answer-item"><strong>${escapeHtml(p.name)}</strong> - ${has ? 'submitted' : 'pending'}</div>`;
+              })
+              .join('');
+            els.openGuessBtn.disabled = submitted < 2;
+            return;
+          }
+
+          els.answerModeratorView.style.display = 'none';
+          els.answerForm.style.display = 'grid';
+          const myAnswer = answers[playerId];
+          const locked = Boolean(myAnswer);
+          els.answerInput.disabled = locked;
+          els.submitAnswerBtn.disabled = locked;
+          if (locked) {
+            els.answerInput.value = myAnswer;
+            els.answerStatus.textContent = 'Answer submitted. Waiting for others...';
+          } else {
+            els.answerStatus.textContent = 'Write your answer before the timer ends.';
+          }
+          const myName = players[playerId]?.name || 'Player';
+          els.heroSubtitle.textContent = `${myName}, keep it fun and office-safe.`;
+        }
+
+        function renderGuessPhase() {
+          const game = session?.game || {};
+          const players = sortedPlayers();
+          const guesses = game.responses || {};
+          updatePhasePill('Guessing');
+          toScreen('guessScreen');
+          updateTimer(els.guessTimer);
+          els.guessAnswerText.textContent = game.selectedAnswerText || '...';
+
+          if (role === 'moderator') {
+            els.guessModeratorView.style.display = 'grid';
+            els.guessPlayerView.style.display = 'none';
+            const authorId = game.selectedAuthorId;
+            const totalEligible = players.filter((p) => p.id !== authorId).length;
+            const locked = Object.keys(guesses).length;
+            const authorName = session.players?.[authorId]?.name || 'Unknown';
+            els.guessProgress.textContent = `${locked} / ${totalEligible} guesses locked. Real author: ${authorName}`;
+            return;
+          }
+
+          els.guessModeratorView.style.display = 'none';
+          els.guessPlayerView.style.display = 'grid';
+          const amAuthor = playerId === game.selectedAuthorId;
+          const lockedGuess = guesses[playerId] || null;
+
+          if (amAuthor) {
+            els.guessHelp.textContent = 'This answer is yours. Sit this vote out and enjoy the reveal.';
+            els.guessChoices.innerHTML = '<div class="status-banner muted">You cannot vote on your own answer.</div>';
+            els.guessStatus.textContent = 'Waiting for other players to vote.';
+            return;
+          }
+
+          els.guessHelp.textContent = 'Choose the player you think wrote the answer. Your vote locks instantly.';
+          els.guessChoices.innerHTML = players
+            .map((p) => {
+              const selectedClass = lockedGuess === p.id ? 'selected' : '';
+              const disabled = lockedGuess ? 'disabled' : '';
+              return `<button class="guess-choice ${selectedClass}" ${disabled} data-guess="${escapeHtml(p.id)}">${escapeHtml(p.name)}</button>`;
+            })
+            .join('');
+
+          els.guessStatus.textContent = lockedGuess
+            ? `Vote locked: ${session.players?.[lockedGuess]?.name || 'Unknown'}.`
+            : 'Choose one name.';
+        }
+
+        function toFairRanking(entries) {
+          let currentRank = 0;
+          let lastScore = null;
+          return entries.map((item, index) => {
+            if (lastScore === null || item.score !== lastScore) {
+              currentRank = index + 1;
+              lastScore = item.score;
+            }
+            return { ...item, rank: currentRank };
+          });
+        }
+
+        function renderResultsPhase() {
+          const game = session?.game || {};
+          const players = session?.players || {};
+          const gains = game.roundGains || {};
+          const authorId = game.selectedAuthorId;
+          const author = players[authorId]?.name || 'Unknown';
+          const answer = game.selectedAnswerText || '';
+          const totalRounds = Number(session?.settings?.roundsTotal || 5);
+          updatePhasePill('Results');
+          toScreen('roundResultsScreen');
+
+          els.resultsTitle.textContent = `Round ${Number(game.logicalRound || 0) + 1} results`;
+          els.resultsSummary.innerHTML = `<strong>Answer:</strong> ${escapeHtml(answer)}<br/><strong>Author:</strong> ${escapeHtml(author)}`;
+
+          const rows = sortedPlayers().map((p) => {
+            const delta = gains[p.id] || 0;
+            const winner = delta > 1 ? 'winner' : '';
+            return `
+              <div class="result-item ${winner}">
+                <strong>${escapeHtml(p.name)}</strong> gained <strong>${delta}</strong> point${delta === 1 ? '' : 's'}
+              </div>
+            `;
+          });
+          els.resultsList.innerHTML = rows.join('');
+
+          const nextExists = Number(game.logicalRound || 0) + 1 < totalRounds;
+          els.nextRoundBtn.style.display = role === 'moderator' && nextExists ? 'inline-flex' : 'none';
+          els.showFinalBtn.style.display = role === 'moderator' && !nextExists ? 'inline-flex' : 'none';
+        }
+
+        function runConfetti() {
+          const container = document.createElement('div');
+          container.className = 'confetti';
+          const colors = ['#ffc857', '#ff9f1c', '#49c96d', '#6fa8ff', '#ffffff'];
+          for (let i = 0; i < 90; i += 1) {
+            const piece = document.createElement('div');
+            piece.className = 'confetti-piece';
+            piece.style.left = `${Math.random() * 100}%`;
+            piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+            piece.style.animationDuration = `${2.2 + Math.random() * 1.8}s`;
+            piece.style.animationDelay = `${Math.random() * 0.3}s`;
+            piece.style.transform = `translateY(-20%) rotate(${Math.random() * 360}deg)`;
+            container.appendChild(piece);
+          }
+          document.body.appendChild(container);
+          window.setTimeout(() => container.remove(), 4200);
+        }
+
+        function renderFinalPhase() {
+          const scores = getScoreMap();
+          const ranked = toFairRanking(
+            sortedPlayers()
+              .map((p) => ({ id: p.id, name: p.name || 'Player', score: scores[p.id] || 0 }))
+              .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name))
+          );
+
+          updatePhasePill('Final');
+          toScreen('finalScreen');
+          const topScore = ranked[0]?.score ?? 0;
+          const winners = ranked.filter((r) => r.score === topScore);
+          els.winnerLine.textContent =
+            winners.length > 1
+              ? `Tie winners: ${winners.map((w) => w.name).join(', ')} (${topScore} pts)`
+              : `Winner: ${winners[0]?.name || 'Nobody'} (${topScore} pts)`;
+
+          els.finalList.innerHTML = ranked
+            .map((row) => {
+              const isWinner = row.score === topScore;
+              const moodClass = isWinner ? '' : 'deflate';
+              return `
+                <div class="final-item ${moodClass}">
+                  <div class="rank-badge">#${row.rank}</div>
+                  <div><strong>${escapeHtml(row.name)}</strong></div>
+                  <div><strong>${row.score}</strong> pts</div>
+                </div>
+              `;
+            })
+            .join('');
+
+          if (role === 'moderator') {
+            els.playAgainBtn.style.display = 'inline-flex';
+          } else {
+            els.playAgainBtn.style.display = 'none';
+          }
+          runConfetti();
+        }
+
+        function render() {
+          if (!statusReady) {
+            toScreen('loadingScreen');
+            return;
+          }
+
+          if (!session) {
+            toScreen('loadingScreen');
+            return;
+          }
+
+          renderPlayerBoard();
+          renderModeratorPanel();
+
+          const stage = session?.game?.stage || session?.status || 'lobby';
+          if (stage === 'lobby') {
+            renderLobby();
+          } else if (stage === 'answer') {
+            renderAnswerPhase();
+          } else if (stage === 'guess') {
+            renderGuessPhase();
+          } else if (stage === 'results') {
+            renderResultsPhase();
+          } else if (stage === 'ended') {
+            renderFinalPhase();
+          }
+        }
+
+        function getNextPrompt(usedIndexes = []) {
+          const candidateIndexes = PROMPTS.map((_, idx) => idx).filter((idx) => !usedIndexes.includes(idx));
+          const pool = candidateIndexes.length ? candidateIndexes : PROMPTS.map((_, idx) => idx);
+          const pick = pool[Math.floor(Math.random() * pool.length)];
+          return { promptIndex: pick, promptText: PROMPTS[pick] };
+        }
+
+        async function startGame() {
+          const roundsTotal = Number.parseInt(els.roundCountSel.value, 10) || 5;
+          const answerSeconds = Number.parseInt(els.answerTimeSel.value, 10) || 45;
+          const guessSeconds = Number.parseInt(els.guessTimeSel.value, 10) || 30;
+          const players = sortedPlayers();
+          if (players.length < 3) return;
+
+          const scores = {};
+          players.forEach((p) => {
+            scores[p.id] = 0;
+          });
+
+          const prompt = getNextPrompt([]);
+          const patch = {
+            'settings/roundsTotal': roundsTotal,
+            'settings/answerSeconds': answerSeconds,
+            'settings/guessSeconds': guessSeconds,
+            'game/stage': 'answer',
+            'game/mode': 'quiz-vote',
+            'game/phase': 'question',
+            'game/roundIndex': 0,
+            'game/submissionRound': 0,
+            'game/logicalRound': 0,
+            'game/usedPromptIndexes': [prompt.promptIndex],
+            'game/promptIndex': prompt.promptIndex,
+            'game/promptText': prompt.promptText,
+            'game/responses': {},
+            'game/selectedAuthorId': null,
+            'game/selectedAnswerText': '',
+            'game/scores': scores,
+            'game/roundGains': {},
+            'game/timerEndsAt': Date.now() + answerSeconds * 1000
+          };
+          await patchSession(patch, 'playing');
+        }
+
+        async function submitResponse(value) {
+          if (!sessionCode || !playerId) return;
+          await fetchJson(`/api/multiplayer/sessions/${sessionCode}/answers`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ playerId, guess: value })
+          });
+        }
+
+        async function submitAnswer() {
+          const value = els.answerInput.value.trim();
+          if (!value || !sessionCode || !playerId) return;
+          await submitResponse(value);
+        }
+
+        async function openGuessPhase() {
+          const game = session?.game || {};
+          const answers = Object.entries(game.responses || {});
+          if (answers.length < 2) return;
+
+          const [authorId, answerText] = answers[Math.floor(Math.random() * answers.length)];
+          const guessSeconds = Number(session?.settings?.guessSeconds || 30);
+          const nextSubmissionRound = Number(game.submissionRound || 0) + 1;
+
+          await patchSession({
+            'game/stage': 'guess',
+            'game/phase': 'question',
+            'game/roundIndex': nextSubmissionRound,
+            'game/submissionRound': nextSubmissionRound,
+            'game/selectedAuthorId': authorId,
+            'game/selectedAnswerText': answerText,
+            'game/responses': {},
+            'game/timerEndsAt': Date.now() + guessSeconds * 1000
+          });
+        }
+
+        async function submitGuess(targetId) {
+          const game = session?.game || {};
+          if (game.selectedAuthorId === playerId) return;
+          if (game.responses?.[playerId]) return;
+          await submitResponse(targetId);
+        }
+
+        function computeRoundGains() {
+          const game = session?.game || {};
+          const authorId = game.selectedAuthorId;
+          const guesses = game.responses || {};
+          const gains = {};
+          const players = Object.keys(session?.players || {});
+          players.forEach((pid) => {
+            gains[pid] = 0;
+          });
+
+          for (const [pid, picked] of Object.entries(guesses)) {
+            if (pid === authorId) continue;
+            if (picked === authorId) {
+              gains[pid] += 2;
+            } else {
+              gains[authorId] += 1;
+            }
+          }
+          return gains;
+        }
+
+        async function finishRound() {
+          const game = session?.game || {};
+          const gains = computeRoundGains();
+          const scores = { ...(game.scores || {}) };
+          for (const [pid, gain] of Object.entries(gains)) {
+            scores[pid] = (scores[pid] || 0) + gain;
+          }
+
+          await patchSession({
+            'game/stage': 'results',
+            'game/phase': 'results',
+            'game/roundGains': gains,
+            'game/scores': scores,
+            'game/timerEndsAt': 0
+          });
+        }
+
+        async function nextRound() {
+          const game = session?.game || {};
+          const nextRound = Number(game.logicalRound || 0) + 1;
+          const nextSubmissionRound = Number(game.submissionRound || 0) + 1;
+          const used = game.usedPromptIndexes || [];
+          const prompt = getNextPrompt(used);
+          const answerSeconds = Number(session?.settings?.answerSeconds || 45);
+          await patchSession({
+            'game/stage': 'answer',
+            'game/mode': 'quiz-vote',
+            'game/phase': 'question',
+            'game/roundIndex': nextSubmissionRound,
+            'game/submissionRound': nextSubmissionRound,
+            'game/logicalRound': nextRound,
+            'game/promptIndex': prompt.promptIndex,
+            'game/promptText': prompt.promptText,
+            'game/usedPromptIndexes': [...used, prompt.promptIndex],
+            'game/responses': {},
+            'game/selectedAuthorId': null,
+            'game/selectedAnswerText': '',
+            'game/roundGains': {},
+            'game/timerEndsAt': Date.now() + answerSeconds * 1000
+          });
+        }
+
+        async function endGame() {
+          await patchSession({ 'game/stage': 'ended', 'game/phase': 'ended', 'game/timerEndsAt': 0 }, 'ended');
+        }
+
+        async function resetToLobby() {
+          await patchSession(
+            {
+              'game/phase': 'lobby',
+              'game/roundIndex': 0,
+              'game/submissionRound': 0,
+              'game/logicalRound': 0,
+              'game/promptIndex': null,
+              'game/promptText': '',
+              'game/usedPromptIndexes': [],
+              'game/responses': {},
+              'game/selectedAuthorId': null,
+              'game/selectedAnswerText': '',
+              'game/scores': {},
+              'game/roundGains': {},
+              'game/timerEndsAt': 0
+            },
+            'lobby'
+          );
+        }
+
+        function bindEvents() {
+          els.copyLinkBtn.addEventListener('click', async () => {
+            if (!sessionCode) return;
+            const url = `${window.location.origin}/join/${sessionCode}`;
+            try {
+              await navigator.clipboard.writeText(url);
+              els.lobbyHint.textContent = 'Join link copied.';
+            } catch {
+              els.lobbyHint.textContent = url;
+            }
+          });
+
+          els.openPanelBtn.addEventListener('click', ensureModeratorPanel);
+
+          els.startBtn.addEventListener('click', () => {
+            if (role !== 'moderator') return;
+            startGame().catch((error) => {
+              console.error('Failed to start game', error);
+            });
+          });
+
+          els.roundCountSel.addEventListener('change', () => {
+            if (role !== 'moderator') return;
+            patchSession({ 'settings/roundsTotal': Number.parseInt(els.roundCountSel.value, 10) || 5 }).catch(
+              () => {}
+            );
+          });
+          els.answerTimeSel.addEventListener('change', () => {
+            if (role !== 'moderator') return;
+            patchSession({ 'settings/answerSeconds': Number.parseInt(els.answerTimeSel.value, 10) || 45 }).catch(
+              () => {}
+            );
+          });
+          els.guessTimeSel.addEventListener('change', () => {
+            if (role !== 'moderator') return;
+            patchSession({ 'settings/guessSeconds': Number.parseInt(els.guessTimeSel.value, 10) || 30 }).catch(
+              () => {}
+            );
+          });
+
+          els.answerForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            submitAnswer().catch((error) => {
+              console.error('Failed to submit answer', error);
+            });
+          });
+
+          els.openGuessBtn.addEventListener('click', () => {
+            if (role !== 'moderator') return;
+            openGuessPhase().catch((error) => {
+              console.error('Failed to open guess phase', error);
+            });
+          });
+
+          els.forceAnswerEndBtn.addEventListener('click', () => {
+            if (role !== 'moderator') return;
+            openGuessPhase().catch(() => {});
+          });
+
+          els.guessChoices.addEventListener('click', (event) => {
+            const target = event.target.closest('[data-guess]');
+            if (!target) return;
+            submitGuess(target.getAttribute('data-guess')).catch((error) => {
+              console.error('Failed to submit guess', error);
+            });
+          });
+
+          els.finishRoundBtn.addEventListener('click', () => {
+            if (role !== 'moderator') return;
+            finishRound().catch((error) => {
+              console.error('Failed to finish round', error);
+            });
+          });
+
+          els.forceGuessEndBtn.addEventListener('click', () => {
+            if (role !== 'moderator') return;
+            finishRound().catch(() => {});
+          });
+
+          els.nextRoundBtn.addEventListener('click', () => {
+            if (role !== 'moderator') return;
+            nextRound().catch((error) => {
+              console.error('Failed to start next round', error);
+            });
+          });
+
+          els.showFinalBtn.addEventListener('click', () => {
+            if (role !== 'moderator') return;
+            endGame().catch((error) => {
+              console.error('Failed to end game', error);
+            });
+          });
+
+          els.playAgainBtn.addEventListener('click', () => {
+            if (role !== 'moderator') return;
+            resetToLobby().catch((error) => {
+              console.error('Failed to reset game', error);
+            });
+          });
+        }
+
+        async function applyTimerTransitions() {
+          if (!session || role !== 'moderator') return;
+          const stage = session?.game?.stage;
+          if (stage !== 'answer' && stage !== 'guess') return;
+          if (readTimerSeconds() > 0) return;
+          if (stage === 'answer') {
+            await openGuessPhase();
+          } else if (stage === 'guess') {
+            await finishRound();
+          }
+        }
+
+        async function refreshSession() {
+          if (!sessionCode) return;
+          try {
+            session = await loadSession(sessionCode);
+            statusReady = true;
+            render();
+            if (role === 'moderator') {
+              await applyTimerTransitions();
+            }
+          } catch (error) {
+            console.error('Failed to refresh session', error);
+          }
+        }
+
+        async function bootstrap() {
+          bindEvents();
+          const configured = await checkStatus();
+          if (!configured) {
+            toScreen('configErrorScreen');
+            return;
+          }
+
+          const hash = parseHash();
+          if (hash.role === 'player' && hash.code && hash.pid) {
+            role = 'player';
+            playerId = hash.pid;
+            sessionCode = hash.code;
+            statusReady = true;
+            await refreshSession();
+          } else {
+            role = 'moderator';
+            const existingCode = hash.code;
+            const stored = existingCode ? loadModeratorRecord(existingCode) : null;
+            if (existingCode && stored?.moderatorId) {
+              sessionCode = existingCode;
+              moderatorId = stored.moderatorId;
+              statusReady = true;
+              await refreshSession();
+            } else {
+              toScreen('loadingScreen');
+              const created = await createSession();
+              sessionCode = created.code;
+              moderatorId = created.moderatorId;
+              saveModeratorRecord(sessionCode, moderatorId);
+              window.location.hash = `code=${sessionCode}&role=moderator`;
+              statusReady = true;
+              await refreshSession();
+            }
+          }
+
+          if (pollHandle) {
+            clearInterval(pollHandle);
+          }
+          pollHandle = setInterval(() => {
+            refreshSession();
+            if (session?.game?.stage === 'answer') {
+              updateTimer(els.answerTimer);
+            }
+            if (session?.game?.stage === 'guess') {
+              updateTimer(els.guessTimer);
+            }
+          }, 1000);
+        }
+
+        bootstrap().catch((error) => {
+          console.error('Bootstrap failed', error);
+          toScreen('configErrorScreen');
+        });
+      })();
+    </script>
+  </body>
+</html>

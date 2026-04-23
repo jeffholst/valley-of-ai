@@ -1,0 +1,37 @@
+{
+  "id": "guess-who-said-it",
+  "name": "Guess Who Said It",
+  "shortDescription": "A host-led Zoom icebreaker where players submit anonymous prompt answers, then everyone guesses who wrote a revealed response. Fast rounds, live scores, and a final tie-aware leaderboard keep it playful and low-pressure.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-04-23T11:06:30Z",
+  "category": "Icebreakers",
+  "status": "active",
+  "tags": [
+    "icebreaker",
+    "multiplayer",
+    "prompt-game",
+    "social-deduction",
+    "zoom",
+    "moderator",
+    "leaderboard"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "maxScore": 200,
+  "generation": {
+    "agentName": "Codex",
+    "llmModel": "GPT-5.4",
+    "startTime": "2026-04-23T11:06:30Z",
+    "endTime": "2026-04-23T11:15:11Z",
+    "totalTokensIn": 23700,
+    "totalTokensOut": 14800,
+    "runId": "run-20260423T110630Z-c84085",
+    "notes": "Built from approved issue #401 with a distinct anonymous-answer author-guess loop to reduce overlap with existing word-focused icebreakers. Implemented on the shared multiplayer session API with moderator-created room codes and /join/{code} player entry. The issue requested no social sharing UI, so no share drawer trigger was added. Token counts are estimated."
+  },
+  "suggestion": {
+    "issueNumber": 401,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/401",
+    "prompt": "## App Suggestion\n\n**Category:** Icebreakers\n**Requestor:** Jeff Holst\n\n### Description\n\nMultiplayer Zoom icebreaker called \"Guess Who Said It\". Moderator shares screen; players join from their own devices via a shared link. Flow: moderator join screen → waiting room → answer round → guessing round → round results → final leaderboard. Use fun, safe, office-appropriate prompts. Moderator screen should show join link + copy button, round count selector, persistent player board (name, status, score), round controls, timer, and a hidden reveal-author panel with submitted answers. Player flow: enter name, wait for moderator, answer each prompt, submit, then guess which player wrote a shown answer from a grid of names; disable controls after voting until round ends. Include subtle motion, confetti for winners, gentle comic-deflate for non-winners, and no social sharing UI.",
+    "requestor": "Jeff Holst"
+  }
+}
