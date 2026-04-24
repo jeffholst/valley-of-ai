@@ -1,5 +1,50 @@
 [
   {
+    "id": "2026/04/24/impostor-question",
+    "name": "The Impostor Question",
+    "shortDescription": "A host-led Zoom icebreaker where everyone answers a vague question, one hidden impostor bluffs without knowing the shared topic, and the group votes before a final topic-guess twist.",
+    "thumbnailUrl": "/apps/2026/04/24/impostor-question/thumbnail.svg",
+    "createdAt": "2026-04-24T20:03:40Z",
+    "year": 2026,
+    "month": 4,
+    "day": 24,
+    "category": "Icebreakers",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "icebreaker",
+      "multiplayer",
+      "hidden-role",
+      "social-deduction",
+      "zoom",
+      "moderator",
+      "party"
+    ],
+    "route": "/apps/2026/04/24/impostor-question",
+    "appPath": "/apps/2026/04/24/impostor-question/index.html",
+    "generation": {
+      "agentName": "Codex",
+      "llmModel": "GPT-5",
+      "startTime": "2026-04-24T20:03:40Z",
+      "endTime": "2026-04-24T20:12:00Z",
+      "totalTokensIn": 32000,
+      "totalTokensOut": 21000,
+      "runId": "run-20260424T200340Z-f77c93",
+      "notes": "Built from approved issue #407. Duplication risk was high for Icebreakers, so the implementation emphasizes a distinct hidden-role topic-deduction loop rather than anonymous answer guessing or word-clue team play. Uses the shared multiplayer session API, /join/{code} entry, moderator-authored state transitions, and player answer/vote submissions through the shared answers endpoint. Token counts are estimated."
+    },
+    "suggestion": {
+      "issueNumber": 407,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/407",
+      "prompt": "Build app called The Impostor Question for Zoom-style icebreaker game. Moderator shares a join link, chooses rounds, and sees player grid, status, and score. Players join, enter their name, and wait for start. One random impostor is assigned while others get a shared topic. A vague question is shown, players take turns answering, then vote who the impostor is with no self-vote. Reveal impostor and votes; if not caught, impostor guesses the topic. Maintain room state for players, roles, topic, responses, votes, and gameState with large, clean, Zoom-friendly UI.",
+      "requestor": "Jeff Holst"
+    },
+    "improvements": null,
+    "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
+    "backups": null
+  },
+  {
     "id": "2026/04/23/guess-who-said-it",
     "name": "Guess Who Said It",
     "shortDescription": "A host-led Zoom icebreaker where players submit anonymous prompt answers, then everyone guesses who wrote a revealed response. Fast rounds, live scores, and a final tie-aware leaderboard keep it playful and low-pressure.",
