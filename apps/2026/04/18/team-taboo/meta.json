@@ -36,5 +36,6 @@
       "llmModel": "claude-opus-4-7",
       "runId": "run-20260418T202731Z-3e9b28"
     }
-  ]
+  ],
+  "leaderboard": false
 }

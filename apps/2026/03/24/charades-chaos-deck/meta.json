@@ -39,5 +39,6 @@
     "totalTokensOut": 1400,
     "runId": "run-20260324T070031Z-fa2a04",
     "notes": "Selected from vote-and-category-analysis recommendation (Entertainment) and built as a social charades experience with keyboard/touch support."
-  }
+  },
+  "leaderboard": false
 }

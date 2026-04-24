@@ -20,5 +20,6 @@
     "totalTokensOut": 8200,
     "runId": "run-20260305T215412Z-f06c2c",
     "notes": "Implemented user suggestion for Color Palette Generator with comprehensive color theory harmonies and multiple export formats."
-  }
+  },
+  "leaderboard": false
 }

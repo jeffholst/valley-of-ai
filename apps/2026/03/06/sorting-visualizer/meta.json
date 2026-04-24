@@ -20,5 +20,6 @@
     "totalTokensOut": 12600,
     "runId": "run-20260306T194500Z-b7e42a",
     "notes": "Original creation - interactive sorting algorithm visualizer with 5 algorithms, speed controls, and multiple initial conditions."
-  }
+  },
+  "leaderboard": false
 }

@@ -33,5 +33,6 @@
     "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/308",
     "prompt": "Category: Games | Benchmark Breakout request. Treat as a controlled, repeatable test where duplication is acceptable. Build a premium mobile-first Breakout game with smooth paddle control for touch, mouse, and keyboard; responsive layout; crisp graphics; fluid animation; satisfying collisions; readable HUD; score, lives, combo/bonus scoring; increasing difficulty; multiple brick patterns; fair rebound angles; progressive speed tuning; balanced power-ups; particle effects; subtle screen shake; adaptive audio; polished transitions; onboarding; sound toggle; 44px+ touch targets; no hover UI; stable 60 FPS; no placeholders; no broken features; no build tools.",
     "requestor": "Jeff Holst"
-  }
+  },
+  "leaderboard": false
 }

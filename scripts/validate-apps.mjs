@@ -11,7 +11,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { buildAppsRegistry } from './apps-registry.mjs';
+import { buildAppsRegistry, detectLeaderboardUsageFromHtml } from './apps-registry.mjs';
 import { validateVersusData, buildVersusRegistry } from './versus-registry.mjs';
 export { parseIssueTemplateCategories, parseSharedPromptCategories } from './category-parsers.mjs';
 import { parseIssueTemplateCategories, parseSharedPromptCategories } from './category-parsers.mjs';
@@ -489,6 +489,26 @@ function main() {
     }
 
     const errors = validateMetaJson(metaData, schema);
+
+    const relPathParts = rel.split(path.sep);
+    if (!relPathParts.includes('backups')) {
+      const appDir = path.dirname(file);
+      const indexPath = path.join(appDir, 'index.html');
+      if (fs.existsSync(indexPath)) {
+        try {
+          const html = fs.readFileSync(indexPath, 'utf8');
+          const expectedLeaderboard = detectLeaderboardUsageFromHtml(html);
+          if (metaData.leaderboard !== expectedLeaderboard) {
+            errors.push(
+              `leaderboard: expected ${expectedLeaderboard} based on index.html usage; run \`npm run generate:apps\``
+            );
+          }
+        } catch (e) {
+          errors.push(`cannot read sibling index.html for leaderboard validation: ${e.message}`);
+        }
+      }
+    }
+
     if (errors.length > 0) {
       metaFailures.push({ file: rel, errors });
     }

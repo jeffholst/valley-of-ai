@@ -19,5 +19,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260323T070037Z-1a17e4",
     "notes": "Built a static mobile-first tic-tac-toe app with minimax AI, score tracking, keyboard navigation, and swipe-to-reset gesture support."
-  }
+  },
+  "leaderboard": false
 }

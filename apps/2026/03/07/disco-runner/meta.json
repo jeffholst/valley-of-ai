@@ -20,5 +20,6 @@
     "totalTokensOut": 12000,
     "runId": "run-20260307T181500Z-a6229f",
     "notes": "Side-scrolling runner with a funky twist: collecting disco balls flips gravity. Features neon colors, disco dancer character with afro, and pulsing background effects."
-  }
+  },
+  "leaderboard": false
 }

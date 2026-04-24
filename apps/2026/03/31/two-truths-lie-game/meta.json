@@ -120,5 +120,6 @@
     "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/243",
     "prompt": "Build a browser-based \"2 Truths and a Lie\" game for a Zoom screen-share host. Start with a setup screen where the host enters participant names. Then show instructions and a 60-second countdown for everyone to think of 3 statements (2 true, 1 false). After the first round timer ends, show a wheel containing all participant names and a button to spin and randomly choose the next speaker. For each turn, show a scoreboard where the host records which statement (1, 2, or 3) each participant guessed was the lie. After reveal, mark everyone who guessed correctly as round winners. Support multiple rounds; only the first round uses the 60-second timer. Make it simple, responsive, and easy to run live on a shared screen.",
     "requestor": "Jeff Holst"
-  }
+  },
+  "leaderboard": false
 }

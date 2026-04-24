@@ -173,7 +173,7 @@ See [Project Structure](wiki/Project-Structure.md) for the full annotated tree c
 ## 📊 App Metadata
 
 Every app includes a `meta.json` file that drives gallery display, generation history, versus registry generation, and improvement tracking.
-See [App Metadata Reference](wiki/App-Metadata-Reference.md) for the annotated example, field-by-field notes, and the optional `visible`, `allowImprovements`, and `maxScore` flags.
+See [App Metadata Reference](wiki/App-Metadata-Reference.md) for the annotated example, field-by-field notes, and the `visible`, `allowImprovements`, `leaderboard`, and `maxScore` flags.
 
 ---
 

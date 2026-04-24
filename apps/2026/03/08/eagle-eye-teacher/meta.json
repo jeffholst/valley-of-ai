@@ -20,5 +20,6 @@
     "totalTokensOut": 8500,
     "runId": "run-20260308T113000Z-4d43ac",
     "notes": "Middle school classroom themed reaction game. Teacher must spot misbehavior while avoiding penalizing good students."
-  }
+  },
+  "leaderboard": false
 }

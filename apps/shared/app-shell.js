@@ -13,6 +13,7 @@
   const DEFAULT_MAIN_SITE_URL = '';
   const DEFAULT_MAIN_SITE_NAME = '';
   let shellConfig = null;
+  let leaderboardSupportPromise = null;
 
   function isResolvedValue(value, placeholder) {
     return !!value && value !== placeholder;
@@ -112,6 +113,44 @@
     }
 
     return false;
+  }
+
+  async function pageSupportsLeaderboard(appId) {
+    // Explicit page-level override wins.
+    if (document.documentElement?.hasAttribute('data-voa-has-leaderboard')) {
+      return document.documentElement.getAttribute('data-voa-has-leaderboard') === 'true';
+    }
+
+    // Optional meta-level override for future templates.
+    const metaValue = document
+      .querySelector('meta[name="voa-app-leaderboard"]')
+      ?.getAttribute('content')
+      ?.trim()
+      ?.toLowerCase();
+    if (metaValue === 'true') {
+      return true;
+    }
+    if (metaValue === 'false') {
+      return false;
+    }
+
+    // Canonical source of truth: sibling app meta.json leaderboard boolean.
+    if (appId) {
+      try {
+        const response = await fetch('./meta.json', { cache: 'force-cache' });
+        if (response.ok) {
+          const parsed = await response.json();
+          if (typeof parsed?.leaderboard === 'boolean') {
+            return parsed.leaderboard;
+          }
+        }
+      } catch {
+        // Fall through to runtime hook detection.
+      }
+    }
+
+    // Legacy fallback for older pages if metadata is unavailable.
+    return pageUsesLeaderboardHook();
   }
 
   function getLocalVoteRecord(appId) {
@@ -1633,7 +1672,9 @@
     improveLink.title = 'Suggest an improvement for this app';
     container.appendChild(improveLink);
 
-    if (pageUsesLeaderboardHook()) {
+    const leaderboardSupported =
+      leaderboardSupportPromise || (leaderboardSupportPromise = pageSupportsLeaderboard(appId));
+    if (await leaderboardSupported) {
       const lbHeaderBtn = document.createElement('button');
       lbHeaderBtn.id = 'voa-lb-btn';
       lbHeaderBtn.type = 'button';

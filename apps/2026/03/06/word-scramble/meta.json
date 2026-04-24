@@ -80,5 +80,6 @@
     "totalTokensOut": 12200,
     "runId": "run-20260306T143200Z-318d76",
     "notes": "Generated as a test of the full agent workflow including git operations and transactional logging."
-  }
+  },
+  "leaderboard": false
 }

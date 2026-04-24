@@ -46,5 +46,6 @@
       "agentName": "Claude Code",
       "llmModel": "claude-opus-4-6"
     }
-  ]
+  ],
+  "leaderboard": false
 }

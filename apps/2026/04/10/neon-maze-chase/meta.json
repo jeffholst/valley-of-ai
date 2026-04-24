@@ -25,5 +25,6 @@
     "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/304",
     "prompt": "## App Suggestion\n\n**Category:** Games\n**Requestor:** Jeff Holst\n\n### Description\n\nBuild a mobile\\-first Pac\\-Man\\-inspired browser game using plain JavaScript and HTML5 Canvas in a single self\\-contained HTML file with embedded CSS and JS\\. Include a tile\\-based maze, walls, pellets, score, lives, start screen, game over, restart, and win state\\. The player must move smoothly on the grid and collect all pellets to clear the level\\. Add 4 ghosts with simple but distinct chase behavior; they cannot be purely random\\. Include proper collision detection, responsive canvas sizing, portrait-friendly layout, keyboard controls, and touch controls for phones\\. Keep visuals retro and simple using Canvas shapes only—no external assets or libraries\\. Code should be modular, clean, and fully playable, with separated logic for state, rendering, input, and enemy behavior\\. Prioritize correctness, smooth gameplay, and mobile usability\\.",
     "requestor": "Jeff Holst"
-  }
+  },
+  "leaderboard": false
 }

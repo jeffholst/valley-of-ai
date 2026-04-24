@@ -45,5 +45,6 @@
       "agentName": "Codex",
       "llmModel": "GPT-5.4"
     }
-  ]
+  ],
+  "leaderboard": false
 }

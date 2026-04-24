@@ -9,8 +9,7 @@ export const metadata = {
 
 export const revalidate = 60;
 
-async function fetchTopScoresByApp() {
-  const appIds = appsData.map((app) => app.id).filter(Boolean);
+async function fetchTopScoresByApp(appIds) {
   const supabase = createServiceClient();
 
   if (!supabase) {
@@ -91,11 +90,18 @@ function ScoreCard({ app, scores }) {
 }
 
 export default async function LeaderboardPage() {
-  const scoreGroups = await fetchTopScoresByApp();
-  const appIds = Object.keys(scoreGroups);
+  const leaderboardCapableAppIds = appsData
+    .filter((app) => app?.leaderboard === true)
+    .map((app) => app.id);
+  const scoreGroups = await fetchTopScoresByApp(leaderboardCapableAppIds);
 
   const appsWithScores = appsData
-    .filter((app) => appIds.includes(app.id) && app.status === 'active')
+    .filter(
+      (app) =>
+        app.status === 'active' &&
+        leaderboardCapableAppIds.includes(app.id) &&
+        (scoreGroups[app.id]?.length ?? 0) > 0
+    )
     .sort((a, b) => {
       // Sort by number of scores desc, then by highest score desc
       const aScores = scoreGroups[a.id] ?? [];

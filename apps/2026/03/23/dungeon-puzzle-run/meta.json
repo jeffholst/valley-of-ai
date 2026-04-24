@@ -37,5 +37,6 @@
     "totalTokensOut": 9400,
     "runId": "run-20260323T174555Z-c330b7",
     "notes": "Built from approved community suggestion #175. All 6 puzzle types implemented: logic (truth grid), memory (pair matching), timing (cursor stop), tile (pattern match), pathing (draw path), resource (budget allocation). Seeded mulberry32 RNG for reproducible runs. Token counts are estimates."
-  }
+  },
+  "leaderboard": false
 }

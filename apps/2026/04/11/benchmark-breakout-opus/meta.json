@@ -33,5 +33,6 @@
     "totalTokensOut": 25000,
     "runId": "run-20260411T031917Z-68c4bc",
     "notes": "Benchmark Breakout built by Claude Opus 4.6 from issue #306. Features canvas-based rendering, Web Audio API synthesized SFX, 5 level patterns, 3 power-up types, combo multiplier scoring, particle effects, and screen shake. Token counts are estimates."
-  }
+  },
+  "leaderboard": false
 }

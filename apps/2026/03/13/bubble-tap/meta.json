@@ -20,5 +20,6 @@
     "totalTokensOut": 7150,
     "runId": "run-20260313T001721Z-3ba148",
     "notes": "Mobile-first responsive bubble popping game with 3 difficulty levels (Easy/Normal/Hard), touch and click controls, real-time score/combo tracking, particle effects, and local storage for persistent best scores. Fully themed with dark/light mode support and responsive design for all screen sizes."
-  }
+  },
+  "leaderboard": false
 }

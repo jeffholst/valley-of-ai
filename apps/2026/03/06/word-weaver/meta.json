@@ -20,5 +20,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260307T020216Z-324c8d",
     "notes": "Token counters unavailable in runtime; set to 0."
-  }
+  },
+  "leaderboard": false
 }

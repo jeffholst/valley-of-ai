@@ -59,5 +59,6 @@
     "runId": "run-20260308T030021Z-4c5ceb",
     "notes": "Nightly build: Space Invaders clone. Token counters unavailable in runtime."
   },
-  "votes": 0
+  "votes": 0,
+  "leaderboard": false
 }

@@ -20,5 +20,6 @@
     "totalTokensOut": 9500,
     "runId": "run-20260308T182000Z-d4e5f6",
     "notes": "Evel Knievel-inspired motorcycle stunt game with ramp launching, mid-air flips, star collection, bus obstacles, and progressive difficulty. Canvas-based rendering with fire trail particles."
-  }
+  },
+  "leaderboard": false
 }
