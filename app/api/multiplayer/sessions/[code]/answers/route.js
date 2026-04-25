@@ -72,29 +72,26 @@ export async function POST(request, { params }) {
     }
 
     const roundIndex = Number(game.roundIndex || 0);
-    if (Number(player.voteRound || 0) === roundIndex && player.lastAnswer) {
-      return Response.json({ ok: true, accepted: true, alreadySubmitted: true });
-    }
 
-    const responses = structuredClone(game.responses || {});
-    responses[playerId] = guess;
-    player.lastAnswer = guess;
-    player.voteRound = roundIndex;
-    player.updatedAt = new Date().toISOString();
-    players[playerId] = player;
-    game.responses = responses;
+    // Use an atomic JSONB merge via RPC to avoid lost-update races when
+    // multiple players vote simultaneously.
+    const { data: rpcRows, error: rpcError } = await supabase.rpc('record_session_vote', {
+      p_code: code,
+      p_player_id: playerId,
+      p_voted_for: guess,
+      p_round: roundIndex,
+    });
 
-    const { error: updateError } = await supabase
-      .from('multiplayer_sessions')
-      .update({ players, game })
-      .eq('code', code);
-
-    if (updateError) {
-      console.error('Failed to persist quiz vote', updateError);
+    if (rpcError) {
+      console.error('Failed to persist quiz vote', rpcError);
       return Response.json({ error: 'Failed to submit answer' }, { status: 500 });
     }
 
-    return Response.json({ ok: true, accepted: true, alreadySubmitted: false });
+    const result = rpcRows?.[0];
+    const accepted = Boolean(result?.accepted);
+    const alreadySubmitted = Boolean(result?.already_submitted);
+
+    return Response.json({ ok: true, accepted, alreadySubmitted });
   }
 
   if (row.status !== 'playing' || game.roundState !== 'active') {
