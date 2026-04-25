@@ -48,6 +48,16 @@
         "implementedAt": "2026-04-24T20:27:27Z",
         "agentName": "Codex",
         "llmModel": "GPT-5"
+      },
+      {
+        "issueNumber": 411,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/411",
+        "runId": "run-20260425T214321Z-cf67d4",
+        "description": "Fixed voting race condition: concurrent vote submissions caused last-writer-wins data loss. Added record_session_vote SQL RPC with SELECT FOR UPDATE row locking and JSONB || merge so all votes are recorded atomically.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-25T22:18:05Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
       }
     ],
     "allowImprovements": true,
@@ -58,6 +68,11 @@
         "runId": "run-20260424T202727Z-65ce0a",
         "path": "backups/run-20260424T202727Z-65ce0a/index.html",
         "url": "/apps/2026/04/24/impostor-question/backups/run-20260424T202727Z-65ce0a/index.html"
+      },
+      {
+        "runId": "run-20260425T214321Z-cf67d4",
+        "path": "backups/run-20260425T214321Z-cf67d4/index.html",
+        "url": "/apps/2026/04/24/impostor-question/backups/run-20260425T214321Z-cf67d4/index.html"
       }
     ]
   },
