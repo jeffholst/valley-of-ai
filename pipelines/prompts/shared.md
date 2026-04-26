@@ -472,6 +472,7 @@ A shared, app-agnostic multiplayer backend is available for any app that needs h
 
 - Supabase table `public.multiplayer_sessions` — one row per game; generic `settings`, `game`, and `players` JSONB columns
 - RPC `public.add_multiplayer_player` — atomic player-join merge (service-role only)
+- RPC `public.record_session_vote` — atomic vote-recording merge for quiz-vote mode; uses `SELECT … FOR UPDATE` row locking so concurrent votes are never clobbered (service-role only)
 - Route handlers under `app/api/multiplayer/`:
   - `GET /api/multiplayer/status` — returns `{ configured: boolean }`
   - `POST /api/multiplayer/sessions` — moderator creates a session
@@ -489,16 +490,64 @@ A shared, app-agnostic multiplayer backend is available for any app that needs h
 - Players are anonymous: `POST .../players` returns a server-generated `playerId`; the `/join/[code]` page stores `{ playerId, name }` in localStorage so refreshing the tab auto-reconnects.
 - Any visitor with the session code can GET the snapshot and POST a player — knowledge of the code is the gate.
 
+**Session lifecycle**
+
+`status` is the server-enforced lifecycle field (`lobby → playing → ended`). `game/stage` is a free-form string your app defines — it drives in-game phase display but the backend ignores its value. Change `status` via the `status` key in the PATCH body; change `game/stage` via the `patch` map.
+
+The `/join/[code]` page redirects joiners into the app with URL hash params:
+`#code=CODE&pid=PLAYER_UUID&role=player`
+
+The moderator opens the app directly (no join page) with:
+`#code=CODE&role=moderator`
+
+Read these on page load to determine role and player identity.
+
+**Quiz-vote mode (icebreaker pattern)**
+
+Set `game/mode: 'quiz-vote'` at game start. This tells `POST /sessions/:code/answers` to use the quiz-vote path instead of the first-correct/word-guessing path.
+
+The quiz-vote answers endpoint dispatches on `game.stage`:
+
+| `game.stage`                | Behavior                                                                                            |
+| --------------------------- | --------------------------------------------------------------------------------------------------- |
+| `'vote'`                    | Calls `record_session_vote` RPC — atomic, concurrent-safe; pass the voted-for `playerId` as `guess` |
+| `'answer'` or anything else | Non-atomic read-modify-write — safe for turn-based answer phases (one writer at a time)             |
+
+Both paths store the submission at `game.responses[playerId]` and track idempotency via `player.voteRound` / `player.lastAnswer`. The endpoint uses `game.roundIndex` as the idempotency key — increment it when transitioning between phases to reset the per-player guard.
+
+**Clearing responses between phases:** `game.responses` is reused for every phase. Clear it on transition (e.g., `'game/responses': {}`). Failing to clear causes players to appear "already submitted" in the next phase because their previous `lastAnswer` still matches the current `roundIndex`.
+
+**Recommended `roundIndex` convention** (avoids collisions across three phases per logical round):
+
+```
+answer phase:      roundIndex = logicalRound * 3
+vote phase:        roundIndex = logicalRound * 3 + 1
+topic-guess phase: roundIndex = logicalRound * 3 + 2
+```
+
+**Timer support:** Store `game.timerEndsAt` as a UTC millisecond timestamp (`Date.now() + durationMs`). The answers endpoint enforces it for non-answer stages. Clients compute remaining time from the polled snapshot: `Math.max(0, Math.ceil((endsAt - Date.now()) / 1000))`.
+
 **Contract for new multiplayer apps**
 
 1. Do not create new API routes or tables. Use the endpoints above as-is.
 2. At session create time, pass the app's `appId`, `appName`, and `appPath` in the POST body so `/join/[code]` can redirect correctly.
-3. Keep canonical game-state mutations behind the moderator PATCH gate (`PATCH /sessions/:code`).
+3. **Persist the moderator key in localStorage** so the moderator can reconnect after a page reload:
+   ```js
+   // On session create:
+   localStorage.setItem(`voa:${APP_ID}:moderator:${code}`, JSON.stringify({ moderatorId }));
+   // On page load (moderator re-join):
+   const stored = JSON.parse(localStorage.getItem(`voa:${APP_ID}:moderator:${code}`) || 'null');
+   if (stored?.moderatorId) {
+     /* restore session */
+   }
+   ```
+4. Keep canonical game-state mutations behind the moderator PATCH gate (`PATCH /sessions/:code`).
    Player-originated writes must use the dedicated shared player endpoints (`POST /sessions/:code/answers` and `PATCH /sessions/:code/players/:playerId`) instead of adding new routes.
-4. Model game state inside the opaque `game` JSONB root; model lobby config inside `settings`. The backend does not enforce either shape.
-5. No realtime push is available — poll `GET /api/multiplayer/sessions/:code` on ~1 Hz and diff locally.
-6. Session-code generation must match the shared `generateSessionCode()` format in `lib/multiplayer/sessionCodes.js`. If your app cannot import that helper directly (for example, a self-contained static HTML app), use the same alphabet/logic rather than inventing a different code format.
-7. Reference implementation: [apps/2026/04/18/team-taboo/index.html](../../apps/2026/04/18/team-taboo/index.html).
+5. Model game state inside the opaque `game` JSONB root; model lobby config inside `settings`. The backend does not enforce either shape.
+6. No realtime push is available — poll `GET /api/multiplayer/sessions/:code` on ~1 Hz and diff locally.
+7. Session-code generation must match the shared `generateSessionCode()` format in `lib/multiplayer/sessionCodes.js`. If your app cannot import that helper directly (for example, a self-contained static HTML app), use the same alphabet/logic rather than inventing a different code format.
+8. **Player kick pattern:** set `players/{id}/kicked: true` and `players/{id}/kickedAt` via moderator PATCH. Filter kicked players client-side everywhere. No server-side enforcement.
+9. Reference implementations: [team-taboo](../../apps/2026/04/18/team-taboo/index.html) (team-based, timer-driven) and [impostor-question](../../apps/2026/04/24/impostor-question/index.html) (quiz-vote mode, hidden-role icebreaker).
 
 For the detailed data model, protocol walkthrough, and common questions (popup panels, authorization edge cases, rejoining, reset semantics) see the wiki page [Multiplayer Backend FAQ](https://github.com/jeffholst/valley-of-ai/wiki/Multiplayer-Backend-FAQ).
 
