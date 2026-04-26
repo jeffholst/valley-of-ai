@@ -64,6 +64,16 @@
       "implementedAt": "2026-04-26T12:49:45Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
+    },
+    {
+      "issueNumber": 416,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/416",
+      "runId": "run-20260426T130938Z-84671c",
+      "description": "Added private topic popup for moderators: main screen now shows 'Topic hidden' so Zoom screen-share is safe; a 'View topic in private window' button opens a popup with the topic and impostor name that the moderator can drag to their non-shared monitor; popup auto-updates via postMessage when a new round starts.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-04-26T13:11:32Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
     }
   ]
 }

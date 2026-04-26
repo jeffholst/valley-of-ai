@@ -443,6 +443,18 @@
         display: none !important;
       }
 
+      .role-value.mod-hidden {
+        color: var(--muted);
+        font-size: 1rem;
+        font-style: italic;
+      }
+
+      .btn.reveal {
+        background: linear-gradient(135deg, rgb(45 212 191 / 18%), rgb(45 212 191 / 8%));
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
       @media (max-width: 760px) {
         .hero {
           align-items: flex-start;
@@ -543,6 +555,7 @@
                 <div class="role-value" id="roleValue">Topic loading</div>
                 <p class="muted" id="roleHint">Answer naturally, but not too obviously.</p>
               </div>
+              <button class="btn reveal hide" id="topicPopupBtn" type="button">View topic in private window</button>
               <div class="big-card">
                 <div class="role-title">Question</div>
                 <div class="question" id="questionText">What is your favorite?</div>
@@ -698,7 +711,8 @@
           revealVotesBtn: document.getElementById('revealVotesBtn'),
           finishGuessBtn: document.getElementById('finishGuessBtn'),
           finalScores: document.getElementById('finalScores'),
-          playAgainBtn: document.getElementById('playAgainBtn')
+          playAgainBtn: document.getElementById('playAgainBtn'),
+          topicPopupBtn: document.getElementById('topicPopupBtn')
         };
 
         let role = 'moderator';
@@ -707,6 +721,7 @@
         let playerId = null;
         let session = null;
         let pollHandle = null;
+        let topicPopup = null;
 
         function generateCode() {
           return Array.from({ length: 6 }, () => CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)]).join('');
@@ -903,6 +918,52 @@
           });
         }
 
+        function openTopicPopup(topic, impostorName) {
+          const safeTopic = escapeHtml(topic || '');
+          const safeImpostor = escapeHtml(impostorName || '');
+          const html =
+            '<!doctype html><html lang="en"><head>' +
+            '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+            '<title>SECRET — Do not share</title>' +
+            '<style>' +
+            '*{box-sizing:border-box;margin:0;padding:0}' +
+            'body{min-height:100vh;background:#0b1120;color:#f8fafc;display:flex;flex-direction:column;' +
+            'align-items:center;justify-content:center;font-family:Inter,system-ui,sans-serif;' +
+            'text-align:center;gap:24px;padding:32px}' +
+            '.warn{position:fixed;top:0;left:0;right:0;background:#fb7185;color:#1f0010;' +
+            'font-size:0.72rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;padding:8px 12px;text-align:center}' +
+            '.label{color:#aab8d3;font-size:0.78rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px}' +
+            '.topic{font-size:clamp(2.8rem,14vw,5rem);font-weight:950;color:#2dd4bf;line-height:1;word-break:break-word}' +
+            '.divider{width:48px;height:2px;background:#40506f;border-radius:2px}' +
+            '.impostor{font-size:clamp(1.2rem,5vw,1.8rem);font-weight:800;color:#fb7185}' +
+            '</style></head><body>' +
+            '<div class="warn">Do not share this window on Zoom</div>' +
+            '<div><div class="label">Shared topic</div><div class="topic" id="t">' + safeTopic + '</div></div>' +
+            '<div class="divider"></div>' +
+            '<div><div class="label">Impostor</div><div class="impostor" id="i">' + safeImpostor + '</div></div>' +
+            '<script>window.addEventListener("message",function(e){' +
+            'if(e.data&&typeof e.data.topic==="string")document.getElementById("t").textContent=e.data.topic;' +
+            'if(e.data&&typeof e.data.impostorName==="string")document.getElementById("i").textContent=e.data.impostorName;' +
+            '});<\/script>' +
+            '</body></html>';
+
+          if (topicPopup && !topicPopup.closed) {
+            topicPopup.postMessage({ topic: topic || '', impostorName: impostorName || '' }, '*');
+            topicPopup.focus();
+          } else {
+            topicPopup = window.open(
+              '',
+              'impostor_topic',
+              'width=540,height=400,menubar=no,toolbar=no,status=no,resizable=yes'
+            );
+            if (topicPopup) {
+              topicPopup.document.open();
+              topicPopup.document.write(html);
+              topicPopup.document.close();
+            }
+          }
+        }
+
         function renderLobby() {
           toScreen('lobbyScreen');
           els.roomBadge.textContent = sessionCode ? `Room ${sessionCode}` : 'Lobby';
@@ -968,15 +1029,25 @@
           els.questionText.textContent = game.question || 'What is your favorite?';
 
           els.roleCard.classList.toggle('impostor', role === 'player' && isImpostor);
+          els.topicPopupBtn.classList.toggle('hide', role !== 'moderator');
           if (role === 'moderator') {
             els.roleTitle.textContent = 'Moderator view';
-            els.roleValue.textContent = game.topic || 'Topic';
-            els.roleHint.textContent = `Impostor: ${playerName(game.impostorId)}`;
+            els.roleValue.textContent = 'Topic hidden';
+            els.roleValue.classList.add('mod-hidden');
+            els.roleHint.textContent = 'Keep this screen shared. Open a private window to see the topic and impostor.';
+            if (topicPopup && !topicPopup.closed) {
+              topicPopup.postMessage(
+                { topic: game.topic || '', impostorName: playerName(game.impostorId) },
+                '*'
+              );
+            }
           } else if (isImpostor) {
+            els.roleValue.classList.remove('mod-hidden');
             els.roleTitle.textContent = 'Your secret role';
             els.roleValue.textContent = 'You are the impostor';
             els.roleHint.textContent = 'Answer vaguely, listen closely, then guess the topic if you survive.';
           } else {
+            els.roleValue.classList.remove('mod-hidden');
             els.roleTitle.textContent = 'Your shared topic';
             els.roleValue.textContent = game.topic || 'Topic';
             els.roleHint.textContent = 'Give a real answer that proves you know the topic without making it too easy.';
@@ -1334,6 +1405,11 @@
                 return refreshSession();
               })
               .catch(console.error);
+          });
+
+          els.topicPopupBtn.addEventListener('click', () => {
+            const game = session?.game || {};
+            openTopicPopup(game.topic || '', playerName(game.impostorId));
           });
 
           els.nextTurnBtn.addEventListener('click', () => nextTurn().catch(console.error));
