@@ -21,6 +21,7 @@ import { createClient } from '@supabase/supabase-js';
 import {
   getIssueComments,
   getRepoOwner,
+  issueHasLabel,
   listIssuesByLabels,
   loadEnv,
 } from './lib/issue-github-client.mjs';
@@ -69,7 +70,7 @@ function getBoostedIssues() {
     labels: ['suggestion', 'status:approved', 'boosted'],
     state: 'open',
     limit: 20,
-    fields: ['number', 'title', 'body', 'url'],
+    fields: ['number', 'title', 'body', 'url', 'labels'],
   });
   if (issues === null) {
     throw new Error(
@@ -80,14 +81,15 @@ function getBoostedIssues() {
   if (!Array.isArray(issues)) {
     throw new Error('GitHub returned an unexpected response while listing boosted suggestions.');
   }
-  if (issues.length === 0) {
+  const available = issues.filter((issue) => !issueHasLabel(issue, 'status:in-progress'));
+  if (available.length === 0) {
     return null;
   }
 
   const owner = getRepoOwner();
   log(`  Repo owner: ${owner}`);
 
-  const ranked = issues.map((issue) => ({
+  const ranked = available.map((issue) => ({
     ...issue,
     tipTotal: getTipTotal(issue.number, owner),
   }));
@@ -102,7 +104,7 @@ function getApprovedIssues() {
     labels: ['suggestion', 'status:approved'],
     state: 'open',
     limit: 10,
-    fields: ['number', 'title', 'body', 'url'],
+    fields: ['number', 'title', 'body', 'url', 'labels'],
   });
   if (issues === null) {
     throw new Error(
@@ -113,12 +115,13 @@ function getApprovedIssues() {
   if (!Array.isArray(issues)) {
     throw new Error('GitHub returned an unexpected response while listing approved suggestions.');
   }
-  if (issues.length === 0) {
+  const available = issues.filter((issue) => !issueHasLabel(issue, 'status:in-progress'));
+  if (available.length === 0) {
     return null;
   }
   // Prefer lower (older) issue numbers
-  issues.sort((a, b) => a.number - b.number);
-  return issues[0];
+  available.sort((a, b) => a.number - b.number);
+  return available[0];
 }
 
 // ---------------------------------------------------------------------------

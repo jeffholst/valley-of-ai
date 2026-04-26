@@ -156,11 +156,12 @@ Verify the issue exists and is approved:
 gh issue view <number> --json number,title,body,labels,state,url
 ```
 
-Check all three:
+Check all four:
 
 1. `state` is `OPEN`
 2. Labels include `improvement`
 3. Labels include `status:approved`
+4. Labels do **not** include `status:in-progress`
 
 If all pass — manually extract the following from the issue body before continuing to Step 1.4:
 
@@ -169,7 +170,7 @@ If all pass — manually extract the following from the issue body before contin
 - `requestor` — value on the `**Requestor:**` line (omit if not present)
 - `targetApp.id` — full app path from the `### App` section or issue title (e.g. `2026/03/22/freecell-mobile-classic`)
 
-If any check fails — **stop.** State why: issue not found, not labeled `improvement`, or not `status:approved`.
+If any check fails — **stop.** State why: issue not found, not labeled `improvement`, not `status:approved`, or already in-progress.
 
 #### Case C — Improvement description given directly
 
@@ -211,6 +212,12 @@ Set `<app-date>` to the `YYYY/MM/DD` portion of `targetApp.id` (e.g. `2026/03/22
 ⚠️ **If the guardrail fires: log GUARDRAIL_ABORT to the existing app log, then stop — do not proceed.**
 
 If clean, continue.
+
+**Claim the issue** — apply `status:in-progress` immediately so no other pipeline run can select the same issue while this one is in flight:
+
+```bash
+gh issue edit <issue-number> --add-label "status:in-progress"
+```
 
 **Sanity check** — read `improvementSanity` from the selection output and act on the `overallRisk` value before doing any further work.
 
@@ -653,7 +660,7 @@ This step is **always required** on every improvement pipeline run. Do not promp
 3. **Close the improvement issue:**
 
    ```bash
-   gh issue edit <issue-number> --add-label "status:implemented" --remove-label "status:approved" --remove-label "status:pending"
+   gh issue edit <issue-number> --add-label "status:implemented" --remove-label "status:approved" --remove-label "status:in-progress" --remove-label "status:pending"
    gh issue close <issue-number> --comment "Improvement applied to [<app-name>](<SITE_URL>/apps/<app-path>/index.html). Thanks for the feedback!"
    ```
 

@@ -140,6 +140,14 @@ Build one production-ready mobile-first web app.
 
    If clean, continue.
 
+   **Claim the issue (GitHub-sourced only)** — if `source` is `github-boosted` or `github-approved`, apply `status:in-progress` immediately so no other pipeline run can select the same issue while this one is in flight:
+
+   ```bash
+   gh issue edit <issue-number> --add-label "status:in-progress"
+   ```
+
+   Skip this step if `source` is `vote-and-category-analysis` (no GitHub issue).
+
 4. Create the app folder: `apps/YYYY/MM/DD/<app-id>/`.
 
 5. Log the transaction start:
@@ -495,7 +503,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 3. **If this app was built from a GitHub issue suggestion**, close the issue:
 
    ```bash
-   gh issue edit <issue-number> --add-label "status:implemented" --remove-label "status:approved" --remove-label "status:pending"
+   gh issue edit <issue-number> --add-label "status:implemented" --remove-label "status:approved" --remove-label "status:in-progress" --remove-label "status:pending"
    gh issue close <issue-number> --comment "Built as [<app-name>](<SITE_URL>/apps/YYYY/MM/DD/<app-id>/index.html). Thanks for the suggestion!"
    ```
 

@@ -23,6 +23,7 @@ import path from 'path';
 import {
   getIssueComments,
   getRepoOwner,
+  issueHasLabel,
   listIssuesByLabels,
   loadEnv,
 } from './lib/issue-github-client.mjs';
@@ -74,7 +75,7 @@ function getBoostedImprovements(repoOwner, rejectPhrases) {
     labels: ['improvement', 'status:approved', 'boosted'],
     state: 'open',
     limit: 20,
-    fields: ['number', 'title', 'body', 'url', 'author'],
+    fields: ['number', 'title', 'body', 'url', 'author', 'labels'],
   });
   if (issues === null) {
     throw new Error(
@@ -89,11 +90,12 @@ function getBoostedImprovements(repoOwner, rejectPhrases) {
     return [];
   }
 
-  // Apply author/injection filters BEFORE fetching tip totals to avoid
+  // Apply author/injection/in-progress filters BEFORE fetching tip totals to avoid
   // unnecessary API calls for issues that will be dropped anyway.
   const eligible = issues
     .filter((issue) => isAuthorAllowed(issue, repoOwner))
-    .filter((issue) => !containsInjectionPhrase(issue, rejectPhrases));
+    .filter((issue) => !containsInjectionPhrase(issue, rejectPhrases))
+    .filter((issue) => !issueHasLabel(issue, 'status:in-progress'));
 
   const ranked = eligible.map((issue) => ({
     ...issue,
@@ -110,7 +112,7 @@ function getApprovedImprovements(repoOwner, rejectPhrases) {
     labels: ['improvement', 'status:approved'],
     state: 'open',
     limit: 10,
-    fields: ['number', 'title', 'body', 'url', 'author'],
+    fields: ['number', 'title', 'body', 'url', 'author', 'labels'],
   });
   if (issues === null) {
     throw new Error(
@@ -126,7 +128,8 @@ function getApprovedImprovements(repoOwner, rejectPhrases) {
   }
   const eligible = issues
     .filter((issue) => isAuthorAllowed(issue, repoOwner))
-    .filter((issue) => !containsInjectionPhrase(issue, rejectPhrases));
+    .filter((issue) => !containsInjectionPhrase(issue, rejectPhrases))
+    .filter((issue) => !issueHasLabel(issue, 'status:in-progress'));
   eligible.sort((a, b) => a.number - b.number);
   return eligible;
 }
