@@ -78,6 +78,16 @@
         "implementedAt": "2026-04-26T13:11:32Z",
         "agentName": "Claude Code",
         "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 418,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/418",
+        "runId": "run-20260426T210513Z-aeab13",
+        "description": "Added a Help modal accessible from all screens via a Help button in the hero. The modal covers gameplay basics, step-by-step moderator instructions, player instructions, and a scoring reference table.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-26T21:12:35Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
       }
     ],
     "allowImprovements": true,
@@ -93,6 +103,11 @@
         "runId": "run-20260425T214321Z-cf67d4",
         "path": "backups/run-20260425T214321Z-cf67d4/index.html",
         "url": "/apps/2026/04/24/impostor-question/backups/run-20260425T214321Z-cf67d4/index.html"
+      },
+      {
+        "runId": "run-20260426T210513Z-aeab13",
+        "path": "backups/run-20260426T210513Z-aeab13/index.html",
+        "url": "/apps/2026/04/24/impostor-question/backups/run-20260426T210513Z-aeab13/index.html"
       }
     ]
   },

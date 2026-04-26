@@ -455,90 +455,6 @@
         color: var(--accent);
       }
 
-      .btn.help {
-        border-radius: 999px;
-        font-size: 0.82rem;
-        min-height: 30px;
-        padding: 4px 12px;
-      }
-
-      .help-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 200;
-        background: rgb(0 0 0 / 60%);
-        display: flex;
-        align-items: flex-start;
-        justify-content: center;
-        padding: 72px 12px 64px;
-        overflow-y: auto;
-      }
-
-      .help-modal {
-        width: min(680px, 100%);
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        box-shadow: var(--shadow);
-        padding: 20px;
-        display: grid;
-        gap: 18px;
-      }
-
-      .help-section {
-        display: grid;
-        gap: 8px;
-      }
-
-      .help-section h3 {
-        color: var(--accent);
-        font-size: 0.8rem;
-        font-weight: 900;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-      }
-
-      .help-steps {
-        display: grid;
-        gap: 5px;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      .help-steps li {
-        display: flex;
-        gap: 8px;
-        color: var(--muted);
-        font-size: 0.93rem;
-        line-height: 1.5;
-      }
-
-      .help-steps li::before {
-        content: '›';
-        color: var(--accent);
-        font-weight: 900;
-        flex-shrink: 0;
-      }
-
-      .help-score-row {
-        align-items: center;
-        background: rgb(255 255 255 / 4%);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        display: flex;
-        font-size: 0.9rem;
-        gap: 12px;
-        justify-content: space-between;
-        padding: 7px 10px;
-      }
-
-      .help-pts {
-        color: var(--gold);
-        font-weight: 900;
-        white-space: nowrap;
-      }
-
       @media (max-width: 760px) {
         .hero {
           align-items: flex-start;
@@ -563,10 +479,7 @@
             <h1>The Impostor Question</h1>
             <p class="subtitle">One player is bluffing. Everyone else shares the same secret topic.</p>
           </div>
-          <div class="row" style="flex-wrap:nowrap;align-items:center">
-            <button class="btn help" id="helpBtn" type="button">Help</button>
-            <span class="badge live" id="roomBadge">Room setup</span>
-          </div>
+          <span class="badge live" id="roomBadge">Room setup</span>
         </section>
 
         <section class="screen active" id="loadingScreen">
@@ -712,70 +625,6 @@
             </aside>
           </div>
         </section>
-
-        <div class="help-overlay hide" id="helpOverlay" role="dialog" aria-modal="true" aria-label="How to play">
-          <div class="help-modal">
-            <div class="row" style="justify-content:space-between;align-items:center;flex-wrap:nowrap">
-              <h2>How to Play</h2>
-              <button class="btn" id="helpCloseBtn" type="button" aria-label="Close help">✕</button>
-            </div>
-
-            <div class="help-section">
-              <h3>The Basics</h3>
-              <ul class="help-steps">
-                <li>One player is secretly the <strong>impostor</strong> — they don't know the shared topic.</li>
-                <li>Everyone else knows the topic and must answer a vague question naturally.</li>
-                <li>After all answers, players vote for who they think is the impostor.</li>
-                <li>If the impostor is caught, the other players score. If not, the impostor gets one topic guess.</li>
-              </ul>
-            </div>
-
-            <div class="help-section">
-              <h3>For Moderators</h3>
-              <ul class="help-steps">
-                <li>The room is created automatically when you open the app. Share the join link in the lobby.</li>
-                <li>Choose the number of rounds and a topic pack, then click <strong>Start game</strong>.</li>
-                <li>During the answer phase, click <strong>Next turn</strong> after each player finishes.</li>
-                <li>Once all players have answered, click <strong>Open voting</strong>.</li>
-                <li>After all votes are in, click <strong>Reveal votes</strong> to show results.</li>
-                <li>If the impostor escapes the vote, wait for their topic guess, then click <strong>Reveal topic guess</strong>.</li>
-                <li>Use <strong>Next round</strong> to continue or <strong>Show final scores</strong> to end the game.</li>
-                <li>Click <strong>View topic in private window</strong> to see the secret topic safely during screen share.</li>
-              </ul>
-            </div>
-
-            <div class="help-section">
-              <h3>For Players</h3>
-              <ul class="help-steps">
-                <li>Join via the link shared by the moderator, enter your name, and wait in the lobby.</li>
-                <li>Your role card shows either the <strong>shared topic</strong> (you're an insider) or <strong>You are the impostor</strong>.</li>
-                <li>When it's your turn, type a short answer and click <strong>Submit answer</strong>.</li>
-                <li>After all answers, vote for who you think is the impostor — you cannot vote for yourself.</li>
-                <li>If you are the impostor and survive the vote, guess the shared topic to earn bonus points.</li>
-              </ul>
-            </div>
-
-            <div class="help-section">
-              <h3>Scoring</h3>
-              <div style="display:grid;gap:6px">
-                <div class="help-score-row">
-                  <span>Impostor caught by the vote</span>
-                  <span class="help-pts">+2 pts each non-impostor</span>
-                </div>
-                <div class="help-score-row">
-                  <span>Impostor guesses topic correctly</span>
-                  <span class="help-pts">+4 pts for impostor</span>
-                </div>
-                <div class="help-score-row">
-                  <span>Impostor survives but guesses wrong</span>
-                  <span class="help-pts">+1 pt for impostor</span>
-                </div>
-              </div>
-            </div>
-
-            <button class="btn primary" id="helpCloseBtnBottom" type="button">Got it, let's play</button>
-          </div>
-        </div>
       </div>
     </main>
 
@@ -863,11 +712,7 @@
           finishGuessBtn: document.getElementById('finishGuessBtn'),
           finalScores: document.getElementById('finalScores'),
           playAgainBtn: document.getElementById('playAgainBtn'),
-          topicPopupBtn: document.getElementById('topicPopupBtn'),
-          helpBtn: document.getElementById('helpBtn'),
-          helpOverlay: document.getElementById('helpOverlay'),
-          helpCloseBtn: document.getElementById('helpCloseBtn'),
-          helpCloseBtnBottom: document.getElementById('helpCloseBtnBottom')
+          topicPopupBtn: document.getElementById('topicPopupBtn')
         };
 
         let role = 'moderator';
@@ -1301,10 +1146,6 @@
           else renderGame();
         }
 
-        function toggleHelp(show) {
-          els.helpOverlay.classList.toggle('hide', !show);
-        }
-
         function pickTopic(pack, usedTopics = []) {
           const pool = TOPICS[pack] || TOPICS.work;
           const fresh = pool.filter((item) => !usedTopics.includes(item.topic));
@@ -1578,12 +1419,6 @@
           els.nextRoundBtn.addEventListener('click', () => nextRound().catch(console.error));
           els.endGameBtn.addEventListener('click', () => endGame().catch(console.error));
           els.playAgainBtn.addEventListener('click', () => resetLobby().catch(console.error));
-          els.helpBtn.addEventListener('click', () => toggleHelp(true));
-          els.helpCloseBtn.addEventListener('click', () => toggleHelp(false));
-          els.helpCloseBtnBottom.addEventListener('click', () => toggleHelp(false));
-          els.helpOverlay.addEventListener('click', (event) => {
-            if (event.target === els.helpOverlay) toggleHelp(false);
-          });
         }
 
         async function bootstrap() {
