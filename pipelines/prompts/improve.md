@@ -660,7 +660,7 @@ This step is **always required** on every improvement pipeline run. Do not promp
 3. **Close the improvement issue:**
 
    ```bash
-   gh issue edit <issue-number> --add-label "status:implemented" --remove-label "status:approved" --remove-label "status:in-progress" --remove-label "status:pending"
+   gh issue edit <issue-number> --remove-label "status:approved" --remove-label "status:in-progress" --remove-label "status:pending" --add-label "status:implemented"
    gh issue close <issue-number> --comment "Improvement applied to [<app-name>](<SITE_URL>/apps/<app-path>/index.html). Thanks for the feedback!"
    ```
 

@@ -503,7 +503,7 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --category pip
 3. **If this app was built from a GitHub issue suggestion**, close the issue:
 
    ```bash
-   gh issue edit <issue-number> --add-label "status:implemented" --remove-label "status:approved" --remove-label "status:in-progress" --remove-label "status:pending"
+   gh issue edit <issue-number> --remove-label "status:approved" --remove-label "status:in-progress" --remove-label "status:pending" --add-label "status:implemented"
    gh issue close <issue-number> --comment "Built as [<app-name>](<SITE_URL>/apps/YYYY/MM/DD/<app-id>/index.html). Thanks for the suggestion!"
    ```
 
