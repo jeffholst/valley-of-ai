@@ -54,16 +54,6 @@
       "implementedAt": "2026-04-25T22:18:05Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
-    },
-    {
-      "issueNumber": 414,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/414",
-      "runId": "run-20260425T224634Z-df1911",
-      "description": "Fixed regression from #411: answers endpoint called record_session_vote RPC for all quiz-vote submissions but the SQL migration was not yet deployed, breaking Submit Answer. Gated the RPC on game.stage==='vote'; answer and topic-guess stages use the original non-atomic path (safe since they are turn-based).",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-04-26T12:49:45Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6"
     }
   ]
 }
