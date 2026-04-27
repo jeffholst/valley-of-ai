@@ -1292,10 +1292,14 @@
             }
           } else if (isImpostor) {
             els.roleValue.classList.remove('mod-hidden');
-            if (topicRevealed) {
+            if (stage === 'results') {
               els.roleTitle.textContent = 'The topic was';
               els.roleValue.textContent = game.topic || 'Topic';
-              els.roleHint.textContent = stage === 'topicGuess' ? 'Your one chance — guess it exactly.' : '';
+              els.roleHint.textContent = '';
+            } else if (stage === 'topicGuess') {
+              els.roleTitle.textContent = 'Your secret role';
+              els.roleValue.textContent = 'You are the impostor';
+              els.roleHint.textContent = 'Your one chance — guess the topic exactly.';
             } else {
               els.roleTitle.textContent = 'Your secret role';
               els.roleValue.textContent = 'You are the impostor';
