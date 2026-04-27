@@ -1215,10 +1215,16 @@
               } else {
                 statusText = game.responses?.[player.id] ? 'answered' : 'waiting';
               }
+              // During vote stage, prefer game.answers (copied from responses at openVoting).
+              // Fall back to player.lastAnswer only while the player hasn't voted yet —
+              // once they vote, the RPC overwrites lastAnswer with the voted-for ID.
+              const preVoteAnswer = isVoteStage
+                && Number(player.voteRound || 0) < Number(game.roundIndex || 0)
+                  ? (player.lastAnswer || '') : '';
               const answerToShow =
                 stage === 'answer'
                   ? (role === 'moderator' ? '' : (game.responses?.[player.id] || ''))
-                  : (game.answers?.[player.id] || '');
+                  : (game.answers?.[player.id] || preVoteAnswer);
               const canVoteFor =
                 isVoteStage && role === 'player' && !isImpostorPlayer && player.id !== playerId && !locked;
               const isVotedFor = isVoteStage && locked === player.id;
