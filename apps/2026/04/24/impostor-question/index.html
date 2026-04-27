@@ -410,6 +410,14 @@
 
       .vote-option {
         text-align: left;
+        padding: 14px 16px;
+        font-size: 1rem;
+        width: 100%;
+      }
+
+      .vote-option:not(:disabled):not(.gold) {
+        border-color: rgb(45 212 191 / 40%);
+        background: rgb(45 212 191 / 6%);
       }
 
       .result-banner {
@@ -657,7 +665,14 @@
 
               <div class="stack hide" id="voteBox">
                 <h2>Who is the impostor?</h2>
+                <p class="muted" id="voteInstruction">Select the player you think is bluffing — you cannot vote for yourself.</p>
                 <div class="vote-list" id="voteChoices"></div>
+                <div class="big-card hide" id="impostorWait" style="text-align:center">
+                  <div class="role-title">You are the impostor</div>
+                  <p class="muted" style="margin-top:8px">Stay quiet — your role prevents you from voting. Wait while the others cast their votes.</p>
+                  <p class="small" id="impostorVoteStatus" style="margin-top:10px;color:var(--accent)"></p>
+                  <button class="btn primary" id="impostorContinueBtn" type="button" style="margin-top:12px">Continue</button>
+                </div>
               </div>
 
               <form class="stack hide" id="guessForm">
@@ -682,7 +697,7 @@
             <aside class="panel stack">
               <h2>Room board</h2>
               <div class="player-grid" id="gamePlayerGrid"></div>
-              <h3>Turn order</h3>
+              <h3 id="turnListLabel">Turn order</h3>
               <div class="turn-list" id="turnList"></div>
               <h3>Responses</h3>
               <div class="answer-list" id="answerList"></div>
@@ -702,6 +717,13 @@
               <h2>Final scores</h2>
               <p class="muted">Shared placements are used for ties.</p>
               <div id="finalScores"></div>
+              <div class="hide" id="finalTopicSection">
+                <div class="big-card role-card">
+                  <div class="role-title">Last round topic</div>
+                  <div class="role-value mod-hidden">Topic hidden</div>
+                </div>
+                <button class="btn reveal" id="finalTopicPopupBtn" type="button">View topic in private window</button>
+              </div>
               <div class="row">
                 <button class="btn primary" id="playAgainBtn" type="button">Back to lobby</button>
               </div>
@@ -845,6 +867,10 @@
           answerBtn: document.getElementById('answerBtn'),
           voteBox: document.getElementById('voteBox'),
           voteChoices: document.getElementById('voteChoices'),
+          voteInstruction: document.getElementById('voteInstruction'),
+          impostorWait: document.getElementById('impostorWait'),
+          impostorVoteStatus: document.getElementById('impostorVoteStatus'),
+          impostorContinueBtn: document.getElementById('impostorContinueBtn'),
           guessForm: document.getElementById('guessForm'),
           topicGuessInput: document.getElementById('topicGuessInput'),
           topicGuessBtn: document.getElementById('topicGuessBtn'),
@@ -862,6 +888,9 @@
           revealVotesBtn: document.getElementById('revealVotesBtn'),
           finishGuessBtn: document.getElementById('finishGuessBtn'),
           finalScores: document.getElementById('finalScores'),
+          finalTopicSection: document.getElementById('finalTopicSection'),
+          finalTopicPopupBtn: document.getElementById('finalTopicPopupBtn'),
+          turnListLabel: document.getElementById('turnListLabel'),
           playAgainBtn: document.getElementById('playAgainBtn'),
           topicPopupBtn: document.getElementById('topicPopupBtn'),
           helpBtn: document.getElementById('helpBtn'),
@@ -1057,7 +1086,11 @@
           target.innerHTML = players
             .map((player) => {
               const isImpostor = revealRoles && player.id === game.impostorId;
-              const status = player.id === game.currentTurnId ? 'answering' : game.responses?.[player.id] ? 'submitted' : 'waiting';
+              const hasResponse = Boolean(game.responses?.[player.id]);
+              const status =
+                game.stage === 'vote'
+                  ? hasResponse ? 'voted' : 'waiting'
+                  : player.id === game.currentTurnId ? 'answering' : hasResponse ? 'submitted' : 'waiting';
               return `<div class="player ${player.id === playerId ? 'me' : ''} ${isImpostor ? 'impostor' : ''}">
                 <div class="name">${escapeHtml(player.name || 'Player')}</div>
                 <div class="small">${Number(scores[player.id] || 0)} pts</div>
@@ -1136,12 +1169,21 @@
 
         function renderTurnList() {
           const game = session?.game || {};
+          const isVoteStage = game.stage === 'vote';
+          els.turnListLabel.textContent = isVoteStage ? 'Vote status' : 'Turn order';
           els.turnList.innerHTML = sortedPlayers()
             .map((player, index) => {
-              const answered = game.answers?.[player.id] || game.responses?.[player.id];
-              return `<div class="turn-item ${player.id === game.currentTurnId ? 'current' : ''}">
+              let statusText;
+              if (isVoteStage) {
+                statusText = game.responses?.[player.id] ? 'voted' : 'waiting';
+              } else {
+                const answered = game.answers?.[player.id] || game.responses?.[player.id];
+                statusText = answered ? 'answered' : 'waiting';
+              }
+              const isCurrent = !isVoteStage && player.id === game.currentTurnId;
+              return `<div class="turn-item ${isCurrent ? 'current' : ''}">
                 <strong>${index + 1}. ${escapeHtml(player.name)}</strong>
-                <span class="small">${answered ? 'answered' : 'waiting'}</span>
+                <span class="small">${statusText}</span>
               </div>`;
             })
             .join('');
@@ -1250,12 +1292,28 @@
 
         function renderVoteChoices() {
           const game = session?.game || {};
+          const isImpostorPlayer = game.roles?.[playerId] === 'impostor';
           const locked = game.responses?.[playerId];
+
+          els.voteInstruction.classList.toggle('hide', isImpostorPlayer);
+          els.voteChoices.classList.toggle('hide', isImpostorPlayer);
+          els.impostorWait.classList.toggle('hide', !isImpostorPlayer);
+
+          if (isImpostorPlayer) {
+            const voters = sortedPlayers().filter((p) => p.id !== game.impostorId);
+            const votedCount = voters.filter((p) => game.responses?.[p.id]).length;
+            els.impostorVoteStatus.textContent = `${votedCount} of ${voters.length} votes cast.`;
+            els.impostorContinueBtn.disabled = Boolean(locked);
+            els.impostorContinueBtn.textContent = locked ? 'Waiting for votes…' : 'Continue';
+            return;
+          }
+
           els.voteChoices.innerHTML = sortedPlayers()
             .map((player) => {
               const disabled = player.id === playerId || Boolean(locked);
+              const isVoted = locked === player.id;
               const suffix = player.id === playerId ? ' (you)' : '';
-              return `<button class="btn vote-option ${locked === player.id ? 'gold' : ''}" type="button"
+              return `<button class="btn vote-option ${isVoted ? 'gold' : ''}" type="button"
                 data-vote="${escapeHtml(player.id)}" ${disabled ? 'disabled' : ''}>
                 ${escapeHtml(player.name || 'Player')}${suffix}
               </button>`;
@@ -1291,6 +1349,10 @@
             )
             .join('');
           els.playAgainBtn.classList.toggle('hide', role !== 'moderator');
+          els.finalTopicSection.classList.toggle('hide', role !== 'moderator');
+          if (role === 'moderator' && topicPopup && !topicPopup.closed) {
+            topicPopup.postMessage({ topic: game.topic || '', impostorName: playerName(game.impostorId) }, '*');
+          }
         }
 
         function render() {
@@ -1379,9 +1441,11 @@
           const game = session?.game || {};
           const votes = game.responses || {};
           const totals = {};
-          Object.values(votes).forEach((target) => {
-            totals[target] = (totals[target] || 0) + 1;
-          });
+          Object.values(votes)
+            .filter((target) => target !== '__skip__')
+            .forEach((target) => {
+              totals[target] = (totals[target] || 0) + 1;
+            });
           const maxVotes = Math.max(0, ...Object.values(totals));
           const accused = Object.entries(totals)
             .filter(([, count]) => count === maxVotes)
@@ -1570,7 +1634,14 @@
             const game = session?.game || {};
             openTopicPopup(game.topic || '', playerName(game.impostorId));
           });
+          els.finalTopicPopupBtn.addEventListener('click', () => {
+            const game = session?.game || {};
+            openTopicPopup(game.topic || '', playerName(game.impostorId));
+          });
 
+          els.impostorContinueBtn.addEventListener('click', () => {
+            submitValue('__skip__').then(refreshSession).catch(console.error);
+          });
           els.nextTurnBtn.addEventListener('click', () => nextTurn().catch(console.error));
           els.openVoteBtn.addEventListener('click', () => openVoting().catch(console.error));
           els.revealVotesBtn.addEventListener('click', () => revealVotes().catch(console.error));
