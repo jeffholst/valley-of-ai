@@ -84,16 +84,6 @@
       "implementedAt": "2026-04-26T21:12:35Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
-    },
-    {
-      "issueNumber": 425,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/425",
-      "runId": "run-20260427T140841Z-765658",
-      "description": "Removed Next turn button so all players answer simultaneously; replaced separate player grid, turn order, and responses sections with a single unified Room board grid showing name, status, answer, and score; voting during vote stage is done by clicking a player card in the grid.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-04-27T14:08:41Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6"
     }
   ]
 }

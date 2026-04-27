@@ -420,27 +420,6 @@
         background: rgb(45 212 191 / 6%);
       }
 
-      .player.votable {
-        cursor: pointer;
-      }
-
-      .player.votable:hover {
-        border-color: var(--accent);
-        background: rgb(45 212 191 / 10%);
-      }
-
-      .player.voted-for {
-        border-color: var(--gold);
-        background: rgb(251 191 36 / 8%);
-      }
-
-      .player-response {
-        color: var(--muted);
-        font-size: 0.85rem;
-        overflow-wrap: anywhere;
-        margin-top: 2px;
-      }
-
       .result-banner {
         border-radius: 16px;
         border: 1px solid var(--border);
@@ -684,13 +663,16 @@
                 <button class="btn primary" id="answerBtn" type="submit">Submit answer</button>
               </form>
 
-              <h2 class="hide" id="voteHeading">Who is the impostor?</h2>
-              <p class="muted hide" id="voteInstruction">Select a player in the grid to cast your vote — you cannot vote for yourself.</p>
-              <div class="big-card hide" id="impostorWait" style="text-align:center">
-                <div class="role-title">You are the impostor</div>
-                <p class="muted" style="margin-top:8px">Stay quiet — your role prevents you from voting. Wait while the others cast their votes.</p>
-                <p class="small" id="impostorVoteStatus" style="margin-top:10px;color:var(--accent)"></p>
-                <button class="btn primary" id="impostorContinueBtn" type="button" style="margin-top:12px">Continue</button>
+              <div class="stack hide" id="voteBox">
+                <h2>Who is the impostor?</h2>
+                <p class="muted" id="voteInstruction">Select the player you think is bluffing — you cannot vote for yourself.</p>
+                <div class="vote-list" id="voteChoices"></div>
+                <div class="big-card hide" id="impostorWait" style="text-align:center">
+                  <div class="role-title">You are the impostor</div>
+                  <p class="muted" style="margin-top:8px">Stay quiet — your role prevents you from voting. Wait while the others cast their votes.</p>
+                  <p class="small" id="impostorVoteStatus" style="margin-top:10px;color:var(--accent)"></p>
+                  <button class="btn primary" id="impostorContinueBtn" type="button" style="margin-top:12px">Continue</button>
+                </div>
               </div>
 
               <form class="stack hide" id="guessForm">
@@ -714,8 +696,13 @@
 
             <aside class="panel stack">
               <h2>Room board</h2>
-              <div class="player-grid" id="unifiedPlayerGrid"></div>
+              <div class="player-grid" id="gamePlayerGrid"></div>
+              <h3 id="turnListLabel">Turn order</h3>
+              <div class="turn-list" id="turnList"></div>
+              <h3>Responses</h3>
+              <div class="answer-list" id="answerList"></div>
               <div class="row" id="moderatorControls">
+                <button class="btn primary" id="nextTurnBtn" type="button">Next turn</button>
                 <button class="btn gold" id="openVoteBtn" type="button">Open voting</button>
                 <button class="btn primary" id="revealVotesBtn" type="button">Reveal votes</button>
                 <button class="btn gold" id="finishGuessBtn" type="button">Reveal topic guess</button>
@@ -865,7 +852,7 @@
           playerCount: document.getElementById('playerCount'),
           roundPill: document.getElementById('roundPill'),
           playerGrid: document.getElementById('playerGrid'),
-          unifiedPlayerGrid: document.getElementById('unifiedPlayerGrid'),
+          gamePlayerGrid: document.getElementById('gamePlayerGrid'),
           finalPlayerGrid: document.getElementById('finalPlayerGrid'),
           stagePill: document.getElementById('stagePill'),
           turnPill: document.getElementById('turnPill'),
@@ -878,7 +865,8 @@
           answerForm: document.getElementById('answerForm'),
           answerInput: document.getElementById('answerInput'),
           answerBtn: document.getElementById('answerBtn'),
-          voteHeading: document.getElementById('voteHeading'),
+          voteBox: document.getElementById('voteBox'),
+          voteChoices: document.getElementById('voteChoices'),
           voteInstruction: document.getElementById('voteInstruction'),
           impostorWait: document.getElementById('impostorWait'),
           impostorVoteStatus: document.getElementById('impostorVoteStatus'),
@@ -892,13 +880,17 @@
           resultActions: document.getElementById('resultActions'),
           nextRoundBtn: document.getElementById('nextRoundBtn'),
           endGameBtn: document.getElementById('endGameBtn'),
+          turnList: document.getElementById('turnList'),
+          answerList: document.getElementById('answerList'),
           moderatorControls: document.getElementById('moderatorControls'),
+          nextTurnBtn: document.getElementById('nextTurnBtn'),
           openVoteBtn: document.getElementById('openVoteBtn'),
           revealVotesBtn: document.getElementById('revealVotesBtn'),
           finishGuessBtn: document.getElementById('finishGuessBtn'),
           finalScores: document.getElementById('finalScores'),
           finalTopicSection: document.getElementById('finalTopicSection'),
           finalTopicPopupBtn: document.getElementById('finalTopicPopupBtn'),
+          turnListLabel: document.getElementById('turnListLabel'),
           playAgainBtn: document.getElementById('playAgainBtn'),
           topicPopupBtn: document.getElementById('topicPopupBtn'),
           helpBtn: document.getElementById('helpBtn'),
@@ -1175,52 +1167,37 @@
           renderPlayers(els.playerGrid);
         }
 
-        function renderUnifiedGrid() {
+        function renderTurnList() {
           const game = session?.game || {};
-          const stage = game.stage || 'lobby';
-          const scores = game.scores || {};
-          const isVoteStage = stage === 'vote';
-          const revealRoles = stage === 'results' || stage === 'ended';
-          const locked = isVoteStage ? game.responses?.[playerId] : null;
-          const isImpostorPlayer = game.roles?.[playerId] === 'impostor';
-          const players = sortedPlayers();
-          if (!players.length) {
-            els.unifiedPlayerGrid.innerHTML = '<div class="empty">No players yet.</div>';
-            return;
-          }
-          els.unifiedPlayerGrid.innerHTML = players
-            .map((player) => {
-              const isImpostorReveal = revealRoles && player.id === game.impostorId;
-              const hasResponse = Boolean(game.responses?.[player.id]);
+          const isVoteStage = game.stage === 'vote';
+          els.turnListLabel.textContent = isVoteStage ? 'Vote status' : 'Turn order';
+          els.turnList.innerHTML = sortedPlayers()
+            .map((player, index) => {
               let statusText;
               if (isVoteStage) {
-                statusText = hasResponse ? 'voted' : 'waiting';
+                statusText = game.responses?.[player.id] ? 'voted' : 'waiting';
               } else {
-                statusText = game.responses?.[player.id] ? 'answered' : 'waiting';
+                const answered = game.answers?.[player.id] || game.responses?.[player.id];
+                statusText = answered ? 'answered' : 'waiting';
               }
-              const answerToShow =
-                stage === 'answer'
-                  ? (game.responses?.[player.id] || '')
-                  : (game.answers?.[player.id] || '');
-              const canVoteFor =
-                isVoteStage && role === 'player' && !isImpostorPlayer && player.id !== playerId && !locked;
-              const isVotedFor = isVoteStage && locked === player.id;
-              const classes = [
-                player.id === playerId ? 'me' : '',
-                isImpostorReveal ? 'impostor' : '',
-                canVoteFor ? 'votable' : '',
-                isVotedFor ? 'voted-for' : ''
-              ]
-                .filter(Boolean)
-                .join(' ');
-              const voteAttr = canVoteFor ? `data-vote="${escapeHtml(player.id)}"` : '';
-              return `<div class="player ${classes}" ${voteAttr}>
-                <div class="name">${escapeHtml(player.name || 'Player')}</div>
-                <div class="small">${Number(scores[player.id] || 0)} pts · ${isImpostorReveal ? 'impostor' : statusText}</div>
-                ${answerToShow ? `<div class="player-response">${escapeHtml(answerToShow)}</div>` : ''}
+              const isCurrent = !isVoteStage && player.id === game.currentTurnId;
+              return `<div class="turn-item ${isCurrent ? 'current' : ''}">
+                <strong>${index + 1}. ${escapeHtml(player.name)}</strong>
+                <span class="small">${statusText}</span>
               </div>`;
             })
             .join('');
+        }
+
+        function renderAnswers() {
+          const game = session?.game || {};
+          const answers = game.answers || (game.stage === 'answer' ? game.responses || {} : {});
+          const rows = Object.entries(answers).filter(([id]) => session?.players?.[id] && !session.players[id].kicked);
+          els.answerList.innerHTML = rows.length
+            ? rows
+                .map(([id, answer]) => `<div class="answer"><strong>${escapeHtml(playerName(id))}:</strong> ${escapeHtml(answer)}</div>`)
+                .join('')
+            : '<div class="empty">Answers will appear here as players submit.</div>';
         }
 
         function renderGame() {
@@ -1228,6 +1205,7 @@
           const players = sortedPlayers();
           const myRole = game.roles?.[playerId];
           const mySubmitted = Boolean(game.responses?.[playerId]);
+          const isMyTurn = game.currentTurnId === playerId;
           const isImpostor = myRole === 'impostor';
           const isModerator = role === 'moderator';
           const stage = game.stage || 'lobby';
@@ -1272,32 +1250,22 @@
             els.roleHint.textContent = 'Give a real answer that proves you know the topic without making it too easy.';
           }
 
-          const canAnswer = role === 'player' && stage === 'answer' && !mySubmitted;
+          const canAnswer = role === 'player' && stage === 'answer' && isMyTurn && !mySubmitted;
           els.answerForm.classList.toggle('hide', stage !== 'answer' || role !== 'player');
           els.answerBtn.disabled = !canAnswer;
           els.answerInput.disabled = !canAnswer;
-          els.answerInput.placeholder = 'Your short, slightly strategic answer...';
+          els.answerInput.placeholder = isMyTurn ? 'Your short, slightly strategic answer...' : 'Wait for your turn...';
           els.phaseHint.textContent =
             stage === 'answer'
-              ? 'Everyone answers at the same time — submit when ready.'
+              ? `${playerName(game.currentTurnId)} is answering.`
               : stage === 'vote'
                 ? 'Vote privately. You cannot vote for yourself.'
                 : stage === 'topicGuess'
                   ? 'The impostor gets one topic guess.'
                   : 'Review the reveal and scores.';
 
-          const showVoteSection = stage === 'vote' && role === 'player';
-          els.voteHeading.classList.toggle('hide', !showVoteSection);
-          els.voteInstruction.classList.toggle('hide', !showVoteSection || isImpostor);
-          els.impostorWait.classList.toggle('hide', !showVoteSection || !isImpostor);
-          if (showVoteSection && isImpostor) {
-            const voters = sortedPlayers().filter((p) => p.id !== game.impostorId);
-            const votedCount = voters.filter((p) => game.responses?.[p.id]).length;
-            els.impostorVoteStatus.textContent = `${votedCount} of ${voters.length} votes cast.`;
-            const myVote = game.responses?.[playerId];
-            els.impostorContinueBtn.disabled = Boolean(myVote);
-            els.impostorContinueBtn.textContent = myVote ? 'Waiting for votes…' : 'Continue';
-          }
+          els.voteBox.classList.toggle('hide', stage !== 'vote' || role !== 'player');
+          renderVoteChoices();
 
           els.guessForm.classList.toggle('hide', stage !== 'topicGuess' || role !== 'player' || !isImpostor);
           els.topicGuessBtn.disabled = role !== 'player' || !isImpostor || Boolean(game.responses?.[playerId]);
@@ -1308,14 +1276,49 @@
           }
 
           els.moderatorControls.classList.toggle('hide', !isModerator);
+          els.nextTurnBtn.classList.toggle('hide', stage !== 'answer');
           els.openVoteBtn.classList.toggle('hide', stage !== 'answer');
           els.revealVotesBtn.classList.toggle('hide', stage !== 'vote');
           els.finishGuessBtn.classList.toggle('hide', stage !== 'topicGuess');
+          els.nextTurnBtn.disabled = !game.responses?.[game.currentTurnId];
           els.openVoteBtn.disabled = players.some((player) => !game.responses?.[player.id]);
           els.revealVotesBtn.disabled = players.some((player) => player.id !== game.impostorId && !game.responses?.[player.id]);
           els.finishGuessBtn.disabled = !game.responses?.[game.impostorId];
 
-          renderUnifiedGrid();
+          renderPlayers(els.gamePlayerGrid, stage === 'results' || stage === 'ended');
+          renderTurnList();
+          renderAnswers();
+        }
+
+        function renderVoteChoices() {
+          const game = session?.game || {};
+          const isImpostorPlayer = game.roles?.[playerId] === 'impostor';
+          const locked = game.responses?.[playerId];
+
+          els.voteInstruction.classList.toggle('hide', isImpostorPlayer);
+          els.voteChoices.classList.toggle('hide', isImpostorPlayer);
+          els.impostorWait.classList.toggle('hide', !isImpostorPlayer);
+
+          if (isImpostorPlayer) {
+            const voters = sortedPlayers().filter((p) => p.id !== game.impostorId);
+            const votedCount = voters.filter((p) => game.responses?.[p.id]).length;
+            els.impostorVoteStatus.textContent = `${votedCount} of ${voters.length} votes cast.`;
+            els.impostorContinueBtn.disabled = Boolean(locked);
+            els.impostorContinueBtn.textContent = locked ? 'Waiting for votes…' : 'Continue';
+            return;
+          }
+
+          els.voteChoices.innerHTML = sortedPlayers()
+            .map((player) => {
+              const disabled = player.id === playerId || Boolean(locked);
+              const isVoted = locked === player.id;
+              const suffix = player.id === playerId ? ' (you)' : '';
+              return `<button class="btn vote-option ${isVoted ? 'gold' : ''}" type="button"
+                data-vote="${escapeHtml(player.id)}" ${disabled ? 'disabled' : ''}>
+                ${escapeHtml(player.name || 'Player')}${suffix}
+              </button>`;
+            })
+            .join('');
         }
 
         function renderResults() {
@@ -1397,6 +1400,9 @@
               'game/question': topic.question,
               'game/impostorId': impostor.id,
               'game/roles': roles,
+              'game/turnOrder': players.map((player) => player.id),
+              'game/currentTurnIndex': 0,
+              'game/currentTurnId': players[0].id,
               'game/responses': {},
               'game/answers': {},
               'game/votes': {},
@@ -1407,6 +1413,16 @@
             },
             'playing'
           );
+        }
+
+        async function nextTurn() {
+          const game = session?.game || {};
+          const order = game.turnOrder || activeIds();
+          const nextIndex = Math.min(Number(game.currentTurnIndex || 0) + 1, order.length - 1);
+          await patchSession({
+            'game/currentTurnIndex': nextIndex,
+            'game/currentTurnId': order[nextIndex]
+          });
         }
 
         async function openVoting() {
@@ -1515,6 +1531,9 @@
             'game/question': topic.question,
             'game/impostorId': impostor.id,
             'game/roles': roles,
+            'game/turnOrder': players.map((player) => player.id),
+            'game/currentTurnIndex': 0,
+            'game/currentTurnId': players[0]?.id || null,
             'game/responses': {},
             'game/answers': {},
             'game/votes': {},
@@ -1593,10 +1612,10 @@
               .catch(console.error);
           });
 
-          els.unifiedPlayerGrid.addEventListener('click', (event) => {
-            const card = event.target.closest('[data-vote]');
-            if (!card) return;
-            submitValue(card.getAttribute('data-vote')).then(refreshSession).catch(console.error);
+          els.voteChoices.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-vote]');
+            if (!button) return;
+            submitValue(button.getAttribute('data-vote')).then(refreshSession).catch(console.error);
           });
 
           els.guessForm.addEventListener('submit', (event) => {
@@ -1623,6 +1642,7 @@
           els.impostorContinueBtn.addEventListener('click', () => {
             submitValue('__skip__').then(refreshSession).catch(console.error);
           });
+          els.nextTurnBtn.addEventListener('click', () => nextTurn().catch(console.error));
           els.openVoteBtn.addEventListener('click', () => openVoting().catch(console.error));
           els.revealVotesBtn.addEventListener('click', () => revealVotes().catch(console.error));
           els.finishGuessBtn.addEventListener('click', () => finishTopicGuess().catch(console.error));
