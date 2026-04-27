@@ -440,6 +440,16 @@
         overflow-wrap: anywhere;
         margin-top: 2px;
       }
+      .vote-label {
+        margin-top: 6px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: rgb(45 212 191 / 80%);
+        letter-spacing: 0.02em;
+      }
+      .vote-label.voted {
+        color: var(--gold);
+      }
 
       .result-banner {
         border-radius: 16px;
@@ -685,7 +695,12 @@
               </form>
 
               <h2 class="hide" id="voteHeading">Who is the impostor?</h2>
-              <p class="muted hide" id="voteInstruction">Select a player in the grid to cast your vote — you cannot vote for yourself.</p>
+              <p class="muted hide" id="voteInstruction">Select a player card in the grid on the right to cast your vote — you cannot vote for yourself.</p>
+              <div class="big-card hide" id="voteCastConfirmation" style="text-align:center">
+                <div class="role-title" style="color:var(--accent)">Vote cast ✓</div>
+                <p class="muted" style="margin-top:8px">Waiting for the other players to vote…</p>
+                <p class="small" id="voteProgressStatus" style="margin-top:10px;color:var(--accent)"></p>
+              </div>
               <div class="big-card hide" id="impostorWait" style="text-align:center">
                 <div class="role-title">You are the impostor</div>
                 <p class="muted" style="margin-top:8px">Stay quiet — your role prevents you from voting. Wait while the others cast their votes.</p>
@@ -880,6 +895,8 @@
           answerBtn: document.getElementById('answerBtn'),
           voteHeading: document.getElementById('voteHeading'),
           voteInstruction: document.getElementById('voteInstruction'),
+          voteCastConfirmation: document.getElementById('voteCastConfirmation'),
+          voteProgressStatus: document.getElementById('voteProgressStatus'),
           impostorWait: document.getElementById('impostorWait'),
           impostorVoteStatus: document.getElementById('impostorVoteStatus'),
           impostorContinueBtn: document.getElementById('impostorContinueBtn'),
@@ -1200,7 +1217,7 @@
               }
               const answerToShow =
                 stage === 'answer'
-                  ? (game.responses?.[player.id] || '')
+                  ? (role === 'moderator' ? '' : (game.responses?.[player.id] || ''))
                   : (game.answers?.[player.id] || '');
               const canVoteFor =
                 isVoteStage && role === 'player' && !isImpostorPlayer && player.id !== playerId && !locked;
@@ -1214,10 +1231,16 @@
                 .filter(Boolean)
                 .join(' ');
               const voteAttr = canVoteFor ? `data-vote="${escapeHtml(player.id)}"` : '';
+              const voteLabel = canVoteFor
+                ? '<div class="vote-label">Tap to vote →</div>'
+                : isVotedFor
+                  ? '<div class="vote-label voted">✓ Your vote</div>'
+                  : '';
               return `<div class="player ${classes}" ${voteAttr}>
                 <div class="name">${escapeHtml(player.name || 'Player')}</div>
                 <div class="small">${Number(scores[player.id] || 0)} pts · ${isImpostorReveal ? 'impostor' : statusText}</div>
                 ${answerToShow ? `<div class="player-response">${escapeHtml(answerToShow)}</div>` : ''}
+                ${voteLabel}
               </div>`;
             })
             .join('');
@@ -1247,13 +1270,20 @@
           els.turnPill.textContent = `Round ${Number(game.logicalRound || 0) + 1} of ${Number(session?.settings?.roundsTotal || 5)}`;
           els.questionText.textContent = game.question || 'What is your favorite?';
 
+          const topicRevealed = stage === 'topicGuess' || stage === 'results';
           els.roleCard.classList.toggle('impostor', role === 'player' && isImpostor);
-          els.topicPopupBtn.classList.toggle('hide', role !== 'moderator');
+          els.topicPopupBtn.classList.toggle('hide', role !== 'moderator' || topicRevealed);
           if (role === 'moderator') {
             els.roleTitle.textContent = 'Moderator view';
-            els.roleValue.textContent = 'Topic hidden';
-            els.roleValue.classList.add('mod-hidden');
-            els.roleHint.textContent = 'Keep this screen shared. Open a private window to see the topic and impostor.';
+            if (topicRevealed) {
+              els.roleValue.textContent = game.topic || 'Topic';
+              els.roleValue.classList.remove('mod-hidden');
+              els.roleHint.textContent = 'The topic has been revealed to all players.';
+            } else {
+              els.roleValue.textContent = 'Topic hidden';
+              els.roleValue.classList.add('mod-hidden');
+              els.roleHint.textContent = 'Keep this screen shared. Open a private window to see the topic and impostor.';
+            }
             if (topicPopup && !topicPopup.closed) {
               topicPopup.postMessage(
                 { topic: game.topic || '', impostorName: playerName(game.impostorId) },
@@ -1262,14 +1292,22 @@
             }
           } else if (isImpostor) {
             els.roleValue.classList.remove('mod-hidden');
-            els.roleTitle.textContent = 'Your secret role';
-            els.roleValue.textContent = 'You are the impostor';
-            els.roleHint.textContent = 'Answer vaguely, listen closely, then guess the topic if you survive.';
+            if (topicRevealed) {
+              els.roleTitle.textContent = 'The topic was';
+              els.roleValue.textContent = game.topic || 'Topic';
+              els.roleHint.textContent = stage === 'topicGuess' ? 'Your one chance — guess it exactly.' : '';
+            } else {
+              els.roleTitle.textContent = 'Your secret role';
+              els.roleValue.textContent = 'You are the impostor';
+              els.roleHint.textContent = 'Answer vaguely, listen closely, then guess the topic if you survive.';
+            }
           } else {
             els.roleValue.classList.remove('mod-hidden');
             els.roleTitle.textContent = 'Your shared topic';
             els.roleValue.textContent = game.topic || 'Topic';
-            els.roleHint.textContent = 'Give a real answer that proves you know the topic without making it too easy.';
+            els.roleHint.textContent = topicRevealed
+              ? ''
+              : 'Give a real answer that proves you know the topic without making it too easy.';
           }
 
           const canAnswer = role === 'player' && stage === 'answer' && !mySubmitted;
@@ -1287,9 +1325,16 @@
                   : 'Review the reveal and scores.';
 
           const showVoteSection = stage === 'vote' && role === 'player';
+          const myVoteLocked = showVoteSection && !isImpostor && Boolean(game.responses?.[playerId]);
           els.voteHeading.classList.toggle('hide', !showVoteSection);
-          els.voteInstruction.classList.toggle('hide', !showVoteSection || isImpostor);
+          els.voteInstruction.classList.toggle('hide', !showVoteSection || isImpostor || myVoteLocked);
+          els.voteCastConfirmation.classList.toggle('hide', !myVoteLocked);
           els.impostorWait.classList.toggle('hide', !showVoteSection || !isImpostor);
+          if (myVoteLocked) {
+            const voters = sortedPlayers().filter((p) => p.id !== game.impostorId);
+            const votedCount = voters.filter((p) => game.responses?.[p.id]).length;
+            els.voteProgressStatus.textContent = `${votedCount} of ${voters.length} votes cast.`;
+          }
           if (showVoteSection && isImpostor) {
             const voters = sortedPlayers().filter((p) => p.id !== game.impostorId);
             const votedCount = voters.filter((p) => game.responses?.[p.id]).length;
