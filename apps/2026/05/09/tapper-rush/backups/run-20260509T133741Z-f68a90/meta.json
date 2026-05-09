@@ -26,17 +26,5 @@
     "runId": "run-20260509T131717Z-99cda3",
     "notes": "Built from GitHub issue #427. Duplication risk flagged 'high' by selection script due to broad arcade/game tags, but the bartender lane-switching mechanic is unique in the catalog. Implemented as canvas game with 4 lanes, tap-to-serve, swipe-to-switch-lane, combo multiplier, escalating wave system, and bonus 2x-score happy-hour rounds. Keyboard: arrows/WASD to switch lane, Space/Enter to serve."
   },
-  "leaderboard": true,
-  "improvements": [
-    {
-      "issueNumber": 429,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/429",
-      "runId": "run-20260509T133741Z-f68a90",
-      "description": "Fixed empty mug return: mugs now travel rightward back toward the bartender and must be caught in the correct lane (wrong lane = lose a life).",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-05-09T13:37:41Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6"
-    }
-  ]
+  "leaderboard": true
 }
