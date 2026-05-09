@@ -666,29 +666,36 @@
           c.x += c.speed * dt;
 
           if (c.isMug) {
-            // Mug moving right (returning toward bartender) — catch only if in correct lane
-            if (c.x >= bartenderX() - 20) {
-              if (c.lane === playerLane) {
-                const pts = addScore(5);
-                score += pts;
-                combo++;
-                if (combo > bestCombo) bestCombo = combo;
-                spawnParticles(bartenderX(), laneCenterY(c.lane), '#fbbf24', 6);
-                spawnFloat(bartenderX() - 30, laneCenterY(c.lane) - 20, `+${pts}`, '#fbbf24');
-                updateHUD();
-              } else {
-                loseLife({ x: bartenderX(), y: laneCenterY(c.lane) });
-              }
+            // Mug moving left (returning) — must be caught
+            if (c.x < -30) {
+              // Dropped mug
               customers.splice(i, 1);
+              loseLife({ x: 30, y: laneCenterY(c.lane) });
+              continue;
+            }
+            // Bartender catches mug
+            if (c.x >= bartenderX() - 20) {
+              const pts = addScore(5);
+              score += pts;
+              combo++;
+              if (combo > bestCombo) bestCombo = combo;
+              spawnParticles(bartenderX(), laneCenterY(c.lane), '#fbbf24', 6);
+              spawnFloat(bartenderX() - 30, laneCenterY(c.lane) - 20, `+${pts}`, '#fbbf24');
+              customers.splice(i, 1);
+              updateHUD();
               continue;
             }
           } else if (c.served) {
             // Retreating customer with mug
             c.mugTimer -= dt;
             if (c.mugTimer <= 0) {
-              // Customer throws empty mug back toward the bartender (rightward)
+              // Throw mug back
+              c.speed = Math.abs(c.speed) * 0.9; // now moves right... wait, actually left toward bartender
+              // The mug should move right toward bartender area
+              // Actually let's convert this customer to a mug moving toward left side
+              // No wait - in Tapper, empty mugs slide back toward the bartender (left)
               c.isMug = true;
-              c.speed = 1.5 + Math.random(); // move right, back toward bartender
+              c.speed = -(1.5 + Math.random()); // move left
               c.served = false;
               c.emoji = '🪣';
             }
