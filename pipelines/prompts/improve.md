@@ -670,7 +670,7 @@ This step is **always required** on every improvement pipeline run. Do not promp
 
    ```bash
    git add apps/<app-path>/log.jsonl logs/YYYY/MM/DD.jsonl
-   git commit -m "chore: finalize transaction logs for <app-id> improvement [skip deploy]"
+   git commit -m "chore: finalize transaction logs for <app-id> improvement"
    git push origin main
    ```
 
