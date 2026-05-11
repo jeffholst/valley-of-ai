@@ -79,7 +79,7 @@
     "jest-environment-jsdom": "^30.3.0",
     "lint-staged": "^16.4.0",
     "playwright": "^1.59.1",
-    "postcss": "^8.5.12",
+    "postcss": "^8.5.14",
     "prettier": "^3.8.3",
     "tailwindcss": "^4.2.4"
   }
