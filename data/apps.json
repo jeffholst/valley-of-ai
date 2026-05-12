@@ -1,5 +1,45 @@
 [
   {
+    "id": "2026/05/12/geo-defense",
+    "name": "Geo Defense",
+    "shortDescription": "A neon geometric tower defense game. Place laser, cannon, and tesla towers along a winding path to stop waves of advancing shape enemies before they reach your base.",
+    "thumbnailUrl": "/apps/2026/05/12/geo-defense/thumbnail.svg",
+    "createdAt": "2026-05-12T21:17:06Z",
+    "year": 2026,
+    "month": 5,
+    "day": 12,
+    "category": "Games",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "tower-defense",
+      "strategy",
+      "canvas",
+      "touch-controls",
+      "geometric",
+      "path-defense",
+      "mobile-first"
+    ],
+    "route": "/apps/2026/05/12/geo-defense",
+    "appPath": "/apps/2026/05/12/geo-defense/index.html",
+    "generation": {
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6",
+      "startTime": "2026-05-12T21:17:06Z",
+      "endTime": "2026-05-12T21:40:00Z",
+      "totalTokensIn": 4100,
+      "totalTokensOut": 11700,
+      "runId": "run-20260512T211706Z-87165f",
+      "notes": "Built from vote-and-category-analysis — inspired by Missile Command Modern (2 net votes). Tower defense is entirely absent from the 76-app catalog; this fills that strategic-placement gap while the existing defense apps (Missile Command, Space Invaders, Galaxian Blitz) all use reactive-shooting mechanics. 3 tower types: Laser (fast single-target), Cannon (slow splash), Tesla (chains 3 enemies). 10 escalating waves. Enemy types: standard squares/pentagons, tank hexagons (3x HP, 0.6x speed), flier triangles (0.6x HP, 1.4x speed). Upgrade system (2 levels per tower) and sell mechanic. Keyboard shortcuts 1-5 for tower selection. Shell-layout safe: fixed top:64px/bottom:56px wrapper."
+    },
+    "suggestion": null,
+    "improvements": null,
+    "allowImprovements": true,
+    "leaderboard": true,
+    "maxScore": 9999,
+    "backups": null
+  },
+  {
     "id": "2026/05/09/tapper-rush",
     "name": "Tapper Rush",
     "shortDescription": "A Tapper-inspired bartender arcade game. Switch lanes, serve drinks, catch returning mugs — don't let anyone reach the bar!",
