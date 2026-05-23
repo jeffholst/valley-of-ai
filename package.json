@@ -76,7 +76,7 @@
     "eslint-plugin-react": "^7.37.5",
     "husky": "^9.1.7",
     "jest": "^30.3.0",
-    "jest-environment-jsdom": "^30.3.0",
+    "jest-environment-jsdom": "^30.4.1",
     "lint-staged": "^16.4.0",
     "playwright": "^1.59.1",
     "postcss": "^8.5.14",
