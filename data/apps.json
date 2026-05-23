@@ -1,5 +1,45 @@
 [
   {
+    "id": "2026/05/23/game-of-life",
+    "name": "Game of Life",
+    "shortDescription": "Conway's cellular automaton — draw cells, load classic presets like the Gosper Glider Gun, and watch generations evolve on a toroidal grid.",
+    "thumbnailUrl": "/apps/2026/05/23/game-of-life/thumbnail.svg",
+    "createdAt": "2026-05-23T19:49:39Z",
+    "year": 2026,
+    "month": 5,
+    "day": 23,
+    "category": "Visualizations",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "cellular-automaton",
+      "simulation",
+      "conway",
+      "canvas",
+      "interactive",
+      "patterns",
+      "educational"
+    ],
+    "route": "/apps/2026/05/23/game-of-life",
+    "appPath": "/apps/2026/05/23/game-of-life/index.html",
+    "generation": {
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6",
+      "startTime": "2026-05-23T19:49:39Z",
+      "endTime": "2026-05-23T19:58:00Z",
+      "totalTokensIn": 5400,
+      "totalTokensOut": 14200,
+      "runId": "run-20260523T194939Z-b7de37",
+      "notes": "Manual concept selection — select:app:suggestion failed on Node 20 due to missing WebSocket support for Supabase realtime. Visualizations was the most underrepresented category (2 apps). Grid uses Uint8Array double-buffering for performance. Toroidal wrap prevents edge stagnation. Default preset is Gosper Glider Gun as a showcase opener."
+    },
+    "suggestion": null,
+    "improvements": null,
+    "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
+    "backups": null
+  },
+  {
     "id": "2026/05/23/simmotion",
     "name": "Simmotion",
     "shortDescription": "Balls roll through a fixed roller coaster track — every gate they hit flips for the next ball. Catch them with your paddle before they hit the floor.",
