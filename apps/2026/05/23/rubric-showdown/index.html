@@ -24,7 +24,6 @@
     <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
     <meta name="application-name" content="Rubric Showdown" />
     <meta name="voa-app-id" content="2026/05/23/rubric-showdown" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js" defer></script>
     <script src="/apps/shared/app-shell.js" defer></script>
 
     <style>
@@ -274,7 +273,7 @@
 
       .criterion-grid {
         display: grid;
-        grid-template-columns: 32px 1fr 72px 92px 40px;
+        grid-template-columns: 32px 1fr 72px 40px;
         gap: 8px;
         align-items: center;
       }
@@ -305,13 +304,6 @@
         color: #11140c;
         background: var(--accent-2);
         font-weight: 900;
-      }
-
-      .scoreboard {
-        display: grid;
-        grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
-        gap: 14px;
-        margin-bottom: 14px;
       }
 
       .leaderboard {
@@ -357,15 +349,6 @@
       .mini {
         color: var(--muted);
         font-size: 0.84rem;
-      }
-
-      .chart-wrap {
-        min-height: 320px;
-      }
-
-      #radarChart {
-        width: 100%;
-        max-height: 370px;
       }
 
       .matrix {
@@ -580,8 +563,7 @@
       }
 
       @media (max-width: 1040px) {
-        .layout,
-        .scoreboard {
+        .layout {
           grid-template-columns: 1fr;
         }
 
@@ -604,7 +586,7 @@
         }
 
         .criterion-grid {
-          grid-template-columns: 32px 1fr 62px 76px 40px;
+          grid-template-columns: 32px 1fr 62px 40px;
           gap: 6px;
         }
 
@@ -657,25 +639,15 @@
         </aside>
 
         <section aria-label="Scoring workspace">
-          <div class="scoreboard">
-            <article class="panel">
-              <div class="panel-head">
-                <h2>Live Leaderboard</h2>
-                <span class="pill" id="leaderLabel">0 scored</span>
-              </div>
-              <div class="panel-body leaderboard" id="leaderboard"></div>
-            </article>
+          <article class="panel" style="margin-bottom: 14px">
+            <div class="panel-head">
+              <h2>Live Leaderboard</h2>
+              <span class="pill" id="leaderLabel">0 scored</span>
+            </div>
+            <div class="panel-body leaderboard" id="leaderboard"></div>
+          </article>
 
-            <article class="panel chart-wrap">
-              <div class="panel-head">
-                <h2>Category Radar</h2>
-                <span class="pill" id="categoryLabel">0 categories</span>
-              </div>
-              <div class="panel-body">
-                <canvas id="radarChart" aria-label="Radar chart comparing competitors"></canvas>
-              </div>
-            </article>
-          </div>
+          <p class="verdict" id="verdict" style="margin-bottom: 14px" aria-live="polite"></p>
 
           <article class="panel">
             <div class="panel-head">
@@ -692,8 +664,6 @@
             </div>
             <div class="panel-body competitor-list" id="competitorList"></div>
           </article>
-
-          <p class="verdict" id="verdict" style="margin-top: 14px" aria-live="polite"></p>
         </section>
       </section>
     </main>
@@ -715,15 +685,14 @@
       <div class="help-card">
         <h2 id="helpTitle">Rubric Showdown Help</h2>
         <p>
-          Build a scoring rubric, compare named competitors, and use the leaderboard, radar
-          chart, notes, and reveal tools to make a decision.
+          Build a scoring rubric, compare named competitors, and use the leaderboard, notes, and reveal tools to make a decision.
         </p>
         <h3>Rubric Builder</h3>
         <ul>
           <li>Use Add Criterion to create a new scoring row.</li>
           <li>Edit the full-width criterion name field for longer descriptions.</li>
           <li>Drag the handle to reorder criteria.</li>
-          <li>Set each criterion to 1x, 2x, or 3x, choose a category, and toggle plus or minus.</li>
+          <li>Set each criterion to 1x, 2x, or 3x and toggle plus or minus.</li>
           <li>Delete Criterion removes that criterion from every competitor score.</li>
         </ul>
         <h3>Scoring Competitors</h3>
@@ -736,8 +705,7 @@
         <h3>Results</h3>
         <ul>
           <li>The leaderboard updates as scores, weights, signs, and confidence change.</li>
-          <li>The category radar compares positive category strengths across competitors.</li>
-          <li>Reveal Winner opens a spotlight result with a verdict based on the leading category.</li>
+          <li>Reveal Winner opens a spotlight result with a verdict based on the leading score.</li>
           <li>Copy Summary copies ranked results, and Export PNG downloads a scorecard.</li>
           <li>Undo and Redo step through recent rubric, competitor, and scoring changes.</li>
         </ul>
@@ -772,7 +740,6 @@
       let state = loadState();
       let undoStack = [];
       let redoStack = [];
-      let radarChart;
       let draggedCriterionId = null;
       let lastWinner = null;
 
@@ -833,10 +800,6 @@
         }, 900);
       }
 
-      function criteriaByCategory() {
-        return [...new Set(state.criteria.map((item) => item.category.trim() || 'General'))];
-      }
-
       function rawCriterionScore(competitor, criterion) {
         const value = Number(state.scores[`${competitor.id}:${criterion.id}`] || 3);
         return value * Number(criterion.weight) * Number(criterion.sign);
@@ -857,28 +820,14 @@
 
       function sortedCompetitors() {
         return state.competitors
-          .map((competitor) => ({
-            ...competitor,
-            total: competitorTotal(competitor),
-            topCategory: topCategoryFor(competitor),
-          }))
+          .map((competitor) => ({ ...competitor, total: competitorTotal(competitor) }))
           .sort((a, b) => b.total - a.total);
-      }
-
-      function topCategoryFor(competitor) {
-        return criteriaByCategory()
-          .map((category) => {
-            const criteria = state.criteria.filter((criterion) => (criterion.category.trim() || 'General') === category);
-            const total = criteria.reduce((sum, criterion) => sum + rawCriterionScore(competitor, criterion), 0);
-            return { category, total };
-          })
-          .sort((a, b) => b.total - a.total)[0]?.category || 'balanced strength';
       }
 
       function verdictFor(winner) {
         const runnerUp = sortedCompetitors()[1];
         const margin = runnerUp ? (winner.total - runnerUp.total).toFixed(1) : winner.total.toFixed(1);
-        return `${winner.name} wins by owning ${winner.topCategory}, with a ${winner.confidence}% confidence signal and a ${margin}-point edge over the nearest challenger.`;
+        return `${winner.name} leads with ${winner.total} points, a ${winner.confidence}% confidence signal, and a ${margin}-point edge over the nearest challenger.`;
       }
 
       function renderCriteria() {
@@ -898,14 +847,12 @@
                 <option value="2">2x</option>
                 <option value="3">3x</option>
               </select>
-              <input aria-label="Category" value="${escapeHtml(criterion.category)}" />
               <button class="icon-btn sign-toggle ${criterion.sign < 0 ? '' : 'active'}" type="button" aria-label="Toggle plus or minus">${criterion.sign < 0 ? '-' : '+'}</button>
             </div>
             <button class="btn" type="button" style="margin-top:8px;width:100%">Delete Criterion</button>
           `;
           const nameInput = row.querySelector('.criterion-name');
           const weightSelect = row.querySelector('select');
-          const categoryInput = row.querySelector('input');
           weightSelect.value = criterion.weight;
           nameInput.addEventListener('change', () =>
             commit(() => {
@@ -915,11 +862,6 @@
           weightSelect.addEventListener('change', () =>
             commit(() => {
               criterion.weight = Number(weightSelect.value);
-            }),
-          );
-          categoryInput.addEventListener('change', () =>
-            commit(() => {
-              criterion.category = categoryInput.value.trim() || 'General';
             }),
           );
           row.querySelector('.sign-toggle').addEventListener('click', () =>
@@ -965,7 +907,7 @@
             <div class="rank">${index + 1}</div>
             <div>
               <h3>${escapeHtml(competitor.name)}</h3>
-              <p class="mini">${escapeHtml(competitor.topCategory)} lead · ${competitor.confidence}% confidence</p>
+              <p class="mini">${competitor.confidence}% confidence</p>
             </div>
             <div class="score">${competitor.total}</div>
           `;
@@ -997,7 +939,7 @@
               <tr>
                 <td>
                   <strong>${escapeHtml(criterion.name)}</strong>
-                  <div class="mini">${escapeHtml(criterion.category)} · ${criterion.sign > 0 ? '+' : '-'}${criterion.weight}x</div>
+                  <div class="mini">${criterion.sign > 0 ? '+' : '-'}${criterion.weight}x</div>
                 </td>
                 ${cells}
               </tr>
@@ -1022,7 +964,6 @@
             input.nextElementSibling.textContent = input.value;
             localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
             renderLeaderboard();
-            updateChart();
           });
           input.addEventListener('change', () => {
             if (input.dataset.before) undoStack.push(JSON.parse(input.dataset.before));
@@ -1076,7 +1017,6 @@
             updateConfidence(competitor, confidenceInput.value, confidenceLabel, confidenceNumber);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
             renderLeaderboard();
-            updateChart();
           });
           confidenceInput.addEventListener('change', () => {
             if (confidenceInput.dataset.before) undoStack.push(JSON.parse(confidenceInput.dataset.before));
@@ -1102,68 +1042,6 @@
         });
       }
 
-      function updateChart() {
-        const categories = criteriaByCategory();
-        const datasets = state.competitors.map((competitor, index) => ({
-          label: competitor.name,
-          data: categories.map((category) => {
-            const criteria = state.criteria.filter((criterion) => (criterion.category.trim() || 'General') === category);
-            return criteria.reduce((sum, criterion) => sum + Math.max(0, rawCriterionScore(competitor, criterion)), 0);
-          }),
-          fill: true,
-          borderColor: palette[index % palette.length],
-          backgroundColor: `${palette[index % palette.length]}33`,
-          pointBackgroundColor: palette[index % palette.length],
-          borderWidth: 2,
-        }));
-        document.getElementById('categoryLabel').textContent = `${categories.length} categories`;
-        if (!window.Chart) return;
-        const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim();
-        const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
-        const chartSignature = JSON.stringify({
-          categories,
-          competitors: state.competitors.map((competitor) => competitor.id),
-        });
-        if (radarChart && radarChart.$signature !== chartSignature) {
-          radarChart.destroy();
-          radarChart = null;
-        }
-        if (!radarChart) {
-          radarChart = new Chart(document.getElementById('radarChart'), {
-            type: 'radar',
-            data: { labels: categories, datasets },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                legend: { labels: { color: textColor, boxWidth: 12 } },
-              },
-              scales: {
-                r: {
-                  beginAtZero: true,
-                  grid: { color: gridColor },
-                  angleLines: { color: gridColor },
-                  pointLabels: { color: textColor },
-                  ticks: { color: textColor, backdropColor: 'transparent' },
-                },
-              },
-              animation: { duration: 350 },
-            },
-          });
-          radarChart.$signature = chartSignature;
-          return;
-        }
-        radarChart.data.labels = categories;
-        radarChart.data.datasets = datasets;
-        radarChart.options.plugins.legend.labels.color = textColor;
-        radarChart.options.scales.r.grid.color = gridColor;
-        radarChart.options.scales.r.angleLines.color = gridColor;
-        radarChart.options.scales.r.pointLabels.color = textColor;
-        radarChart.options.scales.r.ticks.color = textColor;
-        radarChart.$signature = chartSignature;
-        radarChart.update();
-      }
-
       function updateConfidence(competitor, value, label, pairedInput) {
         competitor.confidence = Math.max(0, Math.min(100, Number(value) || 0));
         label.textContent = `${competitor.confidence}%`;
@@ -1176,7 +1054,6 @@
         renderLeaderboard();
         renderMatrix();
         renderCompetitors();
-        updateChart();
         document.getElementById('undoBtn').disabled = undoStack.length === 0;
         document.getElementById('redoBtn').disabled = redoStack.length === 0;
       }

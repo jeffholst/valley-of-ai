@@ -1,12 +1,12 @@
 {
   "id": "rubric-showdown",
   "name": "Rubric Showdown",
-  "shortDescription": "Build weighted rubrics, score multiple competitors side-by-side, compare category strengths on a radar chart, and export a winner scorecard.",
+  "shortDescription": "Build weighted rubrics, score multiple competitors side-by-side, watch a live leaderboard with instant verdict, and export a winner scorecard.",
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-05-23T15:05:07Z",
   "category": "Utilities",
   "status": "active",
-  "tags": ["rubric", "scoring", "ranking", "charts", "comparison", "export"],
+  "tags": ["rubric", "scoring", "ranking", "comparison", "export", "leaderboard"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
   "suggestion": {
@@ -46,6 +46,16 @@
       "implementedAt": "2026-05-23T16:47:15Z",
       "agentName": "Codex",
       "llmModel": "GPT-5"
+    },
+    {
+      "issueNumber": 445,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/445",
+      "runId": "run-20260523T173416Z-4823fc",
+      "description": "Moved verdict above score matrix. Removed criterion category option, chart.js CDN dependency, radar chart, updateChart() and criteriaByCategory() functions. Simplified leaderboard and matrix to remove category references.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-05-23T17:42:15Z",
+      "agentName": "Claude",
+      "llmModel": "claude-sonnet-4-6"
     }
   ]
 }
