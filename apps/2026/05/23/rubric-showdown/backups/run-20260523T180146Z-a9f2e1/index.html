@@ -836,6 +836,7 @@
         state.criteria.forEach((criterion) => {
           const row = document.createElement('article');
           row.className = 'criterion';
+          row.draggable = true;
           row.dataset.id = criterion.id;
           row.innerHTML = `
             <div class="criterion-grid">
@@ -873,21 +874,11 @@
               state.criteria = state.criteria.filter((item) => item.id !== criterion.id);
             }),
           );
-          const dragHandle = row.querySelector('.drag-handle');
-          dragHandle.addEventListener('pointerdown', () => {
-            row.draggable = true;
-          });
-          dragHandle.addEventListener('pointerup', () => {
-            row.draggable = false;
-          });
           row.addEventListener('dragstart', () => {
             draggedCriterionId = criterion.id;
             row.classList.add('dragging');
           });
-          row.addEventListener('dragend', () => {
-            row.classList.remove('dragging');
-            row.draggable = false;
-          });
+          row.addEventListener('dragend', () => row.classList.remove('dragging'));
           row.addEventListener('dragover', (event) => event.preventDefault());
           row.addEventListener('drop', () => reorderCriterion(criterion.id));
           list.append(row);

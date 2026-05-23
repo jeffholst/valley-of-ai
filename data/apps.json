@@ -60,6 +60,16 @@
         "implementedAt": "2026-05-23T17:42:15Z",
         "agentName": "Claude",
         "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 449,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/449",
+        "runId": "run-20260523T180146Z-a9f2e1",
+        "description": "Drag/drop now only engages when the pointer is on the drag handle button; removed draggable=true from the article element and set it dynamically on handle pointerdown/pointerup.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-23T18:01:46Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
       }
     ],
     "allowImprovements": true,
@@ -77,9 +87,9 @@
         "url": "/apps/2026/05/23/rubric-showdown/backups/run-20260523T164715Z-ef5d6b/index.html"
       },
       {
-        "runId": "run-20260523T173416Z-4823fc",
-        "path": "backups/run-20260523T173416Z-4823fc/index.html",
-        "url": "/apps/2026/05/23/rubric-showdown/backups/run-20260523T173416Z-4823fc/index.html"
+        "runId": "run-20260523T180146Z-a9f2e1",
+        "path": "backups/run-20260523T180146Z-a9f2e1/index.html",
+        "url": "/apps/2026/05/23/rubric-showdown/backups/run-20260523T180146Z-a9f2e1/index.html"
       }
     ]
   },
