@@ -214,12 +214,13 @@ Quality standards (non-negotiable):
 - **No JS errors**: console clean on load and during use
 - **If a game**: clear score display, win/loss/restart states all implemented and functional
 - **Social sharing:** See `shared.md` → "Social Share Hook".
-  - **Games (required):** call `window.voaShare()` in the game-over handler with the final score.
-  - **Utilities (when a result exists):** call it when the primary result is produced.
+  - **Games (required):** add a visible Share button on the game-over screen and call `window.voaShare()` only when the player taps it.
+  - **Utilities (when a result exists):** add a visible Share button on the result screen and call it only when the user taps it.
+  - Never auto-open from system events (game-over handler, timer expiry, auto-advance, page load).
   - Always use the guard pattern; never call `window.voaShare` without first checking it exists.
 
   ```js
-  // Inside game-over / result handler:
+  // Inside the Share button click handler on the game-over / result screen:
   if (window.voaShare) {
     window.voaShare({
       text: `I scored ${score.toLocaleString()} in ${APP_NAME}! Can you beat it?`,
@@ -227,11 +228,12 @@ Quality standards (non-negotiable):
   }
   ```
 
-- **Leaderboard (games only, required):** Call `window.voaLeaderboard?.submit(score)` immediately
-  after `voaShare` in the game-over handler. See `shared.md` → "Leaderboard Hook".
+- **Leaderboard (games only, required):** Call `window.voaLeaderboard?.submit(score)` in the
+  game-over handler with the final score (independent of share button taps). See `shared.md` →
+  "Leaderboard Hook".
 
   ```js
-  // Inside game-over handler, right after voaShare:
+  // Inside game-over handler:
   if (window.voaLeaderboard) {
     window.voaLeaderboard.submit(score);
   }
