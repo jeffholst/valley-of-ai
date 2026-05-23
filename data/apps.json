@@ -70,11 +70,27 @@
       "prompt": "## App Suggestion\n\n**Category:** Games\n**Requestor:** Jeff Holst\n\n### Description\n\nBuild Simmotion game similar to the one shown on survivor with single, static, elaborate multi\\-path roller coaster track drawn with canvas winding ramps, steep drops, flat stretches, and splits and multiple exits\\. Each junction sits a physical gate: when a ball rolls over it, the gate visibly flips like a railroad switch, routing the next ball down the alternate branch\\. The track layout is fixed and detailed, not generated randomly\\. Balls enter at the top and follow whatever path the gates have set, creating unpredictable routes to the bottom each run\\. Player controls a catching paddle at the base via mouse or touch drag\\. Catch the ball and flick it back to the top opening to restart\\. Miss=lose a life \\(3 total\\)\\. A new ball enters every 20 seconds, increasing simultaneous balls in play\\. Balls accelerate on drops, slow on flat sections\\. Gates animate with a satisfying snap when triggered\\. R...",
       "requestor": "Jeff Holst"
     },
-    "improvements": null,
+    "improvements": [
+      {
+        "issueNumber": 453,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/453",
+        "runId": "run-20260523T200252Z-9230c3",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6",
+        "appliedAt": "2026-05-23T20:02:52Z",
+        "summary": "Added multi-ball gameplay (3 staggered at start, new ball every 15s), hidden gate reveals (only visible within 80px), 4 exit zones for true unpredictability, paddle shrink on miss (–10px per miss, min 40px), speed escalation (+0.4 cap every 30s up to 6.0), and removed auto-share popup."
+      }
+    ],
     "allowImprovements": true,
     "leaderboard": true,
     "maxScore": 7200,
-    "backups": null
+    "backups": [
+      {
+        "runId": "run-20260523T200252Z-9230c3",
+        "path": "backups/run-20260523T200252Z-9230c3/index.html",
+        "url": "/apps/2026/05/23/simmotion/backups/run-20260523T200252Z-9230c3/index.html"
+      }
+    ]
   },
   {
     "id": "2026/05/23/rubric-showdown",

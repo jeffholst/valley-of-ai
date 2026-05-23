@@ -213,7 +213,7 @@
           <span>🖱️ / 👆 Move paddle left and right</span>
           <span>⚡ Gates flip every time a ball passes through</span>
           <span>❤️ Miss a ball — lose a life (3 total)</span>
-          <span>🎳 3 balls launch at the start, more follow every 15 seconds</span>
+          <span>🎳 A new ball launches every 20 seconds</span>
         </div>
         <button class="btn" id="startBtn">PLAY</button>
       </div>
@@ -335,14 +335,10 @@
           // J4 right → J6
           { from: { x: 200, y: 380 }, to: { x: 310, y: 460 }, gate: 6, type: 'ramp' },
 
-          // J5 → exit far-left (gate 5 = false)
-          { from: { x: 90, y: 460 }, to: { x: 80, y: 560 }, gate: -1, type: 'drop' },
-          // J6 → exit far-right (gate 6 = true)
-          { from: { x: 310, y: 460 }, to: { x: 320, y: 560 }, gate: -1, type: 'drop' },
-          // J5 → exit center-left (gate 5 = true)
-          { from: { x: 90, y: 460 }, to: { x: 160, y: 560 }, gate: -1, type: 'drop' },
-          // J6 → exit center-right (gate 6 = false)
-          { from: { x: 310, y: 460 }, to: { x: 240, y: 560 }, gate: -1, type: 'drop' },
+          // J5 → exit
+          { from: { x: 90, y: 460 }, to: { x: 130, y: 560 }, gate: -1, type: 'drop' },
+          // J6 → exit
+          { from: { x: 310, y: 460 }, to: { x: 270, y: 560 }, gate: -1, type: 'drop' },
         ];
 
         // 7 gates (0-6)
@@ -362,8 +358,7 @@
        * - Speed is clamped to [MIN_SPEED, MAX_SPEED]
        */
       const MIN_SPEED = 0.4;
-      const MAX_SPEED = 3.5; // base cap; escalates during play
-      let currentMaxSpeed = MAX_SPEED;
+      const MAX_SPEED = 3.5;
 
       function segmentLength(seg) {
         const dx = seg.to.x - seg.from.x;
@@ -398,7 +393,7 @@
 
       let balls = [];
       let ballSpawnTimer = 0;
-      const BALL_SPAWN_INTERVAL = 15; // seconds
+      const BALL_SPAWN_INTERVAL = 20; // seconds
 
       /**
        * Choose next segment from gate state.
@@ -422,10 +417,10 @@
           3: { false: 7, true: 8 },
           // gate 4 at segs 7,8,9: left=10, right=11
           4: { false: 10, true: 11 },
-          // gate 5 at seg 10: false=far-left(12), true=center-left(14)
-          5: { false: 12, true: 14 },
-          // gate 6 at seg 11: false=center-right(15), true=far-right(13)
-          6: { false: 15, true: 13 },
+          // gate 5 at seg 10: → 12
+          5: { false: 12, true: 12 },
+          // gate 6 at seg 11: → 13
+          6: { false: 13, true: 13 },
         };
 
         // For gate 3, the merge input determines the output more subtly:
@@ -463,7 +458,7 @@
         if (seg.type === 'flat') {
           ball.speed = Math.max(MIN_SPEED, ball.speed - 1.5 * dt);
         } else {
-          ball.speed = Math.min(currentMaxSpeed, Math.max(MIN_SPEED, ball.speed + gf * 4 * dt));
+          ball.speed = Math.min(MAX_SPEED, Math.max(MIN_SPEED, ball.speed + gf * 4 * dt));
         }
 
         // Advance t
@@ -514,8 +509,6 @@
 
       let paddleX = 200; // center
       let targetPaddleX = 200;
-      let currentPaddleW = PADDLE_W;
-      let speedTier = 0;
 
       // ─── HUD state ────────────────────────────────────────────────────────────
 
@@ -631,24 +624,6 @@
         for (let i = 0; i < gates.length; i++) {
           const jct = junctionMap[i];
           if (!jct) continue;
-
-          // Only reveal gate direction when a ball is within 80 logical px
-          let nearBall = false;
-          for (const ball of balls) {
-            if (!ball.alive) continue;
-            const pos = ballPosition(ball);
-            if (Math.hypot(pos.x - jct.x, pos.y - jct.y) < 80) { nearBall = true; break; }
-          }
-          if (!nearBall) {
-            ctx.save();
-            ctx.fillStyle = isDark ? 'rgba(148,163,184,0.45)' : 'rgba(100,116,139,0.35)';
-            ctx.beginPath();
-            ctx.arc(jct.x, jct.y, 5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-            continue;
-          }
-
           const state = gates[i];
           const color = state
             ? isDark
@@ -728,7 +703,7 @@
         ctx.shadowBlur = 16;
         ctx.fillStyle = paddleColor;
         ctx.beginPath();
-        ctx.roundRect(paddleX - currentPaddleW / 2, PADDLE_Y - PADDLE_H / 2, currentPaddleW, PADDLE_H, 6);
+        ctx.roundRect(paddleX - PADDLE_W / 2, PADDLE_Y - PADDLE_H / 2, PADDLE_W, PADDLE_H, 6);
         ctx.fill();
         ctx.restore();
       }
@@ -853,7 +828,7 @@
         const bx = ball.x;
         const by = ball.exitY;
         if (by + 9 >= PADDLE_Y - PADDLE_H / 2 && by - 9 <= PADDLE_Y + PADDLE_H / 2) {
-          if (bx >= paddleX - currentPaddleW / 2 - 9 && bx <= paddleX + currentPaddleW / 2 + 9) {
+          if (bx >= paddleX - PADDLE_W / 2 - 9 && bx <= paddleX + PADDLE_W / 2 + 9) {
             return true;
           }
         }
@@ -877,6 +852,20 @@
         document.getElementById('goMissed').textContent = missed;
         document.getElementById('gameOverScreen').classList.add('active');
 
+        if (window.voaShare) {
+          window.voaShare({
+            text:
+              'I survived ' +
+              Math.floor(survivalTime / 60)
+                .toString()
+                .padStart(2, '0') +
+              ':' +
+              Math.floor(survivalTime % 60)
+                .toString()
+                .padStart(2, '0') +
+              ' in Simmotion! Can you beat it?',
+          });
+        }
         if (window.voaLeaderboard) {
           window.voaLeaderboard.submit(Math.floor(survivalTime));
         }
@@ -887,19 +876,14 @@
         caught = 0;
         missed = 0;
         survivalTime = 0;
-        ballSpawnTimer = 6;
+        ballSpawnTimer = 0;
         balls = [];
         particles = [];
         gates = [false, false, true, false, true, false, true];
         paddleX = 200;
         targetPaddleX = 200;
-        currentPaddleW = PADDLE_W;
-        currentMaxSpeed = MAX_SPEED;
-        speedTier = 0;
-        // Spawn 3 staggered balls at start
+        // Spawn first ball immediately
         balls.push(createBall(0));
-        setTimeout(() => { if (gameRunning) balls.push(createBall(0)); }, 3000);
-        setTimeout(() => { if (gameRunning) balls.push(createBall(0)); }, 6000);
       }
 
       function update(dt) {
@@ -908,14 +892,7 @@
         survivalTime += dt;
         ballSpawnTimer += dt;
 
-        // Speed escalation: +0.4 every 30s, cap at 6.0
-        const newSpeedTier = Math.floor(survivalTime / 30);
-        if (newSpeedTier > speedTier) {
-          speedTier = newSpeedTier;
-          currentMaxSpeed = Math.min(6.0, MAX_SPEED + speedTier * 0.4);
-        }
-
-        // Spawn a new ball every 15 seconds
+        // Spawn a new ball every 20 seconds
         if (ballSpawnTimer >= BALL_SPAWN_INTERVAL) {
           ballSpawnTimer = 0;
           balls.push(createBall(0));
@@ -927,7 +904,7 @@
           const dir = targetPaddleX > paddleX ? 1 : -1;
           paddleX += dir * Math.min(paddleSpeed * dt, Math.abs(targetPaddleX - paddleX));
         }
-        paddleX = Math.max(currentPaddleW / 2, Math.min(W - currentPaddleW / 2, paddleX));
+        paddleX = Math.max(PADDLE_W / 2, Math.min(W - PADDLE_W / 2, paddleX));
 
         // Advance balls
         for (const ball of balls) {
@@ -954,7 +931,6 @@
               ball.alive = false;
               missed++;
               lives--;
-              currentPaddleW = Math.max(40, currentPaddleW - 10);
               spawnParticles(ball.x, H - 10, '#ef4444', 12);
               if (lives <= 0) {
                 gameOver();
@@ -990,7 +966,7 @@
       function setPaddleFromEvent(clientX) {
         const rect = canvas.getBoundingClientRect();
         const lx = (clientX - rect.left) / scale;
-        targetPaddleX = Math.max(currentPaddleW / 2, Math.min(W - currentPaddleW / 2, lx));
+        targetPaddleX = Math.max(PADDLE_W / 2, Math.min(W - PADDLE_W / 2, lx));
       }
 
       canvas.addEventListener('mousemove', (e) => {
@@ -1018,10 +994,10 @@
 
         if (e.key === 'ArrowLeft') {
           e.preventDefault();
-          targetPaddleX = Math.max(currentPaddleW / 2, targetPaddleX - 40);
+          targetPaddleX = Math.max(PADDLE_W / 2, targetPaddleX - 40);
         } else if (e.key === 'ArrowRight') {
           e.preventDefault();
-          targetPaddleX = Math.min(W - currentPaddleW / 2, targetPaddleX + 40);
+          targetPaddleX = Math.min(W - PADDLE_W / 2, targetPaddleX + 40);
         }
       });
 
