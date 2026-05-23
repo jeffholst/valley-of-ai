@@ -236,22 +236,6 @@
         resize: vertical;
       }
 
-      .criterion-name {
-        min-height: 74px;
-        resize: vertical;
-      }
-
-      .confidence-control {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) 76px;
-        gap: 8px;
-        align-items: center;
-      }
-
-      .confidence-control input[type='number'] {
-        text-align: center;
-      }
-
       .criteria-list,
       .competitor-list {
         display: grid;
@@ -561,8 +545,7 @@
         }
 
         .criterion-grid input,
-        .criterion-grid select,
-        .criterion-grid textarea {
+        .criterion-grid select {
           padding-inline: 8px;
         }
 
@@ -783,7 +766,7 @@
       function topCategoryFor(competitor) {
         return criteriaByCategory()
           .map((category) => {
-            const criteria = state.criteria.filter((criterion) => (criterion.category.trim() || 'General') === category);
+            const criteria = state.criteria.filter((criterion) => criterion.category === category);
             const total = criteria.reduce((sum, criterion) => sum + rawCriterionScore(competitor, criterion), 0);
             return { category, total };
           })
@@ -807,7 +790,7 @@
           row.innerHTML = `
             <div class="criterion-grid">
               <button class="drag-handle" type="button" aria-label="Drag ${criterion.name}">↕</button>
-              <textarea class="criterion-name" aria-label="Criterion name">${escapeHtml(criterion.name)}</textarea>
+              <input aria-label="Criterion name" value="${escapeHtml(criterion.name)}" />
               <select aria-label="Weight">
                 <option value="1">1x</option>
                 <option value="2">2x</option>
@@ -818,9 +801,7 @@
             </div>
             <button class="btn" type="button" style="margin-top:8px;width:100%">Delete Criterion</button>
           `;
-          const nameInput = row.querySelector('.criterion-name');
-          const weightSelect = row.querySelector('select');
-          const categoryInput = row.querySelector('input');
+          const [nameInput, weightSelect, categoryInput] = row.querySelectorAll('input, select');
           weightSelect.value = criterion.weight;
           nameInput.addEventListener('change', () =>
             commit(() => {
@@ -960,10 +941,7 @@
             </div>
             <div class="field">
               <label>Confidence: <span>${competitor.confidence}%</span></label>
-              <div class="confidence-control">
-                <input type="range" min="0" max="100" value="${competitor.confidence}" aria-label="${escapeHtml(competitor.name)} confidence" />
-                <input type="number" min="0" max="100" value="${competitor.confidence}" aria-label="${escapeHtml(competitor.name)} confidence value" />
-              </div>
+              <input type="range" min="0" max="100" value="${competitor.confidence}" aria-label="${escapeHtml(competitor.name)} confidence" />
             </div>
             <div class="field">
               <label>Notes</label>
@@ -973,7 +951,6 @@
           `;
           const nameInput = card.querySelector('input:not([type="range"])');
           const confidenceInput = card.querySelector('input[type="range"]');
-          const confidenceNumber = card.querySelector('input[type="number"]');
           const confidenceLabel = card.querySelector('label span');
           const notesInput = card.querySelector('textarea');
           nameInput.addEventListener('change', () =>
@@ -988,7 +965,8 @@
             if (!confidenceInput.dataset.before) confidenceInput.dataset.before = JSON.stringify(state);
           });
           confidenceInput.addEventListener('input', () => {
-            updateConfidence(competitor, confidenceInput.value, confidenceLabel, confidenceNumber);
+            competitor.confidence = Number(confidenceInput.value);
+            confidenceLabel.textContent = `${competitor.confidence}%`;
             localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
             renderLeaderboard();
             updateChart();
@@ -998,11 +976,6 @@
             delete confidenceInput.dataset.before;
             redoStack = [];
           });
-          confidenceNumber.addEventListener('change', () =>
-            commit(() => {
-              updateConfidence(competitor, confidenceNumber.value, confidenceLabel, confidenceInput);
-            }),
-          );
           notesInput.addEventListener('change', () =>
             commit(() => {
               competitor.notes = notesInput.value;
@@ -1022,7 +995,7 @@
         const datasets = state.competitors.map((competitor, index) => ({
           label: competitor.name,
           data: categories.map((category) => {
-            const criteria = state.criteria.filter((criterion) => (criterion.category.trim() || 'General') === category);
+            const criteria = state.criteria.filter((criterion) => criterion.category === category);
             return criteria.reduce((sum, criterion) => sum + Math.max(0, rawCriterionScore(competitor, criterion)), 0);
           }),
           fill: true,
@@ -1035,14 +1008,6 @@
         if (!window.Chart) return;
         const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim();
         const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
-        const chartSignature = JSON.stringify({
-          categories,
-          competitors: state.competitors.map((competitor) => competitor.id),
-        });
-        if (radarChart && radarChart.$signature !== chartSignature) {
-          radarChart.destroy();
-          radarChart = null;
-        }
         if (!radarChart) {
           radarChart = new Chart(document.getElementById('radarChart'), {
             type: 'radar',
@@ -1065,7 +1030,6 @@
               animation: { duration: 350 },
             },
           });
-          radarChart.$signature = chartSignature;
           return;
         }
         radarChart.data.labels = categories;
@@ -1075,14 +1039,7 @@
         radarChart.options.scales.r.angleLines.color = gridColor;
         radarChart.options.scales.r.pointLabels.color = textColor;
         radarChart.options.scales.r.ticks.color = textColor;
-        radarChart.$signature = chartSignature;
         radarChart.update();
-      }
-
-      function updateConfidence(competitor, value, label, pairedInput) {
-        competitor.confidence = Math.max(0, Math.min(100, Number(value) || 0));
-        label.textContent = `${competitor.confidence}%`;
-        pairedInput.value = competitor.confidence;
       }
 
       function render() {
@@ -1113,7 +1070,7 @@
           state.competitors.push({
             id: crypto.randomUUID(),
             name: `Competitor ${state.competitors.length + 1}`,
-            confidence: 50,
+            confidence: 75,
             notes: '',
           });
         });

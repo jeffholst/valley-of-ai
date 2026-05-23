@@ -25,17 +25,5 @@
     "runId": "run-20260523T150507Z-0f2e97",
     "notes": "Built from approved GitHub suggestion #438. The issue prompt asked for a local dark/light toggle, but the app follows the shared Valley of AI shell theme control per repository contract. The suggestion text is summarized in metadata to satisfy the schema length cap while preserving the requested features."
   },
-  "leaderboard": false,
-  "improvements": [
-    {
-      "issueNumber": 442,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/442",
-      "runId": "run-20260523T154258Z-42a900",
-      "description": "Defaulted new competitors to 50% confidence, added manual confidence entry, expanded criterion names to multiline editing, and rebuilt the radar chart when categories or competitors change.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-05-23T15:42:58Z",
-      "agentName": "Codex",
-      "llmModel": "GPT-5"
-    }
-  ]
+  "leaderboard": false
 }

@@ -30,11 +30,28 @@
       "prompt": "Build a rubric scoring tool in one HTML file. Users add/edit/delete/reorder criteria (drag to sort). Each criterion has a name, weight (1-3x multiplier), plus/minus toggle, and 1-5 slider. Support scoring multiple competitors side-by-side, live leaderboard, confidence meta-score, category grouping, radar chart, notes, cinematic winner reveal, PNG scorecard export, copy-shareable summary, dark/light theme support, undo/redo, autosave, and Chart.js only.",
       "requestor": "Jeff Holst"
     },
-    "improvements": null,
+    "improvements": [
+      {
+        "issueNumber": 442,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/442",
+        "runId": "run-20260523T154258Z-42a900",
+        "description": "Defaulted new competitors to 50% confidence, added manual confidence entry, expanded criterion names to multiline editing, and rebuilt the radar chart when categories or competitors change.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-23T15:42:58Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5"
+      }
+    ],
     "allowImprovements": true,
     "leaderboard": false,
     "maxScore": null,
-    "backups": null
+    "backups": [
+      {
+        "runId": "run-20260523T154258Z-42a900",
+        "path": "backups/run-20260523T154258Z-42a900/index.html",
+        "url": "/apps/2026/05/23/rubric-showdown/backups/run-20260523T154258Z-42a900/index.html"
+      }
+    ]
   },
   {
     "id": "2026/05/23/simmotion",
