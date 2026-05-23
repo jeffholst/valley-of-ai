@@ -47,8 +47,8 @@
   >
     Rubric Showdown
   </text>
-    <text x="50" y="105" fill="#aab3bd" font-family="Inter, Arial, sans-serif" font-size="18">
-    multiline criteria · confidence tuned
+  <text x="50" y="105" fill="#aab3bd" font-family="Inter, Arial, sans-serif" font-size="18">
+    weighted scoring · live verdict
   </text>
 
   <g filter="url(#shadow)">
@@ -58,12 +58,10 @@
     </text>
     <g font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700">
       <rect x="65" y="188" width="198" height="44" rx="8" fill="#121821" stroke="#334050" />
-      <text x="82" y="207" fill="#f7f3e8">Originality and</text>
-      <text x="82" y="224" fill="#f7f3e8">audience fit</text>
+      <text x="82" y="216" fill="#f7f3e8">Originality</text>
       <text x="217" y="216" fill="#f2b705">+3x</text>
       <rect x="65" y="244" width="198" height="44" rx="8" fill="#121821" stroke="#334050" />
-      <text x="82" y="263" fill="#f7f3e8">Execution</text>
-      <text x="82" y="280" fill="#f7f3e8">quality</text>
+      <text x="82" y="272" fill="#f7f3e8">Execution</text>
       <text x="217" y="272" fill="#f2b705">+3x</text>
       <rect x="65" y="300" width="198" height="44" rx="8" fill="#121821" stroke="#334050" />
       <text x="82" y="328" fill="#f7f3e8">Risk</text>
@@ -105,11 +103,6 @@
     <rect x="566" y="304" width="118" height="30" rx="15" fill="#74a7ff" fill-opacity="0.82" />
     <text x="582" y="325" fill="#071313" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="900">
       Forge 31.4
-    </text>
-    <rect x="566" y="346" width="130" height="16" rx="8" fill="#334050" />
-    <rect x="566" y="346" width="65" height="16" rx="8" fill="#2dd4bf" />
-    <text x="704" y="360" fill="#aab3bd" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="800">
-      50%
     </text>
   </g>
 
