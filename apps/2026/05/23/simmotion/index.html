@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Simmotion - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Simmotion" />
+    <meta name="voa-app-id" content="2026/05/23/simmotion" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: #080818;
+        color: var(--text);
+        font-family: 'Courier New', Courier, monospace;
+        overflow: hidden;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      #appWrapper {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #gameCanvas {
+        display: block;
+        cursor: crosshair;
+        touch-action: none;
+      }
+
+      /* ── Overlay screens ── */
+      .screen {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(5, 8, 20, 0.93);
+        z-index: 10;
+        gap: 18px;
+        padding: 24px 20px;
+      }
+
+      .screen.hidden {
+        display: none;
+      }
+
+      .screen h1 {
+        font-size: clamp(2rem, 9vw, 3.8rem);
+        font-weight: 900;
+        letter-spacing: 0.15em;
+        color: #00ffff;
+        text-shadow: 0 0 20px #00ffff, 0 0 50px #00ffff60;
+        text-align: center;
+      }
+
+      .screen .subtitle {
+        font-size: clamp(0.78rem, 2.5vw, 0.92rem);
+        color: #7c9cc0;
+        text-align: center;
+        max-width: 340px;
+        line-height: 1.65;
+      }
+
+      .difficulty-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 4px;
+      }
+
+      .diff-btn {
+        padding: 12px 18px;
+        border: 2px solid currentColor;
+        border-radius: 10px;
+        background: transparent;
+        font-family: inherit;
+        font-size: clamp(0.82rem, 2.5vw, 0.96rem);
+        font-weight: 700;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          box-shadow 0.15s;
+        min-width: 108px;
+        min-height: 56px;
+        line-height: 1.4;
+        text-align: center;
+      }
+
+      .diff-btn.easy {
+        color: #00ffaa;
+      }
+      .diff-btn.medium {
+        color: #ffcc00;
+      }
+      .diff-btn.hard {
+        color: #ff4466;
+      }
+
+      .diff-btn:hover,
+      .diff-btn:focus-visible {
+        background: rgba(255, 255, 255, 0.07);
+        box-shadow: 0 0 20px currentColor;
+        outline: none;
+      }
+
+      .big-btn {
+        padding: 14px 38px;
+        background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 255, 255, 0.05));
+        border: 2px solid #00ffff;
+        border-radius: 10px;
+        color: #00ffff;
+        font-family: inherit;
+        font-size: clamp(0.95rem, 3vw, 1.15rem);
+        font-weight: 700;
+        cursor: pointer;
+        letter-spacing: 0.1em;
+        transition:
+          box-shadow 0.15s,
+          background 0.15s;
+        min-height: 52px;
+        min-width: 160px;
+      }
+
+      .big-btn:hover,
+      .big-btn:focus-visible {
+        box-shadow: 0 0 28px #00ffff80;
+        background: rgba(0, 255, 255, 0.14);
+        outline: none;
+      }
+
+      #finalScore {
+        font-size: clamp(2.4rem, 9vw, 3.5rem);
+        color: #ffcc00;
+        text-shadow: 0 0 20px #ffcc0070;
+        font-weight: 900;
+        letter-spacing: 0.05em;
+      }
+
+      .score-label {
+        font-size: 0.78rem;
+        color: #5a7090;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .hint-text {
+        font-size: clamp(0.7rem, 2vw, 0.8rem);
+        color: #445570;
+        text-align: center;
+        margin-top: -6px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="appWrapper">
+      <canvas id="gameCanvas"></canvas>
+
+      <!-- Start screen -->
+      <div id="startScreen" class="screen">
+        <h1>SIMMOTION</h1>
+        <p class="subtitle">Spin the glowing arms to catch every ball before it escapes the arena. Drag or swipe to rotate.</p>
+        <div class="difficulty-row">
+          <button class="diff-btn easy" data-arms="1" aria-label="Easy mode: 1 arm">
+            1 ARM<br /><small>Easy</small>
+          </button>
+          <button class="diff-btn medium" data-arms="2" aria-label="Medium mode: 2 arms">
+            2 ARMS<br /><small>Medium</small>
+          </button>
+          <button class="diff-btn hard" data-arms="3" aria-label="Hard mode: 3 arms">
+            3 ARMS<br /><small>Hard</small>
+          </button>
+        </div>
+        <p class="hint-text">← → or A/D keys also rotate</p>
+      </div>
+
+      <!-- Game over screen -->
+      <div id="gameOverScreen" class="screen hidden">
+        <h1>GAME OVER</h1>
+        <div class="score-label">FINAL SCORE</div>
+        <div id="finalScore">0</div>
+        <button class="big-btn" id="restartBtn">PLAY AGAIN</button>
+      </div>
+    </div>
+
+    <script>
+      /**
+       * Simmotion — rotating disc-arm ball-catching game.
+       *
+       * Neon arms (full diameter lines through center) rotate when the player
+       * drags. Colourful balls spawn at center and move radially outward.
+       * Catching a ball (arm intersection) scores points and spawns particles.
+       * Missing a ball costs a life. Speed and spawn rate increase every 10 catches.
+       */
+
+      const APP_NAME = 'Simmotion';
+
+      // ── DOM refs ────────────────────────────────────────────────────────────
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+      const appWrapper = document.getElementById('appWrapper');
+      const startScreen = document.getElementById('startScreen');
+      const gameOverScreen = document.getElementById('gameOverScreen');
+      const finalScoreEl = document.getElementById('finalScore');
+      const restartBtn = document.getElementById('restartBtn');
+
+      // ── Config ──────────────────────────────────────────────────────────────
+      const CFG = {
+        ballRadius: 9,
+        armCollisionHalf: 9, // half-width of collision zone per arm side
+        ballSpeedBase: 1.6,
+        ballSpeedPerLevel: 0.25,
+        spawnIntervalBase: 2200, // ms
+        spawnIntervalMin: 650,
+        spawnIntervalDecay: 0.92,
+        catchPoints: 10,
+        livesStart: 3,
+        catchesPerLevel: 10,
+        spawnProtectRadius: 22, // balls won't collide within this px of center
+        particleCount: 16,
+        particleLifeFrames: 42,
+        keyRotateStep: 0.07, // radians per keydown tick
+      };
+
+      // Arm colours indexed by arm slot
+      const ARM_COLORS = ['#00ffff', '#ff00ff', '#00ff88'];
+
+      // ── State ───────────────────────────────────────────────────────────────
+      let state = null; // null until game starts
+      let arenaRadius = 160;
+      let cx = 200,
+        cy = 200;
+        let lastTime = 0;
+      let lastSpawn = 0;
+      let spawnInterval = CFG.spawnIntervalBase;
+      let animId = null;
+      let keysHeld = {}; // tracks held arrow/WASD keys
+
+      function makeState(numArms) {
+        return {
+          phase: 'playing', // 'playing' | 'gameover'
+          numArms,
+          armAngle: 0,
+          balls: [],
+          particles: [],
+          score: 0,
+          lives: CFG.livesStart,
+          totalCaught: 0,
+          level: 1,
+          dragActive: false,
+          dragLastAngle: 0,
+        };
+      }
+
+      // ── Canvas sizing ───────────────────────────────────────────────────────
+      function resize() {
+        const rect = appWrapper.getBoundingClientRect();
+        const size = Math.floor(Math.min(rect.width, rect.height));
+        canvas.width = size;
+        canvas.height = size;
+        cx = size / 2;
+        cy = size / 2;
+        arenaRadius = size * 0.44;
+      }
+
+      // ── Input helpers ───────────────────────────────────────────────────────
+
+      /** Angle from canvas center to a client pointer position, in radians. */
+      function pointerAngle(clientX, clientY) {
+        const rect = canvas.getBoundingClientRect();
+        return Math.atan2(clientY - rect.top - cy, clientX - rect.left - cx);
+      }
+
+      /** Shortest signed delta between two angles. */
+      function angleDelta(from, to) {
+        let d = to - from;
+        while (d > Math.PI) d -= Math.PI * 2;
+        while (d < -Math.PI) d += Math.PI * 2;
+        return d;
+      }
+
+      // Mouse input
+      canvas.addEventListener('mousedown', (e) => {
+        if (state?.phase !== 'playing') return;
+        state.dragActive = true;
+        state.dragLastAngle = pointerAngle(e.clientX, e.clientY);
+      });
+
+      canvas.addEventListener('mousemove', (e) => {
+        if (!state?.dragActive) return;
+        const a = pointerAngle(e.clientX, e.clientY);
+        state.armAngle += angleDelta(state.dragLastAngle, a);
+        state.dragLastAngle = a;
+      });
+
+      canvas.addEventListener('mouseup', () => {
+        if (state) state.dragActive = false;
+      });
+      canvas.addEventListener('mouseleave', () => {
+        if (state) state.dragActive = false;
+      });
+
+      // Touch input
+      canvas.addEventListener(
+        'touchstart',
+        (e) => {
+          if (state?.phase !== 'playing') return;
+          e.preventDefault();
+          const t = e.touches[0];
+          state.dragActive = true;
+          state.dragLastAngle = pointerAngle(t.clientX, t.clientY);
+        },
+        { passive: false }
+      );
+
+      canvas.addEventListener(
+        'touchmove',
+        (e) => {
+          if (!state?.dragActive) return;
+          e.preventDefault();
+          const t = e.touches[0];
+          const a = pointerAngle(t.clientX, t.clientY);
+          state.armAngle += angleDelta(state.dragLastAngle, a);
+          state.dragLastAngle = a;
+        },
+        { passive: false }
+      );
+
+      canvas.addEventListener('touchend', () => {
+        if (state) state.dragActive = false;
+      });
+      canvas.addEventListener('touchcancel', () => {
+        if (state) state.dragActive = false;
+      });
+
+      // Keyboard input — guards per shared.md spec
+      document.addEventListener('keydown', (e) => {
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
+        keysHeld[e.key] = true;
+      });
+
+      document.addEventListener('keyup', (e) => {
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
+        keysHeld[e.key] = false;
+      });
+
+      // ── Arm geometry ─────────────────────────────────────────────────────────
+
+      /**
+       * Returns arm segment endpoints. Each arm is a full diameter line through
+       * center — arm i at angle (armAngle + i*π/numArms). Spacing π/numArms
+       * ensures: 1 arm = 1 line, 2 arms = X shape, 3 arms = asterisk.
+       */
+      function getArmSegments() {
+        const len = arenaRadius * 0.84;
+        return Array.from({ length: state.numArms }, (_, i) => {
+          const a = state.armAngle + (i * Math.PI) / state.numArms;
+          const cos = Math.cos(a);
+          const sin = Math.sin(a);
+          return {
+            x1: cx + cos * len,
+            y1: cy + sin * len,
+            x2: cx - cos * len,
+            y2: cy - sin * len,
+            color: ARM_COLORS[i],
+          };
+        });
+      }
+
+      // ── Collision ─────────────────────────────────────────────────────────────
+
+      /** Distance from point P to line segment AB. */
+      function ptSegDist(px, py, ax, ay, bx, by) {
+        const dx = bx - ax,
+          dy = by - ay;
+        const lenSq = dx * dx + dy * dy;
+        if (lenSq === 0) return Math.hypot(px - ax, py - ay);
+        const t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / lenSq));
+        return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+      }
+
+      // ── Particles ──────────────────────────────────────────────────────────────
+
+      function spawnParticles(x, y, color, count) {
+        const n = count ?? CFG.particleCount;
+        for (let i = 0; i < n; i++) {
+          const a = (Math.PI * 2 * i) / n + Math.random() * 0.5;
+          const spd = 2.5 + Math.random() * 3.5;
+          state.particles.push({
+            x,
+            y,
+            vx: Math.cos(a) * spd,
+            vy: Math.sin(a) * spd,
+            life: CFG.particleLifeFrames,
+            maxLife: CFG.particleLifeFrames,
+            r: 2.5 + Math.random() * 2.5,
+            color,
+          });
+        }
+      }
+
+      // ── Ball spawning ──────────────────────────────────────────────────────────
+
+      function spawnBall(now) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = CFG.ballSpeedBase + (state.level - 1) * CFG.ballSpeedPerLevel + Math.random() * 0.5;
+        const hue = Math.floor(Math.random() * 360);
+        state.balls.push({
+          x: cx,
+          y: cy,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          color: `hsl(${hue},100%,65%)`,
+        });
+        lastSpawn = now;
+      }
+
+      // ── Update ─────────────────────────────────────────────────────────────────
+
+      function update(now) {
+        if (state.phase !== 'playing') return;
+
+        // Keyboard rotation
+        if (keysHeld['ArrowLeft'] || keysHeld['a'] || keysHeld['A']) {
+          state.armAngle -= CFG.keyRotateStep;
+        }
+        if (keysHeld['ArrowRight'] || keysHeld['d'] || keysHeld['D']) {
+          state.armAngle += CFG.keyRotateStep;
+        }
+
+        // Spawn
+        if (now - lastSpawn >= spawnInterval) {
+          spawnBall(now);
+        }
+
+        const arms = getArmSegments();
+        const threshold = CFG.armCollisionHalf + CFG.ballRadius;
+
+        for (let i = state.balls.length - 1; i >= 0; i--) {
+          const b = state.balls[i];
+          b.x += b.vx;
+          b.y += b.vy;
+
+          // Distance from center — spawn-protect zone skips collision
+          const distFromCenter = Math.hypot(b.x - cx, b.y - cy);
+
+          if (distFromCenter > CFG.spawnProtectRadius) {
+            // Check arm collision
+            let caught = false;
+            for (const arm of arms) {
+              if (ptSegDist(b.x, b.y, arm.x1, arm.y1, arm.x2, arm.y2) < threshold) {
+                caught = true;
+                spawnParticles(b.x, b.y, arm.color);
+                state.score += CFG.catchPoints;
+                state.totalCaught++;
+                if (state.totalCaught % CFG.catchesPerLevel === 0) {
+                  state.level++;
+                  spawnInterval = Math.max(CFG.spawnIntervalMin, spawnInterval * CFG.spawnIntervalDecay);
+                }
+                break;
+              }
+            }
+            if (caught) {
+              state.balls.splice(i, 1);
+              continue;
+            }
+          }
+
+          // Escaped arena
+          if (distFromCenter > arenaRadius + CFG.ballRadius) {
+            spawnParticles(b.x, b.y, '#ff4466', 8);
+            state.balls.splice(i, 1);
+            state.lives--;
+            if (state.lives <= 0) {
+              endGame();
+              return;
+            }
+          }
+        }
+
+        // Update particles
+        for (let i = state.particles.length - 1; i >= 0; i--) {
+          const p = state.particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx *= 0.92;
+          p.vy *= 0.92;
+          p.life--;
+          if (p.life <= 0) state.particles.splice(i, 1);
+        }
+      }
+
+      function endGame() {
+        state.phase = 'gameover';
+        finalScoreEl.textContent = state.score.toLocaleString();
+        gameOverScreen.classList.remove('hidden');
+
+        if (window.voaShare) {
+          window.voaShare({
+            text: `I scored ${state.score.toLocaleString()} in ${APP_NAME}! Can you beat it?`,
+          });
+        }
+        if (window.voaLeaderboard) {
+          window.voaLeaderboard.submit(state.score);
+        }
+      }
+
+      // ── Drawing ────────────────────────────────────────────────────────────────
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Background gradient
+        const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, arenaRadius * 1.2);
+        bg.addColorStop(0, '#0d1433');
+        bg.addColorStop(1, '#040610');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Arena boundary ring
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, arenaRadius, 0, Math.PI * 2);
+        ctx.strokeStyle = '#1a3060';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = '#0055cc50';
+        ctx.strokeStyle = '#0044aa50';
+        ctx.lineWidth = 8;
+        ctx.stroke();
+        ctx.restore();
+
+        // Subtle concentric guide ring at 50%
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, arenaRadius * 0.5, 0, Math.PI * 2);
+        ctx.strokeStyle = '#0d2040';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.restore();
+
+        // Center spawn glow
+        const cg = ctx.createRadialGradient(cx, cy, 0, cx, cy, arenaRadius * 0.16);
+        cg.addColorStop(0, 'rgba(0,200,255,0.28)');
+        cg.addColorStop(1, 'rgba(0,200,255,0)');
+        ctx.fillStyle = cg;
+        ctx.beginPath();
+        ctx.arc(cx, cy, arenaRadius * 0.16, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Center dot
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#00ddff';
+        ctx.shadowBlur = 14;
+        ctx.shadowColor = '#00ddff';
+        ctx.fill();
+        ctx.restore();
+
+        if (!state) return;
+
+        // Draw arms
+        for (const arm of getArmSegments()) {
+          // Wide glow pass
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(arm.x1, arm.y1);
+          ctx.lineTo(arm.x2, arm.y2);
+          ctx.strokeStyle = arm.color;
+          ctx.lineWidth = CFG.armCollisionHalf * 2 + 10;
+          ctx.lineCap = 'round';
+          ctx.globalAlpha = 0.18;
+          ctx.shadowBlur = 28;
+          ctx.shadowColor = arm.color;
+          ctx.stroke();
+          ctx.restore();
+
+          // Main arm body
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(arm.x1, arm.y1);
+          ctx.lineTo(arm.x2, arm.y2);
+          ctx.strokeStyle = arm.color;
+          ctx.lineWidth = CFG.armCollisionHalf * 2;
+          ctx.lineCap = 'round';
+          ctx.shadowBlur = 22;
+          ctx.shadowColor = arm.color;
+          ctx.stroke();
+          ctx.restore();
+
+          // Bright core highlight
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(arm.x1, arm.y1);
+          ctx.lineTo(arm.x2, arm.y2);
+          ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+          ctx.lineWidth = 3;
+          ctx.lineCap = 'round';
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // Draw balls
+        for (const b of state.balls) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, CFG.ballRadius, 0, Math.PI * 2);
+          ctx.fillStyle = b.color;
+          ctx.shadowBlur = 20;
+          ctx.shadowColor = b.color;
+          ctx.fill();
+          // Inner bright dot
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, CFG.ballRadius * 0.4, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(255,255,255,0.7)';
+          ctx.shadowBlur = 0;
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // Draw particles
+        for (const p of state.particles) {
+          const alpha = p.life / p.maxLife;
+          ctx.save();
+          ctx.globalAlpha = alpha;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * (0.4 + 0.6 * alpha), 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = p.color;
+          ctx.fill();
+          ctx.restore();
+        }
+
+        drawHUD();
+      }
+
+      function drawHUD() {
+        const hudY = cy - arenaRadius * 0.82;
+        const sidePad = cx - arenaRadius * 0.86;
+
+        ctx.save();
+        ctx.font = `bold ${Math.max(14, Math.floor(arenaRadius * 0.1))}px "Courier New", monospace`;
+        ctx.shadowBlur = 6;
+
+        // Score — left
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#e0f0ff';
+        ctx.shadowColor = '#00ffff60';
+        ctx.fillText(`${state.score.toLocaleString()}`, sidePad, hudY);
+
+        // Level — centre
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#ffcc00';
+        ctx.shadowColor = '#ffcc0060';
+        ctx.fillText(`LVL ${state.level}`, cx, hudY);
+
+        // Lives — right (coloured hearts)
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#ff4466';
+        ctx.shadowColor = '#ff446660';
+        const hearts = '♥'.repeat(state.lives) + '♡'.repeat(Math.max(0, CFG.livesStart - state.lives));
+        ctx.fillText(hearts, cx + arenaRadius * 0.86, hudY);
+
+        ctx.restore();
+      }
+
+      // ── Game loop ──────────────────────────────────────────────────────────────
+
+      function loop(now) {
+        const dt = Math.min(now - lastTime, 50);
+        lastTime = now;
+
+        if (state?.phase === 'playing') {
+          update(now);
+        }
+        draw();
+
+        animId = requestAnimationFrame(loop);
+      }
+
+      // ── Difficulty buttons ─────────────────────────────────────────────────────
+
+      document.querySelectorAll('.diff-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const arms = parseInt(btn.dataset.arms, 10);
+          startScreen.classList.add('hidden');
+          state = makeState(arms);
+          spawnInterval = CFG.spawnIntervalBase;
+          lastSpawn = performance.now();
+        });
+      });
+
+      restartBtn.addEventListener('click', () => {
+        gameOverScreen.classList.add('hidden');
+        startScreen.classList.remove('hidden');
+        state = null;
+        keysHeld = {};
+      });
+
+      // ── Boot ───────────────────────────────────────────────────────────────────
+
+      window.addEventListener('resize', resize);
+      resize();
+      animId = requestAnimationFrame(loop);
+    </script>
+  </body>
+</html>
