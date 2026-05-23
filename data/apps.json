@@ -94,44 +94,6 @@
     ]
   },
   {
-    "id": "2026/05/23/simmotion",
-    "name": "Simmotion",
-    "shortDescription": "Spin neon disc arms to intercept colourful balls bursting from a center chute. Drag or swipe to rotate the arms and rack up catches before three misses end your run.",
-    "thumbnailUrl": "/apps/2026/05/23/simmotion/thumbnail.svg",
-    "createdAt": "2026-05-23T14:35:47Z",
-    "year": 2026,
-    "month": 5,
-    "day": 23,
-    "category": "Games",
-    "inputMode": "responsive",
-    "status": "active",
-    "tags": ["arcade", "rotation", "reflex", "canvas", "neon", "touch-controls", "mobile-first"],
-    "route": "/apps/2026/05/23/simmotion",
-    "appPath": "/apps/2026/05/23/simmotion/index.html",
-    "generation": {
-      "agent": "claude-code",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6",
-      "startTime": "2026-05-23T14:35:47Z",
-      "endTime": "2026-05-23T14:55:00Z",
-      "totalTokensIn": 5400,
-      "totalTokensOut": 9600,
-      "runId": "run-20260523T143547Z-1b4884",
-      "notes": "Arms implemented as full-diameter lines through center (not half-spokes) — 1 arm = diameter, 2 arms = X, 3 arms = asterisk — for better playability at all difficulty levels. Balls move at constant radial velocity with no gravity, keeping the challenge purely about rotational timing. Spawn protection zone (22px from center) prevents instant catches at ball birth."
-    },
-    "suggestion": {
-      "issueNumber": 437,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/437",
-      "prompt": "## App Suggestion\n\n**Category:** Games\n**Requestor:** Jeff Holst\n\n### Description\n\nBuild a playable Simmotion game where players control 1–3 rotating disc arms \\(one per level of difficulty\\) using mouse drag or touch\\. Balls drop from a center chute at increasing speed and must be caught by the spinning arms and guided to the outer edge\\. Miss a ball = lose a life \\(3 lives total\\)\\. Score increases per ball caught; speed ramps every 10 balls\\. Render on a \\<canvas\\> with a dark background, neon\\-glowing arms, smooth ball physics using requestAnimationFrame, and particle burst effects on catch and drop\\. Show a HUD with score, lives, and level\\. Add a start screen and game\\-over screen with final score\\. Controls: click/drag or touch to spin the arm\\. Fully responsive — fill the viewport on any screen size, scale the canvas on resize\\. No libraries, vanilla JS only\\. Buttery smooth 60fps\\. Ship as one self\\-contained \\.html file\\.",
-      "requestor": "Jeff Holst"
-    },
-    "improvements": null,
-    "allowImprovements": true,
-    "leaderboard": true,
-    "maxScore": 9999,
-    "backups": null
-  },
-  {
     "id": "2026/05/12/geo-defense",
     "name": "Geo Defense",
     "shortDescription": "A neon geometric tower defense game. Place laser, cannon, and tesla towers along a winding path to stop waves of advancing shape enemies before they reach your base.",
