@@ -40,6 +40,16 @@
         "implementedAt": "2026-05-23T15:42:58Z",
         "agentName": "Codex",
         "llmModel": "GPT-5"
+      },
+      {
+        "issueNumber": 444,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/444",
+        "runId": "run-20260523T164715Z-ef5d6b",
+        "description": "Moved criterion name editing to a full-width multiline row and added an in-app Help dialog with directions for rubric setup, scoring, results, export, and undo/redo.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-23T16:47:15Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5"
       }
     ],
     "allowImprovements": true,
@@ -50,6 +60,11 @@
         "runId": "run-20260523T154258Z-42a900",
         "path": "backups/run-20260523T154258Z-42a900/index.html",
         "url": "/apps/2026/05/23/rubric-showdown/backups/run-20260523T154258Z-42a900/index.html"
+      },
+      {
+        "runId": "run-20260523T164715Z-ef5d6b",
+        "path": "backups/run-20260523T164715Z-ef5d6b/index.html",
+        "url": "/apps/2026/05/23/rubric-showdown/backups/run-20260523T164715Z-ef5d6b/index.html"
       }
     ]
   },

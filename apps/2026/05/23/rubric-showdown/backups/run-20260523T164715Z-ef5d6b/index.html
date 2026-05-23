@@ -237,8 +237,7 @@
       }
 
       .criterion-name {
-        grid-column: 1 / -1;
-        min-height: 96px;
+        min-height: 74px;
         resize: vertical;
       }
 
@@ -460,53 +459,6 @@
         display: grid;
       }
 
-      .help-overlay {
-        position: fixed;
-        inset: 64px 0 56px;
-        z-index: 9001;
-        display: none;
-        place-items: center;
-        padding: 18px;
-        background: rgba(8, 10, 14, 0.78);
-        overflow: auto;
-      }
-
-      .help-overlay.open {
-        display: grid;
-      }
-
-      .help-card {
-        width: min(720px, 100%);
-        max-height: calc(100dvh - 160px);
-        overflow: auto;
-        padding: 22px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        box-shadow: var(--shadow);
-      }
-
-      .help-card h2 {
-        margin-bottom: 10px;
-        font-size: clamp(1.4rem, 4vw, 2.2rem);
-      }
-
-      .help-card h3 {
-        margin: 18px 0 8px;
-        font-size: 1rem;
-      }
-
-      .help-card p,
-      .help-card li {
-        color: var(--muted);
-        line-height: 1.5;
-      }
-
-      .help-card ul {
-        margin: 0;
-        padding-left: 20px;
-      }
-
       .winner-card {
         position: relative;
         width: min(620px, 100%);
@@ -636,7 +588,6 @@
           <button class="btn" id="redoBtn" type="button" title="Redo">Redo</button>
           <button class="btn" id="copyBtn" type="button">Copy Summary</button>
           <button class="btn" id="exportBtn" type="button">Export PNG</button>
-          <button class="btn" id="helpBtn" type="button">Help</button>
           <button class="btn primary" id="revealBtn" type="button">Reveal Winner</button>
         </div>
       </header>
@@ -707,42 +658,6 @@
         <div class="actions" style="justify-content: center; margin-top: 18px">
           <button class="btn primary" id="shareBtn" type="button">Share Result</button>
           <button class="btn" id="closeRevealBtn" type="button">Close</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="help-overlay" id="helpOverlay" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-      <div class="help-card">
-        <h2 id="helpTitle">Rubric Showdown Help</h2>
-        <p>
-          Build a scoring rubric, compare named competitors, and use the leaderboard, radar
-          chart, notes, and reveal tools to make a decision.
-        </p>
-        <h3>Rubric Builder</h3>
-        <ul>
-          <li>Use Add Criterion to create a new scoring row.</li>
-          <li>Edit the full-width criterion name field for longer descriptions.</li>
-          <li>Drag the handle to reorder criteria.</li>
-          <li>Set each criterion to 1x, 2x, or 3x, choose a category, and toggle plus or minus.</li>
-          <li>Delete Criterion removes that criterion from every competitor score.</li>
-        </ul>
-        <h3>Scoring Competitors</h3>
-        <ul>
-          <li>Add Competitor creates a new competitor with 50% confidence.</li>
-          <li>Use each 1-5 slider in the score matrix to score the competitor on that criterion.</li>
-          <li>Adjust confidence with the slider or 0-100 number field.</li>
-          <li>Use notes to capture context, tradeoffs, or judging comments.</li>
-        </ul>
-        <h3>Results</h3>
-        <ul>
-          <li>The leaderboard updates as scores, weights, signs, and confidence change.</li>
-          <li>The category radar compares positive category strengths across competitors.</li>
-          <li>Reveal Winner opens a spotlight result with a verdict based on the leading category.</li>
-          <li>Copy Summary copies ranked results, and Export PNG downloads a scorecard.</li>
-          <li>Undo and Redo step through recent rubric, competitor, and scoring changes.</li>
-        </ul>
-        <div class="actions" style="justify-content: flex-end; margin-top: 18px">
-          <button class="btn primary" id="closeHelpBtn" type="button">Close Help</button>
         </div>
       </div>
     </div>
@@ -891,8 +806,8 @@
           row.dataset.id = criterion.id;
           row.innerHTML = `
             <div class="criterion-grid">
-              <textarea class="criterion-name" aria-label="Criterion name">${escapeHtml(criterion.name)}</textarea>
               <button class="drag-handle" type="button" aria-label="Drag ${criterion.name}">↕</button>
+              <textarea class="criterion-name" aria-label="Criterion name">${escapeHtml(criterion.name)}</textarea>
               <select aria-label="Weight">
                 <option value="1">1x</option>
                 <option value="2">2x</option>
@@ -1306,20 +1221,6 @@
 
       document.getElementById('addCriterionBtn').addEventListener('click', addCriterion);
       document.getElementById('addCompetitorBtn').addEventListener('click', addCompetitor);
-      document.getElementById('helpBtn').addEventListener('click', () => {
-        document.getElementById('helpOverlay').classList.add('open');
-        document.getElementById('closeHelpBtn').focus();
-      });
-      document.getElementById('closeHelpBtn').addEventListener('click', () => {
-        document.getElementById('helpOverlay').classList.remove('open');
-        document.getElementById('helpBtn').focus();
-      });
-      document.getElementById('helpOverlay').addEventListener('click', (event) => {
-        if (event.target.id === 'helpOverlay') {
-          document.getElementById('helpOverlay').classList.remove('open');
-          document.getElementById('helpBtn').focus();
-        }
-      });
       document.getElementById('revealBtn').addEventListener('click', revealWinner);
       document.getElementById('closeRevealBtn').addEventListener('click', () => {
         document.getElementById('winnerOverlay').classList.remove('open');
@@ -1346,12 +1247,6 @@
         undoStack.push(clone(state));
         state = redoStack.pop();
         saveAndRender();
-      });
-      document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && document.getElementById('helpOverlay').classList.contains('open')) {
-          document.getElementById('helpOverlay').classList.remove('open');
-          document.getElementById('helpBtn').focus();
-        }
       });
       window.addEventListener('load', () => setTimeout(render, 80));
       render();
