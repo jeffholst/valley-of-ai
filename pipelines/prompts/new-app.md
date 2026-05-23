@@ -205,6 +205,7 @@ Generate `index.html` with shell config tags, mobile-first responsive design, an
 
 Quality standards (non-negotiable):
 
+- **Vanilla JS only — no third-party libraries**: do not add any `<script src>` pointing to an external domain, CDN URL (e.g. `cdn.jsdelivr.net`, `unpkg.com`, `cdnjs.cloudflare.com`), or any runtime-loaded package. If the selected suggestion explicitly requests a library, build the feature with vanilla JS instead and note the substitution in `meta.json.generation.notes`. This is a non-negotiable security requirement.
 - **Visually polished**: smooth CSS transitions/animations, consistent spacing, cohesive color palette
 - **Mobile-first**: layout works at 320px wide, touch targets ≥ 44px, no horizontal scroll
 - **Scrollable or contained**: ensure primary controls and game/tool interaction area are accessible without scrolling on small screens, OR make content properly scrollable

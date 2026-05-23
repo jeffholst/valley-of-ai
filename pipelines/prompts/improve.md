@@ -328,6 +328,7 @@ Edit `apps/<app-path>/index.html` to implement the improvement.
 
 **Constraints:**
 
+- **No third-party libraries** — do not add any `<script src>` pointing to an external domain, CDN URL (e.g. `cdn.jsdelivr.net`, `unpkg.com`, `cdnjs.cloudflare.com`), or any runtime-loaded package. If the improvement issue requests a library, implement the feature with vanilla JS instead and note the substitution in the improvement's `notes` field. This is a non-negotiable security requirement and an abort condition if violated.
 - **Surgical changes only** — change the minimum necessary to address the issue. Do not rewrite sections that are not involved. See `shared.md` → "Code Quality Principles" → "Surgical changes" for the full rule set.
   - Every changed line must trace directly to the issue body.
   - Match the existing style in this file even if you would write it differently elsewhere.
