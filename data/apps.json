@@ -1,5 +1,42 @@
 [
   {
+    "id": "2026/05/23/rubric-showdown",
+    "name": "Rubric Showdown",
+    "shortDescription": "Build weighted rubrics, score multiple competitors side-by-side, compare category strengths on a radar chart, and export a winner scorecard.",
+    "thumbnailUrl": "/apps/2026/05/23/rubric-showdown/thumbnail.svg",
+    "createdAt": "2026-05-23T15:05:07Z",
+    "year": 2026,
+    "month": 5,
+    "day": 23,
+    "category": "Utilities",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": ["rubric", "scoring", "ranking", "charts", "comparison", "export"],
+    "route": "/apps/2026/05/23/rubric-showdown",
+    "appPath": "/apps/2026/05/23/rubric-showdown/index.html",
+    "generation": {
+      "agentName": "Codex",
+      "llmModel": "GPT-5",
+      "startTime": "2026-05-23T15:05:07Z",
+      "endTime": "2026-05-23T15:12:00Z",
+      "totalTokensIn": 21000,
+      "totalTokensOut": 14000,
+      "runId": "run-20260523T150507Z-0f2e97",
+      "notes": "Built from approved GitHub suggestion #438. The issue prompt asked for a local dark/light toggle, but the app follows the shared Valley of AI shell theme control per repository contract. The suggestion text is summarized in metadata to satisfy the schema length cap while preserving the requested features."
+    },
+    "suggestion": {
+      "issueNumber": 438,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/438",
+      "prompt": "Build a rubric scoring tool in one HTML file. Users add/edit/delete/reorder criteria (drag to sort). Each criterion has a name, weight (1-3x multiplier), plus/minus toggle, and 1-5 slider. Support scoring multiple competitors side-by-side, live leaderboard, confidence meta-score, category grouping, radar chart, notes, cinematic winner reveal, PNG scorecard export, copy-shareable summary, dark/light theme support, undo/redo, autosave, and Chart.js only.",
+      "requestor": "Jeff Holst"
+    },
+    "improvements": null,
+    "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
+    "backups": null
+  },
+  {
     "id": "2026/05/23/simmotion",
     "name": "Simmotion",
     "shortDescription": "Spin neon disc arms to intercept colourful balls bursting from a center chute. Drag or swipe to rotate the arms and rack up catches before three misses end your run.",

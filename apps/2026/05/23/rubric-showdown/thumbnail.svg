@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-labelledby="title desc">
+  <title id="title">Rubric Showdown thumbnail</title>
+  <desc id="desc">A rubric scoring dashboard with leaderboard, sliders, and radar chart.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#101319" />
+      <stop offset="0.55" stop-color="#191f29" />
+      <stop offset="1" stop-color="#2b2414" />
+    </linearGradient>
+    <radialGradient id="tealGlow" cx="22%" cy="12%" r="68%">
+      <stop offset="0" stop-color="#2dd4bf" stop-opacity="0.32" />
+      <stop offset="1" stop-color="#2dd4bf" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f2b705" />
+      <stop offset="1" stop-color="#ffe28b" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur" />
+      <feOffset dx="0" dy="8" result="offset" />
+      <feMerge>
+        <feMergeNode in="offset" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="titleGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="glow" />
+      <feMerge>
+        <feMergeNode in="glow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  <rect x="0" y="0" width="800" height="450" fill="url(#bg)" />
+  <rect x="0" y="0" width="800" height="450" fill="url(#tealGlow)" />
+  <path d="M34 398H766" stroke="#2dd4bf" stroke-opacity="0.18" stroke-width="2" />
+  <path d="M34 52H766" stroke="#f2b705" stroke-opacity="0.16" stroke-width="2" />
+
+  <text
+    x="46"
+    y="74"
+    fill="#f7f3e8"
+    font-family="Inter, Arial, sans-serif"
+    font-size="42"
+    font-weight="900"
+    filter="url(#titleGlow)"
+  >
+    Rubric Showdown
+  </text>
+  <text x="50" y="105" fill="#aab3bd" font-family="Inter, Arial, sans-serif" font-size="18">
+    weighted scoring · live verdict
+  </text>
+
+  <g filter="url(#shadow)">
+    <rect x="44" y="132" width="244" height="248" rx="8" fill="#191f29" stroke="#334050" />
+    <text x="66" y="164" fill="#f7f3e8" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="800">
+      Criteria
+    </text>
+    <g font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700">
+      <rect x="65" y="188" width="198" height="44" rx="8" fill="#121821" stroke="#334050" />
+      <text x="82" y="216" fill="#f7f3e8">Originality</text>
+      <text x="217" y="216" fill="#f2b705">+3x</text>
+      <rect x="65" y="244" width="198" height="44" rx="8" fill="#121821" stroke="#334050" />
+      <text x="82" y="272" fill="#f7f3e8">Execution</text>
+      <text x="217" y="272" fill="#f2b705">+3x</text>
+      <rect x="65" y="300" width="198" height="44" rx="8" fill="#121821" stroke="#334050" />
+      <text x="82" y="328" fill="#f7f3e8">Risk</text>
+      <text x="224" y="328" fill="#ff6b6b">-2x</text>
+    </g>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="314" y="132" width="204" height="248" rx="8" fill="#191f29" stroke="#334050" />
+    <text x="336" y="164" fill="#f7f3e8" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="800">
+      Radar
+    </text>
+    <g transform="translate(416 264)">
+      <polygon points="0,-74 64,-23 40,60 -40,60 -64,-23" fill="none" stroke="#334050" stroke-width="2" />
+      <polygon points="0,-48 42,-15 26,39 -26,39 -42,-15" fill="none" stroke="#334050" stroke-width="2" />
+      <line x1="0" y1="0" x2="0" y2="-74" stroke="#334050" />
+      <line x1="0" y1="0" x2="64" y2="-23" stroke="#334050" />
+      <line x1="0" y1="0" x2="40" y2="60" stroke="#334050" />
+      <line x1="0" y1="0" x2="-40" y2="60" stroke="#334050" />
+      <line x1="0" y1="0" x2="-64" y2="-23" stroke="#334050" />
+      <polygon points="0,-64 52,-18 24,50 -30,44 -50,-18" fill="#2dd4bf" fill-opacity="0.28" stroke="#2dd4bf" stroke-width="4" />
+      <polygon points="0,-38 58,-12 34,35 -18,55 -42,-9" fill="#f2b705" fill-opacity="0.22" stroke="#f2b705" stroke-width="4" />
+    </g>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="544" y="132" width="212" height="248" rx="8" fill="#191f29" stroke="#334050" />
+    <text x="566" y="164" fill="#f7f3e8" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="800">
+      Leaderboard
+    </text>
+    <rect x="566" y="190" width="166" height="48" rx="24" fill="url(#gold)" />
+    <text x="586" y="222" fill="#101319" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="900">
+      1 Aster 42.8
+    </text>
+    <rect x="566" y="254" width="138" height="30" rx="15" fill="#2dd4bf" fill-opacity="0.82" />
+    <text x="582" y="275" fill="#071313" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="900">
+      Northstar 35.6
+    </text>
+    <rect x="566" y="304" width="118" height="30" rx="15" fill="#74a7ff" fill-opacity="0.82" />
+    <text x="582" y="325" fill="#071313" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="900">
+      Forge 31.4
+    </text>
+  </g>
+
+  <g>
+    <circle cx="705" cy="69" r="25" fill="url(#gold)" filter="url(#titleGlow)" />
+    <path d="M692 68l9 9 18-22" fill="none" stroke="#101319" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+</svg>
