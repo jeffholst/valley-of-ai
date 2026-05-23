@@ -48,7 +48,7 @@
     Rubric Showdown
   </text>
     <text x="50" y="105" fill="#aab3bd" font-family="Inter, Arial, sans-serif" font-size="18">
-    full-width criteria · guided scoring
+    multiline criteria · confidence tuned
   </text>
 
   <g filter="url(#shadow)">
@@ -57,15 +57,17 @@
       Criteria
     </text>
     <g font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700">
-      <rect x="65" y="188" width="198" height="62" rx="8" fill="#121821" stroke="#334050" />
-      <text x="82" y="211" fill="#f7f3e8">Originality and</text>
-      <text x="82" y="230" fill="#f7f3e8">audience fit</text>
-      <text x="217" y="230" fill="#f2b705">+3x</text>
-      <rect x="65" y="264" width="198" height="44" rx="8" fill="#121821" stroke="#334050" />
-      <text x="82" y="292" fill="#f7f3e8">Execution quality</text>
-      <text x="217" y="292" fill="#f2b705">+3x</text>
-      <rect x="65" y="320" width="198" height="30" rx="8" fill="#2dd4bf" fill-opacity="0.16" stroke="#2dd4bf" />
-      <text x="82" y="341" fill="#2dd4bf">Help open</text>
+      <rect x="65" y="188" width="198" height="44" rx="8" fill="#121821" stroke="#334050" />
+      <text x="82" y="207" fill="#f7f3e8">Originality and</text>
+      <text x="82" y="224" fill="#f7f3e8">audience fit</text>
+      <text x="217" y="216" fill="#f2b705">+3x</text>
+      <rect x="65" y="244" width="198" height="44" rx="8" fill="#121821" stroke="#334050" />
+      <text x="82" y="263" fill="#f7f3e8">Execution</text>
+      <text x="82" y="280" fill="#f7f3e8">quality</text>
+      <text x="217" y="272" fill="#f2b705">+3x</text>
+      <rect x="65" y="300" width="198" height="44" rx="8" fill="#121821" stroke="#334050" />
+      <text x="82" y="328" fill="#f7f3e8">Risk</text>
+      <text x="224" y="328" fill="#ff6b6b">-2x</text>
     </g>
   </g>
 
