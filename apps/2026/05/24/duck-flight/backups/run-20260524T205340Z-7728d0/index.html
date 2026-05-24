@@ -146,6 +146,10 @@
     const KILL_Z = 40;              // world units — ring passes camera (miss check)
     const PASS_Z = 80;              // world units — ring considered "passed through"
 
+    const RING_OUTER_R = 0.9;       // ring outer radius in world units
+    const RING_INNER_R = 0.28;      // inner radius (pass threshold)
+    const RING_THICKNESS = 0.62;    // outer - inner
+
     const DUCK_X_MIN = -1.6;        // world units lateral range
     const DUCK_X_MAX = 1.6;
     const DUCK_ACCEL = 4.2;         // lateral acceleration (world units/sec²)
@@ -168,7 +172,7 @@
     let state = STATE.MENU;
 
     let duck = null;    // { x, vx, momentum, score, misses }
-    let shapes = [];    // array of shape objects (ring | triangle | square)
+    let rings = [];     // array of ring objects
     let particles = []; // particle system array
     let cachedSkyGrad = null;    // invalidated on resize
     let cachedGroundGrad = null; // invalidated on resize
@@ -234,35 +238,25 @@
       return `rgb(${Math.round(r1 + (r2 - r1) * t)},${Math.round(g1 + (g2 - g1) * t)},${Math.round(b1 + (b2 - b1) * t)})`;
     }
 
-    // ─── Shape Factory ────────────────────────────────────────────────────────────
-    const SHAPE_TYPES = ['ring', 'triangle', 'square'];
-    let shapeIdCounter = 0;
-
-    function createShape(z) {
-      const type = SHAPE_TYPES[Math.floor(Math.random() * 3)];
-      const size = 0.65 + Math.random() * 0.55;          // 0.65–1.2 world units outer size
-      const innerR = size * 0.47;                         // inner opening ~47% of outer size
-      const hue = Math.floor(Math.random() * 360);
-      const color = `hsl(${hue}, 85%, 58%)`;              // HSL with saturation pop (particles)
+    // ─── Ring Factory ─────────────────────────────────────────────────────────────
+    let ringIdCounter = 0;
+    function createRing(z) {
+      // Place ring at a random world x,y offset so the player must steer
       const wx = (Math.random() * 2 - 1) * 1.2;
       const wy = (Math.random() * 2 - 1) * 0.4;
-      const spinAxis = Math.random() < 0.5 ? 'z' : 'y';  // z=face-on twirl, y=barrel-roll
-      const rotationSpeed = (0.4 + Math.random() * 0.8) * (Math.random() < 0.5 ? 1 : -1);
       return {
-        id: shapeIdCounter++,
-        type,
+        id: ringIdCounter++,
         wx, wy,
         wz: z,
-        size,
-        innerR,
-        hue,
-        color,
-        rotationSpeed,
-        spinAxis,
-        rotation: Math.random() * Math.PI * 2,            // random start angle
         passed: false,
         missed: false,
+        color: randomRingColor(),
       };
+    }
+
+    function randomRingColor() {
+      const colors = ['#fbbf24', '#34d399', '#60a5fa', '#f472b6', '#a78bfa'];
+      return colors[Math.floor(Math.random() * colors.length)];
     }
 
     // ─── Duck Factory ─────────────────────────────────────────────────────────────
@@ -419,46 +413,45 @@
       );
     }
 
-    function updateShapes(dt) {
+    function updateRings(dt) {
       const speed = currentSpeed * (0.5 + duck.momentum * 0.5); // speed tied to momentum
-      for (let i = shapes.length - 1; i >= 0; i--) {
-        const shape = shapes[i];
-        shape.wz -= speed * dt;
-        shape.rotation += shape.rotationSpeed * dt;        // advance spin
+      for (let i = rings.length - 1; i >= 0; i--) {
+        const ring = rings[i];
+        ring.wz -= speed * dt;
 
-        // Pass check: duck is within the inner opening when the shape passes
-        if (!shape.passed && !shape.missed && shape.wz <= PASS_Z) {
-          const dx = duck.x - shape.wx;
-          const dy = 0 - shape.wy; // duck is always at world y=0
+        // Pass check: duck is inside the inner ring when it passes
+        if (!ring.passed && !ring.missed && ring.wz <= PASS_Z) {
+          const dx = duck.x - ring.wx;
+          const dy = 0 - ring.wy; // duck is always at world y=0
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist <= shape.innerR) {
+          if (dist <= RING_INNER_R) {
             // Good pass!
-            shape.passed = true;
+            ring.passed = true;
             duck.score += 10;
             duck.momentum = Math.min(MOMENTUM_MAX, duck.momentum + MOMENTUM_PASS);
-            const { sx, sy } = project(shape.wx, shape.wy, PASS_Z);
-            spawnParticles(sx, sy, shape.color, 18);
+            const { sx, sy } = project(ring.wx, ring.wy, PASS_Z);
+            spawnParticles(sx, sy, ring.color, 18);
             Audio.play('pass');
           } else {
             // Miss
-            shape.missed = true;
+            ring.missed = true;
             duck.misses++;
             duck.momentum = Math.max(MOMENTUM_MIN, duck.momentum + MOMENTUM_MISS);
-            const { sx, sy } = project(shape.wx, shape.wy, PASS_Z);
+            const { sx, sy } = project(ring.wx, ring.wy, PASS_Z);
             spawnParticles(sx, sy, '#ef4444', 10);
             Audio.play('miss');
           }
         }
 
-        if (shape.wz <= -50) shapes.splice(i, 1);
+        if (ring.wz <= -50) rings.splice(i, 1);
       }
     }
 
-    function spawnShapeIfNeeded(dt) {
+    function spawnRingIfNeeded(dt) {
       spawnTimer -= dt;
       if (spawnTimer <= 0) {
-        shapes.push(createShape(SPAWN_Z));
+        rings.push(createRing(SPAWN_Z));
         spawnTimer = currentInterval * (0.8 + Math.random() * 0.4);
       }
     }
@@ -549,110 +542,47 @@
       return Math.max(0, Math.min(1, (wz - 40) / 80));
     }
 
-    // Returns outer and inner polygon vertices in local XY space with spin applied.
-    function getShapeVerts(shape) {
-      const r = shape.size;
-      const ratio = shape.innerR / r;
-      const rot = shape.rotation;
+    function drawRing(ring) {
+      if (ring.wz <= 0) return;
+      const { sx: cx, sy: cy, scale } = project(ring.wx, ring.wy, ring.wz);
+      const outerR = RING_OUTER_R * scale;
+      const innerR = RING_INNER_R * scale;
 
-      let N, offset;
-      if (shape.type === 'ring') {
-        N = 32; offset = 0;
-      } else if (shape.type === 'triangle') {
-        N = 3; offset = -Math.PI / 2;  // point at top
-      } else {                          // square
-        N = 4; offset = -Math.PI / 4;  // flat sides
-      }
+      if (outerR < 1) return;
 
-      const rawOuter = [];
-      for (let i = 0; i < N; i++) {
-        const a = offset + (i / N) * Math.PI * 2;
-        rawOuter.push([Math.cos(a) * r, Math.sin(a) * r]);
-      }
-      const rawInner = rawOuter.map(([lx, ly]) => [lx * ratio, ly * ratio]);
+      const fogT = fogFactor(ring.wz);
+      if (fogT >= 1) return; // fully fogged, skip
 
-      const spin = ([lx, ly]) => {
-        if (shape.spinAxis === 'z') {
-          const c = Math.cos(rot), s = Math.sin(rot);
-          return [lx * c - ly * s, lx * s + ly * c];
-        }
-        return [lx * Math.cos(rot), ly]; // y-axis barrel roll: squish X
-      };
-
-      return { outer: rawOuter.map(spin), inner: rawInner.map(spin) };
-    }
-
-    function drawShape(shape) {
-      if (shape.wz <= 0) return;
-
-      const fogT = fogFactor(shape.wz);
-      if (fogT >= 1) return;
-
-      // Early-out if projected size is too small to see
-      const { sx: cx, sy: cy, scale: sc } = project(shape.wx, shape.wy, shape.wz);
-      if (shape.size * sc < 1) return;
-
-      const { outer, inner } = getShapeVerts(shape);
-
-      // Project local vertices to screen space
-      const projPt = ([lx, ly]) => {
-        const { sx, sy } = project(shape.wx + lx, shape.wy + ly, shape.wz);
-        return [sx, sy];
-      };
-      const outerScreen = outer.map(projPt);
-      const innerScreen = inner.map(projPt);
-
-      // Bounding Y range for top-light gradient
-      const minY = Math.min(...outerScreen.map(p => p[1]));
-      const maxY = Math.max(...outerScreen.map(p => p[1]));
-
-      // Passed/missed tint: green, red, or original hue
-      const h = shape.passed ? 145 : shape.missed ? 0 : shape.hue;
-      const alpha = 1 - fogT * 0.75;
+      const baseColor = ring.passed ? '#6ee7b7' : ring.missed ? '#fca5a5' : ring.color;
+      const displayColor = lerpColor(baseColor, HORIZON_COLOR, fogT);
 
       ctx.save();
+      ctx.globalAlpha = 1 - fogT * 0.75; // still faintly visible at horizon
 
-      // Gradient fill: lighter top (fake top-down light) → darker bottom
-      const grad = ctx.createLinearGradient(0, minY, 0, maxY);
-      grad.addColorStop(0, `hsl(${h}, 80%, 68%)`);
-      grad.addColorStop(1, `hsl(${h}, 80%, 28%)`);
-
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle = grad;
-
-      // Outer polygon as first subpath, inner polygon as second (hole via evenodd)
       ctx.beginPath();
-      ctx.moveTo(...outerScreen[0]);
-      for (let i = 1; i < outerScreen.length; i++) ctx.lineTo(...outerScreen[i]);
-      ctx.closePath();
-      ctx.moveTo(...innerScreen[0]);
-      for (let i = 1; i < innerScreen.length; i++) ctx.lineTo(...innerScreen[i]);
-      ctx.closePath();
+      ctx.arc(cx, cy, outerR, 0, Math.PI * 2);
+      ctx.arc(cx, cy, innerR, 0, Math.PI * 2, true);
+      ctx.fillStyle = displayColor;
       ctx.fill('evenodd');
 
-      // Specular highlight: thin bright stroke clipped to the upper half of the shape
-      const midY = (minY + maxY) / 2;
-      ctx.save();
-      ctx.beginPath();
-      ctx.rect(0, -10, LOGICAL_W, midY + 10);
-      ctx.clip();
-      ctx.globalAlpha = alpha * 0.50;
-      ctx.strokeStyle = `hsl(${h}, 55%, 88%)`;
-      ctx.lineWidth = Math.max(0.8, sc * 0.08);
-      ctx.beginPath();
-      ctx.moveTo(...outerScreen[0]);
-      for (let i = 1; i < outerScreen.length; i++) ctx.lineTo(...outerScreen[i]);
-      ctx.closePath();
-      ctx.stroke();
-      ctx.restore();
+      // Glow only when close enough to see clearly
+      if (fogT < 0.5) {
+        ctx.shadowBlur = 10 * (1 - fogT * 2);
+        ctx.shadowColor = ring.color;
+        ctx.strokeStyle = displayColor;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(cx, cy, (outerR + innerR) / 2, 0, Math.PI * 2);
+        ctx.stroke();
+      }
 
       ctx.restore();
     }
 
-    function drawShapes() {
-      // Sort back-to-front (painter's algorithm) so near shapes occlude far ones
-      const sorted = [...shapes].sort((a, b) => b.wz - a.wz);
-      for (const shape of sorted) drawShape(shape);
+    function drawRings() {
+      // Draw far-to-near for correct painter's order
+      const sorted = [...rings].sort((a, b) => b.wz - a.wz);
+      for (const ring of sorted) drawRing(ring);
     }
 
     function drawDuckPOV() {
@@ -866,8 +796,8 @@
       if (state !== STATE.PLAYING) return;
 
       updateDuck(dt);
-      updateShapes(dt);
-      spawnShapeIfNeeded(dt);
+      updateRings(dt);
+      spawnRingIfNeeded(dt);
       updateDifficulty(dt);
       updateParticles(dt);
       Anim.update(dt);
@@ -878,7 +808,7 @@
       ctx.clearRect(0, 0, LOGICAL_W, LOGICAL_H);
       drawSky();
       drawGround();
-      drawShapes();
+      drawRings();
       drawParticles();
       drawDuckPOV();    // screen-space last, after all world content
       drawInputHints();
@@ -894,7 +824,7 @@
     // ─── Game lifecycle ───────────────────────────────────────────────────────────
     function startGame() {
       duck = createDuck();
-      shapes = [];
+      rings = [];
       particles = [];
       spawnTimer = 0.8;
       difficultyTimer = 0;

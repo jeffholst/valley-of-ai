@@ -47,16 +47,6 @@
       "implementedAt": "2026-05-24T20:26:46Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
-    },
-    {
-      "issueNumber": 464,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/464",
-      "runId": "run-20260524T205340Z-7728d0",
-      "description": "Replaced fixed ring-only shapes with 3 types (ring, triangle, square); each shape carries size, per-shape innerR, HSL hue, spinAxis (z=face-on twirl, y=barrel-roll), rotationSpeed, and rotation; rendering uses projected polygon vertices with a top-light gradient fill and specular highlight stroke clipped to the upper half; back-to-front sort preserved.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-05-24T20:53:40Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6"
     }
   ]
 }
