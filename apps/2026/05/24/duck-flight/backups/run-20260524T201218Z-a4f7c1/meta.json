@@ -26,17 +26,5 @@
     "runId": "run-20260524T195018Z-6e28cd",
     "notes": "Scaffold build — full architecture laid down for future improvement iterations. 3D perspective projection with FOCAL_LEN=300, VP_Y at 44% height. Rings approach from SPAWN_Z=3000 at 900 units/sec base, speed scales with momentum. Duck steers laterally in world range -1.6 to +1.6. Momentum system wired (passive drain, +0.12 pass, -0.22 miss). Particle system, audio stub, and animation stub all scaffolded with named module objects. Difficulty scaler increases speed +90 and tightens interval -0.15 every 30s. maxScore=500 reflects typical good-run ceiling for the scaffold difficulty."
   },
-  "leaderboard": true,
-  "improvements": [
-    {
-      "issueNumber": 461,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/461",
-      "runId": "run-20260524T201218Z-a4f7c1",
-      "description": "Refined projection (FOCAL_LEN 300→2000), moved horizon to true vertical center, added animated 3-band cloud sky with cached gradient, rebuilt ground with proper perspective grid, implemented fog color blending (z=40 clear to z=120 fogged via lerpColor toward horizon tone), and added devicePixelRatio canvas scaling.",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-05-24T20:12:18Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6"
-    }
-  ]
+  "leaderboard": true
 }
