@@ -30,11 +30,28 @@
       "prompt": "Build a single-file HTML5 game, Duck Flight. Mobile-first, 1st-person through-the-eyes-of-a-duck flying experience. Rings spawn far away and approach the camera. Player steers the duck left/right to thread through ring centers. Momentum system: starts at 1.0, drains passively, drops on miss, rises on good pass — hit zero and it's game over. First-person duck silhouette: beak tip and flapping wings at bottom. 3D perspective projection with fog. Score on leaderboard.",
       "requestor": "Jeff Holst"
     },
-    "improvements": null,
+    "improvements": [
+      {
+        "issueNumber": 461,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/461",
+        "runId": "run-20260524T201218Z-a4f7c1",
+        "description": "Refined projection (FOCAL_LEN 300→2000), moved horizon to true vertical center, added animated 3-band cloud sky with cached gradient, rebuilt ground with proper perspective grid, implemented fog color blending (z=40 clear to z=120 fogged via lerpColor toward horizon tone), and added devicePixelRatio canvas scaling.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-05-24T20:12:18Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      }
+    ],
     "allowImprovements": true,
     "leaderboard": true,
     "maxScore": 500,
-    "backups": null
+    "backups": [
+      {
+        "runId": "run-20260524T201218Z-a4f7c1",
+        "path": "backups/run-20260524T201218Z-a4f7c1/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260524T201218Z-a4f7c1/index.html"
+      }
+    ]
   },
   {
     "id": "2026/05/23/game-of-life",

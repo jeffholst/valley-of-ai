@@ -136,11 +136,9 @@
     // ─── Constants ───────────────────────────────────────────────────────────────
     const LOGICAL_W = 400;
     const LOGICAL_H = 650;
-    // focalLength tuned so a 1-unit shape at z=20 spans ~100px in logical 400px canvas
-    const FOCAL_LEN = 2000;
-    const VP_X = LOGICAL_W / 2;     // vanishing point x (horizontal center)
-    const VP_Y = LOGICAL_H / 2;     // vanishing point y (horizon at true vertical center)
-    const HORIZON_COLOR = '#8ec6e0'; // fog target — matches sky horizon tone
+    const FOCAL_LEN = 300;          // perspective focal length
+    const VP_X = LOGICAL_W / 2;     // vanishing point x (center)
+    const VP_Y = LOGICAL_H * 0.44;  // vanishing point y (slightly above center)
 
     const SPAWN_Z = 3000;           // world units from camera when ring spawns
     const KILL_Z = 40;              // world units — ring passes camera (miss check)
@@ -174,8 +172,6 @@
     let duck = null;    // { x, vx, momentum, score, misses }
     let rings = [];     // array of ring objects
     let particles = []; // particle system array
-    let cachedSkyGrad = null;    // invalidated on resize
-    let cachedGroundGrad = null; // invalidated on resize
     let lastTime = 0;
     let spawnTimer = 0;
     let difficultyTimer = 0;
@@ -202,15 +198,10 @@
       const ww = wrap.clientWidth;
       const wh = wrap.clientHeight;
       scale = Math.min(ww / LOGICAL_W, wh / LOGICAL_H);
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = Math.floor(LOGICAL_W * dpr);
-      canvas.height = Math.floor(LOGICAL_H * dpr);
+      canvas.width = LOGICAL_W;
+      canvas.height = LOGICAL_H;
       canvas.style.width = Math.floor(LOGICAL_W * scale) + 'px';
       canvas.style.height = Math.floor(LOGICAL_H * scale) + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      // Invalidate cached gradients — tied to specific canvas pixel dimensions
-      cachedSkyGrad = null;
-      cachedGroundGrad = null;
     }
 
     window.addEventListener('resize', resizeCanvas);
@@ -219,23 +210,13 @@
     // ─── 3D Projection ───────────────────────────────────────────────────────────
     // Projects a world-space point (wx, wy, wz) onto canvas.
     // Camera is at world (duck.x, 0, 0) looking toward +z.
-    // Returns { sx, sy, scale } where scale = focalLength / z.
+    // Returns { sx, sy, s } where s = scale factor (0 at horizon, large when close).
     function project(wx, wy, wz) {
       const relX = wx - (duck ? duck.x : 0);
-      const scale = FOCAL_LEN / Math.max(wz, 1);
-      const sx = VP_X + relX * scale;
-      const sy = VP_Y - wy * scale;
-      return { sx, sy, scale };
-    }
-
-    // Linearly interpolates between two #rrggbb colors; t=0 returns from, t=1 returns to.
-    function lerpColor(hexFrom, hexTo, t) {
-      if (t <= 0) return hexFrom;
-      if (t >= 1) return hexTo;
-      const p = c => [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)];
-      const [r1, g1, b1] = p(hexFrom);
-      const [r2, g2, b2] = p(hexTo);
-      return `rgb(${Math.round(r1 + (r2 - r1) * t)},${Math.round(g1 + (g2 - g1) * t)},${Math.round(b1 + (b2 - b1) * t)})`;
+      const s = FOCAL_LEN / Math.max(wz, 1);
+      const sx = VP_X + relX * s;
+      const sy = VP_Y - wy * s;
+      return { sx, sy, s };
     }
 
     // ─── Ring Factory ─────────────────────────────────────────────────────────────
@@ -451,117 +432,76 @@
 
     // ─── Draw ─────────────────────────────────────────────────────────────────────
     function drawSky() {
-      if (!cachedSkyGrad) {
-        cachedSkyGrad = ctx.createLinearGradient(0, 0, 0, VP_Y);
-        cachedSkyGrad.addColorStop(0, '#0d2137');   // deep blue zenith
-        cachedSkyGrad.addColorStop(0.55, '#1a4a7a'); // mid sky
-        cachedSkyGrad.addColorStop(1, HORIZON_COLOR); // horizon
-      }
-      ctx.fillStyle = cachedSkyGrad;
+      const grad = ctx.createLinearGradient(0, 0, 0, VP_Y);
+      grad.addColorStop(0, '#1e3a5f');
+      grad.addColorStop(1, '#6ab0de');
+      ctx.fillStyle = grad;
       ctx.fillRect(0, 0, LOGICAL_W, VP_Y);
-
-      // Banded clouds drifting right-to-left (3 altitudes, different speeds)
-      const t = performance.now() / 1000;
-      ctx.save();
-      ctx.beginPath();
-      ctx.rect(0, 0, LOGICAL_W, VP_Y - 2);
-      ctx.clip();
-      const bands = [
-        { y: VP_Y * 0.18, h: 16, speed: 13, op: 0.11, count: 4 },
-        { y: VP_Y * 0.44, h: 11, speed: 20, op: 0.08, count: 5 },
-        { y: VP_Y * 0.68, h: 7,  speed: 28, op: 0.06, count: 6 },
-      ];
-      for (const band of bands) {
-        ctx.fillStyle = `rgba(255,255,255,${band.op})`;
-        for (let i = 0; i < band.count; i++) {
-          const seedX = (i * 137 + i * 23) % (LOGICAL_W + 200);
-          const x = ((seedX - t * band.speed) % (LOGICAL_W + 200) + LOGICAL_W + 200) % (LOGICAL_W + 200) - 100;
-          ctx.beginPath();
-          ctx.ellipse(x, band.y, 65 + (i * 19 % 38), band.h, 0, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-      ctx.restore();
     }
 
     function drawGround() {
-      if (!cachedGroundGrad) {
-        cachedGroundGrad = ctx.createLinearGradient(0, VP_Y, 0, LOGICAL_H);
-        cachedGroundGrad.addColorStop(0, '#7aaa60');  // warm horizon green
-        cachedGroundGrad.addColorStop(0.28, '#4a7c3f'); // mid green
-        cachedGroundGrad.addColorStop(1, '#182810');    // dark base
-      }
-      ctx.fillStyle = cachedGroundGrad;
+      const grad = ctx.createLinearGradient(0, VP_Y, 0, LOGICAL_H);
+      grad.addColorStop(0, '#4a7c3f');
+      grad.addColorStop(1, '#2d4a25');
+      ctx.fillStyle = grad;
       ctx.fillRect(0, VP_Y, LOGICAL_W, LOGICAL_H - VP_Y);
 
-      // Perspective grid: camera is 0.9 world units above the ground plane (wy = -0.9).
-      // Ground at wy=-0.9 projects to: sy = VP_Y + FOCAL_LEN/wz * 0.9
-      ctx.save();
-      ctx.strokeStyle = 'rgba(0,0,0,0.18)';
-      ctx.lineWidth = 0.7;
-
-      // Horizontal lines at increasing depth intervals (denser near horizon)
-      for (const wz of [8, 11, 16, 24, 36, 58, 95, 160, 280]) {
-        const sy = VP_Y + (FOCAL_LEN / wz) * 0.9;
-        if (sy > LOGICAL_H) break;
+      // Ground grid lines (perspective) — gives depth sense
+      ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+      ctx.lineWidth = 0.8;
+      for (let wz = 200; wz <= 2800; wz += 200) {
+        const s = FOCAL_LEN / wz;
+        const screenY = VP_Y + s * 1.8; // ground is slightly below VP
+        if (screenY > LOGICAL_H) break;
         ctx.beginPath();
-        ctx.moveTo(0, sy);
-        ctx.lineTo(LOGICAL_W, sy);
+        ctx.moveTo(0, screenY);
+        ctx.lineTo(LOGICAL_W, screenY);
         ctx.stroke();
       }
 
-      // Vertical lines converging to vanishing point (VP_X, VP_Y)
-      const duckX = duck ? duck.x : 0;
-      for (const wx of [-3, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 3]) {
-        const nearZ = 8;
-        const nearSx = VP_X + (wx - duckX) * (FOCAL_LEN / nearZ);
-        const nearSy = VP_Y + (FOCAL_LEN / nearZ) * 0.9;
+      // Vertical perspective lines
+      for (let wx = -3; wx <= 3; wx++) {
         ctx.beginPath();
-        ctx.moveTo(Math.max(-80, Math.min(LOGICAL_W + 80, nearSx)), Math.min(nearSy, LOGICAL_H));
-        ctx.lineTo(VP_X, VP_Y);
+        ctx.moveTo(VP_X, VP_Y);
+        ctx.lineTo(VP_X + wx * 80, LOGICAL_H);
         ctx.stroke();
       }
-      ctx.restore();
     }
 
-    // Returns fog interpolation factor: 0 = fully clear (z≤40), 1 = fully fogged (z≥120).
-    function fogFactor(wz) {
-      return Math.max(0, Math.min(1, (wz - 40) / 80));
+    function drawFog(wz, alpha) {
+      // Fog falloff — rings far away are dimmed
+      return Math.max(0, Math.min(1, 1 - (wz - 200) / (SPAWN_Z - 200))) * alpha;
     }
 
     function drawRing(ring) {
       if (ring.wz <= 0) return;
-      const { sx: cx, sy: cy, scale } = project(ring.wx, ring.wy, ring.wz);
-      const outerR = RING_OUTER_R * scale;
-      const innerR = RING_INNER_R * scale;
+      const { sx: cx, sy: cy, s } = project(ring.wx, ring.wy, ring.wz);
+      const outerR = RING_OUTER_R * s;
+      const innerR = RING_INNER_R * s;
 
-      if (outerR < 1) return;
+      if (outerR < 1) return; // too small to draw
 
-      const fogT = fogFactor(ring.wz);
-      if (fogT >= 1) return; // fully fogged, skip
-
-      const baseColor = ring.passed ? '#6ee7b7' : ring.missed ? '#fca5a5' : ring.color;
-      const displayColor = lerpColor(baseColor, HORIZON_COLOR, fogT);
+      const fogAlpha = drawFog(ring.wz, 1.0);
+      if (fogAlpha < 0.02) return;
 
       ctx.save();
-      ctx.globalAlpha = 1 - fogT * 0.75; // still faintly visible at horizon
+      ctx.globalAlpha = fogAlpha;
 
+      // Outer ring (colored)
       ctx.beginPath();
       ctx.arc(cx, cy, outerR, 0, Math.PI * 2);
-      ctx.arc(cx, cy, innerR, 0, Math.PI * 2, true);
-      ctx.fillStyle = displayColor;
+      ctx.arc(cx, cy, innerR, 0, Math.PI * 2, true); // hole
+      ctx.fillStyle = ring.passed ? '#6ee7b7' : ring.missed ? '#fca5a5' : ring.color;
       ctx.fill('evenodd');
 
-      // Glow only when close enough to see clearly
-      if (fogT < 0.5) {
-        ctx.shadowBlur = 10 * (1 - fogT * 2);
-        ctx.shadowColor = ring.color;
-        ctx.strokeStyle = displayColor;
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.arc(cx, cy, (outerR + innerR) / 2, 0, Math.PI * 2);
-        ctx.stroke();
-      }
+      // Ring glow
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = ring.color;
+      ctx.strokeStyle = ring.color;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(cx, cy, (outerR + innerR) / 2, 0, Math.PI * 2);
+      ctx.stroke();
 
       ctx.restore();
     }
@@ -743,13 +683,35 @@
     document.getElementById('start-btn').addEventListener('click', startGame);
 
     // Idle render loop while on menu/gameover (so background animates)
-    function idleDraw() {
+    function idleDraw(ts) {
       if (state !== STATE.PLAYING) {
         ctx.clearRect(0, 0, LOGICAL_W, LOGICAL_H);
-        drawSky();   // reuse the shared sky (includes animated clouds)
-        drawGround();
+        // Simple animated sky for menu
+        const t = ts / 1000;
+        const grad = ctx.createLinearGradient(0, 0, 0, LOGICAL_H);
+        grad.addColorStop(0, '#0f2a4a');
+        grad.addColorStop(0.5, '#1e4a7a');
+        grad.addColorStop(1, '#2d4a25');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
+
+        // Slowly drifting clouds (visual interest while on menu)
+        drawIdleClouds(t);
       }
       if (state !== STATE.PLAYING) requestAnimationFrame(idleDraw);
+    }
+
+    function drawIdleClouds(t) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(255,255,255,0.07)';
+      for (let i = 0; i < 5; i++) {
+        const x = ((i * 97 + t * 18) % (LOGICAL_W + 120)) - 60;
+        const y = 60 + i * 40;
+        ctx.beginPath();
+        ctx.ellipse(x, y, 60, 22, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
     }
 
     requestAnimationFrame(idleDraw);
