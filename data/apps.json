@@ -79,6 +79,16 @@
         "llmModel": "claude-sonnet-4-6",
         "appliedAt": "2026-05-23T20:02:52Z",
         "summary": "Added multi-ball gameplay (3 staggered at start, new ball every 15s), hidden gate reveals (only visible within 80px), 4 exit zones for true unpredictability, paddle shrink on miss (–10px per miss, min 40px), speed escalation (+0.4 cap every 30s up to 6.0), and removed auto-share popup."
+      },
+      {
+        "issueNumber": 456,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/456",
+        "runId": "run-20260523T225514Z-d2c20a",
+        "description": "Extended track to 9 gates and 20 segments with 6 exits; added randomized gate-flip delays on lower gates (5-8) for unpredictability; replaced auto-respawn with a hold/release power meter relaunch mechanic where timing drift forces gate 0 direction.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-05-23T22:55:14Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
       }
     ],
     "allowImprovements": true,
@@ -89,6 +99,11 @@
         "runId": "run-20260523T200252Z-9230c3",
         "path": "backups/run-20260523T200252Z-9230c3/index.html",
         "url": "/apps/2026/05/23/simmotion/backups/run-20260523T200252Z-9230c3/index.html"
+      },
+      {
+        "runId": "run-20260523T225514Z-d2c20a",
+        "path": "backups/run-20260523T225514Z-d2c20a/index.html",
+        "url": "/apps/2026/05/23/simmotion/backups/run-20260523T225514Z-d2c20a/index.html"
       }
     ]
   },

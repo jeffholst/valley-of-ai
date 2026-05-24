@@ -205,16 +205,15 @@
       <div id="startScreen" class="screen active">
         <h1>SIMMOTION</h1>
         <p>
-          Balls wind through a 9-gate roller coaster with 6 hidden exits. Catch them with your
-          paddle, then HOLD to charge and RELEASE at the green zone to relaunch — bad timing
-          sends balls into harder paths!
+          Balls roll through an elaborate multi-path roller coaster. Every gate they hit flips for
+          the next ball — creating unpredictable routes. Catch them with your paddle before they
+          hit the floor!
         </p>
         <div class="instructions">
           <span>🖱️ / 👆 Move paddle left and right</span>
-          <span>⚡ Gates flip when balls pass — some with random delays!</span>
+          <span>⚡ Gates flip every time a ball passes through</span>
           <span>❤️ Miss a ball — lose a life (3 total)</span>
-          <span>🎳 3 balls launch at start, more follow every 15 seconds</span>
-          <span>🏐 Catch a ball → HOLD &amp; RELEASE at the green zone to relaunch!</span>
+          <span>🎳 3 balls launch at the start, more follow every 15 seconds</span>
         </div>
         <button class="btn" id="startBtn">PLAY</button>
       </div>
@@ -294,56 +293,61 @@
        * Called once at startup and on resize (coords are logical, scale-invariant).
        */
       function buildTrack() {
-        // 9-gate network with 20 segments and 6 exits.
-        // Entry → Gate 0 → [Gate 1 | Gate 2] → Gate 3 merge → Gate 4
-        // → [Gate 5 | Gate 6] → [Gate 7 | center exits | Gate 8]
-        // → 6 exit positions at y≈540-545
+        // Entry point at top-center
+        const entry = { x: 200, y: 30 };
+
+        // Junctions — each has a position and two outgoing segment indices
+        // Layout (logical coords):
+        //   Entry → straight drop to J0
+        //   J0 → left steep ramp → J1  |  right steep ramp → J2
+        //   J1 → left curve flat → J3  |  J2 → right curve flat → J3
+        //   J3 → winding drop → J4  (single merge)
+        //   J4 → left ramp → J5  |  right ramp → J6
+        //   J5 → J7  |  J6 → J7  (converge at J7)
+        //   J7 → exit at bottom (paddle zone)
 
         segments = [
-          // 0: Entry straight drop → Gate 0
-          { from: { x: 200, y: 30 }, to: { x: 200, y: 115 }, gate: 0, type: 'drop' },
+          // 0: Entry straight drop → J0
+          { from: { x: 200, y: 30 }, to: { x: 200, y: 130 }, gate: 0, type: 'drop' },
 
-          // Gate 0 → Gate 1 (left) or Gate 2 (right)
-          { from: { x: 200, y: 115 }, to: { x: 80, y: 200 }, gate: 1, type: 'ramp' },   // seg 1
-          { from: { x: 200, y: 115 }, to: { x: 320, y: 200 }, gate: 2, type: 'ramp' },  // seg 2
+          // J0 left → J1  (gate 0 = false)
+          { from: { x: 200, y: 130 }, to: { x: 80, y: 230 }, gate: 1, type: 'ramp' },
+          // J0 right → J2  (gate 0 = true)
+          { from: { x: 200, y: 130 }, to: { x: 320, y: 230 }, gate: 2, type: 'ramp' },
 
-          // Gate 1 at (80,200) → far-left ramp or center-merge flat
-          { from: { x: 80, y: 200 }, to: { x: 55, y: 265 }, gate: 3, type: 'ramp' },    // seg 3
-          { from: { x: 80, y: 200 }, to: { x: 195, y: 255 }, gate: 3, type: 'flat' },   // seg 4
+          // J1 left → J3
+          { from: { x: 80, y: 230 }, to: { x: 60, y: 310 }, gate: 3, type: 'ramp' },
+          // J1 right → J2 merge ramp
+          { from: { x: 80, y: 230 }, to: { x: 200, y: 280 }, gate: 3, type: 'flat' },
 
-          // Gate 2 at (320,200) → center-merge flat or far-right ramp
-          { from: { x: 320, y: 200 }, to: { x: 205, y: 255 }, gate: 3, type: 'flat' },  // seg 5
-          { from: { x: 320, y: 200 }, to: { x: 345, y: 265 }, gate: 3, type: 'ramp' },  // seg 6
+          // J2 left → J1 merge ramp
+          { from: { x: 320, y: 230 }, to: { x: 200, y: 280 }, gate: 3, type: 'flat' },
+          // J2 right → J3 far right
+          { from: { x: 320, y: 230 }, to: { x: 340, y: 310 }, gate: 3, type: 'ramp' },
 
-          // Gate 3 merge paths → Gate 4 at (200,335)
-          { from: { x: 55, y: 265 }, to: { x: 200, y: 335 }, gate: 4, type: 'curve' },  // seg 7
-          { from: { x: 200, y: 255 }, to: { x: 200, y: 335 }, gate: 4, type: 'drop' },  // seg 8
-          { from: { x: 345, y: 265 }, to: { x: 200, y: 335 }, gate: 4, type: 'curve' }, // seg 9
+          // Merge → J3 (all paths converge here via gate 3)
+          { from: { x: 60, y: 310 }, to: { x: 200, y: 380 }, gate: 4, type: 'curve' },
+          { from: { x: 200, y: 280 }, to: { x: 200, y: 380 }, gate: 4, type: 'drop' },
+          { from: { x: 340, y: 310 }, to: { x: 200, y: 380 }, gate: 4, type: 'curve' },
 
-          // Gate 4 at (200,335) → Gate 5 (left) or Gate 6 (right)
-          { from: { x: 200, y: 335 }, to: { x: 100, y: 400 }, gate: 5, type: 'ramp' },  // seg 10
-          { from: { x: 200, y: 335 }, to: { x: 300, y: 400 }, gate: 6, type: 'ramp' },  // seg 11
+          // J4 left → J5
+          { from: { x: 200, y: 380 }, to: { x: 90, y: 460 }, gate: 5, type: 'ramp' },
+          // J4 right → J6
+          { from: { x: 200, y: 380 }, to: { x: 310, y: 460 }, gate: 6, type: 'ramp' },
 
-          // Gate 5 at (100,400) → Gate 7 (far-left) or center-left exit
-          { from: { x: 100, y: 400 }, to: { x: 55, y: 465 }, gate: 7, type: 'ramp' },   // seg 12
-          { from: { x: 100, y: 400 }, to: { x: 150, y: 540 }, gate: -1, type: 'drop' }, // seg 13 exit
-
-          // Gate 6 at (300,400) → center-right exit or Gate 8 (far-right)
-          { from: { x: 300, y: 400 }, to: { x: 250, y: 540 }, gate: -1, type: 'drop' }, // seg 14 exit
-          { from: { x: 300, y: 400 }, to: { x: 345, y: 465 }, gate: 8, type: 'ramp' },  // seg 15
-
-          // Gate 7 at (55,465) → far-far-left exit or left exit
-          { from: { x: 55, y: 465 }, to: { x: 30, y: 545 }, gate: -1, type: 'drop' },   // seg 16 exit
-          { from: { x: 55, y: 465 }, to: { x: 115, y: 545 }, gate: -1, type: 'drop' },  // seg 17 exit
-
-          // Gate 8 at (345,465) → right exit or far-far-right exit
-          { from: { x: 345, y: 465 }, to: { x: 285, y: 545 }, gate: -1, type: 'drop' }, // seg 18 exit
-          { from: { x: 345, y: 465 }, to: { x: 370, y: 545 }, gate: -1, type: 'drop' }, // seg 19 exit
+          // J5 → exit far-left (gate 5 = false)
+          { from: { x: 90, y: 460 }, to: { x: 80, y: 560 }, gate: -1, type: 'drop' },
+          // J6 → exit far-right (gate 6 = true)
+          { from: { x: 310, y: 460 }, to: { x: 320, y: 560 }, gate: -1, type: 'drop' },
+          // J5 → exit center-left (gate 5 = true)
+          { from: { x: 90, y: 460 }, to: { x: 160, y: 560 }, gate: -1, type: 'drop' },
+          // J6 → exit center-right (gate 6 = false)
+          { from: { x: 310, y: 460 }, to: { x: 240, y: 560 }, gate: -1, type: 'drop' },
         ];
 
-        // 9 gates (0-8)
-        if (gates.length !== 9) {
-          gates = [false, false, true, false, true, false, true, false, true];
+        // 7 gates (0-6)
+        if (gates.length !== 7) {
+          gates = [false, false, true, false, true, false, true];
         }
       }
 
@@ -388,27 +392,8 @@
        * t = progress [0,1] along segment
        * speed = units/frame along the normalized segment
        */
-      function createBall(segIdx, launchDrift = 0) {
-        return { segIdx, t: 0, speed: MIN_SPEED + 0.5, alive: true, caught: false, launchDrift };
-      }
-
-      /**
-       * Maps charge amount (0-1) to a lateral drift value (-1 to +1).
-       * Sweet spot 0.4-0.6 = no drift. Outside = drift left (neg) or right (pos).
-       */
-      function computeDrift(charge) {
-        if (charge >= 0.4 && charge <= 0.6) return 0;
-        if (charge < 0.4) return -(0.4 - charge) / 0.4;
-        return (charge - 0.6) / 0.4;
-      }
-
-      function launchHeldBall() {
-        if (!heldBall) return;
-        const drift = computeDrift(chargeAmount);
-        balls.push(createBall(0, drift));
-        heldBall = null;
-        isCharging = false;
-        chargeAmount = 0;
+      function createBall(segIdx) {
+        return { segIdx, t: 0, speed: MIN_SPEED + 0.5, alive: true, caught: false };
       }
 
       let balls = [];
@@ -417,41 +402,41 @@
 
       /**
        * Choose next segment from gate state.
-       * Accepts the ball so launch drift can override gate 0 routing.
        * Returns segment index or -1 if ball exits the track.
        */
-      function nextSegment(seg, ball) {
+      function nextSegment(seg) {
         const gateIdx = seg.gate;
         if (gateIdx < 0) return -1; // terminal
 
-        let gateState = gates[gateIdx];
+        const gateState = gates[gateIdx];
+        // Segments are paired: even = left branch, odd = right branch (relative to gate)
+        // We store the routing table explicitly:
+        const routing = {
+          // gate 0 at seg 0: left=1, right=2
+          0: { false: 1, true: 2 },
+          // gate 1 at segs 1: left=3, right=4
+          1: { false: 3, true: 4 },
+          // gate 2 at seg 2: left=5, right=6
+          2: { false: 5, true: 6 },
+          // gate 3 at segs 3,4,5,6: all merge to 7,8,9 depending on which entry
+          3: { false: 7, true: 8 },
+          // gate 4 at segs 7,8,9: left=10, right=11
+          4: { false: 10, true: 11 },
+          // gate 5 at seg 10: false=far-left(12), true=center-left(14)
+          5: { false: 12, true: 14 },
+          // gate 6 at seg 11: false=center-right(15), true=far-right(13)
+          6: { false: 15, true: 13 },
+        };
 
-        // Launch drift overrides gate 0 for poorly-timed relaunches
-        if (gateIdx === 0 && ball && ball.launchDrift !== 0) {
-          gateState = ball.launchDrift > 0;
-          ball.launchDrift = 0;
-        }
-
+        // For gate 3, the merge input determines the output more subtly:
+        // segs 3 and 5 → seg 7; segs 4 and 5 → seg 8; seg 6 → seg 9
         const segIdx = segments.indexOf(seg);
-
-        // Gate 3 merge: output depends on which entry segment arrives
         if (gateIdx === 3) {
           if (segIdx === 3 || segIdx === 5) return gateState ? 8 : 7;
           if (segIdx === 4) return gateState ? 9 : 8;
           if (segIdx === 6) return gateState ? 9 : 7;
           return 7;
         }
-
-        const routing = {
-          0: { false: 1, true: 2 },
-          1: { false: 3, true: 4 },
-          2: { false: 5, true: 6 },
-          4: { false: 10, true: 11 },
-          5: { false: 12, true: 13 },
-          6: { false: 14, true: 15 },
-          7: { false: 16, true: 17 },
-          8: { false: 18, true: 19 },
-        };
 
         const r = routing[gateIdx];
         if (!r) return -1;
@@ -486,17 +471,13 @@
         ball.t += dtT;
 
         if (ball.t >= 1) {
-          // Flip the gate — lower-level gates (5-8) use random delays for unpredictability
+          // Flip the gate that was at this junction
           const gateIdx = seg.gate;
           if (gateIdx >= 0) {
-            if (gateIdx >= 5 && Math.random() < 0.5) {
-              pendingGateFlips.push({ gateIdx, flipAt: survivalTime + 0.4 + Math.random() * 0.8 });
-            } else {
-              gates[gateIdx] = !gates[gateIdx];
-            }
+            gates[gateIdx] = !gates[gateIdx];
           }
 
-          const nextIdx = nextSegment(seg, ball);
+          const nextIdx = nextSegment(seg);
           if (nextIdx < 0) {
             // Ball has exited the track bottom
             const pos = ballPosition(ball);
@@ -544,13 +525,6 @@
       let survivalTime = 0;
       let gameRunning = false;
       let lastTimestamp = 0;
-
-      // ─── Relaunch mechanic ────────────────────────────────────────────────────
-      let heldBall = null; // set when a caught ball awaits player relaunch
-      let isCharging = false; // player is holding to charge the power meter
-      let chargeStart = 0; // Date.now() when charging began
-      let chargeAmount = 0; // 0 to 1
-      let pendingGateFlips = []; // { gateIdx, flipAt } for delayed gate flips
 
       // ─── Particle system ─────────────────────────────────────────────────────
 
@@ -645,15 +619,13 @@
 
         // Gates sit at junction points where segments branch
         const junctionMap = {
-          0: { x: 200, y: 115 },
-          1: { x: 80, y: 200 },
-          2: { x: 320, y: 200 },
-          3: { x: 200, y: 255 },
-          4: { x: 200, y: 335 },
-          5: { x: 100, y: 400 },
-          6: { x: 300, y: 400 },
-          7: { x: 55, y: 465 },
-          8: { x: 345, y: 465 },
+          0: { x: 200, y: 130 },
+          1: { x: 80, y: 230 },
+          2: { x: 320, y: 230 },
+          3: { x: 200, y: 280 }, // approximate merge area
+          4: { x: 200, y: 380 },
+          5: { x: 90, y: 460 },
+          6: { x: 310, y: 460 },
         };
 
         for (let i = 0; i < gates.length; i++) {
@@ -850,49 +822,6 @@
         ctx.restore();
       }
 
-      function drawPowerMeter() {
-        if (!heldBall) return;
-        const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-        const meterW = 120;
-        const meterH = 10;
-        const meterX = paddleX - meterW / 2;
-        const meterY = PADDLE_Y - PADDLE_H / 2 - 26;
-
-        ctx.save();
-        // Background
-        ctx.fillStyle = 'rgba(0,0,0,0.6)';
-        ctx.beginPath();
-        ctx.roundRect(meterX - 2, meterY - 2, meterW + 4, meterH + 4, 4);
-        ctx.fill();
-
-        // Charge fill
-        const inSweet = chargeAmount >= 0.4 && chargeAmount <= 0.6;
-        ctx.fillStyle = inSweet ? '#4ade80' : chargeAmount < 0.4 ? '#f97316' : '#ef4444';
-        const fillW = meterW * chargeAmount;
-        if (fillW > 0) {
-          ctx.beginPath();
-          ctx.roundRect(meterX, meterY, fillW, meterH, 3);
-          ctx.fill();
-        }
-
-        // Sweet-spot bracket
-        ctx.strokeStyle = '#fbbf24';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(meterX + meterW * 0.4, meterY, meterW * 0.2, meterH);
-
-        // Label
-        ctx.fillStyle = isDark ? '#f9fafb' : '#1f2937';
-        ctx.font = 'bold 10px system-ui, sans-serif';
-        ctx.textAlign = 'center';
-        const label = !isCharging
-          ? 'Caught! HOLD to relaunch'
-          : inSweet
-            ? '✓ RELEASE NOW!'
-            : 'Release at the green zone';
-        ctx.fillText(label, paddleX, meterY - 6);
-        ctx.restore();
-      }
-
       function render() {
         const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
         ctx.clearRect(0, 0, W, H);
@@ -905,7 +834,6 @@
         drawGates();
         drawBalls();
         drawPaddle();
-        drawPowerMeter();
         drawParticles();
         drawHUD();
       }
@@ -962,11 +890,7 @@
         ballSpawnTimer = 6;
         balls = [];
         particles = [];
-        gates = [false, false, true, false, true, false, true, false, true];
-        heldBall = null;
-        isCharging = false;
-        chargeAmount = 0;
-        pendingGateFlips = [];
+        gates = [false, false, true, false, true, false, true];
         paddleX = 200;
         targetPaddleX = 200;
         currentPaddleW = PADDLE_W;
@@ -983,20 +907,6 @@
 
         survivalTime += dt;
         ballSpawnTimer += dt;
-
-        // Update relaunch charge meter
-        if (isCharging && heldBall) {
-          chargeAmount = Math.min(1, (Date.now() - chargeStart) / 2000);
-          if (chargeAmount >= 1) launchHeldBall(); // auto-launch at max charge
-        }
-
-        // Process deferred gate flips
-        for (let i = pendingGateFlips.length - 1; i >= 0; i--) {
-          if (survivalTime >= pendingGateFlips[i].flipAt) {
-            gates[pendingGateFlips[i].gateIdx] = !gates[pendingGateFlips[i].gateIdx];
-            pendingGateFlips.splice(i, 1);
-          }
-        }
 
         // Speed escalation: +0.4 every 30s, cap at 6.0
         const newSpeedTier = Math.floor(survivalTime / 30);
@@ -1030,18 +940,15 @@
             updateFreeFall(ball, dt);
 
             if (checkPaddleCollision(ball)) {
-              // Caught! Player must relaunch via hold/release power meter
+              // Caught! Send back to top
               ball.alive = false;
               ball.caught = true;
               caught++;
               spawnParticles(ball.x, ball.exitY, '#a78bfa', 16);
-              if (heldBall) {
-                // Already holding one — auto-launch it before accepting this catch
-                launchHeldBall();
-              }
-              heldBall = { ready: true };
-              chargeAmount = 0;
-              isCharging = false;
+              // Relaunch a new ball from top after a short delay
+              setTimeout(() => {
+                if (gameRunning) balls.push(createBall(0));
+              }, 400);
             } else if (ball.exitY > H + 20) {
               // Missed!
               ball.alive = false;
@@ -1090,19 +997,6 @@
         setPaddleFromEvent(e.clientX);
       });
 
-      canvas.addEventListener('mousedown', () => {
-        if (heldBall && gameRunning && !isCharging) {
-          isCharging = true;
-          chargeStart = Date.now();
-        }
-      });
-
-      canvas.addEventListener('mouseup', () => {
-        if (heldBall && isCharging && gameRunning) {
-          launchHeldBall();
-        }
-      });
-
       canvas.addEventListener('touchmove', (e) => {
         e.preventDefault();
         if (e.touches.length > 0) {
@@ -1114,17 +1008,6 @@
         e.preventDefault();
         if (e.touches.length > 0) {
           setPaddleFromEvent(e.touches[0].clientX);
-          if (heldBall && gameRunning && !isCharging) {
-            isCharging = true;
-            chargeStart = Date.now();
-          }
-        }
-      }, { passive: false });
-
-      canvas.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        if (heldBall && isCharging && gameRunning) {
-          launchHeldBall();
         }
       }, { passive: false });
 
@@ -1139,19 +1022,6 @@
         } else if (e.key === 'ArrowRight') {
           e.preventDefault();
           targetPaddleX = Math.min(W - currentPaddleW / 2, targetPaddleX + 40);
-        } else if (e.key === ' ' && heldBall && gameRunning && !isCharging) {
-          e.preventDefault();
-          isCharging = true;
-          chargeStart = Date.now();
-        }
-      });
-
-      document.addEventListener('keyup', (e) => {
-        const tag = document.activeElement?.tagName;
-        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-        if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
-        if (e.key === ' ' && heldBall && isCharging) {
-          launchHeldBall();
         }
       });
 
