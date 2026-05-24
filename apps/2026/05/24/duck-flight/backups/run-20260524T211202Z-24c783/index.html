@@ -164,9 +164,7 @@
     const MAX_MISSES = 5;           // total misses before momentum bottoms out (tracked separately)
 
     // ─── State ───────────────────────────────────────────────────────────────────
-    const STATE = { MENU: 0, PLAYING: 1, STALLING: 2, GAMEOVER: 3 };
-    const STALL_DURATION = 0.75;    // seconds of slow-mo before game over screen shows
-    const DIFFICULTY_EVERY_N = 10;  // ramp difficulty every N successful passes
+    const STATE = { MENU: 0, PLAYING: 1, GAMEOVER: 2 };
     let state = STATE.MENU;
 
     let duck = null;    // { x, vx, momentum, score, misses }
@@ -176,9 +174,7 @@
     let cachedGroundGrad = null; // invalidated on resize
     let lastTime = 0;
     let spawnTimer = 0;
-    let stallTimer = 0;         // counts down during STALLING transition
-    let passCount = 0;          // total successful passes this game (drives difficulty ramp)
-    let innerOpeningFactor = 1.0; // applied to new shape innerR; decreases as difficulty ramps
+    let difficultyTimer = 0;
     let currentSpeed = BASE_SPEED;
     let currentInterval = SPAWN_INTERVAL;
     let animId = null;
@@ -245,7 +241,7 @@
     function createShape(z) {
       const type = SHAPE_TYPES[Math.floor(Math.random() * 3)];
       const size = 0.65 + Math.random() * 0.55;          // 0.65–1.2 world units outer size
-      const innerR = size * 0.47 * innerOpeningFactor;    // shrinks as difficulty ramps
+      const innerR = size * 0.47;                         // inner opening ~47% of outer size
       const hue = Math.floor(Math.random() * 360);
       const color = `hsl(${hue}, 85%, 58%)`;              // HSL with saturation pop (particles)
       const wx = (Math.random() * 2 - 1) * 1.2;
@@ -278,6 +274,17 @@
         score: 0,
         misses: 0,
       };
+    }
+
+    // ─── Difficulty Scaler ────────────────────────────────────────────────────────
+    function updateDifficulty(dt) {
+      difficultyTimer += dt;
+      // Every 30 seconds, speed increases slightly and intervals tighten
+      if (difficultyTimer >= 30) {
+        difficultyTimer = 0;
+        currentSpeed = Math.min(currentSpeed + 90, 2200);
+        currentInterval = Math.max(currentInterval - 0.15, 1.0);
+      }
     }
 
     // ─── Particle System (stub — scaffold for future improvements) ────────────────
@@ -413,7 +420,7 @@
     }
 
     function updateShapes(dt) {
-      const speed = currentSpeed * duck.momentum;          // forward speed scales directly with momentum
+      const speed = currentSpeed * (0.5 + duck.momentum * 0.5); // speed tied to momentum
       for (let i = shapes.length - 1; i >= 0; i--) {
         const shape = shapes[i];
         shape.wz -= speed * dt;
@@ -429,14 +436,7 @@
             // Good pass!
             shape.passed = true;
             duck.score += 10;
-            passCount++;
             duck.momentum = Math.min(MOMENTUM_MAX, duck.momentum + MOMENTUM_PASS);
-            // Ramp difficulty every N passes: more speed, tighter spawns, smaller openings
-            if (passCount % DIFFICULTY_EVERY_N === 0) {
-              currentSpeed = Math.min(currentSpeed + 80, 2000);
-              currentInterval = Math.max(currentInterval - 0.12, 0.9);
-              innerOpeningFactor = Math.max(0.65, innerOpeningFactor - 0.05);
-            }
             const { sx, sy } = project(shape.wx, shape.wy, PASS_Z);
             spawnParticles(sx, sy, shape.color, 18);
             Audio.play('pass');
@@ -464,9 +464,8 @@
     }
 
     function checkGameOver() {
-      if (duck.momentum <= MOMENTUM_MIN && state === STATE.PLAYING) {
-        state = STATE.STALLING;
-        stallTimer = STALL_DURATION;
+      if (duck.momentum <= MOMENTUM_MIN) {
+        endGame();
       }
     }
 
@@ -861,26 +860,15 @@
 
     // ─── Game loop ────────────────────────────────────────────────────────────────
     function update(ts) {
-      const rawDt = Math.min((ts - lastTime) / 1000, 0.1);
+      const dt = Math.min((ts - lastTime) / 1000, 0.1);
       lastTime = ts;
-
-      if (state === STATE.STALLING) {
-        stallTimer -= rawDt;
-        // Slow-mo: effective dt shrinks from full speed to near-zero as stall progresses
-        const sloMoDt = rawDt * Math.max(0.04, stallTimer / STALL_DURATION);
-        updateShapes(sloMoDt);
-        updateParticles(sloMoDt);
-        Anim.update(sloMoDt);
-        if (stallTimer <= 0) endGame();
-        return;
-      }
 
       if (state !== STATE.PLAYING) return;
 
-      const dt = rawDt;
       updateDuck(dt);
       updateShapes(dt);
       spawnShapeIfNeeded(dt);
+      updateDifficulty(dt);
       updateParticles(dt);
       Anim.update(dt);
       checkGameOver();
@@ -893,19 +881,8 @@
       drawShapes();
       drawParticles();
       drawDuckPOV();    // screen-space last, after all world content
-
-      // Stall transition: darken screen as slow-mo progresses
-      if (state === STATE.STALLING) {
-        const progress = 1 - stallTimer / STALL_DURATION;
-        ctx.save();
-        ctx.globalAlpha = progress * 0.75;
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
-        ctx.restore();
-      }
-
       drawInputHints();
-      if (state === STATE.PLAYING || state === STATE.STALLING) drawHUD();
+      if (state === STATE.PLAYING) drawHUD();
     }
 
     function loop(ts) {
@@ -920,9 +897,7 @@
       shapes = [];
       particles = [];
       spawnTimer = 0.8;
-      stallTimer = 0;
-      passCount = 0;
-      innerOpeningFactor = 1.0;
+      difficultyTimer = 0;
       currentSpeed = BASE_SPEED;
       currentInterval = SPAWN_INTERVAL;
       scoreSubmitted = false;
