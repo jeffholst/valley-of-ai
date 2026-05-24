@@ -57,16 +57,6 @@
       "implementedAt": "2026-05-24T20:53:40Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
-    },
-    {
-      "issueNumber": 466,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/466",
-      "runId": "run-20260524T211202Z-24c783",
-      "description": "Wired gameplay feel: forward speed now scales directly with momentum (speed=currentSpeed*momentum), difficulty ramps every 10 passes (not time-based) with speed increase+spawn tightening+opening shrink, and game over uses a STALLING state with 0.75s slow-mo + screen darkening before showing the overlay.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-05-24T21:12:02Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6"
     }
   ]
 }
