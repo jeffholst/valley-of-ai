@@ -12,16 +12,6 @@
       <stop offset="28%" stop-color="#4a7c3f"/>
       <stop offset="100%" stop-color="#182810"/>
     </linearGradient>
-    <!-- Near square gradient: lighter orange top, dark orange-brown bottom (top-down light) -->
-    <linearGradient id="sqGrad" gradientUnits="userSpaceOnUse" x1="350" y1="140" x2="350" y2="236">
-      <stop offset="0%" stop-color="#ef986c"/>
-      <stop offset="100%" stop-color="#81340e"/>
-    </linearGradient>
-    <!-- Mid triangle gradient: lighter teal top, dark teal bottom -->
-    <linearGradient id="triGrad" gradientUnits="userSpaceOnUse" x1="435" y1="172" x2="435" y2="214">
-      <stop offset="0%" stop-color="#6cefe4"/>
-      <stop offset="100%" stop-color="#0e8177"/>
-    </linearGradient>
     <!-- Left wing primary feathers -->
     <linearGradient id="lwPri" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#3d1505"/>
@@ -49,9 +39,9 @@
       <stop offset="0%" stop-color="#e8c84a"/>
       <stop offset="100%" stop-color="#c49a10"/>
     </linearGradient>
-    <!-- Shape glow filter -->
-    <filter id="sglow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="4" result="blur"/>
+    <!-- Ring glow filter -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
@@ -110,71 +100,67 @@
     <line x1="800" y1="450" x2="400" y2="225"/>
   </g>
 
-  <!-- Far ring (fogged, near horizon) -->
-  <circle cx="388" cy="217" r="10" fill="none" stroke="#9cc8dd" stroke-width="3" opacity="0.28"/>
+  <!-- Far ring (fogged) -->
+  <circle cx="388" cy="213" r="10" fill="none" stroke="#9cc8dd" stroke-width="3" opacity="0.28"/>
 
-  <!-- Mid triangle (teal, gradient fill, spinning) -->
-  <g filter="url(#sglow)" opacity="0.72">
-    <!-- Outer triangle minus inner triangle via evenodd -->
-    <path d="M 435,172 L 459,214 L 411,214 Z M 435,187 L 447,207 L 423,207 Z"
-          fill="url(#triGrad)" fill-rule="evenodd"/>
-    <!-- Specular highlight on upper portion: top two edges -->
-    <line x1="435" y1="172" x2="459" y2="214" stroke="#adf0ea" stroke-width="1.5" opacity="0.55"
-          stroke-dasharray="0 0"
-          style="clip-path: inset(0 0 107px 0)"/>
-    <line x1="435" y1="172" x2="411" y2="214" stroke="#adf0ea" stroke-width="1.5" opacity="0.55"/>
+  <!-- Mid ring (yellow) -->
+  <g filter="url(#glow)" opacity="0.52">
+    <circle cx="435" cy="200" r="28" fill="none" stroke="#c8a830" stroke-width="7"/>
+    <circle cx="435" cy="200" r="7" fill="rgba(251,191,36,0.12)"/>
   </g>
 
-  <!-- Near square (orange, gradient fill, framed opening) -->
-  <g filter="url(#sglow)">
-    <!-- Outer square minus inner square via evenodd -->
-    <path d="M 398,140 L 398,236 L 302,236 L 302,140 Z M 373,165 L 373,211 L 327,211 L 327,165 Z"
-          fill="url(#sqGrad)" fill-rule="evenodd"/>
-    <!-- Specular highlight: top edge of outer square -->
-    <line x1="302" y1="140" x2="398" y2="140" stroke="#f1dbd0" stroke-width="2.5" opacity="0.60"/>
-    <!-- Faint inner glow ring for depth -->
-    <rect x="327" y="165" width="46" height="46"
-          fill="none" stroke="rgba(239,152,108,0.18)" stroke-width="6"/>
+  <!-- Near ring (green, bright) -->
+  <g filter="url(#glow)">
+    <circle cx="350" cy="178" r="68" fill="none" stroke="#34d399" stroke-width="15"/>
+    <circle cx="350" cy="178" r="68" fill="none" stroke="rgba(52,211,153,0.22)" stroke-width="28"/>
+    <circle cx="350" cy="178" r="18" fill="rgba(52,211,153,0.14)" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4 4"/>
   </g>
 
-  <!-- Pass particles (just flew through the square successfully) -->
-  <g opacity="0.88">
-    <circle cx="302" cy="152" r="4" fill="#ef986c"/>
-    <circle cx="290" cy="168" r="3" fill="#ef986c"/>
-    <circle cx="309" cy="141" r="2" fill="#fff"/>
-    <circle cx="398" cy="155" r="4" fill="#ef986c"/>
-    <circle cx="410" cy="170" r="3" fill="#ef986c"/>
-    <circle cx="386" cy="144" r="2" fill="#fff"/>
-    <circle cx="350" cy="112" r="4" fill="#ef986c"/>
-    <circle cx="340" cy="102" r="3" fill="#fbbf24"/>
+  <!-- Pass particles -->
+  <g opacity="0.85">
+    <circle cx="304" cy="152" r="4" fill="#34d399"/>
+    <circle cx="292" cy="167" r="3" fill="#34d399"/>
+    <circle cx="310" cy="143" r="2" fill="#fff"/>
+    <circle cx="396" cy="155" r="4" fill="#34d399"/>
+    <circle cx="408" cy="170" r="3" fill="#34d399"/>
+    <circle cx="386" cy="146" r="2" fill="#fff"/>
+    <circle cx="349" cy="117" r="4" fill="#34d399"/>
+    <circle cx="340" cy="108" r="3" fill="#6ee7b7"/>
   </g>
 
-  <!-- Motion blur streak (banking right) -->
+  <!-- Motion blur streak (banking right — right wing dipping) -->
   <ellipse cx="622" cy="367" rx="36" ry="11" fill="#92400e" opacity="0.22" transform="rotate(8, 622, 367)"/>
 
-  <!-- LEFT WING -->
+  <!-- ── LEFT WING (banking slightly left — left wing slightly lower) ── -->
   <g filter="url(#wglow)">
+    <!-- Primary feathers -->
     <path d="M 30 445  C 48 406 145 368 298 342  C 328 372 300 400 258 418  Z"
           fill="url(#lwPri)"/>
+    <!-- Secondary feathers -->
     <path d="M 88 445  C 108 412 190 380 308 358  C 326 380 308 400 278 414  Z"
           fill="url(#lwSec)" opacity="0.82"/>
+    <!-- Covert feathers -->
     <path d="M 160 445  C 175 420 234 396 280 388  C 274 408 240 426 180 440  Z"
           fill="#d97706" opacity="0.48"/>
   </g>
 
-  <!-- RIGHT WING -->
+  <!-- ── RIGHT WING (banking right — dipping slightly) ── -->
   <g filter="url(#wglow)">
+    <!-- Primary feathers -->
     <path d="M 770 445  C 752 400 650 358 502 342  C 472 376 504 408 548 422  Z"
           fill="url(#rwPri)"/>
+    <!-- Secondary feathers -->
     <path d="M 712 445  C 692 408 610 374 492 356  C 474 380 494 406 524 420  Z"
           fill="url(#rwSec)" opacity="0.82"/>
+    <!-- Covert feathers -->
     <path d="M 640 445  C 625 416 566 392 520 384  C 526 406 560 428 620 442  Z"
           fill="#d97706" opacity="0.48"/>
   </g>
 
-  <!-- BEAK -->
+  <!-- ── BEAK ── -->
   <path d="M 400 420  C 391 428 387 437 392 443  C 396 447 404 447 408 443  C 413 437 409 428 400 420  Z"
         fill="url(#beak)" opacity="0.82"/>
+  <!-- Beak split line -->
   <path d="M 388 436  C 394 433 406 433 412 436" fill="none" stroke="#9a6e06" stroke-width="1.2" opacity="0.42"/>
 
   <!-- HUD panel -->
@@ -187,6 +173,6 @@
   <rect x="642" y="14" width="146" height="10" rx="5" fill="rgba(0,0,0,0.5)"/>
   <rect x="642" y="14" width="112" height="10" rx="5" fill="#34d399"/>
 
-  <!-- Shape type legend hint -->
+  <!-- Title -->
   <text x="400" y="444" font-family="system-ui,sans-serif" font-size="13" fill="rgba(255,255,255,0.25)" text-anchor="middle">Duck Flight</text>
 </svg>
