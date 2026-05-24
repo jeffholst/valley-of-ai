@@ -37,16 +37,6 @@
       "implementedAt": "2026-05-24T20:12:18Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
-    },
-    {
-      "issueNumber": 462,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/462",
-      "runId": "run-20260524T202646Z-b3e591",
-      "description": "Rebuilt first-person duck POV: 3-layer bezier wings (primary/secondary/covert feathers with per-layer gradients), off-yellow beak hint at bottom edge, idle bob and flap animations, bank animation driven by damped duck.vx, wing-tip motion blur on hard banking; flap rate scales with momentum.",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-05-24T20:26:46Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6"
     }
   ]
 }

@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <!-- Sky gradient — deep zenith to warm horizon -->
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d2137"/>
+      <stop offset="55%" stop-color="#1a4a7a"/>
+      <stop offset="100%" stop-color="#8ec6e0"/>
+    </linearGradient>
+    <!-- Ground gradient — warm horizon green to dark base -->
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7aaa60"/>
+      <stop offset="28%" stop-color="#4a7c3f"/>
+      <stop offset="100%" stop-color="#182810"/>
+    </linearGradient>
+    <!-- Ring glow filter -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Duck shadow -->
+    <filter id="dshadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Particle glow -->
+    <filter id="pglow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Wing gradient -->
+    <linearGradient id="wingL" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6b2d0b"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+    <linearGradient id="wingR" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0%" stop-color="#6b2d0b"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+    <!-- HUD panel -->
+    <linearGradient id="hudpanel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(0,0,0,0.6)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.4)"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky (top 225px = horizon at center) -->
+  <rect x="0" y="0" width="800" height="225" fill="url(#sky)"/>
+
+  <!-- Cloud bands drifting right-to-left (static snapshot) -->
+  <g opacity="0.11" fill="white">
+    <ellipse cx="120" cy="42" rx="70" ry="14"/>
+    <ellipse cx="340" cy="42" rx="62" ry="14"/>
+    <ellipse cx="580" cy="42" rx="75" ry="14"/>
+    <ellipse cx="730" cy="42" rx="55" ry="14"/>
+  </g>
+  <g opacity="0.08" fill="white">
+    <ellipse cx="60"  cy="100" rx="55" ry="10"/>
+    <ellipse cx="230" cy="100" rx="68" ry="10"/>
+    <ellipse cx="460" cy="100" rx="60" ry="10"/>
+    <ellipse cx="660" cy="100" rx="72" ry="10"/>
+    <ellipse cx="790" cy="100" rx="50" ry="10"/>
+  </g>
+  <g opacity="0.07" fill="white">
+    <ellipse cx="95"  cy="150" rx="50" ry="7"/>
+    <ellipse cx="270" cy="150" rx="58" ry="7"/>
+    <ellipse cx="430" cy="150" rx="52" ry="7"/>
+    <ellipse cx="590" cy="150" rx="62" ry="7"/>
+    <ellipse cx="740" cy="150" rx="48" ry="7"/>
+    <ellipse cx="800" cy="150" rx="45" ry="7"/>
+  </g>
+
+  <!-- Horizon line -->
+  <line x1="0" y1="225" x2="800" y2="225" stroke="#8ec6e0" stroke-width="1" opacity="0.5"/>
+
+  <!-- Ground -->
+  <rect x="0" y="225" width="800" height="225" fill="url(#ground)"/>
+
+  <!-- Perspective grid lines -->
+  <g stroke="rgba(0,0,0,0.18)" stroke-width="0.8">
+    <!-- Horizontal depth lines -->
+    <line x1="0" y1="292" x2="800" y2="292"/>
+    <line x1="0" y1="316" x2="800" y2="316"/>
+    <line x1="0" y1="340" x2="800" y2="340"/>
+    <line x1="0" y1="372" x2="800" y2="372"/>
+    <line x1="0" y1="412" x2="800" y2="412"/>
+    <!-- Vertical lines converging to VP (400, 225) -->
+    <line x1="0"   y1="450" x2="400" y2="225"/>
+    <line x1="130" y1="450" x2="400" y2="225"/>
+    <line x1="270" y1="450" x2="400" y2="225"/>
+    <line x1="400" y1="450" x2="400" y2="225"/>
+    <line x1="530" y1="450" x2="400" y2="225"/>
+    <line x1="670" y1="450" x2="400" y2="225"/>
+    <line x1="800" y1="450" x2="400" y2="225"/>
+  </g>
+
+  <!-- Far ring (tiny, fogged toward horizon color) -->
+  <circle cx="385" cy="210" r="8" fill="none" stroke="#9cc8dd" stroke-width="3" opacity="0.3"/>
+
+  <!-- Mid ring (partially fogged, yellow) -->
+  <g filter="url(#glow)" opacity="0.55">
+    <circle cx="430" cy="198" r="26" fill="none" stroke="#c8a830" stroke-width="7"/>
+    <circle cx="430" cy="198" r="7"  fill="rgba(251,191,36,0.12)"/>
+  </g>
+
+  <!-- Near ring (bright green, clear — being approached) -->
+  <g filter="url(#glow)">
+    <circle cx="350" cy="178" r="70" fill="none" stroke="#34d399" stroke-width="16"/>
+    <circle cx="350" cy="178" r="70" fill="none" stroke="rgba(52,211,153,0.25)" stroke-width="28"/>
+    <circle cx="350" cy="178" r="19" fill="rgba(52,211,153,0.15)" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4 4"/>
+  </g>
+
+  <!-- Pass particles around near ring -->
+  <g filter="url(#pglow)" opacity="0.9">
+    <circle cx="302" cy="152" r="4" fill="#34d399"/>
+    <circle cx="290" cy="168" r="3" fill="#34d399"/>
+    <circle cx="308" cy="143" r="2" fill="#fff"/>
+    <circle cx="400" cy="154" r="4" fill="#34d399"/>
+    <circle cx="412" cy="169" r="3" fill="#34d399"/>
+    <circle cx="390" cy="145" r="2" fill="#fff"/>
+    <circle cx="349" cy="118" r="4" fill="#34d399"/>
+    <circle cx="341" cy="108" r="3" fill="#6ee7b7"/>
+    <circle cx="358" cy="112" r="2" fill="#fff"/>
+  </g>
+
+  <!-- Duck POV: beak + wings at bottom center -->
+  <g filter="url(#dshadow)">
+    <!-- Left wing -->
+    <path d="M 388 372  Q 225 312 125 360  Q 225 402 388 397" fill="url(#wingL)"/>
+    <!-- Right wing -->
+    <path d="M 412 372  Q 575 312 675 360  Q 575 402 412 397" fill="url(#wingR)"/>
+    <!-- Wing highlight streaks -->
+    <path d="M 388 377  Q 258 330 172 356" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="3"/>
+    <path d="M 412 377  Q 542 330 628 356" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="3"/>
+    <!-- Beak -->
+    <polygon points="400,347 386,376 414,376" fill="#f97316"/>
+    <polygon points="400,347 386,376 414,376" fill="none" stroke="#c2410c" stroke-width="1.5"/>
+    <!-- Nostril -->
+    <ellipse cx="394" cy="367" rx="3" ry="1.5" fill="rgba(0,0,0,0.25)"/>
+    <ellipse cx="406" cy="367" rx="3" ry="1.5" fill="rgba(0,0,0,0.25)"/>
+  </g>
+
+  <!-- HUD panel top-left -->
+  <rect x="10" y="10" width="150" height="58" rx="8" fill="url(#hudpanel)"/>
+  <text x="20" y="33" font-family="system-ui,sans-serif" font-weight="700" font-size="18" fill="#fbbf24">Score: 140</text>
+  <text x="20" y="54" font-family="system-ui,sans-serif" font-size="12" fill="#fca5a5">Misses: 1</text>
+
+  <!-- HUD momentum bar top-right -->
+  <text x="636" y="24" font-family="system-ui,sans-serif" font-size="11" fill="#cbd5e1" text-anchor="end">Momentum</text>
+  <rect x="640" y="14" width="148" height="10" rx="5" fill="rgba(0,0,0,0.5)"/>
+  <rect x="640" y="14" width="110" height="10" rx="5" fill="#34d399"/>
+
+  <!-- Title watermark -->
+  <text x="400" y="444" font-family="system-ui,sans-serif" font-size="13" fill="rgba(255,255,255,0.28)" text-anchor="middle">Duck Flight</text>
+</svg>
