@@ -327,35 +327,22 @@
       play(sound) { /* stub */ },
     };
 
-    // ─── Animation state ──────────────────────────────────────────────────────────
+    // ─── Animation helpers (stub) ─────────────────────────────────────────────────
     const Anim = {
-      wingPhase: 0,   // drives flap vertical oscillation
-      bobPhase: 0,    // drives gentle body bob
-      bankAngle: 0,   // smoothed lateral tilt (damped from duck.vx)
+      // Stub — reserved for wing flap animation timing
+      wingPhase: 0,
       update(dt) {
-        // Flap rate scales with momentum — faster flying = faster flapping
-        const flapRate = duck ? 2.5 + duck.momentum * 2.5 : 4;
-        this.wingPhase = (this.wingPhase + dt * flapRate) % (Math.PI * 2);
-        this.bobPhase  = (this.bobPhase  + dt * 1.2)     % (Math.PI * 2);
-        // Bank damps toward duck.vx with a weighted spring so it feels weighty
-        const targetBank = duck ? duck.vx * 0.32 : 0;
-        this.bankAngle += (targetBank - this.bankAngle) * Math.min(dt * 4.5, 1);
+        this.wingPhase = (this.wingPhase + dt * 4) % (Math.PI * 2);
       },
     };
 
     // ─── Input ────────────────────────────────────────────────────────────────────
     function setupInput() {
       window.addEventListener('keydown', e => {
-        const tag = document.activeElement?.tagName;
-        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-        if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
         if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') input.left = true;
         if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') input.right = true;
       });
       window.addEventListener('keyup', e => {
-        const tag = document.activeElement?.tagName;
-        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-        if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
         if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') input.left = false;
         if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') input.right = false;
       });
@@ -586,152 +573,41 @@
     }
 
     function drawDuckPOV() {
-      const W = LOGICAL_W;
-      const H = LOGICAL_H;
+      // First-person duck silhouette: beak tip at center, wings flanking
+      const bx = VP_X;
+      const by = VP_Y + 60;
 
-      // Idle animations
-      const flap = Math.sin(Anim.wingPhase) * 20;    // vertical wing-tip oscillation
-      const bob  = Math.sin(Anim.bobPhase)  * 5;     // gentle body bob
-      const bank = Anim.bankAngle;                    // lateral tilt (+right, -left)
-
-      // Wing anchor line near the bottom edge of canvas
-      const baseY = H - 18 + bob;
-
-      // Left wing: anchor at bottom-left, tip in lower-left quadrant
-      const lAnchorX = W * 0.04;
-      const lAnchorY = baseY;
-      const lShoulderX = W * 0.20;
-      const lShoulderY = baseY - 65 - bank * 28;
-      const lTipX = W * 0.37;
-      const lTipY = baseY - 118 + flap - bank * 46;
-
-      // Right wing: mirror
-      const rAnchorX = W * 0.96;
-      const rAnchorY = baseY;
-      const rShoulderX = W * 0.80;
-      const rShoulderY = baseY - 65 + bank * 28;
-      const rTipX = W * 0.63;
-      const rTipY = baseY - 118 + flap + bank * 46;
+      // Wing flap using Anim.wingPhase
+      const flapOffset = Math.sin(Anim.wingPhase) * 14;
 
       ctx.save();
+      ctx.globalAlpha = 0.92;
 
-      // ── Motion blur streaks ──────────────────────────────────────────────────────
-      // Faint ellipse trail behind the banking-down wing tip
-      const bankMag = Math.abs(bank);
-      if (bankMag > 0.25) {
-        const blurAlpha = Math.min((bankMag - 0.25) / 0.6, 1) * 0.28;
-        ctx.globalAlpha = blurAlpha;
-        ctx.fillStyle = '#92400e';
-        if (bank > 0) {
-          // Banking right → right tip dips; blur trails behind it
-          ctx.beginPath();
-          ctx.ellipse(rTipX + 18, rTipY - 6, 30, 9, 0.25, 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          // Banking left → left tip dips
-          ctx.beginPath();
-          ctx.ellipse(lTipX - 18, lTipY - 6, 30, 9, -0.25, 0, Math.PI * 2);
-          ctx.fill();
-        }
-        ctx.globalAlpha = 1;
-      }
-
-      // ── Left wing ────────────────────────────────────────────────────────────────
-      // Primary feathers (outermost layer)
-      const lgPri = ctx.createLinearGradient(lAnchorX, lAnchorY, lTipX, lTipY);
-      lgPri.addColorStop(0, '#3d1505');
-      lgPri.addColorStop(0.55, '#78350f');
-      lgPri.addColorStop(1, '#a35215');
-      ctx.fillStyle = lgPri;
+      // Left wing
+      ctx.fillStyle = '#78350f';
       ctx.beginPath();
-      ctx.moveTo(lAnchorX, lAnchorY);
-      ctx.bezierCurveTo(lAnchorX + 18, lAnchorY - 38, lShoulderX - 18, lShoulderY - 12, lTipX, lTipY);
-      ctx.bezierCurveTo(lTipX + 28, lTipY + 22, lShoulderX + 12, lShoulderY + 28, lAnchorX + 32, lAnchorY + 6);
+      ctx.moveTo(bx - 20, by + 10);
+      ctx.quadraticCurveTo(bx - 90, by - 30 + flapOffset, bx - 140, by + 20 + flapOffset);
+      ctx.quadraticCurveTo(bx - 70, by + 45, bx - 20, by + 30);
       ctx.closePath();
       ctx.fill();
 
-      // Secondary feathers (inner layer, slightly lighter)
-      const lgSec = ctx.createLinearGradient(lAnchorX + 32, lAnchorY, lTipX - 18, lTipY + 12);
-      lgSec.addColorStop(0, '#5c2108');
-      lgSec.addColorStop(1, '#c2620a');
-      ctx.fillStyle = lgSec;
-      ctx.globalAlpha = 0.82;
+      // Right wing
       ctx.beginPath();
-      ctx.moveTo(lAnchorX + 32, lAnchorY - 4);
-      ctx.bezierCurveTo(lAnchorX + 52, lAnchorY - 32, lShoulderX + 2, lShoulderY - 4, lTipX - 14, lTipY + 9);
-      ctx.bezierCurveTo(lTipX + 10, lTipY + 24, lShoulderX + 22, lShoulderY + 20, lAnchorX + 58, lAnchorY + 3);
+      ctx.moveTo(bx + 20, by + 10);
+      ctx.quadraticCurveTo(bx + 90, by - 30 + flapOffset, bx + 140, by + 20 + flapOffset);
+      ctx.quadraticCurveTo(bx + 70, by + 45, bx + 20, by + 30);
       ctx.closePath();
       ctx.fill();
 
-      // Covert feathers (short inner rounded shapes for texture)
-      ctx.fillStyle = '#d97706';
-      ctx.globalAlpha = 0.50;
+      // Beak (orange triangle tip)
+      ctx.fillStyle = '#f97316';
       ctx.beginPath();
-      ctx.moveTo(lAnchorX + 58, lAnchorY - 6);
-      ctx.bezierCurveTo(lAnchorX + 82, lAnchorY - 38, lShoulderX + 8, lShoulderY + 2, lShoulderX + 28, lShoulderY + 14);
-      ctx.bezierCurveTo(lShoulderX + 18, lShoulderY + 28, lAnchorX + 84, lAnchorY + 10, lAnchorX + 58, lAnchorY - 6);
+      ctx.moveTo(bx, by - 8);
+      ctx.lineTo(bx - 10, by + 8);
+      ctx.lineTo(bx + 10, by + 8);
       ctx.closePath();
       ctx.fill();
-      ctx.globalAlpha = 1;
-
-      // ── Right wing (mirrored geometry) ───────────────────────────────────────────
-      const rgPri = ctx.createLinearGradient(rAnchorX, rAnchorY, rTipX, rTipY);
-      rgPri.addColorStop(0, '#3d1505');
-      rgPri.addColorStop(0.55, '#78350f');
-      rgPri.addColorStop(1, '#a35215');
-      ctx.fillStyle = rgPri;
-      ctx.beginPath();
-      ctx.moveTo(rAnchorX, rAnchorY);
-      ctx.bezierCurveTo(rAnchorX - 18, rAnchorY - 38, rShoulderX + 18, rShoulderY - 12, rTipX, rTipY);
-      ctx.bezierCurveTo(rTipX - 28, rTipY + 22, rShoulderX - 12, rShoulderY + 28, rAnchorX - 32, rAnchorY + 6);
-      ctx.closePath();
-      ctx.fill();
-
-      const rgSec = ctx.createLinearGradient(rAnchorX - 32, rAnchorY, rTipX + 18, rTipY + 12);
-      rgSec.addColorStop(0, '#5c2108');
-      rgSec.addColorStop(1, '#c2620a');
-      ctx.fillStyle = rgSec;
-      ctx.globalAlpha = 0.82;
-      ctx.beginPath();
-      ctx.moveTo(rAnchorX - 32, rAnchorY - 4);
-      ctx.bezierCurveTo(rAnchorX - 52, rAnchorY - 32, rShoulderX - 2, rShoulderY - 4, rTipX + 14, rTipY + 9);
-      ctx.bezierCurveTo(rTipX - 10, rTipY + 24, rShoulderX - 22, rShoulderY + 20, rAnchorX - 58, rAnchorY + 3);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.fillStyle = '#d97706';
-      ctx.globalAlpha = 0.50;
-      ctx.beginPath();
-      ctx.moveTo(rAnchorX - 58, rAnchorY - 6);
-      ctx.bezierCurveTo(rAnchorX - 82, rAnchorY - 38, rShoulderX - 8, rShoulderY + 2, rShoulderX - 28, rShoulderY + 14);
-      ctx.bezierCurveTo(rShoulderX - 18, rShoulderY + 28, rAnchorX - 84, rAnchorY + 10, rAnchorX - 58, rAnchorY - 6);
-      ctx.closePath();
-      ctx.fill();
-      ctx.globalAlpha = 1;
-
-      // ── Beak ─────────────────────────────────────────────────────────────────────
-      // Subtle off-yellow hint peeking from the very bottom edge
-      const bkX = W / 2;
-      const bkY = H - 12 + bob;
-      const bkGrad = ctx.createLinearGradient(bkX, bkY - 26, bkX, bkY + 4);
-      bkGrad.addColorStop(0, '#e8c84a');
-      bkGrad.addColorStop(1, '#c49a10');
-      ctx.fillStyle = bkGrad;
-      ctx.globalAlpha = 0.80;
-      ctx.beginPath();
-      ctx.moveTo(bkX, bkY - 26);
-      ctx.bezierCurveTo(bkX - 9, bkY - 16, bkX - 13, bkY - 5, bkX - 8, bkY + 3);
-      ctx.bezierCurveTo(bkX - 2, bkY + 7, bkX + 2, bkY + 7, bkX + 8, bkY + 3);
-      ctx.bezierCurveTo(bkX + 13, bkY - 5, bkX + 9, bkY - 16, bkX, bkY - 26);
-      ctx.fill();
-      // Upper/lower beak split line
-      ctx.globalAlpha = 0.45;
-      ctx.strokeStyle = '#9a6e06';
-      ctx.lineWidth = 1.2;
-      ctx.beginPath();
-      ctx.moveTo(bkX - 12, bkY - 8);
-      ctx.bezierCurveTo(bkX - 4, bkY - 3, bkX + 4, bkY - 3, bkX + 12, bkY - 8);
-      ctx.stroke();
 
       ctx.restore();
     }
@@ -809,8 +685,8 @@
       drawSky();
       drawGround();
       drawRings();
+      drawDuckPOV();
       drawParticles();
-      drawDuckPOV();    // screen-space last, after all world content
       drawInputHints();
       if (state === STATE.PLAYING) drawHUD();
     }
