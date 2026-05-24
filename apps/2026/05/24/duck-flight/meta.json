@@ -1,0 +1,30 @@
+{
+  "id": "duck-flight",
+  "name": "Duck Flight",
+  "shortDescription": "Fly as a duck in first-person through a world of oncoming rings. Steer left and right to thread each ring — miss too many and your momentum crashes.",
+  "category": "Games",
+  "tags": ["3d", "first-person", "flying", "duck", "rings", "arcade", "canvas", "momentum"],
+  "thumbnail": "thumbnail.svg",
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "createdAt": "2026-05-24T19:50:18Z",
+  "status": "active",
+  "maxScore": 500,
+  "suggestion": {
+    "issueNumber": 458,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/458",
+    "prompt": "Build a single-file HTML5 game, Duck Flight. Mobile-first, 1st-person through-the-eyes-of-a-duck flying experience. Rings spawn far away and approach the camera. Player steers the duck left/right to thread through ring centers. Momentum system: starts at 1.0, drains passively, drops on miss, rises on good pass — hit zero and it's game over. First-person duck silhouette: beak tip and flapping wings at bottom. 3D perspective projection with fog. Score on leaderboard.",
+    "requestor": "Jeff Holst"
+  },
+  "generation": {
+    "agentName": "Claude Code",
+    "llmModel": "claude-sonnet-4-6",
+    "startTime": "2026-05-24T19:50:18Z",
+    "endTime": "2026-05-24T20:10:00Z",
+    "totalTokensIn": 7800,
+    "totalTokensOut": 18200,
+    "runId": "run-20260524T195018Z-6e28cd",
+    "notes": "Scaffold build — full architecture laid down for future improvement iterations. 3D perspective projection with FOCAL_LEN=300, VP_Y at 44% height. Rings approach from SPAWN_Z=3000 at 900 units/sec base, speed scales with momentum. Duck steers laterally in world range -1.6 to +1.6. Momentum system wired (passive drain, +0.12 pass, -0.22 miss). Particle system, audio stub, and animation stub all scaffolded with named module objects. Difficulty scaler increases speed +90 and tightens interval -0.15 every 30s. maxScore=500 reflects typical good-run ceiling for the scaffold difficulty."
+  },
+  "leaderboard": true
+}
