@@ -328,6 +328,16 @@
         "implementedAt": "2026-05-23T22:55:14Z",
         "agentName": "Claude Code",
         "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 490,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/490",
+        "runId": "run-20260525T180738Z-a9d3e5",
+        "description": "Replaced hold/charge relaunch with instant tap-to-launch (tap or Space); drew held ball visually on paddle; added two-ball penalty (second ball landing while one is held costs a life + red particles); fixed advanceBall gate-glitch by resolving all segment transitions in a while-loop so fast balls never skip segments; updated start screen instructions.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-05-25T18:16:58Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
       }
     ],
     "allowImprovements": true,
@@ -343,6 +353,11 @@
         "runId": "run-20260523T225514Z-d2c20a",
         "path": "backups/run-20260523T225514Z-d2c20a/index.html",
         "url": "/apps/2026/05/23/simmotion/backups/run-20260523T225514Z-d2c20a/index.html"
+      },
+      {
+        "runId": "run-20260525T180738Z-a9d3e5",
+        "path": "backups/run-20260525T180738Z-a9d3e5/index.html",
+        "url": "/apps/2026/05/23/simmotion/backups/run-20260525T180738Z-a9d3e5/index.html"
       }
     ]
   },
