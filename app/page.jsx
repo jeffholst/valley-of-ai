@@ -236,12 +236,27 @@ export default function HomePage() {
   const trendingApps = useMemo(() => {
     const now = Date.now();
     return appsData
-      .map((app) => ({
-        app,
-        score: trendingScore(app.createdAt, voteCounts[app.id]?.recentNet ?? 0, now),
-      }))
-      .filter(({ score }) => score > 0)
-      .sort((a, b) => b.score - a.score)
+      .map((app) => {
+        const counts = voteCounts[app.id] ?? {};
+        return {
+          app,
+          score: trendingScore(app.createdAt, counts.recentNet ?? 0, now),
+          recentNet: counts.recentNet ?? 0,
+          net: counts.net ?? 0,
+        };
+      })
+      .sort((a, b) => {
+        if (b.score !== a.score) {
+          return b.score - a.score;
+        }
+        if (b.recentNet !== a.recentNet) {
+          return b.recentNet - a.recentNet;
+        }
+        if (b.net !== a.net) {
+          return b.net - a.net;
+        }
+        return new Date(b.app.createdAt) - new Date(a.app.createdAt);
+      })
       .slice(0, 6)
       .map(({ app }) => app);
   }, [voteCounts]);
