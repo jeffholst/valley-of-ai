@@ -484,31 +484,22 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <ap
 
 2. **Stage modified files explicitly.** Only include files that actually changed. Do NOT use `git add .` or `git add -A`.
 
-   ⚠️ **The backup folder created in Step 3 MUST be staged — do not skip it.** It is the pre-improvement snapshot and belongs in the PR.
+   ⚠️ **Run this entire block as one shell chain.** The backup check and commit are joined with `&&` so a missing backup aborts the commit before it happens. Do not split these into separate commands or rewrite the git add list from memory — copy the template and substitute the placeholders.
 
    ```bash
-   # Always stage — the backup folder is required:
-   git add apps/<app-path>/backups/<runId>/
-
-   # Always stage — core improvement files:
-   git add apps/<app-path>/index.html \
-           apps/<app-path>/meta.json
-
-   # Only if thumbnail was updated in Step 5:
-   git add apps/<app-path>/thumbnail.svg
-
-   # Only if data/apps.json changed (generate:apps doesn't always update it):
-   git diff --quiet data/apps.json || git add data/apps.json
-
-   # Verify backup folder is staged before committing:
-   git diff --cached --stat | grep "backups/" || { echo "ERROR: backup files not staged"; exit 1; }
-
-   git commit -m "improve: <app-id> — <one-line description of change> [skip deploy]"
-
-   # Verify committed files include the backup snapshot for this run:
-   git show --name-only --format="" HEAD | grep "^apps/<app-path>/backups/<runId>/" \
-     || { echo "ERROR: backup files not included in commit"; exit 1; }
+   git add apps/<app-path>/backups/<runId>/ \
+           apps/<app-path>/index.html \
+           apps/<app-path>/meta.json && \
+   git diff --quiet data/apps.json || git add data/apps.json && \
+   git diff --cached --stat | grep -q "backups/" \
+     || { echo "ERROR: backup folder not staged — aborting commit"; exit 1; } && \
+   git commit -m "improve: <app-id> — <one-line description of change> [skip deploy]" && \
+   git show --name-only --format="" HEAD | grep -q "backups/<runId>/" \
+     || { echo "ERROR: backup files missing from commit"; exit 1; }
    ```
+
+   - If thumbnail was updated in Step 5, add `apps/<app-path>/thumbnail.svg` to the first `git add` line before running the chain.
+   - **MUST include `[skip deploy]` in commit message.**
 
    - **MUST include `[skip deploy]` in commit message.**
    - Capture the commit SHA.
