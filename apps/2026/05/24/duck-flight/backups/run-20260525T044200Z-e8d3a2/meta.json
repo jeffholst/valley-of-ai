@@ -77,16 +77,6 @@
       "implementedAt": "2026-05-25T04:31:41Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
-    },
-    {
-      "issueNumber": 468,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/468",
-      "runId": "run-20260525T044200Z-e8d3a2",
-      "description": "Juice pass: pass-through burst upgraded to 28 glowing+stretching particles; near-miss sparkle trail (200ms) when in outer ring; speed lines radiating from VP at high momentum; pulsing red stall-warning vignette below 30% momentum with slower wing flap; GAMEOVER screen shake + particle drift + fog deepening; floating +10 score popups on each clear.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-05-25T04:42:00Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6"
     }
   ]
 }

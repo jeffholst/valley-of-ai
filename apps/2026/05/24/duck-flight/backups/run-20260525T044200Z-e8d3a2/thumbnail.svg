@@ -158,17 +158,6 @@
           fill="none" stroke="rgba(245,201,122,0.18)" stroke-width="6"/>
   </g>
 
-  <!-- Speed lines radiating from vanishing point (high momentum) -->
-  <g opacity="0.18" stroke="white" stroke-linecap="round">
-    <line x1="400" y1="225" x2="308" y2="155" stroke-width="1.0"/>
-    <line x1="400" y1="225" x2="264" y2="210" stroke-width="0.8"/>
-    <line x1="400" y1="225" x2="318" y2="100" stroke-width="0.6"/>
-    <line x1="400" y1="225" x2="492" y2="148" stroke-width="1.0"/>
-    <line x1="400" y1="225" x2="536" y2="205" stroke-width="0.8"/>
-    <line x1="400" y1="225" x2="488" y2="102" stroke-width="0.6"/>
-    <line x1="400" y1="225" x2="400" y2="118" stroke-width="0.7"/>
-  </g>
-
   <!-- Pass particles -->
   <g opacity="0.88">
     <circle cx="302" cy="152" r="4" fill="#f5c97a"/>
@@ -208,11 +197,6 @@
   <path d="M 400 420  C 391 428 387 437 392 443  C 396 447 404 447 408 443  C 413 437 409 428 400 420  Z"
         fill="url(#beak)" opacity="0.82"/>
   <path d="M 388 436  C 394 433 406 433 412 436" fill="none" stroke="#9a6e06" stroke-width="1.2" opacity="0.42"/>
-
-  <!-- Score popup +10 floating up from cleared shape -->
-  <text x="350" y="108" font-family="system-ui,sans-serif" font-weight="700" font-size="18"
-        fill="#fbbf24" text-anchor="middle" opacity="0.85"
-        stroke="rgba(0,0,0,0.45)" stroke-width="2" paint-order="stroke">+10</text>
 
   <!-- Vignette overlay -->
   <rect x="0" y="0" width="800" height="450" fill="url(#vignette)"/>
