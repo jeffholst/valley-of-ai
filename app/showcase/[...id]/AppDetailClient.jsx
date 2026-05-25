@@ -68,93 +68,58 @@ export default function AppDetailClient({ app, id, similarApps }) {
         </Link>
 
         {/* Hero Image — click to launch */}
-        <a
-          href={app.appPath}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="card overflow-hidden mb-8 block group/hero focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-        >
-          <div className="aspect-video bg-gradient-to-br from-primary-400 to-primary-600 relative">
-            {app.thumbnailUrl && (
-              <img
-                src={app.thumbnailUrl}
-                alt={`${app.name} gameplay screenshot showing bricks and paddle`}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                }}
-              />
-            )}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-6xl opacity-30">🤖</span>
-            </div>
-            {/* Play overlay */}
-            <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover/hero:bg-black/30 group-focus-visible/hero:bg-black/30 transition-colors duration-200">
-              <div className="flex flex-col items-center gap-2 opacity-0 group-hover/hero:opacity-100 group-focus-visible/hero:opacity-100 transition-opacity duration-200">
-                <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
-                  <svg
-                    className="w-7 h-7 text-primary-600 ml-1"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </div>
-                <span className="text-white font-semibold text-sm drop-shadow">Launch App</span>
-              </div>
-            </div>
-          </div>
-        </a>
-
-        {/* App Info */}
-        <div id="app-info" className="mb-8">
-          <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{app.name}</h1>
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="inline-block px-3 py-1 text-sm font-medium bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 rounded-full">
-                  {app.category}
-                </span>
-                <VoteButtons
-                  upvoteCount={upvoteCount}
-                  downvoteCount={downvoteCount}
-                  myVote={myVote}
-                  isLoading={isLoading}
-                  isVoting={isVoting}
-                  onVote={vote}
-                  size="md"
+        <div className="mb-8">
+          <a
+            href={selectedVersionUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="card overflow-hidden block group/hero focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+          >
+            <div className="aspect-video bg-gradient-to-br from-primary-400 to-primary-600 relative">
+              {app.thumbnailUrl && (
+                <img
+                  src={app.thumbnailUrl}
+                  alt={`Preview of ${app.name}`}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
                 />
-                {app.allowImprovements !== false ? (
-                  <Link
-                    href={`/improve?app=${encodeURIComponent(id)}&name=${encodeURIComponent(app.name)}`}
-                    className="inline-flex items-center gap-0.5 text-[0.72rem] font-semibold tracking-wide text-slate-900 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full px-2 py-0.5 whitespace-nowrap transition-transform hover:scale-105"
-                  >
-                    💡 Improve
-                  </Link>
-                ) : (
-                  <span
-                    className="inline-flex items-center gap-0.5 text-[0.72rem] font-semibold tracking-wide text-slate-500 bg-slate-200 dark:bg-slate-700 dark:text-slate-400 rounded-full px-2 py-0.5 whitespace-nowrap"
-                    title="Improvements are disabled for this app"
-                  >
-                    🔒 Locked
-                  </span>
-                )}
-                <span className="text-gray-500 dark:text-gray-400">{formattedDate}</span>
+              )}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-6xl opacity-30">🤖</span>
+              </div>
+              {/* Play overlay */}
+              <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover/hero:bg-black/30 group-focus-visible/hero:bg-black/30 transition-colors duration-200">
+                <div className="flex flex-col items-center gap-2 opacity-0 group-hover/hero:opacity-100 group-focus-visible/hero:opacity-100 transition-opacity duration-200">
+                  <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
+                    <svg
+                      className="w-7 h-7 text-primary-600 ml-1"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                  <span className="text-white font-semibold text-sm drop-shadow">Launch App</span>
+                </div>
               </div>
             </div>
+          </a>
 
-            <div className="flex items-center gap-2">
-              <a
-                href={selectedVersionUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="animate-pulse-ring relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white text-sm bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-600 hover:via-teal-500 hover:to-cyan-600 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-              >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-                Launch App
-              </a>
+          <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <a
+              href={selectedVersionUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="animate-pulse-ring relative inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white text-sm bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-600 hover:via-teal-500 hover:to-cyan-600 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-[1.02]"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              Launch App
+            </a>
+            <div className="flex flex-wrap items-center gap-2 sm:justify-end">
               <ShareButton title={app.name} text={shareText} />
               {app.backups && app.backups.length > 0 && (
                 <select
@@ -171,6 +136,43 @@ export default function AppDetailClient({ app, id, similarApps }) {
                   ))}
                 </select>
               )}
+            </div>
+          </div>
+        </div>
+
+        {/* App Info */}
+        <div id="app-info" className="mb-8">
+          <div className="mb-4">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{app.name}</h1>
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="inline-block px-3 py-1 text-sm font-medium bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 rounded-full">
+                {app.category}
+              </span>
+              <VoteButtons
+                upvoteCount={upvoteCount}
+                downvoteCount={downvoteCount}
+                myVote={myVote}
+                isLoading={isLoading}
+                isVoting={isVoting}
+                onVote={vote}
+                size="md"
+              />
+              {app.allowImprovements !== false ? (
+                <Link
+                  href={`/improve?app=${encodeURIComponent(id)}&name=${encodeURIComponent(app.name)}`}
+                  className="inline-flex items-center gap-0.5 text-[0.72rem] font-semibold tracking-wide text-slate-900 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full px-2 py-0.5 whitespace-nowrap transition-transform hover:scale-105"
+                >
+                  💡 Improve
+                </Link>
+              ) : (
+                <span
+                  className="inline-flex items-center gap-0.5 text-[0.72rem] font-semibold tracking-wide text-slate-500 bg-slate-200 dark:bg-slate-700 dark:text-slate-400 rounded-full px-2 py-0.5 whitespace-nowrap"
+                  title="Improvements are disabled for this app"
+                >
+                  🔒 Locked
+                </span>
+              )}
+              <span className="text-gray-500 dark:text-gray-400">{formattedDate}</span>
             </div>
           </div>
 
