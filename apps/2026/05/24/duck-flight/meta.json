@@ -97,6 +97,16 @@
       "implementedAt": "2026-05-25T05:10:00Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
+    },
+    {
+      "issueNumber": 470,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/470",
+      "runId": "run-20260525T051200Z-a624d9",
+      "description": "Mobile polish and performance final pass: DPR capped at 2 for retina performance; touch-action: none on #game-wrap and canvas; touchstart preventDefault with passive: false; visibilitychange handler pauses/resumes loop with lastTime reset to prevent dt spike; haptics via navigator.vibrate (10ms on pass-through, 60ms on game over); input state cleared on tab hide; drawShapes() sort in-place (no per-frame array allocation); DUCK_ACCEL 4.2→5.0 for snappier mobile steering; MOMENTUM_DRAIN -0.012→-0.010 for slightly more forgiving passive drain.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-05-25T05:20:00Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
     }
   ]
 }

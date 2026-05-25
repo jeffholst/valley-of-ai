@@ -57,12 +57,14 @@
         align-items: center;
         justify-content: center;
         background: #000;
+        touch-action: none;
       }
 
       canvas {
         display: block;
         image-rendering: pixelated;
         image-rendering: crisp-edges;
+        touch-action: none;
       }
 
     </style>
@@ -91,7 +93,7 @@
 
     const DUCK_X_MIN = -1.6;        // world units lateral range
     const DUCK_X_MAX = 1.6;
-    const DUCK_ACCEL = 4.2;         // lateral acceleration (world units/sec²)
+    const DUCK_ACCEL = 5.0;         // lateral acceleration (world units/sec²)
     const DUCK_FRICTION = 6.0;      // passive friction
 
     const BASE_SPEED = 900;         // ring approach speed (world units/sec)
@@ -102,7 +104,7 @@
     const MOMENTUM_MIN = 0.0;
     const MOMENTUM_PASS = 0.12;     // gain on good pass
     const MOMENTUM_MISS = -0.22;    // loss on miss
-    const MOMENTUM_DRAIN = -0.012;  // passive drain per second
+    const MOMENTUM_DRAIN = -0.010;  // passive drain per second
 
     const MAX_MISSES = 5;           // total misses before momentum bottoms out (tracked separately)
 
@@ -153,7 +155,7 @@
       const ww = wrap.clientWidth;
       const wh = wrap.clientHeight;
       scale = Math.min(ww / LOGICAL_W, wh / LOGICAL_H);
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.floor(LOGICAL_W * dpr);
       canvas.height = Math.floor(LOGICAL_H * dpr);
       canvas.style.width = Math.floor(LOGICAL_W * scale) + 'px';
@@ -382,6 +384,9 @@
         input.pointerLeft = false;
         input.pointerRight = false;
       });
+
+      // Belt-and-suspenders: prevent scroll/zoom on touch devices
+      canvas.addEventListener('touchstart', e => e.preventDefault(), { passive: false });
     }
 
     function isLeft() { return input.left || input.pointerLeft; }
@@ -439,6 +444,7 @@
             const { sx, sy } = project(shape.wx, shape.wy, PASS_Z);
             spawnParticles(sx, sy, shape.color, 28, { glow: true, stretch: true });
             popups.push({ x: sx, y: sy, vy: -55, life: 1.0 });
+            navigator.vibrate && navigator.vibrate(10);
             Audio.play('pass');
           } else {
             // Near-miss: in outer ring but not through the opening
@@ -715,9 +721,8 @@
     }
 
     function drawShapes() {
-      // Sort back-to-front (painter's algorithm) so near shapes occlude far ones
-      const sorted = [...shapes].sort((a, b) => b.wz - a.wz);
-      for (const shape of sorted) drawShape(shape);
+      shapes.sort((a, b) => b.wz - a.wz);
+      for (const shape of shapes) drawShape(shape);
     }
 
     function drawDuckPOV() {
@@ -1280,6 +1285,7 @@
 
     function endGame() {
       state = STATE.GAMEOVER;
+      navigator.vibrate && navigator.vibrate(60);
 
       if (duck.score > bestScore) {
         bestScore = duck.score;
@@ -1296,6 +1302,17 @@
 
     // ─── Boot ─────────────────────────────────────────────────────────────────────
     setupInput();
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (animId) { cancelAnimationFrame(animId); animId = null; }
+        input.left = input.right = input.pointerLeft = input.pointerRight = false;
+      } else {
+        lastTime = performance.now(); // clamp dt to prevent time jump on resume
+        if (!animId) animId = requestAnimationFrame(loop);
+      }
+    });
+
     lastTime = performance.now();
     animId = requestAnimationFrame(loop);
     </script>
