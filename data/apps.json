@@ -130,6 +130,16 @@
         "implementedAt": "2026-05-25T15:21:07Z",
         "agentName": "Codex",
         "llmModel": "GPT-5"
+      },
+      {
+        "issueNumber": 485,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/485",
+        "runId": "run-20260525T153152Z-30857b",
+        "description": "Amplified Duck Flight banking with a slower spring, larger velocity-driven bank target, stronger wing tilt, and rolled world geometry during banks.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-25T15:31:52Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5"
       }
     ],
     "allowImprovements": true,
@@ -175,6 +185,11 @@
         "runId": "run-20260525T152107Z-38c73a",
         "path": "backups/run-20260525T152107Z-38c73a/index.html",
         "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T152107Z-38c73a/index.html"
+      },
+      {
+        "runId": "run-20260525T153152Z-30857b",
+        "path": "backups/run-20260525T153152Z-30857b/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T153152Z-30857b/index.html"
       }
     ]
   },
