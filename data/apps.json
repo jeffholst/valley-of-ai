@@ -170,6 +170,16 @@
         "implementedAt": "2026-05-25T17:41:44Z",
         "agentName": "Claude Code",
         "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 498,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/498",
+        "runId": "run-20260525T223606Z-119f3b",
+        "description": "Decoupled mobile touch input into left steer, center flap, and right steer zones, raised the starting altitude, and added a short opening grace period with matching first-run input hints.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-05-25T22:36:06Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5"
       }
     ],
     "allowImprovements": true,
@@ -235,6 +245,11 @@
         "runId": "run-20260525T174144Z-f8b3c2",
         "path": "backups/run-20260525T174144Z-f8b3c2/index.html",
         "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T174144Z-f8b3c2/index.html"
+      },
+      {
+        "runId": "run-20260525T223606Z-119f3b",
+        "path": "backups/run-20260525T223606Z-119f3b/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T223606Z-119f3b/index.html"
       }
     ]
   },

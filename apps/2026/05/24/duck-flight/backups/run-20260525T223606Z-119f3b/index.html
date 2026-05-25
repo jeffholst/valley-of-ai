@@ -110,7 +110,6 @@
     const GRAVITY = 5.5;          // downward acceleration (world units/sec²)
     const DUCK_WY_MIN = -0.85;    // altitude floor — reaching it triggers stall
     const DUCK_WY_MAX = 2.8;      // altitude ceiling
-    const START_GRACE_DURATION = 1.1; // seconds before gravity starts pulling the duck down
 
     const MAX_MISSES = 5;           // total misses before momentum bottoms out (tracked separately)
 
@@ -142,7 +141,6 @@
     let shakeAmt = 0;        // current screen-shake amplitude in logical pixels
     let fogDepthMod = 1.0;   // fog density multiplier (1=normal, ramps up during stall)
     let popups = [];         // score popup text objects {x, y, vy, life}
-    let startGraceTimer = 0; // brief safe opening so mobile players can orient before flapping
     let bestScore = parseInt(localStorage.getItem('duckFlight_best') || '0', 10);
 
     // Input state
@@ -237,7 +235,7 @@
       return {
         x: 0,
         vx: 0,
-        wy: 1.25, // starting altitude (above ground plane at -0.9)
+        wy: 0.5,  // starting altitude (above ground plane at -0.9)
         vy: 0,    // vertical velocity
         momentum: MOMENTUM_START,
         score: 0,
@@ -372,24 +370,23 @@
         if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') input.right = false;
       });
 
-      function updatePointerZone(e, allowFlap) {
-        const rect = canvas.getBoundingClientRect();
-        const cx = (e.clientX - rect.left) / scale;
-
-        input.pointerLeft = cx < LOGICAL_W * 0.33;
-        input.pointerRight = cx >= LOGICAL_W * 0.67;
-        if (allowFlap && !input.pointerLeft && !input.pointerRight) {
-          input.flapPending = true;
-        }
-      }
-
       canvas.addEventListener('pointerdown', e => {
         if (state === STATE.MENU || state === STATE.GAMEOVER) { startGame(); return; }
-        if (state === STATE.PLAYING) updatePointerZone(e, true);
+        if (state === STATE.PLAYING) input.flapPending = true;
+        const rect = canvas.getBoundingClientRect();
+        const cx = (e.clientX - rect.left) / scale;
+        if (cx < LOGICAL_W / 2) {
+          input.pointerLeft = true;
+        } else {
+          input.pointerRight = true;
+        }
       });
       canvas.addEventListener('pointermove', e => {
         if (e.buttons === 0) return;
-        updatePointerZone(e, false);
+        const rect = canvas.getBoundingClientRect();
+        const cx = (e.clientX - rect.left) / scale;
+        input.pointerLeft = cx < LOGICAL_W / 2;
+        input.pointerRight = cx >= LOGICAL_W / 2;
       });
       canvas.addEventListener('pointerup', () => {
         input.pointerLeft = false;
@@ -414,13 +411,8 @@
         duck.vy = FLAP_VELOCITY;
         input.flapPending = false;
       }
-      // Gravity starts after a short opening grace period so mobile players can orient.
-      if (startGraceTimer > 0 && duck.vy <= 0) {
-        startGraceTimer = Math.max(0, startGraceTimer - dt);
-        duck.vy = 0;
-      } else {
-        duck.vy -= GRAVITY * dt;
-      }
+      // Gravity pulls duck downward continuously
+      duck.vy -= GRAVITY * dt;
       duck.wy = Math.min(DUCK_WY_MAX, duck.wy + duck.vy * dt);
       // Ground crash — zero momentum triggers the stall state
       if (duck.wy <= DUCK_WY_MIN) {
@@ -1136,21 +1128,19 @@
       ctx.save();
       ctx.globalAlpha = isLeft() ? 0.12 : 0.04;
       ctx.fillStyle = '#fff';
-      ctx.fillRect(0, 0, LOGICAL_W * 0.33, LOGICAL_H);
+      ctx.fillRect(0, 0, LOGICAL_W / 2, LOGICAL_H);
 
       ctx.globalAlpha = isRight() ? 0.12 : 0.04;
-      ctx.fillRect(LOGICAL_W * 0.67, 0, LOGICAL_W * 0.33, LOGICAL_H);
+      ctx.fillRect(LOGICAL_W / 2, 0, LOGICAL_W / 2, LOGICAL_H);
 
-      // Three-zone touch labels, fades out after a few seconds of play.
+      // Tap-to-flap hint at bottom center, fades out after a few seconds of play
       if (duck && gameTime < 4) {
         const fade = Math.max(0, 1 - gameTime / 3.5);
         ctx.globalAlpha = fade * 0.55;
         ctx.fillStyle = '#fff';
         ctx.font = '13px system-ui, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('← steer', LOGICAL_W * 0.165, LOGICAL_H - 30);
-        ctx.fillText('tap flap', LOGICAL_W * 0.5, LOGICAL_H - 30);
-        ctx.fillText('steer →', LOGICAL_W * 0.835, LOGICAL_H - 30);
+        ctx.fillText('Tap anywhere to flap!', LOGICAL_W / 2, LOGICAL_H - 30);
       }
 
       ctx.restore();
@@ -1361,7 +1351,6 @@
       shakeAmt = 0;
       fogDepthMod = 1.0;
       popups = [];
-      startGraceTimer = START_GRACE_DURATION;
       input.flapPending = false;
       state = STATE.PLAYING;
       lastTime = performance.now();

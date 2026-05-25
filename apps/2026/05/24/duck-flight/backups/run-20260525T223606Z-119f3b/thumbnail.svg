@@ -231,12 +231,6 @@
   <rect x="224" y="14" width="352" height="8" rx="4" fill="rgba(0,0,0,0.52)"/>
   <rect x="224" y="14" width="270" height="8" rx="4" fill="#34d399"/>
 
-  <!-- Three-zone mobile input hint -->
-  <g font-family="system-ui,sans-serif" font-size="13" font-weight="600" fill="rgba(255,255,255,0.42)" text-anchor="middle">
-    <rect x="0" y="414" width="264" height="36" fill="rgba(255,255,255,0.035)"/>
-    <rect x="536" y="414" width="264" height="36" fill="rgba(255,255,255,0.035)"/>
-    <text x="132" y="438">← steer</text>
-    <text x="400" y="438">tap flap</text>
-    <text x="668" y="438">steer →</text>
-  </g>
+  <!-- Title hint -->
+  <text x="400" y="444" font-family="system-ui,sans-serif" font-size="13" fill="rgba(255,255,255,0.25)" text-anchor="middle">Duck Flight</text>
 </svg>
