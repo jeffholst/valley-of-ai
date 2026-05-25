@@ -415,8 +415,10 @@
         input.flapPending = false;
       }
       // Gravity starts after a short opening grace period so mobile players can orient.
-      if (startGraceTimer > 0 && duck.vy <= 0) {
+      if (startGraceTimer > 0) {
         startGraceTimer = Math.max(0, startGraceTimer - dt);
+      }
+      if (startGraceTimer > 0 && duck.vy <= 0) {
         duck.vy = 0;
       } else {
         duck.vy -= GRAVITY * dt;
