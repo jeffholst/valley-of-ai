@@ -60,7 +60,7 @@
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-turnstile": "^1.1.5",
-    "stripe": "^22.0.1"
+    "stripe": "^22.1.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
