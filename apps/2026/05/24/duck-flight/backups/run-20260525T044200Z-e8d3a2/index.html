@@ -187,10 +187,6 @@
     let gameTime = 0;        // seconds spent in PLAYING state (drives color cycle)
     let colorCycleT = 0;     // 0 = golden-hour, 1 = dusk (shifts over 60s of play)
     let lastCycleT = -1;     // last colorCycleT at which sky/ground grad caches were built
-    let nearMissTimer = 0;   // seconds remaining for near-miss sparkle emission
-    let shakeAmt = 0;        // current screen-shake amplitude in logical pixels
-    let fogDepthMod = 1.0;   // fog density multiplier (1=normal, ramps up during stall)
-    let popups = [];         // score popup text objects {x, y, vy, life}
 
     // Input state
     const input = {
@@ -288,23 +284,19 @@
       };
     }
 
-    // ─── Particle System ──────────────────────────────────────────────────────────
-    function spawnParticles(sx, sy, color, count, opts = {}) {
+    // ─── Particle System (stub — scaffold for future improvements) ────────────────
+    function spawnParticles(sx, sy, color, count) {
       for (let i = 0; i < count; i++) {
         const angle = Math.random() * Math.PI * 2;
-        const speed = opts.sparkle
-          ? 30 + Math.random() * 60
-          : 60 + Math.random() * 120;
+        const speed = 60 + Math.random() * 120;
         particles.push({
           x: sx, y: sy,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
           life: 1.0,
-          decay: opts.sparkle ? 2.8 + Math.random() * 1.2 : 1.2 + Math.random() * 0.8,
-          r: opts.sparkle ? 1 + Math.random() * 1.5 : 2 + Math.random() * 3,
+          decay: 1.2 + Math.random() * 0.8,
+          r: 2 + Math.random() * 3,
           color,
-          glow: !!opts.glow,
-          stretch: !!opts.stretch,
         });
       }
     }
@@ -320,54 +312,14 @@
       }
     }
 
-    // Emit sparkle trail near duck wings during near-miss window.
-    function updateNearMiss(dt) {
-      if (nearMissTimer <= 0) return;
-      nearMissTimer -= dt;
-      if (Math.random() < 0.55) {
-        const side = Math.random() < 0.5 ? -1 : 1;
-        const sx = VP_X + side * (38 + Math.random() * 52);
-        const sy = LOGICAL_H - 50 - Math.random() * 75;
-        spawnParticles(sx, sy, '#ffffff', 1, { sparkle: true });
-      }
-    }
-
-    // Advance and expire floating score popups.
-    function updatePopups(dt) {
-      for (let i = popups.length - 1; i >= 0; i--) {
-        const p = popups[i];
-        p.y += p.vy * dt;
-        p.life -= dt * 1.8;
-        if (p.life <= 0) popups.splice(i, 1);
-      }
-    }
-
     function drawParticles() {
       for (const p of particles) {
         ctx.save();
         ctx.globalAlpha = Math.max(0, p.life);
-        if (p.stretch && (Math.abs(p.vx) + Math.abs(p.vy) > 30)) {
-          // Motion-blur trail drawn as a short line
-          ctx.strokeStyle = p.color;
-          ctx.lineWidth = p.r * 0.65;
-          ctx.lineCap = 'round';
-          ctx.beginPath();
-          ctx.moveTo(p.x - p.vx * 0.04, p.y - p.vy * 0.04);
-          ctx.lineTo(p.x, p.y);
-          ctx.stroke();
-        } else {
-          ctx.fillStyle = p.color;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fill();
-        }
-        if (p.glow) {
-          ctx.globalAlpha = Math.max(0, p.life * 0.30);
-          ctx.fillStyle = p.color;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r * 2.8, 0, Math.PI * 2);
-          ctx.fill();
-        }
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
         ctx.restore();
       }
     }
@@ -384,8 +336,8 @@
       bobPhase: 0,    // drives gentle body bob
       bankAngle: 0,   // smoothed lateral tilt (damped from duck.vx)
       update(dt) {
-        // Flap rate scales with momentum — visibly slow during stall warning
-        const flapRate = duck ? 1.5 + duck.momentum * 4.0 : 4;
+        // Flap rate scales with momentum — faster flying = faster flapping
+        const flapRate = duck ? 2.5 + duck.momentum * 2.5 : 4;
         this.wingPhase = (this.wingPhase + dt * flapRate) % (Math.PI * 2);
         this.bobPhase  = (this.bobPhase  + dt * 1.2)     % (Math.PI * 2);
         // Bank damps toward duck.vx with a weighted spring so it feels weighty
@@ -490,12 +442,9 @@
               innerOpeningFactor = Math.max(0.65, innerOpeningFactor - 0.05);
             }
             const { sx, sy } = project(shape.wx, shape.wy, PASS_Z);
-            spawnParticles(sx, sy, shape.color, 28, { glow: true, stretch: true });
-            popups.push({ x: sx, y: sy, vy: -55, life: 1.0 });
+            spawnParticles(sx, sy, shape.color, 18);
             Audio.play('pass');
           } else {
-            // Near-miss: in outer ring but not through the opening
-            if (dist <= shape.size) nearMissTimer = 0.2;
             // Miss
             shape.missed = true;
             duck.misses++;
@@ -522,7 +471,6 @@
       if (duck.momentum <= MOMENTUM_MIN && state === STATE.PLAYING) {
         state = STATE.STALLING;
         stallTimer = STALL_DURATION;
-        shakeAmt = 10;  // trigger screen shake
       }
     }
 
@@ -659,9 +607,9 @@
       ctx.restore();
     }
 
-    // Returns fog interpolation factor: 0=clear, 1=fogged; fogDepthMod ramps up during stall.
+    // Returns fog interpolation factor: 0 = fully clear (z≤30), 1 = fully fogged (z≥95).
     function fogFactor(wz) {
-      return Math.max(0, Math.min(1, (wz - 30) / (65 / fogDepthMod)));
+      return Math.max(0, Math.min(1, (wz - 30) / 65));
     }
 
     // Returns outer and inner polygon vertices in local XY space with spin applied.
@@ -976,66 +924,6 @@
       ctx.restore();
     }
 
-    // Speed lines radiating from vanishing point when momentum is high.
-    function drawSpeedLines() {
-      if (!duck) return;
-      const intensity = Math.max(0, (duck.momentum / MOMENTUM_MAX - 0.45) / 0.55);
-      if (intensity < 0.05) return;
-      const t = performance.now() / 1000;
-      const lineCount = Math.ceil(intensity * 14);
-      ctx.save();
-      ctx.globalAlpha = intensity * 0.13;
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineCap = 'round';
-      for (let i = 0; i < lineCount; i++) {
-        const angle = (i / lineCount) * Math.PI * 2 + t * 0.08 + i * 0.31;
-        const seed = (i * 137 + 53) % 100 / 100;
-        const innerR = 25 + seed * 20;
-        const outerR = 90 + seed * 120;
-        ctx.lineWidth = 0.6 + seed * 0.6;
-        ctx.beginPath();
-        ctx.moveTo(VP_X + Math.cos(angle) * innerR, VP_Y + Math.sin(angle) * innerR);
-        ctx.lineTo(VP_X + Math.cos(angle) * outerR, VP_Y + Math.sin(angle) * outerR);
-        ctx.stroke();
-      }
-      ctx.restore();
-    }
-
-    // Pulsing red rim vignette when momentum drops below 30% — stall warning.
-    function drawStallWarning() {
-      if (!duck) return;
-      const warnT = Math.max(0, 0.3 - duck.momentum / MOMENTUM_MAX) / 0.3;
-      if (warnT <= 0) return;
-      const pulse = 0.5 + 0.5 * Math.sin(performance.now() / 240);
-      const alpha = warnT * pulse * 0.55;
-      const rg = ctx.createRadialGradient(
-        LOGICAL_W / 2, LOGICAL_H / 2, LOGICAL_H * 0.28,
-        LOGICAL_W / 2, LOGICAL_H / 2, LOGICAL_H * 0.80
-      );
-      rg.addColorStop(0, 'rgba(220,0,0,0)');
-      rg.addColorStop(1, `rgba(220,0,0,${alpha.toFixed(3)})`);
-      ctx.save();
-      ctx.fillStyle = rg;
-      ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
-      ctx.restore();
-    }
-
-    // Floating "+10" score popups that rise from the cleared shape position.
-    function drawPopups() {
-      for (const p of popups) {
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, p.life);
-        ctx.font = 'bold 16px system-ui, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.strokeStyle = 'rgba(0,0,0,0.55)';
-        ctx.lineWidth = 2.5;
-        ctx.strokeText('+10', p.x, p.y);
-        ctx.fillStyle = '#fbbf24';
-        ctx.fillText('+10', p.x, p.y);
-        ctx.restore();
-      }
-    }
-
     // Faint dark vignette on canvas edges to focus attention at center.
     function drawVignette() {
       const vg = ctx.createRadialGradient(
@@ -1062,21 +950,7 @@
         updateShapes(sloMoDt);
         updateParticles(sloMoDt);
         Anim.update(sloMoDt);
-        shakeAmt = Math.max(0, shakeAmt - rawDt * 16);
-        fogDepthMod = Math.min(2.5, fogDepthMod + rawDt * 2.5);
         if (stallTimer <= 0) endGame();
-        return;
-      }
-
-      if (state === STATE.GAMEOVER) {
-        // Particles freeze and drift slowly downward
-        for (const p of particles) {
-          p.y += 15 * rawDt;
-          p.life -= 0.5 * rawDt;
-        }
-        for (let i = particles.length - 1; i >= 0; i--) {
-          if (particles[i].life <= 0) particles.splice(i, 1);
-        }
         return;
       }
 
@@ -1087,8 +961,6 @@
       updateShapes(dt);
       spawnShapeIfNeeded(dt);
       updateParticles(dt);
-      updateNearMiss(dt);
-      updatePopups(dt);
       Anim.update(dt);
       checkGameOver();
       gameTime += dt;
@@ -1097,27 +969,12 @@
 
     function draw() {
       ctx.clearRect(0, 0, LOGICAL_W, LOGICAL_H);
-
-      // Screen shake: translate canvas during stall onset
-      const shaking = shakeAmt > 0.5;
-      if (shaking) {
-        ctx.save();
-        ctx.translate(
-          (Math.random() * 2 - 1) * shakeAmt,
-          (Math.random() * 2 - 1) * shakeAmt * 0.5
-        );
-      }
-
       drawSky();
       drawGround();
-      drawSpeedLines();
       drawShapes();
       drawParticles();
       drawDuckPOV();    // screen-space last, after all world content
       drawVignette();   // edge darkening to focus center
-      drawStallWarning();
-
-      if (shaking) ctx.restore();
 
       // Stall transition: darken screen as slow-mo progresses
       if (state === STATE.STALLING) {
@@ -1131,7 +988,6 @@
 
       drawInputHints();
       if (state === STATE.PLAYING || state === STATE.STALLING) drawHUD();
-      drawPopups();
     }
 
     function loop(ts) {
@@ -1157,10 +1013,6 @@
       lastCycleT = -1;
       cachedSkyGrad = null;
       cachedGroundGrad = null;
-      nearMissTimer = 0;
-      shakeAmt = 0;
-      fogDepthMod = 1.0;
-      popups = [];
       state = STATE.PLAYING;
       document.getElementById('overlay').classList.add('hidden');
       lastTime = performance.now();
