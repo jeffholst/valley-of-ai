@@ -20,6 +20,8 @@ export default function GalleryPagination({
   onPageChange,
   onPerPageChange,
   onSortChange,
+  onTrendingShortcut,
+  onNewestShortcut,
   navigationOnly = false,
   apps = [],
 }) {
@@ -48,6 +50,22 @@ export default function GalleryPagination({
                 className="inline-flex items-center gap-0.5 text-[0.72rem] font-semibold tracking-wide text-slate-900 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full px-2.5 py-0.5 whitespace-nowrap transition-transform hover:scale-105"
               >
                 🎲 Feeling Lucky
+              </button>
+            )}
+            {onTrendingShortcut && (
+              <button
+                onClick={onTrendingShortcut}
+                className="inline-flex items-center gap-0.5 text-[0.72rem] font-semibold tracking-wide text-emerald-950 bg-gradient-to-r from-emerald-300 to-cyan-300 rounded-full px-2.5 py-0.5 whitespace-nowrap transition-transform hover:scale-105"
+              >
+                🔥 Trending
+              </button>
+            )}
+            {onNewestShortcut && (
+              <button
+                onClick={onNewestShortcut}
+                className="inline-flex items-center gap-0.5 text-[0.72rem] font-semibold tracking-wide text-sky-950 bg-gradient-to-r from-sky-300 to-indigo-300 rounded-full px-2.5 py-0.5 whitespace-nowrap transition-transform hover:scale-105"
+              >
+                ✨ Newest
               </button>
             )}
           </div>
