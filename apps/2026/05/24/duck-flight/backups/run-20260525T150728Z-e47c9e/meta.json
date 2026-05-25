@@ -107,16 +107,6 @@
       "implementedAt": "2026-05-25T05:20:00Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
-    },
-    {
-      "issueNumber": 482,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/482",
-      "runId": "run-20260525T150728Z-e47c9e",
-      "description": "Slowed Duck Flight pacing by reducing base speed, closer and less frequent shape spawns, earlier fog visibility, lower pass/kill thresholds, and gentler difficulty speed ramp.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-05-25T15:07:28Z",
-      "agentName": "Codex",
-      "llmModel": "GPT-5"
     }
   ]
 }
