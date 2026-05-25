@@ -13,6 +13,9 @@
     "url": "https://github.com/jeffholst/valley-of-ai/issues"
   },
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "prepare": "husky",
     "dev": "npm run sync && next dev",
