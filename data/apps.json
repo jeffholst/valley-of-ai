@@ -90,6 +90,16 @@
         "implementedAt": "2026-05-25T04:42:00Z",
         "agentName": "Claude Code",
         "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 469,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/469",
+        "runId": "run-20260525T045401Z-b7c2d8",
+        "description": "Canvas-only UI overhaul: removed DOM #overlay; MENU state shows animated world background with hovering duck silhouette (flapping wings, body, beak), 'DUCK FLIGHT' title with gold glow, subtitle, and persisted best score; HUD redesigned to large outlined score numerals (top-left) + thin centered momentum bar (green-amber-red, pulses below 30%); GAMEOVER state renders dimmed world, red 'GAME OVER', large final score, best score, and pulsing 'Tap to retry'; best score persisted to localStorage; tap/Space/Enter start/retry from canvas; main loop runs continuously from boot.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-25T05:10:00Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
       }
     ],
     "allowImprovements": true,
@@ -125,6 +135,11 @@
         "runId": "run-20260525T044200Z-e8d3a2",
         "path": "backups/run-20260525T044200Z-e8d3a2/index.html",
         "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T044200Z-e8d3a2/index.html"
+      },
+      {
+        "runId": "run-20260525T045401Z-b7c2d8",
+        "path": "backups/run-20260525T045401Z-b7c2d8/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T045401Z-b7c2d8/index.html"
       }
     ]
   },
