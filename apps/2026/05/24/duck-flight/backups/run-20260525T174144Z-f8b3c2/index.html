@@ -104,12 +104,7 @@
     const MOMENTUM_MIN = 0.0;
     const MOMENTUM_PASS = 0.12;     // gain on good pass
     const MOMENTUM_MISS = -0.22;    // loss on miss
-    const MOMENTUM_DRAIN = -0.010;  // passive drain per second (no longer applied — altitude is the survival mechanic)
-
-    const FLAP_VELOCITY = 3.8;    // upward impulse applied when the player taps
-    const GRAVITY = 5.5;          // downward acceleration (world units/sec²)
-    const DUCK_WY_MIN = -0.85;    // altitude floor — reaching it triggers stall
-    const DUCK_WY_MAX = 2.8;      // altitude ceiling
+    const MOMENTUM_DRAIN = -0.010;  // passive drain per second
 
     const MAX_MISSES = 5;           // total misses before momentum bottoms out (tracked separately)
 
@@ -149,7 +144,6 @@
       right: false,
       pointerLeft: false,
       pointerRight: false,
-      flapPending: false,  // consumed once per frame in updateDuck
     };
 
     // ─── Canvas setup ────────────────────────────────────────────────────────────
@@ -178,14 +172,13 @@
 
     // ─── 3D Projection ───────────────────────────────────────────────────────────
     // Projects a world-space point (wx, wy, wz) onto canvas.
-    // Camera is at world (duck.x, duck.wy, 0) looking toward +z.
+    // Camera is at world (duck.x, 0, 0) looking toward +z.
     // Returns { sx, sy, scale } where scale = focalLength / z.
     function project(wx, wy, wz) {
       const relX = wx - (duck ? duck.x : 0);
-      const relY = wy - (duck ? duck.wy : 0);
       const scale = FOCAL_LEN / Math.max(wz, 1);
       const sx = VP_X + relX * scale;
-      const sy = VP_Y - relY * scale;
+      const sy = VP_Y - wy * scale;
       return { sx, sy, scale };
     }
 
@@ -235,8 +228,6 @@
       return {
         x: 0,
         vx: 0,
-        wy: 0.5,  // starting altitude (above ground plane at -0.9)
-        vy: 0,    // vertical velocity
         momentum: MOMENTUM_START,
         score: 0,
         misses: 0,
@@ -358,7 +349,6 @@
         if ((e.key === ' ' || e.key === 'Enter') && (state === STATE.MENU || state === STATE.GAMEOVER)) {
           startGame(); return;
         }
-        if (e.key === ' ' && state === STATE.PLAYING) { input.flapPending = true; return; }
         if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') input.left = true;
         if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') input.right = true;
       });
@@ -372,7 +362,6 @@
 
       canvas.addEventListener('pointerdown', e => {
         if (state === STATE.MENU || state === STATE.GAMEOVER) { startGame(); return; }
-        if (state === STATE.PLAYING) input.flapPending = true;
         const rect = canvas.getBoundingClientRect();
         const cx = (e.clientX - rect.left) / scale;
         if (cx < LOGICAL_W / 2) {
@@ -406,28 +395,16 @@
 
     // ─── Update ───────────────────────────────────────────────────────────────────
     function updateDuck(dt) {
-      // Flap: consume the pending impulse set by tap/keydown
-      if (input.flapPending) {
-        duck.vy = FLAP_VELOCITY;
-        input.flapPending = false;
-      }
-      // Gravity pulls duck downward continuously
-      duck.vy -= GRAVITY * dt;
-      duck.wy = Math.min(DUCK_WY_MAX, duck.wy + duck.vy * dt);
-      // Ground crash — zero momentum triggers the stall state
-      if (duck.wy <= DUCK_WY_MIN) {
-        duck.wy = DUCK_WY_MIN;
-        duck.vy = 0;
-        duck.momentum = MOMENTUM_MIN;
-      }
-
-      // Lateral steering (unchanged from before)
       duck.vx += (isLeft() ? -DUCK_THRUST : isRight() ? DUCK_THRUST : 0) * dt;
       duck.vx *= (1 - DUCK_DRAG * dt);
       duck.vx = Math.max(-2.4, Math.min(2.4, duck.vx));
       duck.x = Math.max(DUCK_X_MIN, Math.min(DUCK_X_MAX, duck.x + duck.vx * dt));
 
-      // No passive momentum drain — altitude is the primary survival mechanic now
+      // Momentum drains passively
+      duck.momentum = Math.max(
+        MOMENTUM_MIN,
+        Math.min(MOMENTUM_MAX, duck.momentum + MOMENTUM_DRAIN * dt)
+      );
     }
 
     function updateShapes(dt) {
@@ -440,7 +417,7 @@
         // Pass check: duck is within the inner opening when the shape passes
         if (!shape.passed && !shape.missed && shape.wz <= PASS_Z) {
           const dx = duck.x - shape.wx;
-          const dy = duck.wy - shape.wy; // use duck's actual altitude
+          const dy = 0 - shape.wy; // duck is always at world y=0
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist <= shape.innerR) {
@@ -936,43 +913,6 @@
       ctx.restore();
     }
 
-    // Altitude indicator: thin vertical bar on the right edge, green=high, red=low.
-    function drawAltitudeBar() {
-      if (!duck) return;
-      const barX = LOGICAL_W - 10;
-      const barW = 6;
-      const barTop = 14;
-      const barBot = LOGICAL_H - 14;
-      const barH = barBot - barTop;
-
-      // Background track
-      ctx.save();
-      ctx.fillStyle = 'rgba(0,0,0,0.35)';
-      ctx.fillRect(barX, barTop, barW, barH);
-
-      // Filled segment based on altitude
-      const range = DUCK_WY_MAX - DUCK_WY_MIN;
-      const t = Math.max(0, Math.min(1, (duck.wy - DUCK_WY_MIN) / range));
-      const fillH = Math.max(2, barH * t);
-      const r = Math.round(255 * (1 - t));
-      const g = Math.round(210 * t);
-      ctx.fillStyle = `rgb(${r},${g},30)`;
-      ctx.fillRect(barX, barBot - fillH, barW, fillH);
-
-      // Danger zone line at bottom 15%
-      const dangerY = barBot - barH * 0.15;
-      ctx.strokeStyle = 'rgba(255,80,80,0.7)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([2, 2]);
-      ctx.beginPath();
-      ctx.moveTo(barX, dangerY);
-      ctx.lineTo(barX + barW, dangerY);
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      ctx.restore();
-    }
-
     function drawMenuDuck(cx, cy) {
       const t = performance.now() / 1000;
       const flap = Math.sin(t * 3.2) * 20;
@@ -1132,17 +1072,6 @@
 
       ctx.globalAlpha = isRight() ? 0.12 : 0.04;
       ctx.fillRect(LOGICAL_W / 2, 0, LOGICAL_W / 2, LOGICAL_H);
-
-      // Tap-to-flap hint at bottom center, fades out after a few seconds of play
-      if (duck && gameTime < 4) {
-        const fade = Math.max(0, 1 - gameTime / 3.5);
-        ctx.globalAlpha = fade * 0.55;
-        ctx.fillStyle = '#fff';
-        ctx.font = '13px system-ui, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('Tap anywhere to flap!', LOGICAL_W / 2, LOGICAL_H - 30);
-      }
-
       ctx.restore();
     }
 
@@ -1318,7 +1247,7 @@
       }
 
       drawInputHints();
-      if (state === STATE.PLAYING || state === STATE.STALLING) { drawHUD(); drawAltitudeBar(); }
+      if (state === STATE.PLAYING || state === STATE.STALLING) drawHUD();
       drawPopups();
       if (state === STATE.GAMEOVER) drawGameOver();
     }
@@ -1351,7 +1280,6 @@
       shakeAmt = 0;
       fogDepthMod = 1.0;
       popups = [];
-      input.flapPending = false;
       state = STATE.PLAYING;
       lastTime = performance.now();
       if (animId) cancelAnimationFrame(animId);
@@ -1381,7 +1309,7 @@
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         if (animId) { cancelAnimationFrame(animId); animId = null; }
-        input.left = input.right = input.pointerLeft = input.pointerRight = input.flapPending = false;
+        input.left = input.right = input.pointerLeft = input.pointerRight = false;
       } else {
         lastTime = performance.now(); // clamp dt to prevent time jump on resume
         if (!animId) animId = requestAnimationFrame(loop);
