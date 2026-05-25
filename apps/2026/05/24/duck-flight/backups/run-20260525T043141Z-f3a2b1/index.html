@@ -140,8 +140,7 @@
     const FOCAL_LEN = 2000;
     const VP_X = LOGICAL_W / 2;     // vanishing point x (horizontal center)
     const VP_Y = LOGICAL_H / 2;     // vanishing point y (horizon at true vertical center)
-    const HORIZON_COLOR = '#f9c784'; // golden-hour horizon (warm peach-gold)
-    const SUN_X = LOGICAL_W * 0.72; // sun off-center to the right
+    const HORIZON_COLOR = '#8ec6e0'; // fog target — matches sky horizon tone
 
     const SPAWN_Z = 3000;           // world units from camera when ring spawns
     const KILL_Z = 40;              // world units — ring passes camera (miss check)
@@ -184,9 +183,6 @@
     let currentInterval = SPAWN_INTERVAL;
     let animId = null;
     let scoreSubmitted = false;
-    let gameTime = 0;        // seconds spent in PLAYING state (drives color cycle)
-    let colorCycleT = 0;     // 0 = golden-hour, 1 = dusk (shifts over 60s of play)
-    let lastCycleT = -1;     // last colorCycleT at which sky/ground grad caches were built
 
     // Input state
     const input = {
@@ -476,21 +472,11 @@
 
     // ─── Draw ─────────────────────────────────────────────────────────────────────
     function drawSky() {
-      // Invalidate gradient caches when color cycle shifts enough
-      if (Math.abs(colorCycleT - lastCycleT) > 0.02) {
-        cachedSkyGrad = null;
-        cachedGroundGrad = null;
-        lastCycleT = colorCycleT;
-      }
       if (!cachedSkyGrad) {
-        // Golden-hour → dusk palette shift over 60s
-        const zenith  = lerpColor('#0d2340', '#0a0d2e', colorCycleT);
-        const mid     = lerpColor('#2d6094', '#4a3a7a', colorCycleT);
-        const horizon = lerpColor('#f9c784', '#d4607a', colorCycleT);
         cachedSkyGrad = ctx.createLinearGradient(0, 0, 0, VP_Y);
-        cachedSkyGrad.addColorStop(0, zenith);
-        cachedSkyGrad.addColorStop(0.55, mid);
-        cachedSkyGrad.addColorStop(1, horizon);
+        cachedSkyGrad.addColorStop(0, '#0d2137');   // deep blue zenith
+        cachedSkyGrad.addColorStop(0.55, '#1a4a7a'); // mid sky
+        cachedSkyGrad.addColorStop(1, HORIZON_COLOR); // horizon
       }
       ctx.fillStyle = cachedSkyGrad;
       ctx.fillRect(0, 0, LOGICAL_W, VP_Y);
@@ -517,20 +503,14 @@
         }
       }
       ctx.restore();
-
-      drawSun();
     }
 
     function drawGround() {
       if (!cachedGroundGrad) {
-        // Golden-hour warm sand → deep umber, shifts to dusty rose/dark at dusk
-        const nearSand  = lerpColor('#c4a46b', '#9c7a6c', colorCycleT);
-        const midBrown  = lerpColor('#8b6347', '#6b4a55', colorCycleT);
-        const deepUmber = lerpColor('#2c1a0a', '#1a0e1a', colorCycleT);
         cachedGroundGrad = ctx.createLinearGradient(0, VP_Y, 0, LOGICAL_H);
-        cachedGroundGrad.addColorStop(0, nearSand);
-        cachedGroundGrad.addColorStop(0.28, midBrown);
-        cachedGroundGrad.addColorStop(1, deepUmber);
+        cachedGroundGrad.addColorStop(0, '#7aaa60');  // warm horizon green
+        cachedGroundGrad.addColorStop(0.28, '#4a7c3f'); // mid green
+        cachedGroundGrad.addColorStop(1, '#182810');    // dark base
       }
       ctx.fillStyle = cachedGroundGrad;
       ctx.fillRect(0, VP_Y, LOGICAL_W, LOGICAL_H - VP_Y);
@@ -565,51 +545,9 @@
       ctx.restore();
     }
 
-    // Sun disc, atmospheric bloom, and lens-flare streaks toward sun when steering right.
-    function drawSun() {
-      const sunY = VP_Y - 8;
-      ctx.save();
-
-      // Wide atmospheric bloom
-      const bloom = ctx.createRadialGradient(SUN_X, sunY, 0, SUN_X, sunY, 90);
-      bloom.addColorStop(0,   'rgba(255,218,95,0.30)');
-      bloom.addColorStop(0.35,'rgba(255,170,50,0.13)');
-      bloom.addColorStop(0.7, 'rgba(255,130,20,0.05)');
-      bloom.addColorStop(1,   'rgba(255,100,10,0)');
-      ctx.fillStyle = bloom;
-      ctx.fillRect(SUN_X - 90, 0, 180, VP_Y);
-
-      // Sun disc — soft radial fade
-      const disc = ctx.createRadialGradient(SUN_X, sunY, 0, SUN_X, sunY, 12);
-      disc.addColorStop(0,    'rgba(255,252,210,1)');
-      disc.addColorStop(0.45, 'rgba(255,210,70,0.92)');
-      disc.addColorStop(1,    'rgba(255,165,30,0)');
-      ctx.fillStyle = disc;
-      ctx.beginPath();
-      ctx.arc(SUN_X, sunY, 12, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Lens-flare streaks: appear when duck steers toward the sun (positive duck.x)
-      const flare = duck ? Math.max(0, duck.x / DUCK_X_MAX) : 0;
-      if (flare > 0.08) {
-        ctx.globalAlpha = flare * 0.38;
-        ctx.strokeStyle = 'rgba(255,228,140,1)';
-        ctx.lineCap = 'round';
-        for (const [angle, len] of [[0.06, 52], [-0.22, 38], [0.38, 26], [-0.62, 18]]) {
-          ctx.lineWidth = Math.max(0.6, (1.5 - Math.abs(angle)) * 1.1);
-          ctx.beginPath();
-          ctx.moveTo(SUN_X, sunY);
-          ctx.lineTo(SUN_X + Math.cos(angle) * len, sunY + Math.sin(angle) * len);
-          ctx.stroke();
-        }
-      }
-
-      ctx.restore();
-    }
-
-    // Returns fog interpolation factor: 0 = fully clear (z≤30), 1 = fully fogged (z≥95).
+    // Returns fog interpolation factor: 0 = fully clear (z≤40), 1 = fully fogged (z≥120).
     function fogFactor(wz) {
-      return Math.max(0, Math.min(1, (wz - 30) / 65));
+      return Math.max(0, Math.min(1, (wz - 40) / 80));
     }
 
     // Returns outer and inner polygon vertices in local XY space with spin applied.
@@ -675,13 +613,10 @@
 
       ctx.save();
 
-      // Gradient fill: desaturate and lift lightness at high fog (atmospheric perspective)
-      const sat    = Math.round(80 * (1 - fogT * 0.65));
-      const litTop = Math.round(68 + fogT * 12);
-      const litBot = Math.round(28 + fogT * 20);
+      // Gradient fill: lighter top (fake top-down light) → darker bottom
       const grad = ctx.createLinearGradient(0, minY, 0, maxY);
-      grad.addColorStop(0, `hsl(${h}, ${sat}%, ${litTop}%)`);
-      grad.addColorStop(1, `hsl(${h}, ${sat}%, ${litBot}%)`);
+      grad.addColorStop(0, `hsl(${h}, 80%, 68%)`);
+      grad.addColorStop(1, `hsl(${h}, 80%, 28%)`);
 
       ctx.globalAlpha = alpha;
       ctx.fillStyle = grad;
@@ -703,7 +638,7 @@
       ctx.rect(0, -10, LOGICAL_W, midY + 10);
       ctx.clip();
       ctx.globalAlpha = alpha * 0.50;
-      ctx.strokeStyle = `hsl(${h}, ${Math.round(55 * (1 - fogT * 0.6))}%, 88%)`;
+      ctx.strokeStyle = `hsl(${h}, 55%, 88%)`;
       ctx.lineWidth = Math.max(0.8, sc * 0.08);
       ctx.beginPath();
       ctx.moveTo(...outerScreen[0]);
@@ -924,20 +859,6 @@
       ctx.restore();
     }
 
-    // Faint dark vignette on canvas edges to focus attention at center.
-    function drawVignette() {
-      const vg = ctx.createRadialGradient(
-        LOGICAL_W / 2, LOGICAL_H / 2, LOGICAL_H * 0.22,
-        LOGICAL_W / 2, LOGICAL_H / 2, LOGICAL_H * 0.80
-      );
-      vg.addColorStop(0, 'rgba(0,0,0,0)');
-      vg.addColorStop(1, 'rgba(0,0,0,0.44)');
-      ctx.save();
-      ctx.fillStyle = vg;
-      ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
-      ctx.restore();
-    }
-
     // ─── Game loop ────────────────────────────────────────────────────────────────
     function update(ts) {
       const rawDt = Math.min((ts - lastTime) / 1000, 0.1);
@@ -963,8 +884,6 @@
       updateParticles(dt);
       Anim.update(dt);
       checkGameOver();
-      gameTime += dt;
-      colorCycleT = Math.min(1, gameTime / 60);
     }
 
     function draw() {
@@ -974,7 +893,6 @@
       drawShapes();
       drawParticles();
       drawDuckPOV();    // screen-space last, after all world content
-      drawVignette();   // edge darkening to focus center
 
       // Stall transition: darken screen as slow-mo progresses
       if (state === STATE.STALLING) {
@@ -1008,11 +926,6 @@
       currentSpeed = BASE_SPEED;
       currentInterval = SPAWN_INTERVAL;
       scoreSubmitted = false;
-      gameTime = 0;
-      colorCycleT = 0;
-      lastCycleT = -1;
-      cachedSkyGrad = null;
-      cachedGroundGrad = null;
       state = STATE.PLAYING;
       document.getElementById('overlay').classList.add('hidden');
       lastTime = performance.now();

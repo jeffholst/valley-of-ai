@@ -60,6 +60,26 @@
         "implementedAt": "2026-05-24T20:53:40Z",
         "agentName": "Claude Code",
         "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 466,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/466",
+        "runId": "run-20260524T211202Z-24c783",
+        "description": "Wired gameplay feel: forward speed now scales directly with momentum (speed=currentSpeed*momentum), difficulty ramps every 10 passes (not time-based) with speed increase+spawn tightening+opening shrink, and game over uses a STALLING state with 0.75s slow-mo + screen darkening before showing the overlay.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-24T21:12:02Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 467,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/467",
+        "runId": "run-20260525T043141Z-f3a2b1",
+        "description": "Golden-hour visual pass: sky replaced with deep teal-blue zenith to warm peach-gold horizon palette (60s color cycle shifts to dusk); sun disc with wide radial bloom and lens-flare streaks when steering toward it; ground updated to warm sand-to-umber; fog range tightened so distant shapes desaturate and lift lightness toward horizon; edge vignette added.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-25T04:31:41Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
       }
     ],
     "allowImprovements": true,
@@ -85,6 +105,11 @@
         "runId": "run-20260524T211202Z-24c783",
         "path": "backups/run-20260524T211202Z-24c783/index.html",
         "url": "/apps/2026/05/24/duck-flight/backups/run-20260524T211202Z-24c783/index.html"
+      },
+      {
+        "runId": "run-20260525T043141Z-f3a2b1",
+        "path": "backups/run-20260525T043141Z-f3a2b1/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T043141Z-f3a2b1/index.html"
       }
     ]
   },

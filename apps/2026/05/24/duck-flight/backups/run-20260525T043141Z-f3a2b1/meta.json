@@ -67,16 +67,6 @@
       "implementedAt": "2026-05-24T21:12:02Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
-    },
-    {
-      "issueNumber": 467,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/467",
-      "runId": "run-20260525T043141Z-f3a2b1",
-      "description": "Golden-hour visual pass: sky replaced with deep teal-blue zenith to warm peach-gold horizon palette (60s color cycle shifts to dusk); sun disc with wide radial bloom and lens-flare streaks when steering toward it; ground updated to warm sand-to-umber; fog range tightened so distant shapes desaturate and lift lightness toward horizon; edge vignette added.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-05-25T04:31:41Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6"
     }
   ]
 }
