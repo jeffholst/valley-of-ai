@@ -147,16 +147,6 @@
       "implementedAt": "2026-05-25T16:32:48Z",
       "agentName": "Codex",
       "llmModel": "GPT-5"
-    },
-    {
-      "issueNumber": 493,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/493",
-      "runId": "run-20260525T171505Z-c4d2e1",
-      "description": "Moved fly-through detection from PASS_Z=60 to PASS_Z=28 (shapes fill viewport at check time for genuine fly-through feel), lowered KILL_Z to 10, removed momentum multiplier from forward speed so shapes approach at constant speed, lowered BASE_SPEED from 130 to 100 and ramp cap from 280 to 220.",
-      "requestor": "Jeff Holst",
-      "implementedAt": "2026-05-25T17:15:05Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6"
     }
   ]
 }
