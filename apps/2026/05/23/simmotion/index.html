@@ -206,15 +206,16 @@
         <h1>SIMMOTION</h1>
         <p>
           Balls wind through a 9-gate roller coaster with 6 hidden exits. Catch them with your
-          paddle, then HOLD to charge and RELEASE at the green zone to relaunch — bad timing
-          sends balls into harder paths!
+          paddle, then tap or press Space to relaunch — but beware: two balls on the paddle
+          at once costs a life!
         </p>
         <div class="instructions">
           <span>🖱️ / 👆 Move paddle left and right</span>
           <span>⚡ Gates flip when balls pass — some with random delays!</span>
           <span>❤️ Miss a ball — lose a life (3 total)</span>
           <span>🎳 3 balls launch at start, more follow every 15 seconds</span>
-          <span>🏐 Catch a ball → HOLD &amp; RELEASE at the green zone to relaunch!</span>
+          <span>🏐 Catch a ball → Tap or press Space to relaunch!</span>
+          <span>⚠️ Two balls on the paddle at once = lose a life!</span>
         </div>
         <button class="btn" id="startBtn">PLAY</button>
       </div>
@@ -404,8 +405,7 @@
 
       function launchHeldBall() {
         if (!heldBall) return;
-        const drift = computeDrift(chargeAmount);
-        balls.push(createBall(0, drift));
+        balls.push(createBall(0, 0));
         heldBall = null;
         isCharging = false;
         chargeAmount = 0;
@@ -485,9 +485,12 @@
         const dtT = (ball.speed * 60 * dt) / Math.max(len, 1);
         ball.t += dtT;
 
-        if (ball.t >= 1) {
+        while (ball.t >= 1 && ball.segIdx >= 0) {
+          const transSeg = segments[ball.segIdx];
+          if (!transSeg) { ball.alive = false; return false; }
+
           // Flip the gate — lower-level gates (5-8) use random delays for unpredictability
-          const gateIdx = seg.gate;
+          const gateIdx = transSeg.gate;
           if (gateIdx >= 0) {
             if (gateIdx >= 5 && Math.random() < 0.5) {
               pendingGateFlips.push({ gateIdx, flipAt: survivalTime + 0.4 + Math.random() * 0.8 });
@@ -496,7 +499,7 @@
             }
           }
 
-          const nextIdx = nextSegment(seg, ball);
+          const nextIdx = nextSegment(transSeg, ball);
           if (nextIdx < 0) {
             // Ball has exited the track bottom
             const pos = ballPosition(ball);
@@ -744,6 +747,24 @@
           ctx.fill();
           ctx.restore();
         }
+
+        // Draw held ball resting on paddle
+        if (heldBall) {
+          const hy = PADDLE_Y - PADDLE_H / 2 - 9;
+          ctx.save();
+          ctx.shadowColor = ballGlow;
+          ctx.shadowBlur = 14;
+          ctx.fillStyle = ballColor;
+          ctx.beginPath();
+          ctx.arc(paddleX, hy, 9, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.6)';
+          ctx.beginPath();
+          ctx.arc(paddleX - 3, hy - 3, 3, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
       }
 
       function drawPaddle() {
@@ -853,43 +874,11 @@
       function drawPowerMeter() {
         if (!heldBall) return;
         const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-        const meterW = 120;
-        const meterH = 10;
-        const meterX = paddleX - meterW / 2;
-        const meterY = PADDLE_Y - PADDLE_H / 2 - 26;
-
         ctx.save();
-        // Background
-        ctx.fillStyle = 'rgba(0,0,0,0.6)';
-        ctx.beginPath();
-        ctx.roundRect(meterX - 2, meterY - 2, meterW + 4, meterH + 4, 4);
-        ctx.fill();
-
-        // Charge fill
-        const inSweet = chargeAmount >= 0.4 && chargeAmount <= 0.6;
-        ctx.fillStyle = inSweet ? '#4ade80' : chargeAmount < 0.4 ? '#f97316' : '#ef4444';
-        const fillW = meterW * chargeAmount;
-        if (fillW > 0) {
-          ctx.beginPath();
-          ctx.roundRect(meterX, meterY, fillW, meterH, 3);
-          ctx.fill();
-        }
-
-        // Sweet-spot bracket
-        ctx.strokeStyle = '#fbbf24';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(meterX + meterW * 0.4, meterY, meterW * 0.2, meterH);
-
-        // Label
-        ctx.fillStyle = isDark ? '#f9fafb' : '#1f2937';
-        ctx.font = 'bold 10px system-ui, sans-serif';
+        ctx.fillStyle = '#4ade80';
+        ctx.font = 'bold 11px system-ui, sans-serif';
         ctx.textAlign = 'center';
-        const label = !isCharging
-          ? 'Caught! HOLD to relaunch'
-          : inSweet
-            ? '✓ RELEASE NOW!'
-            : 'Release at the green zone';
-        ctx.fillText(label, paddleX, meterY - 6);
+        ctx.fillText('Tap / Space to launch!', paddleX, PADDLE_Y - PADDLE_H / 2 - 10);
         ctx.restore();
       }
 
@@ -984,12 +973,6 @@
         survivalTime += dt;
         ballSpawnTimer += dt;
 
-        // Update relaunch charge meter
-        if (isCharging && heldBall) {
-          chargeAmount = Math.min(1, (Date.now() - chargeStart) / 2000);
-          if (chargeAmount >= 1) launchHeldBall(); // auto-launch at max charge
-        }
-
         // Process deferred gate flips
         for (let i = pendingGateFlips.length - 1; i >= 0; i--) {
           if (survivalTime >= pendingGateFlips[i].flipAt) {
@@ -1030,16 +1013,20 @@
             updateFreeFall(ball, dt);
 
             if (checkPaddleCollision(ball)) {
-              // Caught! Player must relaunch via hold/release power meter
               ball.alive = false;
               ball.caught = true;
-              caught++;
-              spawnParticles(ball.x, ball.exitY, '#a78bfa', 16);
               if (heldBall) {
-                // Already holding one — auto-launch it before accepting this catch
-                launchHeldBall();
+                // Two balls on paddle simultaneously — penalty
+                missed++;
+                lives--;
+                heldBall = null;
+                spawnParticles(ball.x, ball.exitY, '#ef4444', 20);
+                if (lives <= 0) { gameOver(); }
+              } else {
+                caught++;
+                spawnParticles(ball.x, ball.exitY, '#a78bfa', 16);
+                heldBall = { ready: true };
               }
-              heldBall = { ready: true };
               chargeAmount = 0;
               isCharging = false;
             } else if (ball.exitY > H + 20) {
@@ -1091,14 +1078,7 @@
       });
 
       canvas.addEventListener('mousedown', () => {
-        if (heldBall && gameRunning && !isCharging) {
-          isCharging = true;
-          chargeStart = Date.now();
-        }
-      });
-
-      canvas.addEventListener('mouseup', () => {
-        if (heldBall && isCharging && gameRunning) {
+        if (heldBall && gameRunning) {
           launchHeldBall();
         }
       });
@@ -1114,18 +1094,14 @@
         e.preventDefault();
         if (e.touches.length > 0) {
           setPaddleFromEvent(e.touches[0].clientX);
-          if (heldBall && gameRunning && !isCharging) {
-            isCharging = true;
-            chargeStart = Date.now();
+          if (heldBall && gameRunning) {
+            launchHeldBall();
           }
         }
       }, { passive: false });
 
       canvas.addEventListener('touchend', (e) => {
         e.preventDefault();
-        if (heldBall && isCharging && gameRunning) {
-          launchHeldBall();
-        }
       }, { passive: false });
 
       document.addEventListener('keydown', (e) => {
@@ -1139,18 +1115,8 @@
         } else if (e.key === 'ArrowRight') {
           e.preventDefault();
           targetPaddleX = Math.min(W - currentPaddleW / 2, targetPaddleX + 40);
-        } else if (e.key === ' ' && heldBall && gameRunning && !isCharging) {
+        } else if (e.key === ' ' && heldBall && gameRunning) {
           e.preventDefault();
-          isCharging = true;
-          chargeStart = Date.now();
-        }
-      });
-
-      document.addEventListener('keyup', (e) => {
-        const tag = document.activeElement?.tagName;
-        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-        if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
-        if (e.key === ' ' && heldBall && isCharging) {
           launchHeldBall();
         }
       });
