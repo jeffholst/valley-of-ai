@@ -24,6 +24,7 @@
     "sync": "node scripts/sync-public-content.mjs",
     "sync:categories": "node scripts/sync-categories.mjs",
     "generate:apps": "node scripts/generate-apps.mjs",
+    "generate:app-votes": "node scripts/generate-app-vote-stats.mjs",
     "generate:versus": "node scripts/generate-versus.mjs",
     "validate:apps": "node scripts/validate-apps.mjs",
     "validate:responsive": "node scripts/validate-responsive.mjs",

@@ -9,11 +9,10 @@ import GalleryPagination, { PER_PAGE_OPTIONS } from '@/components/GalleryPaginat
 import OptionsDrawer from '@/components/OptionsDrawer';
 import PaymentSuccessModal from '@/components/PaymentSuccessModal';
 import PterodactylSky from '@/components/PterodactylSky';
-import TrendingRow from '@/components/TrendingRow';
 import { usePterodactyls } from '@/hooks/usePterodactyls';
-import { useAllVoteCounts } from '@/hooks/useVotes';
 import { trendingScore } from '@/lib/trendingScore';
 import appsData from '@/data/apps.json';
+import appVoteStats from '@/data/app-vote-stats.json';
 
 const OPTIONS_STORAGE_KEY = 'voa-page-options';
 const FILTERS_STORAGE_KEY = 'voa-gallery-filters';
@@ -40,7 +39,8 @@ const DEFAULT_OPTIONS = {
   earthquake: false,
 };
 
-const allAppIds = appsData.map((app) => app.id);
+const staticVoteCounts = appVoteStats.apps ?? {};
+const staticVoteStatsTime = new Date(appVoteStats.generatedAt).getTime();
 
 export default function HomePage() {
   const [showDonateModal, setShowDonateModal] = useState(false);
@@ -58,7 +58,7 @@ export default function HomePage() {
   const [inputModeFilter, setInputModeFilter] = useState('');
 
   const { pterodactyls, handleKill } = usePterodactyls();
-  const { voteCounts, isLoading: votesLoading } = useAllVoteCounts(allAppIds);
+  const voteCounts = staticVoteCounts;
 
   // Open donate modal if ?donate=1 is in the URL
   useEffect(() => {
@@ -209,11 +209,24 @@ export default function HomePage() {
       return apps.sort((a, b) => (voteCounts[b.id]?.net ?? 0) - (voteCounts[a.id]?.net ?? 0));
     }
     if (sortBy === 'trending') {
-      const now = Date.now();
+      const now = Number.isFinite(staticVoteStatsTime) ? staticVoteStatsTime : Date.now();
       return apps.sort((a, b) => {
         const scoreA = trendingScore(a.createdAt, voteCounts[a.id]?.recentNet ?? 0, now);
         const scoreB = trendingScore(b.createdAt, voteCounts[b.id]?.recentNet ?? 0, now);
-        return scoreB - scoreA;
+        if (scoreB !== scoreA) {
+          return scoreB - scoreA;
+        }
+        const recentNetA = voteCounts[a.id]?.recentNet ?? 0;
+        const recentNetB = voteCounts[b.id]?.recentNet ?? 0;
+        if (recentNetB !== recentNetA) {
+          return recentNetB - recentNetA;
+        }
+        const netA = voteCounts[a.id]?.net ?? 0;
+        const netB = voteCounts[b.id]?.net ?? 0;
+        if (netB !== netA) {
+          return netB - netA;
+        }
+        return new Date(b.createdAt) - new Date(a.createdAt);
       });
     }
     return apps.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -233,34 +246,6 @@ export default function HomePage() {
     return sortedApps.slice(start, start + perPage);
   }, [sortedApps, currentPage, totalPages, perPage]);
 
-  const trendingApps = useMemo(() => {
-    const now = Date.now();
-    return appsData
-      .map((app) => {
-        const counts = voteCounts[app.id] ?? {};
-        return {
-          app,
-          score: trendingScore(app.createdAt, counts.recentNet ?? 0, now),
-          recentNet: counts.recentNet ?? 0,
-          net: counts.net ?? 0,
-        };
-      })
-      .sort((a, b) => {
-        if (b.score !== a.score) {
-          return b.score - a.score;
-        }
-        if (b.recentNet !== a.recentNet) {
-          return b.recentNet - a.recentNet;
-        }
-        if (b.net !== a.net) {
-          return b.net - a.net;
-        }
-        return new Date(b.app.createdAt) - new Date(a.app.createdAt);
-      })
-      .slice(0, 6)
-      .map(({ app }) => app);
-  }, [voteCounts]);
-
   const activeFilterCount = [
     categoryFilter,
     agentFilter,
@@ -278,6 +263,26 @@ export default function HomePage() {
     setCurrentPage(1);
     setSortBy(DEFAULT_FILTERS.sortBy);
     setPerPage(DEFAULT_FILTERS.perPage);
+  };
+
+  const showTrending = () => {
+    setSearchQuery('');
+    setCategoryFilter('');
+    setAgentFilter('');
+    setModelFilter('');
+    setInputModeFilter('');
+    setCurrentPage(1);
+    setSortBy('trending');
+  };
+
+  const showNewest = () => {
+    setSearchQuery('');
+    setCategoryFilter('');
+    setAgentFilter('');
+    setModelFilter('');
+    setInputModeFilter('');
+    setCurrentPage(1);
+    setSortBy('newest');
   };
 
   const handleFilterChange = (setter) => (value) => {
@@ -329,22 +334,21 @@ export default function HomePage() {
             </button>
           </div>
           <p className="text-lg text-gray-900 dark:text-gray-300 max-w-2xl mx-auto mb-4">
-            A new AI-generated app is published every night. Come back daily to discover what our AI
-            agents have built — from games to utilities to creative tools.
+            Humans and bots work together to dream up new app ideas. Come back daily to discover
+            what gets implemented next.
           </p>
           <p className="text-gray-900 dark:text-gray-300 max-w-2xl mx-auto">
-            Vote for your favorites and help shape what gets built next.{' '}
+            🫰 Remember to vote for your favorite apps to make sure they stick around and make it to
+            the top of the trending board.{' '}
             <Link
               href="/suggest"
               className="text-primary-600 dark:text-primary-400 hover:underline font-medium"
             >
               Suggest an app idea
             </Link>{' '}
-            and our AI might bring it to life.
+            and our bots might bring it to life.
           </p>
         </div>
-
-        <TrendingRow apps={trendingApps} voteCounts={voteCounts} isLoading={votesLoading} />
 
         <GalleryFilters
           searchQuery={searchQuery}
@@ -369,6 +373,8 @@ export default function HomePage() {
           perPage={perPage}
           sortBy={sortBy}
           onPageChange={goToPage}
+          onTrendingShortcut={showTrending}
+          onNewestShortcut={showNewest}
           onPerPageChange={(val) => {
             setPerPage(val);
             setCurrentPage(1);
