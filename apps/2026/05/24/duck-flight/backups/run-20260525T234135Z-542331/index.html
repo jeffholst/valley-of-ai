@@ -80,7 +80,6 @@
     // ─── Constants ───────────────────────────────────────────────────────────────
     const LOGICAL_W = 400;
     const LOGICAL_H = 650;
-    const EASY_MODE_STORAGE_KEY = 'duckFlight_easyMode';
     // focalLength tuned so a 1-unit shape at z=20 spans ~100px in logical 400px canvas
     const FOCAL_LEN = 2000;
     const VP_X = LOGICAL_W / 2;     // vanishing point x (horizontal center)
@@ -145,7 +144,6 @@
     let popups = [];         // score popup text objects {x, y, vy, life}
     let startGraceTimer = 0; // brief safe opening so mobile players can orient before flapping
     let bestScore = parseInt(localStorage.getItem('duckFlight_best') || '0', 10);
-    let easyMode = localStorage.getItem(EASY_MODE_STORAGE_KEY) === 'true';
 
     // Input state
     const input = {
@@ -213,7 +211,7 @@
       const innerR = size * 0.47 * innerOpeningFactor;    // shrinks as difficulty ramps
       const hue = Math.floor(Math.random() * 360);
       const color = `hsl(${hue}, 85%, 58%)`;              // HSL with saturation pop (particles)
-      const wx = easyMode ? 0 : (Math.random() * 2 - 1) * 1.2;
+      const wx = (Math.random() * 2 - 1) * 1.2;
       const wy = (Math.random() * 2 - 1) * 0.4;
       const spinAxis = Math.random() < 0.5 ? 'z' : 'y';  // z=face-on twirl, y=barrel-roll
       const rotationSpeed = (0.4 + Math.random() * 0.8) * (Math.random() < 0.5 ? 1 : -1);
@@ -359,10 +357,6 @@
         const tag = document.activeElement?.tagName;
         if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
         if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
-        if ((e.key === 'e' || e.key === 'E') && (state === STATE.MENU || state === STATE.GAMEOVER)) {
-          toggleEasyMode();
-          return;
-        }
         if ((e.key === ' ' || e.key === 'Enter') && (state === STATE.MENU || state === STATE.GAMEOVER)) {
           startGame(); return;
         }
@@ -379,12 +373,6 @@
       });
 
       function updatePointerZone(e, allowFlap) {
-        if (easyMode) {
-          input.pointerLeft = false;
-          input.pointerRight = false;
-          if (allowFlap) input.flapPending = true;
-          return;
-        }
         const rect = canvas.getBoundingClientRect();
         const cx = (e.clientX - rect.left) / scale;
 
@@ -396,14 +384,7 @@
       }
 
       canvas.addEventListener('pointerdown', e => {
-        if (state === STATE.MENU || state === STATE.GAMEOVER) {
-          if (isEasyModeToggleHit(e)) {
-            toggleEasyMode();
-            return;
-          }
-          startGame();
-          return;
-        }
+        if (state === STATE.MENU || state === STATE.GAMEOVER) { startGame(); return; }
         if (state === STATE.PLAYING) updatePointerZone(e, true);
       });
       canvas.addEventListener('pointermove', e => {
@@ -423,54 +404,8 @@
       canvas.addEventListener('touchstart', e => e.preventDefault(), { passive: false });
     }
 
-    function isLeft() { return !easyMode && (input.left || input.pointerLeft); }
-    function isRight() { return !easyMode && (input.right || input.pointerRight); }
-
-    function toggleEasyMode() {
-      easyMode = !easyMode;
-      localStorage.setItem(EASY_MODE_STORAGE_KEY, easyMode ? 'true' : 'false');
-      input.left = input.right = input.pointerLeft = input.pointerRight = false;
-    }
-
-    function easyModeToggleBounds() {
-      const w = 176;
-      const h = 30;
-      const y = state === STATE.GAMEOVER ? LOGICAL_H * 0.78 : LOGICAL_H * 0.75;
-      return { x: (LOGICAL_W - w) / 2, y, w, h };
-    }
-
-    function isEasyModeToggleHit(e) {
-      const rect = canvas.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / scale;
-      const y = (e.clientY - rect.top) / scale;
-      const b = easyModeToggleBounds();
-      return x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h;
-    }
-
-    function getTargetShape() {
-      let target = null;
-      for (const shape of shapes) {
-        if (shape.passed || shape.missed || shape.wz <= PASS_Z) continue;
-        if (!target || shape.wz < target.wz) target = shape;
-      }
-      return target;
-    }
-
-    function getTargetAlignment() {
-      if (!duck) return null;
-      const shape = getTargetShape();
-      if (!shape) return null;
-      const dx = duck.x - shape.wx;
-      const dy = duck.wy - shape.wy;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      return {
-        shape,
-        dx,
-        dy,
-        onTarget: dist <= shape.innerR,
-        altitudeOnTarget: Math.abs(dy) <= shape.innerR,
-      };
-    }
+    function isLeft() { return input.left || input.pointerLeft; }
+    function isRight() { return input.right || input.pointerRight; }
 
     // ─── Update ───────────────────────────────────────────────────────────────────
     function updateDuck(dt) {
@@ -496,16 +431,11 @@
         duck.momentum = MOMENTUM_MIN;
       }
 
-      if (easyMode) {
-        duck.vx = 0;
-        duck.x = 0;
-      } else {
-        // Lateral steering (unchanged from before)
-        duck.vx += (isLeft() ? -DUCK_THRUST : isRight() ? DUCK_THRUST : 0) * dt;
-        duck.vx *= (1 - DUCK_DRAG * dt);
-        duck.vx = Math.max(-2.4, Math.min(2.4, duck.vx));
-        duck.x = Math.max(DUCK_X_MIN, Math.min(DUCK_X_MAX, duck.x + duck.vx * dt));
-      }
+      // Lateral steering (unchanged from before)
+      duck.vx += (isLeft() ? -DUCK_THRUST : isRight() ? DUCK_THRUST : 0) * dt;
+      duck.vx *= (1 - DUCK_DRAG * dt);
+      duck.vx = Math.max(-2.4, Math.min(2.4, duck.vx));
+      duck.x = Math.max(DUCK_X_MIN, Math.min(DUCK_X_MAX, duck.x + duck.vx * dt));
 
       // No passive momentum drain — altitude is the primary survival mechanic now
     }
@@ -1050,80 +980,6 @@
       ctx.stroke();
       ctx.setLineDash([]);
 
-      const alignment = getTargetAlignment();
-      if (alignment) {
-        const targetT = Math.max(0, Math.min(1, (alignment.shape.wy - DUCK_WY_MIN) / range));
-        const targetY = barBot - barH * targetT;
-        ctx.strokeStyle = alignment.altitudeOnTarget ? '#34d399' : '#fbbf24';
-        ctx.fillStyle = alignment.altitudeOnTarget ? '#34d399' : '#fbbf24';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(barX - 7, targetY);
-        ctx.lineTo(barX + barW + 7, targetY);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(barX - 10, targetY);
-        ctx.lineTo(barX - 4, targetY - 4);
-        ctx.lineTo(barX - 4, targetY + 4);
-        ctx.closePath();
-        ctx.fill();
-      }
-
-      ctx.restore();
-    }
-
-    function drawTargetAssist() {
-      const alignment = getTargetAlignment();
-      if (!alignment) return;
-
-      const pulse = 0.5 + 0.5 * Math.sin(performance.now() / 160);
-      const color = alignment.onTarget ? '#34d399' : '#fbbf24';
-      ctx.save();
-      ctx.globalAlpha = alignment.onTarget ? 0.85 : 0.42;
-      ctx.strokeStyle = color;
-      ctx.fillStyle = color;
-      ctx.lineWidth = alignment.onTarget ? 2.2 : 1.4;
-
-      ctx.beginPath();
-      ctx.arc(VP_X, VP_Y, 17 + pulse * 2, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(VP_X, VP_Y, 7, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(VP_X - 28, VP_Y);
-      ctx.lineTo(VP_X - 12, VP_Y);
-      ctx.moveTo(VP_X + 12, VP_Y);
-      ctx.lineTo(VP_X + 28, VP_Y);
-      ctx.moveTo(VP_X, VP_Y - 28);
-      ctx.lineTo(VP_X, VP_Y - 12);
-      ctx.moveTo(VP_X, VP_Y + 12);
-      ctx.lineTo(VP_X, VP_Y + 28);
-      ctx.stroke();
-
-      if (alignment.onTarget) {
-        ctx.globalAlpha = 0.75 + pulse * 0.25;
-        ctx.font = 'bold 11px system-ui, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('ON TARGET', VP_X, VP_Y + 46);
-      }
-      ctx.restore();
-    }
-
-    function drawEasyModeToggle() {
-      const b = easyModeToggleBounds();
-      ctx.save();
-      ctx.fillStyle = easyMode ? 'rgba(52,211,153,0.20)' : 'rgba(15,23,42,0.52)';
-      ctx.strokeStyle = easyMode ? '#34d399' : 'rgba(255,255,255,0.32)';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.roundRect(b.x, b.y, b.w, b.h, 15);
-      ctx.fill();
-      ctx.stroke();
-      ctx.font = 'bold 13px system-ui, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillStyle = easyMode ? '#bbf7d0' : '#e2e8f0';
-      ctx.fillText(`Easy Mode: ${easyMode ? 'ON' : 'OFF'}`, LOGICAL_W / 2, b.y + 20);
       ctx.restore();
     }
 
@@ -1215,18 +1071,13 @@
       ctx.font = `${subSize}px system-ui, sans-serif`;
       ctx.fillStyle = '#cbd5e1';
       ctx.fillText('Tap to begin', W / 2, H * 0.67);
-      ctx.fillText(
-        easyMode ? 'Easy mode centers shapes — just flap' : 'Hold left or right to steer',
-        W / 2,
-        H * 0.67 + subSize * 1.6
-      );
-      drawEasyModeToggle();
+      ctx.fillText('Hold left or right to steer', W / 2, H * 0.67 + subSize * 1.6);
 
       // Best score if non-zero
       if (bestScore > 0) {
         ctx.font = `${Math.round(H * 0.022)}px system-ui, sans-serif`;
         ctx.fillStyle = 'rgba(251,191,36,0.55)';
-        ctx.fillText(`Best: ${bestScore}`, W / 2, H * 0.84);
+        ctx.fillText(`Best: ${bestScore}`, W / 2, H * 0.79);
       }
 
       ctx.restore();
@@ -1278,7 +1129,6 @@
       ctx.fillStyle = '#f9fafb';
       ctx.fillText('Tap to retry', W / 2, H * 0.70);
       ctx.globalAlpha = 1;
-      drawEasyModeToggle();
 
       ctx.restore();
     }
@@ -1286,14 +1136,12 @@
     function drawInputHints() {
       // Mobile tap zones (subtle)
       ctx.save();
-      if (!easyMode) {
-        ctx.globalAlpha = isLeft() ? 0.12 : 0.04;
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(0, 0, LOGICAL_W * 0.33, LOGICAL_H);
+      ctx.globalAlpha = isLeft() ? 0.12 : 0.04;
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, LOGICAL_W * 0.33, LOGICAL_H);
 
-        ctx.globalAlpha = isRight() ? 0.12 : 0.04;
-        ctx.fillRect(LOGICAL_W * 0.67, 0, LOGICAL_W * 0.33, LOGICAL_H);
-      }
+      ctx.globalAlpha = isRight() ? 0.12 : 0.04;
+      ctx.fillRect(LOGICAL_W * 0.67, 0, LOGICAL_W * 0.33, LOGICAL_H);
 
       // Three-zone touch labels, fades out after a few seconds of play.
       if (duck && gameTime < 4) {
@@ -1302,13 +1150,9 @@
         ctx.fillStyle = '#fff';
         ctx.font = '13px system-ui, sans-serif';
         ctx.textAlign = 'center';
-        if (easyMode) {
-          ctx.fillText('easy mode: tap anywhere to flap', LOGICAL_W / 2, LOGICAL_H - 30);
-        } else {
-          ctx.fillText('← steer', LOGICAL_W * 0.165, LOGICAL_H - 30);
-          ctx.fillText('tap flap', LOGICAL_W * 0.5, LOGICAL_H - 30);
-          ctx.fillText('steer →', LOGICAL_W * 0.835, LOGICAL_H - 30);
-        }
+        ctx.fillText('← steer', LOGICAL_W * 0.165, LOGICAL_H - 30);
+        ctx.fillText('tap flap', LOGICAL_W * 0.5, LOGICAL_H - 30);
+        ctx.fillText('steer →', LOGICAL_W * 0.835, LOGICAL_H - 30);
       }
 
       ctx.restore();
@@ -1472,7 +1316,6 @@
       drawDuckPOV();    // screen-space last, after all world content
       drawVignette();   // edge darkening to focus center
       drawStallWarning();
-      drawTargetAssist();
 
       if (shaking) ctx.restore();
 

@@ -180,6 +180,16 @@
         "implementedAt": "2026-05-25T22:36:06Z",
         "agentName": "Codex",
         "llmModel": "GPT-5"
+      },
+      {
+        "issueNumber": 504,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/504",
+        "runId": "run-20260525T234135Z-542331",
+        "description": "Added a target-assist HUD with center bullseye and altitude marker, plus an Easy Mode toggle that disables steering and centers all shapes horizontally.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-25T23:41:35Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5"
       }
     ],
     "allowImprovements": true,
@@ -250,6 +260,11 @@
         "runId": "run-20260525T223606Z-119f3b",
         "path": "backups/run-20260525T223606Z-119f3b/index.html",
         "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T223606Z-119f3b/index.html"
+      },
+      {
+        "runId": "run-20260525T234135Z-542331",
+        "path": "backups/run-20260525T234135Z-542331/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T234135Z-542331/index.html"
       }
     ]
   },
