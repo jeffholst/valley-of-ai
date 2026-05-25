@@ -231,13 +231,24 @@ gh issue edit <issue-number> --add-label "status:in-progress"
     --message "Sanity warning — <improvementSanity.reasons joined by '; '>. Proceeding with caution."
   ```
 
-- **`overallRisk: 'high'`** — strong signal of problematic pattern (e.g. high change frequency, oscillating add/remove behavior). Log `SANITY_ABORT` and **stop — do not proceed**:
+- **`overallRisk: 'high'`** — strong signal of problematic pattern (e.g. high change frequency, oscillating add/remove behavior). Log `SANITY_ABORT`, release the issue claim, commit the abort logs, and **stop — do not proceed**:
 
   ```bash
   npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD --app-date <app-date> \
-    --category pipeline --step SANITY_ABORT --status aborted \
+    --agent "<agent-name>" --llmModel "<model-id>" --category pipeline \
+    --step SANITY_ABORT --status aborted \
     --message "Sanity check halted pipeline — <improvementSanity.reasons joined by '; '>."
+
+  gh issue edit <issue-number> --remove-label "status:in-progress"
+
+  git add apps/<app-path>/log.jsonl logs/YYYY/MM/DD.jsonl
+  git commit -m "chore: record sanity abort for <app-id> improvement"
+  git push origin main
   ```
+
+  - Leave `status:approved` in place so the issue can be selected again after the sanity condition is resolved or the request is boosted under policy.
+  - Commit only the two log files created by this abort. Do not stage app files, metadata, backups, or unrelated work.
+  - After the push succeeds, stop the run. Do not log `TRANSACTION_START`, do not create a branch, and do not enter Step 10.
 
 > **Boost note:** If `improvementSanity.isBoosted` is `true`, the sanity check has already applied reduced scrutiny. A `medium` risk on a boosted issue is still safe to proceed — the boost cap ensures boosted requests are never blocked at `high`.
 
