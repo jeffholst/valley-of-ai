@@ -13,6 +13,9 @@
     "url": "https://github.com/jeffholst/valley-of-ai/issues"
   },
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "prepare": "husky",
     "dev": "npm run sync && next dev",
@@ -55,7 +58,7 @@
     "@emailjs/browser": "^4.4.1",
     "@supabase/supabase-js": "^2.106.1",
     "bad-words": "^4.0.0",
-    "commander": "^12.0.0",
+    "commander": "^14.0.3",
     "next": "^16.2.6",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
