@@ -172,19 +172,6 @@
   </g>
   </g>
 
-  <!-- Target assist bullseye -->
-  <g fill="none" stroke="#34d399" stroke-width="3" opacity="0.72">
-    <circle cx="400" cy="225" r="32"/>
-    <circle cx="400" cy="225" r="14"/>
-    <line x1="352" y1="225" x2="376" y2="225"/>
-    <line x1="424" y1="225" x2="448" y2="225"/>
-    <line x1="400" y1="177" x2="400" y2="201"/>
-    <line x1="400" y1="249" x2="400" y2="273"/>
-  </g>
-  <text x="400" y="290" font-family="system-ui,sans-serif" font-weight="700" font-size="17"
-        fill="#34d399" text-anchor="middle" opacity="0.78"
-        stroke="rgba(0,0,0,0.45)" stroke-width="2" paint-order="stroke">ON TARGET</text>
-
   <!-- Pass particles -->
   <g opacity="0.88">
     <circle cx="302" cy="152" r="4" fill="#f5c97a"/>
@@ -243,11 +230,6 @@
   <!-- Momentum bar: centered at top, thin (8px) -->
   <rect x="224" y="14" width="352" height="8" rx="4" fill="rgba(0,0,0,0.52)"/>
   <rect x="224" y="14" width="270" height="8" rx="4" fill="#34d399"/>
-
-  <!-- Easy mode indicator -->
-  <rect x="314" y="32" width="172" height="30" rx="15" fill="rgba(52,211,153,0.20)" stroke="#34d399" stroke-width="1.5"/>
-  <text x="400" y="52" font-family="system-ui,sans-serif" font-weight="700" font-size="14"
-        fill="#bbf7d0" text-anchor="middle">Easy Mode: ON</text>
 
   <!-- Three-zone mobile input hint -->
   <g font-family="system-ui,sans-serif" font-size="13" font-weight="600" fill="rgba(255,255,255,0.42)" text-anchor="middle">
