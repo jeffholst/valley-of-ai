@@ -335,8 +335,8 @@
         this.wingPhase = (this.wingPhase + dt * flapRate) % (Math.PI * 2);
         this.bobPhase  = (this.bobPhase  + dt * 1.2)     % (Math.PI * 2);
         // Bank damps toward duck.vx with a weighted spring so it feels weighty
-        const targetBank = duck ? duck.vx * 0.60 : 0;
-        this.bankAngle += (targetBank - this.bankAngle) * Math.min(dt * 1.5, 1);
+        const targetBank = duck ? duck.vx * 0.32 : 0;
+        this.bankAngle += (targetBank - this.bankAngle) * Math.min(dt * 4.5, 1);
       },
     };
 
@@ -732,17 +732,17 @@
       const lAnchorX = W * 0.04;
       const lAnchorY = baseY;
       const lShoulderX = W * 0.20;
-      const lShoulderY = baseY - 65 - bank * 42;
+      const lShoulderY = baseY - 65 - bank * 28;
       const lTipX = W * 0.37;
-      const lTipY = baseY - 118 + flap - bank * 88;
+      const lTipY = baseY - 118 + flap - bank * 46;
 
       // Right wing: mirror
       const rAnchorX = W * 0.96;
       const rAnchorY = baseY;
       const rShoulderX = W * 0.80;
-      const rShoulderY = baseY - 65 + bank * 42;
+      const rShoulderY = baseY - 65 + bank * 28;
       const rTipX = W * 0.63;
-      const rTipY = baseY - 118 + flap + bank * 88;
+      const rTipY = baseY - 118 + flap + bank * 46;
 
       ctx.save();
 
@@ -1216,14 +1216,8 @@
         );
       }
 
-      const roll = Anim.bankAngle * 0.07;
-      ctx.save();
-      ctx.translate(LOGICAL_W / 2, VP_Y);
-      ctx.rotate(-roll);
-      ctx.translate(-LOGICAL_W / 2, -VP_Y);
       drawSpeedLines();
       drawShapes();
-      ctx.restore();
       drawParticles();
       drawDuckPOV();    // screen-space last, after all world content
       drawVignette();   // edge darkening to focus center
