@@ -88,15 +88,15 @@
     const SUN_X = LOGICAL_W * 0.72; // sun off-center to the right
 
     const SPAWN_Z = 1000;           // world units from camera when ring spawns
-    const KILL_Z = 10;              // world units — ring passes camera (miss check)
-    const PASS_Z = 28;              // world units — ring considered "passed through" (fills viewport at this depth)
+    const KILL_Z = 25;              // world units — ring passes camera (miss check)
+    const PASS_Z = 60;              // world units — ring considered "passed through"
 
     const DUCK_X_MIN = -2.4;        // world units lateral range
     const DUCK_X_MAX = 2.4;
     const DUCK_THRUST = 7.0;        // lateral thrust (world units/sec²)
     const DUCK_DRAG = 3.2;          // proportional velocity drag
 
-    const BASE_SPEED = 100;         // ring approach speed (world units/sec)
+    const BASE_SPEED = 130;         // ring approach speed (world units/sec)
     const SPAWN_INTERVAL = 3.8;     // seconds between ring spawns (base)
 
     const MOMENTUM_START = 1.0;
@@ -408,7 +408,7 @@
     }
 
     function updateShapes(dt) {
-      const speed = currentSpeed;                          // constant speed — momentum governs game over, not approach velocity
+      const speed = currentSpeed * duck.momentum;          // forward speed scales directly with momentum
       for (let i = shapes.length - 1; i >= 0; i--) {
         const shape = shapes[i];
         shape.wz -= speed * dt;
@@ -428,7 +428,7 @@
             duck.momentum = Math.min(MOMENTUM_MAX, duck.momentum + MOMENTUM_PASS);
             // Ramp difficulty every N passes: more speed, tighter spawns, smaller openings
             if (passCount % DIFFICULTY_EVERY_N === 0) {
-              currentSpeed = Math.min(currentSpeed + 18, 220);
+              currentSpeed = Math.min(currentSpeed + 18, 280);
               currentInterval = Math.max(currentInterval - 0.12, 0.9);
               innerOpeningFactor = Math.max(0.65, innerOpeningFactor - 0.05);
             }
