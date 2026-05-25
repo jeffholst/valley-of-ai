@@ -1,38 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
   <defs>
-    <!-- Golden-hour sky gradient -->
+    <!-- Sky gradient -->
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#0d2340"/>
-      <stop offset="55%" stop-color="#2d6094"/>
-      <stop offset="100%" stop-color="#f9c784"/>
+      <stop offset="0%" stop-color="#0d2137"/>
+      <stop offset="55%" stop-color="#1a4a7a"/>
+      <stop offset="100%" stop-color="#8ec6e0"/>
     </linearGradient>
-    <!-- Golden-hour ground: warm sand to deep umber -->
+    <!-- Ground gradient -->
     <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#c4a46b"/>
-      <stop offset="28%" stop-color="#8b6347"/>
-      <stop offset="100%" stop-color="#2c1a0a"/>
+      <stop offset="0%" stop-color="#7aaa60"/>
+      <stop offset="28%" stop-color="#4a7c3f"/>
+      <stop offset="100%" stop-color="#182810"/>
     </linearGradient>
-    <!-- Sun bloom -->
-    <radialGradient id="sunBloom" cx="72%" cy="48%" r="14%" gradientUnits="objectBoundingBox">
-      <stop offset="0%" stop-color="rgba(255,218,95,0.30)"/>
-      <stop offset="40%" stop-color="rgba(255,170,50,0.13)"/>
-      <stop offset="100%" stop-color="rgba(255,100,10,0)"/>
-    </radialGradient>
-    <!-- Sun disc -->
-    <radialGradient id="sunDisc" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#fffcd2"/>
-      <stop offset="45%" stop-color="#ffd246"/>
-      <stop offset="100%" stop-color="rgba(255,165,30,0)"/>
-    </radialGradient>
-    <!-- Near square gradient: warm sand top, deep shadow bottom (golden-hour light) -->
+    <!-- Near square gradient: lighter orange top, dark orange-brown bottom (top-down light) -->
     <linearGradient id="sqGrad" gradientUnits="userSpaceOnUse" x1="350" y1="140" x2="350" y2="236">
-      <stop offset="0%" stop-color="#f5c97a"/>
-      <stop offset="100%" stop-color="#7a3b12"/>
+      <stop offset="0%" stop-color="#ef986c"/>
+      <stop offset="100%" stop-color="#81340e"/>
     </linearGradient>
-    <!-- Mid triangle gradient: warm peach top, deep umber bottom -->
+    <!-- Mid triangle gradient: lighter teal top, dark teal bottom -->
     <linearGradient id="triGrad" gradientUnits="userSpaceOnUse" x1="435" y1="172" x2="435" y2="214">
-      <stop offset="0%" stop-color="#f4a870"/>
-      <stop offset="100%" stop-color="#7a2c08"/>
+      <stop offset="0%" stop-color="#6cefe4"/>
+      <stop offset="100%" stop-color="#0e8177"/>
     </linearGradient>
     <!-- Left wing primary feathers -->
     <linearGradient id="lwPri" x1="0" y1="0" x2="1" y2="0">
@@ -77,11 +65,6 @@
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-    <!-- Vignette -->
-    <radialGradient id="vignette" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="rgba(0,0,0,0)"/>
-      <stop offset="100%" stop-color="rgba(0,0,0,0.44)"/>
-    </radialGradient>
     <!-- HUD panel -->
     <linearGradient id="hudpanel" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="rgba(0,0,0,0.65)"/>
@@ -92,33 +75,22 @@
   <!-- Sky -->
   <rect x="0" y="0" width="800" height="225" fill="url(#sky)"/>
 
-  <!-- Sun bloom -->
-  <rect x="0" y="0" width="800" height="225" fill="url(#sunBloom)"/>
-
-  <!-- Sun disc (at ~72% x, just above horizon) -->
-  <circle cx="576" cy="215" r="18" fill="url(#sunDisc)"/>
-
-  <!-- Lens-flare streaks (subtle) -->
-  <g opacity="0.32" stroke="rgba(255,228,140,1)" stroke-linecap="round">
-    <line x1="576" y1="215" x2="628" y2="214" stroke-width="1.4"/>
-    <line x1="576" y1="215" x2="612" y2="197" stroke-width="1.0"/>
-    <line x1="576" y1="215" x2="599" y2="230" stroke-width="0.7"/>
-  </g>
-
   <!-- Cloud bands -->
   <g opacity="0.10" fill="white">
     <ellipse cx="100" cy="44" rx="68" ry="13"/>
     <ellipse cx="330" cy="44" rx="60" ry="13"/>
+    <ellipse cx="570" cy="44" rx="72" ry="13"/>
     <ellipse cx="730" cy="44" rx="52" ry="13"/>
   </g>
   <g opacity="0.08" fill="white">
     <ellipse cx="55"  cy="100" rx="52" ry="9"/>
     <ellipse cx="240" cy="100" rx="65" ry="9"/>
+    <ellipse cx="460" cy="100" rx="58" ry="9"/>
     <ellipse cx="655" cy="100" rx="70" ry="9"/>
   </g>
 
-  <!-- Horizon line (warm gold) -->
-  <line x1="0" y1="225" x2="800" y2="225" stroke="#f9c784" stroke-width="1" opacity="0.45"/>
+  <!-- Horizon -->
+  <line x1="0" y1="225" x2="800" y2="225" stroke="#8ec6e0" stroke-width="1" opacity="0.45"/>
 
   <!-- Ground -->
   <rect x="0" y="225" width="800" height="225" fill="url(#ground)"/>
@@ -138,39 +110,46 @@
     <line x1="800" y1="450" x2="400" y2="225"/>
   </g>
 
-  <!-- Far ring (fogged to warm horizon color) -->
-  <circle cx="388" cy="217" r="10" fill="none" stroke="#d4ac78" stroke-width="3" opacity="0.28"/>
+  <!-- Far ring (fogged, near horizon) -->
+  <circle cx="388" cy="217" r="10" fill="none" stroke="#9cc8dd" stroke-width="3" opacity="0.28"/>
 
-  <!-- Mid triangle (warm peach tones, gradient fill) -->
+  <!-- Mid triangle (teal, gradient fill, spinning) -->
   <g filter="url(#sglow)" opacity="0.72">
+    <!-- Outer triangle minus inner triangle via evenodd -->
     <path d="M 435,172 L 459,214 L 411,214 Z M 435,187 L 447,207 L 423,207 Z"
           fill="url(#triGrad)" fill-rule="evenodd"/>
-    <line x1="435" y1="172" x2="459" y2="214" stroke="#f8dfc0" stroke-width="1.5" opacity="0.55"/>
-    <line x1="435" y1="172" x2="411" y2="214" stroke="#f8dfc0" stroke-width="1.5" opacity="0.55"/>
+    <!-- Specular highlight on upper portion: top two edges -->
+    <line x1="435" y1="172" x2="459" y2="214" stroke="#adf0ea" stroke-width="1.5" opacity="0.55"
+          stroke-dasharray="0 0"
+          style="clip-path: inset(0 0 107px 0)"/>
+    <line x1="435" y1="172" x2="411" y2="214" stroke="#adf0ea" stroke-width="1.5" opacity="0.55"/>
   </g>
 
-  <!-- Near square (golden warm tones, gradient fill) -->
+  <!-- Near square (orange, gradient fill, framed opening) -->
   <g filter="url(#sglow)">
+    <!-- Outer square minus inner square via evenodd -->
     <path d="M 398,140 L 398,236 L 302,236 L 302,140 Z M 373,165 L 373,211 L 327,211 L 327,165 Z"
           fill="url(#sqGrad)" fill-rule="evenodd"/>
-    <line x1="302" y1="140" x2="398" y2="140" stroke="#fde8c0" stroke-width="2.5" opacity="0.60"/>
+    <!-- Specular highlight: top edge of outer square -->
+    <line x1="302" y1="140" x2="398" y2="140" stroke="#f1dbd0" stroke-width="2.5" opacity="0.60"/>
+    <!-- Faint inner glow ring for depth -->
     <rect x="327" y="165" width="46" height="46"
-          fill="none" stroke="rgba(245,201,122,0.18)" stroke-width="6"/>
+          fill="none" stroke="rgba(239,152,108,0.18)" stroke-width="6"/>
   </g>
 
-  <!-- Pass particles -->
+  <!-- Pass particles (just flew through the square successfully) -->
   <g opacity="0.88">
-    <circle cx="302" cy="152" r="4" fill="#f5c97a"/>
-    <circle cx="290" cy="168" r="3" fill="#f5c97a"/>
-    <circle cx="309" cy="141" r="2" fill="#fff8e0"/>
-    <circle cx="398" cy="155" r="4" fill="#f5c97a"/>
-    <circle cx="410" cy="170" r="3" fill="#f5c97a"/>
-    <circle cx="386" cy="144" r="2" fill="#fff8e0"/>
-    <circle cx="350" cy="112" r="4" fill="#f5c97a"/>
+    <circle cx="302" cy="152" r="4" fill="#ef986c"/>
+    <circle cx="290" cy="168" r="3" fill="#ef986c"/>
+    <circle cx="309" cy="141" r="2" fill="#fff"/>
+    <circle cx="398" cy="155" r="4" fill="#ef986c"/>
+    <circle cx="410" cy="170" r="3" fill="#ef986c"/>
+    <circle cx="386" cy="144" r="2" fill="#fff"/>
+    <circle cx="350" cy="112" r="4" fill="#ef986c"/>
     <circle cx="340" cy="102" r="3" fill="#fbbf24"/>
   </g>
 
-  <!-- Motion blur streak -->
+  <!-- Motion blur streak (banking right) -->
   <ellipse cx="622" cy="367" rx="36" ry="11" fill="#92400e" opacity="0.22" transform="rotate(8, 622, 367)"/>
 
   <!-- LEFT WING -->
@@ -198,9 +177,6 @@
         fill="url(#beak)" opacity="0.82"/>
   <path d="M 388 436  C 394 433 406 433 412 436" fill="none" stroke="#9a6e06" stroke-width="1.2" opacity="0.42"/>
 
-  <!-- Vignette overlay -->
-  <rect x="0" y="0" width="800" height="450" fill="url(#vignette)"/>
-
   <!-- HUD panel -->
   <rect x="10" y="10" width="155" height="58" rx="8" fill="url(#hudpanel)"/>
   <text x="20" y="33" font-family="system-ui,sans-serif" font-weight="700" font-size="18" fill="#fbbf24">Score: 140</text>
@@ -211,6 +187,6 @@
   <rect x="642" y="14" width="146" height="10" rx="5" fill="rgba(0,0,0,0.5)"/>
   <rect x="642" y="14" width="112" height="10" rx="5" fill="#34d399"/>
 
-  <!-- Title hint -->
+  <!-- Shape type legend hint -->
   <text x="400" y="444" font-family="system-ui,sans-serif" font-size="13" fill="rgba(255,255,255,0.25)" text-anchor="middle">Duck Flight</text>
 </svg>
