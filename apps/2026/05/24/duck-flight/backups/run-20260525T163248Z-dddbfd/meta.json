@@ -137,16 +137,6 @@
       "implementedAt": "2026-05-25T15:31:52Z",
       "agentName": "Codex",
       "llmModel": "GPT-5"
-    },
-    {
-      "issueNumber": 486,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/486",
-      "runId": "run-20260525T163248Z-dddbfd",
-      "description": "Added gameplay-speed ground scrolling so Duck Flight horizontal grid lines stream toward the player instead of staying static.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-05-25T16:32:48Z",
-      "agentName": "Codex",
-      "llmModel": "GPT-5"
     }
   ]
 }

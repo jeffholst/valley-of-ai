@@ -537,14 +537,10 @@
       ctx.strokeStyle = 'rgba(0,0,0,0.18)';
       ctx.lineWidth = 0.7;
 
-      // Horizontal grid lines stream toward the player at actual forward speed.
-      const tileZ = 35;
-      const scrollOffset = groundScroll % tileZ;
-      for (let k = 1; k <= 16; k++) {
-        const wz = k * tileZ - scrollOffset;
-        if (wz < 2) continue;
+      // Horizontal lines at increasing depth intervals (denser near horizon)
+      for (const wz of [8, 11, 16, 24, 36, 58, 95, 160, 280]) {
         const sy = VP_Y + (FOCAL_LEN / wz) * 0.9;
-        if (sy > LOGICAL_H) continue;
+        if (sy > LOGICAL_H) break;
         ctx.beginPath();
         ctx.moveTo(0, sy);
         ctx.lineTo(LOGICAL_W, sy);
@@ -1188,7 +1184,6 @@
 
       const dt = rawDt;
       updateDuck(dt);
-      groundScroll += currentSpeed * duck.momentum * dt;
       updateShapes(dt);
       spawnShapeIfNeeded(dt);
       updateParticles(dt);
