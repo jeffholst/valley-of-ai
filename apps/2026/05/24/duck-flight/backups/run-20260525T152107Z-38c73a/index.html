@@ -91,10 +91,10 @@
     const KILL_Z = 25;              // world units — ring passes camera (miss check)
     const PASS_Z = 60;              // world units — ring considered "passed through"
 
-    const DUCK_X_MIN = -2.4;        // world units lateral range
-    const DUCK_X_MAX = 2.4;
-    const DUCK_THRUST = 7.0;        // lateral thrust (world units/sec²)
-    const DUCK_DRAG = 3.2;          // proportional velocity drag
+    const DUCK_X_MIN = -1.6;        // world units lateral range
+    const DUCK_X_MAX = 1.6;
+    const DUCK_ACCEL = 5.0;         // lateral acceleration (world units/sec²)
+    const DUCK_FRICTION = 6.0;      // passive friction
 
     const BASE_SPEED = 130;         // ring approach speed (world units/sec)
     const SPAWN_INTERVAL = 3.8;     // seconds between ring spawns (base)
@@ -395,9 +395,19 @@
 
     // ─── Update ───────────────────────────────────────────────────────────────────
     function updateDuck(dt) {
-      duck.vx += (isLeft() ? -DUCK_THRUST : isRight() ? DUCK_THRUST : 0) * dt;
-      duck.vx *= (1 - DUCK_DRAG * dt);
-      duck.vx = Math.max(-2.4, Math.min(2.4, duck.vx));
+      let ax = 0;
+      if (isLeft()) ax -= DUCK_ACCEL;
+      if (isRight()) ax += DUCK_ACCEL;
+
+      // Friction
+      const friction = DUCK_FRICTION * Math.sign(duck.vx) * dt;
+      if (Math.abs(friction) > Math.abs(duck.vx)) {
+        duck.vx = 0;
+      } else {
+        duck.vx -= friction;
+      }
+
+      duck.vx += ax * dt;
       duck.x = Math.max(DUCK_X_MIN, Math.min(DUCK_X_MAX, duck.x + duck.vx * dt));
 
       // Momentum drains passively

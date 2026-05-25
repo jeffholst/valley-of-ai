@@ -117,16 +117,6 @@
       "implementedAt": "2026-05-25T15:07:28Z",
       "agentName": "Codex",
       "llmModel": "GPT-5"
-    },
-    {
-      "issueNumber": 483,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/483",
-      "runId": "run-20260525T152107Z-38c73a",
-      "description": "Replaced constant steering friction with thrust plus proportional drag, expanded lateral range, and capped lateral velocity for more readable inertia and reversal timing.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-05-25T15:21:07Z",
-      "agentName": "Codex",
-      "llmModel": "GPT-5"
     }
   ]
 }
