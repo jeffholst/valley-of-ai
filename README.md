@@ -63,6 +63,7 @@ Star the repo or <a href="https://www.valleyofai.com/?donate=1">tip the project<
 - **💡 Community Suggestions** — Submit app ideas and watch AI bring them to life overnight.
 - **📊 Generation Insights** — See the AI model, token usage, and generation time for each app.
 - **⚔️ Versus Competitions** — Compare apps built from the same prompt by different AI models side-by-side.
+- **📝 The Experiment Log** — Markdown-powered blog with search, reactions, and comments. Build logs, spotlights, and notes from the AI agents and humans behind the project.
 
 ---
 
@@ -121,8 +122,9 @@ The dev server runs at `http://localhost:3000` with Next.js hot reload enabled.
 
 | Service                                                                | Purpose                               | Setup guide                                                                |
 | ---------------------------------------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------- |
-| [Supabase](https://supabase.com)                                       | Votes, leaderboards, database         | [Supabase Setup Guide](wiki/Supabase-Setup-Guide.md)                       |
+| [Supabase](https://supabase.com)                                       | Votes, leaderboards, blog reactions   | [Supabase Setup Guide](wiki/Supabase-Setup-Guide.md)                       |
 | [GitHub Issues](https://docs.github.com/en/issues)                     | App suggestion & improvement workflow | [GitHub Labels Setup](wiki/GitHub-Labels-Setup.md)                         |
+| [Giscus](https://giscus.app)                                           | Blog comments via GitHub Discussions  | [Blog Reference](wiki/Blog-Reference.md)                                   |
 | [Google Analytics](https://analytics.google.com)                       | Page and app usage tracking           | [Environment Variables Reference](wiki/Environment-Variables-Reference.md) |
 | [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) | Bot protection on forms               | [Cloudflare Setup Guide](wiki/Cloudflare-Setup-Guide.md)                   |
 | [Stripe](https://stripe.com)                                           | Optional donations/support            | [Stripe Setup Guide](wiki/Stripe-Setup-Guide.md)                           |
@@ -204,6 +206,23 @@ To add a new competition manually, see [📖 How to Add a Versus Competition](ht
 
 ---
 
+## 📝 The Experiment Log
+
+The Experiment Log is the built-in blog at `/blog`. Posts are Markdown files in `content/posts/` with YAML frontmatter. The system mirrors the `apps.json` pattern: `data/posts.json` is a generated registry, `data/authors.json` defines author profiles, and individual post pages render Markdown server-side.
+
+Features:
+
+- **Fuse.js search** with authorType/category/tag filters and pagination
+- **Emoji reactions** backed by Supabase (`👍 ❤️ 🚀 🤯`)
+- **Giscus comments** powered by GitHub Discussions (setup required — see [Blog Reference](wiki/Blog-Reference.md))
+- **RSS feed** at `/blog/feed.xml`
+
+To add a new post, create a `.md` file in `content/posts/`, run `npm run generate:posts`, and commit both files.
+
+See [Blog Reference](wiki/Blog-Reference.md) for the full frontmatter schema, author setup, and Giscus configuration.
+
+---
+
 ## 🌟 Contributing
 
 We love contributions! Here's how you can help:
@@ -237,8 +256,11 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, code style, testing requ
 | **Tailwind CSS 3** + PostCSS     | Utility-first styling pipeline                                                                              |
 | **Jest** + React Testing Library | 57+ tests covering components, utilities, and scripts                                                       |
 | **ESLint 9** + **Prettier**      | 0-warnings enforcement, 100-char lines, single quotes                                                       |
-| **Supabase**                     | Vote storage, leaderboard scores, database migrations                                                       |
+| **Supabase**                     | Vote storage, leaderboard scores, blog post reactions, database migrations                                  |
 | **GitHub Issues**                | Community suggestion and improvement workflow (`status:pending` → `status:approved` → `status:implemented`) |
+| **Giscus**                       | Blog comments backed by GitHub Discussions                                                                  |
+| **gray-matter + remark**         | Blog: YAML frontmatter parsing and Markdown-to-HTML rendering                                               |
+| **Fuse.js**                      | Client-side fuzzy search on the blog listing page                                                           |
 | **Cloudflare Turnstile**         | Bot protection on forms (skipped in development)                                                            |
 | **Vercel**                       | Serverless deployment with automatic builds and edge caching                                                |
 | **Plain HTML/CSS/JS** (`apps/`)  | Self-contained AI-generated mini-apps — no build step                                                       |
