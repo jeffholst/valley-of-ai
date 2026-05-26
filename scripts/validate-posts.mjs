@@ -2,7 +2,7 @@
 /**
  * Post Validator
  *
- * Checks all posts in content/posts/ against the schema, and verifies:
+ * Checks all posts in content/posts/ and verifies:
  *   - Required frontmatter fields are present
  *   - Slugs are unique and match the filename
  *   - Author IDs exist in data/authors.json
@@ -103,10 +103,26 @@ function main() {
         issues.push(`  ${filename}: duplicate slug '${data.slug}'`);
       }
       seenSlugs.add(data.slug);
+
+      const expectedSlug = filename.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, '');
+      if (data.slug !== expectedSlug) {
+        issues.push(
+          `  ${filename}: slug '${data.slug}' must match filename-derived slug '${expectedSlug}'`
+        );
+      }
     }
 
     // relatedApps exist in apps.json
-    for (const appId of data.relatedApps ?? []) {
+    const { relatedApps } = data;
+    if (relatedApps != null && !Array.isArray(relatedApps)) {
+      issues.push(`  ${filename}: relatedApps must be an array`);
+    }
+
+    for (const appId of Array.isArray(relatedApps) ? relatedApps : []) {
+      if (typeof appId !== 'string' || !appId.trim()) {
+        issues.push(`  ${filename}: relatedApps entries must be non-empty strings`);
+        continue;
+      }
       if (!appIds.has(appId)) {
         issues.push(`  ${filename}: relatedApp '${appId}' not found in data/apps.json`);
       }

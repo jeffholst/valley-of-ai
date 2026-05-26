@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /**
  * Giscus comments widget backed by GitHub Discussions.
@@ -19,6 +19,32 @@ const GISCUS_CATEGORY_ID = ''; // TODO: fill in from giscus.app
 
 export default function GiscusComments({ slug, theme }) {
   const ref = useRef(null);
+  const [resolvedTheme, setResolvedTheme] = useState(theme === 'dark' ? 'dark' : 'light');
+
+  useEffect(() => {
+    if (theme === 'dark' || theme === 'light') {
+      setResolvedTheme(theme);
+      return;
+    }
+
+    const syncTheme = () => {
+      const storedTheme = localStorage.getItem('theme');
+      if (storedTheme === 'dark' || storedTheme === 'light') {
+        setResolvedTheme(storedTheme);
+        return;
+      }
+      setResolvedTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    };
+
+    syncTheme();
+    const observer = new MutationObserver(syncTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    window.addEventListener('storage', syncTheme);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('storage', syncTheme);
+    };
+  }, [theme]);
 
   useEffect(() => {
     if (!ref.current) {
@@ -44,10 +70,10 @@ export default function GiscusComments({ slug, theme }) {
     script.setAttribute('data-reactions-enabled', '0');
     script.setAttribute('data-emit-metadata', '0');
     script.setAttribute('data-input-position', 'bottom');
-    script.setAttribute('data-theme', theme === 'dark' ? 'dark_dimmed' : 'light');
+    script.setAttribute('data-theme', resolvedTheme === 'dark' ? 'dark_dimmed' : 'light');
     script.setAttribute('data-lang', 'en');
     ref.current.appendChild(script);
-  }, [slug, theme]);
+  }, [slug, resolvedTheme]);
 
   if (!GISCUS_REPO_ID || !GISCUS_CATEGORY_ID) {
     return (
