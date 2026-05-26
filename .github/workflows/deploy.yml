@@ -43,6 +43,9 @@ jobs:
       - name: Validate apps
         run: npm run validate:apps
 
+      - name: Validate posts
+        run: npm run validate:posts
+
   build:
     name: Build
     needs: quality

@@ -13,6 +13,8 @@ import { usePterodactyls } from '@/hooks/usePterodactyls';
 import { trendingScore } from '@/lib/trendingScore';
 import appsData from '@/data/apps.json';
 import appVoteStats from '@/data/app-vote-stats.json';
+import postsData from '@/data/posts.json';
+import BlogPostCard from '@/components/BlogPostCard';
 
 const OPTIONS_STORAGE_KEY = 'voa-page-options';
 const FILTERS_STORAGE_KEY = 'voa-gallery-filters';
@@ -411,6 +413,28 @@ export default function HomePage() {
             setCurrentPage(1);
           }}
         />
+
+        {/* Experiment Log — recent posts */}
+        {postsData.length > 0 && (
+          <section className="mt-16 pt-10 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                The Experiment Log
+              </h2>
+              <Link
+                href="/blog"
+                className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+              >
+                All posts →
+              </Link>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {postsData.slice(0, 3).map((post) => (
+                <BlogPostCard key={post.slug} post={post} />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
 
       {mounted && <OptionsDrawer options={options} onToggle={handleOptionToggle} />}
