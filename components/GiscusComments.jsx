@@ -17,26 +17,37 @@ const GISCUS_REPO_ID = process.env.NEXT_PUBLIC_GISCUS_REPO_ID ?? '';
 const GISCUS_CATEGORY = process.env.NEXT_PUBLIC_GISCUS_CATEGORY ?? 'Blog Comments';
 const GISCUS_CATEGORY_ID = process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID ?? '';
 
+function getGiscusTheme(isDark) {
+  return isDark ? 'dark_dimmed' : 'light';
+}
+
+function readTheme() {
+  try {
+    const stored = localStorage.getItem('theme');
+    if (stored === 'dark' || stored === 'light') {
+      return stored;
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  } catch {
+    return 'light';
+  }
+}
+
 export default function GiscusComments({ slug, theme }) {
   const ref = useRef(null);
-  const [resolvedTheme, setResolvedTheme] = useState(theme === 'dark' ? 'dark' : 'light');
+  const injected = useRef(false);
+  const [resolvedTheme, setResolvedTheme] = useState('light');
 
+  // Sync theme from DOM/localStorage — runs once on mount
   useEffect(() => {
     if (theme === 'dark' || theme === 'light') {
       setResolvedTheme(theme);
       return;
     }
 
-    const syncTheme = () => {
-      const storedTheme = localStorage.getItem('theme');
-      if (storedTheme === 'dark' || storedTheme === 'light') {
-        setResolvedTheme(storedTheme);
-        return;
-      }
-      setResolvedTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-    };
+    setResolvedTheme(readTheme());
 
-    syncTheme();
+    const syncTheme = () => setResolvedTheme(readTheme());
     const observer = new MutationObserver(syncTheme);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     window.addEventListener('storage', syncTheme);
@@ -46,16 +57,14 @@ export default function GiscusComments({ slug, theme }) {
     };
   }, [theme]);
 
+  // Inject Giscus script once per slug
   useEffect(() => {
-    if (!ref.current) {
-      return;
-    }
-    if (!GISCUS_REPO_ID || !GISCUS_CATEGORY_ID) {
+    if (!ref.current || !GISCUS_REPO_ID || !GISCUS_CATEGORY_ID) {
       return;
     }
 
-    // Remove any existing Giscus iframe before injecting a new one
     ref.current.innerHTML = '';
+    injected.current = false;
 
     const script = document.createElement('script');
     script.src = 'https://giscus.app/client.js';
@@ -70,10 +79,28 @@ export default function GiscusComments({ slug, theme }) {
     script.setAttribute('data-reactions-enabled', '0');
     script.setAttribute('data-emit-metadata', '0');
     script.setAttribute('data-input-position', 'bottom');
-    script.setAttribute('data-theme', resolvedTheme === 'dark' ? 'dark_dimmed' : 'light');
+    script.setAttribute('data-theme', getGiscusTheme(resolvedTheme === 'dark'));
     script.setAttribute('data-lang', 'en');
+    script.onload = () => {
+      injected.current = true;
+    };
     ref.current.appendChild(script);
-  }, [slug, resolvedTheme]);
+  }, [slug]); // intentionally omits resolvedTheme — theme changes use postMessage below
+
+  // Update theme without re-injecting — send postMessage to the loaded iframe
+  useEffect(() => {
+    if (!injected.current) {
+      return;
+    }
+    const iframe = ref.current?.querySelector('iframe.giscus-frame');
+    if (!iframe) {
+      return;
+    }
+    iframe.contentWindow?.postMessage(
+      { giscus: { setConfig: { theme: getGiscusTheme(resolvedTheme === 'dark') } } },
+      'https://giscus.app'
+    );
+  }, [resolvedTheme]);
 
   if (!GISCUS_REPO_ID || !GISCUS_CATEGORY_ID) {
     return (
