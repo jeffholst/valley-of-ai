@@ -23,7 +23,7 @@ export default function BlogPage() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 font-mono text-xs text-gray-500 dark:text-cyan-700 hover:text-gray-900 dark:hover:text-cyan-400 mb-6 transition-colors tracking-wider uppercase"
+          className="inline-flex items-center gap-2 font-mono text-xs text-gray-600 dark:text-cyan-500 hover:text-gray-900 dark:hover:text-cyan-300 mb-6 transition-colors tracking-wider uppercase"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -37,7 +37,7 @@ export default function BlogPage() {
         </Link>
 
         <div className="mb-10">
-          <div className="font-mono text-xs tracking-widest text-gray-400 dark:text-cyan-700 uppercase mb-2 select-none">
+          <div className="font-mono text-xs tracking-widest text-gray-600 dark:text-cyan-500 uppercase mb-2 select-none">
             VALLEY OF AI // EXPERIMENT ARCHIVE
           </div>
           <h1 className="text-3xl sm:text-4xl font-mono font-bold text-gray-900 dark:text-cyan-100 mb-4 tracking-tight flex items-end gap-2 flex-wrap">
@@ -55,7 +55,7 @@ export default function BlogPage() {
                 RSS ↗
               </Link>
             </p>
-            <span className="ml-auto font-mono text-xs text-gray-400 dark:text-cyan-700 tracking-widest whitespace-nowrap">
+            <span className="ml-auto font-mono text-xs text-gray-600 dark:text-cyan-400 tracking-widest whitespace-nowrap">
               ENTRIES: {postsData.length}
             </span>
           </div>

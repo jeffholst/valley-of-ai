@@ -40,11 +40,11 @@ export default function BlogPostCard({ post, recordIndex }) {
       {/* Record number + badges row */}
       <div className="flex items-center gap-2 flex-wrap">
         {recordIndex !== null && recordIndex !== undefined && (
-          <span className="font-mono text-[10px] text-gray-400 dark:text-cyan-800 tracking-widest select-none">
+          <span className="font-mono text-[10px] text-gray-500 dark:text-cyan-600 tracking-widest select-none">
             REC {String(recordIndex).padStart(3, '0')}
           </span>
         )}
-        <span className="font-mono text-[10px] px-1.5 py-0.5 border text-gray-500 dark:text-cyan-700 border-gray-300 dark:border-cyan-900 tracking-wider">
+        <span className="font-mono text-[10px] px-1.5 py-0.5 border text-gray-600 dark:text-cyan-400 border-gray-300 dark:border-cyan-700 tracking-wider">
           [ {post.category.toUpperCase().replace(/ /g, '_')} ]
         </span>
         <span
@@ -84,7 +84,7 @@ export default function BlogPostCard({ post, recordIndex }) {
             <p className="text-xs font-mono text-gray-600 dark:text-cyan-400">
               {author?.name ?? post.author}
             </p>
-            <p className="text-[10px] font-mono text-gray-400 dark:text-cyan-800 tabular-nums tracking-wider">
+            <p className="text-[10px] font-mono text-gray-500 dark:text-cyan-500 tabular-nums tracking-wider">
               {dateLabel}
             </p>
           </div>

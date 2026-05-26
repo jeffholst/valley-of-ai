@@ -70,7 +70,7 @@ export default function BlogIndex({ posts, categories, tags }) {
     <div>
       {/* Filter bar */}
       <div className="bg-white dark:bg-[rgba(4,12,30,0.7)] rounded-xl border border-gray-200 dark:border-[rgba(80,200,255,0.2)] p-4 mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:flex-wrap backdrop-blur-sm">
-        <span className="hidden sm:block font-mono text-xs text-gray-400 dark:text-cyan-700 tracking-widest uppercase select-none whitespace-nowrap">
+        <span className="hidden sm:block font-mono text-xs text-gray-600 dark:text-cyan-400 tracking-widest uppercase select-none whitespace-nowrap">
           FILTER BY:
         </span>
         <input
@@ -81,7 +81,7 @@ export default function BlogIndex({ posts, categories, tags }) {
             setQuery(e.target.value);
             setPage(1);
           }}
-          className="flex-1 min-w-48 rounded-lg border border-gray-300 dark:border-[rgba(80,200,255,0.25)] bg-gray-50 dark:bg-[rgba(4,12,40,0.8)] px-3 py-2 text-sm text-gray-900 dark:text-cyan-100 placeholder-gray-400 dark:placeholder-cyan-800 font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-600"
+          className="flex-1 min-w-48 rounded-lg border border-gray-300 dark:border-[rgba(80,200,255,0.25)] bg-gray-50 dark:bg-[rgba(4,12,40,0.8)] px-3 py-2 text-sm text-gray-900 dark:text-cyan-100 placeholder-gray-400 dark:placeholder-cyan-600 font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-600"
         />
 
         <select
@@ -147,7 +147,7 @@ export default function BlogIndex({ posts, categories, tags }) {
       {/* Results */}
       {paginated.length === 0 ? (
         <div className="text-center py-16">
-          <p className="font-mono text-xs tracking-widest text-gray-400 dark:text-cyan-800 uppercase mb-2">
+          <p className="font-mono text-xs tracking-widest text-gray-600 dark:text-cyan-400 uppercase mb-2">
             NO SIGNAL
           </p>
           <p className="text-gray-500 dark:text-gray-400 text-sm">
@@ -178,7 +178,7 @@ export default function BlogIndex({ posts, categories, tags }) {
           >
             &#x2190; PREV
           </button>
-          <span className="font-mono text-xs text-gray-400 dark:text-cyan-700 tracking-widest">
+          <span className="font-mono text-xs text-gray-600 dark:text-cyan-400 tracking-widest">
             PAGE {page} / {totalPages}
           </span>
           <button
