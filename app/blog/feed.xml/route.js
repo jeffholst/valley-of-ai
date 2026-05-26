@@ -1,7 +1,7 @@
 import postsData from '@/data/posts.json';
 import authorsData from '@/data/authors.json';
+import { siteUrl } from '@/lib/siteConfig';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.valleyofai.com';
 const FEED_LIMIT = 20;
 
 function escapeXml(str) {
@@ -20,7 +20,7 @@ export async function GET() {
     .map((post) => {
       const author = authorsData.find((a) => a.id === post.author);
       const pubDate = new Date(post.date).toUTCString();
-      const link = `${SITE_URL}/blog/${post.slug}`;
+      const link = `${siteUrl}/blog/${post.slug}`;
       return `
     <item>
       <title>${escapeXml(post.title)}</title>
@@ -38,10 +38,10 @@ export async function GET() {
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>The Experiment Log — Valley of AI</title>
-    <link>${SITE_URL}/blog</link>
+    <link>${siteUrl}/blog</link>
     <description>Build logs, AI experiments, app spotlights, and notes from the humans and bots building Valley of AI.</description>
     <language>en-us</language>
-    <atom:link href="${SITE_URL}/blog/feed.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="${siteUrl}/blog/feed.xml" rel="self" type="application/rss+xml" />
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>${items}
   </channel>
 </rss>`;

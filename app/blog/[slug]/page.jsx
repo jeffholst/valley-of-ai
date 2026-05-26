@@ -39,7 +39,7 @@ async function getPostContent(filename) {
   const filepath = path.join(POSTS_DIR, filename);
   const raw = fs.readFileSync(filepath, 'utf8');
   const { content } = matter(raw);
-  const processed = await remark().use(html, { sanitize: false }).process(content);
+  const processed = await remark().use(html).process(content);
   return processed.toString();
 }
 
@@ -224,7 +224,7 @@ export default async function BlogPostPage({ params }) {
         {/* Comments */}
         <section>
           <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Comments</h2>
-          <GiscusComments slug={post.slug} theme="dark" />
+          <GiscusComments slug={post.slug} />
         </section>
       </div>
     </>

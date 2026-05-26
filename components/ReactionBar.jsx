@@ -41,11 +41,14 @@ export default function ReactionBar({ slug }) {
       localStorage.setItem(storageKey(slug, emoji), '1');
 
       try {
-        await fetch('/api/post-reactions', {
+        const res = await fetch('/api/post-reactions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ slug, reaction: emoji }),
         });
+        if (!res.ok) {
+          throw new Error('Failed to save reaction');
+        }
       } catch {
         // Revert on failure
         setCounts((prev) => ({ ...prev, [emoji]: Math.max(0, (prev[emoji] ?? 1) - 1) }));
