@@ -1289,42 +1289,6 @@
 
   /* ─── Blog HUD / Holographic Terminal ────────────────────────────────────── */
 
-  @keyframes blog-scan-sweep {
-    0% {
-      top: -4px;
-      opacity: 0;
-    }
-    3% {
-      opacity: 1;
-    }
-    97% {
-      opacity: 1;
-    }
-    100% {
-      top: 100vh;
-      opacity: 0;
-    }
-  }
-
-  .blog-hud-scan-line {
-    position: fixed;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(80, 220, 255, 0.06) 10%,
-      rgba(80, 220, 255, 0.18) 50%,
-      rgba(80, 220, 255, 0.06) 90%,
-      transparent 100%
-    );
-    pointer-events: none;
-    z-index: 20;
-    animation: blog-scan-sweep 9s linear infinite;
-    animation-delay: 2s;
-  }
-
   @keyframes blog-cursor-blink {
     0%,
     100% {
@@ -1398,27 +1362,70 @@
   /* Holographic display panel — wraps post body content */
   .blog-holo-panel {
     position: relative;
-    border: 1px solid rgba(80, 200, 255, 0.18);
-    backdrop-filter: blur(14px);
+    border: 1px solid rgba(80, 200, 255, 0.32);
+    backdrop-filter: blur(18px) saturate(1.5);
     background:
       repeating-linear-gradient(
         0deg,
-        rgba(0, 200, 255, 0.014) 0px,
-        rgba(0, 200, 255, 0.014) 1px,
+        rgba(0, 200, 255, 0.013) 0px,
+        rgba(0, 200, 255, 0.013) 1px,
         transparent 1px,
         transparent 4px
       ),
-      rgba(4, 12, 30, 0.74);
+      linear-gradient(
+        175deg,
+        rgba(0, 50, 100, 0.22) 0%,
+        rgba(4, 12, 30, 0.38) 50%,
+        rgba(2, 8, 22, 0.44) 100%
+      );
     box-shadow:
-      0 0 48px rgba(0, 150, 255, 0.07),
-      inset 0 0 80px rgba(0, 80, 160, 0.05),
-      inset 0 1px 0 rgba(80, 220, 255, 0.12);
+      0 0 70px rgba(0, 150, 255, 0.14),
+      0 0 140px rgba(0, 80, 200, 0.07),
+      inset 0 0 120px rgba(0, 60, 140, 0.08),
+      inset 0 1px 0 rgba(120, 220, 255, 0.28),
+      inset 0 -1px 0 rgba(60, 140, 255, 0.1);
+  }
+
+  /* Diagonal corner brackets on the holographic panel */
+  .blog-holo-panel::before,
+  .blog-holo-panel::after {
+    content: '';
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .blog-holo-panel::before {
+    top: -1px;
+    left: -1px;
+    border-top: 2px solid rgba(80, 230, 255, 0.9);
+    border-left: 2px solid rgba(80, 230, 255, 0.9);
+    filter: drop-shadow(0 0 5px rgba(80, 220, 255, 0.55));
+  }
+
+  .blog-holo-panel::after {
+    bottom: -1px;
+    right: -1px;
+    border-bottom: 2px solid rgba(80, 230, 255, 0.9);
+    border-right: 2px solid rgba(80, 230, 255, 0.9);
+    filter: drop-shadow(0 0 5px rgba(80, 220, 255, 0.55));
   }
 
   :root:not(.dark) .blog-holo-panel {
-    background: rgba(249, 252, 255, 0.9);
-    border-color: rgba(80, 130, 200, 0.22);
-    box-shadow: 0 2px 28px rgba(60, 100, 180, 0.09);
+    background: rgba(248, 252, 255, 0.78);
+    border-color: rgba(80, 140, 220, 0.3);
+    backdrop-filter: blur(18px) saturate(1.2);
+    box-shadow:
+      0 4px 40px rgba(60, 100, 200, 0.1),
+      inset 0 1px 0 rgba(120, 180, 255, 0.4);
+  }
+
+  :root:not(.dark) .blog-holo-panel::before,
+  :root:not(.dark) .blog-holo-panel::after {
+    border-color: rgba(60, 120, 220, 0.5);
+    filter: none;
   }
 
   /* ─── Reduced motion ──────────────────────────────────────────────────────── */

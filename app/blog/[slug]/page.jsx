@@ -87,7 +87,6 @@ export default async function BlogPostPage({ params }) {
         <div className="valley-mountain-row-mid" />
       </div>
       <div className="valley-light-veil" aria-hidden="true" />
-      <div className="blog-hud-scan-line" aria-hidden="true" />
 
       <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back link */}
