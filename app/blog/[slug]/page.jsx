@@ -168,17 +168,24 @@ export default async function BlogPostPage({ params }) {
         </header>
 
         {/* Post body */}
-        <div
-          className="prose prose-gray dark:prose-invert max-w-none mb-12
-            prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h2:mt-8
-            dark:prose-headings:text-cyan-100
-            prose-a:text-purple-600 dark:prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline
-            prose-code:bg-gray-100 dark:prose-code:bg-gray-900 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-            prose-pre:bg-gray-900 dark:prose-pre:bg-gray-950 prose-pre:rounded-xl
-            prose-blockquote:border-l-purple-400 dark:prose-blockquote:border-l-cyan-700 prose-blockquote:text-gray-600 dark:prose-blockquote:text-gray-300
-            prose-hr:border-gray-200 dark:prose-hr:border-cyan-900"
-          dangerouslySetInnerHTML={{ __html: contentHtml }}
-        />
+        <div className="mb-12">
+          <div className="font-mono text-[10px] text-gray-400 dark:text-cyan-700 tracking-widest uppercase mb-0">
+            // TRANSMISSION_BODY
+          </div>
+          <div className="blog-holo-panel p-7 sm:p-9">
+            <div
+              className="prose prose-gray dark:prose-invert max-w-none
+                prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h2:mt-8
+                dark:prose-headings:text-cyan-100
+                prose-a:text-purple-600 dark:prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline
+                prose-code:bg-gray-100 dark:prose-code:bg-gray-900 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+                prose-pre:bg-gray-900 dark:prose-pre:bg-gray-950 prose-pre:rounded-xl
+                prose-blockquote:border-l-purple-400 dark:prose-blockquote:border-l-cyan-700 prose-blockquote:text-gray-600 dark:prose-blockquote:text-gray-300
+                prose-hr:border-gray-200 dark:prose-hr:border-cyan-900"
+              dangerouslySetInnerHTML={{ __html: contentHtml }}
+            />
+          </div>
+        </div>
 
         {/* Related apps */}
         {relatedApps.length > 0 && (
@@ -232,16 +239,16 @@ export default async function BlogPostPage({ params }) {
         </section>
 
         {/* Prev / Next navigation */}
-        <nav
-          className="grid grid-cols-2 gap-4 py-5 border-t border-gray-200 dark:border-[rgba(80,200,255,0.12)] mb-10"
-          aria-label="Post navigation"
-        >
+        <nav className="grid grid-cols-2 gap-3 mb-10" aria-label="Post navigation">
           {prevPost ? (
-            <Link href={`/blog/${prevPost.slug}`} className="flex flex-col gap-1 group">
-              <span className="font-mono text-[10px] text-gray-400 dark:text-cyan-800 tracking-widest uppercase">
+            <Link
+              href={`/blog/${prevPost.slug}`}
+              className="flex flex-col gap-1.5 group p-4 border border-gray-200 dark:border-[rgba(80,200,255,0.2)] bg-white dark:bg-[rgba(4,12,30,0.55)] hover:border-cyan-500 dark:hover:border-cyan-500 transition-colors backdrop-blur-sm"
+            >
+              <span className="font-mono text-[10px] text-gray-500 dark:text-cyan-500 tracking-widest uppercase">
                 ← PREV_TX
               </span>
-              <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-cyan-300 transition-colors line-clamp-2">
+              <span className="text-sm font-medium text-gray-800 dark:text-cyan-200 group-hover:text-purple-600 dark:group-hover:text-cyan-100 transition-colors line-clamp-2">
                 {prevPost.title}
               </span>
             </Link>
@@ -249,11 +256,14 @@ export default async function BlogPostPage({ params }) {
             <div />
           )}
           {nextPost ? (
-            <Link href={`/blog/${nextPost.slug}`} className="flex flex-col gap-1 text-right group">
-              <span className="font-mono text-[10px] text-gray-400 dark:text-cyan-800 tracking-widest uppercase">
+            <Link
+              href={`/blog/${nextPost.slug}`}
+              className="flex flex-col gap-1.5 text-right group p-4 border border-gray-200 dark:border-[rgba(80,200,255,0.2)] bg-white dark:bg-[rgba(4,12,30,0.55)] hover:border-cyan-500 dark:hover:border-cyan-500 transition-colors backdrop-blur-sm"
+            >
+              <span className="font-mono text-[10px] text-gray-500 dark:text-cyan-500 tracking-widest uppercase">
                 NEXT_TX →
               </span>
-              <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-cyan-300 transition-colors line-clamp-2">
+              <span className="text-sm font-medium text-gray-800 dark:text-cyan-200 group-hover:text-purple-600 dark:group-hover:text-cyan-100 transition-colors line-clamp-2">
                 {nextPost.title}
               </span>
             </Link>

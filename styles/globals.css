@@ -1395,6 +1395,32 @@
     border-color: rgba(60, 100, 220, 0.65);
   }
 
+  /* Holographic display panel — wraps post body content */
+  .blog-holo-panel {
+    position: relative;
+    border: 1px solid rgba(80, 200, 255, 0.18);
+    backdrop-filter: blur(14px);
+    background:
+      repeating-linear-gradient(
+        0deg,
+        rgba(0, 200, 255, 0.014) 0px,
+        rgba(0, 200, 255, 0.014) 1px,
+        transparent 1px,
+        transparent 4px
+      ),
+      rgba(4, 12, 30, 0.74);
+    box-shadow:
+      0 0 48px rgba(0, 150, 255, 0.07),
+      inset 0 0 80px rgba(0, 80, 160, 0.05),
+      inset 0 1px 0 rgba(80, 220, 255, 0.12);
+  }
+
+  :root:not(.dark) .blog-holo-panel {
+    background: rgba(249, 252, 255, 0.9);
+    border-color: rgba(80, 130, 200, 0.22);
+    box-shadow: 0 2px 28px rgba(60, 100, 180, 0.09);
+  }
+
   /* ─── Reduced motion ──────────────────────────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
     *,
