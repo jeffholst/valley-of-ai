@@ -107,8 +107,8 @@
     const MOMENTUM_MISS = -0.22;    // loss on miss
     const MOMENTUM_DRAIN = -0.010;  // passive drain per second (no longer applied — altitude is the survival mechanic)
 
-    const FLAP_VELOCITY = 2.4;    // upward impulse cap per tap
-    const GRAVITY = 3.5;          // downward acceleration (world units/sec²)
+    const FLAP_VELOCITY = 3.8;    // upward impulse applied when the player taps
+    const GRAVITY = 5.5;          // downward acceleration (world units/sec²)
     const DUCK_WY_MIN = -0.85;    // altitude floor — reaching it triggers stall
     const DUCK_WY_MAX = 2.8;      // altitude ceiling
     const START_GRACE_DURATION = 1.1; // seconds before gravity starts pulling the duck down
@@ -476,7 +476,7 @@
     function updateDuck(dt) {
       // Flap: consume the pending impulse set by tap/keydown
       if (input.flapPending) {
-        duck.vy = Math.min(FLAP_VELOCITY, duck.vy + FLAP_VELOCITY * 0.75);
+        duck.vy = FLAP_VELOCITY;
         input.flapPending = false;
       }
       // Gravity starts after a short opening grace period so mobile players can orient.

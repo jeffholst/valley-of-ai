@@ -190,6 +190,16 @@
         "implementedAt": "2026-05-25T23:41:35Z",
         "agentName": "Codex",
         "llmModel": "GPT-5"
+      },
+      {
+        "issueNumber": 506,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/506",
+        "runId": "run-20260526T000123Z-d4f8b2",
+        "description": "Gentler flap physics: FLAP_VELOCITY reduced 3.8→2.4, GRAVITY reduced 5.5→3.5, and tap impulse changed from hard overwrite to additive-capped (duck.vy = Math.min(FLAP_VELOCITY, duck.vy + FLAP_VELOCITY * 0.75)) so corrections are proportional to current state — tapping while falling gives incremental lift, tapping while level gives a modest boost, tapping while rising caps cleanly without overshoot.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-05-26T00:01:48Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
       }
     ],
     "allowImprovements": true,
@@ -265,6 +275,11 @@
         "runId": "run-20260525T234135Z-542331",
         "path": "backups/run-20260525T234135Z-542331/index.html",
         "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T234135Z-542331/index.html"
+      },
+      {
+        "runId": "run-20260526T000123Z-d4f8b2",
+        "path": "backups/run-20260526T000123Z-d4f8b2/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260526T000123Z-d4f8b2/index.html"
       }
     ]
   },
