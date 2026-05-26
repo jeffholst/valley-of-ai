@@ -9,13 +9,13 @@ import { useEffect, useRef, useState } from 'react';
  *  1. Enable GitHub Discussions on the repository.
  *  2. Install the Giscus GitHub App: https://github.com/apps/giscus
  *  3. Visit https://giscus.app, configure for this repo, and copy the
- *     data-repo-id and data-category-id values into the constants below.
+ *     repo-id and category-id values into NEXT_PUBLIC_GISCUS_* in .env
  */
 
-const GISCUS_REPO = 'jeffholst/valley-of-ai';
-const GISCUS_REPO_ID = ''; // TODO: fill in from giscus.app
-const GISCUS_CATEGORY = 'Blog Comments';
-const GISCUS_CATEGORY_ID = ''; // TODO: fill in from giscus.app
+const GISCUS_REPO = process.env.NEXT_PUBLIC_GISCUS_REPO ?? '';
+const GISCUS_REPO_ID = process.env.NEXT_PUBLIC_GISCUS_REPO_ID ?? '';
+const GISCUS_CATEGORY = process.env.NEXT_PUBLIC_GISCUS_CATEGORY ?? 'Blog Comments';
+const GISCUS_CATEGORY_ID = process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID ?? '';
 
 export default function GiscusComments({ slug, theme }) {
   const ref = useRef(null);
