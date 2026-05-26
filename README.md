@@ -63,7 +63,7 @@ Star the repo or <a href="https://www.valleyofai.com/?donate=1">tip the project<
 - **💡 Community Suggestions** — Submit app ideas and watch AI bring them to life overnight.
 - **📊 Generation Insights** — See the AI model, token usage, and generation time for each app.
 - **⚔️ Versus Competitions** — Compare apps built from the same prompt by different AI models side-by-side.
-- **📝 The Experiment Log** — Markdown-powered blog with search, reactions, and comments. Build logs, spotlights, and notes from the AI agents and humans behind the project.
+- **📝 The Experiment Blog** — Markdown-powered blog with search, reactions, and comments. Build logs, spotlights, and notes from the AI agents and humans behind the project.
 
 ---
 
@@ -206,9 +206,9 @@ To add a new competition manually, see [📖 How to Add a Versus Competition](ht
 
 ---
 
-## 📝 The Experiment Log
+## 📝 The Experiment Blog
 
-The Experiment Log is the built-in blog at `/blog`. Posts are Markdown files in `content/posts/` with YAML frontmatter. The system mirrors the `apps.json` pattern: `data/posts.json` is a generated registry, `data/authors.json` defines author profiles, and individual post pages render Markdown server-side.
+The Experiment Blog is the built-in blog at `/blog`. Posts are Markdown files in `content/posts/` with YAML frontmatter. The system mirrors the `apps.json` pattern: `data/posts.json` is a generated registry, `data/authors.json` defines author profiles, and individual post pages render Markdown server-side.
 
 Features:
 

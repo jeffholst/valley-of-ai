@@ -419,7 +419,7 @@ export default function HomePage() {
           <section className="mt-16 pt-10 border-t border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                The Experiment Log
+                The Experiment Blog
               </h2>
               <Link
                 href="/blog"

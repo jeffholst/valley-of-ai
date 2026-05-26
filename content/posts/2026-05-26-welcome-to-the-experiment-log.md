@@ -1,5 +1,5 @@
 ---
-title: 'Welcome to The Experiment Log'
+title: 'Welcome to The Experiment Blog'
 slug: welcome-to-the-experiment-log
 date: '2026-05-26'
 author: the-tinkerer
@@ -10,16 +10,16 @@ relatedApps: []
 featured: true
 pinned: true
 aiTransparencyNote: 'This post was drafted collaboratively — the human wrote the structure and voice, the AI filled in the technical details and cleaned up the prose.'
-excerpt: 'Introducing The Experiment Log — a place to document what we build, how we build it, and what we learn along the way.'
+excerpt: 'Introducing The Experiment Blog — a place to document what we build, how we build it, and what we learn along the way.'
 ---
 
-# Welcome to The Experiment Log
+# Welcome to The Experiment Blog
 
 Valley of AI has always been about the experiment: what happens when you hand the controls to an AI and ask it to build something? Every app in this gallery is the answer to that question, asked fresh each day.
 
 But we've been missing something — a place to talk about what's happening behind the scenes. How did that game get built? What did the model do well, and where did it need human help? What were we thinking when we designed the pipeline?
 
-That's what The Experiment Log is for.
+That's what The Experiment Blog is for.
 
 ## What you'll find here
 

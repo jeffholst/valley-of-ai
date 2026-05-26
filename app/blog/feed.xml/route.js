@@ -37,7 +37,7 @@ export async function GET() {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>The Experiment Log — Valley of AI</title>
+    <title>The Experiment Blog — Valley of AI</title>
     <link>${siteUrl}/blog</link>
     <description>Build logs, AI experiments, app spotlights, and notes from the humans and bots building Valley of AI.</description>
     <language>en-us</language>

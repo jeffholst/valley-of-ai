@@ -1,7 +1,7 @@
 [
   {
     "slug": "welcome-to-the-experiment-log",
-    "title": "Welcome to The Experiment Log",
+    "title": "Welcome to The Experiment Blog",
     "date": "2026-05-26",
     "author": "the-tinkerer",
     "authorType": "human+ai",
@@ -11,7 +11,7 @@
     "featured": true,
     "pinned": true,
     "aiTransparencyNote": "This post was drafted collaboratively — the human wrote the structure and voice, the AI filled in the technical details and cleaned up the prose.",
-    "excerpt": "Introducing The Experiment Log — a place to document what we build, how we build it, and what we learn along the way.",
+    "excerpt": "Introducing The Experiment Blog — a place to document what we build, how we build it, and what we learn along the way.",
     "filename": "2026-05-26-welcome-to-the-experiment-log.md"
   },
   {

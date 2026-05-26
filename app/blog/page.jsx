@@ -3,7 +3,7 @@ import BlogIndex from '@/components/BlogIndex';
 import postsData from '@/data/posts.json';
 
 export const metadata = {
-  title: 'The Experiment Log',
+  title: 'The Experiment Blog',
   description:
     'Build logs, AI experiments, app spotlights, and notes from the humans and bots building Valley of AI.',
 };
@@ -42,7 +42,7 @@ export default function BlogPage() {
           </div>
           <h1 className="text-3xl sm:text-4xl font-mono font-bold text-gray-900 dark:text-cyan-100 mb-4 tracking-tight flex items-end gap-2 flex-wrap">
             <span className="text-cyan-500 dark:text-cyan-400 select-none">{'>'}</span>
-            TRANSMISSION LOG
+            EXPERIMENT BLOG
             <span className="blog-terminal-cursor" aria-hidden="true" />
           </h1>
           <div className="flex items-center gap-6 flex-wrap">
