@@ -1,79 +1,99 @@
 import Link from 'next/link';
 import authorsData from '@/data/authors.json';
 
-const AUTHOR_TYPE_LABELS = {
+const AUTHOR_TYPE_SIGNAL = {
   human: {
-    label: 'Human',
-    classes: 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200',
+    label: 'HUMAN',
+    dotClass: 'bg-blue-400',
+    badgeClass: 'text-blue-600 dark:text-blue-300 border-blue-300 dark:border-blue-700',
+    topBarClass: 'bg-blue-500',
   },
   ai: {
-    label: 'AI',
-    classes: 'bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200',
+    label: 'AI_SRC',
+    dotClass: 'bg-purple-400',
+    badgeClass: 'text-purple-600 dark:text-purple-300 border-purple-300 dark:border-purple-700',
+    topBarClass: 'bg-purple-500',
   },
   'human+ai': {
-    label: 'Human + AI',
-    classes: 'bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200',
+    label: 'COLLAB',
+    dotClass: 'bg-teal-400',
+    badgeClass: 'text-teal-600 dark:text-teal-300 border-teal-300 dark:border-teal-700',
+    topBarClass: 'bg-teal-500',
   },
 };
 
-export default function BlogPostCard({ post }) {
+export default function BlogPostCard({ post, recordIndex }) {
   const author = authorsData.find((a) => a.id === post.author);
-  const typeInfo = AUTHOR_TYPE_LABELS[post.authorType] ?? AUTHOR_TYPE_LABELS.ai;
+  const signal = AUTHOR_TYPE_SIGNAL[post.authorType] ?? AUTHOR_TYPE_SIGNAL.ai;
   const dateLabel = new Date(post.date).toLocaleDateString('en-US', {
     year: 'numeric',
-    month: 'long',
+    month: 'short',
     day: 'numeric',
     timeZone: 'UTC',
   });
 
   return (
-    <article className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 flex flex-col gap-3 hover:shadow-md transition-shadow">
+    <article className="blog-hud-card bg-white dark:bg-[rgba(4,12,30,0.72)] rounded-xl shadow-sm dark:shadow-none border border-gray-200 dark:border-[rgba(80,200,255,0.18)] p-6 flex flex-col gap-3 hover:shadow-md dark:hover:border-[rgba(80,220,255,0.45)] transition-all backdrop-blur-sm overflow-hidden">
+      {/* Author-type accent bar */}
+      <div className={`absolute top-0 left-0 right-0 h-[2px] ${signal.topBarClass} opacity-70`} />
+
+      {/* Record number + badges row */}
       <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-          {post.category}
+        {recordIndex !== null && recordIndex !== undefined && (
+          <span className="font-mono text-[10px] text-gray-400 dark:text-cyan-800 tracking-widest select-none">
+            REC {String(recordIndex).padStart(3, '0')}
+          </span>
+        )}
+        <span className="font-mono text-[10px] px-1.5 py-0.5 border text-gray-500 dark:text-cyan-700 border-gray-300 dark:border-cyan-900 tracking-wider">
+          [ {post.category.toUpperCase().replace(/ /g, '_')} ]
         </span>
-        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${typeInfo.classes}`}>
-          {typeInfo.label}
+        <span
+          className={`font-mono text-[10px] px-1.5 py-0.5 border tracking-wider flex items-center gap-1 ${signal.badgeClass}`}
+        >
+          <span className={`inline-block w-1.5 h-1.5 rounded-full ${signal.dotClass} opacity-80`} />
+          {signal.label}
         </span>
         {post.pinned && (
-          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200">
-            📌 Pinned
+          <span className="font-mono text-[10px] px-1.5 py-0.5 border border-amber-400 text-amber-600 dark:text-amber-400 tracking-wider">
+            ◆ PINNED
           </span>
         )}
         {post.featured && (
-          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200">
-            ⭐ Featured
+          <span className="font-mono text-[10px] px-1.5 py-0.5 border border-orange-400 text-orange-600 dark:text-orange-400 tracking-wider">
+            ★ FEATURED
           </span>
         )}
       </div>
 
       <Link href={`/blog/${post.slug}`} className="group">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors leading-snug">
+        <h2 className="text-base font-bold text-gray-900 dark:text-cyan-100 group-hover:text-purple-600 dark:group-hover:text-cyan-300 transition-colors leading-snug">
           {post.title}
         </h2>
       </Link>
 
-      <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed line-clamp-3">
+      <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-3">
         {post.excerpt}
       </p>
 
-      <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100 dark:border-gray-700">
+      <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100 dark:border-[rgba(80,200,255,0.1)]">
         <div className="flex items-center gap-2">
-          <span className="text-lg" aria-hidden="true">
+          <span className="text-base" aria-hidden="true">
             {author?.avatar ?? '✍️'}
           </span>
           <div>
-            <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
+            <p className="text-xs font-mono text-gray-600 dark:text-cyan-400">
               {author?.name ?? post.author}
             </p>
-            <p className="text-xs text-gray-400 dark:text-gray-500">{dateLabel}</p>
+            <p className="text-[10px] font-mono text-gray-400 dark:text-cyan-800 tabular-nums tracking-wider">
+              {dateLabel}
+            </p>
           </div>
         </div>
         <Link
           href={`/blog/${post.slug}`}
-          className="text-xs font-medium text-purple-600 dark:text-purple-400 hover:underline"
+          className="font-mono text-[10px] tracking-widest text-gray-500 dark:text-cyan-600 hover:text-purple-600 dark:hover:text-cyan-300 transition-colors uppercase"
         >
-          Read →
+          READ &#x2192;
         </Link>
       </div>
     </article>
