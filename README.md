@@ -260,7 +260,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, code style, testing requ
 | **GitHub Issues**                | Community suggestion and improvement workflow (`status:pending` → `status:approved` → `status:implemented`) |
 | **Giscus**                       | Blog comments backed by GitHub Discussions                                                                  |
 | **gray-matter + remark**         | Blog: YAML frontmatter parsing and Markdown-to-HTML rendering                                               |
+| **@tailwindcss/typography**      | Blog: prose styling for rendered Markdown (`prose` utility classes)                                         |
 | **Fuse.js**                      | Client-side fuzzy search on the blog listing page                                                           |
+| **JetBrains Mono**               | Site-wide default font loaded via `next/font/google`                                                        |
 | **Cloudflare Turnstile**         | Bot protection on forms (skipped in development)                                                            |
 | **Vercel**                       | Serverless deployment with automatic builds and edge caching                                                |
 | **Plain HTML/CSS/JS** (`apps/`)  | Self-contained AI-generated mini-apps — no build step                                                       |
