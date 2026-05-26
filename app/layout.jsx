@@ -1,9 +1,13 @@
 import '@/styles/globals.css';
-import { Inter } from 'next/font/google';
+import { JetBrains_Mono } from 'next/font/google';
 import LayoutShell from '@/components/LayoutShell';
 import { siteName, siteDescription } from '@/lib/siteConfig';
 
-const inter = Inter({ subsets: ['latin'] });
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-jetbrains-mono',
+  display: 'swap',
+});
 
 export const metadata = {
   title: siteName || 'AI Gallery',
@@ -30,7 +34,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body
-        className={`${inter.className} bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200`}
+        className={`${jetbrainsMono.variable} font-sans bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200`}
       >
         <LayoutShell>{children}</LayoutShell>
       </body>
