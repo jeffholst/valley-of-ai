@@ -102,7 +102,7 @@ export default async function BlogPostPage({ params }) {
               d="M15 19l-7-7 7-7"
             />
           </svg>
-          Transmission Log
+          Experiment Blog
         </Link>
 
         {/* AI Transparency note */}
@@ -144,11 +144,6 @@ export default async function BlogPostPage({ params }) {
               </span>
             )}
           </div>
-
-          {/* Title */}
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-cyan-100 leading-tight mb-5">
-            {post.title}
-          </h1>
 
           {/* Author card */}
           <div className="flex items-center gap-3 p-3 border border-gray-200 dark:border-[rgba(80,200,255,0.2)] bg-white dark:bg-[rgba(4,12,30,0.55)] backdrop-blur-sm">
