@@ -27,6 +27,7 @@ export default function BlogIndex({ posts, categories, tags }) {
           { name: 'tags', weight: 1 },
         ],
         threshold: 0.35,
+        ignoreLocation: true,
         includeScore: false,
       }),
     [posts]
