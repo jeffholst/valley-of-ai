@@ -1629,7 +1629,7 @@
     container.appendChild(improveLink);
 
     const leaderboardSupported =
-      leaderboardSupportPromise || (leaderboardSupportPromise = pageSupportsLeaderboard(appId));
+      leaderboardSupportPromise || (leaderboardSupportPromise = pageSupportsLeaderboard());
     if (await leaderboardSupported) {
       const lbHeaderBtn = document.createElement('button');
       lbHeaderBtn.id = 'voa-lb-btn';
