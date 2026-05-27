@@ -25,6 +25,7 @@ npm run issues:pending            # List pending suggestion/improvement issues f
 npm run issues:decide             # Apply approved/rejected/human-review issue decisions
 npm run select:app:suggestion     # Recommend next new app concept (agent use only)
 npm run select:app:improvement    # Recommend next improvement to an existing app (agent use only)
+npm run select:blog:suggestion    # Pick next approved blog-post issue to execute (agent use only)
 ```
 
 ---
@@ -58,6 +59,7 @@ scripts/
   issues/
     select-app-suggestion.js  # Picks next new app concept
     select-app-improvement.js # Picks next improvement request
+    select-blog-suggestion.mjs # Picks next approved blog-post issue (FIFO)
     retrieve-pending-issues.js # Lists pending issues for automated review
     decide-issue.js            # Applies approved/rejected/human-review decisions
     lib/
@@ -75,14 +77,17 @@ __tests__/
 
 ## AI Agent Pipelines
 
-There are three coordinated flows documented in `pipelines/prompts/`.
+There are four coordinated flows documented in `pipelines/prompts/`.
 
 **Issue review:** agent reads `shared.md` + `review.md`
 **New app:** agent reads `shared.md` + `new-app.md`
 **Improvement:** agent reads `shared.md` + `improve.md`
+**Blog post:** agent reads `shared.md` + `blog-post.md`
 
 The user does NOT manually run the selection scripts — agents run them internally after pending issues have already been reviewed.
 If `guardrails.production` exists, the issue-review flow should load it as an additional private overlay; otherwise it should use `guardrails.example` for structure and defaults.
+
+Blog post issues follow the same `status:pending` → automated review → `status:approved` → pipeline flow as app issues. The `blog-post` label (instead of `suggestion` or `improvement`) identifies them.
 
 ### Logging
 
@@ -96,6 +101,15 @@ npm run log -- --runId <runId> --appId <app-id> --date YYYY/MM/DD \
 
 Categories: `pipeline` | `reasoning` | `validation`
 `npm run log` writes to **two files simultaneously**: `apps/<path>/log.jsonl` AND `logs/YYYY/MM/DD.jsonl`
+
+For blog post pipelines, pass `--type blog` to write to `content/posts/logs/<slug>.jsonl` (post-local) instead of the `apps/` tree:
+
+```bash
+npm run log -- --runId <runId> --appId <slug> --date YYYY/MM/DD \
+  --type blog \
+  --category pipeline --step <STEP_NAME> --seq <N> --status completed \
+  --durationMs <ms> --message "..."
+```
 
 ---
 

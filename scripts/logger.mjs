@@ -100,6 +100,10 @@ program
   .option('--decision <text>', 'Decision made')
   .option('--alternatives <csv>', 'Comma-separated alternatives')
   .option('--rationale <text>', 'Decision rationale')
+  .option(
+    '--type <type>',
+    'Log type: blog — skips app-local write, uses content/posts/logs/<appId>.jsonl instead'
+  )
   .option('--dry-run', 'Print entry without appending')
   .parse(process.argv);
 
@@ -257,7 +261,11 @@ console.log(JSON.stringify(entry, null, 2));
 // Append to logs (unless dry-run)
 if (!args.dryRun) {
   try {
-    appendToLogs(args.appId, args.date, appLogDate, entry);
+    if (args.type === 'blog') {
+      appendToBlogLogs(args.appId, args.date, entry);
+    } else {
+      appendToLogs(args.appId, args.date, appLogDate, entry);
+    }
   } catch (err) {
     console.error(`ERROR appending to logs: ${err.message}`);
     process.exit(1);
@@ -299,6 +307,38 @@ function appendToLogs(appId, centralDate, appLogDate, entry) {
   fs.appendFileSync(centralLogPath, JSON.stringify(entry) + '\n', 'utf8');
 
   console.error(`✓ Logged to: ${appLogPath}`);
+  console.error(`✓ Logged to: ${centralLogPath}`);
+}
+
+/**
+ * Append entry to blog post local log and central daily log.
+ * Post-local path: content/posts/logs/<slug>.jsonl
+ * Central log path: logs/<YYYY>/<MM>/<DD>.jsonl
+ * @param {string} slug - Blog post slug (used as appId)
+ * @param {string} centralDate - Date in YYYY/MM/DD format
+ * @param {object} entry - Log entry
+ */
+function appendToBlogLogs(slug, centralDate, entry) {
+  const [year, month, day] = centralDate.split('/');
+
+  // Validate slug to prevent path traversal
+  const slugPattern = /^[a-zA-Z0-9_-]+$/;
+  if (!slugPattern.test(slug)) {
+    throw new Error(`Blog slug must match ${slugPattern} (got: ${slug})`);
+  }
+
+  // Write to post-local log
+  const postLogsDir = path.resolve('content', 'posts', 'logs');
+  ensureDirectoryExists(postLogsDir);
+  const postLogPath = path.join(postLogsDir, `${slug}.jsonl`);
+  fs.appendFileSync(postLogPath, JSON.stringify(entry) + '\n', 'utf8');
+
+  // Write to central log
+  const centralLogPath = path.join('logs', year, month, `${day}.jsonl`);
+  ensureDirectoryExists(path.dirname(centralLogPath));
+  fs.appendFileSync(centralLogPath, JSON.stringify(entry) + '\n', 'utf8');
+
+  console.error(`✓ Logged to: ${postLogPath}`);
   console.error(`✓ Logged to: ${centralLogPath}`);
 }
 

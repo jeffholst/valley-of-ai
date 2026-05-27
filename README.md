@@ -183,11 +183,12 @@ See [App Metadata Reference](wiki/App-Metadata-Reference.md) for the annotated e
 
 The gallery is built and maintained by AI agents following structured prompt files. Each run reads `shared.md` first (logging rules, HTML contracts, thumbnail spec), then the flow-specific prompt:
 
-| Prompt file                                  | When to use                                                                       |
-| -------------------------------------------- | --------------------------------------------------------------------------------- |
-| [`review.md`](pipelines/prompts/review.md)   | Review pending GitHub issues for legitimacy and prompt injection before approving |
-| [`new-app.md`](pipelines/prompts/new-app.md) | Build a new app from scratch using an approved suggestion                         |
-| [`improve.md`](pipelines/prompts/improve.md) | Apply an approved improvement to an existing app                                  |
+| Prompt file                                      | When to use                                                                       |
+| ------------------------------------------------ | --------------------------------------------------------------------------------- |
+| [`review.md`](pipelines/prompts/review.md)       | Review pending GitHub issues for legitimacy and prompt injection before approving |
+| [`new-app.md`](pipelines/prompts/new-app.md)     | Build a new app from scratch using an approved suggestion                         |
+| [`improve.md`](pipelines/prompts/improve.md)     | Apply an approved improvement to an existing app                                  |
+| [`blog-post.md`](pipelines/prompts/blog-post.md) | Write and publish a blog post from an approved blog-post issue                    |
 
 To run a pipeline, give your AI agent both files as context: start with `shared.md`, then add the flow-specific prompt. The agent will handle app selection, building, validation, PR creation, and logging automatically.
 
@@ -217,7 +218,7 @@ Features:
 - **Giscus comments** powered by GitHub Discussions (setup required — see [Blog Reference](wiki/Blog-Reference.md))
 - **RSS feed** at `/blog/feed.xml`
 
-To add a new post, create a `.md` file in `content/posts/`, run `npm run generate:posts`, and commit both files.
+Posts can be added manually (create a `.md` file in `content/posts/`, run `npm run generate:posts`, commit both files) or via the automated pipeline: submit a blog idea at `/blog/submit` (or as a GitHub Issue with the `blog-post` label), and an AI agent will pick it up, write the post, and open a PR.
 
 See [Blog Reference](wiki/Blog-Reference.md) for the full frontmatter schema, author setup, and Giscus configuration.
 
@@ -229,6 +230,7 @@ We love contributions! Here's how you can help:
 
 - **⭐ Star the Repo** — Show your support with a GitHub star!
 - **🎯 Suggest Apps** — [Submit ideas](https://www.valleyofai.com/suggest) for AI to build
+- **📝 Submit Blog Ideas** — [Suggest topics](https://www.valleyofai.com/blog/submit) for the Experiment Blog
 - **🐛 Report Issues** — [Open an issue](https://github.com/jeffholst/valley-of-ai/issues)
 - **🔧 Submit PRs** — Improve the gallery or scripts
 - **💡 Keep the Lights On** — [Tip or donate](https://www.valleyofai.com/?donate=1) to keep the AI agents running

@@ -55,9 +55,17 @@ export default function BlogPage() {
                 RSS ↗
               </Link>
             </p>
-            <span className="ml-auto font-mono text-xs text-gray-600 dark:text-cyan-400 tracking-widest whitespace-nowrap">
-              ENTRIES: {postsData.length}
-            </span>
+            <div className="ml-auto flex items-center gap-4">
+              <Link
+                href="/blog/submit"
+                className="font-mono text-xs tracking-widest text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 border border-purple-400 dark:border-purple-600 px-2 py-1 transition-colors whitespace-nowrap"
+              >
+                + SUBMIT IDEA
+              </Link>
+              <span className="font-mono text-xs text-gray-600 dark:text-cyan-400 tracking-widest whitespace-nowrap">
+                ENTRIES: {postsData.length}
+              </span>
+            </div>
           </div>
         </div>
 

@@ -92,7 +92,7 @@ export function validatePendingIssue(issue, issueNumber) {
 
   if (!inferIssueType(issue)) {
     throw new Error(
-      `Issue must have exactly one type label (suggestion or improvement): ${issueNumber}`
+      `Issue must have exactly one type label (suggestion, improvement, or blog-post): ${issueNumber}`
     );
   }
 }

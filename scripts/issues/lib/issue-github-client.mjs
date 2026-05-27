@@ -123,10 +123,14 @@ export function issueHasLabel(issue, label) {
 export function inferIssueType(issue) {
   const suggestion = issueHasLabel(issue, 'suggestion');
   const improvement = issueHasLabel(issue, 'improvement');
+  const blogPost = issueHasLabel(issue, 'blog-post');
 
-  if (suggestion === improvement) {
+  const typeCount = [suggestion, improvement, blogPost].filter(Boolean).length;
+  if (typeCount !== 1) {
     return null;
   }
 
-  return suggestion ? 'suggestion' : 'improvement';
+  if (suggestion) return 'suggestion';
+  if (improvement) return 'improvement';
+  return 'blog-post';
 }
