@@ -89,7 +89,7 @@ npm run select:blog:suggestion
 
 - If `found: false` → **abort immediately**. Do not proceed with any further steps.
 - Record: `issueNumber`, `slug` (use the derived slug from the script output), `title`, `category`, `description`, `keyPoints`, `suggestedAuthorType`, `relatedApps`, `requestor`
-- Generate `runId` in format `run-YYYYMMDDTHHMMSSz-<6-hex-chars>`
+- Generate `runId` in format `run-YYYYMMDDTHHMMSSZ-<6-hex-chars>`
 - Generate `date` as `YYYY/MM/DD` (today's date)
 - Log TRANSACTION_START:
   ```bash

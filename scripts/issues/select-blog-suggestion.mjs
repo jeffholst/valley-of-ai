@@ -85,22 +85,31 @@ function parseRelatedApps(body) {
 }
 
 function parseRequestor(body) {
-  const match = body.match(/\*\*Requestor:\*\*\s*([^\n]+)/i);
-  return match ? match[1].trim() : null;
+  const value = parseField(body, 'Requestor', 'Requestor');
+  if (!value || value.toLowerCase() === '_no response_') {
+    return null;
+  }
+  return value;
 }
 
 // ---------------------------------------------------------------------------
 // Slug derivation from title
 // ---------------------------------------------------------------------------
 
-function deriveSlug(title) {
-  return title
+function deriveSlug(title, issueNumber) {
+  const slug = title
     .toLowerCase()
     .replace(/[^a-z0-9\s-]/g, '')
     .trim()
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
     .slice(0, 60);
+
+  if (slug) {
+    return slug;
+  }
+
+  return Number.isInteger(issueNumber) && issueNumber > 0 ? `issue-${issueNumber}` : 'issue';
 }
 
 // ---------------------------------------------------------------------------
@@ -164,7 +173,7 @@ async function main() {
     issueNumber: selected.number,
     issueUrl: selected.url,
     title: selected.title,
-    slug: deriveSlug(selected.title),
+    slug: deriveSlug(selected.title, selected.number),
     category: parseCategory(body) ?? 'AI Experiments',
     description: parseDescription(body) ?? '',
     keyPoints: parseKeyPoints(body),
