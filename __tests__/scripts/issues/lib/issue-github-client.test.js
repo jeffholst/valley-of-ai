@@ -9,7 +9,9 @@ describe('inferIssueType', () => {
 
   it('returns null when more than one type label is present', () => {
     expect(
-      inferIssueType({ labels: [{ name: 'status:pending' }, { name: 'blog-post' }, 'suggestion'] })
+      inferIssueType({
+        labels: [{ name: 'status:pending' }, { name: 'blog-post' }, { name: 'suggestion' }],
+      })
     ).toBeNull();
   });
 });

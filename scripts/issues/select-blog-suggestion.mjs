@@ -81,7 +81,11 @@ function parseRelatedApps(body) {
   return match[1]
     .split(/[\n,]+/)
     .map((s) => s.replace(/^[-*]\s*/, '').trim())
-    .filter((s) => s && s !== '_No response_' && s !== 'n/a' && s !== 'none');
+    .filter((s) => {
+      if (!s) return false;
+      const lower = s.toLowerCase();
+      return lower !== '_no response_' && lower !== 'n/a' && lower !== 'none';
+    });
 }
 
 function parseRequestor(body) {
@@ -109,7 +113,11 @@ function deriveSlug(title, issueNumber) {
     return slug;
   }
 
-  return Number.isInteger(issueNumber) && issueNumber > 0 ? `issue-${issueNumber}` : 'issue';
+  if (Number.isInteger(issueNumber) && issueNumber > 0) {
+    return `issue-${issueNumber}`;
+  }
+
+  return `issue-${Date.now().toString(36)}`;
 }
 
 // ---------------------------------------------------------------------------
