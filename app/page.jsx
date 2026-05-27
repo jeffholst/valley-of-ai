@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import DonateModal from '@/components/DonateModal';
+import WelcomeModal from '@/components/WelcomeModal';
 import GalleryFilters from '@/components/GalleryFilters';
 import GalleryGrid from '@/components/GalleryGrid';
 import GalleryPagination, { PER_PAGE_OPTIONS } from '@/components/GalleryPagination';
@@ -46,6 +47,7 @@ const staticVoteStatsTime = new Date(appVoteStats.generatedAt).getTime();
 
 export default function HomePage() {
   const [showDonateModal, setShowDonateModal] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [paymentType, setPaymentType] = useState('tip');
   const [sortBy, setSortBy] = useState('newest');
@@ -63,6 +65,12 @@ export default function HomePage() {
   const voteCounts = staticVoteCounts;
 
   // Open donate modal if ?donate=1 is in the URL
+  useEffect(() => {
+    if (!localStorage.getItem('voa-welcome-dismissed')) {
+      setShowWelcomeModal(true);
+    }
+  }, []);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('donate') === '1') {
@@ -335,21 +343,6 @@ export default function HomePage() {
               💡 Keep the lights on
             </button>
           </div>
-          <p className="text-lg text-gray-900 dark:text-gray-300 max-w-2xl mx-auto mb-4">
-            Humans and bots work together to dream up new app ideas. Come back daily to discover
-            what gets implemented next.
-          </p>
-          <p className="text-gray-900 dark:text-gray-300 max-w-2xl mx-auto">
-            🫰 Remember to vote for your favorite apps to make sure they stick around and make it to
-            the top of the trending board.{' '}
-            <Link
-              href="/suggest"
-              className="text-primary-600 dark:text-primary-400 hover:underline font-medium"
-            >
-              Suggest an app idea
-            </Link>{' '}
-            and our bots might bring it to life.
-          </p>
         </div>
 
         <GalleryFilters
@@ -438,6 +431,7 @@ export default function HomePage() {
       </div>
 
       {mounted && <OptionsDrawer options={options} onToggle={handleOptionToggle} />}
+      {showWelcomeModal && <WelcomeModal onClose={() => setShowWelcomeModal(false)} />}
       {showDonateModal && <DonateModal onClose={() => setShowDonateModal(false)} />}
       {showPaymentSuccess && (
         <PaymentSuccessModal type={paymentType} onClose={() => setShowPaymentSuccess(false)} />
