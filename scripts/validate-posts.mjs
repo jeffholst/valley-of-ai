@@ -112,6 +112,12 @@ function main() {
       }
     }
 
+    // tags must be an array
+    const { tags } = data;
+    if (tags != null && !Array.isArray(tags)) {
+      issues.push(`  ${filename}: tags must be an array`);
+    }
+
     // relatedApps exist in apps.json
     const { relatedApps } = data;
     if (relatedApps != null && !Array.isArray(relatedApps)) {
@@ -143,6 +149,15 @@ function main() {
     if (missing.length > 0 || extra.length > 0) {
       issues.push(
         `  data/posts.json is out of sync with content/posts/; run \`npm run generate:posts\` and commit the result`
+      );
+    }
+
+    const missingRecordNumbers = registry
+      .filter((p) => !Number.isInteger(p.recordNumber))
+      .map((p) => p.slug);
+    if (missingRecordNumbers.length > 0) {
+      issues.push(
+        `  data/posts.json entries missing recordNumber (${missingRecordNumbers.join(', ')}); run \`npm run generate:posts\``
       );
     }
   } else {

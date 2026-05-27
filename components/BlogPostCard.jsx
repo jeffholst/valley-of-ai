@@ -61,11 +61,6 @@ export default function BlogPostCard({ post, recordIndex }) {
               ◆ PINNED
             </span>
           )}
-          {post.featured && (
-            <span className="font-mono text-[10px] px-1.5 py-0.5 border border-orange-400 text-orange-600 dark:text-orange-400 tracking-wider">
-              ★ FEATURED
-            </span>
-          )}
         </div>
 
         <h2 className="text-base font-bold text-gray-900 dark:text-cyan-100 group-hover:text-purple-600 dark:group-hover:text-cyan-300 transition-colors leading-snug">

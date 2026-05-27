@@ -33,7 +33,7 @@ export default function BlogHoloPanel({ children }) {
       return;
     }
 
-    let t;
+    const ids = [];
 
     function glitch() {
       const el = ref.current;
@@ -41,27 +41,32 @@ export default function BlogHoloPanel({ children }) {
         return;
       }
       el.dataset.glitch = 'a';
-      setTimeout(() => {
-        if (ref.current) {
-          ref.current.dataset.glitch = 'b';
-        }
-      }, 50);
-      setTimeout(() => {
-        if (ref.current) {
-          ref.current.dataset.glitch = 'a';
-        }
-      }, 95);
-      setTimeout(() => {
-        if (ref.current) {
-          delete ref.current.dataset.glitch;
-        }
-      }, 135);
-
-      t = setTimeout(glitch, 7000 + Math.random() * 11000);
+      ids.push(
+        setTimeout(() => {
+          if (ref.current) {
+            ref.current.dataset.glitch = 'b';
+          }
+        }, 50)
+      );
+      ids.push(
+        setTimeout(() => {
+          if (ref.current) {
+            ref.current.dataset.glitch = 'a';
+          }
+        }, 95)
+      );
+      ids.push(
+        setTimeout(() => {
+          if (ref.current) {
+            delete ref.current.dataset.glitch;
+          }
+        }, 135)
+      );
+      ids.push(setTimeout(glitch, 7000 + Math.random() * 11000));
     }
 
-    t = setTimeout(glitch, 3000 + Math.random() * 5000);
-    return () => clearTimeout(t);
+    ids.push(setTimeout(glitch, 3000 + Math.random() * 5000));
+    return () => ids.forEach(clearTimeout);
   }, [fxEnabled]);
 
   return (
