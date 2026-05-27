@@ -34,6 +34,7 @@
     "log": "node scripts/logger.mjs",
     "select:app:suggestion": "node scripts/issues/select-app-suggestion.mjs",
     "select:app:improvement": "node scripts/issues/select-app-improvement.mjs",
+    "select:blog:suggestion": "node scripts/issues/select-blog-suggestion.mjs",
     "issues:pending": "node scripts/issues/retrieve-pending-issues.mjs",
     "issues:decide": "node scripts/issues/decide-issue.mjs",
     "deploy:latest": "git commit --allow-empty -m \"chore: deploy latest\" && git push",

@@ -231,6 +231,8 @@ describe('applyIssueDecision', () => {
           commentOnIssue: jest.fn(),
         }
       )
-    ).toThrow('Issue must have exactly one type label (suggestion or improvement): 301');
+    ).toThrow(
+      'Issue must have exactly one type label (suggestion, improvement, or blog-post): 301'
+    );
   });
 });

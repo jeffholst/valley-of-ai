@@ -27,7 +27,7 @@ function loadAppsData() {
   return JSON.parse(readFileSync(appsPath, 'utf8'));
 }
 
-const VALID_TYPES = new Set(['suggestion', 'improvement']);
+const VALID_TYPES = new Set(['suggestion', 'improvement', 'blog-post']);
 const HUMAN_REVIEW_LABEL = 'status:needs-human-review';
 
 function normalizeLabels(labels = []) {
