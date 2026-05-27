@@ -16,6 +16,7 @@
  *   node scripts/issues/select-blog-suggestion.mjs --dry-run (no label mutation)
  */
 
+import { pathToFileURL } from 'url';
 import {
   addLabels,
   issueHasLabel,
@@ -37,7 +38,7 @@ function log(...args) {
 // Issue body parsers (handles both legacy markdown and YAML form formats)
 // ---------------------------------------------------------------------------
 
-function parseField(body, markdownKey, yamlHeading) {
+export function parseField(body, markdownKey, yamlHeading) {
   return (
     (body.match(new RegExp(`\\*\\*${markdownKey}:\\*\\*\\s*([^\\n]+)`, 'i')) ||
       body.match(new RegExp(`###\\s*${yamlHeading}\\s*\\n+([^\\n#]+)`, 'i')) ||
@@ -45,11 +46,11 @@ function parseField(body, markdownKey, yamlHeading) {
   );
 }
 
-function parseCategory(body) {
+export function parseCategory(body) {
   return parseField(body, 'Category', 'Category');
 }
 
-function parseDescription(body) {
+export function parseDescription(body) {
   // Multi-line: everything between "### Description" (or **Description:**) and next heading
   const yamlMatch = body.match(/###\s*Description\s*\n+([\s\S]*?)(?=\n###|\n\*\*|$)/i);
   if (yamlMatch) return yamlMatch[1].trim();
@@ -57,7 +58,7 @@ function parseDescription(body) {
   return mdMatch ? mdMatch[1].trim() : null;
 }
 
-function parseKeyPoints(body) {
+export function parseKeyPoints(body) {
   const match = body.match(/###\s*Key Points\s*\n+([\s\S]*?)(?=\n###|\n\*\*|$)/i);
   if (!match) return [];
   return match[1]
@@ -66,7 +67,7 @@ function parseKeyPoints(body) {
     .filter(Boolean);
 }
 
-function parseSuggestedAuthorType(body) {
+export function parseSuggestedAuthorType(body) {
   const raw = parseField(body, 'Suggested Author Type', 'Suggested Author Type');
   if (!raw) return 'ai';
   const lower = raw.toLowerCase();
@@ -75,7 +76,7 @@ function parseSuggestedAuthorType(body) {
   return 'ai';
 }
 
-function parseRelatedApps(body) {
+export function parseRelatedApps(body) {
   const match = body.match(/###\s*Related Apps[^\n]*\n+([\s\S]*?)(?=\n###|\n\*\*|$)/i);
   if (!match) return [];
   return match[1]
@@ -88,7 +89,7 @@ function parseRelatedApps(body) {
     });
 }
 
-function parseRequestor(body) {
+export function parseRequestor(body) {
   const value = parseField(body, 'Requestor', 'Requestor');
   if (!value || value.toLowerCase() === '_no response_') {
     return null;
@@ -100,7 +101,7 @@ function parseRequestor(body) {
 // Slug derivation from title
 // ---------------------------------------------------------------------------
 
-function deriveSlug(title, issueNumber) {
+export function deriveSlug(title, issueNumber) {
   const slug = title
     .toLowerCase()
     .replace(/[^a-z0-9\s-]/g, '')
@@ -193,8 +194,12 @@ async function main() {
   console.log(JSON.stringify(result, null, 2));
 }
 
-main().catch((err) => {
-  const message = err instanceof Error ? err.message : String(err);
-  console.error(`select-blog-suggestion.mjs error: ${message}`);
-  process.exit(1);
-});
+const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (isDirectRun) {
+  main().catch((err) => {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error(`select-blog-suggestion.mjs error: ${message}`);
+    process.exit(1);
+  });
+}
