@@ -163,7 +163,7 @@ export default function BlogIndex({ posts, categories, tags }) {
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {paginated.map((post) => (
-            <BlogPostCard key={post.slug} post={post} recordIndex={posts.indexOf(post) + 1} />
+            <BlogPostCard key={post.slug} post={post} recordIndex={post.recordNumber} />
           ))}
         </div>
       )}

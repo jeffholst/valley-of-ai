@@ -61,6 +61,12 @@ async function main() {
 
   const posts = files.map(parsePost).sort((a, b) => new Date(b.date) - new Date(a.date));
 
+  // Assign stable record numbers: oldest post = 1, newest = N
+  const total = posts.length;
+  posts.forEach((p, i) => {
+    p.recordNumber = total - i;
+  });
+
   const json = await formatWithPrettier(JSON.stringify(posts), { parser: 'json' });
   fs.writeFileSync(OUTPUT_FILE, json);
 
