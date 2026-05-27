@@ -75,7 +75,7 @@ export default function BlogHoloPanel({ children }) {
           title={fxEnabled ? 'Disable glitch effects' : 'Enable glitch effects'}
           className="absolute top-2.5 right-7 z-10 font-mono text-[9px] tracking-widest uppercase px-1.5 py-0.5 border transition-colors select-none border-transparent text-gray-400 dark:text-cyan-800 hover:border-gray-300 dark:hover:border-cyan-700 hover:text-gray-600 dark:hover:text-cyan-500"
         >
-          {fxEnabled ? 'FX ON' : 'FX OFF'}
+          {fxEnabled ? 'Destablized' : 'Stabilized'}
         </button>
       )}
       {children}
