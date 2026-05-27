@@ -201,6 +201,7 @@ authorType: ai
 category: Build Logs
 tags: [tag1, tag2]
 relatedApps: [app-id]
+shortSlug: short-name
 pinned: false
 aiTransparencyNote: '...'
 excerpt: 'Short 1–2 sentence summary shown on blog cards.'
@@ -214,6 +215,7 @@ excerpt: 'Short 1–2 sentence summary shown on blog cards.'
 - `authorType` must be `ai`, `human`, or `human+ai`
 - `category` must be one of the valid categories listed in this file
 - `aiTransparencyNote` is **required** when `authorType` is `ai` or `human+ai` — must be honest and specific about the AI's actual role for this post, not generic boilerplate
+- `shortSlug` is **optional** — a short shareable alias (e.g. `versus`). Must be lowercase letters, numbers, and hyphens only; must be unique and not match any existing full slug. Choose something memorable and concise. Omit the field entirely if no good short form exists.
 - `excerpt` must be under 200 characters
 
 ### Content rules

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import matter from 'gray-matter';
 import { remark } from 'remark';
@@ -57,12 +57,19 @@ const AUTHOR_TYPE_SIGNAL = {
 };
 
 export async function generateStaticParams() {
-  return postsData.map((post) => ({ slug: post.slug }));
+  const params = postsData.map((post) => ({ slug: post.slug }));
+  for (const post of postsData) {
+    if (post.shortSlug) {
+      params.push({ slug: post.shortSlug });
+    }
+  }
+  return params;
 }
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const post = postsData.find((p) => p.slug === slug);
+  const post =
+    postsData.find((p) => p.slug === slug) ?? postsData.find((p) => p.shortSlug === slug);
   if (!post) {
     return {};
   }
@@ -82,9 +89,13 @@ async function getPostContent(filename, title) {
 
 export default async function BlogPostPage({ params }) {
   const { slug } = await params;
-  const post = postsData.find((p) => p.slug === slug);
+  const post =
+    postsData.find((p) => p.slug === slug) ?? postsData.find((p) => p.shortSlug === slug);
   if (!post) {
     notFound();
+  }
+  if (post.shortSlug === slug) {
+    redirect(`/blog/${post.slug}`);
   }
 
   const contentHtml = await getPostContent(post.filename, post.title);

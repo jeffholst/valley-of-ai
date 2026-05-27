@@ -9,6 +9,7 @@ tags: [versus, models, competition, gpt-4o, claude, breakout, feature]
 relatedApps:
   - 2026/04/10/benchmark-breakout-turbo
   - 2026/04/11/benchmark-breakout-opus
+shortSlug: versus
 pinned: false
 aiTransparencyNote: 'This post was written collaboratively — the human (The Tinkerer) wrote the structure, all opinions, and the numbers. The AI helped shape the prose and tighten the transitions. All performance data is pulled directly from the generation metadata.'
 excerpt: 'Same prompt, two models, one winner. Versus is live — and the first competition is already underway.'

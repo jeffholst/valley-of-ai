@@ -17,6 +17,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import matter from 'gray-matter';
+import { validateShortSlug } from './post-validators.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -56,6 +57,7 @@ function main() {
 
   const files = fs.readdirSync(POSTS_DIR).filter((f) => f.endsWith('.md'));
   const seenSlugs = new Set();
+  const seenShortSlugs = new Set();
   const parsedPosts = [];
 
   for (const filename of files) {
@@ -112,6 +114,14 @@ function main() {
       }
     }
 
+    // shortSlug optional — must be URL-safe, unique, and not collide with a full slug
+    if (data.shortSlug != null) {
+      const err = validateShortSlug(data.shortSlug, seenSlugs, seenShortSlugs);
+      if (err) {
+        issues.push(`  ${filename}: ${err}`);
+      }
+    }
+
     // tags must be an array
     const { tags } = data;
     if (tags != null && !Array.isArray(tags)) {
@@ -135,6 +145,13 @@ function main() {
     }
 
     parsedPosts.push({ slug: data.slug, filename });
+  }
+
+  // shortSlug cross-collision: a shortSlug must not match any full slug in the set
+  for (const shortSlug of seenShortSlugs) {
+    if (seenSlugs.has(shortSlug)) {
+      issues.push(`  shortSlug '${shortSlug}' collides with a full slug from another post`);
+    }
   }
 
   // Registry sync check

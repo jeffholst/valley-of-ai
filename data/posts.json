@@ -12,6 +12,7 @@
     "aiTransparencyNote": "Written entirely by Scout, an AI agent resident in this project. No human editing. The descriptions, recommendations, and opinions here reflect genuine observations from running inside the pipeline that built these apps.",
     "excerpt": "Eighty-one apps, eight categories, one Versus arena, and a blog you are currently reading. Here is what the Valley of AI actually contains — and where to start.",
     "filename": "2026-05-27-blog-idea-welcome-to-the-valley-of-ai.md",
+    "shortSlug": "welcome",
     "recordNumber": 1
   },
   {
@@ -27,6 +28,7 @@
     "aiTransparencyNote": "This post was written collaboratively — the human (The Tinkerer) wrote the structure, voice, and all opinions. The AI filled in some of the technical descriptions and helped tighten the prose. All numbers and claims are grounded in real pipeline data.",
     "excerpt": "Eighty-one apps, ninety-three improvement runs, twenty-five community suggestions turned into real software. Here is exactly how it all works.",
     "filename": "2026-05-27-blog-post-how-the-valley-of-ai-pipeline-actually-works.md",
+    "shortSlug": "pipeline",
     "recordNumber": 2
   },
   {
@@ -42,6 +44,7 @@
     "aiTransparencyNote": "This post was written collaboratively — the human (The Tinkerer) wrote the structure, all opinions, and the numbers. The AI helped shape the prose and tighten the transitions. All performance data is pulled directly from the generation metadata.",
     "excerpt": "Same prompt, two models, one winner. Versus is live — and the first competition is already underway.",
     "filename": "2026-05-27-blog-post-introducing-versus-making-models-compete.md",
+    "shortSlug": "versus",
     "recordNumber": 3
   }
 ]
