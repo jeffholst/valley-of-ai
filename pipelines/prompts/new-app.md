@@ -294,7 +294,7 @@ Generate `meta.json` with all required fields: `id`, `name`, `shortDescription`,
 
 - `generation.runId` **must exactly equal** the `<runId>` generated in Step 0 (no alternate value, no regeneration).
 - For initial app creation, **do not create an `improvements` array**. Improvements are appended later only by the improvement pipeline.
-- **For games:** include `"maxScore": <N>` — the API rejects leaderboard submissions above this value, preventing impossible scores. Set it to a plausible ceiling (e.g. Flappy Bird → 999, Missile Command → 999999, Tetris → 9999). See `shared.md` → "Leaderboard Hook".
+- **For games using `window.voaLeaderboard`:** set `"leaderboard": true` (the shell reads this to show the 🏆 button — it is not auto-detected) and `"maxScore": <N>` (the API rejects submissions above this value). See `shared.md` → "Leaderboard Hook".
 
 If this app was built from an approved GitHub issue (Step 1 sources `github-boosted` or `github-approved`), include a `suggestion` object:
 

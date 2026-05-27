@@ -211,6 +211,7 @@ Always run `npm run generate:apps` before committing when `meta.json` files chan
 
 - `visible`: boolean — defaults to `true`; set to `false` to hide an app from the gallery without deleting it
 - `allowImprovements`: boolean — defaults to `true`; set to `false` to prevent community improvement submissions for this app. The gallery card shows a 🔒 badge, the improve page blocks the form, and the pipeline skips the app during improvement selection.
+- `leaderboard`: boolean — defaults to `false`; set to `true` for games that integrate `window.voaLeaderboard` for high-score submission. The app shell reads this flag to show the 🏆 button. **Must be set explicitly — it is not auto-detected from the HTML.**
 
 ---
 
