@@ -14,6 +14,26 @@ import BlogHoloPanel from '@/components/BlogHoloPanel';
 import PostLog from '@/components/PostLog';
 
 const POSTS_DIR = path.join(process.cwd(), 'content', 'posts');
+const POST_LOGS_DIR = path.join(process.cwd(), 'content', 'posts', 'logs');
+
+function readPostLog(slug) {
+  const logPath = path.join(POST_LOGS_DIR, `${slug}.jsonl`);
+  if (!fs.existsSync(logPath)) {
+    return [];
+  }
+  return fs
+    .readFileSync(logPath, 'utf8')
+    .split('\n')
+    .filter((line) => line.trim())
+    .map((line) => {
+      try {
+        return JSON.parse(line);
+      } catch {
+        return null;
+      }
+    })
+    .filter(Boolean);
+}
 
 const AUTHOR_TYPE_SIGNAL = {
   human: {
@@ -65,6 +85,7 @@ export default async function BlogPostPage({ params }) {
   }
 
   const contentHtml = await getPostContent(post.filename);
+  const logEntries = readPostLog(post.slug);
   const author = authorsData.find((a) => a.id === post.author);
   const relatedApps = (post.relatedApps ?? [])
     .map((id) => appsData.find((a) => a.id === id))
@@ -236,7 +257,7 @@ export default async function BlogPostPage({ params }) {
 
         {/* Pipeline log */}
         <section className="mb-10">
-          <PostLog slug={post.slug} />
+          <PostLog entries={logEntries} />
         </section>
 
         {/* Prev / Next navigation */}

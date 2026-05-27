@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { formatDuration } from '@/lib/formatDuration';
 
 function StatusDot({ status }) {
@@ -64,24 +64,10 @@ function StatusDot({ status }) {
   );
 }
 
-export default function PostLog({ slug }) {
-  const [entries, setEntries] = useState([]);
+export default function PostLog({ entries = [] }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch(`/api/post-log?slug=${encodeURIComponent(slug)}`)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setEntries(data);
-        }
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, [slug]);
-
-  if (loading || entries.length === 0) {
+  if (entries.length === 0) {
     return null;
   }
 
