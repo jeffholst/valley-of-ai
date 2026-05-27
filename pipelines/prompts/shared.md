@@ -442,16 +442,14 @@ if (window.voaLeaderboard) {
 }
 ```
 
-**`meta.json` — required `maxScore` field for all games:**
+**`meta.json` — required fields for all games using `window.voaLeaderboard`:**
 
 ```json
-{ "maxScore": 9999 }
+{ "leaderboard": true, "maxScore": 9999 }
 ```
 
-Set this to a plausible upper bound for the game's score. The API rejects submissions above
-this value, preventing trivially fake high scores. Ask: what is an exceptionally good but
-physically possible score? Use that as your ceiling, multiplied 2–3×.
-Example values: Flappy Bird → 999, Missile Command → 999999, Tetris → 9999.
+- `"leaderboard": true` — tells the app shell to show the 🏆 button. **Must be set explicitly**; it is not auto-detected from the HTML.
+- `"maxScore": <N>` — the API rejects submissions above this value, preventing impossible scores. Set it to a plausible upper bound (e.g. Flappy Bird → 999, Missile Command → 999999, Tetris → 9999).
 
 **When to call:** Only at game-over, with the final score. Not during gameplay.
 **Not for utilities:** Only games have scores. Do not add `voaLeaderboard` calls to utility or

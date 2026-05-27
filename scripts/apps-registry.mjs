@@ -8,47 +8,6 @@
 import fs from 'fs';
 import path from 'path';
 
-const LEADERBOARD_USAGE_PATTERNS = [
-  // Preferred shared integration helper.
-  /\b(?:window\s*\.\s*)?voaLeaderboard\s*\.\s*submit\s*\(/i,
-  // Manual score API submission via fetch.
-  /\bfetch\s*\(\s*['"`]\/api\/scores(?:[/?'"`]|\\?)/i,
-  // Manual score API submission via XHR open('POST', '/api/scores').
-  /\bopen\s*\(\s*['"`]POST['"`]\s*,\s*['"`]\/api\/scores(?:[/?'"`]|\\?)/i,
-];
-
-function stripCommentsForDetection(text) {
-  // Note: the // line-comment replacement also strips '//' inside string
-  // literals (e.g. 'https://…'), but this is acceptable for pattern-matching
-  // purposes — none of the LEADERBOARD_USAGE_PATTERNS contain '//'.
-  return text
-    .replace(/<!--[\s\S]*?-->/g, ' ')
-    .replace(/\/\*[\s\S]*?\*\//g, ' ')
-    .replace(/\/\/.*$/gm, ' ');
-}
-
-export function detectLeaderboardUsageFromHtml(html) {
-  if (typeof html !== 'string' || html.length === 0) {
-    return false;
-  }
-  const searchable = stripCommentsForDetection(html);
-  return LEADERBOARD_USAGE_PATTERNS.some((pattern) => pattern.test(searchable));
-}
-
-export function detectLeaderboardUsageFromAppDir(appDir) {
-  const indexPath = path.join(appDir, 'index.html');
-  if (!fs.existsSync(indexPath)) {
-    return false;
-  }
-  try {
-    const html = fs.readFileSync(indexPath, 'utf8');
-    return detectLeaderboardUsageFromHtml(html);
-  } catch (err) {
-    console.warn(`[apps-registry] Could not read ${indexPath}: ${err.message}`);
-    return false;
-  }
-}
-
 export function findMetaFiles(dir, files = []) {
   if (!fs.existsSync(dir)) {
     return files;

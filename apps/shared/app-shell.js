@@ -96,61 +96,17 @@
     return resolveConfigUrl('turnstileSiteKey', TURNSTILE_SITE_KEY_PLACEHOLDER);
   }
 
-  function pageUsesLeaderboardHook() {
-    // Escape hatch for apps that support the shared leaderboard but do not reference
-    // window.voaLeaderboard directly in inline script code. Opt in by adding
-    // data-voa-has-leaderboard="true" to the page's <html> element.
-    if (document.documentElement?.hasAttribute('data-voa-has-leaderboard')) {
-      return document.documentElement.getAttribute('data-voa-has-leaderboard') === 'true';
-    }
-
-    const scripts = document.querySelectorAll('script:not([src])');
-    for (const script of scripts) {
-      const source = script.textContent || '';
-      if (/window\.voaLeaderboard\s*\?*\.\s*(submit|show)\s*\(/.test(source)) {
-        return true;
+  async function pageSupportsLeaderboard() {
+    try {
+      const response = await fetch('./meta.json', { cache: 'force-cache' });
+      if (response.ok) {
+        const parsed = await response.json();
+        return parsed.leaderboard === true;
       }
+    } catch {
+      // ignore
     }
-
     return false;
-  }
-
-  async function pageSupportsLeaderboard(appId) {
-    // Explicit page-level override wins.
-    if (document.documentElement?.hasAttribute('data-voa-has-leaderboard')) {
-      return document.documentElement.getAttribute('data-voa-has-leaderboard') === 'true';
-    }
-
-    // Optional meta-level override for future templates.
-    const metaValue = document
-      .querySelector('meta[name="voa-app-leaderboard"]')
-      ?.getAttribute('content')
-      ?.trim()
-      ?.toLowerCase();
-    if (metaValue === 'true') {
-      return true;
-    }
-    if (metaValue === 'false') {
-      return false;
-    }
-
-    // Canonical source of truth: sibling app meta.json leaderboard boolean.
-    if (appId) {
-      try {
-        const response = await fetch('./meta.json', { cache: 'force-cache' });
-        if (response.ok) {
-          const parsed = await response.json();
-          if (typeof parsed?.leaderboard === 'boolean') {
-            return parsed.leaderboard;
-          }
-        }
-      } catch {
-        // Fall through to runtime hook detection.
-      }
-    }
-
-    // Legacy fallback for older pages if metadata is unavailable.
-    return pageUsesLeaderboardHook();
   }
 
   function getLocalVoteRecord(appId) {
@@ -1673,7 +1629,7 @@
     container.appendChild(improveLink);
 
     const leaderboardSupported =
-      leaderboardSupportPromise || (leaderboardSupportPromise = pageSupportsLeaderboard(appId));
+      leaderboardSupportPromise || (leaderboardSupportPromise = pageSupportsLeaderboard());
     if (await leaderboardSupported) {
       const lbHeaderBtn = document.createElement('button');
       lbHeaderBtn.id = 'voa-lb-btn';
