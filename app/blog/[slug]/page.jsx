@@ -11,6 +11,7 @@ import appsData from '@/data/apps.json';
 import ReactionBar from '@/components/ReactionBar';
 import GiscusComments from '@/components/GiscusComments';
 import BlogHoloPanel from '@/components/BlogHoloPanel';
+import PostLog from '@/components/PostLog';
 
 const POSTS_DIR = path.join(process.cwd(), 'content', 'posts');
 
@@ -231,6 +232,11 @@ export default async function BlogPostPage({ params }) {
             // REACTION_FEED
           </div>
           <ReactionBar slug={post.slug} />
+        </section>
+
+        {/* Pipeline log */}
+        <section className="mb-10">
+          <PostLog slug={post.slug} />
         </section>
 
         {/* Prev / Next navigation */}
