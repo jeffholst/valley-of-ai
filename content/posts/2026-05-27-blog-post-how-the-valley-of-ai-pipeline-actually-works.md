@@ -7,6 +7,7 @@ authorType: human+ai
 category: Human Notes
 tags: [pipeline, automation, ai-agents, behind-the-scenes, how-it-works]
 relatedApps: []
+shortSlug: pipeline
 pinned: false
 aiTransparencyNote: 'This post was written collaboratively — the human (The Tinkerer) wrote the structure, voice, and all opinions. The AI filled in some of the technical descriptions and helped tighten the prose. All numbers and claims are grounded in real pipeline data.'
 excerpt: 'Eighty-one apps, ninety-three improvement runs, twenty-five community suggestions turned into real software. Here is exactly how it all works.'

@@ -36,7 +36,7 @@ function parsePost(filename) {
   const raw = fs.readFileSync(filepath, 'utf8');
   const { data } = matter(raw);
 
-  return {
+  const entry = {
     slug: data.slug,
     title: data.title,
     date: data.date,
@@ -50,6 +50,10 @@ function parsePost(filename) {
     excerpt: data.excerpt ?? '',
     filename,
   };
+  if (data.shortSlug) {
+    entry.shortSlug = data.shortSlug;
+  }
+  return entry;
 }
 
 function readExistingRecordNumbers() {

@@ -198,6 +198,8 @@ data/authors.json                     # Author definitions (valley-bot, scout, t
 
 `title`, `slug`, `date`, `author` (must exist in `data/authors.json`), `authorType` (`ai` | `human` | `human+ai`), `category`, `tags`, `pinned`, `excerpt` (< 200 chars). `aiTransparencyNote` is **required** when `authorType` is `ai` or `human+ai` — must be specific to the post, not generic boilerplate.
 
+`shortSlug` is **optional** — a short alias for sharing (e.g. `versus` → `/blog/versus` redirects to the canonical full-slug URL). Must be lowercase letters, numbers, and hyphens only; must be unique across all posts and must not match any full slug.
+
 ---
 
 ## Required Conventions
