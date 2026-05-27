@@ -256,9 +256,11 @@ export default async function BlogPostPage({ params }) {
         </section>
 
         {/* Pipeline log */}
-        <section className="mb-10">
-          <PostLog entries={logEntries} />
-        </section>
+        {logEntries.length > 0 && (
+          <section className="mb-10">
+            <PostLog entries={logEntries} />
+          </section>
+        )}
 
         {/* Prev / Next navigation */}
         <nav className="grid grid-cols-2 gap-3 mb-10" aria-label="Post navigation">

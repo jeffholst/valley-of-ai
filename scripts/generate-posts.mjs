@@ -53,6 +53,21 @@ function parsePost(filename) {
   };
 }
 
+function readExistingRecordNumbers() {
+  if (!fs.existsSync(OUTPUT_FILE)) {
+    return new Map();
+  }
+
+  const raw = fs.readFileSync(OUTPUT_FILE, 'utf8');
+  const posts = JSON.parse(raw);
+
+  return new Map(
+    posts
+      .filter((post) => post.slug && Number.isInteger(post.recordNumber))
+      .map((post) => [post.slug, post.recordNumber])
+  );
+}
+
 async function main() {
   const files = readPostFiles();
   if (files.length === 0) {
@@ -60,11 +75,11 @@ async function main() {
   }
 
   const posts = files.map(parsePost).sort((a, b) => new Date(b.date) - new Date(a.date));
+  const existingRecordNumbers = readExistingRecordNumbers();
+  let nextRecordNumber = Math.max(0, ...existingRecordNumbers.values()) + 1;
 
-  // Assign stable record numbers: oldest post = 1, newest = N
-  const total = posts.length;
-  posts.forEach((p, i) => {
-    p.recordNumber = total - i;
+  posts.forEach((post) => {
+    post.recordNumber = existingRecordNumbers.get(post.slug) ?? nextRecordNumber++;
   });
 
   const json = await formatWithPrettier(JSON.stringify(posts), { parser: 'json' });
