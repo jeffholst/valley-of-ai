@@ -10,6 +10,7 @@ import authorsData from '@/data/authors.json';
 import appsData from '@/data/apps.json';
 import ReactionBar from '@/components/ReactionBar';
 import GiscusComments from '@/components/GiscusComments';
+import BlogHoloPanel from '@/components/BlogHoloPanel';
 
 const POSTS_DIR = path.join(process.cwd(), 'content', 'posts');
 
@@ -166,7 +167,7 @@ export default async function BlogPostPage({ params }) {
           <div className="font-mono text-[10px] text-gray-600 dark:text-cyan-500 tracking-widest uppercase mb-0">
             // TRANSMISSION_BODY
           </div>
-          <div className="blog-holo-panel p-7 sm:p-9">
+          <BlogHoloPanel>
             <div
               className="prose prose-gray dark:prose-invert max-w-none
                 prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h2:mt-8
@@ -178,7 +179,7 @@ export default async function BlogPostPage({ params }) {
                 prose-hr:border-gray-200 dark:prose-hr:border-cyan-800"
               dangerouslySetInnerHTML={{ __html: contentHtml }}
             />
-          </div>
+          </BlogHoloPanel>
         </div>
 
         {/* Related apps */}
