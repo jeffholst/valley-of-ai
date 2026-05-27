@@ -26,6 +26,8 @@ npm run issues:decide             # Apply approved/rejected/human-review issue d
 npm run select:app:suggestion     # Recommend next new app concept (agent use only)
 npm run select:app:improvement    # Recommend next improvement to an existing app (agent use only)
 npm run select:blog:suggestion    # Pick next approved blog-post issue to execute (agent use only)
+npm run generate:posts            # Regenerate data/posts.json from content/posts/*.md
+npm run validate:posts            # Validate post schema, slug uniqueness, author/app references
 ```
 
 ---
@@ -138,6 +140,63 @@ Uses a Supabase `versus_votes` table with `versus_id` and `voted_app_id` columns
 
 - `/versus` — listing page showing all competitions
 - `/versus/[id]` — head-to-head comparison with shared prompt, side-by-side entry cards, launch buttons, and vote results bar
+
+---
+
+## Blog Posts
+
+The Experiment Blog lives under `content/posts/`. Posts are Markdown files with YAML frontmatter; `data/posts.json` is the generated registry (committed alongside the post).
+
+### Adding a new post via the pipeline
+
+Blog post ideas enter the same GitHub issue flow as app suggestions:
+
+1. A GitHub issue is filed with the `blog-post` label and `status:pending`
+2. The automated issue-review agent approves it (`status:approved`) or rejects it
+3. The blog post pipeline agent picks it up and executes the 13-step pipeline in `pipelines/prompts/blog-post.md`
+
+**To trigger the pipeline manually**, start a session with `shared.md` + `blog-post.md`. The agent runs `npm run select:blog:suggestion` as Step 1 — it picks the next approved issue (FIFO). If none exist, it aborts.
+
+### Pipeline overview (13 steps)
+
+| Step | Name                   | What happens                                                                                    |
+| ---- | ---------------------- | ----------------------------------------------------------------------------------------------- |
+| 1    | SELECT_BLOG_SUGGESTION | Runs `npm run select:blog:suggestion`; records slug, title, category, key points                |
+| 2    | RESEARCH_TOPIC         | Reads app logs/meta, `data/posts.json`, `data/authors.json` to ground the post                  |
+| 3    | WRITE_OUTLINE          | Produces a structured section outline; checks for duplication against existing posts            |
+| 4    | WRITE_POST             | Writes `content/posts/YYYY-MM-DD-<slug>.md` (≥ 400 words, valid frontmatter)                    |
+| 5    | VALIDATE_POST          | Runs `generate:posts`, `validate:posts`, `lint`, `npm test` — fix any failure before continuing |
+| 6    | GIT_CHECKOUT_BRANCH    | `git checkout -b blog/<slug>`                                                                   |
+| 7    | GIT_COMMIT             | Stages post file + `data/posts.json`; commits with `[skip deploy]`                              |
+| 8    | GIT_PUSH               | Pushes `blog/<slug>` to origin                                                                  |
+| 9    | CREATE_PR              | Opens PR titled `blog: <post title>`                                                            |
+| 10   | PR_REVIEW              | Self-review checklist; pushes fix commit if needed                                              |
+| 11   | MERGE_PR               | `gh pr merge --squash --auto`; waits for CI                                                     |
+| 12   | DELETE_BRANCH          | Cleans up local and remote branch                                                               |
+| 13   | FINALIZE_LOGS          | Commits log files on `main`; closes the GitHub issue                                            |
+
+### Key paths
+
+```
+content/posts/YYYY-MM-DD-<slug>.md   # Post file (committed in the PR)
+content/posts/logs/<slug>.jsonl       # Per-post pipeline log (committed after merge)
+data/posts.json                       # Generated registry — committed with each post
+data/authors.json                     # Author definitions (valley-bot, scout, the-tinkerer)
+```
+
+### Git workflow for blog posts
+
+- Branch prefix: `blog/<slug>`
+- Commit: `content: add blog post '<title>' [skip deploy]`
+- Log files (`content/posts/logs/<slug>.jsonl`) are committed separately after merge: `chore: finalize transaction logs for blog/<slug>`
+
+### Valid categories
+
+`Build Logs` · `AI Experiments` · `App Spotlights` · `Human Notes` · `Bot Notes` · `Tutorials` · `Release Notes`
+
+### Frontmatter required fields
+
+`title`, `slug`, `date`, `author` (must exist in `data/authors.json`), `authorType` (`ai` | `human` | `human+ai`), `category`, `tags`, `featured`, `pinned`, `excerpt` (< 200 chars). `aiTransparencyNote` is **required** when `authorType` is `ai` or `human+ai` — must be specific to the post, not generic boilerplate.
 
 ---
 
