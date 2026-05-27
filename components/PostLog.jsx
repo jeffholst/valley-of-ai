@@ -67,10 +67,6 @@ function StatusDot({ status }) {
 export default function PostLog({ entries = [] }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  if (entries.length === 0) {
-    return null;
-  }
-
   const pipelineEntries = entries.filter(
     (e) =>
       e.pipeline?.step &&

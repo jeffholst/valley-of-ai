@@ -76,7 +76,8 @@ async function main() {
 
   const posts = files.map(parsePost).sort((a, b) => new Date(b.date) - new Date(a.date));
   const existingRecordNumbers = readExistingRecordNumbers();
-  let nextRecordNumber = Math.max(0, ...existingRecordNumbers.values()) + 1;
+  let nextRecordNumber =
+    existingRecordNumbers.size > 0 ? Math.max(...existingRecordNumbers.values()) + 1 : 1;
 
   posts.forEach((post) => {
     post.recordNumber = existingRecordNumbers.get(post.slug) ?? nextRecordNumber++;
