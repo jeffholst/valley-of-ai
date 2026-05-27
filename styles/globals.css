@@ -1573,6 +1573,56 @@
       0 4px 40px rgba(60, 100, 200, 0.1),
       inset 0 1px 0 rgba(120, 180, 255, 0.4);
   }
+  /* ── Dark-mode holographic text glow ──────────────────────────────────────
+     Layered text-shadow adds luminosity without blurring readability.
+     Headings get a strong cyan glow; body text gets a whisper-level haze. */
+
+  .dark .blog-holo-panel h1,
+  .dark .blog-holo-panel h2,
+  .dark .blog-holo-panel h3,
+  .dark .blog-holo-panel h4 {
+    text-shadow:
+      0 0 14px rgba(100, 215, 255, 0.65),
+      0 0 36px rgba(60, 170, 255, 0.3),
+      0 0 70px rgba(40, 120, 255, 0.14);
+  }
+
+  .dark .blog-holo-panel p,
+  .dark .blog-holo-panel li,
+  .dark .blog-holo-panel dt,
+  .dark .blog-holo-panel dd {
+    text-shadow: 0 0 14px rgba(190, 228, 255, 0.13);
+  }
+
+  .dark .blog-holo-panel strong,
+  .dark .blog-holo-panel b {
+    text-shadow: 0 0 12px rgba(160, 222, 255, 0.3);
+  }
+
+  .dark .blog-holo-panel em,
+  .dark .blog-holo-panel i {
+    text-shadow: 0 0 12px rgba(200, 180, 255, 0.28);
+  }
+
+  .dark .blog-holo-panel a {
+    text-shadow:
+      0 0 10px rgba(80, 210, 255, 0.55),
+      0 0 24px rgba(60, 180, 255, 0.22);
+  }
+
+  .dark .blog-holo-panel blockquote {
+    text-shadow: 0 0 12px rgba(160, 200, 255, 0.18);
+  }
+
+  .dark .blog-holo-panel :not(pre) > code {
+    text-shadow:
+      0 0 10px rgba(0, 235, 185, 0.6),
+      0 0 22px rgba(0, 200, 160, 0.25);
+  }
+
+  .dark .blog-holo-panel pre code {
+    text-shadow: 0 0 8px rgba(0, 230, 180, 0.22);
+  }
 
   :root:not(.dark) .blog-holo-panel[data-glitch]::after {
     display: none;
