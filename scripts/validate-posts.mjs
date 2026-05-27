@@ -144,7 +144,7 @@ function main() {
       }
     }
 
-    parsedPosts.push({ slug: data.slug, filename });
+    parsedPosts.push({ slug: data.slug, shortSlug: data.shortSlug ?? null, filename });
   }
 
   // shortSlug cross-collision: a shortSlug must not match any full slug in the set
@@ -167,6 +167,18 @@ function main() {
       issues.push(
         `  data/posts.json is out of sync with content/posts/; run \`npm run generate:posts\` and commit the result`
       );
+    }
+
+    // Check shortSlug drift
+    for (const parsed of parsedPosts) {
+      const reg = registry.find((p) => p.slug === parsed.slug);
+      if (!reg) continue;
+      const regShortSlug = reg.shortSlug ?? null;
+      if (parsed.shortSlug !== regShortSlug) {
+        issues.push(
+          `  shortSlug mismatch for '${parsed.slug}': content has '${parsed.shortSlug}', registry has '${regShortSlug}'; run \`npm run generate:posts\` and commit the result`
+        );
+      }
     }
 
     const missingRecordNumbers = registry

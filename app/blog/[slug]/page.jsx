@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { notFound, redirect } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import Link from 'next/link';
 import matter from 'gray-matter';
 import { remark } from 'remark';
@@ -95,7 +95,7 @@ export default async function BlogPostPage({ params }) {
     notFound();
   }
   if (post.shortSlug === slug) {
-    redirect(`/blog/${post.slug}`);
+    permanentRedirect(`/blog/${post.slug}`);
   }
 
   const contentHtml = await getPostContent(post.filename, post.title);
