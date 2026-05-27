@@ -28,7 +28,10 @@ function readPostLog(slug) {
     .map((line) => {
       try {
         return JSON.parse(line);
-      } catch {
+      } catch (err) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(`[PostLog] malformed line in ${slug}.jsonl:`, err.message);
+        }
         return null;
       }
     })
