@@ -12,11 +12,11 @@ aiTransparencyNote: 'This post was written collaboratively — the human (The Ti
 excerpt: 'Eighty-one apps, ninety-three improvement runs, twenty-five community suggestions turned into real software. Here is exactly how it all works.'
 ---
 
-People ask me this more than anything else: _how does the gallery actually work?_ They see 81 apps, they notice a new one appearing, they find the pipeline logs — and they want to understand the machinery behind it. This is my attempt to explain it plainly.
+People ask me this more than anything else: _how does the gallery actually work?_ They see a gallery of apps, they notice a new one appearing, they find the pipeline logs — and they want to understand the machinery behind it. This is my attempt to explain it plainly.
 
 ## It starts with an idea
 
-Everything in the gallery begins as a GitHub issue. Anyone can file one — there is a [Suggest an App](/suggest) form on the site that creates the issue automatically. The issue includes a title, a description of the app, and the category it fits into.
+Everything in the gallery begins as a suggestion that is posted as a [Github issue](https://github.com/jeffholst/valley-of-ai/issues). Anyone can file one — there is a [Suggest an App](/suggest) form on the site that creates the issue automatically. The issue includes a title, a description of the app, and the category it fits into.
 
 But an idea sitting in an issue doesn't automatically become an app. First it goes through a review step.
 
@@ -26,9 +26,9 @@ Once an issue is marked `status:approved`, it enters the queue.
 
 ## The build pipeline
 
-A nightly run picks the next approved suggestion using a selection script. The script applies some heuristics — it avoids building too many apps in the same category back to back, deprioritizes tags that have been saturated recently, and uses a duplication score to skip ideas that are too similar to something already in the gallery.
+An automated run picks the next approved suggestion using a selection script. The script applies some heuristics — it avoids building too many apps in the same category back to back, deprioritizes tags that have been saturated recently, and uses a duplication score to skip ideas that are too similar to something already in the gallery.
 
-When an issue is selected, the pipeline locks it (`status:in-progress`) and starts a 14-step build run. The agent for this is Claude Code, running with a structured prompt (`shared.md` + `new-app.md`) that defines every contract the app must meet.
+When an issue is selected, the pipeline locks it (`status:in-progress`) and starts a 14-step build run. The agent for this varies (Claude, ChatGPT, Gemini. Llama, etc.), running with a structured prompt (`shared.md` + `new-app.md`) that defines every contract the app must meet.
 
 The 14 steps are roughly:
 
@@ -52,8 +52,6 @@ The whole thing — from first file to merged PR — runs in a single agent sess
 After an app ships, it can be improved. The same issue flow applies: someone files an improvement request, it gets reviewed, it gets approved, and the improvement pipeline picks it up.
 
 The improvement pipeline reads the existing app, understands what's there, and applies the requested change without breaking what already works. It's more constrained than the build pipeline — surgical changes only, no rewrites.
-
-As of today: 22 apps have at least one improvement, totaling 93 improvement runs. Duck Flight has 17 of those runs by itself, which tells you something about how a game can evolve when you keep asking for more.
 
 ## The transparency layer
 
@@ -83,7 +81,7 @@ Game feel is harder. The physics and the responsiveness and the "does this actua
 
 The prompt contracts matter more than the model. I've run the same build on multiple models. The gap between them is real but smaller than you'd expect. What matters more is whether the prompt clearly defines what success looks like. A well-constrained prompt on a mid-tier model beats a vague prompt on the best model available.
 
-And finally: the hardest part is not the code. It's curation. Eighty-one apps is a lot of apps. Deciding what deserves to be here, what should be retired, what the gallery should feel like as a whole — that's the work that doesn't automate.
+And finally: the hardest part is not the code. It's curation. Deciding what deserves to be here, what should be retired, what the gallery should feel like as a whole — that's the work that doesn't automate.
 
 ---
 
