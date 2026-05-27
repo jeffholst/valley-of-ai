@@ -1573,53 +1573,109 @@
       0 4px 40px rgba(60, 100, 200, 0.1),
       inset 0 1px 0 rgba(120, 180, 255, 0.4);
   }
-  /* ── Dark-mode holographic text glow ──────────────────────────────────────
-     Layered text-shadow adds luminosity without blurring readability.
-     Headings get a strong cyan glow; body text gets a whisper-level haze. */
+  /* ── Dark-mode holographic text effects ─────────────────────────────────
+     Three layered techniques:
+       1. Iridescent gradient fill — background-clip:text with a pastel spectrum
+       2. Prismatic shimmer — background-position animation shifts the gradient
+       3. Neon projection — offset magenta + cyan text-shadow behind the glyphs */
 
+  @keyframes blog-holo-shimmer {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* Headings: full iridescent shimmer + neon projection */
   .dark .blog-holo-panel h1,
   .dark .blog-holo-panel h2,
   .dark .blog-holo-panel h3,
   .dark .blog-holo-panel h4 {
+    background: linear-gradient(
+      135deg,
+      #67e8f9 0%,
+      #c4b5fd 20%,
+      #f0abfc 38%,
+      #93c5fd 56%,
+      #fde68a 74%,
+      #6ee7b7 88%,
+      #67e8f9 100%
+    );
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: blog-holo-shimmer 9s ease-in-out infinite;
+    /* Chromatic-aberration neon projection behind the transparent glyphs */
     text-shadow:
-      0 0 14px rgba(100, 215, 255, 0.65),
-      0 0 36px rgba(60, 170, 255, 0.3),
-      0 0 70px rgba(40, 120, 255, 0.14);
+      2px 2px 0 rgba(236, 72, 255, 0.42),
+      -1px -1px 0 rgba(56, 189, 248, 0.38),
+      0 0 22px rgba(167, 139, 250, 0.5),
+      0 0 55px rgba(96, 165, 250, 0.2);
   }
 
+  /* Body text: neon projection only — keeps readability, adds chromatic depth */
   .dark .blog-holo-panel p,
   .dark .blog-holo-panel li,
   .dark .blog-holo-panel dt,
   .dark .blog-holo-panel dd {
-    text-shadow: 0 0 14px rgba(190, 228, 255, 0.13);
+    text-shadow:
+      1px 1px 0 rgba(236, 72, 255, 0.15),
+      -0.5px -0.5px 0 rgba(56, 189, 248, 0.15),
+      0 0 14px rgba(190, 225, 255, 0.11);
   }
 
+  /* Strong: brighter chromatic split */
   .dark .blog-holo-panel strong,
   .dark .blog-holo-panel b {
-    text-shadow: 0 0 12px rgba(160, 222, 255, 0.3);
+    text-shadow:
+      1px 1px 0 rgba(236, 72, 255, 0.28),
+      -1px 0 0 rgba(56, 189, 248, 0.28),
+      0 0 12px rgba(200, 175, 255, 0.28);
   }
 
+  /* Italic: violet projection */
   .dark .blog-holo-panel em,
   .dark .blog-holo-panel i {
-    text-shadow: 0 0 12px rgba(200, 180, 255, 0.28);
-  }
-
-  .dark .blog-holo-panel a {
     text-shadow:
-      0 0 10px rgba(80, 210, 255, 0.55),
-      0 0 24px rgba(60, 180, 255, 0.22);
+      1px 0 0 rgba(167, 139, 250, 0.35),
+      0 0 14px rgba(200, 175, 255, 0.26);
   }
 
+  /* Links: compact iridescent shimmer + cyan-violet neon */
+  .dark .blog-holo-panel a {
+    background: linear-gradient(135deg, #67e8f9 0%, #a5f3fc 25%, #c4b5fd 55%, #67e8f9 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: blog-holo-shimmer 7s ease-in-out infinite;
+    text-shadow:
+      1px 1px 0 rgba(236, 72, 255, 0.25),
+      0 0 12px rgba(56, 189, 248, 0.55),
+      0 0 28px rgba(139, 92, 246, 0.22);
+  }
+
+  /* Blockquote */
   .dark .blog-holo-panel blockquote {
-    text-shadow: 0 0 12px rgba(160, 200, 255, 0.18);
+    text-shadow:
+      1px 1px 0 rgba(167, 139, 250, 0.18),
+      0 0 14px rgba(160, 200, 255, 0.15);
   }
 
+  /* Inline code: teal terminal glow */
   .dark .blog-holo-panel :not(pre) > code {
     text-shadow:
       0 0 10px rgba(0, 235, 185, 0.6),
       0 0 22px rgba(0, 200, 160, 0.25);
   }
 
+  /* Code block text */
   .dark .blog-holo-panel pre code {
     text-shadow: 0 0 8px rgba(0, 230, 180, 0.22);
   }
