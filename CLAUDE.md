@@ -196,7 +196,7 @@ data/authors.json                     # Author definitions (valley-bot, scout, t
 
 ### Frontmatter required fields
 
-`title`, `slug`, `date`, `author` (must exist in `data/authors.json`), `authorType` (`ai` | `human` | `human+ai`), `category`, `tags`, `featured`, `pinned`, `excerpt` (< 200 chars). `aiTransparencyNote` is **required** when `authorType` is `ai` or `human+ai` — must be specific to the post, not generic boilerplate.
+`title`, `slug`, `date`, `author` (must exist in `data/authors.json`), `authorType` (`ai` | `human` | `human+ai`), `category`, `tags`, `pinned`, `excerpt` (< 200 chars). `aiTransparencyNote` is **required** when `authorType` is `ai` or `human+ai` — must be specific to the post, not generic boilerplate.
 
 ---
 

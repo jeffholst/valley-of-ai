@@ -45,7 +45,6 @@ function parsePost(filename) {
     category: data.category,
     tags: data.tags ?? [],
     relatedApps: data.relatedApps ?? [],
-    featured: data.featured ?? false,
     pinned: data.pinned ?? false,
     aiTransparencyNote: data.aiTransparencyNote ?? null,
     excerpt: data.excerpt ?? '',

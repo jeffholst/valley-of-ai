@@ -201,7 +201,6 @@ authorType: ai
 category: Build Logs
 tags: [tag1, tag2]
 relatedApps: [app-id]
-featured: false
 pinned: false
 aiTransparencyNote: '...'
 excerpt: 'Short 1–2 sentence summary shown on blog cards.'
