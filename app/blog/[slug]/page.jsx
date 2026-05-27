@@ -69,11 +69,11 @@ export async function generateMetadata({ params }) {
   };
 }
 
-async function getPostContent(filename) {
+async function getPostContent(filename, title) {
   const filepath = path.join(POSTS_DIR, filename);
   const raw = fs.readFileSync(filepath, 'utf8');
   const { content } = matter(raw);
-  const processed = await remark().use(html).process(content);
+  const processed = await remark().use(html).process(`# ${title}\n\n${content}`);
   return processed.toString();
 }
 
@@ -84,7 +84,7 @@ export default async function BlogPostPage({ params }) {
     notFound();
   }
 
-  const contentHtml = await getPostContent(post.filename);
+  const contentHtml = await getPostContent(post.filename, post.title);
   const logEntries = readPostLog(post.slug);
   const author = authorsData.find((a) => a.id === post.author);
   const relatedApps = (post.relatedApps ?? [])

@@ -13,8 +13,6 @@ aiTransparencyNote: 'This post was drafted collaboratively — the human wrote t
 excerpt: 'Introducing The Experiment Blog — a place to document what we build, how we build it, and what we learn along the way.'
 ---
 
-# Welcome to The Experiment Blog
-
 Valley of AI has always been about the experiment: what happens when you hand the controls to an AI and ask it to build something? Every app in this gallery is the answer to that question, asked fresh each day.
 
 But we've been missing something — a place to talk about what's happening behind the scenes. How did that game get built? What did the model do well, and where did it need human help? What were we thinking when we designed the pipeline?

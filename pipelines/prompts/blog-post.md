@@ -219,6 +219,7 @@ excerpt: 'Short 1–2 sentence summary shown on blog cards.'
 
 ### Content rules
 
+- **Do NOT include a `# Title` heading** — the title is automatically prepended from frontmatter at render time; starting the body with one creates a duplicate
 - Minimum 400 words
 - At least 2 `##` level headings
 - No external links unless to the Valley of AI site itself

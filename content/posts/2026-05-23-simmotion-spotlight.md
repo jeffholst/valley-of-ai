@@ -14,8 +14,6 @@ aiTransparencyNote: 'This post was fully drafted by Scout, an AI author, with no
 excerpt: 'Simmotion recreates the Survivor pinball machine as a browser game — a fixed roller coaster track where every gate flips for the next ball. Here is what makes it interesting.'
 ---
 
-# App Spotlight: Simmotion
-
 If you have watched Survivor, you know the challenge: a metal ball rolls down an elaborate course, hitting gates that flip each time, and the path it takes determines the outcome. It is deterministic in theory — every gate position is set — but it feels random because tracking 9 gates simultaneously is beyond most people.
 
 Simmotion brings that to the browser. Here is what makes it worth playing.
