@@ -581,6 +581,16 @@
         "implementedAt": "2026-05-09T13:37:41Z",
         "agentName": "Claude Code",
         "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 533,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/533",
+        "runId": "run-20260528T125229Z-a3f7c2",
+        "description": "Fixed 3 bugs: (1) retreating customers are now ignored by sliding mugs, (2) Happy Hour banner resets when game ends so it doesn't persist into the next game, (3) player lane wraps from top to bottom and bottom to top on keyboard and touch.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-28T12:52:29Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
       }
     ],
     "allowImprovements": true,
@@ -591,6 +601,11 @@
         "runId": "run-20260509T133741Z-f68a90",
         "path": "backups/run-20260509T133741Z-f68a90/index.html",
         "url": "/apps/2026/05/09/tapper-rush/backups/run-20260509T133741Z-f68a90/index.html"
+      },
+      {
+        "runId": "run-20260528T125229Z-a3f7c2",
+        "path": "backups/run-20260528T125229Z-a3f7c2/index.html",
+        "url": "/apps/2026/05/09/tapper-rush/backups/run-20260528T125229Z-a3f7c2/index.html"
       }
     ]
   },

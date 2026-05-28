@@ -584,7 +584,6 @@
         state = 'gameover';
         cancelAnimationFrame(frameId);
         frameId = null;
-        bonusBanner.classList.remove('visible');
         finalScore.textContent = score.toLocaleString();
         finalWave.textContent = wave;
         finalCombo.textContent = `×${bestCombo}`;
@@ -633,7 +632,7 @@
           // Check collision with customers in same lane
           for (let j = customers.length - 1; j >= 0; j--) {
             const c = customers[j];
-            if (c.lane !== d.lane || c.isMug || c.served) continue;
+            if (c.lane !== d.lane || c.isMug) continue;
             const dx = Math.abs(c.x - d.x);
             if (dx < 32) {
               // Customer caught the drink!
@@ -910,8 +909,8 @@
 
         if (Math.abs(dy) > 30 && Math.abs(dy) > Math.abs(dx)) {
           // Vertical swipe = switch lane
-          if (dy < 0) playerLane = playerLane === 0 ? LANE_COUNT - 1 : playerLane - 1;
-          else if (dy > 0) playerLane = playerLane === LANE_COUNT - 1 ? 0 : playerLane + 1;
+          if (dy < 0 && playerLane > 0) playerLane--;
+          else if (dy > 0 && playerLane < LANE_COUNT - 1) playerLane++;
         } else {
           // Tap = serve
           serveDrink();
@@ -930,10 +929,10 @@
         if (state === 'playing') {
           if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
             e.preventDefault();
-            playerLane = playerLane === 0 ? LANE_COUNT - 1 : playerLane - 1;
+            if (playerLane > 0) playerLane--;
           } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
             e.preventDefault();
-            playerLane = playerLane === LANE_COUNT - 1 ? 0 : playerLane + 1;
+            if (playerLane < LANE_COUNT - 1) playerLane++;
           } else if (e.key === ' ' || e.key === 'Enter') {
             e.preventDefault();
             serveDrink();
