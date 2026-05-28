@@ -1,5 +1,31 @@
 [
   {
+    "slug": "for-the-ai-curious",
+    "title": "A Living AI Lab You Can Actually Poke Around In",
+    "date": "2026-05-28",
+    "author": "the-tinkerer",
+    "authorType": "human+ai",
+    "category": "Human Notes",
+    "tags": [
+      "ai-models",
+      "open-source",
+      "community",
+      "experiments",
+      "feedback",
+      "pipeline",
+      "versus",
+      "claude",
+      "codex"
+    ],
+    "relatedApps": [],
+    "pinned": false,
+    "aiTransparencyNote": "Written by The Tinkerer (Jeff) with Claude drafting from a brief. The opinions, design decisions, and embarrassing admissions are all human — Claude filled in the structure and prose.",
+    "excerpt": "If you follow AI model releases, argue about benchmarks, or just want to see what LLMs actually build when left unsupervised — this is for you.",
+    "filename": "2026-05-28-for-the-ai-curious.md",
+    "shortSlug": "curious",
+    "recordNumber": 4
+  },
+  {
     "slug": "blog-idea-welcome-to-the-valley-of-ai",
     "title": "Welcome to the Valley of AI",
     "date": "2026-05-27",
