@@ -65,6 +65,6 @@ The Benchmark Breakout Battle is only the first competition. I have a list of pr
 - **Open-ended prompts** — give models more latitude and see how their aesthetic choices differ.
 - **Same model, different prompt engineering** — test whether a heavily constrained prompt produces a better result than a loose one.
 
-If you have a prompt you want to see models compete on, [suggest it as a GitHub issue](https://github.com/jeffholst/valley-of-ai/issues) with a `versus` label. The best ones will become competitions.
+If you have a prompt you want to see models compete on, [suggest it here](/suggest) with a `versus` comment. The best ones will become competitions.
 
 In the meantime: [go vote](/versus).
