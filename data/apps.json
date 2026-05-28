@@ -1140,6 +1140,16 @@
         "implementedAt": "2026-04-16T04:17:43Z",
         "agentName": "Claude Code",
         "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 536,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/536",
+        "runId": "run-20260528T163327Z-b9e4f1",
+        "description": "Removed automatic window.voaShare() call from triggerGameOver(); the share drawer now only opens when the player explicitly clicks the Share button in the shell footer.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-28T16:33:27Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
       }
     ],
     "allowImprovements": true,
@@ -1150,6 +1160,11 @@
         "runId": "run-20260416T041743Z-a3f7c2",
         "path": "backups/run-20260416T041743Z-a3f7c2/index.html",
         "url": "/apps/2026/04/14/missile-command-modern/backups/run-20260416T041743Z-a3f7c2/index.html"
+      },
+      {
+        "runId": "run-20260528T163327Z-b9e4f1",
+        "path": "backups/run-20260528T163327Z-b9e4f1/index.html",
+        "url": "/apps/2026/04/14/missile-command-modern/backups/run-20260528T163327Z-b9e4f1/index.html"
       }
     ]
   },
