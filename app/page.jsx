@@ -358,6 +358,8 @@ export default function HomePage() {
           onInputModeChange={handleFilterChange(setInputModeFilter)}
           activeFilterCount={activeFilterCount}
           onReset={resetFilters}
+          sortBy={sortBy}
+          onSortChange={handleFilterChange(setSortBy)}
         />
 
         <GalleryPagination
