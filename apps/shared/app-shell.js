@@ -1415,13 +1415,53 @@
       appendLbCloseBtn();
     }
 
-    function openLeaderboardSubmit(score, opts) {
+    async function openLeaderboardSubmit(score, opts) {
       const appId = resolveAppId();
       if (!appId) {
         return;
       }
       const appName = getAppName();
       const label = opts && typeof opts.label === 'string' ? opts.label : 'points';
+
+      // Open immediately with a loading state so the player gets instant feedback
+      lbTitle.textContent = '\uD83C\uDFC6 Checking scores\u2026';
+      lbContentArea.innerHTML = '<p class="voa-lb-empty">Loading\u2026</p>';
+      openLbModal();
+
+      // Fetch the current top 10 to decide whether this score qualifies
+      let topScores = [];
+      let fetchFailed = false;
+      try {
+        topScores = await fetchTopScores(appId);
+      } catch {
+        fetchFailed = true;
+      }
+
+      // Player may have dismissed the loading modal during the fetch \u2014 don't re-open
+      if (!_leaderboardModalOpen) {
+        return;
+      }
+
+      // Qualifies if: fetch failed (give benefit of the doubt), fewer than 10 scores exist,
+      // or this score strictly beats the current lowest top-10 score
+      const qualifies =
+        fetchFailed || topScores.length < 10 || score > topScores[topScores.length - 1].score;
+
+      if (!qualifies) {
+        // Player didn't reach the top 10 \u2014 show the leaderboard with their score for context
+        lbTitle.textContent = `\uD83C\uDFC6 Top 10 \u2014 ${appName}`;
+        lbContentArea.innerHTML = '';
+        const yourScoreEl = document.createElement('p');
+        yourScoreEl.style.cssText =
+          'text-align:center;font:600 0.92rem/1.4 system-ui;color:var(--muted,#94a3b8);margin:0 0 12px;';
+        yourScoreEl.textContent = `Your score: ${score} ${label}`;
+        lbContentArea.appendChild(yourScoreEl);
+        lbContentArea.appendChild(renderScoreTable(topScores, null));
+        appendLbCloseBtn();
+        return;
+      }
+
+      // Score qualifies \u2014 build the name submission form
       const prefix = resolveStoragePrefix();
       const savedName = (() => {
         try {
@@ -1471,7 +1511,7 @@
       errorMsg.setAttribute('role', 'alert');
       lbContentArea.appendChild(errorMsg);
 
-      openLbModal();
+      // Modal is already open from the loading state above \u2014 no need to call openLbModal() again
 
       let turnstileToken = null;
       if (siteKey && !isLocal) {
@@ -1592,7 +1632,7 @@
 
     window.voaLeaderboard = {
       submit: function (score, opts) {
-        openLeaderboardSubmit(score, opts || {});
+        void openLeaderboardSubmit(score, opts || {});
       },
       show: function () {
         const appId = resolveAppId();
