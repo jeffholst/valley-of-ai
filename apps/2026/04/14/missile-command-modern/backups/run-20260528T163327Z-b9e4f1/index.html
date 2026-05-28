@@ -890,6 +890,13 @@
           overlay.style.display = 'flex';
           requestAnimationFrame(() => startBtn.focus());
 
+          // Social share hook: post score when game ends
+          if (window.voaShare) {
+            window.voaShare({
+              text: `I scored ${score.toLocaleString()} defending cities in Missile Command Modern! Survived ${wave} wave${wave !== 1 ? 's' : ''}. Can you beat it?`,
+            });
+          }
+
           // Leaderboard hook: submit final score
           if (window.voaLeaderboard) {
             window.voaLeaderboard.submit(score);
