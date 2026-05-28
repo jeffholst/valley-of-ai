@@ -17,6 +17,7 @@ const SORT_OPTIONS = [
   { value: 'highest', label: 'Highest rated' },
   { value: 'trending', label: 'Trending' },
 ];
+const MOBILE_BREAKPOINT_QUERY = '(max-width: 639px)';
 
 function MobileFiltersSheet({ activeFilterCount, onClose, children }) {
   const panelRef = useRef(null);
@@ -111,7 +112,7 @@ export default function GalleryFilters({
       return;
     }
 
-    const media = window.matchMedia('(max-width: 639px)');
+    const media = window.matchMedia(MOBILE_BREAKPOINT_QUERY);
     const handleChange = () => setIsMobileView(media.matches);
     handleChange();
 
