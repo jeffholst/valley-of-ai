@@ -495,6 +495,9 @@
       bestScoreEl.textContent = 'Best: ' + bestScore;
       gameoverOverlay.classList.remove('hidden');
 
+      if (window.voaShare) {
+        window.voaShare({ text: `I scored ${score} in Flappy Bird! Can you beat it?` });
+      }
       if (window.voaLeaderboard) {
         window.voaLeaderboard.submit(score);
       }
