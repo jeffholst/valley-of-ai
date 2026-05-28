@@ -10,6 +10,13 @@ const agents = [
 const models = [...new Set(appsData.map((app) => app.generation?.llmModel).filter(Boolean))].sort();
 const INPUT_MODE_OPTIONS = ['Desktop', 'Mobile', 'Responsive'];
 
+const SORT_OPTIONS = [
+  { value: 'newest', label: 'Newest' },
+  { value: 'oldest', label: 'Oldest' },
+  { value: 'highest', label: 'Highest rated' },
+  { value: 'trending', label: 'Trending' },
+];
+
 export default function GalleryFilters({
   searchQuery,
   onSearchChange,
@@ -23,6 +30,8 @@ export default function GalleryFilters({
   onInputModeChange,
   activeFilterCount,
   onReset,
+  sortBy = null,
+  onSortChange = null,
 }) {
   const [showFilters, setShowFilters] = useState(false);
 
@@ -92,7 +101,7 @@ export default function GalleryFilters({
       {/* Filter Panel */}
       {showFilters && (
         <div className="card p-4 mb-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             <div>
               <label htmlFor="categoryFilter" className="label">
                 Category
@@ -169,7 +178,27 @@ export default function GalleryFilters({
               </select>
             </div>
 
-            <div className="flex items-end">
+            {sortBy !== null && onSortChange && (
+              <div className="sm:hidden">
+                <label htmlFor="mobileSortFilter" className="label">
+                  Sort by
+                </label>
+                <select
+                  id="mobileSortFilter"
+                  value={sortBy}
+                  onChange={(e) => onSortChange(e.target.value)}
+                  className="input"
+                >
+                  {SORT_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <div className="col-span-2 sm:col-span-1 flex items-end">
               <button
                 onClick={onReset}
                 disabled={activeFilterCount === 0 && !searchQuery}
