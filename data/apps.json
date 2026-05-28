@@ -3793,6 +3793,16 @@
         "implementedAt": "2026-04-14T21:00:17Z",
         "agentName": "claude-code",
         "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 537,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/537",
+        "runId": "run-20260528T163809Z-c4d2e8",
+        "description": "Removed automatic window.voaShare() call from endGame(); the share drawer now only opens when the player explicitly clicks the Share button in the shell footer.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-28T16:38:09Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
       }
     ],
     "allowImprovements": true,
@@ -3803,6 +3813,11 @@
         "runId": "run-20260414T205826Z-4681ec",
         "path": "backups/run-20260414T205826Z-4681ec/index.html",
         "url": "/apps/2026/03/07/flappy-bird/backups/run-20260414T205826Z-4681ec/index.html"
+      },
+      {
+        "runId": "run-20260528T163809Z-c4d2e8",
+        "path": "backups/run-20260528T163809Z-c4d2e8/index.html",
+        "url": "/apps/2026/03/07/flappy-bird/backups/run-20260528T163809Z-c4d2e8/index.html"
       }
     ]
   },
