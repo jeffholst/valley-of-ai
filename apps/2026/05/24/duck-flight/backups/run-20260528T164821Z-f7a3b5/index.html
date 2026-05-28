@@ -1050,6 +1050,25 @@
       ctx.stroke();
       ctx.setLineDash([]);
 
+      const alignment = getTargetAlignment();
+      if (alignment) {
+        const targetT = Math.max(0, Math.min(1, (alignment.shape.wy - DUCK_WY_MIN) / range));
+        const targetY = barBot - barH * targetT;
+        ctx.strokeStyle = alignment.altitudeOnTarget ? '#34d399' : '#fbbf24';
+        ctx.fillStyle = alignment.altitudeOnTarget ? '#34d399' : '#fbbf24';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(barX - 7, targetY);
+        ctx.lineTo(barX + barW + 7, targetY);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(barX - 10, targetY);
+        ctx.lineTo(barX - 4, targetY - 4);
+        ctx.lineTo(barX - 4, targetY + 4);
+        ctx.closePath();
+        ctx.fill();
+      }
+
       ctx.restore();
     }
 
@@ -1087,54 +1106,6 @@
         ctx.font = 'bold 11px system-ui, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('ON TARGET', VP_X, VP_Y + 46);
-      } else {
-        // Directional arrows: show which way to fly to thread the next shape.
-        // dx = duck.x - shape.wx: positive → duck right of shape → fly left
-        // dy = duck.wy - shape.wy: positive → duck above shape → fly down
-        const { dx, dy, shape } = alignment;
-        const eps = shape.innerR * 0.25;
-        const tip = 38;  // distance from center to arrowhead tip
-        const hs = 6;    // arrowhead half-width
-        const depth = 7; // arrowhead depth
-
-        ctx.globalAlpha = 0.72 + pulse * 0.28;
-        ctx.fillStyle = '#fbbf24';
-
-        if (dx > eps) {
-          // Fly left
-          ctx.beginPath();
-          ctx.moveTo(VP_X - tip, VP_Y);
-          ctx.lineTo(VP_X - tip + depth, VP_Y - hs);
-          ctx.lineTo(VP_X - tip + depth, VP_Y + hs);
-          ctx.closePath();
-          ctx.fill();
-        } else if (dx < -eps) {
-          // Fly right
-          ctx.beginPath();
-          ctx.moveTo(VP_X + tip, VP_Y);
-          ctx.lineTo(VP_X + tip - depth, VP_Y - hs);
-          ctx.lineTo(VP_X + tip - depth, VP_Y + hs);
-          ctx.closePath();
-          ctx.fill();
-        }
-
-        if (dy > eps) {
-          // Fly down
-          ctx.beginPath();
-          ctx.moveTo(VP_X, VP_Y + tip);
-          ctx.lineTo(VP_X - hs, VP_Y + tip - depth);
-          ctx.lineTo(VP_X + hs, VP_Y + tip - depth);
-          ctx.closePath();
-          ctx.fill();
-        } else if (dy < -eps) {
-          // Fly up
-          ctx.beginPath();
-          ctx.moveTo(VP_X, VP_Y - tip);
-          ctx.lineTo(VP_X - hs, VP_Y - tip + depth);
-          ctx.lineTo(VP_X + hs, VP_Y - tip + depth);
-          ctx.closePath();
-          ctx.fill();
-        }
       }
       ctx.restore();
     }

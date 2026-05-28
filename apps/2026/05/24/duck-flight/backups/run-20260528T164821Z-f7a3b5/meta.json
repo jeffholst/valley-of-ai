@@ -197,16 +197,6 @@
       "implementedAt": "2026-05-26T00:01:48Z",
       "agentName": "Claude Code",
       "llmModel": "claude-sonnet-4-6"
-    },
-    {
-      "issueNumber": 540,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/540",
-      "runId": "run-20260528T164821Z-f7a3b5",
-      "description": "Removed the target-altitude marker (horizontal line + left-pointing triangle) from the elevation bar — it was too revealing. Added four directional arrowheads to the bullseye crosshair: each arm shows a filled triangle pointing toward the target when the duck is off-axis on that dimension (dx/dy > 25% of the shape opening radius); both axes can show simultaneously; arrows disappear and 'ON TARGET' text appears when fully aligned.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-05-28T16:48:21Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-sonnet-4-6"
     }
   ]
 }
