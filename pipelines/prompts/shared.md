@@ -72,6 +72,21 @@ Each pipeline prompt file contains a `model-routing` block embedded in an HTML c
 - Must include accurate metadata and logs.
 - Must complete full git workflow: branch → commit → PR → merge.
 
+### Canvas text and emoji (cross-browser)
+
+Safari (WebKit) does **not** render emoji or pictographic glyphs through the canvas 2D
+`fillText` API — they come out blank, even with `"Apple Color Emoji"` in the font stack.
+Chrome renders them fine, so a canvas game with emoji sprites looks perfect in Chrome and is
+silently broken in Safari. Automated validation (`validate:responsive:sample`, `build`) runs
+headless Chromium and will **not** catch this.
+
+- Do not draw emoji or symbol glyphs with `ctx.fillText(...)`. Render them as absolutely
+  positioned DOM elements (e.g. a `<span>` overlay layer sized 1:1 over the canvas) or as
+  preloaded `<img>` sprites composited with `drawImage`.
+- Plain ASCII/Latin text via `fillText` is fine — reserve only emoji/pictographs for the DOM.
+- Any app that uses emoji on a canvas must be confirmed in Safari (not just Chrome) before the
+  code-generation step is logged `completed`.
+
 ---
 
 ## Code Quality Principles

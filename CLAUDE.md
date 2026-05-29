@@ -30,6 +30,8 @@ npm run generate:posts            # Regenerate data/posts.json from content/post
 npm run validate:posts            # Validate post schema, slug uniqueness, author/app references
 ```
 
+> **Dev-loop gotcha:** the dev server serves the synced copy under `public/`, not the source under `apps/`. After editing a file in `apps/` while `npm run dev` is already running, re-run `npm run sync` (or restart the server) before testing in the browser — otherwise you're looking at the stale pre-edit copy.
+
 ---
 
 ## Project Layout (Key Paths)
@@ -256,6 +258,14 @@ data/authors.json                     # Author definitions (valley-bot, scout, t
 - Must include at least one gradient and one filter effect
 - Run `xmllint --noout thumbnail.svg` to validate before saving
 
+### Canvas emoji (Safari)
+
+Safari/WebKit renders emoji and symbol glyphs as **blank** when drawn via canvas `ctx.fillText(...)` — even with `"Apple Color Emoji"` in the font stack. Chrome renders them fine, and the automated checks (`validate:responsive:sample`, `build`) run headless Chromium, so this breaks silently in Safari only.
+
+- Do not draw emoji/symbols with `ctx.fillText(...)`. Use a positioned `<span>` overlay sized 1:1 over the canvas, or preloaded `<img>` sprites composited via `drawImage`.
+- Plain ASCII/Latin text via `fillText` is fine — only emoji/pictographs need the DOM treatment.
+- Verify any emoji-bearing canvas app in Safari before considering it done.
+
 ### Git workflow
 
 - Branch prefix: `feat/<app-id>` for new apps, `improve/<app-id>` for improvements
@@ -280,6 +290,7 @@ Always run `npm run generate:apps` before committing when `meta.json` files chan
 
 - Do not hardcode real URLs or keys in app `index.html` — use `__PLACEHOLDER__` tokens
 - Do not hand-code a header, footer, or theme toggle in app HTML — the shared shell injects them at runtime
+- Do not draw emoji or symbol glyphs with canvas `ctx.fillText(...)` — they render blank on Safari; use a DOM `<span>` overlay or `<img>` sprites instead
 - Do not commit `log.jsonl` files in the same commit as app files — log files go in a separate final commit
 - Do not run `npm run select:app:suggestion` or `npm run select:app:improvement` manually and hand the output to the agent — the agent runs these scripts itself as part of the pipeline
 - Do not bypass the pending issue review workflow for `status:pending` suggestion/improvement issues

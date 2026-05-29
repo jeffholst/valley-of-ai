@@ -79,6 +79,10 @@ wiki/                 Extended project documentation
 - Run `npm run validate:apps` after changing app HTML, metadata, thumbnails, registries, or
   validation scripts.
 - `npm run dev` and `npm run build` run `npm run sync` first.
+- The dev server serves the synced copy under `public/`, not the source under `apps/`. After
+  editing a file in `apps/` while the server is already running, re-run `npm run sync` (or
+  restart `npm run dev`) before testing in the browser — otherwise you are viewing the stale
+  pre-edit copy.
 
 ## Static App Contracts
 
@@ -100,6 +104,11 @@ When editing generated apps:
   app shell injects that behavior.
 - Preserve the shared shell script reference: `/apps/shared/app-shell.js`.
 - Keep required theme CSS variables for both default and `[data-theme='light']`.
+- Do not draw emoji or symbol glyphs with canvas `ctx.fillText(...)`. Safari/WebKit renders
+  them blank even with `"Apple Color Emoji"` in the font stack (Chrome renders them, so the
+  bug is invisible in Chrome-only and headless-Chromium checks). Render emoji as positioned
+  DOM elements over the canvas, or as preloaded `<img>` sprites via `drawImage`. Verify any
+  emoji-bearing canvas app in Safari before finishing.
 - `thumbnail.svg` must use `viewBox="0 0 800 450"`, render statically, and remain valid XML.
 - Prefer validating thumbnails with `xmllint --noout thumbnail.svg` when available.
 
