@@ -71,6 +71,20 @@
         touch-action: none;
       }
 
+      #emojiLayer {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      #emojiLayer span {
+        position: absolute;
+        line-height: 1;
+        user-select: none;
+        transform: translate(-50%, -50%);
+      }
+
       /* HUD overlay */
       #hud {
         position: absolute;
@@ -307,6 +321,7 @@
   <body>
     <div id="gameWrapper">
       <canvas id="gameCanvas"></canvas>
+      <div id="emojiLayer"></div>
 
       <!-- HUD -->
       <div id="hud">
@@ -404,6 +419,34 @@
       let spawnTimer = 0;
       let mugTimer = 0;
       let spawnInterval = 120; // frames
+
+      // ─── Emoji rendering via DOM spans (bypasses broken Safari canvas emoji) ───
+      const _emojiLayer = document.getElementById('emojiLayer');
+      const _spanPool = [];
+      let _spanIdx = 0;
+
+      function _beginEmojiFrame() { _spanIdx = 0; }
+
+      function _endEmojiFrame() {
+        for (let i = _spanIdx; i < _spanPool.length; i++) {
+          _spanPool[i].style.display = 'none';
+        }
+      }
+
+      function drawEmoji(_ctx, emoji, x, y, size) {
+        let s = _spanPool[_spanIdx];
+        if (!s) {
+          s = document.createElement('span');
+          _emojiLayer.appendChild(s);
+          _spanPool.push(s);
+        }
+        s.textContent = emoji;
+        s.style.fontSize = size + 'px';
+        s.style.left = x + 'px';
+        s.style.top = y + 'px';
+        s.style.display = '';
+        _spanIdx++;
+      }
 
       // ─── Canvas setup ────────────────────────────────────────────────────────
       const wrapper = document.getElementById('gameWrapper');
@@ -738,6 +781,7 @@
         const dark = isDark();
 
         ctx.clearRect(0, 0, w, h);
+        _beginEmojiFrame();
 
         // Background
         const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
@@ -812,10 +856,7 @@
           ctx.fillRect(bx - 32, cy - 30, 64, 60);
 
           // Bartender emoji
-          ctx.font = '26px serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('🍺', bx, cy);
+          drawEmoji(ctx, '🍺', bx, cy, 26);
         }
 
         // Drinks
@@ -830,20 +871,15 @@
           ctx.fillStyle = grd;
           ctx.fillRect(d.x - 18, cy - 18, 36, 36);
 
-          ctx.font = '22px serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('🥤', d.x, cy);
+          drawEmoji(ctx, '🥤', d.x, cy, 22);
         }
 
         // Customers
         for (const c of customers) {
           const cy = laneCenterY(c.lane);
-          ctx.font = '26px serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(c.emoji, c.x, cy);
+          drawEmoji(ctx, c.emoji, c.x, cy, 26);
         }
+        _endEmojiFrame();
 
         // Particles
         for (const p of particles) {
@@ -874,13 +910,12 @@
           const alpha = Math.min(1, waveMsgTimer / 30);
           ctx.globalAlpha = alpha;
           ctx.fillStyle = '#a78bfa';
-          ctx.font = `bold clamp(18px, 5vw, 28px) system-ui`;
-          ctx.font = 'bold 26px system-ui';
+          ctx.font = 'bold 26px "Apple Color Emoji", "Segoe UI Emoji", system-ui, sans-serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.shadowColor = '#a78bfa';
           ctx.shadowBlur = 20;
-          ctx.fillText(`⭐ Wave ${wave} ⭐`, w / 2, h / 2);
+          ctx.fillText(`★ Wave ${wave} ★`, w / 2, h / 2);
           ctx.shadowBlur = 0;
           ctx.globalAlpha = 1;
         }
