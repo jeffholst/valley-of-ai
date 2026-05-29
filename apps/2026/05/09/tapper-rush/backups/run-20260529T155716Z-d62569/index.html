@@ -66,15 +66,6 @@
         background: var(--bg);
       }
 
-      /* Capped, centered play field — keeps lane length (and difficulty) the
-         same on desktop and mobile instead of growing with the screen. */
-      #stage {
-        position: relative;
-        width: 100%;
-        max-width: 480px;
-        height: 100%;
-      }
-
       canvas {
         display: block;
         touch-action: none;
@@ -329,7 +320,6 @@
 
   <body>
     <div id="gameWrapper">
-      <div id="stage">
       <canvas id="gameCanvas"></canvas>
       <div id="emojiLayer"></div>
 
@@ -389,7 +379,6 @@
         <button class="btn-primary" id="restartBtn">Play Again</button>
         <button class="btn-secondary" id="shareBtn">Share Score</button>
       </div>
-      </div>
     </div>
 
     <script>
@@ -403,9 +392,6 @@
       const DRINK_COLORS = ['#fbbf24', '#f472b6', '#f87171', '#34d399'];
       const CUSTOMER_COLORS = ['#93c5fd', '#c4b5fd', '#fda4af', '#6ee7b7'];
       const CUSTOMER_TYPES = ['👨', '👩', '🧔', '👱'];
-      // Minimum gap (px) between a freshly served drink and the next one in the
-      // same lane — lets drinks queue to serve multiple customers without stacking.
-      const SERVE_SPACING = 48;
 
       // ─── State ────────────────────────────────────────────────────────────────
       let state = 'start'; // 'start' | 'playing' | 'paused' | 'gameover'
@@ -463,15 +449,13 @@
       }
 
       // ─── Canvas setup ────────────────────────────────────────────────────────
-      const stage = document.getElementById('stage');
+      const wrapper = document.getElementById('gameWrapper');
       const canvas = document.getElementById('gameCanvas');
       const ctx = canvas.getContext('2d');
 
       function resizeCanvas() {
-        // Size to the capped #stage, not the full wrapper, so the play field
-        // stays a fixed max width on desktop and mobile alike.
-        const w = stage.clientWidth;
-        const h = stage.clientHeight;
+        const w = wrapper.clientWidth;
+        const h = wrapper.clientHeight;
         canvas.width = w;
         canvas.height = h;
       }
@@ -597,18 +581,12 @@
       }
 
       function serveDrink() {
-        // Allow multiple drinks per lane so a line of customers can be served
-        // in quick succession. Only block a new drink if one is still close to
-        // the bartender in this lane, so taps queue drinks down the lane
-        // instead of stacking them on top of each other.
-        const startX = bartenderX() - 20;
-        const tooClose = drinks.some(
-          d => d.lane === playerLane && Math.abs(d.x - startX) < SERVE_SPACING
-        );
-        if (tooClose) return;
+        // Check no drink already in this lane
+        const already = drinks.some(d => d.lane === playerLane);
+        if (already) return;
 
         const speed = 6 + wave * 0.5;
-        drinks.push({ lane: playerLane, x: startX, speed, fresh: true });
+        drinks.push({ lane: playerLane, x: bartenderX() - 20, speed, fresh: true });
 
         // Visual pulse on bartender
         spawnParticles(bartenderX(), laneCenterY(playerLane), DRINK_COLORS[playerLane], 6);
