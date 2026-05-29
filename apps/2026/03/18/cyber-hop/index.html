@@ -1010,10 +1010,15 @@
             ctx.shadowBlur = 0;
 
             if (reached) {
-              ctx.font = `${CELL * 0.48}px serif`;
+              ctx.fillStyle = '#00ff88';
+              ctx.beginPath();
+              ctx.arc(cx2, cy2, CELL * 0.28, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.fillStyle = '#003322';
+              ctx.font = `bold ${CELL * 0.28}px system-ui`;
               ctx.textAlign = 'center';
               ctx.textBaseline = 'middle';
-              ctx.fillText('🐸', cx2, cy2);
+              ctx.fillText('✓', cx2, cy2 + 1);
             } else {
               // Crosshair target icon
               const cr = CELL * 0.18;
