@@ -809,7 +809,7 @@
 
         // Lives
         ctx.fillStyle = isDark ? '#ef4444' : '#dc2626';
-        ctx.fillText('❤️ ' + lives, 10, 14);
+        ctx.fillText('♥ ' + lives, 10, 14);
 
         // Time
         const mins = Math.floor(survivalTime / 60)
@@ -820,7 +820,7 @@
           .padStart(2, '0');
         ctx.fillStyle = isDark ? '#f9fafb' : '#1f2937';
         ctx.textAlign = 'center';
-        ctx.fillText('⏱ ' + mins + ':' + secs, W / 2, 14);
+        ctx.fillText(mins + ':' + secs, W / 2, 14);
 
         // Caught / Missed
         ctx.textAlign = 'right';
