@@ -1,0 +1,94 @@
+{
+  "id": "two-truths-lie-game",
+  "name": "2 Truths and a Lie",
+  "shortDescription": "Host a live 2 Truths and a Lie party game — spin to pick speakers, record guesses, reveal the lie, and track scores across rounds.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-31T01:54:53Z",
+  "category": "Icebreakers",
+  "status": "active",
+  "tags": ["party", "game", "social", "spinner", "multiplayer", "zoom", "icebreaker", "responsive"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "Claude Code",
+    "llmModel": "claude-sonnet-4-6",
+    "startTime": "2026-03-31T01:54:53Z",
+    "endTime": "2026-03-31T02:02:26Z",
+    "totalTokensIn": 5200,
+    "totalTokensOut": 12400,
+    "runId": "run-20260331T015453Z-a7f3c2",
+    "notes": "Built from community suggestion #243. 6-screen host-driven flow: Setup → Think Timer (round 1 only) → Spinner wheel → Turn/Guess recording → Reveal → Round-end Scoreboard. Dark purple theme optimised for Zoom screen-sharing."
+  },
+  "improvements": [
+    {
+      "issueNumber": 247,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/247",
+      "runId": "run-20260331T024754Z-b3c9e1",
+      "appliedAt": "2026-03-31T02:47:54Z",
+      "summary": "Enlarged guess buttons (52x52) with glow, scale, and checkmark badge when selected; whole row highlights purple on selection. Replaced generic points card on reveal screen with a prominent winners banner listing correct guessers by name as green chips."
+    },
+    {
+      "issueNumber": 245,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/245",
+      "runId": "run-20260331T022221Z-d4e8f1",
+      "appliedAt": "2026-03-31T02:22:21Z",
+      "summary": "Fixed spinner wheel alignment (integer rotations + corrected modulo formula), added host statement capture on turn screen with numbered display, updated reveal screen to show statements with lie highlighted, redrew thumbnail with geometrically perfect circular wheel using SVG arc paths and clipPath."
+    },
+    {
+      "issueNumber": 249,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/249",
+      "runId": "run-20260331T112654Z-e7f521",
+      "description": "Renamed Reveal the Lie button to Show the Winners, added End Game button on spinner screen to finish round early and show scoreboard.",
+      "requestor": "Jeff Holst",
+      "implementedAt": "2026-03-31T11:26:54Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-opus-4-6"
+    },
+    {
+      "issueNumber": 251,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/251",
+      "runId": "run-20260331T114206Z-c31c68",
+      "description": "Moved End Game button on spinner screen to reduce accidental clicks, changed End Game on Round Complete to return to setup with player names preserved, added Remove All button on setup screen.",
+      "requestor": "Jeff Holst",
+      "implementedAt": "2026-03-31T11:42:06Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-opus-4-6"
+    },
+    {
+      "issueNumber": 253,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/253",
+      "runId": "run-20260331T195547Z-a7a8dd",
+      "description": "Updated scoreboard ranking so tied players share the same medal and subsequent ranks are skipped (competition ranking).",
+      "requestor": "Jeff Holst",
+      "implementedAt": "2026-03-31T19:55:47Z",
+      "agentName": "Codex",
+      "llmModel": "gpt-5"
+    },
+    {
+      "issueNumber": 350,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/350",
+      "runId": "run-20260418T161449Z-b2be10",
+      "description": "Persist setup-screen player names to localStorage so they are recalled on the next visit. Names are saved after add, remove, remove-all, and reset; scores always start at zero.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-04-18T16:14:49Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-opus-4-7"
+    },
+    {
+      "issueNumber": 375,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/375",
+      "runId": "run-20260420T125914Z-8ff7c0",
+      "description": "Upgraded the app to a backend-powered multiplayer flow with moderator lobby/share link, player statement submission, kicking, synced voting, and shared results progression.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-04-20T12:59:14Z",
+      "agentName": "Codex",
+      "llmModel": "gpt-5.4"
+    }
+  ],
+  "suggestion": {
+    "issueNumber": 243,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/243",
+    "prompt": "Build a browser-based \"2 Truths and a Lie\" game for a Zoom screen-share host. Start with a setup screen where the host enters participant names. Then show instructions and a 60-second countdown for everyone to think of 3 statements (2 true, 1 false). After the first round timer ends, show a wheel containing all participant names and a button to spin and randomly choose the next speaker. For each turn, show a scoreboard where the host records which statement (1, 2, or 3) each participant guessed was the lie. After reveal, mark everyone who guessed correctly as round winners. Support multiple rounds; only the first round uses the 60-second timer. Make it simple, responsive, and easy to run live on a shared screen.",
+    "requestor": "Jeff Holst"
+  }
+}

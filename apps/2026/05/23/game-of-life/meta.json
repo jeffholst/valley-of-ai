@@ -1,0 +1,31 @@
+{
+  "id": "game-of-life",
+  "name": "Game of Life",
+  "shortDescription": "Conway's cellular automaton — draw cells, load classic presets like the Gosper Glider Gun, and watch generations evolve on a toroidal grid.",
+  "category": "Visualizations",
+  "tags": [
+    "cellular-automaton",
+    "simulation",
+    "conway",
+    "canvas",
+    "interactive",
+    "patterns",
+    "educational"
+  ],
+  "thumbnail": "thumbnail.svg",
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "createdAt": "2026-05-23T19:49:39Z",
+  "status": "active",
+  "generation": {
+    "agentName": "Claude Code",
+    "llmModel": "claude-sonnet-4-6",
+    "startTime": "2026-05-23T19:49:39Z",
+    "endTime": "2026-05-23T19:58:00Z",
+    "totalTokensIn": 5400,
+    "totalTokensOut": 14200,
+    "runId": "run-20260523T194939Z-b7de37",
+    "notes": "Manual concept selection — select:app:suggestion failed on Node 20 due to missing WebSocket support for Supabase realtime. Visualizations was the most underrepresented category (2 apps). Grid uses Uint8Array double-buffering for performance. Toroidal wrap prevents edge stagnation. Default preset is Gosper Glider Gun as a showcase opener."
+  },
+  "leaderboard": false
+}

@@ -1032,10 +1032,6 @@ function drawPath(canvas, d, CELL) {
       ctx.font = `bold ${CELL*.4}px system-ui`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(isStart ? 'S' : 'E', c*CELL+CELL/2, r*CELL+CELL/2);
-    } else if (isWall) {
-      ctx.fillStyle = '#5a3a70'; ctx.font = `${CELL*.45}px system-ui`;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText('🪨', c*CELL+CELL/2, r*CELL+CELL/2+2);
     }
     if (G.relics.includes('torch') && isWall) {
       // Show hint: walls near valid path glow slightly

@@ -1,0 +1,2738 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Team Taboo - __MAIN_SITE_NAME__</title>
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Team Taboo" />
+    <meta name="voa-app-id" content="2026/04/18/team-taboo" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --card: #15213e;
+        --muted: #9ca3af;
+        --accent: #f97316;
+        --accent-2: #fbbf24;
+        --team-a: #3b82f6;
+        --team-a-soft: rgb(59 130 246 / 18%);
+        --team-b: #ec4899;
+        --team-b-soft: rgb(236 72 153 / 18%);
+        --success: #22c55e;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --border: #334155;
+      }
+
+      [data-theme='light'] {
+        --bg: #fff7ed;
+        --text: #1f2937;
+        --surface: #fed7aa;
+        --card: #ffffff;
+        --muted: #6b7280;
+        --accent: #ea580c;
+        --accent-2: #d97706;
+        --team-a: #2563eb;
+        --team-a-soft: rgb(37 99 235 / 12%);
+        --team-b: #db2777;
+        --team-b-soft: rgb(219 39 119 / 12%);
+        --success: #16a34a;
+        --warning: #d97706;
+        --danger: #dc2626;
+        --border: #d1d5db;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        min-height: 100vh;
+        font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 10% 20%, rgb(249 115 22 / 22%), transparent 45%),
+          radial-gradient(circle at 85% 10%, rgb(236 72 153 / 18%), transparent 40%),
+          var(--bg);
+        line-height: 1.4;
+      }
+
+      .app {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 1.25rem 1rem 1.5rem;
+        display: grid;
+        gap: 1rem;
+      }
+
+      .hero {
+        background: linear-gradient(135deg, rgb(15 23 42 / 92%), rgb(76 29 149 / 60%));
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 1rem 1.25rem;
+        box-shadow: 0 18px 28px rgb(2 6 23 / 25%);
+      }
+
+      [data-theme='light'] .hero {
+        background: linear-gradient(135deg, rgb(255 247 237 / 95%), rgb(254 215 170 / 70%));
+        box-shadow: 0 14px 24px rgb(15 23 42 / 8%);
+      }
+
+      h1 {
+        font-size: clamp(1.5rem, 2.4vw, 2rem);
+        margin-bottom: 0.3rem;
+        letter-spacing: 0.01em;
+      }
+
+      .hero p {
+        color: var(--muted);
+        font-size: 0.98rem;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1rem 1.1rem 1.2rem;
+        box-shadow: 0 8px 18px rgb(2 6 23 / 18%);
+      }
+
+      [data-theme='light'] .card {
+        box-shadow: 0 4px 12px rgb(15 23 42 / 6%);
+      }
+
+      .screen {
+        display: none;
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      .section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 0.7rem;
+        color: var(--accent);
+      }
+
+      label {
+        display: block;
+        font-size: 0.9rem;
+        color: var(--muted);
+        margin-bottom: 0.3rem;
+      }
+
+      select {
+        width: 100%;
+        padding: 0.7rem 0.85rem;
+        font-size: 1rem;
+        color: var(--text);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font-family: inherit;
+      }
+
+      select:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+      }
+
+      .btn {
+        cursor: pointer;
+        border: none;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 0.7rem 1.1rem;
+        min-height: 44px;
+        transition:
+          transform 0.08s ease,
+          filter 0.15s ease,
+          background 0.15s ease;
+        color: #0f172a;
+      }
+
+      .btn:active {
+        transform: translateY(1px);
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: #1a1203;
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        filter: brightness(1.1);
+      }
+
+      .btn-secondary {
+        background: var(--surface);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      .btn-secondary:hover:not(:disabled) {
+        background: var(--border);
+      }
+
+      .btn-success {
+        background: var(--success);
+        color: #052e16;
+      }
+
+      .btn-warning {
+        background: var(--warning);
+        color: #1f1302;
+      }
+
+      .btn-danger {
+        background: var(--danger);
+        color: #fff;
+      }
+
+      .btn-block {
+        width: 100%;
+      }
+
+      .player-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin: 0.8rem 0;
+        min-height: 2.5rem;
+      }
+
+      .player-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.9rem;
+      }
+
+      .player-pill.self {
+        border-color: var(--accent);
+        background: rgb(249 115 22 / 18%);
+      }
+
+      .controls-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.6rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .muted {
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      .scoreboard {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .team-score {
+        background: var(--surface);
+        border: 2px solid var(--border);
+        border-radius: 14px;
+        padding: 0.9rem 0.8rem;
+        text-align: center;
+        transition:
+          border-color 0.2s ease,
+          transform 0.2s ease;
+      }
+
+      .team-score.team-a {
+        border-color: var(--team-a);
+        background: var(--team-a-soft);
+      }
+
+      .team-score.team-b {
+        border-color: var(--team-b);
+        background: var(--team-b-soft);
+      }
+
+      .team-score.active {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgb(249 115 22 / 35%);
+      }
+
+      .team-score h3 {
+        font-size: 1rem;
+        margin-bottom: 0.2rem;
+      }
+
+      .team-score .score-num {
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .team-score .team-members {
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin-top: 0.3rem;
+        line-height: 1.3;
+      }
+
+      .round-header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.8rem;
+        align-items: center;
+        margin-bottom: 0.8rem;
+      }
+
+      .timer {
+        font-size: 2rem;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        padding: 0.4rem 0.9rem;
+        background: var(--surface);
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        min-width: 5rem;
+        text-align: center;
+        color: var(--accent);
+      }
+
+      .timer.warning {
+        color: var(--warning);
+        border-color: var(--warning);
+      }
+
+      .timer.danger {
+        color: var(--danger);
+        border-color: var(--danger);
+        animation: pulse 0.6s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      .taboo-card {
+        background: linear-gradient(160deg, var(--card), var(--surface));
+        border: 3px solid var(--accent);
+        border-radius: 18px;
+        padding: 1.5rem 1.2rem;
+        text-align: center;
+        box-shadow: 0 12px 32px rgb(249 115 22 / 25%);
+      }
+
+      .taboo-target {
+        font-size: clamp(1.8rem, 6vw, 2.6rem);
+        font-weight: 900;
+        color: var(--accent-2);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 0.6rem 0;
+        border-bottom: 2px solid var(--accent);
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 8px rgb(251 191 36 / 40%);
+      }
+
+      .taboo-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .taboo-list li {
+        font-size: clamp(1rem, 3vw, 1.3rem);
+        font-weight: 600;
+        color: var(--danger);
+        padding: 0.3rem 0;
+        text-decoration: line-through;
+        text-decoration-color: var(--danger);
+        text-decoration-thickness: 2px;
+      }
+
+      .guess-placeholder {
+        background: var(--card);
+        border: 3px dashed var(--border);
+        border-radius: 18px;
+        padding: 2.5rem 1.2rem;
+        text-align: center;
+      }
+
+      .guess-placeholder .big {
+        font-size: clamp(1.4rem, 4vw, 2rem);
+        font-weight: 800;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
+      }
+
+      .round-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .round-actions .btn {
+        font-size: 0.95rem;
+        padding: 0.8rem 0.4rem;
+      }
+
+      .notice {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--accent);
+        border-radius: 10px;
+        padding: 0.7rem 0.9rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.92rem;
+      }
+
+      .notice.warn {
+        border-left-color: var(--warning);
+      }
+
+      .notice.danger {
+        border-left-color: var(--danger);
+      }
+
+      .team-ready {
+        display: grid;
+        gap: 0.8rem;
+        text-align: center;
+        padding: 1rem;
+      }
+
+      .team-ready .team-name {
+        font-size: 1.4rem;
+        font-weight: 800;
+      }
+
+      .team-ready .team-a-name {
+        color: var(--team-a);
+      }
+
+      .team-ready .team-b-name {
+        color: var(--team-b);
+      }
+
+      .team-ready .active-player {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--accent-2);
+        padding: 0.6rem 1rem;
+        background: var(--surface);
+        border: 2px solid var(--accent);
+        border-radius: 12px;
+        display: inline-block;
+      }
+
+      .team-ready .instructions {
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+
+      .mod-panel-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgb(0 0 0 / 82%);
+        z-index: 9000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 64px 1rem 56px;
+        backdrop-filter: blur(4px);
+      }
+
+      .mod-panel-overlay.open {
+        display: flex;
+      }
+
+      .mod-panel {
+        background: var(--card);
+        border: 2px solid var(--accent);
+        border-radius: 18px;
+        padding: 1.2rem 1rem;
+        max-width: 520px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+        box-shadow: 0 24px 48px rgb(0 0 0 / 50%);
+      }
+
+      .mod-panel h2 {
+        font-size: 1.2rem;
+        color: var(--accent);
+        margin-bottom: 0.6rem;
+      }
+
+      .mod-panel .roster {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+        margin: 0.8rem 0;
+      }
+
+      .mod-panel .roster-col {
+        background: var(--surface);
+        border-radius: 12px;
+        padding: 0.7rem;
+      }
+
+      .mod-panel .roster-col.team-a {
+        border-top: 3px solid var(--team-a);
+      }
+
+      .mod-panel .roster-col.team-b {
+        border-top: 3px solid var(--team-b);
+      }
+
+      .mod-panel .roster-col h3 {
+        font-size: 0.95rem;
+        margin-bottom: 0.4rem;
+      }
+
+      .mod-panel .roster-col ol {
+        padding-left: 1.2rem;
+        font-size: 0.88rem;
+        line-height: 1.6;
+      }
+
+      .mod-panel .roster-col .active {
+        color: var(--accent-2);
+        font-weight: 700;
+      }
+
+      .mod-panel .warning-text {
+        background: var(--warning);
+        color: #1f1302;
+        padding: 0.5rem 0.7rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 0.6rem;
+      }
+
+      .mod-panel-close {
+        margin-top: 0.6rem;
+      }
+
+      .open-panel-btn {
+        position: relative;
+        font-size: 0.85rem;
+        padding: 0.5rem 0.8rem;
+        min-height: 36px;
+      }
+
+      .round-count-badge {
+        display: inline-block;
+        background: var(--accent);
+        color: #1f1302;
+        font-weight: 700;
+        font-size: 0.85rem;
+        letter-spacing: 0.04em;
+        padding: 0.3rem 0.7rem;
+        border-radius: 999px;
+        margin-bottom: 0.6rem;
+      }
+
+      .teams-strip {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.6rem;
+        margin: 0.6rem 0 0.8rem;
+      }
+
+      .teams-strip-col {
+        background: var(--surface);
+        border-radius: 10px;
+        padding: 0.5rem 0.7rem;
+      }
+
+      .teams-strip-col.team-a {
+        border-left: 4px solid var(--team-a);
+      }
+
+      .teams-strip-col.team-b {
+        border-left: 4px solid var(--team-b);
+      }
+
+      .teams-strip-title {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.25rem;
+      }
+
+      .teams-strip-members {
+        font-size: 0.88rem;
+        line-height: 1.5;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+      }
+
+      .teams-strip-member {
+        background: rgba(255, 255, 255, 0.06);
+        padding: 0.15rem 0.5rem;
+        border-radius: 999px;
+        white-space: nowrap;
+      }
+
+      .teams-strip-members .me {
+        background: var(--accent-2);
+        color: #1f1302;
+        font-weight: 700;
+      }
+
+      .teams-strip-members .cue {
+        outline: 1px solid var(--accent);
+      }
+
+      .card-role-label {
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--accent-2);
+        text-align: center;
+        margin: 0 0 0.3rem;
+      }
+
+      .card-role-instruction {
+        font-size: 0.88rem;
+        color: var(--muted);
+        text-align: center;
+        margin: 0.6rem 0 0;
+        line-height: 1.5;
+      }
+
+      .how-to-play {
+        background: var(--surface);
+        border-left: 3px solid var(--accent);
+        border-radius: 8px;
+        padding: 0.7rem 0.9rem;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-top: 0.8rem;
+      }
+
+      .final-scoreboard {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+        margin: 0.8rem 0;
+      }
+
+      .mod-round-actions-row {
+        display: flex;
+        gap: 0.6rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 0.6rem;
+      }
+
+      .mod-round-actions-row .btn {
+        flex: 0 1 auto;
+      }
+
+      .mod-round-status {
+        background: var(--surface);
+        border: 2px dashed var(--accent);
+        border-radius: 16px;
+        padding: 1.4rem 1.2rem;
+        text-align: center;
+        margin: 1rem 0;
+      }
+
+      .mod-round-status .big {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--accent-2);
+        margin-bottom: 0.6rem;
+      }
+
+      .mod-round-status p {
+        font-size: 1rem;
+        line-height: 1.5;
+        margin: 0.4rem 0;
+      }
+
+      .mod-round-status .btn {
+        margin-top: 0.8rem;
+      }
+
+      .game-over {
+        text-align: center;
+        padding: 1.5rem 1rem;
+      }
+
+      .game-over h2 {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+        color: var(--accent-2);
+      }
+
+      .winner-badge {
+        display: inline-block;
+        padding: 0.6rem 1.5rem;
+        border-radius: 999px;
+        font-size: 1.3rem;
+        font-weight: 800;
+        margin: 0.5rem 0;
+      }
+
+      .winner-badge.team-a {
+        background: var(--team-a);
+        color: white;
+      }
+
+      .winner-badge.team-b {
+        background: var(--team-b);
+        color: white;
+      }
+
+      .final-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+        margin: 1rem 0;
+      }
+
+      .stat-box {
+        background: var(--surface);
+        border-radius: 10px;
+        padding: 0.7rem;
+        text-align: center;
+      }
+
+      .stat-box .label {
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      .stat-box .value {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--accent);
+      }
+
+      .top-bar {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.6rem;
+        align-items: center;
+      }
+
+      .join-box {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 0.9rem 1rem;
+        display: grid;
+        gap: 0.6rem;
+      }
+
+      .join-code {
+        font-family: ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
+        font-size: clamp(1.6rem, 5vw, 2.4rem);
+        font-weight: 800;
+        letter-spacing: 0.2em;
+        color: var(--accent-2);
+        text-align: center;
+        padding: 0.6rem 0.4rem;
+        background: var(--card);
+        border-radius: 10px;
+        border: 2px dashed var(--accent);
+        user-select: all;
+      }
+
+      .join-url-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .join-share-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .join-share-row .muted {
+        margin: 0;
+        flex: 1;
+      }
+
+      .join-url {
+        font-family: ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
+        font-size: 0.85rem;
+        padding: 0.5rem 0.7rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        word-break: break-all;
+        color: var(--text);
+      }
+
+      .hint {
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin-top: 0.4rem;
+      }
+
+      .kbd {
+        display: inline-block;
+        padding: 0.08rem 0.35rem;
+        font-family: monospace;
+        font-size: 0.78rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-bottom-width: 2px;
+        border-radius: 4px;
+        color: var(--text);
+      }
+
+      .fatal {
+        background: rgb(239 68 68 / 14%);
+        border: 1px solid var(--danger);
+        border-radius: 12px;
+        padding: 1rem 1.1rem;
+        color: var(--text);
+      }
+
+      .fatal h2 {
+        color: var(--danger);
+        font-size: 1.1rem;
+        margin-bottom: 0.4rem;
+      }
+
+      @media (max-width: 420px) {
+        .round-actions {
+          grid-template-columns: 1fr;
+        }
+
+        .controls-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .mod-panel .roster {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <div class="top-bar">
+          <div>
+            <h1>🤫 Team Taboo</h1>
+            <p id="heroSubtitle">
+              Clue-givers guide their team past the forbidden words.
+            </p>
+          </div>
+          <button
+            id="openPanelBtn"
+            class="btn btn-secondary open-panel-btn"
+            style="display: none"
+            aria-label="Open moderator panel"
+          >
+            📋 Mod Panel
+          </button>
+        </div>
+      </header>
+
+      <!-- Fatal config error -->
+      <section id="configError" class="card screen" aria-label="Configuration error">
+        <div class="fatal">
+          <h2>Multiplayer not configured</h2>
+          <p>
+            This site is missing Supabase multiplayer configuration. Ask the site owner to set
+            required Supabase environment variables.
+          </p>
+        </div>
+      </section>
+
+      <!-- Initial loading state for moderator (before session is created) -->
+      <section id="loadingScreen" class="card screen" aria-label="Preparing game">
+        <h2 class="section-title">Creating your game room…</h2>
+        <p class="muted">Generating a join code and lobby. This takes just a moment.</p>
+      </section>
+
+      <!-- Moderator lobby: share link, settings, start -->
+      <section id="lobbyScreen" class="card screen" aria-label="Moderator lobby">
+        <h2 class="section-title">Invite players</h2>
+        <p class="muted" style="margin-bottom: 0.6rem">
+          Share the link below — players land on their own join screen and enter a name. New
+          players are added automatically when they join.
+        </p>
+        <div class="join-box">
+          <label>Game code</label>
+          <div id="joinCode" class="join-code" aria-live="polite">------</div>
+          <label>Join link</label>
+          <div class="join-url-row">
+            <div id="joinUrl" class="join-url"></div>
+            <button id="copyLinkBtn" class="btn btn-secondary" style="min-height: 40px">
+              📋 Copy
+            </button>
+          </div>
+          <div class="join-share-row">
+            <button id="shareLinkBtn" class="btn btn-secondary" style="display: none">
+              🔗 Share
+            </button>
+            <p id="lobbyHint" class="muted" aria-live="polite">
+              Waiting for participants to join…
+            </p>
+          </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top: 1rem">Settings</h2>
+        <div class="controls-grid">
+          <div>
+            <label for="roundsTotal">Total rounds</label>
+            <select id="roundsTotal">
+              <option value="2">2 (quick)</option>
+              <option value="4" selected>4 (regular)</option>
+              <option value="6">6</option>
+              <option value="8">8</option>
+              <option value="10">10 (long)</option>
+            </select>
+          </div>
+          <div>
+            <label for="roundLength">Seconds per round</label>
+            <select id="roundLength">
+              <option value="30">30 seconds</option>
+              <option value="60" selected>60 seconds</option>
+              <option value="90">90 seconds</option>
+              <option value="120">120 seconds</option>
+              <option value="180">3 minutes</option>
+            </select>
+          </div>
+        </div>
+        <button id="startGameBtn" class="btn btn-primary btn-block" disabled>
+          Assign Teams &amp; Start
+        </button>
+      </section>
+
+      <!-- Player lobby: waiting for host to start -->
+      <section id="playerLobbyScreen" class="card screen" aria-label="Player lobby">
+        <h2 class="section-title" id="playerLobbyTitle">You’re in!</h2>
+        <p class="muted" id="playerLobbySubtitle">
+          Waiting for the host to start the game…
+        </p>
+        <div class="how-to-play">
+          <strong>How to play:</strong> When the host starts the game, you'll be split into two
+          teams. Each round, one player on the active team is the <strong>clue-giver</strong> —
+          they try to get teammates to guess a <strong>target word</strong> without saying any
+          of the forbidden <strong>taboo words</strong>. The opposing team watches the card to
+          catch violations. Highest score after all rounds wins.
+        </div>
+        <h2 class="section-title" style="margin-top: 1rem">Players in the room</h2>
+        <div id="playerLobbyPlayers" class="player-list" aria-live="polite"></div>
+      </section>
+
+      <!-- Round-ready screen -->
+      <section id="readyScreen" class="card screen" aria-label="Round ready screen">
+        <div class="round-count-badge" id="readyRoundCount">Round 1 of 4</div>
+        <div class="scoreboard">
+          <div id="scoreTeamA" class="team-score team-a">
+            <h3 id="labelTeamA">Team A</h3>
+            <div class="score-num" id="numTeamA">0</div>
+            <div class="team-members" id="membersTeamA"></div>
+          </div>
+          <div id="scoreTeamB" class="team-score team-b">
+            <h3 id="labelTeamB">Team B</h3>
+            <div class="score-num" id="numTeamB">0</div>
+            <div class="team-members" id="membersTeamB"></div>
+          </div>
+        </div>
+        <div class="team-ready">
+          <div>
+            <span class="team-name" id="activeTeamName">Team A</span>
+            <span>’s turn</span>
+          </div>
+          <div>
+            <div class="muted" style="margin-bottom: 0.4rem">Clue-giver</div>
+            <span id="activePlayerName" class="active-player">—</span>
+          </div>
+          <p class="instructions" id="readyInstructions"></p>
+          <button id="beginRoundBtn" class="btn btn-primary btn-block" style="display: none">
+            Begin Round <span class="kbd">Space</span>
+          </button>
+          <button
+            id="readyEndGameBtn"
+            class="btn btn-danger btn-block"
+            style="display: none; margin-top: 0.6rem"
+          >
+            End Game
+          </button>
+        </div>
+      </section>
+
+      <!-- In-round screen -->
+      <section id="roundScreen" class="card screen" aria-label="In-round screen">
+        <div class="round-count-badge" id="inRoundCount">Round 1 of 4</div>
+        <div class="round-header">
+          <div>
+            <strong id="inRoundTeamName" style="font-size: 1.1rem">Team A</strong>
+            <div class="muted" id="inRoundPlayer">Clue-giver: —</div>
+          </div>
+          <div id="timerDisplay" class="timer" role="timer" aria-live="polite">0:60</div>
+        </div>
+
+        <!-- Teams strip (shown to players so they see teammates + opponents) -->
+        <div id="teamsStrip" class="teams-strip">
+          <div class="teams-strip-col team-a">
+            <div class="teams-strip-title" id="stripLabelA">Team A</div>
+            <div class="teams-strip-members" id="stripMembersA"></div>
+          </div>
+          <div class="teams-strip-col team-b">
+            <div class="teams-strip-title" id="stripLabelB">Team B</div>
+            <div class="teams-strip-members" id="stripMembersB"></div>
+          </div>
+        </div>
+
+        <!-- Card (shown to clue-giver + opposing team only) -->
+        <div id="tabooCard" class="taboo-card" style="display: none">
+          <p class="card-role-label" id="cardRoleLabel">You can see this card</p>
+          <div class="taboo-target" id="targetWord">—</div>
+          <ul class="taboo-list" id="tabooList"></ul>
+          <p class="card-role-instruction" id="cardRoleInstruction"></p>
+        </div>
+
+        <!-- Placeholder (shown to active-team non-giver teammates) -->
+        <div id="guessPlaceholder" class="guess-placeholder" style="display: none">
+          <div class="big">🤐 Your team is guessing</div>
+          <p>
+            <strong id="guessCueName">Your teammate</strong> is giving clues. Shout your guesses
+            out loud — <strong>don't peek at the card!</strong>
+          </p>
+          <p class="muted" id="guessRoundHint">
+            When the moderator marks Correct, you'll move on to the next word. Timer is ticking!
+          </p>
+        </div>
+
+        <!-- Moderator shared-screen status (no words, safe to screenshare) -->
+        <div id="modRoundStatus" class="mod-round-status" style="display: none">
+          <div class="big">🎤 Round in progress</div>
+          <p>
+            <strong id="modRoundClueLine">—</strong> is giving clues to
+            <strong id="modRoundTeamLine">—</strong>. Opposing team is watching the card to catch
+            taboo violations.
+          </p>
+          <p class="muted">
+            📋 Open your Moderator Panel (private popup) to see the card and mark
+            <strong>Correct / Skip / Violation</strong>.
+          </p>
+          <div class="mod-round-actions-row">
+            <button
+              id="modRoundOpenPanelBtn"
+              class="btn btn-primary"
+              aria-label="Open moderator panel popup"
+            >
+              📋 Open Mod Panel
+            </button>
+            <button
+              id="inRoundEndGameBtn"
+              class="btn btn-danger"
+              aria-label="End game now"
+            >
+              End Game
+            </button>
+          </div>
+        </div>
+
+        <!-- Moderator-only action buttons (main screen — hidden when popup is used) -->
+        <div id="roundActions" class="round-actions" style="display: none">
+          <button id="correctBtn" class="btn btn-success" aria-label="Correct guess">
+            ✓ Correct <span class="kbd">C</span>
+          </button>
+          <button id="skipBtn" class="btn btn-warning" aria-label="Skip card">
+            ↻ Skip <span class="kbd">S</span>
+          </button>
+          <button id="violationBtn" class="btn btn-danger" aria-label="Taboo violation">
+            ✗ Violation <span class="kbd">V</span>
+          </button>
+        </div>
+        <p id="roundHint" class="hint"></p>
+      </section>
+
+      <!-- Round-end screen -->
+      <section id="summaryScreen" class="card screen" aria-label="Round summary screen">
+        <div class="round-count-badge" id="sumRoundCount">Round 1 of 4</div>
+        <h2 class="section-title">Round summary</h2>
+        <div class="scoreboard">
+          <div class="team-score team-a">
+            <h3 id="sumLabelA">Team A</h3>
+            <div class="score-num" id="sumNumA">0</div>
+          </div>
+          <div class="team-score team-b">
+            <h3 id="sumLabelB">Team B</h3>
+            <div class="score-num" id="sumNumB">0</div>
+          </div>
+        </div>
+        <div id="roundResults" class="notice"></div>
+        <button id="nextRoundBtn" class="btn btn-primary btn-block" style="display: none">
+          Next Round
+        </button>
+        <button
+          id="summaryEndGameBtn"
+          class="btn btn-danger btn-block"
+          style="display: none; margin-top: 0.6rem"
+        >
+          End Game
+        </button>
+      </section>
+
+      <!-- Game-over screen -->
+      <section id="endScreen" class="card screen" aria-label="End game screen">
+        <div class="game-over">
+          <h2>🏆 Final Score</h2>
+          <div id="winnerBadge" class="winner-badge team-a">Team A wins!</div>
+          <p id="finalScoreText" class="muted" style="margin: 0.4rem 0 0.8rem"></p>
+          <div class="final-scoreboard">
+            <div class="team-score team-a">
+              <h3 id="finalLabelA">Team A</h3>
+              <div class="score-num" id="finalNumA">0</div>
+              <div class="team-members" id="finalMembersA"></div>
+            </div>
+            <div class="team-score team-b">
+              <h3 id="finalLabelB">Team B</h3>
+              <div class="score-num" id="finalNumB">0</div>
+              <div class="team-members" id="finalMembersB"></div>
+            </div>
+          </div>
+          <div class="final-stats">
+            <div class="stat-box">
+              <div class="label">Rounds played</div>
+              <div class="value" id="statRounds">0</div>
+            </div>
+            <div class="stat-box">
+              <div class="label">Cards revealed</div>
+              <div class="value" id="statCards">0</div>
+            </div>
+          </div>
+          <button id="playAgainBtn" class="btn btn-primary btn-block" style="display: none">
+            Play Again
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Moderator-only private panel -->
+    <div id="modPanelOverlay" class="mod-panel-overlay" role="dialog" aria-modal="true">
+      <div class="mod-panel">
+        <h2>📋 Moderator Panel</h2>
+        <div class="warning-text">
+          ⚠️ Popup was blocked — allow popups for this site and reopen so the private view stays off
+          your shared screen. If popups stay blocked, you can still score from the main window
+          with keyboard shortcuts: C = correct, S = skip, V = taboo.
+        </div>
+        <div class="roster">
+          <div class="roster-col team-a">
+            <h3 id="rosterLabelA">Team A</h3>
+            <ol id="rosterListA"></ol>
+          </div>
+          <div class="roster-col team-b">
+            <h3 id="rosterLabelB">Team B</h3>
+            <ol id="rosterListB"></ol>
+          </div>
+        </div>
+        <p class="muted" style="font-size: 0.82rem; margin-bottom: 0.6rem">
+          Clue-giver order rotates top-to-bottom within each team. Current clue-giver is
+          highlighted.
+        </p>
+        <button id="closePanelBtn" class="btn btn-secondary btn-block mod-panel-close">
+          Close Panel
+        </button>
+      </div>
+    </div>
+
+    <script type="module">
+      // ------------------------------------------------------------------
+      // Team Taboo — multiplayer via Supabase (through Next.js API routes).
+      //
+      // Moderator's browser is authoritative for game mutations. Players write
+      // only their own player record via the join endpoint. A lightweight poll
+      // loop keeps every client in sync with the latest session snapshot.
+      // ------------------------------------------------------------------
+
+      const APP_NAME = 'Team Taboo';
+      const APP_ID = 'team-taboo';
+      const APP_PATH = '2026/04/18/team-taboo';
+      const STORAGE_PREFIX = '__STORAGE_PREFIX__';
+      const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      const SESSION_POLL_MS = 800;
+
+      // --- Word cards ---------------------------------------------------
+      const CARDS = [
+        { target: 'BEACH', taboo: ['sand', 'ocean', 'sun', 'towel', 'waves'] },
+        { target: 'PIZZA', taboo: ['cheese', 'Italy', 'slice', 'dough', 'pepperoni'] },
+        { target: 'COMPUTER', taboo: ['keyboard', 'screen', 'laptop', 'type', 'mouse'] },
+        { target: 'ELEPHANT', taboo: ['trunk', 'gray', 'big', 'Africa', 'tusks'] },
+        { target: 'BASEBALL', taboo: ['bat', 'field', 'pitcher', 'diamond', 'home run'] },
+        { target: 'CHRISTMAS', taboo: ['tree', 'Santa', 'December', 'presents', 'snow'] },
+        { target: 'HOSPITAL', taboo: ['doctor', 'nurse', 'sick', 'emergency', 'bed'] },
+        { target: 'BATHROOM', taboo: ['toilet', 'shower', 'sink', 'soap', 'tub'] },
+        { target: 'AIRPLANE', taboo: ['fly', 'sky', 'wings', 'pilot', 'airport'] },
+        { target: 'COFFEE', taboo: ['bean', 'morning', 'cup', 'caffeine', 'brew'] },
+        { target: 'GUITAR', taboo: ['strings', 'music', 'strum', 'rock', 'pluck'] },
+        { target: 'UMBRELLA', taboo: ['rain', 'open', 'handle', 'wet', 'cover'] },
+        { target: 'WEDDING', taboo: ['bride', 'groom', 'married', 'ring', 'dress'] },
+        { target: 'VOLCANO', taboo: ['lava', 'erupt', 'mountain', 'hot', 'ash'] },
+        { target: 'BIRTHDAY', taboo: ['cake', 'candles', 'year', 'wish', 'party'] },
+        { target: 'LIBRARY', taboo: ['book', 'quiet', 'read', 'shelf', 'librarian'] },
+        { target: 'SOCCER', taboo: ['ball', 'goal', 'kick', 'field', 'football'] },
+        { target: 'PIRATE', taboo: ['ship', 'treasure', 'eye patch', 'parrot', 'ocean'] },
+        { target: 'HAMBURGER', taboo: ['meat', 'bun', 'ketchup', 'grill', 'beef'] },
+        { target: 'SNOWMAN', taboo: ['carrot', 'cold', 'scarf', 'melt', 'winter'] },
+        { target: 'MICROWAVE', taboo: ['heat', 'food', 'kitchen', 'timer', 'popcorn'] },
+        { target: 'TELESCOPE', taboo: ['stars', 'space', 'lens', 'see', 'Galileo'] },
+        { target: 'CACTUS', taboo: ['desert', 'spikes', 'prickly', 'water', 'green'] },
+        { target: 'DENTIST', taboo: ['teeth', 'drill', 'cavity', 'mouth', 'brush'] },
+        { target: 'ZOMBIE', taboo: ['dead', 'brains', 'walk', 'scary', 'undead'] },
+        { target: 'LIGHTHOUSE', taboo: ['beacon', 'ship', 'coast', 'light', 'tower'] },
+        { target: 'SALAD', taboo: ['lettuce', 'dressing', 'vegetable', 'bowl', 'green'] },
+        { target: 'VAMPIRE', taboo: ['bite', 'blood', 'fangs', 'Dracula', 'night'] },
+        { target: 'PENCIL', taboo: ['write', 'eraser', 'lead', 'sharp', 'paper'] },
+        { target: 'SKATEBOARD', taboo: ['wheels', 'trick', 'ramp', 'street', 'ollie'] },
+        { target: 'FIREWORKS', taboo: ['explode', 'July', 'sparks', 'sky', 'boom'] },
+        { target: 'MERMAID', taboo: ['fish', 'sea', 'tail', 'Ariel', 'underwater'] },
+        { target: 'KANGAROO', taboo: ['Australia', 'jump', 'pouch', 'boxing', 'joey'] },
+        { target: 'POPCORN', taboo: ['movie', 'butter', 'kernel', 'pop', 'corn'] },
+        { target: 'CASTLE', taboo: ['king', 'moat', 'tower', 'knight', 'stone'] },
+        { target: 'LADDER', taboo: ['climb', 'rungs', 'tall', 'paint', 'step'] },
+        { target: 'CAMEL', taboo: ['desert', 'hump', 'sand', 'spit', 'Egypt'] },
+        { target: 'PILLOW', taboo: ['sleep', 'head', 'bed', 'soft', 'fluffy'] },
+        { target: 'BINGO', taboo: ['numbers', 'cards', 'grandma', 'call', 'game'] },
+        { target: 'RAINBOW', taboo: ['colors', 'rain', 'arc', 'sky', 'sunshine'] },
+        { target: 'JELLYFISH', taboo: ['sting', 'tentacle', 'ocean', 'float', 'clear'] },
+        { target: 'BICYCLE', taboo: ['wheels', 'pedal', 'ride', 'handle', 'bike'] },
+        { target: 'FIRETRUCK', taboo: ['red', 'siren', 'hose', 'fire', 'ladder'] },
+        { target: 'TELEPHONE', taboo: ['call', 'ring', 'number', 'dial', 'hello'] },
+        { target: 'COWBOY', taboo: ['horse', 'hat', 'rope', 'cattle', 'west'] },
+        { target: 'CUPCAKE', taboo: ['frosting', 'bake', 'cake', 'sweet', 'paper'] },
+        { target: 'OCTOPUS', taboo: ['arms', 'ocean', 'ink', 'suction', 'eight'] },
+        { target: 'BACKPACK', taboo: ['school', 'straps', 'carry', 'books', 'bag'] },
+        { target: 'WATERFALL', taboo: ['river', 'drop', 'mist', 'rocks', 'Niagara'] },
+        { target: 'NINJA', taboo: ['sword', 'stealth', 'Japan', 'black', 'shadow'] },
+        { target: 'CHOCOLATE', taboo: ['sweet', 'cocoa', 'bar', 'brown', 'candy'] },
+        { target: 'TRAMPOLINE', taboo: ['bounce', 'jump', 'springs', 'yard', 'flip'] },
+        { target: 'DINOSAUR', taboo: ['T-Rex', 'extinct', 'fossil', 'roar', 'Jurassic'] },
+        { target: 'ICE CREAM', taboo: ['cone', 'scoop', 'cold', 'sundae', 'melt'] },
+        { target: 'SUBMARINE', taboo: ['underwater', 'periscope', 'navy', 'yellow', 'dive'] },
+      ];
+
+      // --- Multiplayer API wrappers --------------------------------------
+      function ref(_db, path) {
+        return path;
+      }
+
+      function serverTimestamp() {
+        return Date.now();
+      }
+
+      function onDisconnect() {
+        return {
+          set: async () => {},
+        };
+      }
+
+      function buildSnapshot(value) {
+        return {
+          exists: () => value !== null && value !== undefined,
+          val: () => value,
+        };
+      }
+
+      function flattenPatch(prefix, value, out) {
+        if (value === null || value === undefined) {
+          out[prefix] = value;
+          return;
+        }
+        const isObject = typeof value === 'object' && !Array.isArray(value);
+        if (!isObject) {
+          out[prefix] = value;
+          return;
+        }
+        const entries = Object.entries(value);
+        if (entries.length === 0) {
+          out[prefix] = {};
+          return;
+        }
+        entries.forEach(([key, child]) => {
+          flattenPatch(`${prefix}/${key}`, child, out);
+        });
+      }
+
+      async function isMultiplayerConfigured() {
+        const response = await fetch('/api/multiplayer/status', { cache: 'no-store' });
+        if (!response.ok) return false;
+        const payload = await response.json();
+        return Boolean(payload?.configured);
+      }
+
+      async function get(path) {
+        const parts = String(path)
+          .split('/')
+          .filter(Boolean);
+        if (parts[0] !== 'sessions' || !parts[1]) {
+          return buildSnapshot(null);
+        }
+        const response = await fetch(`/api/multiplayer/sessions/${parts[1]}`, { cache: 'no-store' });
+        if (response.status === 404) {
+          return buildSnapshot(null);
+        }
+        if (!response.ok) {
+          throw new Error('Failed to fetch session');
+        }
+        const payload = await response.json();
+        const sessionData = payload?.session || null;
+        if (parts.length === 2) {
+          return buildSnapshot(sessionData);
+        }
+        let nested = sessionData;
+        for (let i = 2; i < parts.length; i += 1) {
+          nested = nested?.[parts[i]];
+        }
+        return buildSnapshot(nested);
+      }
+
+      async function set(path, value) {
+        const parts = String(path)
+          .split('/')
+          .filter(Boolean);
+        if (parts[0] !== 'sessions' || !parts[1] || parts.length !== 2) {
+          throw new Error('Unsupported set path');
+        }
+        const body = {
+          code: parts[1],
+          appId: value.appId,
+          appName: value.appName,
+          appPath: value.appPath,
+          moderatorId: value.moderatorId,
+          settings: value.settings || {},
+        };
+        const response = await fetch('/api/multiplayer/sessions', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        if (!response.ok) {
+          throw new Error('Failed to create session');
+        }
+      }
+
+      async function update(path, patch) {
+        const parts = String(path)
+          .split('/')
+          .filter(Boolean);
+        if (parts[0] !== 'sessions' || !parts[1]) {
+          throw new Error('Unsupported update path');
+        }
+        const code = parts[1];
+        const scope = parts.slice(2).join('/');
+        const normalizedPatch = {};
+        let nextStatus = null;
+
+        if (scope) {
+          Object.entries(patch || {}).forEach(([key, value]) => {
+            flattenPatch(`${scope}/${key}`, value, normalizedPatch);
+          });
+        } else {
+          Object.entries(patch || {}).forEach(([key, value]) => {
+            if (key === 'status' && typeof value === 'string') {
+              nextStatus = value;
+              return;
+            }
+            if (key.includes('/')) {
+              normalizedPatch[key] = value;
+              return;
+            }
+            flattenPatch(key, value, normalizedPatch);
+          });
+        }
+
+        const response = await fetch(`/api/multiplayer/sessions/${code}`, {
+          method: 'PATCH',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            moderatorId,
+            status: nextStatus,
+            patch: normalizedPatch,
+          }),
+        });
+        if (!response.ok) {
+          throw new Error('Failed to update session');
+        }
+      }
+
+      function onValue(path, callback) {
+        let cancelled = false;
+        let timerId = null;
+
+        const tick = async () => {
+          try {
+            const snap = await get(path);
+            if (!cancelled) {
+              callback(snap);
+            }
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error('Session poll failed', error);
+          }
+        };
+
+        tick();
+        timerId = setInterval(tick, SESSION_POLL_MS);
+
+        return () => {
+          cancelled = true;
+          if (timerId) {
+            clearInterval(timerId);
+          }
+        };
+      }
+
+      // --- Pure helpers -------------------------------------------------
+      function generateSessionCode(length = 6) {
+        let code = '';
+        for (let i = 0; i < length; i += 1) {
+          code += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
+        }
+        return code;
+      }
+
+      function generateId(prefix = 'id') {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+          return `${prefix}-${crypto.randomUUID()}`;
+        }
+        return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+      }
+
+      function shuffleInPlace(array) {
+        for (let i = array.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
+
+      function pickTeamName(exclude) {
+        const options = [
+          'Sharks',
+          'Foxes',
+          'Wolves',
+          'Ravens',
+          'Tigers',
+          'Hawks',
+          'Pandas',
+          'Otters',
+          'Dragons',
+          'Lions',
+        ];
+        const filtered = options.filter((name) => name !== exclude);
+        return filtered[Math.floor(Math.random() * filtered.length)];
+      }
+
+      function parseHashParams() {
+        const hash = window.location.hash.startsWith('#')
+          ? window.location.hash.slice(1)
+          : window.location.hash;
+        return new URLSearchParams(hash);
+      }
+
+      function localKey(suffix) {
+        return `${STORAGE_PREFIX}:${APP_ID}:${suffix}`;
+      }
+
+      // --- DOM refs -----------------------------------------------------
+      const screens = {
+        configError: document.getElementById('configError'),
+        loading: document.getElementById('loadingScreen'),
+        lobby: document.getElementById('lobbyScreen'),
+        playerLobby: document.getElementById('playerLobbyScreen'),
+        ready: document.getElementById('readyScreen'),
+        round: document.getElementById('roundScreen'),
+        summary: document.getElementById('summaryScreen'),
+        end: document.getElementById('endScreen'),
+      };
+
+      const heroSubtitle = document.getElementById('heroSubtitle');
+      const joinCodeEl = document.getElementById('joinCode');
+      const joinUrlEl = document.getElementById('joinUrl');
+      const copyLinkBtn = document.getElementById('copyLinkBtn');
+      const shareLinkBtn = document.getElementById('shareLinkBtn');
+      const lobbyHint = document.getElementById('lobbyHint');
+      const startGameBtn = document.getElementById('startGameBtn');
+      const roundsTotalSel = document.getElementById('roundsTotal');
+      const roundLengthSel = document.getElementById('roundLength');
+
+      const playerLobbyTitle = document.getElementById('playerLobbyTitle');
+      const playerLobbySubtitle = document.getElementById('playerLobbySubtitle');
+      const playerLobbyPlayersEl = document.getElementById('playerLobbyPlayers');
+
+      const labelTeamA = document.getElementById('labelTeamA');
+      const labelTeamB = document.getElementById('labelTeamB');
+      const numTeamA = document.getElementById('numTeamA');
+      const numTeamB = document.getElementById('numTeamB');
+      const scoreTeamA = document.getElementById('scoreTeamA');
+      const scoreTeamB = document.getElementById('scoreTeamB');
+      const membersTeamA = document.getElementById('membersTeamA');
+      const membersTeamB = document.getElementById('membersTeamB');
+
+      const readyRoundCount = document.getElementById('readyRoundCount');
+      const activeTeamName = document.getElementById('activeTeamName');
+      const activePlayerName = document.getElementById('activePlayerName');
+      const readyInstructions = document.getElementById('readyInstructions');
+      const beginRoundBtn = document.getElementById('beginRoundBtn');
+      const readyEndGameBtn = document.getElementById('readyEndGameBtn');
+
+      const inRoundCount = document.getElementById('inRoundCount');
+      const inRoundTeamName = document.getElementById('inRoundTeamName');
+      const inRoundPlayer = document.getElementById('inRoundPlayer');
+      const timerDisplay = document.getElementById('timerDisplay');
+      const stripLabelA = document.getElementById('stripLabelA');
+      const stripLabelB = document.getElementById('stripLabelB');
+      const stripMembersA = document.getElementById('stripMembersA');
+      const stripMembersB = document.getElementById('stripMembersB');
+      const tabooCard = document.getElementById('tabooCard');
+      const guessPlaceholder = document.getElementById('guessPlaceholder');
+      const guessCueName = document.getElementById('guessCueName');
+      const cardRoleLabel = document.getElementById('cardRoleLabel');
+      const cardRoleInstruction = document.getElementById('cardRoleInstruction');
+      const targetWord = document.getElementById('targetWord');
+      const tabooList = document.getElementById('tabooList');
+      const roundActions = document.getElementById('roundActions');
+      const roundHint = document.getElementById('roundHint');
+      const correctBtn = document.getElementById('correctBtn');
+      const skipBtn = document.getElementById('skipBtn');
+      const violationBtn = document.getElementById('violationBtn');
+      const modRoundStatus = document.getElementById('modRoundStatus');
+      const modRoundClueLine = document.getElementById('modRoundClueLine');
+      const modRoundTeamLine = document.getElementById('modRoundTeamLine');
+      const modRoundOpenPanelBtn = document.getElementById('modRoundOpenPanelBtn');
+      const inRoundEndGameBtn = document.getElementById('inRoundEndGameBtn');
+
+      const sumRoundCount = document.getElementById('sumRoundCount');
+      const sumLabelA = document.getElementById('sumLabelA');
+      const sumLabelB = document.getElementById('sumLabelB');
+      const sumNumA = document.getElementById('sumNumA');
+      const sumNumB = document.getElementById('sumNumB');
+      const roundResults = document.getElementById('roundResults');
+      const nextRoundBtn = document.getElementById('nextRoundBtn');
+      const summaryEndGameBtn = document.getElementById('summaryEndGameBtn');
+
+      const winnerBadge = document.getElementById('winnerBadge');
+      const finalScoreText = document.getElementById('finalScoreText');
+      const finalLabelA = document.getElementById('finalLabelA');
+      const finalLabelB = document.getElementById('finalLabelB');
+      const finalNumA = document.getElementById('finalNumA');
+      const finalNumB = document.getElementById('finalNumB');
+      const finalMembersA = document.getElementById('finalMembersA');
+      const finalMembersB = document.getElementById('finalMembersB');
+      const statRounds = document.getElementById('statRounds');
+      const statCards = document.getElementById('statCards');
+      const playAgainBtn = document.getElementById('playAgainBtn');
+
+      const openPanelBtn = document.getElementById('openPanelBtn');
+      const closePanelBtn = document.getElementById('closePanelBtn');
+      const modPanelOverlay = document.getElementById('modPanelOverlay');
+      const rosterLabelA = document.getElementById('rosterLabelA');
+      const rosterLabelB = document.getElementById('rosterLabelB');
+      const rosterListA = document.getElementById('rosterListA');
+      const rosterListB = document.getElementById('rosterListB');
+
+      // --- Runtime state ------------------------------------------------
+      const db = null;
+      let sessionCode = null;
+      let role = null; // 'moderator' | 'player'
+      let moderatorId = null;
+      let playerId = null;
+      let session = null; // latest snapshot of /sessions/<code>
+      let sessionUnsubscribe = null;
+      let timerTickId = null;
+      let endingRound = false;
+      let modPanelWindow = null;
+      let modPanelPollId = null;
+
+      // --- Screen navigation -------------------------------------------
+      function showScreen(name) {
+        Object.entries(screens).forEach(([key, el]) => {
+          el.classList.toggle('active', key === name);
+        });
+        openPanelBtn.style.display = role === 'moderator' && session ? 'inline-block' : 'none';
+      }
+
+      // --- Multiplayer init --------------------------------------------
+      async function init() {
+        const configured = await isMultiplayerConfigured();
+        if (!configured) {
+          heroSubtitle.textContent = 'Multiplayer is not configured on this site.';
+          showScreen('configError');
+          return;
+        }
+        bootstrap();
+      }
+
+      init();
+
+      // --- Bootstrap: decide the starting screen based on URL + storage -
+      function bootstrap() {
+        const params = parseHashParams();
+        const hashCode = params.get('code');
+        const hashPid = params.get('pid');
+        const hashRole = params.get('role');
+
+        if (hashRole === 'player' && hashCode && hashPid) {
+          joinAsPlayer(hashCode, hashPid);
+          return;
+        }
+
+        if (hashCode) {
+          // Likely a moderator reloading an existing session.
+          const savedMod = loadModeratorRecord(hashCode);
+          if (savedMod) {
+            reconnectAsModerator(hashCode, savedMod.moderatorId);
+            return;
+          }
+          // Unknown code with no credentials — fall through to auto-create.
+          window.location.hash = '';
+        }
+
+        // Fresh moderator visit: create a session immediately so the share
+        // link is already on-screen when they arrive.
+        showScreen('loading');
+        createSession();
+      }
+
+      // --- localStorage helpers ----------------------------------------
+      function saveModeratorRecord(code, id) {
+        try {
+          window.localStorage.setItem(
+            localKey(`mod:${code}`),
+            JSON.stringify({ moderatorId: id })
+          );
+        } catch {
+          // ignore
+        }
+      }
+
+      function loadModeratorRecord(code) {
+        try {
+          const raw = window.localStorage.getItem(localKey(`mod:${code}`));
+          return raw ? JSON.parse(raw) : null;
+        } catch {
+          return null;
+        }
+      }
+
+      // --- Moderator: create a new session ------------------------------
+      async function createSession() {
+        try {
+          // Generate a code and make sure it doesn't collide with an existing session.
+          let code = '';
+          for (let attempt = 0; attempt < 8; attempt += 1) {
+            code = generateSessionCode(6);
+            // eslint-disable-next-line no-await-in-loop
+            const existing = await get(ref(db, `sessions/${code}`));
+            if (!existing.exists()) break;
+          }
+
+          moderatorId = generateId('mod');
+          sessionCode = code;
+          role = 'moderator';
+
+          const initial = {
+            appId: APP_ID,
+            appName: APP_NAME,
+            appPath: APP_PATH,
+            moderatorId,
+            createdAt: serverTimestamp(),
+            status: 'lobby',
+            settings: {
+              roundsTotal: 4,
+              roundLength: 60,
+            },
+          };
+          await set(ref(db, `sessions/${sessionCode}`), initial);
+
+          saveModeratorRecord(sessionCode, moderatorId);
+          window.location.hash = new URLSearchParams({
+            code: sessionCode,
+            role: 'mod',
+          }).toString();
+
+          subscribeSession();
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error('Failed to create session', err);
+          heroSubtitle.textContent = 'Could not create a game room.';
+          showScreen('configError');
+          document.querySelector('#configError .fatal h2').textContent = 'Couldn’t start the game';
+          document.querySelector('#configError .fatal p').textContent =
+            'Check your connection and refresh to try again.';
+        }
+      }
+
+      // --- Moderator: reconnect after refresh ---------------------------
+      async function reconnectAsModerator(code, id) {
+        try {
+          const snap = await get(ref(db, `sessions/${code}`));
+          if (!snap.exists() || snap.val().moderatorId !== id) {
+            // Session no longer exists or moderatorId no longer matches: start fresh.
+            window.location.hash = '';
+            showScreen('loading');
+            createSession();
+            return;
+          }
+          sessionCode = code;
+          moderatorId = id;
+          role = 'moderator';
+          subscribeSession();
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error('Reconnect failed', err);
+          showScreen('loading');
+          createSession();
+        }
+      }
+
+      // --- Player: join via hash params --------------------------------
+      async function joinAsPlayer(code, pid) {
+        try {
+          const snap = await get(ref(db, `sessions/${code}`));
+          if (!snap.exists()) {
+            heroSubtitle.textContent = 'This game no longer exists.';
+            showScreen('configError');
+            document.querySelector('#configError .fatal h2').textContent =
+              'Game not found';
+            document.querySelector('#configError .fatal p').textContent =
+              'The host may have ended the session. Ask them for a new link.';
+            return;
+          }
+          const data = snap.val();
+          if (!data.players || !data.players[pid]) {
+            heroSubtitle.textContent = 'Your spot in this game was removed.';
+            showScreen('configError');
+            document.querySelector('#configError .fatal h2').textContent =
+              'Player record missing';
+            document.querySelector('#configError .fatal p').textContent =
+              'Rejoin from the /join link your host shared.';
+            return;
+          }
+          sessionCode = code;
+          playerId = pid;
+          role = 'player';
+
+          subscribeSession();
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error('Player connect failed', err);
+          heroSubtitle.textContent = 'Connection failed.';
+          showScreen('configError');
+        }
+      }
+
+      // --- Subscribe to session updates --------------------------------
+      function subscribeSession() {
+        if (sessionUnsubscribe) sessionUnsubscribe();
+        const sessionRef = ref(db, `sessions/${sessionCode}`);
+        sessionUnsubscribe = onValue(sessionRef, (snap) => {
+          session = snap.val();
+          if (!session) {
+            // Session was deleted out from under us.
+            if (role === 'moderator') {
+              window.location.hash = '';
+              showScreen('loading');
+              createSession();
+            } else {
+              showScreen('configError');
+              document.querySelector('#configError .fatal h2').textContent =
+                'Game ended';
+              document.querySelector('#configError .fatal p').textContent =
+                'The host closed the game. Thanks for playing!';
+            }
+            return;
+          }
+          render();
+        });
+      }
+
+      // --- Rendering (pure, driven by `session`) -----------------------
+      function render() {
+        if (!session) return;
+
+        if (role === 'moderator') {
+          updateJoinBox();
+        }
+        updateScoreboardFromSession();
+        updateModPanel();
+        updateTimerTick();
+
+        switch (session.status) {
+          case 'lobby':
+            renderLobby();
+            break;
+          case 'playing':
+            renderPlaying();
+            break;
+          case 'ended':
+            renderEnded();
+            break;
+          default:
+            break;
+        }
+      }
+
+      function playersArray() {
+        if (!session?.players) return [];
+        return Object.values(session.players);
+      }
+
+      function renderLobby() {
+        const players = playersArray();
+        if (role === 'moderator') {
+          const count = players.length;
+          const names = players.map((p) => p.name).join(', ');
+          startGameBtn.disabled = count < 4 || count % 2 !== 0;
+          if (count === 0) {
+            lobbyHint.textContent = 'Waiting for participants to join…';
+          } else if (count < 4) {
+            lobbyHint.textContent = `${count} joined (${names}) — need ${4 - count} more (minimum 4, even total).`;
+          } else if (count % 2 !== 0) {
+            lobbyHint.textContent = `${count} joined (${names}) — add 1 more to keep teams even.`;
+          } else {
+            lobbyHint.textContent = `${count} players ready (${names}).`;
+          }
+          roundsTotalSel.value = String(session.settings?.roundsTotal ?? 4);
+          roundLengthSel.value = String(session.settings?.roundLength ?? 60);
+          showScreen('lobby');
+        } else {
+          const self = session.players?.[playerId];
+          playerLobbyTitle.textContent = self ? `Welcome, ${self.name}!` : "You're in!";
+          playerLobbyPlayersEl.innerHTML = '';
+          players.forEach((player) => {
+            const pill = document.createElement('span');
+            pill.className = 'player-pill';
+            if (player.id === playerId) pill.classList.add('self');
+            pill.textContent = player.name;
+            playerLobbyPlayersEl.appendChild(pill);
+          });
+          showScreen('playerLobby');
+        }
+      }
+
+      function renderPlaying() {
+        const game = session.game;
+        if (!game) return;
+        const roundState = game.roundState;
+        if (roundState === 'ready') renderReadyScreen();
+        else if (roundState === 'playing') renderRoundScreen();
+        else if (roundState === 'summary') renderSummaryScreen();
+      }
+
+      function roundCountLabel(roundsPlayed) {
+        const total = session?.settings?.roundsTotal ?? 4;
+        const current = Math.min(total, (roundsPlayed ?? 0) + 1);
+        return `Round ${current} of ${total}`;
+      }
+
+      function renderReadyScreen() {
+        const { game } = session;
+        const activeTeam = game.activeTeam;
+        const teamNames = game.teamNames || { A: 'Team A', B: 'Team B' };
+        const cuePid = game.teamOrder?.[activeTeam]?.[game.cueIndex?.[activeTeam] ?? 0];
+        const cueName = session.players?.[cuePid]?.name || '—';
+
+        readyRoundCount.textContent = roundCountLabel(game.roundsPlayed);
+        activeTeamName.textContent = teamNames[activeTeam];
+        activeTeamName.className = `team-name team-${activeTeam.toLowerCase()}-name`;
+        activePlayerName.textContent = cueName;
+
+        const cueNameStrong = document.createElement('strong');
+        cueNameStrong.textContent = cueName;
+
+        readyInstructions.replaceChildren();
+
+        if (role === 'moderator') {
+          readyInstructions.append(cueNameStrong, ': you’ll see the card once I hit Begin.');
+          beginRoundBtn.style.display = 'block';
+          readyEndGameBtn.style.display = 'block';
+        } else if (playerId === cuePid) {
+          const youAreUpStrong = document.createElement('strong');
+          youAreUpStrong.textContent = "You're up!";
+          readyInstructions.append(
+            youAreUpStrong,
+            ' The card appears here when the host starts the round.'
+          );
+          beginRoundBtn.style.display = 'none';
+          readyEndGameBtn.style.display = 'none';
+        } else if (session.players?.[playerId]?.team === activeTeam) {
+          readyInstructions.append(
+            'Your teammate ',
+            cueNameStrong,
+            ' is the clue-giver. Get ready to guess.'
+          );
+          beginRoundBtn.style.display = 'none';
+          readyEndGameBtn.style.display = 'none';
+        } else {
+          readyInstructions.append(
+            'Watch for violations! ',
+            cueNameStrong,
+            ' is giving clues to their team.'
+          );
+          beginRoundBtn.style.display = 'none';
+          readyEndGameBtn.style.display = 'none';
+        }
+        showScreen('ready');
+      }
+
+      function populateTeamsStrip(activeTeam, cuePid) {
+        if (!session?.game) return;
+        const { game } = session;
+        const teamNames = game.teamNames || { A: 'Team A', B: 'Team B' };
+        stripLabelA.textContent = teamNames.A;
+        stripLabelB.textContent = teamNames.B;
+        const renderCol = (teamKey, container) => {
+          container.innerHTML = '';
+          const ids = game.teamOrder?.[teamKey] || [];
+          ids.forEach((id) => {
+            const name = session.players?.[id]?.name || '(gone)';
+            const pill = document.createElement('span');
+            pill.className = 'teams-strip-member';
+            if (id === cuePid) pill.classList.add('cue');
+            if (id === playerId) pill.classList.add('me');
+            pill.textContent = id === cuePid ? `🎤 ${name}` : name;
+            container.appendChild(pill);
+          });
+        };
+        renderCol('A', stripMembersA);
+        renderCol('B', stripMembersB);
+      }
+
+      function renderRoundScreen() {
+        const { game } = session;
+        const activeTeam = game.activeTeam;
+        const teamNames = game.teamNames || { A: 'Team A', B: 'Team B' };
+        const cuePid = game.teamOrder?.[activeTeam]?.[game.cueIndex?.[activeTeam] ?? 0];
+        const cueName = session.players?.[cuePid]?.name || '—';
+
+        inRoundCount.textContent = roundCountLabel(game.roundsPlayed);
+        inRoundTeamName.textContent = teamNames[activeTeam];
+        inRoundPlayer.textContent = `Clue-giver: ${cueName}`;
+        populateTeamsStrip(activeTeam, cuePid);
+
+        // Role-based card visibility. The moderator's MAIN (shared) screen never
+        // shows the card or Correct/Skip/Violation buttons — those live in the
+        // private popup window so they aren't visible on screen share.
+        const myTeam = role === 'player' ? session.players?.[playerId]?.team : null;
+        const isClueGiver = role === 'player' && playerId === cuePid;
+        const isGuesser = role === 'player' && myTeam === activeTeam && !isClueGiver;
+        const isOpponent = role === 'player' && myTeam && myTeam !== activeTeam;
+        const showCard = isClueGiver || isOpponent;
+
+        if (showCard && game.currentCard) {
+          if (isClueGiver) {
+            cardRoleLabel.textContent = '🎤 Your turn — you see the card';
+            cardRoleInstruction.textContent =
+              'Get your team to say the target word without using any of the taboo words.';
+          } else {
+            cardRoleLabel.textContent = '👀 Opposing team — watch for violations';
+            cardRoleInstruction.textContent =
+              'Listen to the clue-giver. If they say the target or any taboo word, tell the moderator.';
+          }
+          targetWord.textContent = game.currentCard.target;
+          tabooList.innerHTML = '';
+          game.currentCard.taboo.forEach((word) => {
+            const li = document.createElement('li');
+            li.textContent = word;
+            tabooList.appendChild(li);
+          });
+          tabooCard.style.display = 'block';
+          guessPlaceholder.style.display = 'none';
+          modRoundStatus.style.display = 'none';
+        } else if (role === 'moderator') {
+          // Shared-screen safe status — no words, no buttons.
+          tabooCard.style.display = 'none';
+          guessPlaceholder.style.display = 'none';
+          modRoundClueLine.textContent = cueName;
+          modRoundTeamLine.textContent = teamNames[activeTeam];
+          modRoundStatus.style.display = 'block';
+        } else if (isGuesser) {
+          guessCueName.textContent = cueName;
+          tabooCard.style.display = 'none';
+          guessPlaceholder.style.display = 'block';
+          modRoundStatus.style.display = 'none';
+        } else {
+          // Player not yet assigned a team (edge case).
+          guessCueName.textContent = cueName;
+          tabooCard.style.display = 'none';
+          guessPlaceholder.style.display = 'block';
+          modRoundStatus.style.display = 'none';
+        }
+
+        // Main-screen action buttons are hidden for moderator — mirror lives in popup.
+        roundActions.style.display = 'none';
+        roundHint.textContent = '';
+
+        showScreen('round');
+        updateModPanelRound();
+      }
+
+      function renderSummaryScreen() {
+        const { game } = session;
+        const teamNames = game.teamNames || { A: 'Team A', B: 'Team B' };
+        const activeTeam = game.lastRoundTeam || game.activeTeam;
+        const tally = game.lastResults || { correct: 0, skipped: 0, violations: 0 };
+
+        const playedSoFar = Math.max(0, (game.roundsPlayed ?? 1) - 1);
+        sumRoundCount.textContent = roundCountLabel(playedSoFar);
+        sumLabelA.textContent = teamNames.A;
+        sumLabelB.textContent = teamNames.B;
+        sumNumA.textContent = String(game.scores?.A ?? 0);
+        sumNumB.textContent = String(game.scores?.B ?? 0);
+
+        const word = game.lastEndedReason === 'timeout' ? 'ran out' : 'ended early';
+        roundResults.innerHTML = `
+          <strong>Round ${word}.</strong><br />
+          ${teamNames[activeTeam]} scored <strong>${tally.correct}</strong>
+          (skipped ${tally.skipped}, violations ${tally.violations}).
+        `;
+
+        nextRoundBtn.style.display = role === 'moderator' ? 'block' : 'none';
+        summaryEndGameBtn.style.display = role === 'moderator' ? 'block' : 'none';
+        showScreen('summary');
+      }
+
+      function renderEnded() {
+        const { game } = session;
+        if (!game) return;
+        const teamNames = game.teamNames || { A: 'Team A', B: 'Team B' };
+        const scores = game.scores || { A: 0, B: 0 };
+        const winner = game.winner;
+
+        if (winner) {
+          winnerBadge.textContent = `${teamNames[winner]} win!`;
+          winnerBadge.className = `winner-badge team-${winner.toLowerCase()}`;
+        } else {
+          winnerBadge.textContent = 'Tie game!';
+          winnerBadge.className = 'winner-badge team-a';
+        }
+        finalScoreText.textContent = `${teamNames.A} ${scores.A} — ${teamNames.B} ${scores.B}`;
+        finalLabelA.textContent = teamNames.A;
+        finalLabelB.textContent = teamNames.B;
+        finalNumA.textContent = String(scores.A ?? 0);
+        finalNumB.textContent = String(scores.B ?? 0);
+        const rosterFor = (teamKey) =>
+          (game.teamOrder?.[teamKey] || [])
+            .map((id) => session.players?.[id]?.name)
+            .filter(Boolean)
+            .join(', ');
+        finalMembersA.textContent = rosterFor('A');
+        finalMembersB.textContent = rosterFor('B');
+        statRounds.textContent = String(game.roundsPlayed ?? 0);
+        statCards.textContent = String(game.cardsRevealed ?? 0);
+        playAgainBtn.style.display = role === 'moderator' ? 'block' : 'none';
+        showScreen('end');
+
+        if (role === 'moderator' && !window._sharedOnce && window.voaShare) {
+          window._sharedOnce = true;
+          const myTeam = winner;
+          const shareText = myTeam
+            ? `${teamNames[myTeam]} won ${APP_NAME} ${scores[myTeam]}–${scores[myTeam === 'A' ? 'B' : 'A']}! Who’s on your team?`
+            : `We tied ${scores.A}–${scores.B} at ${APP_NAME}!`;
+          window.voaShare({ text: shareText });
+        }
+      }
+
+      // --- UI helpers --------------------------------------------------
+      function updateJoinBox() {
+        joinCodeEl.textContent = sessionCode || '------';
+        if (sessionCode) {
+          joinUrlEl.textContent = `${window.location.origin}/join/${sessionCode}`;
+        }
+      }
+
+      function updateScoreboardFromSession() {
+        if (!session?.game) return;
+        const { game } = session;
+        const teamNames = game.teamNames || { A: 'Team A', B: 'Team B' };
+        labelTeamA.textContent = teamNames.A;
+        labelTeamB.textContent = teamNames.B;
+        numTeamA.textContent = String(game.scores?.A ?? 0);
+        numTeamB.textContent = String(game.scores?.B ?? 0);
+        const teamA = (game.teamOrder?.A || [])
+          .map((id) => session.players?.[id]?.name)
+          .filter(Boolean);
+        const teamB = (game.teamOrder?.B || [])
+          .map((id) => session.players?.[id]?.name)
+          .filter(Boolean);
+        membersTeamA.textContent = teamA.join(', ');
+        membersTeamB.textContent = teamB.join(', ');
+        scoreTeamA.classList.toggle('active', game.activeTeam === 'A');
+        scoreTeamB.classList.toggle('active', game.activeTeam === 'B');
+      }
+
+      function renderRosterInto(labelAEl, labelBEl, listAEl, listBEl) {
+        if (role !== 'moderator' || !session?.game) {
+          if (listAEl) listAEl.innerHTML = '';
+          if (listBEl) listBEl.innerHTML = '';
+          return;
+        }
+        const { game } = session;
+        const teamNames = game.teamNames || { A: 'Team A', B: 'Team B' };
+        if (labelAEl) labelAEl.textContent = teamNames.A;
+        if (labelBEl) labelBEl.textContent = teamNames.B;
+        if (listAEl) listAEl.innerHTML = '';
+        if (listBEl) listBEl.innerHTML = '';
+        (game.teamOrder?.A || []).forEach((id, index) => {
+          if (!listAEl) return;
+          const li = listAEl.ownerDocument.createElement('li');
+          li.textContent = session.players?.[id]?.name || '(gone)';
+          if (game.activeTeam === 'A' && index === (game.cueIndex?.A ?? 0)) {
+            li.classList.add('active');
+          }
+          listAEl.appendChild(li);
+        });
+        (game.teamOrder?.B || []).forEach((id, index) => {
+          if (!listBEl) return;
+          const li = listBEl.ownerDocument.createElement('li');
+          li.textContent = session.players?.[id]?.name || '(gone)';
+          if (game.activeTeam === 'B' && index === (game.cueIndex?.B ?? 0)) {
+            li.classList.add('active');
+          }
+          listBEl.appendChild(li);
+        });
+      }
+
+      function updateModPanel() {
+        renderRosterInto(rosterLabelA, rosterLabelB, rosterListA, rosterListB);
+        if (modPanelWindow && !modPanelWindow.closed && modPanelWindow.document) {
+          const doc = modPanelWindow.document;
+          renderRosterInto(
+            doc.getElementById('rosterLabelA'),
+            doc.getElementById('rosterLabelB'),
+            doc.getElementById('rosterListA'),
+            doc.getElementById('rosterListB')
+          );
+          updateModPanelRound(doc);
+        }
+      }
+
+      function updateModPanelRound(docRoot) {
+        const doc = docRoot || modPanelWindow?.document;
+        if (!doc || role !== 'moderator') return;
+        const roundBlock = doc.getElementById('modRoundBlock');
+        const idleBlock = doc.getElementById('modIdleBlock');
+        if (!roundBlock || !idleBlock) return;
+
+        const game = session?.game;
+        const isPlaying = game?.roundState === 'playing';
+        if (!isPlaying || !game?.currentCard) {
+          roundBlock.style.display = 'none';
+          idleBlock.style.display = 'block';
+          return;
+        }
+        roundBlock.style.display = 'block';
+        idleBlock.style.display = 'none';
+
+        const activeTeam = game.activeTeam;
+        const teamNames = game.teamNames || { A: 'Team A', B: 'Team B' };
+        const cuePid = game.teamOrder?.[activeTeam]?.[game.cueIndex?.[activeTeam] ?? 0];
+        const cueName = session.players?.[cuePid]?.name || '—';
+
+        doc.getElementById('popupTeamName').textContent = teamNames[activeTeam];
+        doc.getElementById('popupCueName').textContent = cueName;
+        doc.getElementById('popupTarget').textContent = game.currentCard.target;
+        const list = doc.getElementById('popupTabooList');
+        list.innerHTML = '';
+        game.currentCard.taboo.forEach((word) => {
+          const li = doc.createElement('li');
+          li.textContent = word;
+          list.appendChild(li);
+        });
+      }
+
+      function updateTimerTick() {
+        if (timerTickId) {
+          clearInterval(timerTickId);
+          timerTickId = null;
+        }
+        if (session?.game?.roundState !== 'playing') {
+          // Reset the guard whenever we leave the playing state so a fresh
+          // round can trigger a timeout again.
+          endingRound = false;
+          return;
+        }
+        const roundLength = session.settings?.roundLength ?? 60;
+        const startedAt = session.game.roundStartedAt;
+        if (!startedAt) return;
+        const tick = () => {
+          const elapsed = Math.max(0, (Date.now() - startedAt) / 1000);
+          const remaining = Math.max(0, Math.ceil(roundLength - elapsed));
+          const m = Math.floor(remaining / 60);
+          const s = remaining % 60;
+          const label = `${m}:${s.toString().padStart(2, '0')}`;
+          timerDisplay.textContent = label;
+          timerDisplay.classList.remove('warning', 'danger');
+          if (remaining <= 10) timerDisplay.classList.add('danger');
+          else if (remaining <= 20) timerDisplay.classList.add('warning');
+          if (modPanelWindow && !modPanelWindow.closed && modPanelWindow.document) {
+            const popupTimer = modPanelWindow.document.getElementById('popupTimer');
+            if (popupTimer) {
+              popupTimer.textContent = label;
+              popupTimer.classList.remove('warning', 'danger');
+              if (remaining <= 10) popupTimer.classList.add('danger');
+              else if (remaining <= 20) popupTimer.classList.add('warning');
+            }
+          }
+          if (remaining <= 0 && role === 'moderator' && !endingRound) {
+            endingRound = true;
+            clearInterval(timerTickId);
+            timerTickId = null;
+            endRound('timeout');
+          }
+        };
+        tick();
+        timerTickId = setInterval(tick, 250);
+      }
+
+      // --- Moderator: game mutations -----------------------------------
+      async function assignTeamsAndStart() {
+        const players = playersArray();
+        if (players.length < 4 || players.length % 2 !== 0) return;
+
+        const ids = shuffleInPlace(players.map((player) => player.id));
+        const teamOrder = { A: [], B: [] };
+        ids.forEach((id, index) => {
+          (index % 2 === 0 ? teamOrder.A : teamOrder.B).push(id);
+        });
+
+        // Persist team assignments back to each player's record.
+        const playerUpdates = {};
+        teamOrder.A.forEach((id) => {
+          playerUpdates[`players/${id}/team`] = 'A';
+        });
+        teamOrder.B.forEach((id) => {
+          playerUpdates[`players/${id}/team`] = 'B';
+        });
+
+        const teamNames = {
+          A: pickTeamName(),
+          B: pickTeamName(),
+        };
+        while (teamNames.A === teamNames.B) {
+          teamNames.B = pickTeamName(teamNames.A);
+        }
+
+        const settings = {
+          roundsTotal: parseInt(roundsTotalSel.value, 10) || 4,
+          roundLength: parseInt(roundLengthSel.value, 10) || 60,
+        };
+
+        await update(ref(db, `sessions/${sessionCode}`), {
+          ...playerUpdates,
+          status: 'playing',
+          settings,
+          game: {
+            activeTeam: 'A',
+            scores: { A: 0, B: 0 },
+            teamNames,
+            teamOrder,
+            cueIndex: { A: 0, B: 0 },
+            roundState: 'ready',
+            roundsPlayed: 0,
+            cardsRevealed: 0,
+            currentCard: null,
+            deckSeed: Math.floor(Math.random() * 2 ** 31),
+            deckPointer: 0,
+          },
+        });
+      }
+
+      function drawCard() {
+        // Deterministic-ish draw: shuffle once per session using deckSeed, then
+        // walk an index. The moderator owns the deck — only their writes update
+        // currentCard, so other clients just receive what the moderator chose.
+        const seed = session.game.deckSeed ?? 1;
+        const pointer = session.game.deckPointer ?? 0;
+        const deck = [...CARDS];
+        // Mulberry32-ish PRNG for shuffle determinism.
+        let t = seed >>> 0;
+        const rand = () => {
+          t = (t + 0x6D2B79F5) >>> 0;
+          let r = Math.imul(t ^ (t >>> 15), 1 | t);
+          r ^= r + Math.imul(r ^ (r >>> 7), 61 | r);
+          return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+        };
+        for (let i = deck.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(rand() * (i + 1));
+          [deck[i], deck[j]] = [deck[j], deck[i]];
+        }
+        return { card: deck[pointer % deck.length], nextPointer: pointer + 1 };
+      }
+
+      async function beginRound() {
+        endingRound = false;
+        const { card, nextPointer } = drawCard();
+        await update(ref(db, `sessions/${sessionCode}/game`), {
+          roundState: 'playing',
+          roundStartedAt: serverTimestamp(),
+          currentCard: card,
+          deckPointer: nextPointer,
+          cardsRevealed: (session.game.cardsRevealed || 0) + 1,
+          lastResults: { correct: 0, skipped: 0, violations: 0 },
+        });
+      }
+
+      async function nextCard(scoreDelta, tallyField) {
+        const { card, nextPointer } = drawCard();
+        const { game } = session;
+        const activeTeam = game.activeTeam;
+        const currentScore = game.scores?.[activeTeam] ?? 0;
+        const newScore = Math.max(0, currentScore + scoreDelta);
+        const tally = { ...(game.lastResults || { correct: 0, skipped: 0, violations: 0 }) };
+        tally[tallyField] = (tally[tallyField] || 0) + 1;
+
+        await update(ref(db, `sessions/${sessionCode}/game`), {
+          currentCard: card,
+          deckPointer: nextPointer,
+          cardsRevealed: (game.cardsRevealed || 0) + 1,
+          [`scores/${activeTeam}`]: newScore,
+          lastResults: tally,
+        });
+      }
+
+      async function endRound(reason) {
+        const { game } = session;
+        const roundsTotal = session.settings?.roundsTotal ?? 4;
+        const scores = game.scores || { A: 0, B: 0 };
+        const roundsPlayedNext = (game.roundsPlayed || 0) + 1;
+
+        if (roundsPlayedNext >= roundsTotal) {
+          const winner =
+            scores.A > scores.B ? 'A' : scores.B > scores.A ? 'B' : null;
+          await update(ref(db, `sessions/${sessionCode}`), {
+            status: 'ended',
+            'game/roundState': 'ended',
+            'game/winner': winner,
+            'game/roundsPlayed': roundsPlayedNext,
+            'game/lastEndedReason': reason,
+            'game/lastRoundTeam': game.activeTeam,
+          });
+          return;
+        }
+
+        const activeTeam = game.activeTeam;
+        const nextTeam = activeTeam === 'A' ? 'B' : 'A';
+        const nextCue = ((game.cueIndex?.[activeTeam] ?? 0) + 1) %
+          (game.teamOrder?.[activeTeam]?.length || 1);
+
+        await update(ref(db, `sessions/${sessionCode}/game`), {
+          roundState: 'summary',
+          roundsPlayed: roundsPlayedNext,
+          lastRoundTeam: activeTeam,
+          lastEndedReason: reason,
+          activeTeam: nextTeam,
+          [`cueIndex/${activeTeam}`]: nextCue,
+          currentCard: null,
+        });
+      }
+
+      async function endGameNow() {
+        if (role !== 'moderator' || !session?.game) return;
+        const confirmed = window.confirm(
+          'End the game now? The current scores will be used to pick the winner.'
+        );
+        if (!confirmed) return;
+        const { game } = session;
+        const scores = game.scores || { A: 0, B: 0 };
+        const winner =
+          scores.A > scores.B ? 'A' : scores.B > scores.A ? 'B' : null;
+        await update(ref(db, `sessions/${sessionCode}`), {
+          status: 'ended',
+          'game/roundState': 'ended',
+          'game/winner': winner,
+          'game/lastEndedReason': 'moderator-ended',
+          'game/currentCard': null,
+        });
+      }
+
+      async function advanceToNextRound() {
+        await update(ref(db, `sessions/${sessionCode}/game`), {
+          roundState: 'ready',
+        });
+      }
+
+      async function playAgain() {
+        // Keep the same players; reset the game payload.
+        const players = playersArray();
+        const ids = shuffleInPlace(players.map((p) => p.id));
+        const teamOrder = { A: [], B: [] };
+        ids.forEach((id, index) => {
+          (index % 2 === 0 ? teamOrder.A : teamOrder.B).push(id);
+        });
+        const teamNames = { A: pickTeamName(), B: pickTeamName() };
+        while (teamNames.A === teamNames.B) teamNames.B = pickTeamName(teamNames.A);
+
+        const playerUpdates = {};
+        teamOrder.A.forEach((id) => {
+          playerUpdates[`players/${id}/team`] = 'A';
+        });
+        teamOrder.B.forEach((id) => {
+          playerUpdates[`players/${id}/team`] = 'B';
+        });
+
+        await update(ref(db, `sessions/${sessionCode}`), {
+          status: 'playing',
+          ...playerUpdates,
+          game: {
+            activeTeam: 'A',
+            scores: { A: 0, B: 0 },
+            teamNames,
+            teamOrder,
+            cueIndex: { A: 0, B: 0 },
+            roundState: 'ready',
+            roundsPlayed: 0,
+            cardsRevealed: 0,
+            currentCard: null,
+            deckSeed: Math.floor(Math.random() * 2 ** 31),
+            deckPointer: 0,
+          },
+        });
+        window._sharedOnce = false;
+      }
+
+      // --- Event wiring (guarded by role where relevant) ----------------
+      startGameBtn.addEventListener('click', () => assignTeamsAndStart());
+      beginRoundBtn.addEventListener('click', () => beginRound());
+      correctBtn.addEventListener('click', () => nextCard(1, 'correct'));
+      skipBtn.addEventListener('click', () => nextCard(0, 'skipped'));
+      violationBtn.addEventListener('click', () => nextCard(-1, 'violations'));
+      nextRoundBtn.addEventListener('click', () => advanceToNextRound());
+      playAgainBtn.addEventListener('click', () => playAgain());
+      readyEndGameBtn.addEventListener('click', () => endGameNow());
+      inRoundEndGameBtn.addEventListener('click', () => endGameNow());
+      summaryEndGameBtn.addEventListener('click', () => endGameNow());
+
+      copyLinkBtn.addEventListener('click', async () => {
+        if (!sessionCode) return;
+        const url = `${window.location.origin}/join/${sessionCode}`;
+        try {
+          await navigator.clipboard.writeText(url);
+          copyLinkBtn.textContent = '✓ Copied';
+          setTimeout(() => {
+            copyLinkBtn.textContent = '📋 Copy';
+          }, 1500);
+        } catch {
+          copyLinkBtn.textContent = 'Copy failed';
+        }
+      });
+
+      // Use the native share sheet where supported (iOS, Android, some desktop
+      // Safari/Edge). Falls back silently where unavailable — copyLinkBtn handles
+      // that case.
+      if (typeof navigator.share === 'function') {
+        shareLinkBtn.style.display = 'inline-block';
+        shareLinkBtn.addEventListener('click', async () => {
+          if (!sessionCode) return;
+          const url = `${window.location.origin}/join/${sessionCode}`;
+          try {
+            await navigator.share({
+              title: `${APP_NAME} — join my game`,
+              text: `Join my ${APP_NAME} game (code ${sessionCode}):`,
+              url,
+            });
+          } catch {
+            // User dismissed the share sheet or share failed — no action needed.
+          }
+        });
+      }
+
+      roundsTotalSel.addEventListener('change', () => {
+        if (role !== 'moderator') return;
+        const value = parseInt(roundsTotalSel.value, 10);
+        if (Number.isFinite(value)) {
+          update(ref(db, `sessions/${sessionCode}/settings`), { roundsTotal: value });
+        }
+      });
+
+      roundLengthSel.addEventListener('change', () => {
+        if (role !== 'moderator') return;
+        const value = parseInt(roundLengthSel.value, 10);
+        if (Number.isFinite(value)) {
+          update(ref(db, `sessions/${sessionCode}/settings`), { roundLength: value });
+        }
+      });
+
+      const MOD_PANEL_POPUP_HTML = `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Team Taboo — Moderator Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root { --bg: #0f172a; --text: #f9fafb; --surface: #1e293b; --card: #1e293b;
+              --accent: #f97316; --accent-2: #fbbf24; --team-a: #38bdf8; --team-b: #f472b6;
+              --success: #22c55e; --danger: #ef4444; --warning: #fde68a; --muted: #94a3b8; }
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 1rem; background: var(--bg); color: var(--text);
+             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+             font-size: 15px; }
+      h2 { font-size: 1.2rem; color: var(--accent); margin: 0 0 0.6rem; }
+      h3 { font-size: 0.95rem; margin: 0 0 0.4rem; }
+      h4 { font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase;
+           color: var(--muted); margin: 0 0 0.4rem; }
+      .warning-text { background: var(--warning); color: #1f1302; padding: 0.5rem 0.7rem;
+                      border-radius: 8px; font-size: 0.85rem; font-weight: 600;
+                      margin-bottom: 0.8rem; }
+      .round-head { display: flex; justify-content: space-between; align-items: center;
+                    gap: 0.6rem; background: var(--surface); border-radius: 12px;
+                    padding: 0.6rem 0.8rem; margin-bottom: 0.6rem; }
+      .round-head .who { font-size: 0.9rem; line-height: 1.3; }
+      .round-head .who strong { font-size: 1rem; }
+      .round-head .timer { font-family: ui-monospace, Menlo, monospace;
+                           font-size: 1.6rem; font-weight: 700; color: var(--accent-2); }
+      .round-head .timer.warning { color: #f59e0b; }
+      .round-head .timer.danger { color: var(--danger); }
+      .mod-card { background: #0b1322; border: 2px solid var(--accent);
+                  border-radius: 14px; padding: 0.9rem 0.9rem 1rem; margin-bottom: 0.8rem; }
+      .mod-card .target { font-size: 1.8rem; font-weight: 800; text-align: center;
+                          color: var(--accent-2); margin: 0.3rem 0 0.8rem; word-break: break-word; }
+      .mod-card ul { list-style: none; padding: 0; margin: 0; display: grid;
+                     grid-template-columns: 1fr 1fr; gap: 0.35rem; }
+      .mod-card li { background: var(--surface); padding: 0.4rem 0.6rem; border-radius: 8px;
+                     text-align: center; font-size: 0.9rem; color: #fecaca; }
+      .mod-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;
+                     margin-bottom: 0.9rem; }
+      .mod-actions button { position: relative; font-size: 0.9rem; font-weight: 700;
+                            padding: 0.7rem 0.3rem; border: 2px solid transparent;
+                            border-radius: 10px; cursor: pointer; color: #fff;
+                            transition: transform 120ms ease, box-shadow 120ms ease,
+                                        filter 120ms ease, background-color 120ms ease;
+                            -webkit-tap-highlight-color: transparent;
+                            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
+      .mod-actions button:hover:not(:disabled) { filter: brightness(1.1);
+                                                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+                                                 transform: translateY(-1px); }
+      .mod-actions button:active:not(:disabled) { filter: brightness(0.9);
+                                                  transform: translateY(1px);
+                                                  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35); }
+      .mod-actions button:focus-visible { outline: none;
+                                          border-color: var(--accent-2);
+                                          box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.45); }
+      .mod-actions button:disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(0.5);
+                                     box-shadow: none; transform: none; }
+      .mod-actions .correct { background: var(--success); }
+      .mod-actions .skip { background: #f59e0b; color: #1f1302; }
+      .mod-actions .violation { background: var(--danger); }
+      @media (prefers-reduced-motion: reduce) {
+        .mod-actions button { transition: none; }
+        .mod-actions button:hover:not(:disabled),
+        .mod-actions button:active:not(:disabled) { transform: none; }
+      }
+      .idle-note { background: var(--surface); border-radius: 10px; padding: 0.6rem 0.7rem;
+                   font-size: 0.85rem; color: var(--muted); margin-bottom: 0.8rem; text-align: center; }
+      .roster { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin: 0.6rem 0; }
+      .roster-col { background: var(--surface); border-radius: 12px; padding: 0.7rem; }
+      .roster-col.team-a { border-top: 3px solid var(--team-a); }
+      .roster-col.team-b { border-top: 3px solid var(--team-b); }
+      .roster-col ol { padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.6; margin: 0; }
+      .roster-col .active { color: var(--accent-2); font-weight: 700; }
+      .muted { color: var(--muted); font-size: 0.82rem; }
+      @media (max-width: 440px) { .roster { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <h2>📋 Moderator Panel</h2>
+    <div class="warning-text">
+      ⚠️ Private view — keep this popup off of your shared screen.
+    </div>
+
+    <div id="modRoundBlock" style="display: none">
+      <h4>Current round</h4>
+      <div class="round-head">
+        <div class="who">
+          <strong id="popupTeamName">—</strong><br />
+          Clue-giver: <span id="popupCueName">—</span>
+        </div>
+        <div class="timer" id="popupTimer">0:00</div>
+      </div>
+      <div class="mod-card">
+        <div class="target" id="popupTarget">—</div>
+        <ul id="popupTabooList"></ul>
+      </div>
+      <div class="mod-actions">
+        <button type="button" class="correct" id="popupCorrectBtn">✓ Correct</button>
+        <button type="button" class="skip" id="popupSkipBtn">↻ Skip</button>
+        <button type="button" class="violation" id="popupViolationBtn">✗ Violation</button>
+      </div>
+      <p class="muted" style="margin: 0 0 0.8rem">
+        Keyboard on the main window: <strong>C</strong> correct · <strong>S</strong> skip ·
+        <strong>V</strong> violation.
+      </p>
+    </div>
+
+    <div id="modIdleBlock" class="idle-note">
+      No round in progress. Start a round from the main window.
+    </div>
+
+    <h4>Rosters</h4>
+    <div class="roster">
+      <div class="roster-col team-a">
+        <h3 id="rosterLabelA">Team A</h3>
+        <ol id="rosterListA"></ol>
+      </div>
+      <div class="roster-col team-b">
+        <h3 id="rosterLabelB">Team B</h3>
+        <ol id="rosterListB"></ol>
+      </div>
+    </div>
+    <p class="muted">
+      Clue-giver order rotates top-to-bottom within each team. Current clue-giver is highlighted.
+    </p>
+  </body>
+</html>`;
+
+      function openModPanelPopup() {
+        if (modPanelWindow && !modPanelWindow.closed) {
+          modPanelWindow.focus();
+          return true;
+        }
+        const popup = window.open(
+          '',
+          'taboo-mod-panel',
+          'popup,width=520,height=640,menubar=no,toolbar=no,location=no,status=no'
+        );
+        if (!popup) {
+          return false;
+        }
+        popup.document.open();
+        popup.document.write(MOD_PANEL_POPUP_HTML);
+        popup.document.close();
+        modPanelWindow = popup;
+        // Wire popup action buttons back to the moderator's mutation helpers
+        // running in this window. Popup shares our origin so direct calls work.
+        const wireBtn = (id, fn) => {
+          const btn = popup.document.getElementById(id);
+          if (btn) btn.addEventListener('click', fn);
+        };
+        wireBtn('popupCorrectBtn', () => nextCard(1, 'correct'));
+        wireBtn('popupSkipBtn', () => nextCard(0, 'skipped'));
+        wireBtn('popupViolationBtn', () => nextCard(-1, 'violations'));
+        updateModPanel();
+        if (modPanelPollId) clearInterval(modPanelPollId);
+        modPanelPollId = setInterval(() => {
+          if (modPanelWindow && modPanelWindow.closed) {
+            modPanelWindow = null;
+            clearInterval(modPanelPollId);
+            modPanelPollId = null;
+          }
+        }, 500);
+        return true;
+      }
+
+      function handleOpenPanel() {
+        if (openModPanelPopup()) return;
+        // Popup blocked — fall back to in-page overlay.
+        updateModPanel();
+        modPanelOverlay.classList.add('open');
+      }
+      openPanelBtn.addEventListener('click', handleOpenPanel);
+      modRoundOpenPanelBtn.addEventListener('click', handleOpenPanel);
+      closePanelBtn.addEventListener('click', () => modPanelOverlay.classList.remove('open'));
+      modPanelOverlay.addEventListener('click', (event) => {
+        if (event.target === modPanelOverlay) modPanelOverlay.classList.remove('open');
+      });
+      window.addEventListener('beforeunload', () => {
+        if (modPanelWindow && !modPanelWindow.closed) modPanelWindow.close();
+      });
+
+      // Keyboard shortcuts — moderator only, same guards as shell requires.
+      document.addEventListener('keydown', (event) => {
+        if (role !== 'moderator') return;
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
+        if (modPanelOverlay.classList.contains('open')) return;
+
+        const key = event.key.toLowerCase();
+        if (screens.ready.classList.contains('active') && event.key === ' ') {
+          event.preventDefault();
+          beginRound();
+          return;
+        }
+        if (screens.round.classList.contains('active')) {
+          if (key === 'c') {
+            event.preventDefault();
+            nextCard(1, 'correct');
+          } else if (key === 's') {
+            event.preventDefault();
+            nextCard(0, 'skipped');
+          } else if (key === 'v') {
+            event.preventDefault();
+            nextCard(-1, 'violations');
+          } else if (event.key === 'Enter') {
+            event.preventDefault();
+            endRound('early');
+          }
+        }
+        if (screens.summary.classList.contains('active') && event.key === 'Enter') {
+          event.preventDefault();
+          advanceToNextRound();
+        }
+      });
+    </script>
+  </body>
+</html>

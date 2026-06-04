@@ -20,5 +20,6 @@
     "totalTokensOut": 8800,
     "runId": "run-20260319T214200Z-a3f7b2",
     "notes": "Neon-themed 2048 sliding tile puzzle. Features: 4x4 grid, keyboard/WASD/swipe controls, merge animations, localStorage best score, win/lose/continue overlays, responsive mobile-first layout, full light/dark theme support."
-  }
+  },
+  "leaderboard": false
 }

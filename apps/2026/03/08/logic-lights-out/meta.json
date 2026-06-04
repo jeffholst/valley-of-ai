@@ -20,5 +20,6 @@
     "totalTokensOut": 3900,
     "runId": "run-20260308T080103Z-3c1eed",
     "notes": "Built a mobile-friendly Lights Out game with dark/light theming, keyboard-accessible controls, and deterministic daily mode. Token counts are estimated for this autonomous run."
-  }
+  },
+  "leaderboard": false
 }

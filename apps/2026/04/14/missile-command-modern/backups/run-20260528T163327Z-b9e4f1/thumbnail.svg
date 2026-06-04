@@ -1,0 +1,315 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <!-- Sky: deep navy to near-black -->
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000010"/>
+      <stop offset="55%" stop-color="#010918"/>
+      <stop offset="100%" stop-color="#081426"/>
+    </linearGradient>
+
+    <!-- Ground: dark olive earth -->
+    <linearGradient id="groundGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#182810"/>
+      <stop offset="30%" stop-color="#0c1808"/>
+      <stop offset="100%" stop-color="#020402"/>
+    </linearGradient>
+
+    <!-- Ground glow edge: thin green pulse at surface -->
+    <linearGradient id="groundGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(64,255,120,0.65)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </linearGradient>
+
+    <!-- Explosion at center: orange-white radial burst -->
+    <radialGradient id="explBig" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(255,245,200,0.90)"/>
+      <stop offset="40%" stop-color="rgba(255,140,0,0.70)"/>
+      <stop offset="75%" stop-color="rgba(200,60,0,0.35)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </radialGradient>
+
+    <!-- Secondary explosion: smaller shockwave remnant -->
+    <radialGradient id="explSmall" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(255,220,140,0.55)"/>
+      <stop offset="55%" stop-color="rgba(255,100,0,0.30)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </radialGradient>
+
+    <!-- Silo dome fill -->
+    <radialGradient id="siloDomeActive" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#4a6840"/>
+      <stop offset="100%" stop-color="#1c2c18"/>
+    </radialGradient>
+
+    <radialGradient id="siloDomeEmpty" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#3a1818"/>
+      <stop offset="100%" stop-color="#140808"/>
+    </radialGradient>
+
+    <!-- Interceptor tip glow -->
+    <radialGradient id="interceptTip" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#80eeff"/>
+      <stop offset="100%" stop-color="rgba(0,200,255,0)"/>
+    </radialGradient>
+
+    <!-- Enemy missile glow -->
+    <radialGradient id="missileGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(255,90,90,0.50)"/>
+      <stop offset="100%" stop-color="rgba(255,0,0,0)"/>
+    </radialGradient>
+
+    <!-- Glow filter: bloom for HUD text and hotspots -->
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Strong glow for score text -->
+    <filter id="scoreGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Soft explosion bloom -->
+    <filter id="explBloom" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- SKY BACKGROUND -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#skyGrad)"/>
+
+  <!-- STARS -->
+  <g opacity="0.85">
+    <circle cx="42"  cy="18"  r="1.1" fill="#fff" opacity="0.75"/>
+    <circle cx="115" cy="40"  r="0.8" fill="#fff" opacity="0.60"/>
+    <circle cx="195" cy="12"  r="1.4" fill="#fff" opacity="0.80"/>
+    <circle cx="280" cy="30"  r="0.7" fill="#fff" opacity="0.55"/>
+    <circle cx="360" cy="8"   r="1.2" fill="#fff" opacity="0.70"/>
+    <circle cx="430" cy="25"  r="0.9" fill="#fff" opacity="0.65"/>
+    <circle cx="510" cy="14"  r="1.3" fill="#fff" opacity="0.75"/>
+    <circle cx="590" cy="38"  r="0.8" fill="#fff" opacity="0.60"/>
+    <circle cx="665" cy="11"  r="1.1" fill="#fff" opacity="0.70"/>
+    <circle cx="745" cy="29"  r="1.5" fill="#fff" opacity="0.85"/>
+    <circle cx="78"  cy="70"  r="0.8" fill="#fff" opacity="0.50"/>
+    <circle cx="158" cy="82"  r="1.0" fill="#fff" opacity="0.65"/>
+    <circle cx="248" cy="58"  r="0.7" fill="#fff" opacity="0.55"/>
+    <circle cx="335" cy="90"  r="1.2" fill="#fff" opacity="0.68"/>
+    <circle cx="468" cy="72"  r="0.9" fill="#fff" opacity="0.62"/>
+    <circle cx="548" cy="60"  r="1.4" fill="#fff" opacity="0.72"/>
+    <circle cx="628" cy="85"  r="0.8" fill="#fff" opacity="0.58"/>
+    <circle cx="710" cy="65"  r="1.1" fill="#fff" opacity="0.67"/>
+    <circle cx="768" cy="48"  r="0.7" fill="#fff" opacity="0.55"/>
+    <circle cx="22"  cy="110" r="1.0" fill="#fff" opacity="0.60"/>
+    <circle cx="400" cy="50"  r="0.8" fill="#ddeeff" opacity="0.55"/>
+    <circle cx="560" cy="100" r="1.0" fill="#fff" opacity="0.58"/>
+    <circle cx="130" cy="130" r="0.7" fill="#fff" opacity="0.48"/>
+    <circle cx="700" cy="110" r="1.2" fill="#fff" opacity="0.65"/>
+  </g>
+
+  <!-- TARGETING GRID OVERLAY (subtle green lines) -->
+  <g stroke="#00ff88" stroke-width="0.5" opacity="0.045">
+    <line x1="56"  y1="0" x2="56"  y2="360"/>
+    <line x1="112" y1="0" x2="112" y2="360"/>
+    <line x1="168" y1="0" x2="168" y2="360"/>
+    <line x1="224" y1="0" x2="224" y2="360"/>
+    <line x1="280" y1="0" x2="280" y2="360"/>
+    <line x1="336" y1="0" x2="336" y2="360"/>
+    <line x1="392" y1="0" x2="392" y2="360"/>
+    <line x1="448" y1="0" x2="448" y2="360"/>
+    <line x1="504" y1="0" x2="504" y2="360"/>
+    <line x1="560" y1="0" x2="560" y2="360"/>
+    <line x1="616" y1="0" x2="616" y2="360"/>
+    <line x1="672" y1="0" x2="672" y2="360"/>
+    <line x1="728" y1="0" x2="728" y2="360"/>
+    <line x1="784" y1="0" x2="784" y2="360"/>
+    <line x1="0" y1="56"  x2="800" y2="56"/>
+    <line x1="0" y1="112" x2="800" y2="112"/>
+    <line x1="0" y1="168" x2="800" y2="168"/>
+    <line x1="0" y1="224" x2="800" y2="224"/>
+    <line x1="0" y1="280" x2="800" y2="280"/>
+    <line x1="0" y1="336" x2="800" y2="336"/>
+  </g>
+
+  <!-- SECONDARY EXPLOSION (fading remnant at right) -->
+  <circle cx="635" cy="178" r="44" fill="url(#explSmall)" filter="url(#explBloom)" opacity="0.70"/>
+  <circle cx="635" cy="178" r="47" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.30"/>
+
+  <!-- MAIN EXPLOSION (large interception burst at center) -->
+  <circle cx="360" cy="200" r="68" fill="url(#explBig)" filter="url(#explBloom)"/>
+  <circle cx="360" cy="200" r="72" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.55"/>
+
+  <!-- ENEMY MISSILE A: descending from upper-left toward city at x=208 -->
+  <!-- Trail: from (175,15) to head at (192,162) -->
+  <line x1="175" y1="15"  x2="192" y2="162" stroke="#ff4444" stroke-width="1.8" opacity="0.55"/>
+  <circle cx="192" cy="162" r="14" fill="url(#missileGlow)"/>
+  <!-- Warhead triangle (tip pointing down) -->
+  <polygon points="192,171 187,157 197,157" fill="#ff4444" filter="url(#glow)"/>
+
+  <!-- ENEMY MISSILE B: descending from upper-center-right toward city at x=488 -->
+  <!-- Trail: from (540,10) to head at (522,120) -->
+  <line x1="540" y1="10"  x2="522" y2="120" stroke="#ff4444" stroke-width="1.8" opacity="0.55"/>
+  <circle cx="522" cy="120" r="14" fill="url(#missileGlow)"/>
+  <polygon points="522,129 517,115 527,115" fill="#ff4444" filter="url(#glow)"/>
+
+  <!-- SPLIT WARHEAD: parent came from (730,0), split at (710,190) into 2 children -->
+  <!-- Split segment: (730,0) to (710,190) -->
+  <line x1="730" y1="0"   x2="710" y2="190" stroke="#ff6666" stroke-width="1.5" opacity="0.40"/>
+  <!-- Child A: from (710,190) to head at (695,255) -->
+  <line x1="710" y1="190" x2="695" y2="255" stroke="#ff4444" stroke-width="1.5" opacity="0.60"/>
+  <!-- Child B: from (710,190) to head at (728,250) -->
+  <line x1="710" y1="190" x2="728" y2="250" stroke="#ff4444" stroke-width="1.5" opacity="0.60"/>
+  <!-- Child A warhead -->
+  <circle cx="695" cy="255" r="12" fill="url(#missileGlow)" opacity="0.85"/>
+  <polygon points="695,264 690,251 700,251" fill="#ff5555" filter="url(#glow)"/>
+  <!-- Child B warhead -->
+  <circle cx="728" cy="250" r="12" fill="url(#missileGlow)" opacity="0.85"/>
+  <polygon points="728,259 723,246 733,246" fill="#ff5555" filter="url(#glow)"/>
+
+  <!-- INTERCEPTOR: from center silo (400,348) heading to missile A (192,162), now at (310,242) -->
+  <!-- Cyan trail -->
+  <line x1="400" y1="348" x2="310" y2="242" stroke="#00ccff" stroke-width="1.8" opacity="0.82"/>
+  <!-- Interceptor glowing tip -->
+  <circle cx="310" cy="242" r="9" fill="url(#interceptTip)" filter="url(#glow)"/>
+
+  <!-- INTERCEPTOR 2: from right silo (760,348) heading to split child B (728,250), now at (746,304) -->
+  <line x1="760" y1="348" x2="746" y2="304" stroke="#00ccff" stroke-width="1.8" opacity="0.82"/>
+  <circle cx="746" cy="304" r="9" fill="url(#interceptTip)" filter="url(#glow)"/>
+
+  <!-- GROUND STRIP -->
+  <rect x="0" y="360" width="800" height="90" fill="url(#groundGrad)"/>
+
+  <!-- Ground glow edge -->
+  <rect x="0" y="354" width="800" height="14" fill="url(#groundGlow)" opacity="0.40"/>
+
+  <!-- CITY 1 at x=104 (alive) -->
+  <rect x="90"  y="340" width="9"  height="20" fill="#1b3055" stroke="#2d5080" stroke-width="0.5"/>
+  <rect x="101" y="332" width="11" height="28" fill="#243a68" stroke="#2d5080" stroke-width="0.5"/>
+  <rect x="114" y="344" width="8"  height="16" fill="#1b3055" stroke="#2d5080" stroke-width="0.5"/>
+  <!-- Windows -->
+  <g fill="rgba(255,240,100,0.85)">
+    <rect x="102" y="334" width="2" height="2"/><rect x="107" y="334" width="2" height="2"/>
+    <rect x="102" y="340" width="2" height="2"/><rect x="107" y="340" width="2" height="2"/>
+    <rect x="102" y="346" width="2" height="2"/>
+  </g>
+
+  <!-- CITY 2 at x=208 (alive, being targeted) -->
+  <rect x="194" y="344" width="9"  height="16" fill="#1b3055" stroke="#2d5080" stroke-width="0.5"/>
+  <rect x="205" y="336" width="11" height="24" fill="#243a68" stroke="#2d5080" stroke-width="0.5"/>
+  <rect x="218" y="342" width="8"  height="18" fill="#1b3055" stroke="#2d5080" stroke-width="0.5"/>
+  <g fill="rgba(255,240,100,0.85)">
+    <rect x="206" y="338" width="2" height="2"/><rect x="211" y="338" width="2" height="2"/>
+    <rect x="206" y="344" width="2" height="2"/><rect x="211" y="344" width="2" height="2"/>
+  </g>
+
+  <!-- CITY 3 at x=312 (DESTROYED: rubble) -->
+  <rect x="296" y="355" width="32" height="5" fill="#2a1a08"/>
+
+  <!-- CITY 4 at x=488 (alive) -->
+  <rect x="474" y="342" width="9"  height="18" fill="#1b3055" stroke="#2d5080" stroke-width="0.5"/>
+  <rect x="485" y="334" width="11" height="26" fill="#243a68" stroke="#2d5080" stroke-width="0.5"/>
+  <rect x="498" y="346" width="8"  height="14" fill="#1b3055" stroke="#2d5080" stroke-width="0.5"/>
+  <g fill="rgba(255,240,100,0.85)">
+    <rect x="486" y="336" width="2" height="2"/><rect x="491" y="336" width="2" height="2"/>
+    <rect x="486" y="342" width="2" height="2"/><rect x="491" y="342" width="2" height="2"/>
+    <rect x="486" y="348" width="2" height="2"/>
+  </g>
+
+  <!-- CITY 5 at x=592 (alive) -->
+  <rect x="578" y="344" width="9"  height="16" fill="#1b3055" stroke="#2d5080" stroke-width="0.5"/>
+  <rect x="589" y="336" width="11" height="24" fill="#243a68" stroke="#2d5080" stroke-width="0.5"/>
+  <rect x="602" y="342" width="8"  height="18" fill="#1b3055" stroke="#2d5080" stroke-width="0.5"/>
+  <g fill="rgba(255,240,100,0.85)">
+    <rect x="590" y="338" width="2" height="2"/><rect x="595" y="338" width="2" height="2"/>
+    <rect x="590" y="344" width="2" height="2"/>
+  </g>
+
+  <!-- CITY 6 at x=704 (alive) -->
+  <rect x="690" y="342" width="9"  height="18" fill="#1b3055" stroke="#2d5080" stroke-width="0.5"/>
+  <rect x="701" y="334" width="11" height="26" fill="#243a68" stroke="#2d5080" stroke-width="0.5"/>
+  <rect x="714" y="346" width="8"  height="14" fill="#1b3055" stroke="#2d5080" stroke-width="0.5"/>
+  <g fill="rgba(255,240,100,0.85)">
+    <rect x="702" y="336" width="2" height="2"/><rect x="707" y="336" width="2" height="2"/>
+    <rect x="702" y="342" width="2" height="2"/><rect x="707" y="342" width="2" height="2"/>
+  </g>
+
+  <!-- SILO LEFT at x=40 (active) -->
+  <path d="M22,350 A18,18 0 0,1 58,350 L58,361 L22,361 Z" fill="url(#siloDomeActive)" stroke="#70b060" stroke-width="1"/>
+  <!-- Launch barrel -->
+  <line x1="40" y1="323" x2="40" y2="334" stroke="#90ee90" stroke-width="2.5"/>
+  <!-- Ammo bar -->
+  <rect x="26" y="357" width="28" height="3" fill="#111a10"/>
+  <rect x="26" y="357" width="18" height="3" fill="#44dd44"/>
+
+  <!-- SILO CENTER at x=400 (active, just fired) -->
+  <path d="M382,350 A18,18 0 0,1 418,350 L418,361 L382,361 Z" fill="url(#siloDomeActive)" stroke="#70b060" stroke-width="1"/>
+  <line x1="400" y1="323" x2="400" y2="334" stroke="#a0ffa0" stroke-width="2.5"/>
+  <rect x="386" y="357" width="28" height="3" fill="#111a10"/>
+  <rect x="386" y="357" width="22" height="3" fill="#44dd44"/>
+
+  <!-- SILO RIGHT at x=760 (active) -->
+  <path d="M742,350 A18,18 0 0,1 778,350 L778,361 L742,361 Z" fill="url(#siloDomeActive)" stroke="#70b060" stroke-width="1"/>
+  <line x1="760" y1="323" x2="760" y2="334" stroke="#90ee90" stroke-width="2.5"/>
+  <rect x="746" y="357" width="28" height="3" fill="#111a10"/>
+  <rect x="746" y="357" width="24" height="3" fill="#44dd44"/>
+
+  <!-- HUD OVERLAY: score, wave, combo -->
+
+  <!-- Score (center top) -->
+  <text x="400" y="38" font-family="'Courier New', Courier, monospace" font-weight="bold"
+        font-size="28" fill="#ffdd44" text-anchor="middle" filter="url(#scoreGlow)">13,450</text>
+
+  <!-- Wave label (top-left) -->
+  <text x="16" y="36" font-family="'Courier New', Courier, monospace"
+        font-size="17" fill="#80ccff">WAVE 4</text>
+
+  <!-- Combo multiplier (top-right) -->
+  <text x="784" y="36" font-family="'Courier New', Courier, monospace" font-weight="bold"
+        font-size="17" fill="#ff8844" text-anchor="end" filter="url(#glow)">x3 CHAIN</text>
+
+  <!-- City status dots above ground -->
+  <!-- dot positions evenly spaced: x = 800/7 * (k+1) for k=0..5 -->
+  <!-- City 1: x=114 alive -->
+  <circle cx="114" cy="322" r="6" fill="#44ff44" stroke="#55ee55" stroke-width="1"/>
+  <!-- City 2: x=229 alive -->
+  <circle cx="229" cy="322" r="6" fill="#44ff44" stroke="#55ee55" stroke-width="1"/>
+  <!-- City 3: x=343 destroyed -->
+  <circle cx="343" cy="322" r="6" fill="#3a1010"/>
+  <!-- City 4: x=457 alive -->
+  <circle cx="457" cy="322" r="6" fill="#44ff44" stroke="#55ee55" stroke-width="1"/>
+  <!-- City 5: x=571 alive -->
+  <circle cx="571" cy="322" r="6" fill="#44ff44" stroke="#55ee55" stroke-width="1"/>
+  <!-- City 6: x=686 alive -->
+  <circle cx="686" cy="322" r="6" fill="#44ff44" stroke="#55ee55" stroke-width="1"/>
+
+  <!-- App title (bottom-right branding) -->
+  <text x="788" y="440" font-family="'Courier New', Courier, monospace" font-weight="bold"
+        font-size="14" fill="rgba(100,180,120,0.70)" text-anchor="end" letter-spacing="2">MISSILE COMMAND MODERN</text>
+
+  <!-- Corner accent lines (top-left) -->
+  <line x1="0" y1="0" x2="32" y2="0" stroke="#00ff88" stroke-width="1.5" opacity="0.55"/>
+  <line x1="0" y1="0" x2="0"  y2="32" stroke="#00ff88" stroke-width="1.5" opacity="0.55"/>
+
+  <!-- Corner accent lines (top-right) -->
+  <line x1="800" y1="0" x2="768" y2="0" stroke="#00ff88" stroke-width="1.5" opacity="0.55"/>
+  <line x1="800" y1="0" x2="800" y2="32" stroke="#00ff88" stroke-width="1.5" opacity="0.55"/>
+
+  <!-- Corner accent lines (bottom-left) -->
+  <line x1="0" y1="450" x2="32"  y2="450" stroke="#00ff88" stroke-width="1.5" opacity="0.40"/>
+  <line x1="0" y1="450" x2="0"   y2="418" stroke="#00ff88" stroke-width="1.5" opacity="0.40"/>
+
+  <!-- Corner accent lines (bottom-right) -->
+  <line x1="800" y1="450" x2="768" y2="450" stroke="#00ff88" stroke-width="1.5" opacity="0.40"/>
+  <line x1="800" y1="450" x2="800" y2="418" stroke="#00ff88" stroke-width="1.5" opacity="0.40"/>
+</svg>

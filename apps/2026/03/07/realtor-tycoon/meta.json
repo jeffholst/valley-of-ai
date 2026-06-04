@@ -20,5 +20,6 @@
     "totalTokensOut": 12000,
     "runId": "run-20260307T215800Z-7df140",
     "notes": "Lemonade Stand-style business simulation game themed around real estate. Features market conditions, pricing strategies, marketing budgets, and reputation system."
-  }
+  },
+  "leaderboard": false
 }

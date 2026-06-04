@@ -1,5 +1,5 @@
 /**
- * Tests for scripts/issues/decide-issue.js
+ * Tests for scripts/issues/decide-issue.mjs
  *
  * Covers argument parsing, issue-state validation, and label/comment
  * mutations for approved, rejected, and needs-human-review decisions.
@@ -11,7 +11,7 @@ import {
   buildDecisionSummary,
   parseArgs,
   validatePendingIssue,
-} from '../../../scripts/issues/decide-issue.js';
+} from '../../../scripts/issues/decide-issue.mjs';
 
 // Minimal issue factory for status-transition tests.
 function makeIssue(overrides = {}) {
@@ -231,6 +231,8 @@ describe('applyIssueDecision', () => {
           commentOnIssue: jest.fn(),
         }
       )
-    ).toThrow('Issue must have exactly one type label (suggestion or improvement): 301');
+    ).toThrow(
+      'Issue must have exactly one type label (suggestion, improvement, or blog-post): 301'
+    );
   });
 });

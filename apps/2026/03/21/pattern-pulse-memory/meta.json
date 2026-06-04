@@ -21,5 +21,6 @@
     "runId": "run-20260321T070022Z-52c4df",
     "notes": "Built as a responsive static game integrated with the shared shell, including keyboard/touch controls and persistent best score."
   },
-  "votes": 0
+  "votes": 0,
+  "leaderboard": false
 }

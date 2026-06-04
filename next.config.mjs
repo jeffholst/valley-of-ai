@@ -1,9 +1,9 @@
-import { readFileSync } from 'fs'
+import { readFileSync } from 'fs';
 
-const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf-8'))
+const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf-8'));
 
-const commitSha = (process.env.VERCEL_GIT_COMMIT_SHA || '').slice(0, 7)
-const deployVersion = commitSha ? `${pkg.version}+${commitSha}` : pkg.version
+const commitSha = (process.env.VERCEL_GIT_COMMIT_SHA || '').slice(0, 7);
+const deployVersion = commitSha ? `${pkg.version}+${commitSha}` : pkg.version;
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -13,6 +13,7 @@ const nextConfig = {
     NEXT_PUBLIC_APP_VERSION: pkg.version,
     NEXT_PUBLIC_DEPLOY_VERSION: deployVersion,
   },
-}
+  serverExternalPackages: ['bad-words', 'badwords-list'],
+};
 
-export default nextConfig
+export default nextConfig;

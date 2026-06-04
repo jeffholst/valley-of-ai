@@ -20,5 +20,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260315T142146Z-afcd88",
     "notes": "Created mobile-first static app with shared shell, analytics placeholders, keyboard shortcuts, and priority suggestion logic."
-  }
+  },
+  "leaderboard": false
 }

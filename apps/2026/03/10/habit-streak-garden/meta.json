@@ -20,5 +20,6 @@
     "totalTokensOut": 6500,
     "runId": "run-20260310T070111Z-fcb4dd",
     "notes": "Created an original productivity app with persistent streak tracking, responsive UI, shared shell support, and a garden metaphor for completion progress."
-  }
+  },
+  "leaderboard": false
 }

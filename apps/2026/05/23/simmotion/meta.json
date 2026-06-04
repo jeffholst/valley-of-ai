@@ -1,0 +1,61 @@
+{
+  "id": "simmotion",
+  "name": "Simmotion",
+  "shortDescription": "Balls roll through a fixed roller coaster track — every gate they hit flips for the next ball. Catch them with your paddle before they hit the floor.",
+  "category": "Games",
+  "tags": ["physics", "ball", "gates", "roller-coaster", "paddle", "arcade", "canvas"],
+  "thumbnail": "thumbnail.svg",
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "createdAt": "2026-05-23T19:23:12Z",
+  "status": "active",
+  "maxScore": 7200,
+  "suggestion": {
+    "issueNumber": 440,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/440",
+    "prompt": "## App Suggestion\n\n**Category:** Games\n**Requestor:** Jeff Holst\n\n### Description\n\nBuild Simmotion game similar to the one shown on survivor with single, static, elaborate multi\\-path roller coaster track drawn with canvas winding ramps, steep drops, flat stretches, and splits and multiple exits\\. Each junction sits a physical gate: when a ball rolls over it, the gate visibly flips like a railroad switch, routing the next ball down the alternate branch\\. The track layout is fixed and detailed, not generated randomly\\. Balls enter at the top and follow whatever path the gates have set, creating unpredictable routes to the bottom each run\\. Player controls a catching paddle at the base via mouse or touch drag\\. Catch the ball and flick it back to the top opening to restart\\. Miss=lose a life \\(3 total\\)\\. A new ball enters every 20 seconds, increasing simultaneous balls in play\\. Balls accelerate on drops, slow on flat sections\\. Gates animate with a satisfying snap when triggered\\. R...",
+    "requestor": "Jeff Holst"
+  },
+  "generation": {
+    "agentName": "Claude Code",
+    "llmModel": "claude-sonnet-4-6",
+    "startTime": "2026-05-23T19:23:12Z",
+    "endTime": "2026-05-23T19:30:00Z",
+    "totalTokensIn": 6300,
+    "totalTokensOut": 15400,
+    "runId": "run-20260523T192312Z-e21750",
+    "notes": "Built as specified. Track is a fixed 7-gate network with 14 segments rendered in logical 400x600 space scaled to viewport. Balls follow gravity-driven physics (accelerate on drops, decelerate on flat). Requesting a 3D perspective tilt was interpreted as a visual aesthetic — achieved via track lighting/glow rather than CSS perspective transform, as perspective transforms interact poorly with touch input coordinates. maxScore set to 7200 (120 minutes = very exceptional survival time)."
+  },
+  "leaderboard": true,
+  "improvements": [
+    {
+      "issueNumber": 453,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/453",
+      "runId": "run-20260523T200252Z-9230c3",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6",
+      "appliedAt": "2026-05-23T20:02:52Z",
+      "summary": "Added multi-ball gameplay (3 staggered at start, new ball every 15s), hidden gate reveals (only visible within 80px), 4 exit zones for true unpredictability, paddle shrink on miss (–10px per miss, min 40px), speed escalation (+0.4 cap every 30s up to 6.0), and removed auto-share popup."
+    },
+    {
+      "issueNumber": 456,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/456",
+      "runId": "run-20260523T225514Z-d2c20a",
+      "description": "Extended track to 9 gates and 20 segments with 6 exits; added randomized gate-flip delays on lower gates (5-8) for unpredictability; replaced auto-respawn with a hold/release power meter relaunch mechanic where timing drift forces gate 0 direction.",
+      "requestor": "Jeff Holst",
+      "implementedAt": "2026-05-23T22:55:14Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
+    },
+    {
+      "issueNumber": 490,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/490",
+      "runId": "run-20260525T180738Z-a9d3e5",
+      "description": "Replaced hold/charge relaunch with instant tap-to-launch (tap or Space); drew held ball visually on paddle; added two-ball penalty (second ball landing while one is held costs a life + red particles); fixed advanceBall gate-glitch by resolving all segment transitions in a while-loop so fast balls never skip segments; updated start screen instructions.",
+      "requestor": "Jeff Holst",
+      "implementedAt": "2026-05-25T18:16:58Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
+    }
+  ]
+}

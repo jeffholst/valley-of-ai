@@ -63,5 +63,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260325T070025Z-5460ff",
     "notes": "Built from approved community suggestion issue #198; optimized for 320px portrait and keyboard/touch parity."
-  }
+  },
+  "leaderboard": false
 }

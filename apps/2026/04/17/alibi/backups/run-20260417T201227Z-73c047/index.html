@@ -1,0 +1,2805 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Alibi" />
+    <meta name="voa-app-id" content="2026/04/17/alibi" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <title>Alibi - __MAIN_SITE_NAME__</title>
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f1f5f9;
+        --text-muted: #94a3b8;
+        --text-dim: #64748b;
+        --surface: #1e293b;
+        --surface-soft: #293548;
+        --surface-raised: #334155;
+        --border: #334155;
+        --border-soft: #1e3a5f;
+        --accent: #a855f7;
+        --accent-strong: #9333ea;
+        --accent-soft: rgba(168, 85, 247, 0.15);
+        --accent-glow: rgba(168, 85, 247, 0.35);
+        --good: #22c55e;
+        --good-soft: rgba(34, 197, 94, 0.18);
+        --warn: #f59e0b;
+        --warn-soft: rgba(245, 158, 11, 0.18);
+        --bad: #ef4444;
+        --bad-soft: rgba(239, 68, 68, 0.18);
+        --crime: #f97316;
+        --crime-soft: rgba(249, 115, 22, 0.18);
+      }
+      [data-theme='light'] {
+        --bg: #f8fafc;
+        --text: #0f172a;
+        --text-muted: #475569;
+        --text-dim: #64748b;
+        --surface: #ffffff;
+        --surface-soft: #f1f5f9;
+        --surface-raised: #e2e8f0;
+        --border: #cbd5e1;
+        --border-soft: #e2e8f0;
+        --accent: #7c3aed;
+        --accent-strong: #6d28d9;
+        --accent-soft: rgba(124, 58, 237, 0.12);
+        --accent-glow: rgba(124, 58, 237, 0.25);
+        --good: #15803d;
+        --good-soft: rgba(21, 128, 61, 0.12);
+        --warn: #b45309;
+        --warn-soft: rgba(180, 83, 9, 0.12);
+        --bad: #b91c1c;
+        --bad-soft: rgba(185, 28, 28, 0.12);
+        --crime: #c2410c;
+        --crime-soft: rgba(194, 65, 12, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        line-height: 1.5;
+      }
+
+      .app {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px clamp(12px, 3vw, 32px) 48px;
+      }
+
+      /* ── Screens ──────────────────────────────────── */
+      .screen {
+        display: none;
+      }
+      .screen.active {
+        display: block;
+        animation: fadeIn 200ms ease-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ── Shared components ─────────────────────────── */
+      .btn {
+        font: inherit;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          transform 120ms ease,
+          background 120ms ease,
+          border-color 120ms ease;
+      }
+      .btn:hover {
+        background: var(--surface-soft);
+        border-color: var(--accent);
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
+      .btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .btn.primary {
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 0 6px 18px var(--accent-glow);
+      }
+      .btn.primary:hover {
+        background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+      }
+      .btn.good {
+        background: var(--good);
+        color: #fff;
+        border-color: transparent;
+      }
+      .btn.good:hover {
+        background: var(--good);
+        filter: brightness(1.1);
+      }
+      .btn.ghost {
+        background: transparent;
+      }
+      .btn.sm {
+        padding: 8px 14px;
+        font-size: 0.88rem;
+        border-radius: 10px;
+      }
+      .btn.lg {
+        padding: 16px 28px;
+        font-size: 1.05rem;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 12px;
+        border-radius: 999px;
+        background: var(--surface-soft);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        border: 1px solid var(--border);
+      }
+      .pill.accent {
+        color: var(--accent);
+        background: var(--accent-soft);
+        border-color: var(--accent);
+      }
+      .pill.crime {
+        color: var(--crime);
+        background: var(--crime-soft);
+        border-color: var(--crime);
+      }
+
+      /* ── App header ─────────────────────────────── */
+      .app-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+      }
+      .app-header h1 {
+        margin: 0;
+        font-size: clamp(1.8rem, 3.5vw, 2.3rem);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+      }
+      .logo-mark {
+        color: var(--accent);
+        font-size: 0.85em;
+      }
+      .tagline {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        margin-top: 4px;
+      }
+
+      /* ── Setup screen ─────────────────────────────── */
+      .mode-tabs {
+        display: flex;
+        gap: 6px;
+        padding: 6px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        margin-bottom: 20px;
+        width: fit-content;
+      }
+      .mode-tab {
+        font: inherit;
+        padding: 10px 18px;
+        border: 0;
+        border-radius: 10px;
+        background: transparent;
+        color: var(--text-muted);
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .mode-tab[aria-selected='true'] {
+        background: var(--accent);
+        color: #fff;
+        box-shadow: 0 2px 8px var(--accent-glow);
+      }
+
+      .setup-grid {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr;
+        gap: 20px;
+      }
+      @media (max-width: 820px) {
+        .setup-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .section-title {
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin: 0 0 12px;
+      }
+
+      .player-input {
+        display: flex;
+        gap: 8px;
+      }
+      .player-input input {
+        flex: 1;
+        padding: 12px 14px;
+        background: var(--surface-soft);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text);
+        font: inherit;
+      }
+      .player-input input:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+      }
+
+      .player-list {
+        list-style: none;
+        padding: 0;
+        margin: 16px 0 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .player-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        background: var(--surface-soft);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        font-weight: 600;
+      }
+      .player-chip button {
+        border: 0;
+        background: transparent;
+        color: var(--text-dim);
+        cursor: pointer;
+        padding: 0 2px;
+        font-size: 1.2em;
+        line-height: 1;
+      }
+      .player-chip button:hover {
+        color: var(--bad);
+      }
+
+      .settings-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border-soft);
+      }
+      .settings-row:last-child {
+        border-bottom: 0;
+      }
+      .settings-row label {
+        font-weight: 600;
+      }
+      .segmented {
+        display: inline-flex;
+        padding: 4px;
+        background: var(--surface-soft);
+        border-radius: 10px;
+        border: 1px solid var(--border);
+      }
+      .segmented button {
+        font: inherit;
+        padding: 6px 12px;
+        border: 0;
+        background: transparent;
+        color: var(--text-muted);
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .segmented button[aria-pressed='true'] {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .setup-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      /* ── Game screen ─────────────────────────── */
+      .game-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+      }
+      .game-top .round-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .timer {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 12px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        font-variant-numeric: tabular-nums;
+        font-weight: 800;
+        font-size: 1.3rem;
+      }
+      .timer.warn {
+        color: var(--warn);
+        border-color: var(--warn);
+      }
+      .timer.bad {
+        color: var(--bad);
+        border-color: var(--bad);
+        animation: pulse 1s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        50% {
+          opacity: 0.6;
+        }
+      }
+
+      .crime-card {
+        padding: 28px 28px 24px;
+        background: linear-gradient(135deg, var(--surface), var(--surface-soft));
+        border: 1px solid var(--border);
+        border-left: 5px solid var(--crime);
+        border-radius: 20px;
+        margin-bottom: 20px;
+        position: relative;
+      }
+      .crime-card .case-label {
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        color: var(--crime);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .crime-card .crime-text {
+        font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.35;
+      }
+      .crime-card .category-tag {
+        display: inline-block;
+        margin-top: 14px;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+      }
+
+      .accused-panel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      @media (max-width: 720px) {
+        .accused-panel {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .accused-card {
+        text-align: center;
+        padding: 24px;
+      }
+      .accused-card .label {
+        font-size: 0.78rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        font-weight: 700;
+      }
+      .accused-name {
+        font-size: clamp(1.6rem, 3vw, 2.1rem);
+        font-weight: 800;
+        margin: 8px 0 4px;
+        color: var(--accent);
+        letter-spacing: -0.02em;
+      }
+      .accused-sub {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      .spin-btn {
+        margin-top: 16px;
+      }
+
+      .actions-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 16px;
+      }
+
+      /* ── Award panel ─────────────────────────── */
+      .award-panel {
+        margin-top: 8px;
+      }
+      .award-group {
+        margin-bottom: 20px;
+      }
+      .award-group h3 {
+        margin: 0 0 10px;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .award-group h3 .pts {
+        padding: 3px 10px;
+        background: var(--good-soft);
+        color: var(--good);
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 800;
+      }
+      .award-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .award-buttons button {
+        padding: 10px 14px;
+        min-width: 90px;
+      }
+      .award-buttons button.selected {
+        background: var(--good-soft);
+        border-color: var(--good);
+        color: var(--good);
+      }
+      .award-buttons button.nowinner {
+        border-style: dashed;
+        color: var(--text-muted);
+      }
+      .award-buttons button.nowinner.selected {
+        background: var(--surface-raised);
+        border-color: var(--text-muted);
+        color: var(--text-muted);
+        border-style: solid;
+      }
+
+      /* ── Scoreboard ─────────────────────────── */
+      .scoreboard {
+        margin-top: 20px;
+      }
+      .scoreboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 10px;
+      }
+      .score-chip {
+        padding: 12px 14px;
+        background: var(--surface-soft);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .score-chip.accused {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+      .score-chip .name {
+        font-weight: 600;
+      }
+      .score-chip .pts {
+        font-variant-numeric: tabular-nums;
+        font-weight: 800;
+        color: var(--text-muted);
+      }
+
+      /* ── Results screen ─────────────────────────── */
+      .results-hero {
+        text-align: center;
+        margin-bottom: 24px;
+      }
+      .results-hero h2 {
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        margin: 0 0 8px;
+        color: var(--accent);
+      }
+      .results-hero p {
+        color: var(--text-muted);
+        margin: 0;
+      }
+      .leaderboard {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .leaderboard-row {
+        display: grid;
+        grid-template-columns: 56px 1fr auto;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 18px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        border-radius: 14px;
+      }
+      .leaderboard-row.podium-1 {
+        border-color: #f59e0b;
+        background: linear-gradient(135deg, var(--surface), rgba(245, 158, 11, 0.1));
+      }
+      .leaderboard-row.podium-2 {
+        border-color: #94a3b8;
+      }
+      .leaderboard-row.podium-3 {
+        border-color: #d97706;
+      }
+      .leaderboard-rank {
+        font-size: 1.8rem;
+        font-weight: 800;
+        text-align: center;
+        color: var(--text-muted);
+      }
+      .leaderboard-name {
+        font-size: 1.15rem;
+        font-weight: 700;
+      }
+      .leaderboard-pts {
+        font-variant-numeric: tabular-nums;
+        font-weight: 800;
+        font-size: 1.3rem;
+        color: var(--accent);
+      }
+
+      .results-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 28px;
+      }
+
+      /* ── Solo screen ─────────────────────────────── */
+      .choice-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      @media (max-width: 640px) {
+        .choice-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .choice-btn {
+        font: inherit;
+        padding: 14px 16px;
+        border-radius: 12px;
+        background: var(--surface-soft);
+        border: 1px solid var(--border);
+        color: var(--text);
+        text-align: left;
+        cursor: pointer;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        transition:
+          border-color 120ms ease,
+          background 120ms ease;
+      }
+      .choice-btn:hover {
+        border-color: var(--accent);
+      }
+      .choice-btn .letter {
+        background: var(--accent);
+        color: #fff;
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+      }
+      .choice-btn.correct {
+        border-color: var(--good);
+        background: var(--good-soft);
+      }
+      .choice-btn.correct .letter {
+        background: var(--good);
+      }
+      .choice-btn.wrong {
+        border-color: var(--bad);
+        background: var(--bad-soft);
+      }
+      .choice-btn.wrong .letter {
+        background: var(--bad);
+      }
+      .choice-btn:disabled {
+        cursor: default;
+      }
+
+      .feedback {
+        margin-top: 18px;
+        padding: 14px 18px;
+        border-radius: 12px;
+        background: var(--surface-soft);
+        border: 1px solid var(--border);
+      }
+      .feedback.correct {
+        border-color: var(--good);
+        background: var(--good-soft);
+        color: var(--good);
+      }
+      .feedback.wrong {
+        border-color: var(--bad);
+        background: var(--bad-soft);
+      }
+      .feedback strong {
+        display: block;
+        font-size: 1.1rem;
+      }
+      .feedback p {
+        color: var(--text);
+        margin: 6px 0 0;
+      }
+
+      .solo-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+      .solo-score {
+        font-weight: 700;
+        color: var(--accent);
+      }
+
+      /* ── Utility ─────────────────────────── */
+      .hidden {
+        display: none !important;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      .muted {
+        color: var(--text-muted);
+      }
+      .text-center {
+        text-align: center;
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 88px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 20px;
+        background: var(--surface);
+        border: 1px solid var(--accent);
+        color: var(--text);
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 180ms ease;
+        z-index: 9000;
+        font-weight: 600;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+
+      kbd {
+        display: inline-block;
+        padding: 2px 8px;
+        font-family: 'SF Mono', 'Roboto Mono', monospace;
+        font-size: 0.82em;
+        background: var(--surface-soft);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--text-muted);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <header class="app-header">
+        <div>
+          <h1><span class="logo-mark">◆</span> Alibi</h1>
+          <div class="tagline">A team-builder icebreaker for Zoom calls and screen shares.</div>
+        </div>
+      </header>
+
+      <!-- ── SETUP SCREEN ─────────────────────────── -->
+      <section id="setup-screen" class="screen active" aria-label="Setup">
+        <div
+          class="mode-tabs"
+          role="tablist"
+          aria-label="Game mode"
+        >
+          <button
+            class="mode-tab"
+            role="tab"
+            id="tab-host"
+            aria-selected="true"
+            aria-controls="host-setup"
+            data-mode="host"
+          >
+            Host Game
+          </button>
+          <button
+            class="mode-tab"
+            role="tab"
+            id="tab-solo"
+            aria-selected="false"
+            aria-controls="solo-setup"
+            data-mode="solo"
+          >
+            Solo Practice
+          </button>
+        </div>
+
+        <div id="host-setup" role="tabpanel" aria-labelledby="tab-host">
+          <div class="setup-grid">
+            <div class="card">
+              <p class="section-title">Players (2–12)</p>
+              <form id="player-form" class="player-input" autocomplete="off">
+                <input
+                  id="player-input"
+                  type="text"
+                  placeholder="Add a player name and press Enter"
+                  maxlength="24"
+                  aria-label="Player name"
+                />
+                <button type="submit" class="btn sm">Add</button>
+              </form>
+              <ul id="player-list" class="player-list" aria-live="polite"></ul>
+              <p id="player-hint" class="muted" style="margin-top: 14px; font-size: 0.88rem">
+                Add at least 2 players to start the game. Names save locally.
+              </p>
+            </div>
+
+            <div class="card">
+              <p class="section-title">Round Settings</p>
+              <div class="settings-row">
+                <label for="round-count">Rounds</label>
+                <div class="segmented" role="group" aria-label="Round count">
+                  <button type="button" data-rounds="3" aria-pressed="false">3</button>
+                  <button type="button" data-rounds="5" aria-pressed="true">5</button>
+                  <button type="button" data-rounds="7" aria-pressed="false">7</button>
+                  <button type="button" data-rounds="10" aria-pressed="false">10</button>
+                </div>
+              </div>
+              <div class="settings-row">
+                <label for="timer-length">Alibi Timer</label>
+                <div class="segmented" role="group" aria-label="Timer length">
+                  <button type="button" data-timer="30" aria-pressed="false">30s</button>
+                  <button type="button" data-timer="45" aria-pressed="true">45s</button>
+                  <button type="button" data-timer="60" aria-pressed="false">60s</button>
+                  <button type="button" data-timer="0" aria-pressed="false">Off</button>
+                </div>
+              </div>
+              <div class="settings-row">
+                <label for="rotate-select">Accused Rotation</label>
+                <div class="segmented" role="group" aria-label="Rotation mode">
+                  <button type="button" data-rotation="random" aria-pressed="true">Random</button>
+                  <button type="button" data-rotation="rotate" aria-pressed="false">In order</button>
+                </div>
+              </div>
+
+              <div class="setup-actions">
+                <button id="open-moderator" class="btn" type="button">
+                  <span aria-hidden="true">🪟</span> Open Moderator Window
+                </button>
+                <button id="start-game" class="btn primary lg" type="button" disabled>
+                  Start Game →
+                </button>
+              </div>
+              <p class="muted" style="margin: 10px 0 0; font-size: 0.85rem">
+                The moderator window shows the truth reveal and prompt ideas. Keep it on a second
+                screen or minimized.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div id="solo-setup" role="tabpanel" aria-labelledby="tab-solo" class="hidden">
+          <div class="card">
+            <p class="section-title">Solo Practice</p>
+            <p>
+              Build your alibi instincts. Each round shows a silly crime and four candidate alibis.
+              Pick the one that's the <em>most creative and believable</em> — the kind a real group
+              would award.
+            </p>
+            <p class="muted">
+              You'll see feedback on each pick. Score tracks across the session. Great for prepping
+              to host a live round.
+            </p>
+            <div class="setup-actions">
+              <button id="start-solo" class="btn primary lg" type="button">Start Practice →</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── GAME SCREEN ─────────────────────────── -->
+      <section id="game-screen" class="screen" aria-label="Game">
+        <div class="game-top">
+          <div class="round-info">
+            <span class="pill accent" id="round-pill">Round 1 of 5</span>
+            <span class="pill" id="category-pill">Category</span>
+          </div>
+          <div class="timer" id="timer" aria-live="polite">--:--</div>
+        </div>
+
+        <div class="crime-card">
+          <div class="case-label">
+            <span aria-hidden="true">🕵️</span> Tonight's Case
+          </div>
+          <div class="crime-text" id="crime-text">Loading...</div>
+          <div class="category-tag" id="crime-subcat"></div>
+        </div>
+
+        <div class="accused-panel">
+          <div class="accused-card card">
+            <div class="label">The Accused</div>
+            <div class="accused-name" id="accused-name">— Spin —</div>
+            <div class="accused-sub" id="accused-sub">Click below to assign</div>
+            <button id="spin-btn" class="btn primary spin-btn" type="button">
+              <span aria-hidden="true">🎰</span> Spin for Accused
+            </button>
+          </div>
+
+          <div class="accused-card card">
+            <div class="label">Instructions</div>
+            <p style="margin: 10px 0" id="phase-instructions">
+              Once spun, the accused improvises an alibi. Start the timer when they begin speaking.
+            </p>
+            <div class="actions-row">
+              <button id="start-timer-btn" class="btn" type="button" disabled>
+                <span aria-hidden="true">⏱️</span> Start Timer
+              </button>
+              <button id="stop-timer-btn" class="btn ghost" type="button" disabled>Stop</button>
+              <button id="reveal-awards-btn" class="btn good" type="button" disabled>
+                Reveal Awards →
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="award-panel" class="card award-panel hidden">
+          <div class="award-group">
+            <h3>
+              <span aria-hidden="true">🏆</span> Best Alibi
+              <span class="pts">+2 pts</span>
+            </h3>
+            <p class="muted" style="margin: 0 0 10px; font-size: 0.9rem">
+              Who told the most creative, entertaining, or clever story?
+            </p>
+            <div class="award-buttons" id="award-best"></div>
+          </div>
+
+          <div class="award-group">
+            <h3>
+              <span aria-hidden="true">🤝</span> Most Convincing
+              <span class="pts">+1 pt</span>
+            </h3>
+            <p class="muted" style="margin: 0 0 10px; font-size: 0.9rem">
+              Who sold it best? (Optional — skip if nobody stood out.)
+            </p>
+            <div class="award-buttons" id="award-convincing"></div>
+          </div>
+
+          <div class="actions-row" style="justify-content: flex-end">
+            <button id="skip-round-btn" class="btn ghost" type="button">Skip round</button>
+            <button id="continue-btn" class="btn primary" type="button">Next Round →</button>
+          </div>
+        </div>
+
+        <div class="scoreboard card">
+          <p class="section-title">Scoreboard</p>
+          <div class="scoreboard-grid" id="scoreboard"></div>
+        </div>
+
+        <div class="actions-row" style="margin-top: 20px">
+          <button id="quit-game-btn" class="btn ghost" type="button">End Game</button>
+          <button id="help-btn" class="btn ghost" type="button">Keyboard Shortcuts</button>
+        </div>
+      </section>
+
+      <!-- ── RESULTS SCREEN ─────────────────────────── -->
+      <section id="results-screen" class="screen" aria-label="Results">
+        <div class="results-hero">
+          <h2 id="results-title">Case Closed!</h2>
+          <p id="results-subtitle">The verdicts are in...</p>
+        </div>
+
+        <ol id="leaderboard" class="leaderboard" aria-label="Final standings"></ol>
+
+        <div class="results-actions">
+          <button id="replay-same" class="btn primary" type="button">Play Again</button>
+          <button id="replay-new" class="btn" type="button">New Players</button>
+          <button id="share-btn" class="btn" type="button">
+            <span aria-hidden="true">📣</span> Share Results
+          </button>
+          <button id="submit-score-btn" class="btn" type="button">
+            <span aria-hidden="true">🏅</span> Submit to Leaderboard
+          </button>
+        </div>
+      </section>
+
+      <!-- ── SOLO SCREEN ─────────────────────────── -->
+      <section id="solo-screen" class="screen" aria-label="Solo Practice">
+        <div class="solo-top">
+          <span class="pill accent" id="solo-round-pill">Case 1</span>
+          <span class="solo-score">Score: <span id="solo-score">0</span></span>
+        </div>
+
+        <div class="crime-card">
+          <div class="case-label">
+            <span aria-hidden="true">🕵️</span> The Crime
+          </div>
+          <div class="crime-text" id="solo-crime-text">Loading...</div>
+          <div class="category-tag" id="solo-crime-subcat"></div>
+        </div>
+
+        <p class="muted" style="margin: 18px 0 0">
+          Pick the most creative, believable alibi — the one your group would award:
+        </p>
+        <div class="choice-grid" id="solo-choices"></div>
+
+        <div id="solo-feedback" class="feedback hidden" role="status" aria-live="polite"></div>
+
+        <div class="actions-row" style="margin-top: 22px">
+          <button id="solo-next-btn" class="btn primary" type="button" disabled>Next Case →</button>
+          <button id="solo-quit-btn" class="btn ghost" type="button">End Practice</button>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      'use strict';
+
+      const CRIMES = [
+        {
+          id: 'office-coffee',
+          category: 'Office',
+          subcat: 'Break Room Mystery',
+          text: 'Every coffee mug in the break room has been replaced with a matching set of novelty kitten mugs.',
+          realTruths: [
+            'It was the IT intern — they thought it would "boost morale scores."',
+            'The office manager lost a bet with HR about Q1 culture metrics.',
+            'A passing sales rep did it and has already been promoted to VP somewhere.'
+          ],
+          promptIdeas: [
+            'Ask: "Where were you between 9:47 and 9:51?"',
+            'Ask: "Why did your chair scoot across the floor that morning?"',
+            'Surprise fact: there is also a kitten poster in the supply closet now.'
+          ],
+          altAlibis: [
+            'I was in a three-hour budget meeting with the CFO. Ask anyone — my eyes never unglazed.',
+            'I was hiding in the supply closet because the printer was making eye contact with me.',
+            'I was at my desk, clearly. You can see me in the security footage — I\'m the blur.',
+            'I don\'t drink coffee. I\'ve been on a personal journey involving spring water and regret.'
+          ],
+          bestAlibi: 1
+        },
+        {
+          id: 'office-stapler',
+          category: 'Office',
+          subcat: 'Missing Supplies',
+          text: 'All 47 staplers in the office are now glued to the ceiling, arranged in the shape of a smiley face.',
+          realTruths: [
+            'A team bonding exercise got out of hand at 3am.',
+            'Facilities thinks it was "the new hire" but there is no new hire.',
+            'Every stapler is signed "love, Gary" but nobody works here named Gary.'
+          ],
+          promptIdeas: [
+            'Ask: "Do you own a ladder? Can you prove it?"',
+            'Ask: "How do you feel about staplers, generally?"',
+            'Insist: "A witness saw someone wearing your shoes."'
+          ],
+          altAlibis: [
+            'I was at the dentist. Here\'s the receipt. Ignore the date.',
+            'Staplers are afraid of me. They always have been. I keep my distance.',
+            'I was here, but I was asleep at my desk with headphones on. I heard nothing.',
+            'I helped. But only because the shape was originally a frown and that felt worse.'
+          ],
+          bestAlibi: 3
+        },
+        {
+          id: 'office-printer',
+          category: 'Office',
+          subcat: 'Equipment Tampering',
+          text: 'The office printer only prints photos of someone\'s pet hamster now, regardless of what you submit.',
+          realTruths: [
+            'The IT team calls it "Greg" and refuses to elaborate.',
+            'A firmware update from a suspicious .zip file was applied last Tuesday.',
+            'HR is thrilled with employee engagement metrics since Greg arrived.'
+          ],
+          promptIdeas: [
+            'Ask: "Do you own a hamster?"',
+            'Ask: "What\'s your relationship with firmware updates?"',
+            'Note: "The hamster has been named. They called it Bernard."'
+          ],
+          altAlibis: [
+            'I used to love that printer. You think I would betray it like this?',
+            'I\'m allergic to hamsters, and frankly, to accusation.',
+            'I did it, but only because the hamster asked nicely.',
+            'I\'ve never touched a computer in my life. I communicate via fax.'
+          ],
+          bestAlibi: 0
+        },
+        {
+          id: 'office-meeting',
+          category: 'Office',
+          subcat: 'Calendar Sabotage',
+          text: 'A recurring meeting titled "Silence Appreciation Hour" now appears on everyone\'s calendar every Thursday at 2pm — and it has an actual conference room booked.',
+          realTruths: [
+            'The CEO started it in 2019 and nobody has ever attended.',
+            'Facilities charges it back to marketing for reasons nobody understands.',
+            'There is a vase of flowers delivered fresh to the room each week. Untouched.'
+          ],
+          promptIdeas: [
+            'Ask: "Where were you last Thursday at 2pm?"',
+            'Ask: "Do you appreciate silence more than the average person?"',
+            'Note: "Someone has been eating the mints that appear on the table."'
+          ],
+          altAlibis: [
+            'I love silence. I\'d never ruin it by booking a meeting about it.',
+            'I thought it was legitimate and I\'ve attended every single one for three years.',
+            'I was in Denver that day. Denver is a state of mind, not a place.',
+            'I booked it, but only as a gift for my future self, who is very tired.'
+          ],
+          bestAlibi: 1
+        },
+        {
+          id: 'office-chairs',
+          category: 'Office',
+          subcat: 'Furniture Arrangement',
+          text: 'Every office chair has been rotated to face the wall, and each has a tiny plant on the seat.',
+          realTruths: [
+            'Wellness committee. They\'ve been planning this for months.',
+            'A well-meaning consultant was allowed in the building again.',
+            'The plants are all basil and nobody knows who is watering them.'
+          ],
+          promptIdeas: [
+            'Ask: "What\'s your favorite herb?"',
+            'Ask: "Why do your hands smell like potting soil?"',
+            'Note: "One plant is already wilting. Suspicious timing."'
+          ],
+          altAlibis: [
+            'I came in early to water the plants. That\'s my alibi. That\'s all I did.',
+            'I hate basil. Nothing I\'ve ever done has involved basil.',
+            'I\'ve been sitting in the wall-facing chair for two weeks. It\'s actually very calming.',
+            'I was helping HR redecorate. The rotation was meant to be temporary. Then it was Tuesday.'
+          ],
+          bestAlibi: 2
+        },
+        {
+          id: 'neighbor-garden',
+          category: 'Neighborhood',
+          subcat: 'Gardening Caper',
+          text: 'Someone replaced every tulip in the entire neighborhood with a single suspiciously tall sunflower.',
+          realTruths: [
+            'A gardening club with a grudge. They\'ve been waiting all year.',
+            'A viral TikTok challenge nobody over 40 has heard of.',
+            'It was actually the squirrels — organized, vengeful, and highly coordinated.'
+          ],
+          promptIdeas: [
+            'Ask: "Do you own gardening gloves?"',
+            'Ask: "Have you ever been angry at a tulip?"',
+            'Note: "One sunflower is wearing a tiny hat."'
+          ],
+          altAlibis: [
+            'I was at yoga. I\'m always at yoga. Even right now, mentally.',
+            'I love tulips. Anyone who knows me knows this.',
+            'I\'ve been training sunflowers for a gardening show. This is just a coincidence.',
+            'I was asleep. I sleep a lot. Sometimes during testimony.'
+          ],
+          bestAlibi: 2
+        },
+        {
+          id: 'neighbor-mail',
+          category: 'Neighborhood',
+          subcat: 'Mail Mischief',
+          text: 'Every mailbox on the block now plays a different 80s hit song when you open it.',
+          realTruths: [
+            'A mystery benefactor nobody has met.',
+            'A retiring mail carrier\'s final, cryptic gift.',
+            'An Airbnb guest who refused to explain and then left.'
+          ],
+          promptIdeas: [
+            'Ask: "What\'s your favorite 80s song?"',
+            'Ask: "How are you with small electronics?"',
+            'Note: "One mailbox plays a song that was never released."'
+          ],
+          altAlibis: [
+            'I hate the 80s with every fiber of my being.',
+            'I was in a choir rehearsal. We were practicing 80s hits. That\'s a weird coincidence.',
+            'I put the speakers in. But only because my mailbox was boring and judgmental.',
+            'I was out of town all week. You can verify with my parrot.'
+          ],
+          bestAlibi: 3
+        },
+        {
+          id: 'neighbor-trash',
+          category: 'Neighborhood',
+          subcat: 'Bin Shuffle',
+          text: 'Every recycling bin on the street has been swapped with someone else\'s, and now nobody knows which bin is theirs.',
+          realTruths: [
+            'A sleepwalking toddler with surprising strength.',
+            'An app glitch that "gamified" trash pickup.',
+            'A cat that has learned how to lift things. We are all doomed.'
+          ],
+          promptIdeas: [
+            'Ask: "What color is your bin? Can you swear to it?"',
+            'Ask: "Have you noticed anything unusual about your trash lately?"',
+            'Note: "One bin contains a single polite note."'
+          ],
+          altAlibis: [
+            'I don\'t recycle. I\'m not proud. Leave me out of this.',
+            'I was watching a documentary about trash all night. Completely absorbed.',
+            'I swapped them, but only as a prank, and I always meant to swap them back. Eventually.',
+            'My bin ran away on its own. I didn\'t want to say anything.'
+          ],
+          bestAlibi: 3
+        },
+        {
+          id: 'neighbor-dog',
+          category: 'Neighborhood',
+          subcat: 'Canine Chaos',
+          text: 'Every dog in a three-block radius now barks only in perfect rhyming couplets.',
+          realTruths: [
+            'A viral pet training seminar. It worked too well.',
+            'A local poet nobody takes seriously anymore.',
+            'Nobody knows. The dogs refuse to comment.'
+          ],
+          promptIdeas: [
+            'Ask: "Are you a poet?"',
+            'Ask: "Have you attended any unusual dog classes lately?"',
+            'Note: "One golden retriever has a TED talk now."'
+          ],
+          altAlibis: [
+            'I can\'t rhyme to save my life. I\'m famously bad at it.',
+            'I trained the dogs, but only on haiku. Someone else clearly got involved.',
+            'I was home watching dog TV. I have receipts. The dogs in the show were silent.',
+            'Dogs just evolved. It was bound to happen. I had nothing to do with it.'
+          ],
+          bestAlibi: 1
+        },
+        {
+          id: 'neighbor-lawn',
+          category: 'Neighborhood',
+          subcat: 'Landscape Art',
+          text: 'Someone mowed a gigantic portrait of a very confused-looking goose into the community lawn.',
+          realTruths: [
+            'A lawn artist with a surprisingly full schedule.',
+            'A mowing robot that gained sentience and opinions.',
+            'The goose in question. It commissioned the piece.'
+          ],
+          promptIdeas: [
+            'Ask: "Do you own a riding mower?"',
+            'Ask: "What is your relationship with geese?"',
+            'Note: "The goose has been seen standing on the portrait looking satisfied."'
+          ],
+          altAlibis: [
+            'I was teaching my cousin to mow. He insisted on "surprising" the neighborhood.',
+            'I don\'t know how to operate any yard equipment. I eat grass, apparently, that\'s how I cope.',
+            'I was asleep, specifically, for all of April.',
+            'I did it. The goose asked. I said yes. I regret nothing.'
+          ],
+          bestAlibi: 3
+        },
+        {
+          id: 'school-lockers',
+          category: 'School',
+          subcat: 'Locker Riddle',
+          text: 'Every locker at the school now opens to reveal a different student\'s belongings, but perfectly organized.',
+          realTruths: [
+            'An over-caffeinated student council president.',
+            'A janitor who has had enough.',
+            'A visiting exchange student from a country with very different locker customs.'
+          ],
+          promptIdeas: [
+            'Ask: "Do you own a label maker?"',
+            'Ask: "How do you feel about personal space?"',
+            'Note: "Everyone\'s socks are now in alphabetical order."'
+          ],
+          altAlibis: [
+            'I was in the library. I live in the library. Ask the librarian — I pay rent.',
+            'I organized my own locker, but I don\'t know how it spread.',
+            'I tried to stop it. I was overwhelmed. There were too many labels.',
+            'I don\'t have a locker. I carry everything in a tote bag like an adult.'
+          ],
+          bestAlibi: 2
+        },
+        {
+          id: 'school-cafeteria',
+          category: 'School',
+          subcat: 'Menu Mayhem',
+          text: 'The cafeteria menu has been entirely replaced with ornate French descriptions, and the food tastes exactly the same.',
+          realTruths: [
+            'An overzealous intern in the school newspaper.',
+            'The lunch lady decided to try something new.',
+            'An AI that was accidentally given the menu to "polish."'
+          ],
+          promptIdeas: [
+            'Ask: "Do you speak French?"',
+            'Ask: "How do you feel about mystery meat being called <em>la surprise du chef</em>?"',
+            'Note: "The fish sticks are now <em>pommes de la mer</em> and still cost $1.50."'
+          ],
+          altAlibis: [
+            'Je ne parle pas français. I just don\'t. Stop asking.',
+            'I helped with one word. ONE word. I can\'t be held responsible for the rest.',
+            'I was in detention all lunch period. Ironically, for swearing in French.',
+            'I was at a French immersion camp. I have no alibi. I mean, I have a fabulous alibi, it\'s just in French.'
+          ],
+          bestAlibi: 3
+        },
+        {
+          id: 'school-gym',
+          category: 'School',
+          subcat: 'Gymnasium Graffiti',
+          text: 'Someone wrote motivational quotes on every single gym ball, but each quote is secretly from a reality TV show.',
+          realTruths: [
+            'The gym teacher has opinions and a marker.',
+            'A student running for class president with a weird strategy.',
+            'A substitute who was only supposed to cover one class and clearly had time.'
+          ],
+          promptIdeas: [
+            'Ask: "What\'s your favorite reality TV show?"',
+            'Ask: "Do you own a Sharpie?"',
+            'Note: "One ball has a quote from a show that hasn\'t aired yet."'
+          ],
+          altAlibis: [
+            'I only watch documentaries. About other documentaries. Nothing with drama.',
+            'I was in the pool. I\'m always in the pool. The pool is my alibi for everything.',
+            'I don\'t watch reality TV, but my uncle is on one of them, so technically I might be responsible.',
+            'Those quotes are from my original screenplay. I\'ve been robbed.'
+          ],
+          bestAlibi: 3
+        },
+        {
+          id: 'family-remote',
+          category: 'Family',
+          subcat: 'Remote Control',
+          text: 'Every TV remote in the house now controls a different TV than the one it belongs to, and nobody knows why.',
+          realTruths: [
+            'A cat walked across a universal remote setup screen.',
+            'A grandparent "fixed" something.',
+            'The TVs decided to mix things up for variety.'
+          ],
+          promptIdeas: [
+            'Ask: "Were you watching TV at 2am last Tuesday?"',
+            'Ask: "Do you ever mess with universal remotes?"',
+            'Note: "One remote now controls a TV at the neighbor\'s house."'
+          ],
+          altAlibis: [
+            'I don\'t watch TV. I listen to podcasts like a refined person.',
+            'I programmed the remotes as a magic trick. I forgot to undo it.',
+            'I was asleep. The remotes did this to themselves.',
+            'I took the batteries out of all of them yesterday, so this would have been impossible for me.'
+          ],
+          bestAlibi: 1
+        },
+        {
+          id: 'family-fridge',
+          category: 'Family',
+          subcat: 'Refrigerator Mystery',
+          text: 'Every item in the fridge has a handwritten note on it reading "not yours." Even the ice.',
+          realTruths: [
+            'A sibling with too much time.',
+            'A roommate ending a long silent standoff.',
+            'A very organized burglar who did not steal anything.'
+          ],
+          promptIdeas: [
+            'Ask: "What\'s your handwriting like?"',
+            'Ask: "Have you had any disagreements over food recently?"',
+            'Note: "The notes are all on sticky tabs imported from Sweden."'
+          ],
+          altAlibis: [
+            'I was at my friend\'s house all night. We ate pizza. I didn\'t write a single note.',
+            'I wrote one note, but only on the pickles, and only because they are mine.',
+            'I can\'t write. I\'ve been dictating everything for years. This handwriting is not mine.',
+            'I was in the fridge the whole time. Chilling, literally.'
+          ],
+          bestAlibi: 1
+        },
+        {
+          id: 'family-phones',
+          category: 'Family',
+          subcat: 'Phone Chaos',
+          text: 'Every family member\'s phone is now set to a different language, and nobody knows how to change it back.',
+          realTruths: [
+            'A teenager with access to settings menus.',
+            'An autocorrect glitch that spread across devices.',
+            'A pet that walked on a lot of screens.'
+          ],
+          promptIdeas: [
+            'Ask: "What languages do you speak?"',
+            'Ask: "When was the last time you handed your phone to someone?"',
+            'Note: "Grandma\'s phone is in Klingon."'
+          ],
+          altAlibis: [
+            'I\'ve been fluent in six languages since Tuesday. Wildly convenient. Not related.',
+            'I was at a phone-free retreat. I haven\'t touched a device in weeks.',
+            'I did it, but as a teaching moment. The whole family is learning now.',
+            'My phone is already in a language I don\'t understand. I live this way.'
+          ],
+          bestAlibi: 2
+        },
+        {
+          id: 'internet-emoji',
+          category: 'Internet',
+          subcat: 'Social Media',
+          text: 'Someone hijacked the company Slack and every emoji has been replaced with a tiny photo of a specific employee\'s forehead.',
+          realTruths: [
+            'The intern, back at it.',
+            'An overnight Slack admin who has given up.',
+            'The employee in question — it was self-inflicted branding.'
+          ],
+          promptIdeas: [
+            'Ask: "Do you have Slack admin access?"',
+            'Ask: "Whose forehead is it, actually?"',
+            'Note: "The 🔥 emoji has been extremely well-received."'
+          ],
+          altAlibis: [
+            'I don\'t even use Slack. I communicate via carrier pigeon and wishful thinking.',
+            'I did it, but only because the emoji market needed shaking up.',
+            'I was in a long meeting with my therapist about my Slack behavior. Ironic.',
+            'That forehead is mine. I am flattered but innocent.'
+          ],
+          bestAlibi: 3
+        },
+        {
+          id: 'internet-wifi',
+          category: 'Internet',
+          subcat: 'Network Name',
+          text: 'The office WiFi network is now named "SnitchesGetWitches." Nobody will admit to changing it.',
+          realTruths: [
+            'The IT intern, who deserves a raise and a stern talk.',
+            'The CEO, who is in their feelings today.',
+            'A router that has developed personality disorder.'
+          ],
+          promptIdeas: [
+            'Ask: "What\'s your own WiFi named?"',
+            'Ask: "Have you ever been called a snitch?"',
+            'Note: "The password is now the full lyrics to a Lizzo song."'
+          ],
+          altAlibis: [
+            'I thought the WiFi was always called that. I kind of liked it.',
+            'I was at a seminar on network security. I\'m the LAST person who would do this.',
+            'I did it but in my defense, I was locked out of my calendar and furious.',
+            'I don\'t know what WiFi is. I\'ve been hardwired my whole life.'
+          ],
+          bestAlibi: 2
+        },
+        {
+          id: 'internet-email',
+          category: 'Internet',
+          subcat: 'Inbox Invasion',
+          text: 'Every work email sent today has been mysteriously auto-translated into pirate speak. Ahoy!',
+          realTruths: [
+            'A browser extension installed during "Talk Like a Pirate Day" nobody took off.',
+            'An AI assistant having a creative moment.',
+            'An over-ambitious office theme week that has spread.'
+          ],
+          promptIdeas: [
+            'Ask: "Do ye consider yerself a pirate, matey?"',
+            'Ask: "What browser extensions do you have installed?"',
+            'Note: "HR has already sent five emails of concern, all in pirate."'
+          ],
+          altAlibis: [
+            'I was ashore, with land-lubbers. I would never.',
+            'I am a pirate, but I\'m off duty today.',
+            'I installed it as a joke. I forgot. It kept going.',
+            'Arrr, I deny everything. Wait — that wasn\'t convincing.'
+          ],
+          bestAlibi: 3
+        },
+        {
+          id: 'internet-photo',
+          category: 'Internet',
+          subcat: 'Photo Phantom',
+          text: 'Every photo in the shared company drive has been replaced with the same photo of a single alpaca wearing a party hat.',
+          realTruths: [
+            'A disgruntled marketing team member.',
+            'The alpaca, who has an agent now.',
+            'Nobody. It just happened. We accept it.'
+          ],
+          promptIdeas: [
+            'Ask: "Do you have any affiliation with alpacas?"',
+            'Ask: "Why does your desktop background look suspiciously similar?"',
+            'Note: "The alpaca has been booked for the holiday party."'
+          ],
+          altAlibis: [
+            'I don\'t even have access to that drive. I\'ve been asking for access for months.',
+            'I was the alpaca\'s personal assistant for a week. We\'re no longer on speaking terms.',
+            'I replaced one photo because it was terrible. I can\'t explain the rest.',
+            'I love alpacas too much to involve them in crime.'
+          ],
+          bestAlibi: 3
+        },
+        {
+          id: 'strange-clocks',
+          category: 'Strange',
+          subcat: 'Time Trouble',
+          text: 'Every clock in the building now runs exactly two minutes fast, and every watch runs exactly three minutes slow.',
+          realTruths: [
+            'A punctuality prankster with a mission.',
+            'A clock company testing a new product.',
+            'The space-time continuum acting up again.'
+          ],
+          promptIdeas: [
+            'Ask: "What time is it right now, according to you?"',
+            'Ask: "How do you feel about tardiness?"',
+            'Note: "The building lost five minutes collectively this morning."'
+          ],
+          altAlibis: [
+            'I\'ve been on another time zone for weeks, mentally speaking.',
+            'I set all the clocks forward to trick myself into being on time. It\'s working.',
+            'I never look at clocks. I go by vibes.',
+            'I was asleep. Time doesn\'t exist when I\'m asleep.'
+          ],
+          bestAlibi: 1
+        },
+        {
+          id: 'strange-doors',
+          category: 'Strange',
+          subcat: 'Door Disturbance',
+          text: 'Every door in the building now plays a short orchestral fanfare when opened.',
+          realTruths: [
+            'A dramatic arts teacher.',
+            'A smart-building system that got a firmware "upgrade."',
+            'The building itself. It\'s been waiting for its moment.'
+          ],
+          promptIdeas: [
+            'Ask: "Have you made any unusually dramatic entrances lately?"',
+            'Ask: "Do you know anyone in the sound department?"',
+            'Note: "The bathroom doors have their own theme. It\'s getting complicated."'
+          ],
+          altAlibis: [
+            'I love fanfares. I\'d never ruin them by installing them everywhere.',
+            'I was locked in a closet for three days — sorry, meant to mention it.',
+            'I did it. I\'m sorry. My life needed more drama.',
+            'I don\'t go through doors. I only use windows. Medical reasons.'
+          ],
+          bestAlibi: 2
+        },
+        {
+          id: 'strange-lights',
+          category: 'Strange',
+          subcat: 'Lighting Situation',
+          text: 'Every light in the building now only turns on if you whisper a compliment to it first.',
+          realTruths: [
+            'A wellness-forward office manager.',
+            'A smart bulb manufacturer in the middle of a weird update cycle.',
+            'An art installation that got out of the gallery and into reality.'
+          ],
+          promptIdeas: [
+            'Ask: "What\'s the nicest thing you\'ve ever whispered?"',
+            'Ask: "Do you own any smart bulbs?"',
+            'Note: "People are becoming visibly happier. Productivity is... complicated."'
+          ],
+          altAlibis: [
+            'I hate the dark. I\'d never do this to myself.',
+            'I\'ve been whispering compliments to lights my whole life. I assumed it was normal.',
+            'It was part of a therapy exercise that spiraled.',
+            'I live in the dark. I don\'t need lights. I don\'t know what compliments are.'
+          ],
+          bestAlibi: 2
+        },
+        {
+          id: 'strange-shoes',
+          category: 'Strange',
+          subcat: 'Shoe Situation',
+          text: 'Every pair of shoes left at the entrance has been swapped with a slightly smaller pair of the same style.',
+          realTruths: [
+            'A shoe collector with a growing problem.',
+            'A dry cleaner mix-up that went the wrong direction.',
+            'The floor itself is shrinking things. Scientists are baffled.'
+          ],
+          promptIdeas: [
+            'Ask: "Have your shoes felt tight lately?"',
+            'Ask: "Do you work in retail or shoe adjacent industries?"',
+            'Note: "One pair is now clearly meant for a toddler."'
+          ],
+          altAlibis: [
+            'I only wear sandals. I don\'t participate in closed-toe politics.',
+            'My shoes were already too tight. This is just convenient cover.',
+            'I was barefoot at the entrance. I brought no shoes. I don\'t know about shoes.',
+            'I swapped one pair by accident. The rest is a conspiracy I\'ve been framed for.'
+          ],
+          bestAlibi: 3
+        },
+        {
+          id: 'strange-elevator',
+          category: 'Strange',
+          subcat: 'Elevator Etiquette',
+          text: 'The office elevator now stops at every floor regardless of what button you press, and plays a different genre of music on each one.',
+          realTruths: [
+            'The elevator technician, who has a sense of humor.',
+            'A software glitch that we\'ve all decided is actually great.',
+            'The building management, as part of a "vibrancy initiative."'
+          ],
+          promptIdeas: [
+            'Ask: "What\'s your favorite floor and why?"',
+            'Ask: "How do you feel about music in elevators?"',
+            'Note: "Floor 4 is now unofficially known as the jazz floor."'
+          ],
+          altAlibis: [
+            'I take the stairs. My calves can vouch for me.',
+            'I programmed the elevator, but only as a training exercise. It escaped.',
+            'I\'ve been trapped between floors for two weeks. Please send help.',
+            'I\'m a big fan of forced relaxation. I confess.'
+          ],
+          bestAlibi: 2
+        },
+        {
+          id: 'office-monitors',
+          category: 'Office',
+          subcat: 'Desk Disturbance',
+          text: 'Every monitor in the office now displays a rotating slideshow of dogs in human business attire.',
+          realTruths: [
+            'An enterprising IT intern building their portfolio.',
+            'The HR "workplace wellness" initiative finally took.',
+            'A CEO\'s misguided rebranding attempt.'
+          ],
+          promptIdeas: [
+            'Ask: "Do you own business attire for a dog?"',
+            'Ask: "When did you last check your screensaver?"',
+            'Note: "The slideshow updates in real time. We don\'t know how."'
+          ],
+          altAlibis: [
+            'I was dog-sitting. The dog was wearing business attire. It\'s a coincidence.',
+            'I don\'t know what a monitor is. I do all my work on paper.',
+            'I installed it, yes, but as a gift for everyone. You\'re welcome.',
+            'Those are my dogs. Please take them down. They\'re professional models.'
+          ],
+          bestAlibi: 0
+        },
+        {
+          id: 'office-snacks',
+          category: 'Office',
+          subcat: 'Pantry Puzzle',
+          text: 'All the individually wrapped snacks in the office pantry have been re-wrapped with labels reading "Property of the Vibes Committee."',
+          realTruths: [
+            'The Vibes Committee — but nobody knew it existed until now.',
+            'A disgruntled employee who really wanted to form a committee.',
+            'The CEO, who is secretly on the Vibes Committee.'
+          ],
+          promptIdeas: [
+            'Ask: "Are you familiar with the Vibes Committee?"',
+            'Ask: "What\'s your relationship with snacks in general?"',
+            'Note: "The committee has already scheduled its first meeting."'
+          ],
+          altAlibis: [
+            'I\'m on the Vibes Committee. I\'ve been working overtime. You\'re welcome.',
+            'I don\'t eat snacks. I\'m on a strict diet of coffee and spite.',
+            'I was the one who ordered the labels, but only for my own drawer.',
+            'I\'ve never heard of the Vibes Committee. But I\'d like to join.'
+          ],
+          bestAlibi: 0
+        },
+        {
+          id: 'neighbor-decor',
+          category: 'Neighborhood',
+          subcat: 'Holiday Havoc',
+          text: 'Somebody put holiday lights on every house on the street, but they\'re celebrating a completely different holiday from each other.',
+          realTruths: [
+            'A retired electrician with unlimited time.',
+            'A local news station doing a "spirit of the neighborhood" piece.',
+            'The neighborhood association, finally agreeing on something (disagreement).'
+          ],
+          promptIdeas: [
+            'Ask: "What holidays do you celebrate?"',
+            'Ask: "Do you own a ladder and a lot of extension cords?"',
+            'Note: "One house is celebrating a holiday that was made up yesterday."'
+          ],
+          altAlibis: [
+            'I don\'t celebrate anything. I live in dignified darkness.',
+            'I was installing lights on only MY house. Someone else escalated.',
+            'I\'ve been in another country for a month. The lights followed me.',
+            'I\'ve been electrocuted too many times to use a ladder. Ask my insurance.'
+          ],
+          bestAlibi: 3
+        },
+        {
+          id: 'strange-parking',
+          category: 'Strange',
+          subcat: 'Parking Lot',
+          text: 'Every car in the parking lot now has a single polite note on the windshield saying "you\'re doing great." No signature.',
+          realTruths: [
+            'A local self-help author testing a theory.',
+            'A mysterious kindness bandit with a vendetta against bad days.',
+            'The parking meter repair person, who just finished their shift.'
+          ],
+          promptIdeas: [
+            'Ask: "Have you left any notes on cars recently?"',
+            'Ask: "Do you consider yourself an encouraging person?"',
+            'Note: "The notes are all handwritten in slightly different handwriting."'
+          ],
+          altAlibis: [
+            'I can\'t reach windshields. I\'m vertically challenged.',
+            'I\'ve been encouraging cars for years. It\'s finally catching on.',
+            'I left one note, on my own car. I needed it.',
+            'I was in the parking lot, yes, but only to yell at my own car.'
+          ],
+          bestAlibi: 2
+        },
+        {
+          id: 'office-wallpaper',
+          category: 'Office',
+          subcat: 'Wall Woes',
+          text: 'The conference room wallpaper has been replaced overnight with an extremely detailed mural of the office dog chasing a UPS truck.',
+          realTruths: [
+            'A muralist who owed the office dog a favor.',
+            'The UPS driver, as a grand gesture.',
+            'A team-bonding activity nobody was invited to.'
+          ],
+          promptIdeas: [
+            'Ask: "Do you know any muralists personally?"',
+            'Ask: "Have you ever commissioned a painting of a chase scene?"',
+            'Note: "The dog appears to be winning in the mural."'
+          ],
+          altAlibis: [
+            'I\'m allergic to paint. You can check with my doctor.',
+            'I was at the paint store, but only buying a small amount. For a project. Different project.',
+            'I painted it. It\'s my life\'s work. Please don\'t cover it up.',
+            'I was delivering packages that entire weekend. Ironic, given the subject.'
+          ],
+          bestAlibi: 2
+        },
+        {
+          id: 'family-toaster',
+          category: 'Family',
+          subcat: 'Kitchen Calamity',
+          text: 'The family toaster now toasts a different compliment onto each slice of bread.',
+          realTruths: [
+            'A tech-savvy teen with a laser engraver.',
+            'A toaster that got a firmware update from an unknown source.',
+            'The toaster has been doing this for years and we just noticed.'
+          ],
+          promptIdeas: [
+            'Ask: "When did you last use the toaster?"',
+            'Ask: "Do you own a laser engraver?"',
+            'Note: "The latest slice read: \'you are enough.\' It was extremely moving."'
+          ],
+          altAlibis: [
+            'I don\'t eat toast. I\'m a bagel person exclusively.',
+            'I installed the firmware. It was meant to be a birthday gift. The release date was off.',
+            'My toast never has compliments. The toaster hates me specifically.',
+            'I was in the kitchen, but only to reheat soup. I don\'t interfere with the toaster.'
+          ],
+          bestAlibi: 1
+        },
+        {
+          id: 'school-homework',
+          category: 'School',
+          subcat: 'Assignment Anomaly',
+          text: 'Every homework assignment handed in today has been graded with extremely elaborate, emotional feedback that the teacher swears they didn\'t write.',
+          realTruths: [
+            'A student teacher being very invested.',
+            'An AI tool accidentally left running all night.',
+            'The teacher, who is having a moment but won\'t admit it.'
+          ],
+          promptIdeas: [
+            'Ask: "Have you been feeling unusually emotional lately?"',
+            'Ask: "Did you leave any AI tools running overnight?"',
+            'Note: "One comment reads: \'You are the future, and I believe in you.\' It was on a math quiz."'
+          ],
+          altAlibis: [
+            'I was grading papers. I cry sometimes. It\'s not a crime.',
+            'I wasn\'t even at school. I have a letter from my mother.',
+            'I did it as a favor to the teacher, who is burned out.',
+            'I AM the AI tool. I\'m sorry.'
+          ],
+          bestAlibi: 2
+        },
+        {
+          id: 'strange-radio',
+          category: 'Strange',
+          subcat: 'Audio Anomaly',
+          text: 'Every radio in the building is now tuned to a station that only plays dolphin sounds, and you can\'t change the channel.',
+          realTruths: [
+            'A marine biology enthusiast in IT.',
+            'A signal interference from a suspicious truck parked outside.',
+            'The dolphins themselves, using new technology.'
+          ],
+          promptIdeas: [
+            'Ask: "Do you have any relationship with marine mammals?"',
+            'Ask: "Have you ever tuned into an unusual radio station?"',
+            'Note: "People are starting to prefer it. This is concerning."'
+          ],
+          altAlibis: [
+            'I hate dolphins. Famously. Everyone knows.',
+            'I\'m actually a dolphin trainer on weekends. I was off-duty.',
+            'I did it, but it was supposed to be whale songs. The files got mixed up.',
+            'I never touch radios. Radios are sacred.'
+          ],
+          bestAlibi: 2
+        },
+        {
+          id: 'neighbor-birdhouse',
+          category: 'Neighborhood',
+          subcat: 'Backyard Mystery',
+          text: 'Someone built a tiny, perfect replica of the neighborhood inside a birdhouse, complete with miniature residents.',
+          realTruths: [
+            'A retired model-maker with way too much time.',
+            'A local artist in residence, whose residency was supposed to end months ago.',
+            'The birds, who are plotting something.'
+          ],
+          promptIdeas: [
+            'Ask: "Do you own miniature modeling tools?"',
+            'Ask: "Have you seen any unusual birds recently?"',
+            'Note: "A miniature version of you is sitting on a miniature porch in the replica."'
+          ],
+          altAlibis: [
+            'I can\'t build anything smaller than a loaf of bread.',
+            'I built one birdhouse. One. Don\'t blame me for the neighborhood escalation.',
+            'I was at a birdwatching retreat. I have never been a crafter.',
+            'Those are my replicas. Please return them. They cost a fortune.'
+          ],
+          bestAlibi: 1
+        },
+        {
+          id: 'internet-passwords',
+          category: 'Internet',
+          subcat: 'Password Pandemonium',
+          text: 'Every password in the company password manager has been changed to a different haiku. They all still work, but only if you recite them out loud.',
+          realTruths: [
+            'The poet laureate of the engineering team.',
+            'A security researcher trying something new.',
+            'An AI tool that went off-book.'
+          ],
+          promptIdeas: [
+            'Ask: "Do you write poetry?"',
+            'Ask: "When did you last access the password manager?"',
+            'Note: "The passwords are all extremely good haikus."'
+          ],
+          altAlibis: [
+            'I can\'t write poetry to save my life. I\'ve tried. It\'s all prose.',
+            'I do write haiku, but only about wildlife. These are about IT. Different genre.',
+            'I rewrote them all. I\'m proud. Please don\'t sue.',
+            'I don\'t use passwords. I remember everything in my head.'
+          ],
+          bestAlibi: 2
+        },
+        {
+          id: 'family-laundry',
+          category: 'Family',
+          subcat: 'Laundry Labyrinth',
+          text: 'Every sock in the house has a matching partner now, for the first time in recorded history.',
+          realTruths: [
+            'A miracle. A true miracle.',
+            'A sock-sorting robot that entered the house uninvited.',
+            'A family member who finally snapped.'
+          ],
+          promptIdeas: [
+            'Ask: "When did you last do laundry?"',
+            'Ask: "Do you own any sock-sorting equipment?"',
+            'Note: "There are three extra pairs now. Where did they come from?"'
+          ],
+          altAlibis: [
+            'I don\'t wear socks. I\'m a sandals person.',
+            'I sorted the socks. I needed closure.',
+            'I was at work. Laundry never enters my orbit.',
+            'I tried to stop the robot. It was too strong.'
+          ],
+          bestAlibi: 1
+        },
+        {
+          id: 'strange-weather',
+          category: 'Strange',
+          subcat: 'Weather Weirdness',
+          text: 'Every umbrella in the building now opens upside-down and collects compliments instead of rain.',
+          realTruths: [
+            'A new umbrella design that nobody approved but everyone loves.',
+            'A prankster with engineering skills.',
+            'The umbrellas, finally standing up for themselves.'
+          ],
+          promptIdeas: [
+            'Ask: "What was the last compliment you gave?"',
+            'Ask: "Do you know any umbrella engineers?"',
+            'Note: "The umbrellas are getting heavier. The compliments are stacking up."'
+          ],
+          altAlibis: [
+            'I don\'t own an umbrella. I enjoy being rained on.',
+            'I redesigned them. It was a passion project. I got carried away.',
+            'I was dry all day. No umbrellas were involved in my schedule.',
+            'I compliment things constantly. This could be residual.'
+          ],
+          bestAlibi: 1
+        },
+        {
+          id: 'office-keyboard',
+          category: 'Office',
+          subcat: 'Key Crisis',
+          text: 'Every keyboard in the office has had its keys rearranged to spell out different encouraging phrases when you type normal words.',
+          realTruths: [
+            'A very enthusiastic engineer with a key puller.',
+            'An accessibility tool that went rogue.',
+            'The keyboards themselves, through sheer willpower.'
+          ],
+          promptIdeas: [
+            'Ask: "Can you type without looking?"',
+            'Ask: "Do you own a key puller?"',
+            'Note: "Typing \'report\' now produces \'you did great today.\'"'
+          ],
+          altAlibis: [
+            'I type with two fingers. I barely know where the keys are.',
+            'I rearranged my own keyboard. Only mine. The rest is inspired copying.',
+            'I use a voice-to-text system. Keyboards are theoretical to me.',
+            'I was on vacation all week. My keyboard was locked in a drawer.'
+          ],
+          bestAlibi: 1
+        }
+      ];
+
+      const state = {
+        mode: 'host',
+        players: [],
+        roundCount: 5,
+        timerLength: 45,
+        rotation: 'random',
+        currentRound: 0,
+        currentCrime: null,
+        currentAccusedIndex: null,
+        crimeQueue: [],
+        timerInterval: null,
+        timerRemaining: 0,
+        timerRunning: false,
+        scores: {},
+        roundHistory: [],
+        pendingBest: null,
+        pendingConvincing: null,
+        modWindow: null,
+        soloIndex: 0,
+        soloScore: 0,
+        soloQueue: [],
+        soloAnswered: false,
+        soloMaxCases: 10,
+        accusedRotationIdx: 0
+      };
+
+      const STORAGE_PLAYERS = 'alibi-players-v1';
+
+      function loadSavedPlayers() {
+        try {
+          const raw = localStorage.getItem(STORAGE_PLAYERS);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed.filter((n) => typeof n === 'string') : [];
+        } catch {
+          return [];
+        }
+      }
+      function savePlayers() {
+        try {
+          localStorage.setItem(STORAGE_PLAYERS, JSON.stringify(state.players));
+        } catch {
+          /* ignore quota errors */
+        }
+      }
+
+      function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      function buildCrimeQueue(count) {
+        return shuffle(CRIMES).slice(0, count);
+      }
+
+      function $(sel, root = document) {
+        return root.querySelector(sel);
+      }
+      function $$(sel, root = document) {
+        return Array.from(root.querySelectorAll(sel));
+      }
+
+      let toastTimer;
+      function toast(msg) {
+        const t = $('#toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+      }
+
+      /* ── Setup ─────────────────────────────── */
+      function renderPlayers() {
+        const ul = $('#player-list');
+        ul.innerHTML = '';
+        state.players.forEach((name, i) => {
+          const li = document.createElement('li');
+          li.className = 'player-chip';
+          li.innerHTML = `<span>${escapeHtml(name)}</span>`;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.setAttribute('aria-label', `Remove ${name}`);
+          btn.textContent = '×';
+          btn.addEventListener('click', () => {
+            state.players.splice(i, 1);
+            savePlayers();
+            renderPlayers();
+            updateStartButton();
+          });
+          li.appendChild(btn);
+          ul.appendChild(li);
+        });
+      }
+
+      function escapeHtml(str) {
+        return String(str).replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              '&': '&amp;',
+              '<': '&lt;',
+              '>': '&gt;',
+              '"': '&quot;',
+              "'": '&#39;'
+            })[c]
+        );
+      }
+
+      function updateStartButton() {
+        const btn = $('#start-game');
+        const ok = state.players.length >= 2 && state.players.length <= 12;
+        btn.disabled = !ok;
+        const hint = $('#player-hint');
+        if (state.players.length === 0) {
+          hint.textContent = 'Add at least 2 players to start. Names save locally.';
+        } else if (state.players.length === 1) {
+          hint.textContent = 'Add one more player to start.';
+        } else if (state.players.length > 12) {
+          hint.textContent = 'Maximum 12 players — remove a few to start.';
+        } else {
+          hint.textContent = `${state.players.length} players ready. Hit "Start Game" when you're all set.`;
+        }
+      }
+
+      function initSetupListeners() {
+        $('#player-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const input = $('#player-input');
+          const name = input.value.trim();
+          if (!name) return;
+          if (state.players.length >= 12) {
+            toast('Maximum 12 players reached.');
+            return;
+          }
+          if (state.players.some((p) => p.toLowerCase() === name.toLowerCase())) {
+            toast('Player with that name already added.');
+            return;
+          }
+          state.players.push(name);
+          savePlayers();
+          input.value = '';
+          renderPlayers();
+          updateStartButton();
+        });
+
+        $$('.segmented').forEach((group) => {
+          group.addEventListener('click', (e) => {
+            const b = e.target.closest('button');
+            if (!b || !group.contains(b)) return;
+            $$('button', group).forEach((x) => x.setAttribute('aria-pressed', 'false'));
+            b.setAttribute('aria-pressed', 'true');
+            if (b.dataset.rounds) state.roundCount = Number(b.dataset.rounds);
+            if (b.dataset.timer !== undefined) state.timerLength = Number(b.dataset.timer);
+            if (b.dataset.rotation) state.rotation = b.dataset.rotation;
+          });
+        });
+
+        $$('.mode-tab').forEach((tab) => {
+          tab.addEventListener('click', () => {
+            const mode = tab.dataset.mode;
+            $$('.mode-tab').forEach((t) => t.setAttribute('aria-selected', 'false'));
+            tab.setAttribute('aria-selected', 'true');
+            $('#host-setup').classList.toggle('hidden', mode !== 'host');
+            $('#solo-setup').classList.toggle('hidden', mode !== 'solo');
+          });
+        });
+
+        $('#open-moderator').addEventListener('click', openModeratorWindow);
+        $('#start-game').addEventListener('click', startHostGame);
+        $('#start-solo').addEventListener('click', startSoloGame);
+      }
+
+      /* ── Screen transitions ─────────────────────── */
+      function showScreen(id) {
+        $$('.screen').forEach((s) => s.classList.toggle('active', s.id === id));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      /* ── Host game flow ─────────────────────── */
+      function startHostGame() {
+        state.mode = 'host';
+        state.currentRound = 0;
+        state.scores = {};
+        state.players.forEach((p) => (state.scores[p] = 0));
+        state.roundHistory = [];
+        state.crimeQueue = buildCrimeQueue(state.roundCount);
+        state.accusedRotationIdx = 0;
+        showScreen('game-screen');
+        nextRound();
+      }
+
+      function nextRound() {
+        if (state.currentRound >= state.roundCount) {
+          showResults();
+          return;
+        }
+        state.currentRound++;
+        state.currentCrime = state.crimeQueue[state.currentRound - 1];
+        state.currentAccusedIndex = null;
+        state.pendingBest = null;
+        state.pendingConvincing = null;
+        state.timerRemaining = state.timerLength;
+        state.timerRunning = false;
+        stopTimerTick();
+
+        $('#round-pill').textContent = `Round ${state.currentRound} of ${state.roundCount}`;
+        $('#category-pill').textContent = state.currentCrime.category;
+        $('#crime-text').textContent = state.currentCrime.text;
+        $('#crime-subcat').textContent = state.currentCrime.subcat;
+
+        $('#accused-name').textContent = '— Spin —';
+        $('#accused-sub').textContent = 'Click below to assign';
+        $('#phase-instructions').textContent =
+          'Once spun, the accused improvises an alibi. Start the timer when they begin speaking.';
+
+        $('#start-timer-btn').disabled = true;
+        $('#stop-timer-btn').disabled = true;
+        $('#reveal-awards-btn').disabled = true;
+        $('#spin-btn').disabled = false;
+        $('#award-panel').classList.add('hidden');
+
+        renderScoreboard();
+        resetTimerDisplay();
+        updateModeratorWindow();
+      }
+
+      function pickAccused() {
+        if (state.players.length === 0) return null;
+        if (state.rotation === 'rotate') {
+          const idx = state.accusedRotationIdx % state.players.length;
+          state.accusedRotationIdx++;
+          return idx;
+        }
+        // Random, but avoid repeating the immediate previous accused if possible.
+        const last = state.roundHistory[state.roundHistory.length - 1]?.accusedIndex;
+        const pool = state.players
+          .map((_, i) => i)
+          .filter((i) => state.players.length === 1 || i !== last);
+        return pool[Math.floor(Math.random() * pool.length)];
+      }
+
+      function spinForAccused() {
+        const spinBtn = $('#spin-btn');
+        spinBtn.disabled = true;
+        const nameEl = $('#accused-name');
+        let ticks = 0;
+        const maxTicks = 18 + Math.floor(Math.random() * 8);
+        const interval = setInterval(() => {
+          const idx = Math.floor(Math.random() * state.players.length);
+          nameEl.textContent = state.players[idx];
+          ticks++;
+          if (ticks >= maxTicks) {
+            clearInterval(interval);
+            const finalIdx = pickAccused();
+            state.currentAccusedIndex = finalIdx;
+            nameEl.textContent = state.players[finalIdx];
+            $('#accused-sub').textContent = 'has 45 seconds to invent an alibi.';
+            if (state.timerLength === 0) {
+              $('#accused-sub').textContent = 'invents an alibi at their own pace.';
+            } else {
+              $('#accused-sub').textContent =
+                `has ${state.timerLength} seconds to invent an alibi.`;
+            }
+            $('#start-timer-btn').disabled = state.timerLength === 0;
+            $('#reveal-awards-btn').disabled = false;
+            $('#phase-instructions').textContent =
+              'Hit "Start Timer" when the accused begins their alibi. Reveal awards when they\'re done.';
+            renderScoreboard();
+            updateModeratorWindow();
+          }
+        }, 70);
+      }
+
+      /* ── Timer ─────────────────────── */
+      function resetTimerDisplay() {
+        const t = $('#timer');
+        t.classList.remove('warn', 'bad');
+        if (state.timerLength === 0) {
+          t.textContent = 'No timer';
+          return;
+        }
+        const s = state.timerRemaining;
+        t.textContent = formatTime(s);
+      }
+      function formatTime(s) {
+        const mm = Math.floor(s / 60);
+        const ss = s % 60;
+        return `${mm}:${String(ss).padStart(2, '0')}`;
+      }
+      function startTimer() {
+        if (state.timerLength === 0) return;
+        if (state.timerRunning) return;
+        state.timerRunning = true;
+        $('#start-timer-btn').disabled = true;
+        $('#stop-timer-btn').disabled = false;
+        state.timerInterval = setInterval(() => {
+          state.timerRemaining--;
+          const t = $('#timer');
+          t.textContent = formatTime(Math.max(0, state.timerRemaining));
+          t.classList.remove('warn', 'bad');
+          if (state.timerRemaining <= 10 && state.timerRemaining > 5) t.classList.add('warn');
+          if (state.timerRemaining <= 5) t.classList.add('bad');
+          if (state.timerRemaining <= 0) {
+            stopTimerTick();
+            toast("Time's up — award points when ready.");
+            $('#stop-timer-btn').disabled = true;
+          }
+        }, 1000);
+      }
+      function stopTimer() {
+        stopTimerTick();
+        $('#stop-timer-btn').disabled = true;
+      }
+      function stopTimerTick() {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+        state.timerRunning = false;
+      }
+
+      /* ── Awards ─────────────────────── */
+      function revealAwards() {
+        stopTimer();
+        $('#award-panel').classList.remove('hidden');
+        renderAwardButtons('award-best', 'pendingBest');
+        renderAwardButtons('award-convincing', 'pendingConvincing');
+      }
+
+      function renderAwardButtons(containerId, stateKey) {
+        const root = $('#' + containerId);
+        root.innerHTML = '';
+        state.players.forEach((name, i) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'btn sm';
+          b.textContent = name;
+          if (state[stateKey] === i) b.classList.add('selected');
+          b.addEventListener('click', () => {
+            state[stateKey] = state[stateKey] === i ? null : i;
+            renderAwardButtons(containerId, stateKey);
+          });
+          root.appendChild(b);
+        });
+        const noneBtn = document.createElement('button');
+        noneBtn.type = 'button';
+        noneBtn.className = 'btn sm nowinner';
+        noneBtn.textContent = 'No winner';
+        if (state[stateKey] === 'none') noneBtn.classList.add('selected');
+        noneBtn.addEventListener('click', () => {
+          state[stateKey] = state[stateKey] === 'none' ? null : 'none';
+          renderAwardButtons(containerId, stateKey);
+        });
+        root.appendChild(noneBtn);
+      }
+
+      function applyAwards() {
+        if (state.pendingBest !== null && state.pendingBest !== 'none') {
+          const name = state.players[state.pendingBest];
+          state.scores[name] += 2;
+        }
+        if (state.pendingConvincing !== null && state.pendingConvincing !== 'none') {
+          const name = state.players[state.pendingConvincing];
+          state.scores[name] += 1;
+        }
+        state.roundHistory.push({
+          round: state.currentRound,
+          accusedIndex: state.currentAccusedIndex,
+          best: state.pendingBest,
+          convincing: state.pendingConvincing,
+          crimeId: state.currentCrime.id
+        });
+      }
+
+      /* ── Scoreboard ─────────────────────── */
+      function renderScoreboard() {
+        const grid = $('#scoreboard');
+        grid.innerHTML = '';
+        state.players.forEach((name, i) => {
+          const chip = document.createElement('div');
+          chip.className = 'score-chip';
+          if (i === state.currentAccusedIndex) chip.classList.add('accused');
+          chip.innerHTML = `<span class="name">${escapeHtml(name)}</span><span class="pts">${state.scores[name]} pt${state.scores[name] === 1 ? '' : 's'}</span>`;
+          grid.appendChild(chip);
+        });
+      }
+
+      /* ── Results ─────────────────────── */
+      function computeStandings() {
+        const rows = state.players.map((name) => ({ name, score: state.scores[name] || 0 }));
+        rows.sort((a, b) => b.score - a.score);
+        const MEDAL_ICONS = { 1: '🥇', 2: '🥈', 3: '🥉' };
+        let currentRank = 1;
+        rows.forEach((r, i) => {
+          r.rank = i > 0 && r.score === rows[i - 1].score ? rows[i - 1].rank : currentRank;
+          currentRank = i + 2;
+          r.medal = MEDAL_ICONS[r.rank] || '';
+        });
+        return rows;
+      }
+
+      function showResults() {
+        showScreen('results-screen');
+        const ol = $('#leaderboard');
+        ol.innerHTML = '';
+        const rows = computeStandings();
+
+        const topScore = rows[0]?.score ?? 0;
+        const winners = rows.filter((r) => r.score === topScore && topScore > 0);
+        const subtitle = $('#results-subtitle');
+        if (winners.length === 0) {
+          subtitle.textContent = 'Nobody scored. You were all equally unconvincing.';
+        } else if (winners.length === 1) {
+          subtitle.textContent = `${winners[0].name} told the most believable lies with ${topScore} pt${topScore === 1 ? '' : 's'}.`;
+        } else {
+          const names = joinNames(winners.map((w) => w.name));
+          subtitle.textContent = `${names} tied for the win with ${topScore} pt${topScore === 1 ? '' : 's'}!`;
+        }
+
+        rows.forEach((r) => {
+          const li = document.createElement('li');
+          li.className = 'leaderboard-row';
+          if (r.rank <= 3) li.classList.add(`podium-${r.rank}`);
+          li.innerHTML = `
+            <div class="leaderboard-rank">${r.medal || r.rank}</div>
+            <div class="leaderboard-name">${escapeHtml(r.name)}</div>
+            <div class="leaderboard-pts">${r.score}</div>
+          `;
+          ol.appendChild(li);
+        });
+        updateModeratorWindowResults(rows);
+      }
+
+      function joinNames(names) {
+        if (names.length === 0) return '';
+        if (names.length === 1) return names[0];
+        if (names.length === 2) return `${names[0]} and ${names[1]}`;
+        return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
+      }
+
+      /* ── Moderator window ─────────────────────── */
+      function openModeratorWindow() {
+        if (state.modWindow && !state.modWindow.closed) {
+          state.modWindow.focus();
+          return;
+        }
+        const w = window.open('', 'alibi-moderator', 'width=440,height=620');
+        if (!w) {
+          toast('Popup blocked — allow popups to use the moderator window.');
+          return;
+        }
+        w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Alibi — Moderator</title>
+          <style>
+            * { box-sizing: border-box; }
+            body {
+              margin: 0;
+              font-family: system-ui, -apple-system, sans-serif;
+              background: #0f172a;
+              color: #f1f5f9;
+              padding: 20px;
+              line-height: 1.5;
+            }
+            h1 { margin: 0 0 4px; font-size: 1.1rem; color: #a855f7; }
+            .sub { color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px; }
+            .section { margin-bottom: 20px; }
+            .section h2 {
+              font-size: 0.72rem;
+              letter-spacing: 0.1em;
+              text-transform: uppercase;
+              color: #64748b;
+              margin: 0 0 8px;
+              font-weight: 700;
+            }
+            .crime {
+              background: #1e293b;
+              border-left: 4px solid #f97316;
+              padding: 14px 16px;
+              border-radius: 10px;
+              font-weight: 700;
+              font-size: 1rem;
+              line-height: 1.35;
+            }
+            .accused-name {
+              font-size: 1.3rem;
+              color: #a855f7;
+              font-weight: 800;
+              margin: 0;
+            }
+            .truth {
+              padding: 14px 16px;
+              background: #1e293b;
+              border-radius: 10px;
+              border: 1px solid #334155;
+              font-size: 0.95rem;
+            }
+            ul { padding-left: 20px; margin: 8px 0 0; font-size: 0.92rem; color: #cbd5e1; }
+            li { margin-bottom: 6px; }
+            .scores {
+              background: #1e293b;
+              border: 1px solid #334155;
+              border-radius: 10px;
+              padding: 12px 16px;
+            }
+            .score-row {
+              display: flex;
+              justify-content: space-between;
+              padding: 4px 0;
+            }
+            .score-row strong { font-variant-numeric: tabular-nums; color: #a855f7; }
+            .empty { color: #64748b; font-style: italic; }
+            .winner-banner {
+              padding: 14px 18px;
+              background: linear-gradient(135deg, #a855f7, #9333ea);
+              color: white;
+              border-radius: 12px;
+              margin-bottom: 16px;
+              text-align: center;
+              font-weight: 700;
+            }
+          </style></head><body>
+            <h1>◆ Alibi — Moderator View</h1>
+            <div class="sub">Keep this window off-screen. It reveals answers!</div>
+            <div id="banner"></div>
+            <div class="section">
+              <h2>This round's case</h2>
+              <div class="crime" id="m-crime">No round in progress.</div>
+            </div>
+            <div class="section">
+              <h2>The Accused</h2>
+              <p class="accused-name" id="m-accused">—</p>
+            </div>
+            <div class="section">
+              <h2>The Real Truth</h2>
+              <div class="truth" id="m-truth">Crimes will reveal themselves here.</div>
+            </div>
+            <div class="section">
+              <h2>Prompt ideas (mid-story interjections)</h2>
+              <ul id="m-prompts"><li class="empty">Start a round to see prompt ideas.</li></ul>
+            </div>
+            <div class="section">
+              <h2>Scoreboard</h2>
+              <div class="scores" id="m-scores"><div class="empty">No scores yet.</div></div>
+            </div>
+          </body></html>`);
+        w.document.close();
+        state.modWindow = w;
+        w.addEventListener('beforeunload', () => {
+          state.modWindow = null;
+        });
+        setTimeout(() => updateModeratorWindow(), 200);
+      }
+
+      function updateModeratorWindow() {
+        const w = state.modWindow;
+        if (!w || w.closed) return;
+        const doc = w.document;
+        if (!doc) return;
+        const crime = state.currentCrime;
+        const accusedName =
+          state.currentAccusedIndex !== null ? state.players[state.currentAccusedIndex] : '—';
+        const crimeEl = doc.getElementById('m-crime');
+        const accusedEl = doc.getElementById('m-accused');
+        const truthEl = doc.getElementById('m-truth');
+        const promptsEl = doc.getElementById('m-prompts');
+        const bannerEl = doc.getElementById('banner');
+        if (bannerEl) bannerEl.innerHTML = '';
+        if (crime && crimeEl) {
+          crimeEl.textContent = `${crime.category} — ${crime.subcat}: ${crime.text}`;
+        }
+        if (accusedEl) accusedEl.textContent = accusedName;
+        if (truthEl) {
+          if (crime) {
+            const truth = crime.realTruths[Math.floor(Math.random() * crime.realTruths.length)];
+            truthEl.textContent = truth;
+          } else {
+            truthEl.textContent = 'Crimes will reveal themselves here.';
+          }
+        }
+        if (promptsEl) {
+          promptsEl.innerHTML = '';
+          if (crime) {
+            crime.promptIdeas.forEach((p) => {
+              const li = doc.createElement('li');
+              li.innerHTML = p;
+              promptsEl.appendChild(li);
+            });
+          } else {
+            const li = doc.createElement('li');
+            li.className = 'empty';
+            li.textContent = 'Start a round to see prompt ideas.';
+            promptsEl.appendChild(li);
+          }
+        }
+        const scoresEl = doc.getElementById('m-scores');
+        if (scoresEl) {
+          scoresEl.innerHTML = '';
+          if (state.players.length === 0) {
+            scoresEl.innerHTML = '<div class="empty">No players.</div>';
+          } else {
+            state.players.forEach((name) => {
+              const row = doc.createElement('div');
+              row.className = 'score-row';
+              row.innerHTML = `<span>${escapeHtml(name)}</span><strong>${state.scores[name] || 0}</strong>`;
+              scoresEl.appendChild(row);
+            });
+          }
+        }
+      }
+
+      function updateModeratorWindowResults(rows) {
+        const w = state.modWindow;
+        if (!w || w.closed) return;
+        const doc = w.document;
+        const bannerEl = doc.getElementById('banner');
+        if (bannerEl) {
+          const top = rows.filter((r) => r.rank === 1);
+          if (top.length === 1) {
+            bannerEl.innerHTML = `<div class="winner-banner">🏆 Winner: ${escapeHtml(top[0].name)} — ${top[0].score} pt${top[0].score === 1 ? '' : 's'}</div>`;
+          } else if (top.length > 1) {
+            bannerEl.innerHTML = `<div class="winner-banner">🏆 Tie! ${escapeHtml(joinNames(top.map((t) => t.name)))} — ${top[0].score} pt${top[0].score === 1 ? '' : 's'} each</div>`;
+          }
+        }
+      }
+
+      /* ── Solo mode ─────────────────────── */
+      function startSoloGame() {
+        state.soloIndex = 0;
+        state.soloScore = 0;
+        state.soloAnswered = false;
+        state.soloQueue = shuffle(CRIMES).slice(0, Math.min(state.soloMaxCases, CRIMES.length));
+        showScreen('solo-screen');
+        renderSoloCase();
+      }
+
+      function renderSoloCase() {
+        const crime = state.soloQueue[state.soloIndex];
+        if (!crime) {
+          finishSolo();
+          return;
+        }
+        $('#solo-round-pill').textContent = `Case ${state.soloIndex + 1} of ${state.soloQueue.length}`;
+        $('#solo-score').textContent = state.soloScore;
+        $('#solo-crime-text').textContent = crime.text;
+        $('#solo-crime-subcat').textContent = `${crime.category} — ${crime.subcat}`;
+        const choices = $('#solo-choices');
+        choices.innerHTML = '';
+        const letters = ['A', 'B', 'C', 'D'];
+        crime.altAlibis.forEach((alibi, i) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'choice-btn';
+          btn.dataset.index = i;
+          btn.innerHTML = `<span class="letter">${letters[i]}</span><span>${escapeHtml(alibi)}</span>`;
+          btn.addEventListener('click', () => handleSoloPick(i));
+          choices.appendChild(btn);
+        });
+        $('#solo-feedback').classList.add('hidden');
+        $('#solo-feedback').textContent = '';
+        $('#solo-next-btn').disabled = true;
+        state.soloAnswered = false;
+      }
+
+      function handleSoloPick(i) {
+        if (state.soloAnswered) return;
+        state.soloAnswered = true;
+        const crime = state.soloQueue[state.soloIndex];
+        const correct = crime.bestAlibi;
+        const buttons = $$('.choice-btn', $('#solo-choices'));
+        buttons.forEach((b) => (b.disabled = true));
+        const picked = buttons[i];
+        const correctBtn = buttons[correct];
+        if (i === correct) {
+          picked.classList.add('correct');
+          state.soloScore += 2;
+        } else {
+          picked.classList.add('wrong');
+          correctBtn.classList.add('correct');
+        }
+        $('#solo-score').textContent = state.soloScore;
+        const fb = $('#solo-feedback');
+        fb.classList.remove('hidden', 'correct', 'wrong');
+        if (i === correct) {
+          fb.classList.add('correct');
+          fb.innerHTML = `<strong>Nailed it — +2 pts.</strong><p>That alibi balances creativity and just enough plausibility. It's the kind of story a live group rewards.</p>`;
+        } else {
+          fb.classList.add('wrong');
+          fb.innerHTML = `<strong>Not the crowd favorite this round.</strong><p>The winning alibi was "${escapeHtml(crime.altAlibis[correct])}" — groups tend to reward ones that commit to a detailed, ridiculous premise without breaking character.</p>`;
+        }
+        $('#solo-next-btn').disabled = false;
+      }
+
+      function finishSolo() {
+        showScreen('results-screen');
+        const ol = $('#leaderboard');
+        ol.innerHTML = '';
+        $('#results-title').textContent = 'Practice Complete!';
+        const total = state.soloQueue.length * 2;
+        const sub = $('#results-subtitle');
+        const pct = Math.round((state.soloScore / total) * 100);
+        sub.textContent = `You scored ${state.soloScore} of ${total} (${pct}%) — ${pct >= 80 ? 'you should be hosting!' : pct >= 50 ? 'solid alibi instincts.' : 'room to sharpen.'}`;
+        const li = document.createElement('li');
+        li.className = 'leaderboard-row podium-1';
+        li.innerHTML = `
+          <div class="leaderboard-rank">🏅</div>
+          <div class="leaderboard-name">You</div>
+          <div class="leaderboard-pts">${state.soloScore} / ${total}</div>
+        `;
+        ol.appendChild(li);
+        $('#submit-score-btn').classList.remove('hidden');
+      }
+
+      /* ── Share / leaderboard ─────────────────────── */
+      function buildShareText() {
+        if (state.mode === 'host') {
+          const rows = computeStandings();
+          const top = rows.slice(0, 3);
+          const line = top
+            .map((r) => `${r.medal || r.rank + '.'} ${r.name} (${r.score})`)
+            .join(' · ');
+          return `Just played Alibi with ${state.players.length} players — ${line}`;
+        }
+        const total = state.soloQueue.length * 2;
+        return `Scored ${state.soloScore}/${total} on Alibi solo practice — can you beat it?`;
+      }
+
+      function submitLeaderboard() {
+        if (!window.voaLeaderboard) {
+          toast('Leaderboard not available right now.');
+          return;
+        }
+        let score, label;
+        if (state.mode === 'host') {
+          const rows = computeStandings();
+          const top = rows[0];
+          if (!top || top.score === 0) {
+            toast('Score a point before submitting.');
+            return;
+          }
+          score = top.score;
+          label = `Host game — top scorer: ${top.name}`;
+        } else {
+          score = state.soloScore;
+          label = `Solo practice — ${state.soloQueue.length} cases`;
+        }
+        try {
+          window.voaLeaderboard.submit(score, { label });
+          toast('Submitted to leaderboard.');
+        } catch {
+          toast('Could not submit score.');
+        }
+      }
+
+      /* ── Global listeners ─────────────────────── */
+      function initGameListeners() {
+        $('#spin-btn').addEventListener('click', spinForAccused);
+        $('#start-timer-btn').addEventListener('click', startTimer);
+        $('#stop-timer-btn').addEventListener('click', stopTimer);
+        $('#reveal-awards-btn').addEventListener('click', revealAwards);
+        $('#continue-btn').addEventListener('click', () => {
+          applyAwards();
+          nextRound();
+        });
+        $('#skip-round-btn').addEventListener('click', () => {
+          state.pendingBest = null;
+          state.pendingConvincing = null;
+          nextRound();
+        });
+        $('#quit-game-btn').addEventListener('click', () => {
+          if (confirm('End game and return to setup?')) {
+            stopTimerTick();
+            showScreen('setup-screen');
+          }
+        });
+        $('#help-btn').addEventListener('click', () => {
+          alert(
+            [
+              'Keyboard shortcuts:',
+              '',
+              'Space — Spin for accused (or start/stop timer if already spun)',
+              'Enter — Continue to next round from award panel',
+              'R — Reveal award buttons',
+              'Esc — End game',
+              '',
+              'Press in the game screen (not in an input).'
+            ].join('\n')
+          );
+        });
+
+        $('#replay-same').addEventListener('click', () => {
+          if (state.mode === 'host') startHostGame();
+          else startSoloGame();
+        });
+        $('#replay-new').addEventListener('click', () => {
+          showScreen('setup-screen');
+        });
+        $('#share-btn').addEventListener('click', () => {
+          if (!window.voaShare) {
+            toast('Share not available right now.');
+            return;
+          }
+          window.voaShare({ text: buildShareText() });
+        });
+        $('#submit-score-btn').addEventListener('click', submitLeaderboard);
+        $('#solo-next-btn').addEventListener('click', () => {
+          state.soloIndex++;
+          if (state.soloIndex >= state.soloQueue.length) {
+            finishSolo();
+          } else {
+            renderSoloCase();
+          }
+        });
+        $('#solo-quit-btn').addEventListener('click', () => {
+          if (confirm('End practice and return to setup?')) {
+            showScreen('setup-screen');
+          }
+        });
+      }
+
+      function initKeyboard() {
+        document.addEventListener('keydown', (e) => {
+          const tag = (e.target.tagName || '').toUpperCase();
+          if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+          const inShellOverlay = document.querySelector(
+            '.voa-lb-backdrop.open, .voa-share-backdrop.open'
+          );
+          if (inShellOverlay) return;
+          const active = document.querySelector('.screen.active');
+          if (!active) return;
+          if (active.id === 'game-screen') {
+            if (e.code === 'Space') {
+              e.preventDefault();
+              if (state.currentAccusedIndex === null) {
+                if (!$('#spin-btn').disabled) spinForAccused();
+              } else if (!state.timerRunning && state.timerRemaining > 0 && state.timerLength > 0) {
+                startTimer();
+              } else if (state.timerRunning) {
+                stopTimer();
+              }
+            } else if (e.key === 'r' || e.key === 'R') {
+              if (!$('#reveal-awards-btn').disabled) revealAwards();
+            } else if (e.key === 'Enter') {
+              if (!$('#award-panel').classList.contains('hidden')) {
+                applyAwards();
+                nextRound();
+              }
+            } else if (e.key === 'Escape') {
+              if (confirm('End game and return to setup?')) {
+                stopTimerTick();
+                showScreen('setup-screen');
+              }
+            }
+          }
+        });
+      }
+
+      /* ── Init ─────────────────────── */
+      document.addEventListener('DOMContentLoaded', () => {
+        state.players = loadSavedPlayers();
+        renderPlayers();
+        updateStartButton();
+        initSetupListeners();
+        initGameListeners();
+        initKeyboard();
+      });
+    </script>
+  </body>
+</html>

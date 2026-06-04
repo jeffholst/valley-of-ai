@@ -1,0 +1,59 @@
+{
+  "id": "impostor-question",
+  "name": "The Impostor Question",
+  "shortDescription": "A host-led Zoom icebreaker where everyone answers a vague question, one hidden impostor bluffs without knowing the shared topic, and the group votes before a final topic-guess twist.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-04-24T20:03:40Z",
+  "category": "Icebreakers",
+  "status": "active",
+  "tags": [
+    "icebreaker",
+    "multiplayer",
+    "hidden-role",
+    "social-deduction",
+    "zoom",
+    "moderator",
+    "party"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "leaderboard": false,
+  "generation": {
+    "agentName": "Codex",
+    "llmModel": "GPT-5",
+    "startTime": "2026-04-24T20:03:40Z",
+    "endTime": "2026-04-24T20:12:00Z",
+    "totalTokensIn": 32000,
+    "totalTokensOut": 21000,
+    "runId": "run-20260424T200340Z-f77c93",
+    "notes": "Built from approved issue #407. Duplication risk was high for Icebreakers, so the implementation emphasizes a distinct hidden-role topic-deduction loop rather than anonymous answer guessing or word-clue team play. Uses the shared multiplayer session API, /join/{code} entry, moderator-authored state transitions, and player answer/vote submissions through the shared answers endpoint. Token counts are estimated."
+  },
+  "suggestion": {
+    "issueNumber": 407,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/407",
+    "prompt": "Build app called The Impostor Question for Zoom-style icebreaker game. Moderator shares a join link, chooses rounds, and sees player grid, status, and score. Players join, enter their name, and wait for start. One random impostor is assigned while others get a shared topic. A vague question is shown, players take turns answering, then vote who the impostor is with no self-vote. Reveal impostor and votes; if not caught, impostor guesses the topic. Maintain room state for players, roles, topic, responses, votes, and gameState with large, clean, Zoom-friendly UI.",
+    "requestor": "Jeff Holst"
+  },
+  "improvements": [
+    {
+      "issueNumber": 409,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/409",
+      "runId": "run-20260424T202727Z-65ce0a",
+      "description": "Fixed the player join flow by storing the canonical app path used by the shared /join redirect.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-04-24T20:27:27Z",
+      "agentName": "Codex",
+      "llmModel": "GPT-5"
+    },
+    {
+      "issueNumber": 411,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/411",
+      "runId": "run-20260425T214321Z-cf67d4",
+      "description": "Fixed voting race condition: concurrent vote submissions caused last-writer-wins data loss. Added record_session_vote SQL RPC with SELECT FOR UPDATE row locking and JSONB || merge so all votes are recorded atomically.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-04-25T22:18:05Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
+    }
+  ]
+}

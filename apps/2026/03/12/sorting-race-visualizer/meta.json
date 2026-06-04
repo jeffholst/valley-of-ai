@@ -22,5 +22,6 @@
     "notes": "Agent-generated concept (no pending suggestion). Added shared shell, GA placeholder snippet, responsive UI, and side-by-side sorting race with comparison/swap counters. Token values are best-effort estimates from model-side interaction logs."
   },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://valleyofai.com/schemas/meta.json"
+  "$id": "https://valleyofai.com/schemas/meta.json",
+  "leaderboard": false
 }

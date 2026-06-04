@@ -101,5 +101,6 @@
     "totalTokensOut": 20000,
     "runId": "run-20260326T185345Z-a3f7c2",
     "notes": "Built from approved community suggestion issue #230. 12 hand-crafted levels of increasing difficulty. Canvas-based rendering with brick walls, wooden crate aesthetic, amber color palette. Token counts are estimates."
-  }
+  },
+  "leaderboard": false
 }

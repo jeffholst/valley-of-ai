@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emoji Quiz Party - __MAIN_SITE_NAME__</title>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', '__GA_MEASUREMENT_ID__');
+  </script>
+
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+  <meta name="voa-github-url" content="__GITHUB_URL__" />
+  <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+  <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+  <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+  <meta name="application-name" content="Emoji Quiz Party" />
+  <meta name="voa-app-id" content="2026/04/01/emoji-quiz-party" />
+  <script src="/apps/shared/app-shell.js" defer></script>
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --text: #f9fafb;
+      --surface: #1e293b;
+      --accent: #f59e0b;
+      --accent2: #8b5cf6;
+      --success: #10b981;
+      --danger: #ef4444;
+      --info: #3b82f6;
+      --glow: rgba(245, 158, 11, 0.3);
+    }
+
+    [data-theme='light'] {
+      --bg: #ffffff;
+      --text: #1f2937;
+      --surface: #f3f4f6;
+      --accent: #d97706;
+      --accent2: #7c3aed;
+      --success: #059669;
+      --danger: #dc2626;
+      --info: #2563eb;
+      --glow: rgba(217, 119, 6, 0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    #appWrapper {
+      position: fixed;
+      top: 64px;
+      bottom: 56px;
+      left: 0;
+      right: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .screen {
+      display: none;
+      width: 100%;
+      max-width: 600px;
+      padding: 16px;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    /* Setup Screen */
+    .setup-title {
+      font-size: 2rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 4px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .setup-subtitle {
+      font-size: 0.95rem;
+      color: var(--text);
+      opacity: 0.7;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .player-input-row {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+
+    .player-input-row input {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 2px solid var(--surface);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .player-input-row input:focus {
+      border-color: var(--accent);
+    }
+
+    .player-input-row input::placeholder {
+      opacity: 0.5;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      touch-action: manipulation;
+      min-height: 48px;
+      min-width: 48px;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn-accent {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      box-shadow: 0 4px 15px var(--glow);
+    }
+
+    .btn-accent:hover:not(:disabled) {
+      box-shadow: 0 6px 25px var(--glow);
+    }
+
+    .btn-add {
+      background: var(--success);
+      color: #fff;
+      padding: 12px 18px;
+      font-size: 1.2rem;
+      border-radius: 12px;
+    }
+
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      min-height: 36px;
+      min-width: 36px;
+      border-radius: 8px;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .btn-info {
+      background: var(--info);
+      color: #fff;
+    }
+
+    .player-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .player-chip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .player-chip .remove-btn {
+      background: none;
+      border: none;
+      color: var(--danger);
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      line-height: 1;
+      min-height: 44px;
+      min-width: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .player-count {
+      font-size: 0.85rem;
+      opacity: 0.6;
+      margin-bottom: 12px;
+    }
+
+    .round-config {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .round-config label {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .round-config select {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 2px solid var(--surface);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 1rem;
+      cursor: pointer;
+      min-height: 44px;
+    }
+
+    /* Game Screen */
+    .game-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .round-label {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .type-badge {
+      font-size: 1.05rem;
+      font-weight: 900;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .emoji-display {
+      width: 100%;
+      text-align: center;
+      font-size: 3.5rem;
+      padding: 24px 8px;
+      background: var(--surface);
+      border-radius: 16px;
+      margin-bottom: 12px;
+      line-height: 1.4;
+      word-break: break-word;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 4px;
+    }
+
+    .timer-bar-wrap {
+      width: 100%;
+      height: 12px;
+      background: var(--surface);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    .timer-bar {
+      height: 100%;
+      border-radius: 6px;
+      transition: width 1s linear, background 0.5s;
+      background: var(--success);
+    }
+
+    .timer-bar.warn {
+      background: var(--accent);
+    }
+
+    .timer-bar.danger {
+      background: var(--danger);
+    }
+
+    .timer-text {
+      font-size: 1.5rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-text.danger {
+      color: var(--danger);
+    }
+
+    .clue-section {
+      width: 100%;
+      min-height: 64px;
+      margin-bottom: 12px;
+    }
+
+    .clue-card {
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 10px 16px;
+      margin-bottom: 6px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      animation: clueIn 0.4s ease;
+    }
+
+    .clue-card.visible {
+      display: flex;
+    }
+
+    @keyframes clueIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .clue-label {
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: #fff;
+    }
+
+    .clue-label.hard {
+      background: var(--danger);
+    }
+
+    .clue-label.medium {
+      background: var(--accent);
+    }
+
+    .clue-label.easy {
+      background: var(--success);
+    }
+
+    .clue-text {
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .answer-reveal {
+      width: 100%;
+      text-align: center;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: none;
+      animation: clueIn 0.4s ease;
+    }
+
+    .answer-reveal.visible {
+      display: block;
+    }
+
+    .player-buttons {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .player-score-btn {
+      padding: 10px 8px;
+      border-radius: 10px;
+      border: 2px solid var(--surface);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-height: 52px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      touch-action: manipulation;
+    }
+
+    .player-score-btn:active {
+      transform: scale(0.96);
+    }
+
+    .player-score-btn.selected {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.15);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    }
+
+    .player-score-btn .name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
+    }
+
+    .player-score-btn .score {
+      font-size: 0.75rem;
+      opacity: 0.7;
+    }
+
+    .game-actions {
+      width: 100%;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Scoreboard Screen */
+    .scoreboard-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 4px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .scoreboard-subtitle {
+      font-size: 0.9rem;
+      opacity: 0.6;
+      margin-bottom: 20px;
+    }
+
+    .scoreboard-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .score-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--surface);
+      border-radius: 12px;
+      transition: transform 0.3s;
+    }
+
+    .score-row.winner {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(139, 92, 246, 0.2));
+      border: 2px solid var(--accent);
+      box-shadow: 0 4px 20px var(--glow);
+    }
+
+    .score-rank {
+      font-size: 1.5rem;
+      font-weight: 800;
+      min-width: 40px;
+      text-align: center;
+    }
+
+    .score-row.winner .score-rank {
+      color: var(--accent);
+    }
+
+    .score-name {
+      flex: 1;
+      font-size: 1.1rem;
+      font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .score-value {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* Host Answer Options */
+    .answer-options {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .answer-options-label {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .answer-options-hint {
+      font-size: 0.8rem;
+      opacity: 0.5;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .answer-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--surface);
+      border-radius: 10px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .answer-option:hover {
+      background: var(--surface);
+      filter: brightness(1.1);
+    }
+
+    .answer-option input[type='checkbox'] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .answer-option-text {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .answer-option-desc {
+      font-size: 0.75rem;
+      opacity: 0.6;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 400px) {
+      .emoji-display {
+        font-size: 2.5rem;
+        padding: 16px 8px;
+      }
+
+      .setup-title {
+        font-size: 1.6rem;
+      }
+
+      .player-buttons {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="appWrapper">
+    <!-- Setup Screen -->
+    <div id="setupScreen" class="screen active">
+      <div class="setup-title">Emoji Quiz Party</div>
+      <div class="setup-subtitle">
+        A fun emoji guessing game for Zoom calls
+      </div>
+
+      <div class="player-input-row">
+        <input type="text" id="playerNameInput" placeholder="Enter player name..." maxlength="20" autocomplete="off" />
+        <button class="btn btn-add" id="addPlayerBtn" title="Add player">
+          +
+        </button>
+      </div>
+
+      <div class="player-count" id="playerCount">0 players added</div>
+      <div class="player-list" id="playerList"></div>
+      <button class="btn btn-danger" id="clearPlayersBtn" type="button">
+        Remove All Users
+      </button>
+
+      <div class="round-config">
+        <label for="roundSelect">Rounds:</label>
+        <select id="roundSelect">
+          <option value="5" selected>5</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+        </select>
+      </div>
+
+      <div class="answer-options">
+        <div class="answer-options-label">Host Answer Display</div>
+        <div class="answer-options-hint">
+          Choose how you see answers (hidden from screen-shared players)
+        </div>
+        <label class="answer-option">
+          <input type="checkbox" id="optPopup" checked />
+          <div>
+            <div class="answer-option-text">Separate popup window</div>
+            <div class="answer-option-desc">
+              Opens a small window — don't share it on Zoom
+            </div>
+          </div>
+        </label>
+        <label class="answer-option">
+          <input type="checkbox" id="optNotification" />
+          <div>
+            <div class="answer-option-text">Browser notification</div>
+            <div class="answer-option-desc">
+              OS notification — invisible on most screen shares
+            </div>
+          </div>
+        </label>
+        <label class="answer-option">
+          <input type="checkbox" id="optConsole" />
+          <div>
+            <div class="answer-option-text">Developer console</div>
+            <div class="answer-option-desc">
+              Prints answer to browser console (F12)
+            </div>
+          </div>
+        </label>
+      </div>
+
+      <button class="btn btn-accent" id="startGameBtn" disabled>
+        Start Game
+      </button>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="screen">
+      <div class="game-header">
+        <span class="round-label" id="roundLabel">Round 1 / 5</span>
+        <span class="type-badge" id="typeBadge">Movie</span>
+      </div>
+
+      <div class="emoji-display" id="emojiDisplay"></div>
+
+      <div class="timer-bar-wrap">
+        <div class="timer-bar" id="timerBar"></div>
+      </div>
+      <div class="timer-text" id="timerText">30</div>
+
+      <div class="clue-section" id="clueSection">
+        <div class="clue-card" id="clueHard">
+          <span class="clue-label hard">Hard</span>
+          <span class="clue-text" id="clueHardText"></span>
+        </div>
+        <div class="clue-card" id="clueMedium">
+          <span class="clue-label medium">Medium</span>
+          <span class="clue-text" id="clueMediumText"></span>
+        </div>
+        <div class="clue-card" id="clueEasy">
+          <span class="clue-label easy">Easy</span>
+          <span class="clue-text" id="clueEasyText"></span>
+        </div>
+      </div>
+
+      <div class="answer-reveal" id="answerReveal"></div>
+
+      <div class="player-buttons" id="playerButtons"></div>
+
+      <div class="game-actions">
+        <button class="btn btn-accent" id="nextRoundBtn">Next Round</button>
+        <button class="btn btn-danger" id="endGameBtn">End Game</button>
+      </div>
+    </div>
+
+    <!-- Scoreboard Screen -->
+    <div id="scoreboardScreen" class="screen">
+      <div class="scoreboard-title">Final Scores</div>
+      <div class="scoreboard-subtitle" id="scoreboardSubtitle">
+        Game Over!
+      </div>
+
+      <div class="scoreboard-list" id="scoreboardList"></div>
+
+      <button class="btn btn-accent" id="playAgainBtn">Play Again</button>
+    </div>
+  </div>
+
+  <canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+
+  <script>
+    /* ============================================================
+     * Emoji Quiz Party
+     * A presenter-driven party game for Zoom calls.
+     * The presenter adds player names, starts the game, and taps
+     * player buttons to award points as players guess emoji combos.
+     * ============================================================ */
+
+    // --- Quiz Data: 20 rounds of emoji sets ---
+    const QUIZ_DATA = [
+      {
+        "emojis": "🧑‍🚀🌕",
+        "type": "movie",
+        "title": "Apollo 13",
+        "clue_hard": "Real-life mission where things did not go as planned",
+        "clue_medium": "Features the quote about failure not being an option",
+        "clue_easy": "Drama about a troubled NASA lunar mission"
+      },
+      {
+        "emojis": "🧑‍⚖️📜🇺🇸",
+        "type": "movie",
+        "title": "Legally Blonde",
+        "clue_hard": "Pink crosses paths with precedent",
+        "clue_medium": "Law school proves more fashionable than expected",
+        "clue_easy": "Comedy about a sorority girl who goes to Harvard Law"
+      },
+      {
+        "emojis": "🧊🚢🌊",
+        "type": "movie",
+        "title": "Titanic",
+        "clue_hard": "A collision changes countless fates",
+        "clue_medium": "Set on a doomed luxury liner",
+        "clue_easy": "Epic romance aboard an ill-fated ocean liner"
+      },
+      {
+        "emojis": "🧔🔫🍸",
+        "type": "movie",
+        "title": "James Bond",
+        "clue_hard": "License and style come together",
+        "clue_medium": "Known for gadgets and tuxedos",
+        "clue_easy": "British spy franchise with 007 as the main agent"
+      },
+      {
+        "emojis": "🧟‍♂️🏹🏙️",
+        "type": "movie",
+        "title": "World War Z",
+        "clue_hard": "Fast problems spread globally",
+        "clue_medium": "Features a UN investigator father",
+        "clue_easy": "Zombie pandemic thriller racing across the globe"
+      },
+      {
+        "emojis": "🧙‍♂️💍🌋",
+        "type": "movie",
+        "title": "The Lord of the Rings",
+        "clue_hard": "A burdensome circle shapes destinies",
+        "clue_medium": "Includes journeys through Middle-earth",
+        "clue_easy": "Fantasy saga about destroying a powerful ring"
+      },
+      {
+        "emojis": "🦇🏙️🤵",
+        "type": "movie",
+        "title": "The Dark Knight",
+        "clue_hard": "Order and chaos clash in a modern city",
+        "clue_medium": "Features a clown-faced nemesis",
+        "clue_easy": "Superhero film with Batman facing the Joker"
+      },
+      {
+        "emojis": "🎈🏠👴👦",
+        "type": "movie",
+        "title": "Up",
+        "clue_hard": "Grief, helium, and adventure intertwine",
+        "clue_medium": "Begins with a powerful wordless montage",
+        "clue_easy": "Animated film about a flying house and an old man"
+      },
+      {
+        "emojis": "🧑‍🍳🐀🇫🇷",
+        "type": "movie",
+        "title": "Ratatouille",
+        "clue_hard": "An unlikely chef proves a critic wrong",
+        "clue_medium": "Culinary ambition in the City of Light",
+        "clue_easy": "Animated movie about a rat who cooks in Paris"
+      },
+      {
+        "emojis": "🧟‍♂️🧠🏫",
+        "type": "movie",
+        "title": "Zombieland",
+        "clue_hard": "The rules matter for survival",
+        "clue_medium": "Features a theme-park finale",
+        "clue_easy": "Comedy about surviving a zombie apocalypse"
+      },
+      {
+        "emojis": "🎸🏫👨‍🏫",
+        "type": "movie",
+        "title": "School of Rock",
+        "clue_hard": "Impostor teaches more than the curriculum",
+        "clue_medium": "A band forms inside a classroom",
+        "clue_easy": "Comedy about a fake substitute who starts a rock band"
+      },
+      {
+        "emojis": "🕷️🧑‍🎓🏙️",
+        "type": "movie",
+        "title": "Spider-Man",
+        "clue_hard": "With responsibility comes complication",
+        "clue_medium": "Radioactivity causes wall-related hobbies",
+        "clue_easy": "Superhero story about a teen bitten by a spider"
+      },
+      {
+        "emojis": "🏎️🔥👊",
+        "type": "movie",
+        "title": "Fast & Furious",
+        "clue_hard": "Torque, family, and loyalty collide",
+        "clue_medium": "Focused on heists and street racing",
+        "clue_easy": "Action franchise about fast cars and found family"
+      },
+      {
+        "emojis": "👻🏠📹",
+        "type": "movie",
+        "title": "Paranormal Activity",
+        "clue_hard": "A fixed perspective captures odd events",
+        "clue_medium": "Found footage inside a suburban home",
+        "clue_easy": "Horror movie using security cameras to show a haunting"
+      },
+      {
+        "emojis": "🦁👑🌅",
+        "type": "movie",
+        "title": "The Lion King",
+        "clue_hard": "A circle shapes every destiny",
+        "clue_medium": "Set mostly on the African savannah",
+        "clue_easy": "Animated film about a lion prince reclaiming his throne"
+      },
+      {
+        "emojis": "❄️👭⛄",
+        "type": "movie",
+        "title": "Frozen",
+        "clue_hard": "A storm of emotions freezes relationships",
+        "clue_medium": "Sisters struggle with distance and power",
+        "clue_easy": "Disney musical about two royal sisters and ice magic"
+      },
+      {
+        "emojis": "🚀🌌👽",
+        "type": "movie",
+        "title": "Guardians of the Galaxy",
+        "clue_hard": "Outlaws discover they can be heroes",
+        "clue_medium": "Features a talking tree and a raccoon",
+        "clue_easy": "Marvel movie about misfit space heroes"
+      },
+      {
+        "emojis": "🧑‍🚀🤖🌌",
+        "type": "movie",
+        "title": "Interstellar",
+        "clue_hard": "Love bends interpretation across dimensions",
+        "clue_medium": "Time dilation plays a major role",
+        "clue_easy": "Sci-fi film about a space mission to save humanity"
+      },
+      {
+        "emojis": "🕰️🔁💏",
+        "type": "movie",
+        "title": "Groundhog Day",
+        "clue_hard": "A lesson learned only through repetition",
+        "clue_medium": "One day becomes many chances",
+        "clue_easy": "Comedy where the same day repeats endlessly"
+      },
+      {
+        "emojis": "🎤🧤👑",
+        "type": "song",
+        "title": "Billie Jean",
+        "clue_hard": "Denial sits at the center of the story",
+        "clue_medium": "Narrator insists a child isn’t his",
+        "clue_easy": "Michael Jackson song about a woman’s claim of paternity"
+      },
+      {
+        "emojis": "💍💔🧠",
+        "type": "song",
+        "title": "Rolling in the Deep",
+        "clue_hard": "Ruins become fuel for powerful sound",
+        "clue_medium": "A voice turns heartbreak into revenge",
+        "clue_easy": "Adele song about betrayal and anger after a breakup"
+      },
+      {
+        "emojis": "🐝💍💃",
+        "type": "song",
+        "title": "Single Ladies",
+        "clue_hard": "Instructions come with rhythmic pointing",
+        "clue_medium": "Choreography is almost as famous as the chorus",
+        "clue_easy": "Beyoncé anthem about independence and commitment"
+      },
+      {
+        "emojis": "☀️🎶👓",
+        "type": "song",
+        "title": "Walking on Sunshine",
+        "clue_hard": "Optimism amps up like volume",
+        "clue_medium": "Often used in upbeat montage scenes",
+        "clue_easy": "Katrina & The Waves song about feeling incredibly happy"
+      },
+      {
+        "emojis": "😴💤🧠",
+        "type": "song",
+        "title": "Enter Sandman",
+        "clue_hard": "Lullaby imagery takes a darker route",
+        "clue_medium": "Metal meets childhood fears",
+        "clue_easy": "Metallica song about nightmares and the bogeyman"
+      },
+      {
+        "emojis": "💰🗣️",
+        "type": "phrase",
+        "title": "Talk is cheap",
+        "clue_hard": "Value is questioned without action",
+        "clue_medium": "Implies promises aren’t worth much",
+        "clue_easy": "Saying that actions matter more than words"
+      },
+      {
+        "emojis": "🧂🧠",
+        "type": "phrase",
+        "title": "Take it with a grain of salt",
+        "clue_hard": "Skepticism is the hidden ingredient",
+        "clue_medium": "Suggests mild doubt about what was said",
+        "clue_easy": "Means you shouldn’t fully believe something"
+      },
+      {
+        "emojis": "🕓💰",
+        "type": "phrase",
+        "title": "Time is money",
+        "clue_hard": "Two resources are equated",
+        "clue_medium": "Common in productivity and business settings",
+        "clue_easy": "Means time is as valuable as cash"
+      },
+      {
+        "emojis": "🥊🎓",
+        "type": "phrase",
+        "title": "School of hard knocks",
+        "clue_hard": "Lessons come without a classroom",
+        "clue_medium": "Refers to learning from life’s difficulties",
+        "clue_easy": "Expression about gaining experience through tough situations"
+      },
+      {
+        "emojis": "🚪📖",
+        "type": "phrase",
+        "title": "When one door closes, another opens",
+        "clue_hard": "Transition is embedded in the metaphor",
+        "clue_medium": "Often used to comfort after a setback",
+        "clue_easy": "Means new opportunities follow failures or endings"
+      },
+      {
+        "emojis": "🎭🙂☹️",
+        "type": "phrase",
+        "title": "Mixed feelings",
+        "clue_hard": "Masks represent emotional conflict",
+        "clue_medium": "Used when reactions are not straightforward",
+        "clue_easy": "Means feeling both positive and negative at once"
+      },
+      {
+        "emojis": "🎯🔥",
+        "type": "phrase",
+        "title": "On fire",
+        "clue_hard": "Success comes in streaks",
+        "clue_medium": "Often used in games or performance",
+        "clue_easy": "Means doing extremely well repeatedly"
+      },
+      {
+        "emojis": "📦🐱❓",
+        "type": "phrase",
+        "title": "Schrödinger's cat",
+        "clue_hard": "Experiment lives more in thought than cage",
+        "clue_medium": "Involves uncertainty until observation",
+        "clue_easy": "Famous physics thought experiment about quantum superposition"
+      },
+      {
+        "emojis": "🧠💨",
+        "type": "phrase",
+        "title": "Mind blown",
+        "clue_hard": "Perception can’t contain the new data",
+        "clue_medium": "Used after surprising info or ideas",
+        "clue_easy": "Means being extremely surprised or amazed"
+      },
+      {
+        "emojis": "🎢😱😁",
+        "type": "phrase",
+        "title": "Emotional roller coaster",
+        "clue_hard": "Ups and downs share a track",
+        "clue_medium": "Describes unstable states",
+        "clue_easy": "Means rapidly changing feelings, often intense"
+      },
+      {
+        "emojis": "🥶 🧱🔨",
+        "type": "phrase",
+        "title": "Break the ice",
+        "clue_hard": "First strike eases tension",
+        "clue_medium": "Used frequently at the start of meetings",
+        "clue_easy": "Means to get people comfortable talking"
+      },
+      {
+        "emojis": "🔊⬆️",
+        "type": "phrase",
+        "title": "Turn it up",
+        "clue_hard": "A request is made without units",
+        "clue_medium": "Often said while playing music",
+        "clue_easy": "Means increase the volume"
+      },
+      {
+        "emojis": "🌃📚🔥",
+        "type": "phrase",
+        "title": "Burning the midnight oil",
+        "clue_hard": "Illumination once came from lamps",
+        "clue_medium": "Refers to late-night effort",
+        "clue_easy": "Means working or studying very late"
+      },
+      {
+        "emojis": "🌪️🧠",
+        "type": "phrase",
+        "title": "Brainstorm",
+        "clue_hard": "Weather meets creativity",
+        "clue_medium": "Common in meetings",
+        "clue_easy": "Means generating lots of ideas quickly"
+      },
+      {
+        "emojis": "🎩🐇",
+        "type": "phrase",
+        "title": "Pull a rabbit out of a hat",
+        "clue_hard": "Surprise emerges from nowhere",
+        "clue_medium": "Linked with magic shows",
+        "clue_easy": "Means producing an unexpected solution or result"
+      },
+      {
+        "emojis": "⚖️❤️🧠",
+        "type": "phrase",
+        "title": "Head over heart",
+        "clue_hard": "Balance tilts away from feeling",
+        "clue_medium": "Describes a certain decision style",
+        "clue_easy": "Means choosing logic over emotion"
+      },
+      {
+        "emojis": "🧑‍🦱⚡️🧹",
+        "type": "movie",
+        "title": "Harry Potter",
+        "clue_hard": "A scar and a school change everything",
+        "clue_medium": "Features a castle full of young wizards",
+        "clue_easy": "Fantasy series about a boy wizard at a magic school"
+      },
+      {
+        "emojis": "🐼🥋🎋",
+        "type": "movie",
+        "title": "Kung Fu Panda",
+        "clue_hard": "A prophecy picks an unlikely hero",
+        "clue_medium": "Martial arts meet noodles and destiny",
+        "clue_easy": "Animated movie about a panda who learns kung fu"
+      },
+      {
+        "emojis": "🚗🧒🏞️",
+        "type": "movie",
+        "title": "Cars",
+        "clue_hard": "A detour leads to humility",
+        "clue_medium": "Set in a quiet town along an old highway",
+        "clue_easy": "Pixar film about talking race cars"
+      },
+      {
+        "emojis": "👦🤖🚀",
+        "type": "movie",
+        "title": "The Iron Giant",
+        "clue_hard": "A promise about not being a weapon",
+        "clue_medium": "Set during the Cold War in a small town",
+        "clue_easy": "Animated movie about a boy who befriends a giant robot"
+      },
+      {
+        "emojis": "🦖🧬🏝️",
+        "type": "movie",
+        "title": "Jurassic Park",
+        "clue_hard": "Nature finds its own way",
+        "clue_medium": "An attraction island goes wrong",
+        "clue_easy": "Sci‑fi adventure about a dinosaur theme park"
+      },
+      {
+        "emojis": "👶🏠🕵️",
+        "type": "movie",
+        "title": "Home Alone",
+        "clue_hard": "A forgotten traveler changes everyone’s plans",
+        "clue_medium": "Booby traps defend a suburban house",
+        "clue_easy": "Holiday comedy about a kid left alone at home"
+      },
+      {
+        "emojis": "🕶️📱💊",
+        "type": "movie",
+        "title": "The Matrix",
+        "clue_hard": "Choice between reality and comfort",
+        "clue_medium": "Features a famous red and blue option",
+        "clue_easy": "Sci‑fi movie about a hacker who learns the world is a simulation"
+      },
+      {
+        "emojis": "🎈🤡🎪",
+        "type": "movie",
+        "title": "It",
+        "clue_hard": "Fear returns on a long cycle",
+        "clue_medium": "A small town is haunted by a clown",
+        "clue_easy": "Horror film about an evil clown terrorizing children"
+      },
+      {
+        "emojis": "🧑‍🌾👽🌾",
+        "type": "movie",
+        "title": "Signs",
+        "clue_hard": "Patterns in fields cause concern",
+        "clue_medium": "A former preacher faces strange visitors",
+        "clue_easy": "Thriller about aliens and mysterious crop circles"
+      },
+      {
+        "emojis": "🧹🏠👻",
+        "type": "movie",
+        "title": "Ghostbusters",
+        "clue_hard": "Science meets slime",
+        "clue_medium": "A catchy theme song asks who you’ll call",
+        "clue_easy": "Comedy about a team that catches ghosts in New York"
+      },
+      {
+        "emojis": "👑👠🕛",
+        "type": "movie",
+        "title": "Cinderella",
+        "clue_hard": "Transportation expires at midnight",
+        "clue_medium": "A lost shoe changes someone’s life",
+        "clue_easy": "Fairy tale movie about a girl, a glass slipper, and a prince"
+      },
+      {
+        "emojis": "🍫🏭👦",
+        "type": "movie",
+        "title": "Charlie and the Chocolate Factory",
+        "clue_hard": "A ticket opens the door to temptation",
+        "clue_medium": "Strange candy tests several children",
+        "clue_easy": "Film about a boy touring a wild chocolate factory"
+      },
+      {
+        "emojis": "🎄👦🧊",
+        "type": "movie",
+        "title": "The Polar Express",
+        "clue_hard": "A train ride tests belief",
+        "clue_medium": "Journey to a very cold address",
+        "clue_easy": "Animated movie about a magical train to the North Pole"
+      },
+      {
+        "emojis": "🖊️📓💔",
+        "type": "movie",
+        "title": "The Notebook",
+        "clue_hard": "Memory fades but the story remains",
+        "clue_medium": "A love story is read aloud in pieces",
+        "clue_easy": "Romantic film about a couple whose story is kept in a journal"
+      },
+      {
+        "emojis": "🏹🖤🔥",
+        "type": "movie",
+        "title": "The Hunger Games",
+        "clue_hard": "Survival is turned into a spectacle",
+        "clue_medium": "Features a bow‑using heroine",
+        "clue_easy": "Dystopian movie about teens forced to fight on TV"
+      },
+      {
+        "emojis": "🧛🌙🎹",
+        "type": "song",
+        "title": "Zombie",
+        "clue_hard": "Title suggests the undead, lyrics talk conflict",
+        "clue_medium": "Distinctive vocals from an Irish band",
+        "clue_easy": "The Cranberries rock song with a haunting chorus"
+      },
+      {
+        "emojis": "🚀⭐️",
+        "type": "phrase",
+        "title": "Reach for the stars",
+        "clue_hard": "Gravity doesn’t limit ambition",
+        "clue_medium": "Common in motivational speeches",
+        "clue_easy": "Means aim very high with your goals"
+      },
+    ];
+
+    // --- State ---
+    let players = [];
+    let scores = {};
+    let currentRound = 0;
+    let totalRounds = 5;
+    let roundOrder = [];
+    let timerInterval = null;
+    const ROUND_DURATION_SECONDS = 30;
+    let timeLeft = ROUND_DURATION_SECONDS;
+    let roundSelections = new Set();
+
+    // Host answer display settings
+    let hostPopupWindow = null;
+    let usePopup = true;
+    let useNotification = false;
+    let useConsole = false;
+    const PLAYER_STORAGE_KEY = 'emoji-quiz-party:players';
+
+    // --- DOM refs ---
+    const $ = (id) => document.getElementById(id);
+
+    const playerNameInput = $('playerNameInput');
+    const addPlayerBtn = $('addPlayerBtn');
+    const clearPlayersBtn = $('clearPlayersBtn');
+    const playerList = $('playerList');
+    const playerCount = $('playerCount');
+    const roundSelect = $('roundSelect');
+    const startGameBtn = $('startGameBtn');
+
+    const setupScreen = $('setupScreen');
+    const gameScreen = $('gameScreen');
+    const scoreboardScreen = $('scoreboardScreen');
+
+    const roundLabel = $('roundLabel');
+    const typeBadge = $('typeBadge');
+    const emojiDisplay = $('emojiDisplay');
+    const timerBar = $('timerBar');
+    const timerText = $('timerText');
+    const clueHard = $('clueHard');
+    const clueMedium = $('clueMedium');
+    const clueEasy = $('clueEasy');
+    const clueHardText = $('clueHardText');
+    const clueMediumText = $('clueMediumText');
+    const clueEasyText = $('clueEasyText');
+    const answerReveal = $('answerReveal');
+    const playerButtons = $('playerButtons');
+    const nextRoundBtn = $('nextRoundBtn');
+    const endGameBtn = $('endGameBtn');
+
+    const scoreboardList = $('scoreboardList');
+    const scoreboardSubtitle = $('scoreboardSubtitle');
+    const playAgainBtn = $('playAgainBtn');
+    const confettiCanvas = $('confettiCanvas');
+
+    const optPopup = $('optPopup');
+    const optNotification = $('optNotification');
+    const optConsole = $('optConsole');
+
+    // --- Host Answer Delivery ---
+
+    /** Ensure browser notification permission is granted when enabled */
+    async function ensureNotificationPermission() {
+      if (!('Notification' in window)) return false;
+      if (Notification.permission === 'granted') return true;
+      if (Notification.permission === 'denied') return false;
+      try {
+        const permission = await Notification.requestPermission();
+        return permission === 'granted';
+      } catch (err) {
+        console.warn('Notification permission request failed:', err);
+        return false;
+      }
+    }
+
+    /** Request notification permission when that option is checked */
+    optNotification.addEventListener('change', function () {
+      if (this.checked) {
+        ensureNotificationPermission();
+      }
+    });
+
+    /** Read answer display preferences from the setup checkboxes */
+    function readAnswerPrefs() {
+      usePopup = optPopup.checked;
+      useNotification = optNotification.checked;
+      useConsole = optConsole.checked;
+    }
+
+    /** Send the answer for the current round to the host via selected channels */
+    function deliverAnswerToHost(data) {
+      const msg = `Round ${currentRound + 1}: ${data.title} (${data.type})`;
+
+      if (usePopup && hostPopupWindow && !hostPopupWindow.closed) {
+        const doc = hostPopupWindow.document;
+        doc.getElementById('hostRound').textContent = `Round ${currentRound + 1} / ${totalRounds}`;
+        const typeEl = doc.getElementById('hostType');
+        typeEl.textContent = data.type;
+        typeEl.style.display = 'inline-block';
+        doc.getElementById('hostAnswer').textContent = data.title;
+        doc.getElementById('hostClueHard').textContent = data.clue_hard;
+        doc.getElementById('hostClueMedium').textContent = data.clue_medium;
+        doc.getElementById('hostClueEasy').textContent = data.clue_easy;
+      }
+
+      if (useNotification && 'Notification' in window && Notification.permission === 'granted') {
+        try {
+          new Notification('Emoji Quiz Party', {
+            body: msg,
+            requireInteraction: true,
+            tag: `emoji-quiz-party-round-${currentRound + 1}`,
+          });
+        } catch (err) {
+          console.warn('Browser notification failed:', err);
+        }
+      }
+
+      if (useConsole) {
+        console.log(
+          `%c${msg}`,
+          'color: #f59e0b; font-size: 16px; font-weight: bold;'
+        );
+        console.log(`  Hard clue: ${data.clue_hard}`);
+        console.log(`  Medium clue: ${data.clue_medium}`);
+        console.log(`  Easy clue: ${data.clue_easy}`);
+      }
+    }
+
+    /** Open the host answer popup window with a styled display */
+    function openHostPopup() {
+      if (hostPopupWindow && !hostPopupWindow.closed) {
+        hostPopupWindow.focus();
+        return;
+      }
+      hostPopupWindow = window.open('', 'HostAnswers', 'width=360,height=320,left=50,top=50');
+      if (!hostPopupWindow) return;
+      hostPopupWindow.document.write(`<!DOCTYPE html>
+<html><head><title>Host Answers</title><style>
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f172a; color: #f9fafb; margin: 0; padding: 16px; }
+  h2 { color: #f59e0b; margin: 0 0 4px; font-size: 1rem; }
+  .round { opacity: 0.7; font-size: 0.85rem; margin-bottom: 12px; }
+  .type { display: inline-block; background: #8b5cf6; color: #fff; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+  .answer { font-size: 1.8rem; font-weight: 800; margin-bottom: 16px; background: linear-gradient(135deg, #f59e0b, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .clues { font-size: 0.85rem; }
+  .clue { padding: 6px 0; border-bottom: 1px solid #1e293b; }
+  .clue-label { font-weight: 700; font-size: 0.7rem; text-transform: uppercase; }
+  .clue-label.hard { color: #ef4444; } .clue-label.medium { color: #f59e0b; } .clue-label.easy { color: #10b981; }
+  .waiting { opacity: 0.5; font-style: italic; margin-top: 40px; text-align: center; }
+</style></head><body>
+  <h2>Host Answers</h2>
+  <div class="round" id="hostRound">Waiting for game to start...</div>
+  <div class="type" id="hostType" style="display:none"></div>
+  <div class="answer" id="hostAnswer"></div>
+  <div class="clues">
+    <div class="clue"><span class="clue-label hard">Hard:</span> <span id="hostClueHard"></span></div>
+    <div class="clue"><span class="clue-label medium">Medium:</span> <span id="hostClueMedium"></span></div>
+    <div class="clue"><span class="clue-label easy">Easy:</span> <span id="hostClueEasy"></span></div>
+  </div>
+</body></html>`);
+      hostPopupWindow.document.close();
+    }
+
+    // --- Setup Screen Logic ---
+
+    /** Save the current player list so hosts do not need to re-enter names each session */
+    function persistPlayers() {
+      try {
+        localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(players));
+      } catch (err) {
+        console.warn('Unable to save players to localStorage:', err);
+      }
+    }
+
+    /** Load previously saved players from localStorage and repopulate in-memory scores */
+    function loadPersistedPlayers() {
+      try {
+        const raw = localStorage.getItem(PLAYER_STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return;
+        players = parsed
+          .map((name) => (typeof name === 'string' ? name.trim() : ''))
+          .filter(Boolean)
+          .slice(0, 12)
+          .filter((name, i, arr) => arr.indexOf(name) === i);
+        scores = {};
+        players.forEach((name) => {
+          scores[name] = 0;
+        });
+      } catch (err) {
+        console.warn('Unable to load players from localStorage:', err);
+      }
+    }
+
+    /** Add a player to the list */
+    function addPlayer() {
+      const name = playerNameInput.value.trim();
+      if (!name || players.length >= 12) return;
+      if (players.includes(name)) {
+        playerNameInput.value = '';
+        return;
+      }
+      players.push(name);
+      scores[name] = 0;
+      playerNameInput.value = '';
+      persistPlayers();
+      renderPlayerList();
+      playerNameInput.focus();
+    }
+
+    /** Remove a player by index */
+    function removePlayer(index) {
+      const name = players[index];
+      players.splice(index, 1);
+      delete scores[name];
+      persistPlayers();
+      renderPlayerList();
+    }
+
+    /** Remove all players from setup and clear the saved localStorage roster */
+    function clearAllPlayers() {
+      players = [];
+      scores = {};
+      try {
+        localStorage.removeItem(PLAYER_STORAGE_KEY);
+      } catch (err) {
+        console.warn('Unable to clear players from localStorage:', err);
+      }
+      renderPlayerList();
+    }
+
+    /** Render the player chip list and update the start button state */
+    function renderPlayerList() {
+      playerList.innerHTML = players
+        .map(
+          (name, i) => `
+          <div class="player-chip">
+            <span>${escapeHtml(name)}</span>
+            <button class="remove-btn" onclick="removePlayer(${i})" title="Remove ${escapeHtml(name)}" aria-label="Remove ${escapeHtml(name)}">&#10005;</button>
+          </div>
+        `
+        )
+        .join('');
+      playerCount.textContent = `${players.length} player${players.length !== 1 ? 's' : ''} added`;
+      startGameBtn.disabled = players.length < 2;
+    }
+
+    /** Escape HTML entities to prevent injection */
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    addPlayerBtn.addEventListener('click', addPlayer);
+    clearPlayersBtn.addEventListener('click', clearAllPlayers);
+    playerNameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') addPlayer();
+    });
+    loadPersistedPlayers();
+    renderPlayerList();
+
+    // --- Game Logic ---
+
+    /** Shuffle an array using Fisher-Yates algorithm */
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    /** Start a new game: initialize state and show the first round */
+    async function startGame() {
+      totalRounds = parseInt(roundSelect.value, 10);
+      currentRound = 0;
+      players.forEach((p) => (scores[p] = 0));
+      roundOrder = shuffle(QUIZ_DATA).slice(0, totalRounds);
+      readAnswerPrefs();
+      if (useNotification) {
+        await ensureNotificationPermission();
+      }
+      if (usePopup) openHostPopup();
+      showScreen('game');
+      startRound();
+    }
+
+    /** Start the current round: set up emojis, clues, timer */
+    function startRound() {
+      const data = roundOrder[currentRound];
+      roundLabel.textContent = `Round ${currentRound + 1} / ${totalRounds}`;
+      typeBadge.textContent = `Type: ${data.type}`;
+      emojiDisplay.textContent = data.emojis;
+
+      // Deliver answer to host via selected channels
+      deliverAnswerToHost(data);
+
+      // Reset clues
+      clueHard.classList.remove('visible');
+      clueMedium.classList.remove('visible');
+      clueEasy.classList.remove('visible');
+      clueHardText.textContent = data.clue_hard;
+      clueMediumText.textContent = data.clue_medium;
+      clueEasyText.textContent = data.clue_easy;
+      clueHard.classList.add('visible');
+
+      // Reset answer
+      answerReveal.classList.remove('visible');
+      answerReveal.textContent = '';
+
+      // Reset player selections
+      roundSelections.clear();
+      renderPlayerButtons();
+
+      // Start timer
+      timeLeft = ROUND_DURATION_SECONDS;
+      updateTimerDisplay();
+      clearInterval(timerInterval);
+      timerInterval = setInterval(timerTick, 1000);
+
+      // Update next round button
+      nextRoundBtn.textContent =
+        currentRound < totalRounds - 1 ? 'Next Round' : 'See Results';
+    }
+
+    /** Timer tick: update display, reveal clues progressively, end round at 0 */
+    function timerTick() {
+      timeLeft--;
+      updateTimerDisplay();
+
+      // Progressive clue reveals
+      if (timeLeft <= ROUND_DURATION_SECONDS - 5 && timeLeft > 0) {
+        clueMedium.classList.add('visible');
+      }
+      if (timeLeft <= ROUND_DURATION_SECONDS - 15 && timeLeft > 0) {
+        clueEasy.classList.add('visible');
+      }
+
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        revealAnswer();
+      }
+    }
+
+    /** Update the timer bar width, color, and text */
+    function updateTimerDisplay() {
+      const pct = (timeLeft / ROUND_DURATION_SECONDS) * 100;
+      timerBar.style.width = pct + '%';
+      timerBar.className = 'timer-bar';
+      timerText.className = 'timer-text';
+      if (pct <= 15) {
+        timerBar.classList.add('danger');
+        timerText.classList.add('danger');
+      } else if (pct <= 40) {
+        timerBar.classList.add('warn');
+      }
+      timerText.textContent = timeLeft;
+    }
+
+    /** Reveal the answer for the current round */
+    function revealAnswer() {
+      const data = roundOrder[currentRound];
+      answerReveal.textContent = `Answer: ${data.title}`;
+      answerReveal.classList.add('visible');
+      clueHard.classList.add('visible');
+      clueMedium.classList.add('visible');
+      clueEasy.classList.add('visible');
+    }
+
+    /** Render the player buttons grid for scoring */
+    function renderPlayerButtons() {
+      playerButtons.innerHTML = players
+        .map(
+          (name) => `
+          <button class="player-score-btn ${roundSelections.has(name) ? 'selected' : ''}"
+                  onclick="togglePlayerPoint('${escapeHtml(name)}')"
+                  aria-label="Award point to ${escapeHtml(name)}">
+            <span class="name">${escapeHtml(name)}</span>
+            <span class="score">${scores[name]} pt${scores[name] !== 1 ? 's' : ''}</span>
+          </button>
+        `
+        )
+        .join('');
+    }
+
+    /** Toggle a point for a player in the current round (allows ties) */
+    function togglePlayerPoint(name) {
+      if (roundSelections.has(name)) {
+        roundSelections.delete(name);
+        scores[name]--;
+      } else {
+        roundSelections.add(name);
+        scores[name]++;
+      }
+      renderPlayerButtons();
+    }
+
+    /** Advance to the next round or end the game */
+    function nextRound() {
+      clearInterval(timerInterval);
+      currentRound++;
+      if (currentRound >= totalRounds) {
+        endGame();
+      } else {
+        startRound();
+      }
+    }
+
+    /** End the game and show the scoreboard */
+    function endGame() {
+      clearInterval(timerInterval);
+      showScreen('scoreboard');
+      renderScoreboard();
+      launchConfetti();
+    }
+
+    /** Render the final scoreboard sorted by score descending */
+    function renderScoreboard() {
+      const sorted = [...players].sort((a, b) => scores[b] - scores[a]);
+      const topScore = scores[sorted[0]] || 0;
+      const winners = sorted.filter((p) => scores[p] === topScore);
+
+      if (winners.length === 1) {
+        scoreboardSubtitle.textContent = `${winners[0]} wins!`;
+      } else if (winners.length > 1 && topScore > 0) {
+        scoreboardSubtitle.textContent = "It's a tie!";
+      } else {
+        scoreboardSubtitle.textContent = 'Game Over!';
+      }
+
+      const rankEmojis = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'];
+      let previousScore = null;
+      let currentRank = 0;
+      scoreboardList.innerHTML = sorted
+        .map((name, i) => {
+          if (scores[name] !== previousScore) {
+            currentRank = i + 1;
+            previousScore = scores[name];
+          }
+          const isWinner = scores[name] === topScore && topScore > 0;
+          const rank =
+            currentRank <= 3
+              ? rankEmojis[currentRank - 1]
+              : `<span style="opacity:0.5">${currentRank}</span>`;
+          return `
+            <div class="score-row ${isWinner ? 'winner' : ''}">
+              <span class="score-rank">${rank}</span>
+              <span class="score-name">${escapeHtml(name)}</span>
+              <span class="score-value">${scores[name]}</span>
+            </div>
+          `;
+        })
+        .join('');
+    }
+
+    /** Reset state and return to setup */
+    function playAgain() {
+      clearInterval(timerInterval);
+      players.forEach((p) => (scores[p] = 0));
+      currentRound = 0;
+      showScreen('setup');
+    }
+
+    /** Switch visible screen */
+    function showScreen(name) {
+      setupScreen.classList.remove('active');
+      gameScreen.classList.remove('active');
+      scoreboardScreen.classList.remove('active');
+      if (name === 'setup') setupScreen.classList.add('active');
+      if (name === 'game') gameScreen.classList.add('active');
+      if (name === 'scoreboard') scoreboardScreen.classList.add('active');
+    }
+
+    // --- Confetti Animation ---
+
+    /** Launch a brief confetti burst on the canvas overlay */
+    function launchConfetti() {
+      const canvas = confettiCanvas;
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = [
+        '#f59e0b',
+        '#8b5cf6',
+        '#10b981',
+        '#ef4444',
+        '#3b82f6',
+        '#ec4899',
+      ];
+
+      for (let i = 0; i < 120; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          w: Math.random() * 8 + 4,
+          h: Math.random() * 6 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 3,
+          vy: Math.random() * 4 + 2,
+          rot: Math.random() * 360,
+          vr: (Math.random() - 0.5) * 8,
+          opacity: 1,
+        });
+      }
+
+      let frame = 0;
+      const maxFrames = 180;
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+        particles.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.vr;
+          p.vy += 0.05;
+          if (frame > maxFrames * 0.6) {
+            p.opacity -= 0.015;
+          }
+          if (p.opacity > 0 && p.y < canvas.height + 20) {
+            alive = true;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rot * Math.PI) / 180);
+            ctx.globalAlpha = Math.max(0, p.opacity);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.restore();
+          }
+        });
+        frame++;
+        if (alive && frame < maxFrames * 1.5) {
+          requestAnimationFrame(draw);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+
+    // --- Event Listeners ---
+    startGameBtn.addEventListener('click', startGame);
+    nextRoundBtn.addEventListener('click', nextRound);
+    endGameBtn.addEventListener('click', endGame);
+    playAgainBtn.addEventListener('click', playAgain);
+
+    // --- Keyboard support ---
+    document.addEventListener('keydown', (e) => {
+      if (
+        gameScreen.classList.contains('active') &&
+        e.key === ' ' &&
+        e.target === document.body
+      ) {
+        e.preventDefault();
+        nextRound();
+      }
+    });
+  </script>
+</body>
+
+</html>

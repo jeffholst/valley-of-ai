@@ -494,6 +494,10 @@
       finalScoreEl.textContent = score;
       bestScoreEl.textContent = 'Best: ' + bestScore;
       gameoverOverlay.classList.remove('hidden');
+
+      if (window.voaLeaderboard) {
+        window.voaLeaderboard.submit(score);
+      }
     }
 
     function checkCollision() {
@@ -589,6 +593,8 @@
     // Event listeners
     document.addEventListener('keydown', (e) => {
       if (e.code === 'Space' || e.key === ' ') {
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
         e.preventDefault();
         if (gameOver) {
           startGame();

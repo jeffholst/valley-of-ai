@@ -11,6 +11,7 @@
   "tags": ["game", "flappy-bird", "arcade", "tap", "touch-controls", "endless-runner"],
   "homepagePath": "index.html",
   "inputMode": "desktop",
+  "maxScore": 999,
   "generation": {
     "agentName": "copilot-agent",
     "llmModel": "claude-opus-4.5",
@@ -20,5 +21,28 @@
     "totalTokensOut": 4200,
     "runId": "run-20260307T151000Z-0fa3be",
     "notes": "Classic Flappy Bird game with gravity physics, pipe obstacles, scoring system, best score tracking, dark/light mode, touch and keyboard controls."
-  }
+  },
+  "improvements": [
+    {
+      "issueNumber": 327,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/327",
+      "runId": "run-20260414T205826Z-4681ec",
+      "description": "update game to include social media sharing of score when game over",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-04-14T21:00:17Z",
+      "agentName": "claude-code",
+      "llmModel": "claude-sonnet-4-6"
+    },
+    {
+      "issueNumber": 537,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/537",
+      "runId": "run-20260528T163809Z-c4d2e8",
+      "description": "Removed automatic window.voaShare() call from endGame(); the share drawer now only opens when the player explicitly clicks the Share button in the shell footer.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-05-28T16:38:09Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
+    }
+  ],
+  "leaderboard": true
 }

@@ -25,5 +25,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260325T000318Z-adea94",
     "notes": "Built from GitHub issue #196 suggestion by Perplexity"
-  }
+  },
+  "leaderboard": false
 }

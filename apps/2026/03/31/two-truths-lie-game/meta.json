@@ -4,7 +4,7 @@
   "shortDescription": "Host a live 2 Truths and a Lie party game — spin to pick speakers, record guesses, reveal the lie, and track scores across rounds.",
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-03-31T01:54:53Z",
-  "category": "Entertainment",
+  "category": "Icebreakers",
   "status": "active",
   "tags": ["party", "game", "social", "spinner", "multiplayer", "zoom", "icebreaker", "responsive"],
   "homepagePath": "index.html",
@@ -63,6 +63,56 @@
       "implementedAt": "2026-03-31T19:55:47Z",
       "agentName": "Codex",
       "llmModel": "gpt-5"
+    },
+    {
+      "issueNumber": 350,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/350",
+      "runId": "run-20260418T161449Z-b2be10",
+      "description": "Persist setup-screen player names to localStorage so they are recalled on the next visit. Names are saved after add, remove, remove-all, and reset; scores always start at zero.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-04-18T16:14:49Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-opus-4-7"
+    },
+    {
+      "issueNumber": 375,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/375",
+      "runId": "run-20260420T125914Z-8ff7c0",
+      "description": "Upgraded the app to a backend-powered multiplayer flow with moderator lobby/share link, player statement submission, kicking, synced voting, and shared results progression.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-04-20T12:59:14Z",
+      "agentName": "Codex",
+      "llmModel": "gpt-5.4"
+    },
+    {
+      "issueNumber": 377,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/377",
+      "runId": "run-20260420T132957Z-2fd4a8",
+      "description": "Added speaking-screen statement visibility, per-statement vote breakdown, moderator score visibility, final leaderboard on all screens, and moderator new-game reset requiring fresh submissions.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-04-20T13:29:57Z",
+      "agentName": "Codex",
+      "llmModel": "gpt-5.4"
+    },
+    {
+      "issueNumber": 380,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/380",
+      "runId": "run-20260420T150902Z-931007",
+      "description": "Simplified moderator lobby to single player panel, added per-player vote status during voting, highlighted lie in all results boards, added score display in moderator round results, and added CSS confetti/rain animations for winners and losers on player screens.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-04-20T15:09:02Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
+    },
+    {
+      "issueNumber": 382,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/382",
+      "runId": "run-20260420T152955Z-cbc17f",
+      "description": "Added rich per-player status to the moderator bottom roster grid during gameplay (speaking, vote status, correct/wrong per phase); extended confetti and rain animations to the player final leaderboard screen (rank 1 gets confetti, others get rain).",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-04-20T15:29:55Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
     }
   ],
   "suggestion": {
@@ -70,5 +120,6 @@
     "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/243",
     "prompt": "Build a browser-based \"2 Truths and a Lie\" game for a Zoom screen-share host. Start with a setup screen where the host enters participant names. Then show instructions and a 60-second countdown for everyone to think of 3 statements (2 true, 1 false). After the first round timer ends, show a wheel containing all participant names and a button to spin and randomly choose the next speaker. For each turn, show a scoreboard where the host records which statement (1, 2, or 3) each participant guessed was the lie. After reveal, mark everyone who guessed correctly as round winners. Support multiple rounds; only the first round uses the 60-second timer. Make it simple, responsive, and easy to run live on a shared screen.",
     "requestor": "Jeff Holst"
-  }
+  },
+  "leaderboard": false
 }

@@ -1,0 +1,82 @@
+{
+  "id": "duck-flight",
+  "name": "Duck Flight",
+  "shortDescription": "Fly as a duck in first-person through a world of oncoming rings. Steer left and right to thread each ring — miss too many and your momentum crashes.",
+  "category": "Games",
+  "tags": ["3d", "first-person", "flying", "duck", "rings", "arcade", "canvas", "momentum"],
+  "thumbnail": "thumbnail.svg",
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "createdAt": "2026-05-24T19:50:18Z",
+  "status": "active",
+  "maxScore": 500,
+  "suggestion": {
+    "issueNumber": 458,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/458",
+    "prompt": "Build a single-file HTML5 game, Duck Flight. Mobile-first, 1st-person through-the-eyes-of-a-duck flying experience. Rings spawn far away and approach the camera. Player steers the duck left/right to thread through ring centers. Momentum system: starts at 1.0, drains passively, drops on miss, rises on good pass — hit zero and it's game over. First-person duck silhouette: beak tip and flapping wings at bottom. 3D perspective projection with fog. Score on leaderboard.",
+    "requestor": "Jeff Holst"
+  },
+  "generation": {
+    "agentName": "Claude Code",
+    "llmModel": "claude-sonnet-4-6",
+    "startTime": "2026-05-24T19:50:18Z",
+    "endTime": "2026-05-24T20:10:00Z",
+    "totalTokensIn": 7800,
+    "totalTokensOut": 18200,
+    "runId": "run-20260524T195018Z-6e28cd",
+    "notes": "Scaffold build — full architecture laid down for future improvement iterations. 3D perspective projection with FOCAL_LEN=300, VP_Y at 44% height. Rings approach from SPAWN_Z=3000 at 900 units/sec base, speed scales with momentum. Duck steers laterally in world range -1.6 to +1.6. Momentum system wired (passive drain, +0.12 pass, -0.22 miss). Particle system, audio stub, and animation stub all scaffolded with named module objects. Difficulty scaler increases speed +90 and tightens interval -0.15 every 30s. maxScore=500 reflects typical good-run ceiling for the scaffold difficulty."
+  },
+  "leaderboard": true,
+  "improvements": [
+    {
+      "issueNumber": 461,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/461",
+      "runId": "run-20260524T201218Z-a4f7c1",
+      "description": "Refined projection (FOCAL_LEN 300→2000), moved horizon to true vertical center, added animated 3-band cloud sky with cached gradient, rebuilt ground with proper perspective grid, implemented fog color blending (z=40 clear to z=120 fogged via lerpColor toward horizon tone), and added devicePixelRatio canvas scaling.",
+      "requestor": "Jeff Holst",
+      "implementedAt": "2026-05-24T20:12:18Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
+    },
+    {
+      "issueNumber": 462,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/462",
+      "runId": "run-20260524T202646Z-b3e591",
+      "description": "Rebuilt first-person duck POV: 3-layer bezier wings (primary/secondary/covert feathers with per-layer gradients), off-yellow beak hint at bottom edge, idle bob and flap animations, bank animation driven by damped duck.vx, wing-tip motion blur on hard banking; flap rate scales with momentum.",
+      "requestor": "Jeff Holst",
+      "implementedAt": "2026-05-24T20:26:46Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
+    },
+    {
+      "issueNumber": 464,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/464",
+      "runId": "run-20260524T205340Z-7728d0",
+      "description": "Replaced fixed ring-only shapes with 3 types (ring, triangle, square); each shape carries size, per-shape innerR, HSL hue, spinAxis (z=face-on twirl, y=barrel-roll), rotationSpeed, and rotation; rendering uses projected polygon vertices with a top-light gradient fill and specular highlight stroke clipped to the upper half; back-to-front sort preserved.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-05-24T20:53:40Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
+    },
+    {
+      "issueNumber": 466,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/466",
+      "runId": "run-20260524T211202Z-24c783",
+      "description": "Wired gameplay feel: forward speed now scales directly with momentum (speed=currentSpeed*momentum), difficulty ramps every 10 passes (not time-based) with speed increase+spawn tightening+opening shrink, and game over uses a STALLING state with 0.75s slow-mo + screen darkening before showing the overlay.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-05-24T21:12:02Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
+    },
+    {
+      "issueNumber": 467,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/467",
+      "runId": "run-20260525T043141Z-f3a2b1",
+      "description": "Golden-hour visual pass: sky replaced with deep teal-blue zenith to warm peach-gold horizon palette (60s color cycle shifts to dusk); sun disc with wide radial bloom and lens-flare streaks when steering toward it; ground updated to warm sand-to-umber; fog range tightened so distant shapes desaturate and lift lightness toward horizon; edge vignette added.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-05-25T04:31:41Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
+    }
+  ]
+}

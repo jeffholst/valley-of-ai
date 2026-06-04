@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game of Life - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Game of Life" />
+    <meta name="voa-app-id" content="2026/05/23/game-of-life" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --cell: #22d3ee;
+        --cell-glow: rgba(34, 211, 238, 0.45);
+        --grid-line: rgba(255, 255, 255, 0.04);
+        --toolbar-bg: rgba(15, 23, 42, 0.92);
+        --btn-bg: #1e293b;
+        --btn-hover: #334155;
+        --btn-active-bg: #0e7490;
+        --btn-active-text: #f0f9ff;
+        --accent: #22d3ee;
+        --border: rgba(255, 255, 255, 0.1);
+      }
+      [data-theme='light'] {
+        --bg: #f8fafc;
+        --text: #1f2937;
+        --surface: #e2e8f0;
+        --cell: #0891b2;
+        --cell-glow: rgba(8, 145, 178, 0.3);
+        --grid-line: rgba(0, 0, 0, 0.06);
+        --toolbar-bg: rgba(248, 250, 252, 0.95);
+        --btn-bg: #e2e8f0;
+        --btn-hover: #cbd5e1;
+        --btn-active-bg: #0891b2;
+        --btn-active-text: #ffffff;
+        --accent: #0891b2;
+        --border: rgba(0, 0, 0, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        overflow: hidden;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      /* Safe zone: fixed between shell header (64px) and footer (56px) */
+      #appWrapper {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ── Toolbar ── */
+      #toolbar {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        background: var(--toolbar-bg);
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+        flex-wrap: wrap;
+        min-height: 48px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 6px 12px;
+        background: var(--btn-bg);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        min-height: 34px;
+        min-width: 44px;
+        transition: background 0.12s;
+        white-space: nowrap;
+      }
+      .btn:hover {
+        background: var(--btn-hover);
+      }
+      .btn.active {
+        background: var(--btn-active-bg);
+        color: var(--btn-active-text);
+        border-color: var(--accent);
+      }
+      .btn:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .sep {
+        width: 1px;
+        height: 28px;
+        background: var(--border);
+        flex-shrink: 0;
+      }
+
+      /* Speed slider */
+      #speedWrap {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--text);
+        flex-shrink: 0;
+      }
+      #speedSlider {
+        width: 80px;
+        accent-color: var(--accent);
+        cursor: pointer;
+      }
+
+      /* Presets dropdown */
+      #presetSelect {
+        padding: 5px 8px;
+        background: var(--btn-bg);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        min-height: 34px;
+      }
+      #presetSelect:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      /* HUD stats */
+      #stats {
+        margin-left: auto;
+        display: flex;
+        gap: 14px;
+        font-size: 12px;
+        color: var(--text);
+        opacity: 0.85;
+        flex-shrink: 0;
+      }
+      #stats span strong {
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      /* ── Canvas area ── */
+      #canvasWrap {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        cursor: crosshair;
+        touch-action: none;
+      }
+
+      #gameCanvas {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      /* Zoom controls bottom-right */
+      #zoomControls {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        z-index: 5;
+      }
+      #zoomControls .btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+        padding: 0;
+        border-radius: 8px;
+      }
+
+      /* Draw mode indicator */
+      #drawModeIndicator {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        font-size: 11px;
+        color: var(--text);
+        opacity: 0.6;
+        pointer-events: none;
+        background: var(--toolbar-bg);
+        padding: 4px 8px;
+        border-radius: 4px;
+        border: 1px solid var(--border);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="appWrapper">
+      <div id="toolbar">
+        <!-- Play / Pause -->
+        <button class="btn" id="playBtn" title="Play/Pause (Space)">▶ Play</button>
+        <!-- Step once -->
+        <button class="btn" id="stepBtn" title="Step one generation">⏭ Step</button>
+
+        <div class="sep"></div>
+
+        <!-- Clear -->
+        <button class="btn" id="clearBtn" title="Clear grid">✕ Clear</button>
+        <!-- Randomize -->
+        <button class="btn" id="randomBtn" title="Fill with random cells">⁕ Random</button>
+
+        <div class="sep"></div>
+
+        <!-- Presets -->
+        <select id="presetSelect" title="Load a preset pattern" aria-label="Preset patterns">
+          <option value="">Presets…</option>
+          <option value="glider">Glider</option>
+          <option value="pulsar">Pulsar</option>
+          <option value="gun">Gosper Glider Gun</option>
+          <option value="rpentomino">R-pentomino</option>
+          <option value="diehard">Diehard</option>
+          <option value="acorn">Acorn</option>
+        </select>
+
+        <div class="sep"></div>
+
+        <!-- Speed -->
+        <div id="speedWrap">
+          <span>Speed</span>
+          <input type="range" id="speedSlider" min="1" max="60" value="10" title="Generations per second" />
+          <span id="speedLabel">10/s</span>
+        </div>
+
+        <!-- Stats -->
+        <div id="stats">
+          <span>Gen <strong id="statGen">0</strong></span>
+          <span>Alive <strong id="statAlive">0</strong></span>
+        </div>
+      </div>
+
+      <div id="canvasWrap">
+        <canvas id="gameCanvas"></canvas>
+
+        <div id="zoomControls">
+          <button class="btn" id="zoomInBtn" title="Zoom in">+</button>
+          <button class="btn" id="zoomOutBtn" title="Zoom out">−</button>
+          <button class="btn" id="zoomResetBtn" title="Reset zoom" style="font-size:11px">⊡</button>
+        </div>
+
+        <div id="drawModeIndicator">✏ Draw · Erase on painted cells</div>
+      </div>
+    </div>
+
+    <script>
+      'use strict';
+
+      // ─── Constants ────────────────────────────────────────────────────────────
+      const MIN_CELL = 2;
+      const MAX_CELL = 40;
+      const DEFAULT_CELL = 10;
+      const ZOOM_FACTOR = 1.25;
+
+      // ─── State ────────────────────────────────────────────────────────────────
+      let cellSize = DEFAULT_CELL;
+      let cols = 0, rows = 0;
+      let grid = null;      // Uint8Array, current generation
+      let next = null;      // Uint8Array, scratch buffer
+      let running = false;
+      let generation = 0;
+      let tickInterval = null;
+      let genPerSec = 10;
+      let drawMode = null;  // null | 'draw' | 'erase' — set on pointer down
+
+      // Pan offset (pixels, applied before cell rendering)
+      let panX = 0, panY = 0;
+      let isPanning = false;
+      let panStart = { x: 0, y: 0 };
+
+      // ─── DOM refs ─────────────────────────────────────────────────────────────
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+      const wrap = document.getElementById('canvasWrap');
+      const playBtn = document.getElementById('playBtn');
+      const stepBtn = document.getElementById('stepBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const randomBtn = document.getElementById('randomBtn');
+      const presetSelect = document.getElementById('presetSelect');
+      const speedSlider = document.getElementById('speedSlider');
+      const speedLabel = document.getElementById('speedLabel');
+      const statGen = document.getElementById('statGen');
+      const statAlive = document.getElementById('statAlive');
+
+      // ─── Grid helpers ─────────────────────────────────────────────────────────
+
+      function idx(c, r) {
+        // Toroidal wrap
+        const cc = ((c % cols) + cols) % cols;
+        const rr = ((r % rows) + rows) % rows;
+        return rr * cols + cc;
+      }
+
+      function countNeighbors(c, r) {
+        return (
+          grid[idx(c - 1, r - 1)] + grid[idx(c, r - 1)] + grid[idx(c + 1, r - 1)] +
+          grid[idx(c - 1, r)]                            + grid[idx(c + 1, r)] +
+          grid[idx(c - 1, r + 1)] + grid[idx(c, r + 1)] + grid[idx(c + 1, r + 1)]
+        );
+      }
+
+      /** Advance grid by one generation using Conway's rules. */
+      function stepGeneration() {
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const alive = grid[idx(c, r)];
+            const n = countNeighbors(c, r);
+            if (alive) {
+              next[idx(c, r)] = (n === 2 || n === 3) ? 1 : 0;
+            } else {
+              next[idx(c, r)] = n === 3 ? 1 : 0;
+            }
+          }
+        }
+        // Swap buffers
+        [grid, next] = [next, grid];
+        generation++;
+      }
+
+      // ─── Resize / init grid ───────────────────────────────────────────────────
+
+      function initGrid(preserveCells) {
+        const w = wrap.clientWidth;
+        const h = wrap.clientHeight;
+        const newCols = Math.ceil(w / cellSize) + 2;
+        const newRows = Math.ceil(h / cellSize) + 2;
+
+        const newGrid = new Uint8Array(newCols * newRows);
+        const newNext = new Uint8Array(newCols * newRows);
+
+        if (preserveCells && grid && cols && rows) {
+          // Copy existing cells into new grid, accounting for pan
+          const offsetC = Math.round(panX / cellSize);
+          const offsetR = Math.round(panY / cellSize);
+          for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+              if (grid[r * cols + c]) {
+                const nc = c + offsetC;
+                const nr = r + offsetR;
+                if (nc >= 0 && nc < newCols && nr >= 0 && nr < newRows) {
+                  newGrid[nr * newCols + nc] = 1;
+                }
+              }
+            }
+          }
+        }
+
+        cols = newCols;
+        rows = newRows;
+        grid = newGrid;
+        next = newNext;
+        canvas.width = w;
+        canvas.height = h;
+      }
+
+      function resize() {
+        initGrid(true);
+        render();
+      }
+
+      window.addEventListener('resize', resize);
+
+      // ─── Rendering ────────────────────────────────────────────────────────────
+
+      function render() {
+        const w = canvas.width;
+        const h = canvas.height;
+        const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+
+        ctx.fillStyle = isDark ? '#0f172a' : '#f8fafc';
+        ctx.fillRect(0, 0, w, h);
+
+        // Grid lines
+        if (cellSize >= 6) {
+          ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.06)';
+          ctx.lineWidth = 0.5;
+          const startC = Math.floor(-panX / cellSize);
+          const startR = Math.floor(-panY / cellSize);
+          const endC = startC + Math.ceil(w / cellSize) + 2;
+          const endR = startR + Math.ceil(h / cellSize) + 2;
+
+          for (let c = startC; c <= endC; c++) {
+            const x = c * cellSize + (panX % cellSize);
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, h);
+            ctx.stroke();
+          }
+          for (let r = startR; r <= endR; r++) {
+            const y = r * cellSize + (panY % cellSize);
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(w, y);
+            ctx.stroke();
+          }
+        }
+
+        // Cells
+        const cellColor = isDark ? '#22d3ee' : '#0891b2';
+        const glowColor = isDark ? 'rgba(34,211,238,0.5)' : 'rgba(8,145,178,0.35)';
+
+        // Use shadow glow only when cell is large enough (performance)
+        if (cellSize >= 8) {
+          ctx.shadowColor = glowColor;
+          ctx.shadowBlur = cellSize * 0.6;
+        } else {
+          ctx.shadowBlur = 0;
+        }
+        ctx.fillStyle = cellColor;
+
+        const padding = cellSize > 4 ? 1 : 0;
+        let alive = 0;
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            if (grid[r * cols + c]) {
+              alive++;
+              const x = c * cellSize + panX + padding;
+              const y = r * cellSize + panY + padding;
+              const sz = cellSize - padding * 2;
+              if (x + sz < 0 || y + sz < 0 || x > w || y > h) continue;
+              ctx.fillRect(x, y, sz, sz);
+            }
+          }
+        }
+
+        ctx.shadowBlur = 0;
+
+        // Update stats
+        statGen.textContent = generation.toLocaleString();
+        statAlive.textContent = alive.toLocaleString();
+      }
+
+      // ─── Tick loop ────────────────────────────────────────────────────────────
+
+      function startTick() {
+        stopTick();
+        tickInterval = setInterval(() => {
+          stepGeneration();
+          render();
+        }, Math.round(1000 / genPerSec));
+      }
+
+      function stopTick() {
+        if (tickInterval !== null) {
+          clearInterval(tickInterval);
+          tickInterval = null;
+        }
+      }
+
+      function setRunning(val) {
+        running = val;
+        playBtn.textContent = running ? '⏸ Pause' : '▶ Play';
+        playBtn.classList.toggle('active', running);
+        if (running) startTick();
+        else stopTick();
+      }
+
+      // ─── Cell interaction (draw/erase) ────────────────────────────────────────
+
+      function clientToCell(clientX, clientY) {
+        const rect = canvas.getBoundingClientRect();
+        const x = clientX - rect.left - panX;
+        const y = clientY - rect.top - panY;
+        const c = Math.floor(x / cellSize);
+        const r = Math.floor(y / cellSize);
+        return { c, r };
+      }
+
+      function setCellFromPointer(clientX, clientY) {
+        const { c, r } = clientToCell(clientX, clientY);
+        if (c >= 0 && c < cols && r >= 0 && r < rows) {
+          grid[idx(c, r)] = drawMode === 'draw' ? 1 : 0;
+          render();
+        }
+      }
+
+      // ─── Pointer events ───────────────────────────────────────────────────────
+
+      let lastCell = null;
+
+      wrap.addEventListener('pointerdown', (e) => {
+        wrap.setPointerCapture(e.pointerId);
+        const { c, r } = clientToCell(e.clientX, e.clientY);
+
+        // Middle button or Alt+left = pan
+        if (e.button === 1 || e.altKey) {
+          isPanning = true;
+          panStart = { x: e.clientX - panX, y: e.clientY - panY };
+          return;
+        }
+
+        // Left button = draw/erase
+        const cell = c >= 0 && c < cols && r >= 0 && r < rows ? grid[idx(c, r)] : 0;
+        drawMode = cell ? 'erase' : 'draw';
+        lastCell = `${c},${r}`;
+        setCellFromPointer(e.clientX, e.clientY);
+      });
+
+      wrap.addEventListener('pointermove', (e) => {
+        if (isPanning) {
+          panX = e.clientX - panStart.x;
+          panY = e.clientY - panStart.y;
+          render();
+          return;
+        }
+        if (drawMode && e.buttons > 0) {
+          const key = `${Math.floor((e.clientX - panX) / cellSize)},${Math.floor((e.clientY - panY) / cellSize)}`;
+          if (key !== lastCell) {
+            lastCell = key;
+            setCellFromPointer(e.clientX, e.clientY);
+          }
+        }
+      });
+
+      wrap.addEventListener('pointerup', () => {
+        drawMode = null;
+        isPanning = false;
+        lastCell = null;
+      });
+
+      // Pinch-to-zoom (touch)
+      let lastPinchDist = null;
+
+      wrap.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          lastPinchDist = Math.hypot(dx, dy);
+        }
+      }, { passive: true });
+
+      wrap.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2 && lastPinchDist !== null) {
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          const dist = Math.hypot(dx, dy);
+          const ratio = dist / lastPinchDist;
+          if (Math.abs(ratio - 1) > 0.05) {
+            const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+            const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+            zoom(ratio > 1 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR, cx, cy);
+            lastPinchDist = dist;
+          }
+        }
+      }, { passive: true });
+
+      wrap.addEventListener('touchend', () => { lastPinchDist = null; });
+
+      // Mouse wheel zoom
+      wrap.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        zoom(e.deltaY < 0 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR, e.clientX, e.clientY);
+      }, { passive: false });
+
+      // ─── Zoom ─────────────────────────────────────────────────────────────────
+
+      function zoom(factor, cx, cy) {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = cx - rect.left;
+        const mouseY = cy - rect.top;
+
+        const newSize = Math.round(Math.min(MAX_CELL, Math.max(MIN_CELL, cellSize * factor)));
+        if (newSize === cellSize) return;
+
+        // Adjust pan so the point under cursor stays fixed
+        panX = mouseX - (mouseX - panX) * (newSize / cellSize);
+        panY = mouseY - (mouseY - panY) * (newSize / cellSize);
+        cellSize = newSize;
+
+        initGrid(true);
+        render();
+      }
+
+      // ─── Toolbar actions ──────────────────────────────────────────────────────
+
+      playBtn.addEventListener('click', () => setRunning(!running));
+
+      stepBtn.addEventListener('click', () => {
+        setRunning(false);
+        stepGeneration();
+        render();
+      });
+
+      clearBtn.addEventListener('click', () => {
+        setRunning(false);
+        generation = 0;
+        grid.fill(0);
+        render();
+      });
+
+      randomBtn.addEventListener('click', () => {
+        setRunning(false);
+        generation = 0;
+        for (let i = 0; i < grid.length; i++) {
+          grid[i] = Math.random() < 0.3 ? 1 : 0;
+        }
+        render();
+      });
+
+      speedSlider.addEventListener('input', () => {
+        genPerSec = parseInt(speedSlider.value, 10);
+        speedLabel.textContent = genPerSec + '/s';
+        if (running) startTick();
+      });
+
+      document.getElementById('zoomInBtn').addEventListener('click', () => {
+        const cx = wrap.clientWidth / 2 + wrap.getBoundingClientRect().left;
+        const cy = wrap.clientHeight / 2 + wrap.getBoundingClientRect().top;
+        zoom(ZOOM_FACTOR, cx, cy);
+      });
+
+      document.getElementById('zoomOutBtn').addEventListener('click', () => {
+        const cx = wrap.clientWidth / 2 + wrap.getBoundingClientRect().left;
+        const cy = wrap.clientHeight / 2 + wrap.getBoundingClientRect().top;
+        zoom(1 / ZOOM_FACTOR, cx, cy);
+      });
+
+      document.getElementById('zoomResetBtn').addEventListener('click', () => {
+        cellSize = DEFAULT_CELL;
+        panX = 0;
+        panY = 0;
+        initGrid(false);
+        render();
+      });
+
+      // ─── Presets ──────────────────────────────────────────────────────────────
+
+      /**
+       * Each preset is a list of [col, row] offsets from center of the grid.
+       * Cells are painted relative to the visible center.
+       */
+      const PRESETS = {
+        glider: [
+          [1, 0], [2, 1], [0, 2], [1, 2], [2, 2],
+        ],
+        pulsar: [
+          // Pulsar (period-3 oscillator) — offsets from center
+          [-6,-4],[-5,-4],[-4,-4],[-2,-4],[-1,-4],[0,-4],
+          [0,-6],[0,-5],[0,-4],[0,-2],[0,-1],[0,0],
+          [2,-4],[3,-4],[4,-4],[6,-4],[5,-4],
+          [-6,-2],[-5,-2],[-4,-2],[-2,-2],[-1,-2],[0,-2],
+          [0,2],[0,3],[0,4],[0,6],[0,5],
+          [-6,0],[-5,0],[-4,0],[-2,0],[-1,0],
+          [2,0],[3,0],[4,0],[6,0],[5,0],
+          [-6,2],[-5,2],[-4,2],[-2,2],[-1,2],
+          [2,2],[3,2],[4,2],[6,2],[5,2],
+          [6,4],[5,4],[4,4],[2,4],[1,4],[0,4],
+          [-6,4],[-5,4],[-4,4],[-2,4],[-1,4],
+          [-4,6],[-5,6],[-6,6],[-4,5],[-5,5],[-6,5],
+          [4,6],[5,6],[6,6],[4,5],[5,5],[6,5],
+          [-4,-6],[-5,-6],[-6,-6],[-4,-5],[-5,-5],[-6,-5],
+          [4,-6],[5,-6],[6,-6],[4,-5],[5,-5],[6,-5],
+        ],
+        gun: [
+          // Gosper Glider Gun (offset so it fits) — relative to col 5, row 5
+          [0,4],[0,5],
+          [10,4],[10,5],
+          [20,5],[20,6],[20,7],
+          [21,4],[21,8],
+          [22,3],[22,9],
+          [23,3],[23,9],
+          [24,6],
+          [25,4],[25,8],
+          [26,5],[26,6],[26,7],
+          [27,6],
+          [30,3],[30,4],[30,5],
+          [31,3],[31,4],[31,5],
+          [32,2],[32,6],
+          [34,1],[34,2],[34,6],[34,7],
+          [44,3],[44,4],
+          [45,3],[45,4],
+        ],
+        rpentomino: [
+          [1,0],[2,0],[0,1],[1,1],[1,2],
+        ],
+        diehard: [
+          [6,0],
+          [0,1],[1,1],
+          [1,2],[5,2],[6,2],[7,2],
+        ],
+        acorn: [
+          [1,0],
+          [3,1],
+          [0,2],[1,2],[4,2],[5,2],[6,2],
+        ],
+      };
+
+      presetSelect.addEventListener('change', () => {
+        const key = presetSelect.value;
+        if (!key || !PRESETS[key]) return;
+        presetSelect.value = '';
+
+        setRunning(false);
+        generation = 0;
+        grid.fill(0);
+
+        const pattern = PRESETS[key];
+        // Center in the visible viewport
+        const visColCenter = Math.floor((wrap.clientWidth / 2 - panX) / cellSize);
+        const visRowCenter = Math.floor((wrap.clientHeight / 2 - panY) / cellSize);
+
+        // Find bounding box of pattern to center it
+        const minC = Math.min(...pattern.map(([c]) => c));
+        const maxC = Math.max(...pattern.map(([c]) => c));
+        const minR = Math.min(...pattern.map(([, r]) => r));
+        const maxR = Math.max(...pattern.map(([, r]) => r));
+        const offC = visColCenter - Math.floor((minC + maxC) / 2);
+        const offR = visRowCenter - Math.floor((minR + maxR) / 2);
+
+        for (const [dc, dr] of pattern) {
+          const c = dc + offC;
+          const r = dr + offR;
+          if (c >= 0 && c < cols && r >= 0 && r < rows) {
+            grid[idx(c, r)] = 1;
+          }
+        }
+        render();
+      });
+
+      // ─── Keyboard shortcuts ───────────────────────────────────────────────────
+
+      document.addEventListener('keydown', (e) => {
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
+
+        if (e.key === ' ') {
+          e.preventDefault();
+          setRunning(!running);
+        } else if (e.key === 'ArrowRight' || e.key === '.') {
+          e.preventDefault();
+          setRunning(false);
+          stepGeneration();
+          render();
+        } else if (e.key === 'c' || e.key === 'C') {
+          setRunning(false);
+          generation = 0;
+          grid.fill(0);
+          render();
+        } else if (e.key === 'r' || e.key === 'R') {
+          setRunning(false);
+          generation = 0;
+          for (let i = 0; i < grid.length; i++) grid[i] = Math.random() < 0.3 ? 1 : 0;
+          render();
+        } else if (e.key === '+' || e.key === '=') {
+          zoom(ZOOM_FACTOR, wrap.clientWidth / 2, wrap.clientHeight / 2);
+        } else if (e.key === '-') {
+          zoom(1 / ZOOM_FACTOR, wrap.clientWidth / 2, wrap.clientHeight / 2);
+        }
+      });
+
+      // ─── Init ─────────────────────────────────────────────────────────────────
+
+      function init() {
+        initGrid(false);
+        // Start with Gosper Glider Gun as a showcase default
+        presetSelect.value = 'gun';
+        presetSelect.dispatchEvent(new Event('change'));
+        render();
+      }
+
+      init();
+    </script>
+  </body>
+</html>

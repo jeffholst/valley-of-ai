@@ -21,5 +21,6 @@
     "runId": "run-20260321T122150Z-46a700",
     "notes": "Static HTML/CSS/JS app with Web Audio API oscillator for morse code audio, canvas oscilloscope visualization, animated dot/dash symbols, manual key button, speed/frequency sliders, and collapsible reference chart. Mobile-first responsive design with touch support."
   },
-  "votes": 0
+  "votes": 0,
+  "leaderboard": false
 }

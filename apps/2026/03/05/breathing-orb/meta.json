@@ -20,5 +20,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260305T225348Z-affe05",
     "notes": "Original concept built as a lightweight static app; token counters unavailable in this runtime so set to 0 for this run."
-  }
+  },
+  "leaderboard": false
 }

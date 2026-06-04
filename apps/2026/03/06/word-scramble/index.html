@@ -1,800 +1,1807 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="auto">
 <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '__GA_MEASUREMENT_ID__');
-    </script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Word Scramble - __MAIN_SITE_NAME__</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🔤%3C/text%3E%3C/svg%3E">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', '__GA_MEASUREMENT_ID__');
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word Scramble Party - __MAIN_SITE_NAME__</title>
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+  <meta name="voa-github-url" content="__GITHUB_URL__" />
+  <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+  <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+  <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+  <meta name="application-name" content="Word Scramble Party" />
+  <meta name="voa-app-id" content="2026/03/06/word-scramble" />
+  <script src="/apps/shared/app-shell.js" defer></script>
   <style>
     :root {
-      --primary: #8b5cf6;
-      --primary-hover: #7c3aed;
-      --success: #10b981;
-      --error: #ef4444;
+      --bg: #0f172a;
+      --text: #f9fafb;
+      --surface: #1e293b;
+      --card: #15213e;
+      --muted: #9ca3af;
+      --accent: #22d3ee;
+      --accent-2: #38bdf8;
+      --success: #22c55e;
       --warning: #f59e0b;
-      --bg: #fafaf9;
-      --bg-card: #ffffff;
-      --text: #1c1917;
-      --text-secondary: #78716c;
-      --border: #e7e5e4;
-      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    ;--surface:#101a31;--accent:#22d3ee;}
-
-    [data-theme="dark"] {
-      --primary: #a78bfa;
-      --primary-hover: #8b5cf6;
-      --bg: #1c1917;
-      --bg-card: #292524;
-      --text: #fafaf9;
-      --text-secondary: #a8a29e;
-      --border: #44403c;
-      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3);
-      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3);
+      --danger: #ef4444;
+      --border: #334155;
     }
 
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) {
-        --primary: #a78bfa;
-        --primary-hover: #8b5cf6;
-        --bg: #1c1917;
-        --bg-card: #292524;
-        --text: #fafaf9;
-        --text-secondary: #a8a29e;
-        --border: #44403c;
-        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3);
-        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3);
-      }
+    [data-theme='light'] {
+      --bg: #ffffff;
+      --text: #1f2937;
+      --surface: #f3f4f6;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #0891b2;
+      --accent-2: #0369a1;
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --border: #d1d5db;
     }
 
-    .theme-toggle {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      background: var(--bg-card, #fff);
-      border: 1px solid var(--border, #ccc);
-      border-radius: 50%;
-      width: 44px;
-      height: 44px;
-      font-size: 1.3rem;
-      cursor: pointer;
-      z-index: 100;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      line-height: 1.6;
+      font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 20%, rgb(34 211 238 / 18%), transparent 45%),
+        radial-gradient(circle at 85% 0%, rgb(56 189 248 / 18%), transparent 40%),
+        var(--bg);
+      line-height: 1.4;
     }
 
-    .container {
-      width: 100%;
-      max-width: 500px;
+    .app {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 1.25rem 1rem 1.5rem;
+      display: grid;
+      gap: 1rem;
     }
 
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
+    .hero {
+      background: linear-gradient(135deg, rgb(15 23 42 / 92%), rgb(30 41 59 / 92%));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1rem 1.25rem;
+      box-shadow: 0 18px 28px rgb(2 6 23 / 25%);
+    }
+
+    [data-theme='light'] .hero {
+      background: linear-gradient(135deg, rgb(240 249 255 / 95%), rgb(236 253 245 / 95%));
+      box-shadow: 0 14px 24px rgb(15 23 42 / 10%);
     }
 
     h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
+      font-size: clamp(1.5rem, 2.4vw, 2rem);
+      margin-bottom: 0.3rem;
     }
 
-    .subtitle {
-      color: var(--text-secondary);
-      font-size: 1rem;
+    h2 {
+      margin-bottom: 0.35rem;
+      font-size: 1.2rem;
     }
 
-    .stats {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      margin-bottom: 1.5rem;
+    .hero p {
+      color: var(--muted);
+      font-size: 0.98rem;
     }
 
-    .stat {
-      text-align: center;
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1rem;
+      box-shadow: 0 10px 20px rgb(2 6 23 / 22%);
     }
 
-    .stat-value {
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--primary);
+    [data-theme='light'] .card {
+      box-shadow: 0 10px 20px rgb(15 23 42 / 8%);
     }
 
-    .stat-label {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+    .screen {
+      display: none;
+      gap: 1rem;
     }
 
-    .game-card {
-      background: var(--bg-card);
-      border-radius: 16px;
-      padding: 2rem;
-      box-shadow: var(--shadow-lg);
-      margin-bottom: 1.5rem;
+    .screen.active {
+      display: grid;
     }
 
-    .hint {
-      text-align: center;
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-      margin-bottom: 1rem;
-    }
-
-    .hint strong {
-      color: var(--text);
-    }
-
-    .scrambled-word {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    .letter-tile {
-      width: 48px;
-      height: 56px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-      color: white;
-      font-size: 1.5rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 8px;
-      box-shadow: var(--shadow);
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s;
-      user-select: none;
-      touch-action: manipulation;
-    }
-
-    .letter-tile:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .letter-tile:active {
-      transform: translateY(0);
-    }
-
-    .letter-tile.used {
-      opacity: 0.3;
-      pointer-events: none;
-    }
-
-    .answer-area {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-      min-height: 56px;
-      flex-wrap: wrap;
-    }
-
-    .answer-slot {
-      width: 48px;
-      height: 56px;
-      background: var(--bg);
-      border: 2px dashed var(--border);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: var(--text);
-      transition: border-color 0.2s, background 0.2s;
-    }
-
-    .answer-slot.filled {
-      border-style: solid;
-      border-color: var(--primary);
-      background: var(--bg-card);
-      cursor: pointer;
-    }
-
-    .answer-slot.filled:hover {
-      background: var(--border);
-    }
-
-    .answer-slot.filled {
-      touch-action: manipulation;
-    }
-
-    .answer-slot.correct {
-      border-color: var(--success);
-      background: rgba(16, 185, 129, 0.1);
-    }
-
-    .answer-slot.wrong {
-      border-color: var(--error);
-      background: rgba(239, 68, 68, 0.1);
-      animation: shake 0.4s ease-in-out;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-8px); }
-      75% { transform: translateX(8px); }
-    }
-
-    .actions {
+    .row {
       display: flex;
       gap: 0.75rem;
-      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
     }
 
-    button {
-      min-height: 44px;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
+    .col {
+      display: grid;
       gap: 0.5rem;
     }
 
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-      color: white;
+    label {
+      font-weight: 700;
+      font-size: 0.92rem;
     }
 
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    input,
+    button {
+      font: inherit;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      min-height: 44px;
+    }
+
+    input {
+      background: var(--surface);
+      color: var(--text);
+      padding: 0.5rem 0.7rem;
+      width: min(100%, 360px);
+    }
+
+    .btn {
+      cursor: pointer;
+      color: #fff;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: none;
+      padding: 0.5rem 1rem;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
     .btn-secondary {
-      background: var(--bg);
+      background: var(--surface);
       color: var(--text);
-      border: 2px solid var(--border);
+      border: 1px solid var(--border);
     }
 
-    .btn-secondary:hover {
-      background: var(--border);
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #f97316);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.65rem;
+    }
+
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.6rem;
+      text-align: center;
+    }
+
+    .stat b {
+      display: block;
+      font-size: 1.2rem;
+    }
+
+    .timer-urgent {
+      color: var(--danger);
+    }
+
+    .hint {
+      background: var(--surface);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 0.7rem;
+      font-size: 0.95rem;
+    }
+
+    .player-instructions {
+      margin: 0.45rem 0 0.65rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .scramble,
+    .answer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      justify-content: center;
+    }
+
+    .tile {
+      width: clamp(42px, 11vw, 52px);
+      min-width: 42px;
+      height: 56px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      font-weight: 800;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      user-select: none;
+      text-transform: uppercase;
+      transition:
+        transform 120ms ease,
+        border-color 120ms ease,
+        box-shadow 120ms ease,
+        opacity 120ms ease;
+    }
+
+    .tile.letter {
+      cursor: pointer;
+      color: #fff;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 8px 16px rgb(8 145 178 / 22%);
+    }
+
+    .tile.letter:not(:disabled):hover,
+    .tile.slot.filled:not(:disabled):hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 18px rgb(8 145 178 / 30%);
+    }
+
+    .tile.letter:not(:disabled):active,
+    .tile.slot.filled:not(:disabled):active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 4px 10px rgb(8 145 178 / 22%);
+    }
+
+    .tile.letter.used {
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    .tile.slot {
+      background: var(--surface);
+      border-style: dashed;
+      color: var(--muted);
+    }
+
+    .tile.slot.filled {
+      border-style: solid;
+      cursor: pointer;
+      background: rgb(8 145 178 / 14%);
+      color: var(--text);
+      border-color: rgb(34 211 238 / 55%);
+    }
+
+    .tile.slot.active-slot {
+      border-color: var(--warning);
+      box-shadow: 0 0 0 4px rgb(245 158 11 / 13%);
+      background: rgb(245 158 11 / 10%);
+    }
+
+    .tile:disabled {
+      cursor: not-allowed;
+      opacity: 0.42;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .tile.slot:disabled:not(.filled) {
+      background: rgb(148 163 184 / 8%);
     }
 
     .message {
-      text-align: center;
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      font-weight: 500;
-      animation: fadeIn 0.3s ease-out;
+      border-radius: 10px;
+      padding: 0.7rem 0.8rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: 1px solid transparent;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+    .message.info {
+      background: rgb(34 211 238 / 14%);
+      border-color: rgb(34 211 238 / 45%);
     }
 
     .message.success {
-      background: rgba(16, 185, 129, 0.1);
-      color: var(--success);
+      background: rgb(34 197 94 / 14%);
+      border-color: rgb(34 197 94 / 45%);
+    }
+
+    .message.warn {
+      background: rgb(245 158 11 / 14%);
+      border-color: rgb(245 158 11 / 45%);
     }
 
     .message.error {
-      background: rgba(239, 68, 68, 0.1);
-      color: var(--error);
+      background: rgb(239 68 68 / 14%);
+      border-color: rgb(239 68 68 / 45%);
     }
 
-    .level-indicator {
+    .round-result {
+      display: none;
+      position: relative;
+      min-height: 64px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgb(15 23 42 / 34%);
+      padding: 0.7rem;
       text-align: center;
-      margin-bottom: 1rem;
     }
 
-    .level-badge {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      background: var(--primary);
-      color: white;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+    .round-result.active {
+      display: grid;
+      place-items: center;
     }
 
-    .timer {
-      color: var(--warning);
-      font-weight: 600;
+    .round-result-title {
+      position: relative;
+      z-index: 2;
+      font-weight: 800;
     }
 
-    footer {
-      text-align: center;
-      margin-top: 2rem;
+    .round-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 9999;
+      display: none;
     }
 
-    .badge {
-      display: inline-block;
-      background: var(--border);
-      color: var(--text-secondary);
-      padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 500;
+    .round-overlay.active {
+      display: block;
     }
 
+    .round-overlay .confetti-piece {
+      position: absolute;
+      top: -24px;
+      width: 10px;
+      height: 16px;
+      border-radius: 2px;
+      animation-name: confettiFallFull;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-duration: 2600ms;
+    }
 
-    @media (max-width: 640px) {
-      body {
-        justify-content: flex-start;
-        padding: 0.75rem;
+    .round-overlay .raindrop {
+      position: absolute;
+      top: -24px;
+      width: 3px;
+      height: 22px;
+      border-radius: 999px;
+      background: linear-gradient(to bottom, rgb(56 189 248 / 0%), rgb(56 189 248 / 90%));
+      animation-name: rainDropFull;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-duration: 1200ms;
+    }
+
+    @keyframes confettiFallFull {
+      0% {
+        transform: translateY(-24px) rotate(0deg);
+        opacity: 0;
       }
-
-      .container {
-        max-width: 100%;
+      8% {
+        opacity: 1;
       }
-
-      header {
-        margin-bottom: 1rem;
+      100% {
+        transform: translateY(105vh) rotate(720deg);
+        opacity: 0.9;
       }
+    }
 
-      h1 {
-        font-size: 1.5rem;
+    @keyframes rainDropFull {
+      0% {
+        transform: translateY(-24px);
+        opacity: 0;
       }
-
-      .stats {
-        gap: 0.75rem;
-        justify-content: space-between;
+      10% {
+        opacity: 1;
       }
-
-      .stat {
-        flex: 1;
-        min-width: 72px;
-      }
-
-      .stat-value {
-        font-size: 1.35rem;
-      }
-
-      .game-card {
-        padding: 1rem;
-      }
-
-      .letter-tile,
-      .answer-slot {
-        width: 42px;
-        height: 50px;
-        font-size: 1.3rem;
-      }
-
-      .actions {
-        flex-direction: column;
-      }
-
-      .actions button {
-        width: 100%;
-      }
-
-      .theme-toggle {
-        top: 10px;
-        right: 10px;
+      100% {
+        transform: translateY(110vh);
+        opacity: 0.6;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
+      .round-overlay {
+        display: none !important;
       }
     }
-  [data-theme='light']{--bg:#eef4ff;--surface:#ffffff;--text:#1f2f52;--accent:#0891b2;--shadow:rgba(31, 47, 82, 0.12);}
-</style>
-  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__">
-  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__">
-    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__">
-  <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__">
-  <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__">
-  <meta name="voa-app-id" content="2026/03/06/word-scramble" />
-  <script src="/apps/shared/app-shell.js" defer></script>
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 0.8rem;
+    }
+
+    .score-list {
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      gap: 0.6rem;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.55rem 0.7rem;
+    }
+
+    .rank {
+      font-weight: 800;
+    }
+
+    .score {
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .score-cell {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+
+    .btn-kick {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 1px solid rgb(239 68 68 / 55%);
+      background: rgb(239 68 68 / 14%);
+      color: #fecaca;
+      font-weight: 700;
+      font-size: 0.85rem;
+      line-height: 1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .btn-kick:hover {
+      background: rgb(239 68 68 / 28%);
+      color: #fff;
+    }
+
+    .btn-kick:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .join-box {
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 0.7rem;
+      background: rgb(2 6 23 / 18%);
+      word-break: break-all;
+    }
+
+    [data-theme='light'] .join-box {
+      background: rgb(248 250 252 / 80%);
+    }
+
+    .role-badge {
+      display: inline-block;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 0.2rem 0.65rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 760px) {
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .app {
+        padding: 0.85rem;
+      }
+
+      .score-row {
+        grid-template-columns: 64px 1fr auto;
+      }
+    }
+  </style>
 </head>
 <body>
-  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
-  <div class="container">
-    <header>
-      <h1>🔤 Word Scramble</h1>
-      <p class="subtitle">Unscramble the letters to reveal the word! Tap letters on mobile.</p>
-    </header>
+  <main class="app">
+    <section class="hero">
+      <h1>Word Scramble Party</h1>
+      <p>
+        Multiplayer backend mode: moderator hosts a room, players join with a share link,
+        first correct answer wins the round automatically.
+      </p>
+    </section>
 
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-value" id="score">0</div>
-        <div class="stat-label">Score</div>
+    <section id="loadingScreen" class="card screen active" aria-label="Loading screen">
+      <h2>Connecting...</h2>
+      <p class="muted">Setting up multiplayer room.</p>
+    </section>
+
+    <section id="joinScreen" class="card screen" aria-label="Join screen">
+      <h2>Join Word Scramble</h2>
+      <p class="muted">Enter your name to join this game room.</p>
+      <div class="col">
+        <label for="playerNameInput">Your Name</label>
+        <input id="playerNameInput" maxlength="24" placeholder="Player name" />
       </div>
-      <div class="stat">
-        <div class="stat-value" id="streak">0</div>
-        <div class="stat-label">Streak</div>
+      <div class="row">
+        <button id="joinBtn" class="btn" type="button">Join Game</button>
       </div>
-      <div class="stat">
-        <div class="stat-value timer" id="timer">30</div>
-        <div class="stat-label">Seconds</div>
-      </div>
-    </div>
+      <p id="joinMessage" class="message info">Waiting for your name.</p>
+    </section>
 
-    <div class="game-card">
-      <div class="level-indicator">
-        <span class="level-badge" id="level">Level 1</span>
+    <section id="lobbyScreen" class="card screen" aria-label="Lobby screen">
+      <div class="row">
+        <h2 style="margin: 0">Lobby</h2>
+        <span id="roleBadge" class="role-badge">Moderator</span>
       </div>
 
-      <div class="hint" id="hint">
-        Hint: <strong>Loading...</strong>
+      <div id="moderatorLobbyTools">
+        <div class="join-box">
+          <div class="muted">Share this link with players:</div>
+          <strong id="joinUrlText">—</strong>
+          <div class="row" style="margin-top: 0.6rem">
+            <button id="copyJoinLinkBtn" class="btn btn-secondary" type="button">Copy Link</button>
+            <button id="shareJoinLinkBtn" class="btn btn-secondary" type="button">Share Link</button>
+          </div>
+        </div>
+        <div class="row">
+          <label for="roundsInput">Number of Rounds</label>
+          <input id="roundsInput" type="number" min="1" max="30" value="6" />
+          <button id="startBtn" class="btn" type="button">Start Game</button>
+        </div>
       </div>
 
-      <div id="message"></div>
-
-      <div class="scrambled-word" id="scrambled"></div>
-
-      <div class="answer-area" id="answer"></div>
-
-      <div class="actions">
-        <button class="btn-secondary" onclick="clearAnswer()">
-          ↩️ Clear
-        </button>
-        <button class="btn-primary" onclick="submitAnswer()">
-          ✓ Submit
-        </button>
-        <button class="btn-secondary" onclick="skipWord()">
-          ⏭️ Skip
-        </button>
+      <div>
+        <h3>Players</h3>
+        <p class="muted">All connected players appear here in realtime.</p>
+        <div id="lobbyPlayers" class="score-list"></div>
       </div>
-    </div>
 
-    <footer>
-      <span class="badge">Generated by AI</span>
-    </footer>
-    <footer style="text-align: center; padding: 20px; margin-top: 20px; opacity: 0.7;">
-      <a href="https://www.valleyofai.com" target="_blank" rel="noopener" style="color: var(--primary, #3b82f6); text-decoration: none;">← Back to Valley of AI</a>
-    </footer>
-  </div>
+      <p id="lobbyMessage" class="message info">Moderator: wait for players, then start.</p>
+    </section>
 
-  <script>
-    // Word list with hints organized by difficulty
-    const WORDS = {
-      easy: [
-        { word: 'apple', hint: 'A red or green fruit' },
-        { word: 'house', hint: 'A place to live' },
-        { word: 'water', hint: 'Essential for life, H2O' },
-        { word: 'happy', hint: 'Feeling of joy' },
-        { word: 'music', hint: 'Sound arranged in patterns' },
-        { word: 'dance', hint: 'Moving to rhythm' },
-        { word: 'light', hint: 'Opposite of dark' },
-        { word: 'dream', hint: 'What happens when you sleep' },
-        { word: 'cloud', hint: 'White fluffy thing in the sky' },
-        { word: 'smile', hint: 'Happy facial expression' },
-      ],
-      medium: [
-        { word: 'purple', hint: 'A mix of red and blue' },
-        { word: 'garden', hint: 'Where flowers grow' },
-        { word: 'bridge', hint: 'Crosses over water' },
-        { word: 'planet', hint: 'Earth is one of these' },
-        { word: 'frozen', hint: 'Solid water state' },
-        { word: 'silent', hint: 'Without any sound' },
-        { word: 'guitar', hint: 'A stringed instrument' },
-        { word: 'market', hint: 'Place to buy food' },
-        { word: 'winter', hint: 'Cold season' },
-        { word: 'castle', hint: 'Where kings live' },
-      ],
-      hard: [
-        { word: 'computer', hint: 'Electronic device for work' },
-        { word: 'elephant', hint: 'Large gray animal with trunk' },
-        { word: 'treasure', hint: 'Valuable hidden items' },
-        { word: 'mountain', hint: 'Very tall landform' },
-        { word: 'sandwich', hint: 'Food between two slices' },
-        { word: 'calendar', hint: 'Shows dates and months' },
-        { word: 'umbrella', hint: 'Protection from rain' },
-        { word: 'keyboard', hint: 'Input device with keys' },
-        { word: 'starfish', hint: 'Sea creature with five arms' },
-        { word: 'dinosaur', hint: 'Extinct prehistoric creature' },
-      ]
+    <section id="playScreen" class="card screen" aria-label="Round play screen">
+      <div class="row">
+        <h2 style="margin: 0">Live Round</h2>
+        <span id="playRoleBadge" class="role-badge">Player</span>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span>Round</span>
+          <b id="roundStat">1 / 6</b>
+        </div>
+        <div class="stat">
+          <span>Timer</span>
+          <b id="timerStat">30</b>
+        </div>
+        <div class="stat">
+          <span>Solved</span>
+          <b id="solvedStat">0</b>
+        </div>
+        <div class="stat">
+          <span>Players</span>
+          <b id="playerCountStat">0</b>
+        </div>
+      </div>
+
+      <div id="roundMessage" class="message info">Waiting for moderator to start.</div>
+      <div id="hintBox" class="hint">Hint: <strong>Waiting for round...</strong></div>
+
+      <div class="grid-2">
+        <div class="card" style="padding: 0.7rem">
+          <h3 style="margin-bottom: 0.6rem">Scramble</h3>
+          <p id="playerInstructions" class="player-instructions">
+            When the round begins, click or type the letters to spell your answer.
+          </p>
+          <div id="scramble" class="scramble" aria-label="Scrambled letters"></div>
+          <div id="answer" class="answer" aria-label="Answer slots" style="margin-top: 0.65rem"></div>
+          <div id="roundResult" class="round-result" aria-live="polite"></div>
+          <div class="row" style="margin-top: 0.65rem">
+            <button id="clearBtn" class="btn btn-secondary" type="button">Clear Answer</button>
+          </div>
+          <p class="muted" style="margin-top: 0.45rem">Answer auto-submits when all letters are correct.</p>
+        </div>
+
+        <div class="card" style="padding: 0.7rem">
+          <h3 style="margin-bottom: 0.55rem">Players & Scores</h3>
+          <div id="playPlayers" class="score-list"></div>
+        </div>
+      </div>
+
+      <div id="moderatorControls" class="row hidden">
+        <button id="openPanelBtn" class="btn btn-secondary" type="button">Open Answer Panel Window</button>
+        <button id="skipBtn" class="btn btn-secondary" type="button">Skip Round</button>
+        <button id="nextRoundBtn" class="btn" type="button">Start Next Round</button>
+        <button id="endGameBtn" class="btn btn-danger" type="button">End Game</button>
+      </div>
+    </section>
+
+    <section id="scoreScreen" class="card screen" aria-label="Final scoreboard">
+      <h2>Final Scoreboard</h2>
+      <p class="muted">Placements use fair shared ranking for ties (1, 1, 3 style).</p>
+      <div id="scoreList" class="score-list"></div>
+      <div id="scoreModeratorControls" class="row hidden">
+        <button id="playAgainBtn" class="btn" type="button">Play Again</button>
+        <button id="createNewGameBtn" class="btn btn-secondary" type="button">Create New Game</button>
+      </div>
+    </section>
+
+    <section id="errorScreen" class="card screen" aria-label="Error screen">
+      <h2>Couldn’t connect</h2>
+      <p id="errorText" class="message error">Multiplayer backend is unavailable.</p>
+    </section>
+  </main>
+
+  <div id="roundOverlay" class="round-overlay" aria-hidden="true"></div>
+
+  <script type="module">
+    const APP_NAME = 'Word Scramble Party';
+    const APP_ID = 'word-scramble';
+    const APP_PATH = '2026/03/06/word-scramble';
+    const SESSION_POLL_MS = 800;
+    const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const STORAGE_PREFIX = '__STORAGE_PREFIX__';
+
+    const WORDS = [
+      { word: 'apple', hint: 'A common fruit often in lunch boxes' },
+      { word: 'dance', hint: 'Move to rhythm and music' },
+      { word: 'guitar', hint: 'String instrument with six strings' },
+      { word: 'planet', hint: 'Earth is one of these' },
+      { word: 'bridge', hint: 'Structure used to cross water' },
+      { word: 'castle', hint: 'Historic fortress for royalty' },
+      { word: 'memory', hint: 'What this game challenges' },
+      { word: 'camera', hint: 'Device used to take photos' },
+      { word: 'rocket', hint: 'Vehicle that launches to space' },
+      { word: 'forest', hint: 'Large area full of trees' },
+      { word: 'puzzle', hint: 'A problem to solve for fun' },
+      { word: 'travel', hint: 'To go from place to place' },
+      { word: 'friend', hint: 'Someone you trust and enjoy' },
+      { word: 'silver', hint: 'Metal and also a medal color' },
+      { word: 'orange', hint: 'Color and citrus fruit' },
+      { word: 'school', hint: 'Place for classes and learning' },
+      { word: 'runner', hint: 'Someone moving quickly by foot' },
+      { word: 'market', hint: 'Place where goods are sold' },
+      { word: 'winter', hint: 'The coldest season' },
+      { word: 'bright', hint: 'Very full of light' }
+    ];
+
+    const screens = {
+      loading: document.getElementById('loadingScreen'),
+      join: document.getElementById('joinScreen'),
+      lobby: document.getElementById('lobbyScreen'),
+      play: document.getElementById('playScreen'),
+      score: document.getElementById('scoreScreen'),
+      error: document.getElementById('errorScreen')
     };
 
-    // Game state
-    let currentWord = '';
-    let currentHint = '';
-    let scrambledLetters = [];
-    let answerLetters = [];
-    let usedIndices = new Set();
-    let score = 0;
-    let streak = 0;
-    let level = 1;
-    let timeLeft = 30;
-    let timerInterval = null;
-    let usedWords = new Set();
+    const roleBadge = document.getElementById('roleBadge');
+    const playRoleBadge = document.getElementById('playRoleBadge');
+    const roundsInput = document.getElementById('roundsInput');
+    const startBtn = document.getElementById('startBtn');
+    const lobbyPlayers = document.getElementById('lobbyPlayers');
+    const lobbyMessage = document.getElementById('lobbyMessage');
+    const joinUrlText = document.getElementById('joinUrlText');
 
-    // DOM Elements
-    const scoreEl = document.getElementById('score');
-    const streakEl = document.getElementById('streak');
-    const timerEl = document.getElementById('timer');
-    const levelEl = document.getElementById('level');
-    const hintEl = document.getElementById('hint');
-    const messageEl = document.getElementById('message');
-    const scrambledEl = document.getElementById('scrambled');
+    const joinBtn = document.getElementById('joinBtn');
+    const playerNameInput = document.getElementById('playerNameInput');
+    const joinMessage = document.getElementById('joinMessage');
+
+    const roundStat = document.getElementById('roundStat');
+    const timerStat = document.getElementById('timerStat');
+    const solvedStat = document.getElementById('solvedStat');
+    const playerCountStat = document.getElementById('playerCountStat');
+    const roundMessage = document.getElementById('roundMessage');
+    const hintBox = document.getElementById('hintBox');
+    const scrambleEl = document.getElementById('scramble');
     const answerEl = document.getElementById('answer');
+    const roundResult = document.getElementById('roundResult');
+    const roundOverlay = document.getElementById('roundOverlay');
+    const clearBtn = document.getElementById('clearBtn');
+    const playPlayers = document.getElementById('playPlayers');
 
-    // Get difficulty based on level
-    function getDifficulty() {
-      if (level <= 3) return 'easy';
-      if (level <= 6) return 'medium';
-      return 'hard';
+    const moderatorControls = document.getElementById('moderatorControls');
+    const scoreModeratorControls = document.getElementById('scoreModeratorControls');
+    const scoreList = document.getElementById('scoreList');
+
+    const errorText = document.getElementById('errorText');
+
+    let sessionCode = null;
+    let role = null;
+    let moderatorId = null;
+    let playerId = null;
+    let session = null;
+    let pollHandle = null;
+    let timerHandle = null;
+    let pendingAutoSubmit = false;
+    let answerPanelWindow = null;
+    let activeRoundKey = null;
+    let activeOverlayKey = null;
+
+    let localAnswer = [];
+    let localUsedIndices = new Set();
+
+    function localKey(key) {
+      return `${STORAGE_PREFIX}:word-scramble:${key}`;
     }
 
-    // Shuffle array (Fisher-Yates)
-    function shuffle(array) {
-      const arr = [...array];
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
+    function showScreen(name) {
+      Object.entries(screens).forEach(([key, el]) => {
+        el.classList.toggle('active', key === name);
+      });
+    }
+
+    function setError(message) {
+      errorText.textContent = message;
+      showScreen('error');
+    }
+
+    function normalize(value) {
+      return String(value || '')
+        .trim()
+        .toLowerCase();
+    }
+
+    function generateSessionCode(length = 6) {
+      let code = '';
+      for (let i = 0; i < length; i += 1) {
+        code += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
       }
-      return arr;
+      return code;
     }
 
-    // Get a new word
-    function getNewWord() {
-      const difficulty = getDifficulty();
-      const words = WORDS[difficulty].filter(w => !usedWords.has(w.word));
-      
-      // Reset used words if we've gone through all
-      if (words.length === 0) {
-        usedWords.clear();
-        return getNewWord();
+    function generateId(prefix = 'id') {
+      if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        return `${prefix}-${crypto.randomUUID()}`;
       }
-      
-      const selected = words[Math.floor(Math.random() * words.length)];
-      usedWords.add(selected.word);
-      return selected;
+      return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
     }
 
-    // Start new round
-    function newRound() {
-      const wordData = getNewWord();
-      currentWord = wordData.word;
-      currentHint = wordData.hint;
-      
-      // Make sure scrambled version is different from original
-      do {
-        scrambledLetters = shuffle(currentWord.split(''));
-      } while (scrambledLetters.join('') === currentWord);
-      
-      answerLetters = [];
-      usedIndices.clear();
-      
-      // Reset timer
-      timeLeft = Math.max(15, 30 - (level - 1) * 2); // Decreases with level, min 15
-      
-      renderGame();
-      startTimer();
+    function hashParams() {
+      return new URLSearchParams(window.location.hash.replace(/^#/, ''));
     }
 
-    // Render the game
-    function renderGame() {
-      // Update stats
-      scoreEl.textContent = score;
-      streakEl.textContent = streak;
-      timerEl.textContent = timeLeft;
-      levelEl.textContent = `Level ${level}`;
-      hintEl.innerHTML = `Hint: <strong>${currentHint}</strong>`;
-      
-      // Render scrambled letters
-      scrambledEl.innerHTML = scrambledLetters.map((letter, idx) => `
-        <div class="letter-tile ${usedIndices.has(idx) ? 'used' : ''}" 
-             onclick="selectLetter(${idx})"
-             role="button" 
-             tabindex="0"
-             aria-label="Letter ${letter}">
-          ${letter}
-        </div>
-      `).join('');
-      
-      // Render answer slots
+    function setHash(params) {
+      window.location.hash = params.toString();
+    }
+
+    function savePlayerName(name) {
+      try {
+        window.localStorage.setItem(localKey('playerName'), name);
+      } catch {
+        // ignore
+      }
+    }
+
+    function loadPlayerName() {
+      try {
+        return window.localStorage.getItem(localKey('playerName')) || '';
+      } catch {
+        return '';
+      }
+    }
+
+    function prepareJoinScreen(code) {
+      role = 'player';
+      sessionCode = code.toUpperCase();
+      playerId = null;
+      session = null;
+      activeRoundKey = null;
+      resetLocalAnswer();
+      playerNameInput.disabled = false;
+      joinBtn.disabled = false;
+      playerNameInput.value = loadPlayerName();
+      showScreen('join');
+      updateJoinedPlayerWaitState();
+      window.setTimeout(() => playerNameInput.focus(), 0);
+    }
+
+    async function isMultiplayerConfigured() {
+      const response = await fetch('/api/multiplayer/status', { cache: 'no-store' });
+      if (!response.ok) return false;
+      const payload = await response.json();
+      return Boolean(payload?.configured);
+    }
+
+    async function fetchSession(code) {
+      const response = await fetch(`/api/multiplayer/sessions/${code}`, { cache: 'no-store' });
+      if (response.status === 404) return null;
+      if (!response.ok) throw new Error('Failed to fetch session');
+      const payload = await response.json();
+      return payload?.session || null;
+    }
+
+    async function createSession(code, modId) {
+      const response = await fetch('/api/multiplayer/sessions', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          code,
+          appId: APP_ID,
+          appName: APP_NAME,
+          appPath: APP_PATH,
+          moderatorId: modId,
+          settings: { roundsTotal: 6 },
+          status: 'lobby'
+        })
+      });
+      if (response.status === 409) return false;
+      if (!response.ok) throw new Error('Failed to create session');
+      return true;
+    }
+
+    function flattenPatch(prefix, value, out) {
+      if (value === null || value === undefined) {
+        out[prefix] = value;
+        return;
+      }
+      const isObject = typeof value === 'object' && !Array.isArray(value);
+      if (!isObject) {
+        out[prefix] = value;
+        return;
+      }
+      const entries = Object.entries(value);
+      if (entries.length === 0) {
+        out[prefix] = {};
+        return;
+      }
+      entries.forEach(([key, child]) => {
+        flattenPatch(`${prefix}/${key}`, child, out);
+      });
+    }
+
+    async function patchSession({ status = null, patch = {} } = {}) {
+      if (!sessionCode || !moderatorId) return;
+      const normalizedPatch = {};
+      Object.entries(patch).forEach(([key, value]) => {
+        if (key.includes('/')) {
+          normalizedPatch[key] = value;
+        } else {
+          flattenPatch(key, value, normalizedPatch);
+        }
+      });
+
+      const response = await fetch(`/api/multiplayer/sessions/${sessionCode}`, {
+        method: 'PATCH',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ moderatorId, status, patch: normalizedPatch })
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update session');
+      }
+    }
+
+    async function joinSession(code, name) {
+      const response = await fetch(`/api/multiplayer/sessions/${code}/players`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ name })
+      });
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload?.error || 'Unable to join session');
+      }
+      return response.json();
+    }
+
+    async function submitCorrectAnswer(guess) {
+      if (!sessionCode || !playerId) return;
+      const response = await fetch(`/api/multiplayer/sessions/${sessionCode}/answers`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ playerId, guess })
+      });
+      if (!response.ok) {
+        throw new Error('Failed to submit answer');
+      }
+      return response.json();
+    }
+
+    async function refreshSessionNow() {
+      if (!sessionCode) return;
+      const nextSession = await fetchSession(sessionCode);
+      if (nextSession) {
+        session = nextSession;
+        updateScreenBySession();
+      }
+    }
+
+    function playersArray() {
+      if (!session?.players) return [];
+      return Object.values(session.players)
+        .filter((entry) => entry && entry.id)
+        .sort((a, b) => {
+          const scoreA = Number(a?.score || 0);
+          const scoreB = Number(b?.score || 0);
+          if (scoreB !== scoreA) return scoreB - scoreA;
+          return String(a?.name || '').localeCompare(String(b?.name || ''));
+        });
+    }
+
+    function getRoundGame() {
+      return session?.game || null;
+    }
+
+    function setRoundMessage(text, tone = 'info') {
+      roundMessage.className = `message ${tone}`;
+      roundMessage.textContent = text;
+    }
+
+    function kickButtonHtml(entry) {
+      if (role !== 'moderator') return '';
+      return `<button type="button" class="btn-kick" data-kick="${entry.id}" title="Remove player" aria-label="Remove ${entry.name}">✕</button>`;
+    }
+
+    function bindKickButtons(container) {
+      container.querySelectorAll('[data-kick]').forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+          event.stopPropagation();
+          removePlayer(btn.dataset.kick);
+        });
+      });
+    }
+
+    function renderLobbyPlayers() {
+      const players = playersArray();
+      lobbyPlayers.innerHTML = '';
+      if (!players.length) {
+        lobbyPlayers.innerHTML = '<p class="muted">No players connected yet.</p>';
+        return;
+      }
+      players.forEach((entry) => {
+        const row = document.createElement('div');
+        row.className = 'score-row';
+        row.innerHTML = `<div class="rank">•</div><div>${entry.name}</div><div class="score-cell"><span class="score">${entry.score || 0}</span>${kickButtonHtml(entry)}</div>`;
+        lobbyPlayers.appendChild(row);
+      });
+      bindKickButtons(lobbyPlayers);
+    }
+
+    function renderPlayPlayers() {
+      const players = playersArray();
+      const winnerId = getRoundGame()?.roundWinnerId;
+      playPlayers.innerHTML = '';
+
+      players.forEach((entry, index) => {
+        const rank = index + 1;
+        const winnerLabel = winnerId && winnerId === entry.id ? ' 🏁' : '';
+        const row = document.createElement('div');
+        row.className = 'score-row';
+        row.innerHTML = `<div class="rank">${rank}</div><div>${entry.name}${winnerLabel}</div><div class="score-cell"><span class="score">${entry.score || 0} pts</span>${kickButtonHtml(entry)}</div>`;
+        playPlayers.appendChild(row);
+      });
+      bindKickButtons(playPlayers);
+    }
+
+    function computePlacements(players) {
+      const sorted = [...players].sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        return a.name.localeCompare(b.name);
+      });
+      let previousScore = null;
+      let currentRank = 0;
+      return sorted.map((player, index) => {
+        if (previousScore === null || player.score < previousScore) {
+          currentRank = index + 1;
+        }
+        previousScore = player.score;
+        return { ...player, rank: currentRank };
+      });
+    }
+
+    function rankLabel(rank) {
+      if (rank === 1) return 'Gold';
+      if (rank === 2) return 'Silver';
+      if (rank === 3) return 'Bronze';
+      return `${rank}th`;
+    }
+
+    function renderScoreboard() {
+      const placements = computePlacements(playersArray().map((entry) => ({
+        name: entry.name,
+        score: Number(entry.score || 0)
+      })));
+      scoreList.innerHTML = '';
+      placements.forEach((entry) => {
+        const row = document.createElement('div');
+        row.className = 'score-row';
+        row.innerHTML = `<div class="rank">${entry.rank}. ${rankLabel(entry.rank)}</div><div>${entry.name}</div><div class="score">${entry.score} pts</div>`;
+        scoreList.appendChild(row);
+      });
+    }
+
+    function resetLocalAnswer() {
+      localAnswer = [];
+      localUsedIndices = new Set();
+      pendingAutoSubmit = false;
+    }
+
+    function syncLocalAnswerToRound(game) {
+      const nextRoundKey = game
+        ? [game.roundNumber, game.word, game.roundStartedAt].filter(Boolean).join(':')
+        : null;
+      if (nextRoundKey && nextRoundKey !== activeRoundKey) {
+        resetLocalAnswer();
+      }
+      activeRoundKey = nextRoundKey;
+    }
+
+    function renderTiles() {
+      const game = getRoundGame();
+      const scramble = Array.isArray(game?.scramble) ? game.scramble : [];
+      const answerLength = game?.word ? game.word.length : 0;
+      const locked = !game || session?.status !== 'playing' || game.roundState !== 'active' || role !== 'player';
+      clearBtn.disabled = locked;
+
+      scrambleEl.innerHTML = scramble
+        .map((letter, index) => {
+          const used = localUsedIndices.has(index) ? ' used' : '';
+          return `<button type="button" class="tile letter${used}" data-index="${index}" aria-label="Letter ${letter}">${letter}</button>`;
+        })
+        .join('');
+
       answerEl.innerHTML = '';
-      for (let i = 0; i < currentWord.length; i++) {
-        const letter = answerLetters[i];
-        const slot = document.createElement('div');
-        slot.className = 'answer-slot' + (letter ? ' filled' : '');
-        slot.textContent = letter?.letter || '';
-        if (letter) {
-          slot.onclick = () => removeLetter(i);
+      for (let i = 0; i < answerLength; i += 1) {
+        const slotData = localAnswer[i];
+        const slot = document.createElement('button');
+        slot.type = 'button';
+        const active = !locked && !slotData && i === localAnswer.length ? ' active-slot' : '';
+        slot.className = `tile slot${slotData ? ' filled' : ''}${active}`;
+        slot.textContent = slotData ? slotData.letter : '';
+        slot.disabled = locked || !slotData;
+        if (!locked && slotData) {
+          slot.addEventListener('click', () => removeLetter(i));
         }
         answerEl.appendChild(slot);
       }
+
+      scrambleEl.querySelectorAll('button').forEach((button) => {
+        button.disabled = locked;
+        if (!locked) {
+          button.addEventListener('click', () => {
+            const idx = Number.parseInt(button.dataset.index, 10);
+            selectLetter(idx);
+          });
+        }
+      });
     }
 
-    // Select a letter from scrambled
-    function selectLetter(idx) {
-      if (usedIndices.has(idx)) return;
-      if (answerLetters.length >= currentWord.length) return;
-      
-      usedIndices.add(idx);
-      answerLetters.push({ letter: scrambledLetters[idx], sourceIdx: idx });
-      renderGame();
-      
-      // Auto-submit if all letters placed
-      if (answerLetters.length === currentWord.length) {
-        setTimeout(submitAnswer, 300);
-      }
-    }
-
-    // Remove letter from answer
-    function removeLetter(idx) {
-      if (!answerLetters[idx]) return;
-      
-      usedIndices.delete(answerLetters[idx].sourceIdx);
-      answerLetters.splice(idx, 1);
-      renderGame();
-    }
-
-    // Clear answer
-    function clearAnswer() {
-      answerLetters = [];
-      usedIndices.clear();
-      messageEl.innerHTML = '';
-      renderGame();
-    }
-
-    // Submit answer
-    function submitAnswer() {
-      if (answerLetters.length !== currentWord.length) {
-        showMessage('Fill in all letters!', 'error');
+    function renderRoundResult(game) {
+      const showResult = role === 'player' && game?.roundState !== 'active' && game?.roundWinnerId;
+      if (!showResult) {
+        if (activeOverlayKey !== null) {
+          roundResult.className = 'round-result';
+          roundResult.innerHTML = '';
+          roundOverlay.className = 'round-overlay';
+          roundOverlay.innerHTML = '';
+          activeOverlayKey = null;
+        }
         return;
       }
-      
-      const answer = answerLetters.map(l => l.letter).join('');
-      
-      if (answer === currentWord) {
-        // Correct!
-        stopTimer();
-        const slots = answerEl.querySelectorAll('.answer-slot');
-        slots.forEach(s => s.classList.add('correct'));
-        
-        const timeBonus = Math.floor(timeLeft / 2);
-        const streakBonus = streak * 5;
-        const points = 10 + timeBonus + streakBonus;
-        
-        score += points;
-        streak++;
-        
-        // Level up every 3 correct answers
-        if (streak > 0 && streak % 3 === 0) {
-          level++;
+
+      const isWinner = game.roundWinnerId === playerId;
+      const overlayKey = `${game.roundNumber || 0}:${game.roundWinnerId}:${isWinner ? 'w' : 'l'}`;
+      if (overlayKey === activeOverlayKey) return;
+      activeOverlayKey = overlayKey;
+
+      roundResult.className = 'round-result active';
+      roundResult.innerHTML = isWinner
+        ? '<div class="round-result-title">You won this round!</div>'
+        : '<div class="round-result-title">Waiting for the next round</div>';
+
+      roundOverlay.className = 'round-overlay active';
+      roundOverlay.innerHTML = isWinner
+        ? buildConfettiOverlay()
+        : buildRainOverlay();
+    }
+
+    function buildConfettiOverlay() {
+      const colors = ['#22d3ee', '#38bdf8', '#22c55e', '#f59e0b', '#ef4444', '#a855f7', '#ec4899'];
+      const pieces = 90;
+      let html = '';
+      for (let i = 0; i < pieces; i++) {
+        const left = Math.random() * 100;
+        const duration = 2400 + Math.random() * 2000;
+        const delay = -Math.random() * duration;
+        const color = colors[i % colors.length];
+        const width = 7 + Math.random() * 6;
+        const height = 11 + Math.random() * 8;
+        html += `<span class="confetti-piece" style="left:${left.toFixed(2)}%;animation-duration:${duration.toFixed(0)}ms;animation-delay:${delay.toFixed(0)}ms;background:${color};width:${width.toFixed(1)}px;height:${height.toFixed(1)}px"></span>`;
+      }
+      return html;
+    }
+
+    function buildRainOverlay() {
+      const drops = 130;
+      let html = '';
+      for (let i = 0; i < drops; i++) {
+        const left = Math.random() * 100;
+        const duration = 900 + Math.random() * 900;
+        const delay = -Math.random() * duration;
+        const opacity = 0.45 + Math.random() * 0.5;
+        const height = 16 + Math.random() * 12;
+        html += `<span class="raindrop" style="left:${left.toFixed(2)}%;animation-duration:${duration.toFixed(0)}ms;animation-delay:${delay.toFixed(0)}ms;opacity:${opacity.toFixed(2)};height:${height.toFixed(0)}px"></span>`;
+      }
+      return html;
+    }
+
+    async function tryAutoSubmit() {
+      const game = getRoundGame();
+      if (!game || role !== 'player' || pendingAutoSubmit || localAnswer.length !== game.word.length) return;
+      const guess = localAnswer.map((item) => item.letter).join('');
+      if (normalize(guess) !== normalize(game.word)) {
+        setRoundMessage('Not correct yet. Keep trying.', 'warn');
+        return;
+      }
+      pendingAutoSubmit = true;
+      try {
+        const result = await submitCorrectAnswer(guess);
+        if (result?.alreadyAwarded) {
+          setRoundMessage(`${result.winnerName || 'Another player'} already solved first.`, 'warn');
+        } else if (result?.correct) {
+          setRoundMessage('Correct! Waiting for room sync...', 'success');
         }
-        
-        showMessage(`🎉 Correct! +${points} points`, 'success');
-        
-        setTimeout(newRound, 1500);
-      } else {
-        // Wrong!
-        const slots = answerEl.querySelectorAll('.answer-slot');
-        slots.forEach(s => s.classList.add('wrong'));
-        
-        streak = 0;
-        showMessage('❌ Not quite! Try again.', 'error');
-        
-        setTimeout(() => {
-          slots.forEach(s => s.classList.remove('wrong'));
-        }, 400);
+        if (result?.accepted || result?.alreadyAwarded || result?.reason === 'round-inactive') {
+          await refreshSessionNow();
+        }
+      } catch {
+        setRoundMessage('Could not submit answer. Try again.', 'error');
+      } finally {
+        pendingAutoSubmit = false;
       }
     }
 
-    // Skip word
-    function skipWord() {
-      stopTimer();
-      streak = 0;
-      showMessage(`The word was: ${currentWord.toUpperCase()}`, 'error');
-      setTimeout(newRound, 1500);
+    function selectLetter(index) {
+      const game = getRoundGame();
+      const scramble = Array.isArray(game?.scramble) ? game.scramble : [];
+      if (!game || role !== 'player' || game.roundState !== 'active') return;
+      if (localUsedIndices.has(index) || localAnswer.length >= game.word.length) return;
+      localUsedIndices.add(index);
+      localAnswer.push({ letter: scramble[index], sourceIndex: index });
+      renderTiles();
+      tryAutoSubmit();
     }
 
-    // Show message
-    function showMessage(text, type) {
-      messageEl.innerHTML = `<div class="message ${type}">${text}</div>`;
+    function removeLetter(index) {
+      const game = getRoundGame();
+      if (!game || role !== 'player' || game.roundState !== 'active') return;
+      const removed = localAnswer[index];
+      if (!removed) return;
+      localUsedIndices.delete(removed.sourceIndex);
+      localAnswer.splice(index, 1);
+      renderTiles();
     }
 
-    // Timer functions
-    function startTimer() {
-      stopTimer();
-      timerInterval = setInterval(() => {
-        timeLeft--;
-        timerEl.textContent = timeLeft;
-        
-        if (timeLeft <= 5) {
-          timerEl.style.color = 'var(--error)';
-        } else {
-          timerEl.style.color = 'var(--warning)';
+    function clearAnswer() {
+      const game = getRoundGame();
+      if (!game || role !== 'player' || game.roundState !== 'active') return;
+      resetLocalAnswer();
+      renderTiles();
+    }
+
+    function updateJoinBox() {
+      if (!sessionCode) return;
+      const url = `${window.location.origin}${window.location.pathname}#join=${sessionCode}`;
+      joinUrlText.textContent = url;
+    }
+
+    function saveModeratorRecord(code, id) {
+      try {
+        window.localStorage.setItem(localKey(`mod:${code}`), JSON.stringify({ moderatorId: id }));
+      } catch {
+        // ignore
+      }
+    }
+
+    function loadModeratorRecord(code) {
+      try {
+        const raw = window.localStorage.getItem(localKey(`mod:${code}`));
+        return raw ? JSON.parse(raw) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function getRandomWord(usedWordKeys = []) {
+      const used = new Set(Array.isArray(usedWordKeys) ? usedWordKeys : []);
+      const available = WORDS.filter((entry) => !used.has(entry.word));
+      const source = available.length ? available : WORDS;
+      const picked = source[Math.floor(Math.random() * source.length)];
+      return picked;
+    }
+
+    function shuffleLetters(word) {
+      const letters = word.split('');
+      for (let i = letters.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [letters[i], letters[j]] = [letters[j], letters[i]];
+      }
+      if (letters.join('') === word) {
+        letters.reverse();
+      }
+      return letters;
+    }
+
+    async function startRound(roundNumber, roundsTotal, usedWords = []) {
+      const picked = getRandomWord(usedWords);
+      const scramble = shuffleLetters(picked.word);
+      const now = Date.now();
+      const roundSeconds = 30;
+
+      await patchSession({
+        patch: {
+          settings: { roundsTotal },
+          game: {
+            roundNumber,
+            roundsTotal,
+            solvedRounds: Number(session?.game?.solvedRounds || 0),
+            roundState: 'active',
+            word: picked.word,
+            hint: picked.hint,
+            scramble,
+            roundWinnerId: null,
+            roundWinnerName: null,
+            roundWinnerAt: null,
+            announcement: 'Round is live. First correct answer wins automatically.',
+            usedWords: [...usedWords, picked.word],
+            roundStartedAt: new Date(now).toISOString(),
+            roundEndsAt: new Date(now + roundSeconds * 1000).toISOString()
+          }
+        },
+        status: 'playing'
+      });
+    }
+
+    async function moderatorStartGame() {
+      const roundsTotal = Math.min(30, Math.max(1, Number.parseInt(roundsInput.value, 10) || 6));
+      roundsInput.value = String(roundsTotal);
+      const players = playersArray();
+      if (players.length < 2) {
+        lobbyMessage.className = 'message warn';
+        lobbyMessage.textContent = 'Need at least two players before starting.';
+        return;
+      }
+      startBtn.disabled = true;
+      try {
+        await startRound(1, roundsTotal, []);
+      } catch {
+        lobbyMessage.className = 'message error';
+        lobbyMessage.textContent = 'Could not start game.';
+      } finally {
+        startBtn.disabled = false;
+      }
+    }
+
+    async function skipRound() {
+      const game = getRoundGame();
+      if (!game || role !== 'moderator' || game.roundState !== 'active') return;
+      await patchSession({
+        patch: {
+          game: {
+            ...game,
+            roundState: 'between',
+            announcement: `Round skipped. Answer was ${String(game.word || '').toUpperCase()}.`
+          }
         }
-        
-        if (timeLeft <= 0) {
-          stopTimer();
-          streak = 0;
-          showMessage(`⏰ Time's up! The word was: ${currentWord.toUpperCase()}`, 'error');
-          setTimeout(newRound, 2000);
+      });
+    }
+
+    async function startNextRound() {
+      const game = getRoundGame();
+      if (!game || role !== 'moderator') return;
+      const current = Number(game.roundNumber || 1);
+      const total = Number(game.roundsTotal || session?.settings?.roundsTotal || 6);
+      if (current >= total) {
+        await patchSession({ status: 'ended' });
+        return;
+      }
+      await startRound(current + 1, total, game.usedWords || []);
+    }
+
+    async function playAgain() {
+      if (role !== 'moderator') return;
+      const total = Number(session?.settings?.roundsTotal || 6);
+      const players = playersArray();
+      const nextPlayers = {};
+      players.forEach((entry) => {
+        nextPlayers[entry.id] = { ...entry, score: 0 };
+      });
+
+      await patchSession({
+        patch: { players: nextPlayers, game: null },
+        status: 'lobby'
+      });
+      await startRound(1, total, []);
+    }
+
+    async function endGameNow() {
+      if (role !== 'moderator') return;
+      await patchSession({ status: 'ended' });
+    }
+
+    async function createNewGame() {
+      if (role !== 'moderator') return;
+      const btn = document.getElementById('createNewGameBtn');
+      if (btn) btn.disabled = true;
+      try {
+        session = null;
+        activeRoundKey = null;
+        showScreen('loading');
+        await createModeratorSession();
+        await refreshSessionNow();
+      } catch {
+        setError('Could not create a new game.');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function removePlayer(pid) {
+      if (role !== 'moderator' || !pid) return;
+      const entry = session?.players?.[pid];
+      if (!entry) return;
+      const name = entry.name || 'this player';
+      // eslint-disable-next-line no-alert
+      if (!window.confirm(`Remove ${name} from the game?`)) return;
+      try {
+        await patchSession({ patch: { [`players/${pid}`]: null } });
+        await refreshSessionNow();
+      } catch {
+        setRoundMessage('Could not remove player. Try again.', 'error');
+      }
+    }
+
+    function renderModeratorPanel() {
+      const game = getRoundGame();
+      if (!answerPanelWindow || answerPanelWindow.closed || !game) return;
+      answerPanelWindow.document.open();
+      answerPanelWindow.document.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Word Scramble Moderator Panel</title>
+  <style>
+    body { font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; margin: 0; padding: 16px; background: #0f172a; color: #f8fafc; }
+    .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 12px; margin-bottom: 12px; }
+    h1 { margin: 0 0 10px; font-size: 1.2rem; }
+    h2 { margin: 0 0 6px; font-size: 0.95rem; color: #67e8f9; }
+    b { color: #22d3ee; }
+  </style>
+</head>
+<body>
+  <h1>Moderator Answer Panel</h1>
+  <div class="card"><h2>Round</h2><div><b>${game.roundNumber || 1}</b> / ${game.roundsTotal || 1}</div></div>
+  <div class="card"><h2>Hint</h2><div>${game.hint || '-'}</div></div>
+  <div class="card"><h2>Answer</h2><div><b>${String(game.word || '').toUpperCase()}</b></div></div>
+  <div class="card"><h2>Winner</h2><div>${game.roundWinnerName || '-'}</div></div>
+  <div class="card"><h2>Status</h2><div>${game.announcement || '-'}</div></div>
+</body>
+</html>`);
+      answerPanelWindow.document.close();
+    }
+
+    function openAnswerPanel() {
+      answerPanelWindow = window.open('', 'voa-answer-panel', 'width=520,height=620');
+      if (!answerPanelWindow) {
+        setRoundMessage('Popup blocked. Allow popups for moderator panel.', 'warn');
+        return;
+      }
+      renderModeratorPanel();
+    }
+
+    function updateJoinedPlayerWaitState() {
+      const joined = role === 'player' && Boolean(playerId);
+      playerNameInput.disabled = joined;
+      joinBtn.disabled = joined;
+      joinMessage.className = 'message info';
+      joinMessage.textContent = joined
+        ? 'You are in the room. Waiting for the moderator to start the game.'
+        : 'Enter your name once to join this room.';
+    }
+
+    function updateScreenBySession() {
+      const players = playersArray();
+      const game = getRoundGame();
+
+      roleBadge.textContent = role === 'moderator' ? 'Moderator' : 'Player';
+      playRoleBadge.textContent = role === 'moderator' ? 'Moderator' : 'Player';
+
+      if (!session) {
+        showScreen('loading');
+        return;
+      }
+
+      renderLobbyPlayers();
+      renderPlayPlayers();
+      playerCountStat.textContent = String(players.length);
+
+      if (session.status === 'lobby' || !game) {
+        activeRoundKey = null;
+        updateJoinBox();
+        showScreen(role === 'moderator' ? 'lobby' : 'join');
+        updateJoinedPlayerWaitState();
+        lobbyMessage.className = 'message info';
+        lobbyMessage.textContent = 'Moderator: wait for players, then start.';
+        moderatorControls.classList.add('hidden');
+        scoreModeratorControls.classList.add('hidden');
+        return;
+      }
+
+      if (session.status === 'ended') {
+        showScreen('score');
+        renderScoreboard();
+        scoreModeratorControls.classList.toggle('hidden', role !== 'moderator');
+        return;
+      }
+
+      showScreen('play');
+      syncLocalAnswerToRound(game);
+      moderatorControls.classList.toggle('hidden', role !== 'moderator');
+
+      const roundNumber = Number(game.roundNumber || 1);
+      const roundsTotal = Number(game.roundsTotal || 1);
+      const solved = Number(game.solvedRounds || 0);
+      const winnerName = game.roundWinnerName;
+
+      roundStat.textContent = `${roundNumber} / ${roundsTotal}`;
+      solvedStat.textContent = String(solved);
+      hintBox.innerHTML = `Hint: <strong>${game.hint || 'Loading...'}</strong>`;
+
+      const now = Date.now();
+      const endsAt = Date.parse(game.roundEndsAt || '') || now;
+      const left = Math.max(0, Math.ceil((endsAt - now) / 1000));
+      timerStat.textContent = String(left);
+      timerStat.classList.toggle('timer-urgent', left <= 7);
+
+      if (game.roundState === 'active') {
+        if (winnerName) {
+          setRoundMessage(`${winnerName} answered correctly first.`, 'success');
+        } else {
+          setRoundMessage(game.announcement || 'Round is live.', 'info');
+        }
+      } else if (role === 'player' && winnerName) {
+        setRoundMessage(
+          `${winnerName} answered correctly first. Waiting for the moderator to start the next round.`,
+          'success'
+        );
+      } else {
+        setRoundMessage(game.announcement || 'Round complete.', winnerName ? 'success' : 'warn');
+      }
+
+      document.getElementById('nextRoundBtn').disabled = !(role === 'moderator' && game.roundState !== 'active');
+      document.getElementById('skipBtn').disabled = !(role === 'moderator' && game.roundState === 'active');
+      document.getElementById('openPanelBtn').disabled = role !== 'moderator';
+
+      renderTiles();
+      renderRoundResult(game);
+      renderModeratorPanel();
+    }
+
+    function startPolling() {
+      if (pollHandle) {
+        clearInterval(pollHandle);
+      }
+      const tick = async () => {
+        if (!sessionCode) return;
+        try {
+          session = await fetchSession(sessionCode);
+          if (!session) {
+            setError('This game session no longer exists.');
+            return;
+          }
+
+          if (role === 'player' && playerId && !session.players?.[playerId]) {
+            setError('Your player record no longer exists. Rejoin from the host link.');
+            return;
+          }
+
+          if (role === 'moderator') {
+            const game = getRoundGame();
+            const now = Date.now();
+            const endsAt = Date.parse(game?.roundEndsAt || '') || now;
+            const expired = now >= endsAt;
+            if (session.status === 'playing' && game?.roundState === 'active' && expired) {
+              await skipRound();
+            }
+          }
+
+          updateScreenBySession();
+        } catch {
+          setError('Connection lost while syncing multiplayer state.');
+        }
+      };
+
+      tick();
+      pollHandle = setInterval(tick, SESSION_POLL_MS);
+    }
+
+    function startTimerUiTick() {
+      if (timerHandle) {
+        clearInterval(timerHandle);
+      }
+      timerHandle = setInterval(() => {
+        if (screens.play.classList.contains('active')) {
+          updateScreenBySession();
         }
       }, 1000);
     }
 
-    function stopTimer() {
-      if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
+    async function createModeratorSession() {
+      let created = false;
+      for (let attempt = 0; attempt < 8; attempt += 1) {
+        const code = generateSessionCode(6);
+        const id = generateId('mod');
+        // eslint-disable-next-line no-await-in-loop
+        const ok = await createSession(code, id);
+        if (!ok) {
+          continue;
+        }
+        sessionCode = code;
+        moderatorId = id;
+        role = 'moderator';
+        saveModeratorRecord(code, id);
+        const params = new URLSearchParams({ code, role: 'moderator' });
+        setHash(params);
+        created = true;
+        break;
+      }
+      if (!created) {
+        throw new Error('Could not create session');
       }
     }
 
-    // Keyboard support
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        submitAnswer();
-      } else if (e.key === 'Backspace') {
-        if (answerLetters.length > 0) {
-          removeLetter(answerLetters.length - 1);
+    async function reconnectModerator(code) {
+      const saved = loadModeratorRecord(code);
+      if (!saved?.moderatorId) {
+        await createModeratorSession();
+        return;
+      }
+      const existing = await fetchSession(code);
+      if (!existing || existing.moderatorId !== saved.moderatorId) {
+        await createModeratorSession();
+        return;
+      }
+      sessionCode = code;
+      moderatorId = saved.moderatorId;
+      role = 'moderator';
+    }
+
+    async function reconnectPlayer(code, pid) {
+      const existing = await fetchSession(code);
+      if (!existing || !existing.players?.[pid]) {
+        const params = new URLSearchParams({ join: code });
+        setHash(params);
+        prepareJoinScreen(code);
+        return;
+      }
+      role = 'player';
+      sessionCode = code;
+      playerId = pid;
+    }
+
+    async function bootstrap() {
+      showScreen('loading');
+      const configured = await isMultiplayerConfigured();
+      if (!configured) {
+        setError('Multiplayer backend is not configured on this deployment.');
+        return;
+      }
+
+      const params = hashParams();
+      const joinCode = params.get('join');
+      const code = params.get('code');
+      const hashRole = params.get('role');
+      const pid = params.get('pid');
+
+      if (hashRole === 'player' && code && pid) {
+        await reconnectPlayer(code, pid);
+        startPolling();
+        startTimerUiTick();
+        return;
+      }
+
+      if (joinCode) {
+        prepareJoinScreen(joinCode);
+        return;
+      }
+
+      if (hashRole === 'moderator' && code) {
+        await reconnectModerator(code.toUpperCase());
+      } else {
+        await createModeratorSession();
+      }
+
+      startPolling();
+      startTimerUiTick();
+    }
+
+    document.getElementById('copyJoinLinkBtn').addEventListener('click', async () => {
+      const url = joinUrlText.textContent || '';
+      if (!url || url === '—') return;
+      try {
+        await navigator.clipboard.writeText(url);
+        lobbyMessage.className = 'message success';
+        lobbyMessage.textContent = 'Join link copied.';
+      } catch {
+        lobbyMessage.className = 'message warn';
+        lobbyMessage.textContent = 'Could not copy link.';
+      }
+    });
+
+    const shareBtn = document.getElementById('shareJoinLinkBtn');
+    if (typeof navigator.share === 'function') {
+      shareBtn.addEventListener('click', async () => {
+        const url = joinUrlText.textContent || '';
+        if (!url || url === '—') return;
+        try {
+          await navigator.share({
+            title: `${APP_NAME} — join my game`,
+            text: `Join my ${APP_NAME} game (${sessionCode}):`,
+            url
+          });
+        } catch {
+          // ignored
         }
-      } else if (e.key === 'Escape') {
+      });
+    } else {
+      shareBtn.classList.add('hidden');
+    }
+
+    joinBtn.addEventListener('click', async () => {
+      if (playerId) {
+        updateJoinedPlayerWaitState();
+        return;
+      }
+      const name = playerNameInput.value.trim();
+      if (!name) {
+        joinMessage.className = 'message warn';
+        joinMessage.textContent = 'Please enter your name.';
+        return;
+      }
+      joinBtn.disabled = true;
+      try {
+        savePlayerName(name);
+        const response = await joinSession(sessionCode, name);
+        playerId = response.playerId;
+        role = 'player';
+        const params = new URLSearchParams({
+          code: sessionCode,
+          role: 'player',
+          pid: playerId
+        });
+        setHash(params);
+        updateJoinedPlayerWaitState();
+        startPolling();
+        startTimerUiTick();
+      } catch (error) {
+        joinMessage.className = 'message error';
+        joinMessage.textContent = error.message || 'Unable to join game.';
+      } finally {
+        if (!playerId) {
+          joinBtn.disabled = false;
+        }
+      }
+    });
+
+    playerNameInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        joinBtn.click();
+      }
+    });
+
+    roundsInput.addEventListener('change', () => {
+      const value = Number.parseInt(roundsInput.value, 10);
+      if (Number.isFinite(value)) {
+        roundsInput.value = String(Math.min(30, Math.max(1, value)));
+      }
+    });
+
+    startBtn.addEventListener('click', () => {
+      moderatorStartGame();
+    });
+
+    document.getElementById('clearBtn').addEventListener('click', clearAnswer);
+    document.getElementById('openPanelBtn').addEventListener('click', openAnswerPanel);
+    document.getElementById('skipBtn').addEventListener('click', () => {
+      skipRound();
+    });
+    document.getElementById('nextRoundBtn').addEventListener('click', () => {
+      startNextRound();
+    });
+    document.getElementById('playAgainBtn').addEventListener('click', () => {
+      playAgain();
+    });
+    document.getElementById('createNewGameBtn').addEventListener('click', () => {
+      createNewGame();
+    });
+    document.getElementById('endGameBtn').addEventListener('click', () => {
+      endGameNow();
+    });
+
+    window.addEventListener('hashchange', () => {
+      const params = hashParams();
+      const joinCode = params.get('join');
+      if (joinCode) {
+        prepareJoinScreen(joinCode);
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (!screens.play.classList.contains('active')) return;
+      if (role !== 'player') return;
+      const tag = document.activeElement ? document.activeElement.tagName : '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+      if (event.key === 'Backspace') {
+        event.preventDefault();
+        if (localAnswer.length > 0) {
+          removeLetter(localAnswer.length - 1);
+        }
+        return;
+      }
+
+      if (event.key === 'Escape') {
+        event.preventDefault();
         clearAnswer();
-      } else if (e.key.length === 1 && e.key.match(/[a-zA-Z]/)) {
-        // Find first unused occurrence of this letter
-        const letter = e.key.toLowerCase();
-        const idx = scrambledLetters.findIndex((l, i) => 
-          l === letter && !usedIndices.has(i)
-        );
-        if (idx !== -1) {
+        return;
+      }
+
+      if (/^[a-zA-Z]$/.test(event.key)) {
+        const game = getRoundGame();
+        const scramble = Array.isArray(game?.scramble) ? game.scramble : [];
+        const letter = event.key.toLowerCase();
+        const idx = scramble.findIndex((item, index) => item === letter && !localUsedIndices.has(index));
+        if (idx >= 0) {
           selectLetter(idx);
         }
       }
     });
 
-    // Initialize game
-    newRound();
-
-    function getPreferredTheme() {
-      const stored = localStorage.getItem('theme');
-      if (stored) return stored;
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    function applyTheme(theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-      document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '☀️' : '🌙';
-    }
-    function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('theme', next);
-      applyTheme(next);
-    }
-    applyTheme(getPreferredTheme());
+    bootstrap().catch(() => {
+      setError('Unable to initialize multiplayer room.');
+    });
   </script>
 </body>
 </html>

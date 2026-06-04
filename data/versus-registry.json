@@ -1,0 +1,37 @@
+[
+  {
+    "id": "benchmark-breakout-battle",
+    "title": "Benchmark Breakout Battle",
+    "prompt": "Build a premium mobile-first Breakout game with smooth paddle control for touch, mouse, and keyboard; responsive layout; crisp graphics; fluid animation; satisfying collisions; readable HUD; score, lives, combo/bonus scoring; increasing difficulty; multiple brick patterns; fair rebound angles; progressive speed tuning; balanced power-ups; particle effects; subtle screen shake; adaptive audio; polished transitions; onboarding; sound toggle; 44px+ touch targets; no hover UI; stable 60 FPS; no placeholders; no broken features; no build tools.",
+    "createdAt": "2026-04-18T12:00:00Z",
+    "category": "Games",
+    "entries": [
+      {
+        "appId": "2026/04/10/benchmark-breakout-turbo",
+        "name": "Benchmark Breakout Turbo",
+        "shortDescription": "Portrait-friendly benchmark Breakout with charge shots, combo chains, mobile-safe controls, and polished arcade FX.",
+        "thumbnailUrl": "/apps/2026/04/10/benchmark-breakout-turbo/thumbnail.svg",
+        "appPath": "/apps/2026/04/10/benchmark-breakout-turbo/index.html",
+        "model": "gpt-4o",
+        "agent": "pi-coding-agent",
+        "generationTime": 211,
+        "tokensIn": 4500,
+        "tokensOut": 5060,
+        "improvementCount": 0
+      },
+      {
+        "appId": "2026/04/11/benchmark-breakout-opus",
+        "name": "Benchmark Breakout Opus",
+        "shortDescription": "A premium Breakout game built as a benchmark for Claude Opus 4.6. Features smooth paddle physics, combo scoring, power-ups, particle effects, screen shake, adaptive Web Audio, and 5 progressively difficult levels with multi-hit and indestructible bricks.",
+        "thumbnailUrl": "/apps/2026/04/11/benchmark-breakout-opus/thumbnail.svg",
+        "appPath": "/apps/2026/04/11/benchmark-breakout-opus/index.html",
+        "model": "claude-opus-4-6",
+        "agent": "claude-code",
+        "generationTime": 643,
+        "tokensIn": 17500,
+        "tokensOut": 25000,
+        "improvementCount": 0
+      }
+    ]
+  }
+]

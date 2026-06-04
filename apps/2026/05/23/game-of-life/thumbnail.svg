@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a1628"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <radialGradient id="cellGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(34,211,238,0.12)"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+    <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#67e8f9"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="titleGlow" x="-10%" y="-50%" width="120%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="gridPat" width="18" height="18" patternUnits="userSpaceOnUse">
+      <path d="M 18 0 L 0 0 0 18" fill="none" stroke="rgba(255,255,255,0.035)" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)"/>
+  <rect x="0" y="0" width="800" height="450" fill="url(#gridPat)"/>
+
+  <!-- Center glow blob -->
+  <ellipse cx="380" cy="240" rx="300" ry="200" fill="url(#centerGlow)"/>
+
+  <!-- ── Gosper Glider Gun pattern (left/center area, cell=18px) ── -->
+  <!-- Rendered as a recognizable mid-simulation state with glow -->
+
+  <!-- Left pair (cols 0-1, rows 4-5) -->
+  <g filter="url(#glow)">
+    <!-- Col 20 pair -->
+    <rect x="70" y="112" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="70" y="130" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <!-- Col 30 triplet -->
+    <rect x="250" y="94"  width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="250" y="112" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="250" y="130" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="268" y="76"  width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="268" y="148" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="286" y="58"  width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="286" y="166" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="304" y="58"  width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="304" y="166" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="322" y="112" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="340" y="94"  width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="340" y="130" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="358" y="94"  width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="358" y="112" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="358" y="130" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="376" y="112" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <!-- Second gun cluster -->
+    <rect x="394" y="94"  width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="394" y="112" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="394" y="130" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <!-- Glider trail cells -->
+    <rect x="430" y="220" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="448" y="238" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="412" y="238" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="412" y="256" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="430" y="256" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="448" y="256" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <!-- Second glider -->
+    <rect x="480" y="290" width="15" height="15" rx="2" fill="#22d3ee" opacity="0.85"/>
+    <rect x="498" y="308" width="15" height="15" rx="2" fill="#22d3ee" opacity="0.85"/>
+    <rect x="462" y="308" width="15" height="15" rx="2" fill="#22d3ee" opacity="0.85"/>
+    <rect x="462" y="326" width="15" height="15" rx="2" fill="#22d3ee" opacity="0.85"/>
+    <rect x="480" y="326" width="15" height="15" rx="2" fill="#22d3ee" opacity="0.85"/>
+    <rect x="498" y="326" width="15" height="15" rx="2" fill="#22d3ee" opacity="0.85"/>
+    <!-- Third glider (fading) -->
+    <rect x="528" y="356" width="15" height="15" rx="2" fill="#22d3ee" opacity="0.6"/>
+    <rect x="546" y="374" width="15" height="15" rx="2" fill="#22d3ee" opacity="0.6"/>
+    <rect x="510" y="374" width="15" height="15" rx="2" fill="#22d3ee" opacity="0.6"/>
+    <rect x="510" y="392" width="15" height="15" rx="2" fill="#22d3ee" opacity="0.6"/>
+    <rect x="528" y="392" width="15" height="15" rx="2" fill="#22d3ee" opacity="0.6"/>
+    <rect x="546" y="392" width="15" height="15" rx="2" fill="#22d3ee" opacity="0.6"/>
+    <!-- Right pair (far right col) -->
+    <rect x="88"  y="112" width="15" height="15" rx="2" fill="#22d3ee"/>
+    <rect x="88"  y="130" width="15" height="15" rx="2" fill="#22d3ee"/>
+  </g>
+
+  <!-- HUD strip at top -->
+  <rect x="0" y="0" width="800" height="34" fill="rgba(15,23,42,0.9)"/>
+  <!-- Gen counter -->
+  <text x="16" y="22" font-family="'Segoe UI', system-ui, monospace" font-size="13" font-weight="600" fill="rgba(255,255,255,0.7)">Gen</text>
+  <text x="46" y="22" font-family="'Segoe UI', system-ui, monospace" font-size="13" font-weight="700" fill="#22d3ee">1,248</text>
+  <!-- Alive counter -->
+  <text x="110" y="22" font-family="'Segoe UI', system-ui, monospace" font-size="13" font-weight="600" fill="rgba(255,255,255,0.7)">Alive</text>
+  <text x="148" y="22" font-family="'Segoe UI', system-ui, monospace" font-size="13" font-weight="700" fill="#22d3ee">36</text>
+  <!-- Pause button pill -->
+  <rect x="214" y="6" width="68" height="22" rx="5" fill="#0e7490"/>
+  <text x="248" y="22" font-family="system-ui" font-size="12" font-weight="700" fill="#f0f9ff" text-anchor="middle">⏸ Pause</text>
+  <!-- Step -->
+  <rect x="288" y="6" width="58" height="22" rx="5" fill="#1e293b"/>
+  <text x="317" y="22" font-family="system-ui" font-size="12" font-weight="600" fill="rgba(255,255,255,0.8)" text-anchor="middle">⏭ Step</text>
+  <!-- Speed 10/s badge -->
+  <text x="612" y="22" font-family="system-ui" font-size="12" fill="rgba(255,255,255,0.5)">Speed</text>
+  <text x="656" y="22" font-family="system-ui" font-size="12" font-weight="700" fill="#22d3ee">10/s</text>
+
+  <!-- Glider trail fade line (decorative) -->
+  <line x1="435" y1="210" x2="556" y2="400" stroke="rgba(34,211,238,0.08)" stroke-width="18"/>
+
+  <!-- ── Right panel: title + info ── -->
+  <text
+    x="690" y="180"
+    font-family="'Segoe UI', system-ui, sans-serif"
+    font-size="42" font-weight="900"
+    letter-spacing="2"
+    fill="url(#titleGrad)"
+    text-anchor="middle"
+    filter="url(#titleGlow)"
+  >GAME</text>
+  <text
+    x="690" y="228"
+    font-family="'Segoe UI', system-ui, sans-serif"
+    font-size="42" font-weight="900"
+    letter-spacing="2"
+    fill="url(#titleGrad)"
+    text-anchor="middle"
+    filter="url(#titleGlow)"
+  >OF LIFE</text>
+  <text
+    x="690" y="256"
+    font-family="'Segoe UI', system-ui, sans-serif"
+    font-size="13" font-weight="500"
+    letter-spacing="3"
+    fill="rgba(34,211,238,0.6)"
+    text-anchor="middle"
+  >CONWAY'S CELLULAR AUTOMATON</text>
+
+  <!-- Info card -->
+  <rect x="612" y="278" width="162" height="100" rx="8" fill="rgba(30,41,59,0.8)" stroke="rgba(34,211,238,0.2)" stroke-width="1"/>
+  <text x="624" y="300" font-family="system-ui" font-size="12" fill="rgba(255,255,255,0.65)">✏ Click to draw cells</text>
+  <text x="624" y="320" font-family="system-ui" font-size="12" fill="rgba(255,255,255,0.65)">⌨ Space to play/pause</text>
+  <text x="624" y="340" font-family="system-ui" font-size="12" fill="rgba(255,255,255,0.65)">🔭 Scroll to zoom</text>
+  <text x="624" y="360" font-family="system-ui" font-size="12" fill="rgba(255,255,255,0.65)">⭐ 6 classic presets</text>
+
+  <!-- Border accent -->
+  <rect x="0" y="0" width="800" height="450" fill="none" stroke="rgba(34,211,238,0.12)" stroke-width="2"/>
+</svg>

@@ -20,5 +20,6 @@
     "totalTokensOut": 3500,
     "runId": "run-20260316T041541Z-3410bf",
     "notes": "Built responsive breathing app with 4-7-8 technique, dark/light theme support, progress tracking, and streak gamification"
-  }
+  },
+  "leaderboard": false
 }

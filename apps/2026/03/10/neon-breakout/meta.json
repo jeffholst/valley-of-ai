@@ -21,5 +21,6 @@
     "runId": "run-20260310T050133Z-fda811",
     "notes": "Nightly app run. Token counters unavailable in runtime."
   },
-  "votes": 0
+  "votes": 0,
+  "leaderboard": false
 }

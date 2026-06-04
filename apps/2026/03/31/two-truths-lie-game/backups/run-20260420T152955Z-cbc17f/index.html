@@ -1,0 +1,1759 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2 Truths and a Lie - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="2 Truths and a Lie" />
+    <meta name="voa-app-id" content="2026/03/31/two-truths-lie-game" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+      }
+
+      :root {
+        --accent: #8b5cf6;
+        --accent-bright: #a78bfa;
+        --accent-dark: #6d28d9;
+        --success: #10b981;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --card: #1e293b;
+        --card-border: #334155;
+        --text-muted: #94a3b8;
+      }
+      [data-theme='light'] {
+        --card: #f3f4f6;
+        --card-border: #d1d5db;
+        --text-muted: #6b7280;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        min-height: 100dvh;
+      }
+
+      #app {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        overflow-y: auto;
+        padding: 16px;
+      }
+
+      .screen {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        max-width: 760px;
+        margin: 0 auto;
+        padding-bottom: 16px;
+      }
+      .screen.active {
+        display: flex;
+      }
+
+      h1 {
+        font-size: clamp(1.4rem, 4vw, 2rem);
+        font-weight: 700;
+        color: var(--accent-bright);
+        text-align: center;
+      }
+      h2 {
+        font-size: clamp(1.1rem, 3vw, 1.5rem);
+        font-weight: 600;
+        text-align: center;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1.5px solid var(--card-border);
+        border-radius: 12px;
+        padding: 16px;
+        width: 100%;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 24px;
+        border-radius: 10px;
+        border: none;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        min-height: 48px;
+      }
+      .btn:active {
+        transform: scale(0.98);
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: var(--accent-dark);
+      }
+      .btn-success {
+        background: var(--success);
+        color: #fff;
+      }
+      .btn-danger {
+        background: var(--danger);
+        color: #fff;
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--text-muted);
+        border: 1.5px solid var(--card-border);
+      }
+      .btn-sm {
+        min-height: 36px;
+        padding: 8px 12px;
+        font-size: 0.85rem;
+      }
+      .btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .input,
+      .textarea,
+      .select {
+        width: 100%;
+        padding: 11px 12px;
+        background: var(--bg);
+        border: 1.5px solid var(--card-border);
+        border-radius: 8px;
+        color: var(--text);
+        font-size: 1rem;
+      }
+      .textarea {
+        min-height: 72px;
+        resize: vertical;
+      }
+
+      .muted {
+        color: var(--text-muted);
+        font-size: 0.92rem;
+      }
+
+      .full {
+        width: 100%;
+      }
+
+      .row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        width: 100%;
+      }
+      .row.wrap {
+        flex-wrap: wrap;
+      }
+
+      .pill {
+        border: 1.5px solid var(--card-border);
+        border-radius: 999px;
+        padding: 5px 10px;
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        background: var(--surface);
+      }
+
+      .players {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .player-row {
+        display: grid;
+        grid-template-columns: 1fr auto auto auto;
+        gap: 10px;
+        align-items: center;
+        background: var(--surface);
+        border: 1.5px solid var(--card-border);
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+      .score-chip {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--accent-bright);
+      }
+      .status-ready {
+        color: var(--success);
+        font-weight: 600;
+      }
+      .status-waiting {
+        color: var(--warning);
+        font-weight: 600;
+      }
+
+      .statement-list,
+      .vote-list,
+      .result-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .statement-item,
+      .vote-row,
+      .result-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--surface);
+        border: 1.5px solid var(--card-border);
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+
+      .vote-buttons {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .vote-btn {
+        min-height: 52px;
+        border-radius: 10px;
+        border: 1.5px solid var(--card-border);
+        background: var(--bg);
+        color: var(--text);
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .vote-btn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .vote-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .wheel-wrap {
+        position: relative;
+        display: inline-block;
+      }
+      #spinCanvas {
+        border-radius: 50%;
+        max-width: 100%;
+      }
+      .wheel-pointer {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-top: 14px solid transparent;
+        border-bottom: 14px solid transparent;
+        border-right: 28px solid var(--accent-bright);
+        filter: drop-shadow(0 0 4px var(--accent));
+      }
+
+      .big-name {
+        text-align: center;
+        font-size: clamp(1.6rem, 6vw, 2.7rem);
+        font-weight: 700;
+        color: var(--accent-bright);
+      }
+
+      .result-good {
+        border-color: var(--success);
+        background: rgba(16, 185, 129, 0.1);
+      }
+      .result-bad {
+        border-color: var(--danger);
+        background: rgba(239, 68, 68, 0.1);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .leaderboard-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .leaderboard-row {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 10px;
+        align-items: center;
+        background: var(--surface);
+        border: 1.5px solid var(--card-border);
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+      .leaderboard-rank {
+        width: 30px;
+        text-align: center;
+        font-weight: 700;
+      }
+      .leaderboard-score {
+        color: var(--accent-bright);
+        font-weight: 700;
+      }
+      .statement-breakdown-card {
+        border: 1.5px solid var(--card-border);
+        border-radius: 10px;
+        padding: 10px 12px;
+        background: var(--surface);
+      }
+      .statement-breakdown-lie {
+        border-color: var(--danger);
+        background: rgba(239, 68, 68, 0.12);
+      }
+      .lie-badge {
+        display: inline-block;
+        background: var(--danger);
+        color: #fff;
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 1px 6px;
+        border-radius: 4px;
+        margin-left: 6px;
+        vertical-align: middle;
+      }
+      .vote-status-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 6px;
+      }
+      .vote-status-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.88rem;
+        padding: 3px 0;
+      }
+      .voted-yes {
+        color: var(--success);
+        font-weight: 600;
+      }
+      .voted-no {
+        color: var(--warning);
+      }
+      #animOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 100;
+      }
+      .confetti-piece {
+        position: absolute;
+        top: -20px;
+        animation: confettiFall linear forwards;
+        border-radius: 2px;
+      }
+      @keyframes confettiFall {
+        to {
+          transform: translateY(110vh) rotate(720deg);
+        }
+      }
+      .rain-drop {
+        position: absolute;
+        top: -60px;
+        width: 2px;
+        border-radius: 2px;
+        animation: rainFall linear infinite;
+      }
+      @keyframes rainFall {
+        to {
+          transform: translateY(110vh);
+        }
+      }
+
+      @media (max-width: 640px) {
+        .player-row {
+          grid-template-columns: 1fr auto;
+        }
+        .vote-buttons {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div id="animOverlay"></div>
+      <div id="screenLoading" class="screen active">
+        <h1>2 Truths and a Lie</h1>
+        <p class="muted">Connecting to multiplayer room...</p>
+      </div>
+
+      <div id="screenError" class="screen">
+        <h1>Connection Error</h1>
+        <div class="card"><p id="errorText" class="muted"></p></div>
+      </div>
+
+      <div id="screenJoin" class="screen">
+        <h1>Join 2 Truths and a Lie</h1>
+        <div class="card">
+          <p class="muted" style="margin-bottom: 8px">Code: <strong id="joinCodeLabel"></strong></p>
+          <div class="row wrap" style="margin-bottom: 8px">
+            <input id="joinNameInput" class="input" maxlength="30" placeholder="Your name" />
+          </div>
+          <p class="muted" style="margin-bottom: 6px">Enter two truths and one lie.</p>
+          <div class="statement-list" style="margin-bottom: 10px">
+            <textarea id="joinStatement1" class="textarea" maxlength="180" placeholder="Statement 1"></textarea>
+            <textarea id="joinStatement2" class="textarea" maxlength="180" placeholder="Statement 2"></textarea>
+            <textarea id="joinStatement3" class="textarea" maxlength="180" placeholder="Statement 3"></textarea>
+          </div>
+          <label class="muted" for="joinLieSelect" style="display: block; margin-bottom: 6px"
+            >Which statement is the lie?</label
+          >
+          <select id="joinLieSelect" class="select" style="margin-bottom: 12px">
+            <option value="0">Statement 1</option>
+            <option value="1">Statement 2</option>
+            <option value="2">Statement 3</option>
+          </select>
+          <button id="joinSubmitBtn" class="btn btn-primary full">Submit and Join</button>
+          <p id="joinMessage" class="muted" style="margin-top: 8px"></p>
+        </div>
+      </div>
+
+      <div id="screenModerator" class="screen">
+        <h1>2 Truths and a Lie</h1>
+        <div class="row wrap">
+          <span class="pill">Moderator</span>
+          <span class="pill" id="modCodePill">Code: ----</span>
+          <span class="pill" id="modPhasePill">Lobby</span>
+        </div>
+
+        <div id="modLobbyPanel" class="card full">
+          <h2>Lobby</h2>
+          <p class="muted" style="margin: 6px 0 10px">Share this link with players.</p>
+          <div class="row wrap" style="margin-bottom: 10px">
+            <input id="joinLinkInput" class="input" readonly />
+            <button id="copyJoinLinkBtn" class="btn btn-ghost btn-sm">Copy Link</button>
+          </div>
+          <p id="modLobbyMessage" class="muted" style="margin-bottom: 8px">
+            Players appear here as they submit their two truths and a lie.
+          </p>
+          <div id="modLobbyPlayers" class="players"></div>
+          <button id="modStartGameBtn" class="btn btn-success full" style="margin-top: 12px" disabled>
+            Start Game
+          </button>
+        </div>
+
+        <div id="modSpinPanel" class="card full hidden">
+          <h2>Pick the next speaker</h2>
+          <div class="wheel-wrap" style="margin: 10px auto; width: 280px">
+            <canvas id="spinCanvas" width="280" height="280"></canvas>
+            <div id="wheelPointer" class="wheel-pointer"></div>
+          </div>
+          <div id="modSelectedSpeaker" class="big-name" style="display: none"></div>
+          <div class="row wrap" style="margin-top: 12px">
+            <button id="modSpinBtn" class="btn btn-primary">Spin Wheel</button>
+            <button id="modStartRoundBtn" class="btn btn-success" disabled>Start Round</button>
+          </div>
+        </div>
+
+        <div id="modVotePanel" class="card full hidden">
+          <h2 id="modVoteTitle">Vote on the lie</h2>
+          <p class="muted" id="modVoteHint" style="margin: 6px 0 10px"></p>
+          <div id="modStatements" class="statement-list"></div>
+          <div id="modVoteProgress" class="muted" style="margin-top: 10px"></div>
+          <button id="modShowResultsBtn" class="btn btn-primary full" style="margin-top: 12px" disabled>
+            Show Results
+          </button>
+        </div>
+
+        <div id="modResultsPanel" class="card full hidden">
+          <h2>Round Results</h2>
+          <p id="modResultSummary" class="muted" style="margin: 6px 0 10px"></p>
+          <div id="modStatementBreakdown" class="statement-list" style="margin-bottom: 10px"></div>
+          <div id="modResultsRows" class="result-list"></div>
+          <button id="modContinueBtn" class="btn btn-success full" style="margin-top: 12px">
+            Continue
+          </button>
+        </div>
+
+        <div id="modLeaderboardPanel" class="card full hidden">
+          <h2>Leaderboard</h2>
+          <p class="muted" style="margin: 6px 0 10px">Final standings for this game.</p>
+          <div id="modLeaderboardRows" class="leaderboard-list"></div>
+          <button id="modNewGameBtn" class="btn btn-primary full" style="margin-top: 12px">
+            Start New Game
+          </button>
+        </div>
+
+        <div id="modRosterCard" class="card full">
+          <h2>Players</h2>
+          <div id="modRosterPlayers" class="players"></div>
+        </div>
+      </div>
+
+      <div id="screenPlayer" class="screen">
+        <h1>2 Truths and a Lie</h1>
+        <div class="row wrap">
+          <span class="pill">Player</span>
+          <span class="pill" id="playerNamePill">Joined</span>
+          <span class="pill" id="playerPhasePill">Waiting</span>
+        </div>
+
+        <div id="playerWaitingPanel" class="card full">
+          <h2 id="playerWaitingTitle">Waiting for moderator</h2>
+          <p id="playerWaitingText" class="muted" style="margin-top: 6px"></p>
+          <div id="playerSpeakerStatements" class="statement-list" style="margin-top: 10px"></div>
+        </div>
+
+        <div id="playerSubmissionPanel" class="card full hidden">
+          <h2>Submit Statements</h2>
+          <p class="muted" style="margin: 6px 0 8px">Enter two truths and one lie for this game.</p>
+          <div class="statement-list" style="margin-bottom: 10px">
+            <textarea
+              id="playerStatement1"
+              class="textarea"
+              maxlength="180"
+              placeholder="Statement 1"
+            ></textarea>
+            <textarea
+              id="playerStatement2"
+              class="textarea"
+              maxlength="180"
+              placeholder="Statement 2"
+            ></textarea>
+            <textarea
+              id="playerStatement3"
+              class="textarea"
+              maxlength="180"
+              placeholder="Statement 3"
+            ></textarea>
+          </div>
+          <label class="muted" for="playerLieSelect" style="display: block; margin-bottom: 6px"
+            >Which statement is the lie?</label
+          >
+          <select id="playerLieSelect" class="select" style="margin-bottom: 12px">
+            <option value="0">Statement 1</option>
+            <option value="1">Statement 2</option>
+            <option value="2">Statement 3</option>
+          </select>
+          <button id="playerSubmitStatementsBtn" class="btn btn-primary full">Submit Statements</button>
+          <p id="playerSubmitMessage" class="muted" style="margin-top: 8px"></p>
+        </div>
+
+        <div id="playerVotePanel" class="card full hidden">
+          <h2 id="playerVoteTitle">Which statement is the lie?</h2>
+          <div id="playerStatements" class="statement-list" style="margin-top: 8px"></div>
+          <p id="playerVoteMessage" class="muted" style="margin: 10px 0 8px"></p>
+          <div class="vote-buttons">
+            <button class="vote-btn" data-vote-index="0">1</button>
+            <button class="vote-btn" data-vote-index="1">2</button>
+            <button class="vote-btn" data-vote-index="2">3</button>
+          </div>
+        </div>
+
+        <div id="playerResultsPanel" class="card full hidden">
+          <h2>Results Board</h2>
+          <p id="playerResultSummary" class="muted" style="margin: 6px 0 10px"></p>
+          <div id="playerStatementBreakdown" class="statement-list" style="margin-bottom: 10px"></div>
+          <div id="playerResultsRows" class="result-list"></div>
+        </div>
+
+        <div id="playerLeaderboardPanel" class="card full hidden">
+          <h2>Leaderboard</h2>
+          <p class="muted" style="margin: 6px 0 10px">Final standings for this game.</p>
+          <div id="playerLeaderboardRows" class="leaderboard-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const APP_ID = 'two-truths-lie-game';
+      const APP_NAME = '2 Truths and a Lie';
+      const APP_PATH = '/apps/2026/03/31/two-truths-lie-game';
+      const STORAGE_PREFIX = 'voa-mp-2tl';
+      const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      const SESSION_POLL_MS = 1800;
+      const WHEEL_COLORS = ['#7c3aed', '#2563eb', '#059669', '#d97706', '#dc2626', '#0891b2'];
+
+      const screens = {
+        loading: document.getElementById('screenLoading'),
+        error: document.getElementById('screenError'),
+        join: document.getElementById('screenJoin'),
+        moderator: document.getElementById('screenModerator'),
+        player: document.getElementById('screenPlayer'),
+      };
+
+      let sessionCode = null;
+      let session = null;
+      let role = null;
+      let moderatorId = null;
+      let playerId = null;
+      let pollHandle = null;
+      let spinning = false;
+      let spinAngle = 0;
+      let selectedSpeakerId = null;
+      let animState = null;
+      let animForRound = null;
+
+      function showScreen(name) {
+        Object.entries(screens).forEach(([key, el]) => {
+          el.classList.toggle('active', key === name);
+        });
+      }
+
+      function setError(message) {
+        document.getElementById('errorText').textContent = message;
+        showScreen('error');
+      }
+
+      function hashParams() {
+        return new URLSearchParams(window.location.hash.replace(/^#/, ''));
+      }
+
+      function setHash(params) {
+        window.location.hash = params.toString();
+      }
+
+      function localKey(key) {
+        return `${STORAGE_PREFIX}:${key}`;
+      }
+
+      function saveModeratorRecord(code, id) {
+        try {
+          window.localStorage.setItem(localKey(`mod:${code}`), JSON.stringify({ moderatorId: id }));
+        } catch {
+          // no-op
+        }
+      }
+
+      function loadModeratorRecord(code) {
+        try {
+          const raw = window.localStorage.getItem(localKey(`mod:${code}`));
+          return raw ? JSON.parse(raw) : null;
+        } catch {
+          return null;
+        }
+      }
+
+      function savePlayerName(name) {
+        try {
+          window.localStorage.setItem(localKey('playerName'), name);
+        } catch {
+          // no-op
+        }
+      }
+
+      function loadPlayerName() {
+        try {
+          return window.localStorage.getItem(localKey('playerName')) || '';
+        } catch {
+          return '';
+        }
+      }
+
+      function generateSessionCode(length = 6) {
+        let code = '';
+        for (let i = 0; i < length; i += 1) {
+          code += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
+        }
+        return code;
+      }
+
+      function generateId(prefix = 'id') {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+          return `${prefix}-${crypto.randomUUID()}`;
+        }
+        return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+      }
+
+      async function isMultiplayerConfigured() {
+        const response = await fetch('/api/multiplayer/status', { cache: 'no-store' });
+        if (!response.ok) return false;
+        const payload = await response.json();
+        return Boolean(payload?.configured);
+      }
+
+      async function fetchSession(code) {
+        const response = await fetch(`/api/multiplayer/sessions/${code}`, { cache: 'no-store' });
+        if (response.status === 404) return null;
+        if (!response.ok) throw new Error('Failed to fetch session');
+        const payload = await response.json();
+        return payload?.session || null;
+      }
+
+      async function createSession(code, modId) {
+        const response = await fetch('/api/multiplayer/sessions', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            code,
+            appId: APP_ID,
+            appName: APP_NAME,
+            appPath: APP_PATH,
+            moderatorId: modId,
+            settings: {},
+          }),
+        });
+        if (response.status === 409) return false;
+        if (!response.ok) throw new Error('Failed to create session');
+        return true;
+      }
+
+      function flattenPatch(prefix, value, out) {
+        if (value === null || value === undefined) {
+          out[prefix] = value;
+          return;
+        }
+        const isObject = typeof value === 'object' && !Array.isArray(value);
+        if (!isObject) {
+          out[prefix] = value;
+          return;
+        }
+        const entries = Object.entries(value);
+        if (entries.length === 0) {
+          out[prefix] = {};
+          return;
+        }
+        entries.forEach(([key, child]) => {
+          flattenPatch(`${prefix}/${key}`, child, out);
+        });
+      }
+
+      async function patchSession({ status = null, patch = {} } = {}) {
+        if (!sessionCode || !moderatorId) return;
+        const normalizedPatch = {};
+        Object.entries(patch).forEach(([key, value]) => {
+          if (key.includes('/')) {
+            normalizedPatch[key] = value;
+          } else {
+            flattenPatch(key, value, normalizedPatch);
+          }
+        });
+
+        const response = await fetch(`/api/multiplayer/sessions/${sessionCode}`, {
+          method: 'PATCH',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ moderatorId, status, patch: normalizedPatch }),
+        });
+        if (!response.ok) {
+          throw new Error('Failed to update session');
+        }
+      }
+
+      async function joinSession(code, name) {
+        const response = await fetch(`/api/multiplayer/sessions/${code}/players`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ name }),
+        });
+        if (!response.ok) {
+          const payload = await response.json().catch(() => ({}));
+          throw new Error(payload?.error || 'Unable to join session');
+        }
+        return response.json();
+      }
+
+      async function updatePlayer(playerPatch) {
+        if (!sessionCode || !playerId) return;
+        const response = await fetch(`/api/multiplayer/sessions/${sessionCode}/players/${playerId}`, {
+          method: 'PATCH',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(playerPatch),
+        });
+        if (!response.ok) {
+          const payload = await response.json().catch(() => ({}));
+          throw new Error(payload?.error || 'Unable to update player');
+        }
+      }
+
+      function activePlayers() {
+        if (!session?.players) return [];
+        return Object.values(session.players)
+          .filter((entry) => entry && entry.id)
+          .sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')));
+      }
+
+      function gameState() {
+        return session?.game || null;
+      }
+
+      function eligibleVoterIds(game) {
+        const speakerId = game?.currentSpeakerId || null;
+        return activePlayers()
+          .filter((p) => p.id !== speakerId)
+          .map((p) => p.id);
+      }
+
+      function allVotesIn(game) {
+        if (!game || game.phase !== 'vote') return false;
+        const voters = eligibleVoterIds(game);
+        return voters.every((pid) => session?.players?.[pid]?.vote?.roundId === game.currentRoundId);
+      }
+
+      function shuffle(array) {
+        const copy = [...array];
+        for (let i = copy.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      }
+
+      function updateJoinLink() {
+        const input = document.getElementById('joinLinkInput');
+        if (!sessionCode || !input) return;
+        input.value = `${window.location.origin}${window.location.pathname}#join=${sessionCode}`;
+      }
+
+      function kickButtonHtml(entry) {
+        if (role !== 'moderator') return '';
+        return `<button type="button" class="btn btn-danger btn-sm" data-kick="${entry.id}">Kick</button>`;
+      }
+
+      function playerStatusLabel(entry) {
+        if (!entry?.submission?.ready) return '<span class="status-waiting">Joined</span>';
+        return '<span class="status-ready">Ready</span>';
+      }
+
+      function bindKickButtons(container) {
+        container.querySelectorAll('[data-kick]').forEach((btn) => {
+          btn.addEventListener('click', () => kickPlayer(btn.dataset.kick));
+        });
+      }
+
+      function renderModeratorPlayers(containerId) {
+        const container = document.getElementById(containerId);
+        const players = activePlayers();
+        if (!players.length) {
+          container.innerHTML = '<p class="muted">No players joined yet.</p>';
+          return;
+        }
+        container.innerHTML = players
+          .map(
+            (entry) =>
+              `<div class="player-row"><div>${esc(entry.name)}</div><div>${playerStatusLabel(entry)}</div><div class="score-chip">${Number(entry.score || 0)} pts</div><div>${kickButtonHtml(entry)}</div></div>`,
+          )
+          .join('');
+        bindKickButtons(container);
+      }
+
+      function getLeaderboardRows() {
+        const sorted = [...activePlayers()].sort((a, b) => {
+          const scoreDiff = Number(b.score || 0) - Number(a.score || 0);
+          if (scoreDiff !== 0) return scoreDiff;
+          return String(a.name || '').localeCompare(String(b.name || ''));
+        });
+
+        let lastScore = null;
+        let lastRank = 0;
+        return sorted.map((entry, index) => {
+          const score = Number(entry.score || 0);
+          const rank = score === lastScore ? lastRank : index + 1;
+          lastScore = score;
+          lastRank = rank;
+          return { rank, name: entry.name || 'Player', score };
+        });
+      }
+
+      function renderLeaderboard(containerId) {
+        const container = document.getElementById(containerId);
+        const rows = getLeaderboardRows();
+        container.innerHTML = rows
+          .map(
+            (row) =>
+              `<div class="leaderboard-row"><div class="leaderboard-rank">#${row.rank}</div><div>${esc(row.name)}</div><div class="leaderboard-score">${row.score} pts</div></div>`,
+          )
+          .join('');
+      }
+
+      function renderStatementBreakdown(containerId, game) {
+        const container = document.getElementById(containerId);
+        const breakdown = Array.isArray(game?.statementBreakdown) ? game.statementBreakdown : [];
+        if (!breakdown.length) {
+          container.innerHTML = '';
+          return;
+        }
+        container.innerHTML = breakdown
+          .map((entry, index) => {
+            const voters = Array.isArray(entry.voters) ? entry.voters : [];
+            const lieClass = entry.isLie ? ' statement-breakdown-lie' : '';
+            const lieBadge = entry.isLie ? '<span class="lie-badge">LIE</span>' : '';
+            return `<div class="statement-breakdown-card${lieClass}">
+              <div><strong>${index + 1}.</strong> ${esc(entry.text || '')}${lieBadge}</div>
+              <div class="muted" style="margin-top:6px">${entry.isLie ? 'Lie' : 'Truth'} • Votes: ${voters.length ? voters.map(esc).join(', ') : 'none'}</div>
+            </div>`;
+          })
+          .join('');
+      }
+
+      function renderWheel(names, angle = 0) {
+        const canvas = document.getElementById('spinCanvas');
+        const pointer = document.getElementById('wheelPointer');
+        if (!canvas || !pointer) return;
+        const ctx = canvas.getContext('2d');
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        const r = cx - 8;
+
+        pointer.style.left = `calc(50% + ${r - 10}px)`;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (!names.length) return;
+
+        const slice = (2 * Math.PI) / names.length;
+        for (let i = 0; i < names.length; i += 1) {
+          const start = angle + i * slice;
+          const end = start + slice;
+
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.arc(cx, cy, r, start, end);
+          ctx.closePath();
+          ctx.fillStyle = WHEEL_COLORS[i % WHEEL_COLORS.length];
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+          ctx.stroke();
+
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate(start + slice / 2);
+          ctx.textAlign = 'right';
+          ctx.fillStyle = 'white';
+          ctx.font = `600 ${Math.max(10, Math.min(15, 220 / names.length))}px system-ui, sans-serif`;
+          const label = names[i].length > 12 ? `${names[i].slice(0, 11)}...` : names[i];
+          ctx.fillText(label, r - 8, 4);
+          ctx.restore();
+        }
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, 18, 0, 2 * Math.PI);
+        ctx.fillStyle = '#1e293b';
+        ctx.fill();
+      }
+
+      function esc(value) {
+        return String(value || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      async function createModeratorSession() {
+        for (let attempt = 0; attempt < 8; attempt += 1) {
+          const code = generateSessionCode(6);
+          const modId = generateId('mod');
+          // eslint-disable-next-line no-await-in-loop
+          const created = await createSession(code, modId);
+          if (!created) continue;
+          sessionCode = code;
+          moderatorId = modId;
+          role = 'moderator';
+          saveModeratorRecord(code, modId);
+          const params = new URLSearchParams({ code, role: 'moderator' });
+          setHash(params);
+          return;
+        }
+        throw new Error('Could not create session');
+      }
+
+      async function reconnectModerator(code) {
+        const existing = await fetchSession(code);
+        const saved = loadModeratorRecord(code);
+        if (!existing || !saved?.moderatorId || existing.moderatorId !== saved.moderatorId) {
+          await createModeratorSession();
+          return;
+        }
+        sessionCode = code;
+        moderatorId = saved.moderatorId;
+        role = 'moderator';
+      }
+
+      async function reconnectPlayer(code, pid) {
+        const existing = await fetchSession(code);
+        if (!existing || !existing.players?.[pid]) {
+          const params = new URLSearchParams({ join: code });
+          setHash(params);
+          prepareJoinScreen(code);
+          return;
+        }
+        sessionCode = code;
+        playerId = pid;
+        role = 'player';
+      }
+
+      function prepareJoinScreen(code) {
+        sessionCode = code.toUpperCase();
+        role = 'player';
+        playerId = null;
+        session = null;
+        document.getElementById('joinCodeLabel').textContent = sessionCode;
+        document.getElementById('joinNameInput').value = loadPlayerName();
+        document.getElementById('joinMessage').textContent = '';
+        showScreen('join');
+      }
+
+      function clearAnimation() {
+        if (!animState) return;
+        const overlay = document.getElementById('animOverlay');
+        if (overlay) overlay.innerHTML = '';
+        animState = null;
+        animForRound = null;
+      }
+
+      function startConfetti(roundId) {
+        if (animState === 'confetti' && animForRound === roundId) return;
+        clearAnimation();
+        animState = 'confetti';
+        animForRound = roundId;
+        const overlay = document.getElementById('animOverlay');
+        if (!overlay) return;
+        const colors = ['#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#ec4899', '#a78bfa', '#34d399'];
+        const pieces = [];
+        for (let i = 0; i < 80; i += 1) {
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          const left = Math.random() * 100;
+          const delay = Math.random() * 3;
+          const duration = 2.5 + Math.random() * 2;
+          const size = 7 + Math.floor(Math.random() * 10);
+          const round = Math.random() > 0.5 ? '50%' : '2px';
+          pieces.push(
+            `<div class="confetti-piece" style="left:${left}%;width:${size}px;height:${size}px;background:${color};border-radius:${round};animation-duration:${duration}s;animation-delay:${delay}s"></div>`,
+          );
+        }
+        overlay.innerHTML = pieces.join('');
+      }
+
+      function startBlueRain(roundId) {
+        if (animState === 'rain' && animForRound === roundId) return;
+        clearAnimation();
+        animState = 'rain';
+        animForRound = roundId;
+        const overlay = document.getElementById('animOverlay');
+        if (!overlay) return;
+        const drops = [];
+        for (let i = 0; i < 70; i += 1) {
+          const left = Math.random() * 100;
+          const delay = Math.random() * 2;
+          const duration = 0.7 + Math.random() * 0.8;
+          const height = 20 + Math.floor(Math.random() * 35);
+          const alpha = (0.3 + Math.random() * 0.5).toFixed(2);
+          drops.push(
+            `<div class="rain-drop" style="left:${left}%;height:${height}px;background:linear-gradient(to bottom,rgba(59,130,246,0),rgba(59,130,246,${alpha}),rgba(147,197,253,${alpha}));animation-duration:${duration}s;animation-delay:${delay}s"></div>`,
+          );
+        }
+        overlay.innerHTML = drops.join('');
+      }
+
+      function updateModeratorUi() {
+        showScreen('moderator');
+        const game = gameState();
+        const phase = game?.phase || 'lobby';
+
+        document.getElementById('modCodePill').textContent = `Code: ${sessionCode}`;
+        document.getElementById('modPhasePill').textContent = phase[0].toUpperCase() + phase.slice(1);
+        updateJoinLink();
+        renderModeratorPlayers('modLobbyPlayers');
+        renderModeratorPlayers('modRosterPlayers');
+
+        document.getElementById('modLobbyPanel').classList.toggle('hidden', phase !== 'lobby');
+        document.getElementById('modSpinPanel').classList.toggle('hidden', phase !== 'spin');
+        document.getElementById('modVotePanel').classList.toggle('hidden', phase !== 'vote');
+        document.getElementById('modResultsPanel').classList.toggle('hidden', phase !== 'results');
+        document.getElementById('modLeaderboardPanel').classList.toggle('hidden', phase !== 'leaderboard');
+        document.getElementById('modRosterCard').classList.toggle('hidden', phase === 'lobby');
+
+        const players = activePlayers();
+        const readyCount = players.filter((p) => p?.submission?.ready).length;
+        const canStart = players.length >= 2 && readyCount === players.length;
+        document.getElementById('modStartGameBtn').disabled = !canStart;
+        document.getElementById('modLobbyMessage').textContent = `${readyCount}/${players.length} players ready.`;
+
+        const remainingIds = Array.isArray(game?.remainingSpeakerIds) ? game.remainingSpeakerIds : [];
+        const remainingNames = remainingIds
+          .map((id) => session?.players?.[id]?.name)
+          .filter(Boolean);
+
+        renderWheel(remainingNames, spinAngle);
+
+        const selectedSpeaker = game?.currentSpeakerId ? session?.players?.[game.currentSpeakerId] : null;
+        const speakerBox = document.getElementById('modSelectedSpeaker');
+        if (selectedSpeaker) {
+          speakerBox.style.display = 'block';
+          speakerBox.textContent = selectedSpeaker.name;
+        } else {
+          speakerBox.style.display = 'none';
+          speakerBox.textContent = '';
+        }
+
+        document.getElementById('modStartRoundBtn').disabled = !selectedSpeaker;
+
+        const statements = Array.isArray(game?.presentedStatements) ? game.presentedStatements : [];
+        document.getElementById('modStatements').innerHTML = statements
+          .map(
+            (entry, index) => `<div class="statement-item"><strong>${index + 1}.</strong> <span>${esc(entry.text)}</span></div>`,
+          )
+          .join('');
+
+        const voters = eligibleVoterIds(game);
+        const voted = voters.filter((pid) => session?.players?.[pid]?.vote?.roundId === game?.currentRoundId).length;
+        document.getElementById('modVoteHint').textContent =
+          selectedSpeaker ? `${selectedSpeaker.name} is speaking. Players are voting now.` : 'Waiting for speaker.';
+        const voteStatusHtml = voters.length
+          ? `<div class="vote-status-list">${voters
+              .map((pid) => {
+                const p = session?.players?.[pid];
+                const hasVoted = p?.vote?.roundId === game?.currentRoundId;
+                return `<div class="vote-status-row"><span>${esc(p?.name || 'Player')}</span><span class="${hasVoted ? 'voted-yes' : 'voted-no'}">${hasVoted ? '✓ Voted' : '⋯ Waiting'}</span></div>`;
+              })
+              .join('')}</div>`
+          : '';
+        document.getElementById('modVoteProgress').innerHTML = voteStatusHtml;
+        document.getElementById('modShowResultsBtn').disabled = !allVotesIn(game);
+
+        const results = Array.isArray(game?.results) ? game.results : [];
+        renderStatementBreakdown('modStatementBreakdown', game);
+        document.getElementById('modResultsRows').innerHTML = results
+          .map(
+            (row) =>
+              `<div class="result-row ${row.correct ? 'result-good' : 'result-bad'}"><strong>${esc(row.name)}</strong><span class="muted">voted #${Number(row.voteIndex) + 1}</span><span>${row.correct ? 'Correct' : 'Wrong'}</span>${row.score != null ? `<span class="score-chip">${row.score} pts</span>` : ''}</div>`,
+          )
+          .join('');
+        const answerIndex = Number(game?.answerIndexInPresented);
+        document.getElementById('modResultSummary').textContent = Number.isFinite(answerIndex)
+          ? `Lie was statement #${answerIndex + 1}.`
+          : '';
+
+        if (phase === 'leaderboard') {
+          renderLeaderboard('modLeaderboardRows');
+        }
+      }
+
+      function updatePlayerUi() {
+        showScreen('player');
+        const player = session?.players?.[playerId];
+        const game = gameState();
+        const phase = game?.phase || 'lobby';
+
+        if (!player) {
+          setError('You were removed by the moderator.');
+          return;
+        }
+
+        document.getElementById('playerNamePill').textContent = player.name;
+        document.getElementById('playerPhasePill').textContent = phase[0].toUpperCase() + phase.slice(1);
+
+        const waitingPanel = document.getElementById('playerWaitingPanel');
+        const submissionPanel = document.getElementById('playerSubmissionPanel');
+        const votePanel = document.getElementById('playerVotePanel');
+        const resultsPanel = document.getElementById('playerResultsPanel');
+        const leaderboardPanel = document.getElementById('playerLeaderboardPanel');
+        const speakerStatements = document.getElementById('playerSpeakerStatements');
+
+        waitingPanel.classList.add('hidden');
+        submissionPanel.classList.add('hidden');
+        votePanel.classList.add('hidden');
+        resultsPanel.classList.add('hidden');
+        leaderboardPanel.classList.add('hidden');
+        speakerStatements.innerHTML = '';
+        if (phase !== 'results') clearAnimation();
+
+        if (phase === 'lobby' || phase === 'spin') {
+          if (phase === 'lobby' && !player?.submission?.ready) {
+            submissionPanel.classList.remove('hidden');
+            document.getElementById('playerSubmitMessage').textContent =
+              'Submit your statements to be marked ready.';
+          } else {
+            waitingPanel.classList.remove('hidden');
+            const title = document.getElementById('playerWaitingTitle');
+            const text = document.getElementById('playerWaitingText');
+            title.textContent = phase === 'lobby' ? 'Waiting in lobby' : 'Moderator is selecting speaker';
+            text.textContent =
+              phase === 'lobby'
+                ? 'Your statements are submitted. Waiting for the moderator to start.'
+                : 'The moderator is spinning for the next speaker.';
+          }
+          return;
+        }
+
+        if (phase === 'vote') {
+          const speakerId = game?.currentSpeakerId;
+          const speaker = speakerId ? session?.players?.[speakerId] : null;
+          if (speakerId === playerId) {
+            waitingPanel.classList.remove('hidden');
+            document.getElementById('playerWaitingTitle').textContent = 'You are speaking';
+            document.getElementById('playerWaitingText').textContent =
+              'Tell everyone your statements while players vote for the lie.';
+            const ownStatements = Array.isArray(player?.submission?.statements)
+              ? player.submission.statements
+              : [];
+            speakerStatements.innerHTML = ownStatements
+              .map(
+                (text, index) => `<div class="statement-item"><strong>${index + 1}.</strong><span>${esc(text)}</span></div>`,
+              )
+              .join('');
+            return;
+          }
+
+          votePanel.classList.remove('hidden');
+          document.getElementById('playerVoteTitle').textContent = speaker
+            ? `${speaker.name}'s statements`
+            : 'Statements';
+
+          const statements = Array.isArray(game?.presentedStatements) ? game.presentedStatements : [];
+          document.getElementById('playerStatements').innerHTML = statements
+            .map(
+              (entry, index) => `<div class="statement-item"><strong>${index + 1}.</strong><span>${esc(entry.text)}</span></div>`,
+            )
+            .join('');
+
+          const existingVote = player?.vote?.roundId === game?.currentRoundId ? player.vote.statementIndex : null;
+          document.querySelectorAll('[data-vote-index]').forEach((btn) => {
+            const idx = Number(btn.dataset.voteIndex);
+            btn.classList.toggle('active', idx === existingVote);
+            const locked = existingVote !== null;
+            btn.disabled = locked;
+          });
+          document.getElementById('playerVoteMessage').textContent =
+            existingVote !== null
+              ? `Vote submitted: statement #${existingVote + 1}. Waiting for everyone else.`
+              : 'Pick the statement you think is the lie.';
+          return;
+        }
+
+        if (phase === 'results') {
+          resultsPanel.classList.remove('hidden');
+          const answerIndex = Number(game?.answerIndexInPresented);
+          document.getElementById('playerResultSummary').textContent = Number.isFinite(answerIndex)
+            ? `Lie was statement #${answerIndex + 1}.`
+            : '';
+          const rows = Array.isArray(game?.results) ? game.results : [];
+          renderStatementBreakdown('playerStatementBreakdown', game);
+          document.getElementById('playerResultsRows').innerHTML = rows
+            .map(
+              (row) => `<div class="result-row ${row.correct ? 'result-good' : 'result-bad'}"><strong>${esc(row.name)}</strong><span class="muted">voted #${Number(row.voteIndex) + 1}</span><span>${row.correct ? 'Correct' : 'Wrong'}</span></div>`,
+            )
+            .join('');
+          // Show win/lose animation for eligible voters
+          const myResult = rows.find((r) => r.playerId === playerId);
+          const roundId = game?.currentRoundId || 'results';
+          if (myResult) {
+            if (myResult.correct) {
+              startConfetti(roundId);
+            } else {
+              startBlueRain(roundId);
+            }
+          }
+          return;
+        }
+
+        if (phase === 'leaderboard') {
+          leaderboardPanel.classList.remove('hidden');
+          renderLeaderboard('playerLeaderboardRows');
+        }
+      }
+
+      function updateScreenBySession() {
+        if (!session) return;
+        if (role === 'moderator') {
+          updateModeratorUi();
+        } else if (role === 'player') {
+          updatePlayerUi();
+        }
+      }
+
+      async function refreshSessionNow() {
+        if (!sessionCode) return;
+        const next = await fetchSession(sessionCode);
+        if (!next) {
+          setError('Session no longer exists.');
+          return;
+        }
+        session = next;
+        updateScreenBySession();
+      }
+
+      async function startPolling() {
+        if (pollHandle) {
+          clearInterval(pollHandle);
+        }
+        const tick = async () => {
+          if (!sessionCode) return;
+          try {
+            const next = await fetchSession(sessionCode);
+            if (!next) {
+              setError('Session no longer exists.');
+              return;
+            }
+            session = next;
+            updateScreenBySession();
+          } catch {
+            setError('Connection lost while syncing multiplayer state.');
+          }
+        };
+        await tick();
+        pollHandle = setInterval(tick, SESSION_POLL_MS);
+      }
+
+      async function kickPlayer(pid) {
+        if (role !== 'moderator' || !pid) return;
+        const entry = session?.players?.[pid];
+        if (!entry) return;
+        if (!window.confirm(`Kick ${entry.name}?`)) return;
+
+        const game = gameState() || {};
+        const remaining = Array.isArray(game.remainingSpeakerIds)
+          ? game.remainingSpeakerIds.filter((id) => id !== pid)
+          : [];
+
+        const patch = {
+          [`players/${pid}`]: null,
+          'game/remainingSpeakerIds': remaining,
+        };
+
+        if (game.currentSpeakerId === pid) {
+          patch['game/currentSpeakerId'] = null;
+          patch['game/phase'] = 'spin';
+          patch['game/presentedStatements'] = [];
+          patch['game/currentRoundId'] = null;
+          patch['game/results'] = [];
+        }
+
+        await patchSession({ patch });
+        await refreshSessionNow();
+      }
+
+      async function moderatorStartGame() {
+        if (role !== 'moderator') return;
+        const players = activePlayers();
+        const playerIds = players.map((p) => p.id);
+        const allReady = players.length >= 2 && players.every((p) => p?.submission?.ready);
+        if (!allReady) return;
+
+        selectedSpeakerId = null;
+        await patchSession({
+          status: 'playing',
+          patch: {
+            game: {
+              phase: 'spin',
+              roundNumber: 1,
+              remainingSpeakerIds: playerIds,
+              currentSpeakerId: null,
+              currentRoundId: null,
+              presentedStatements: [],
+              answerIndexInPresented: null,
+              results: [],
+            },
+          },
+        });
+        await refreshSessionNow();
+      }
+
+      async function spinForSpeaker() {
+        if (role !== 'moderator' || spinning) return;
+        const game = gameState();
+        const remainingIds = Array.isArray(game?.remainingSpeakerIds) ? game.remainingSpeakerIds : [];
+        const candidates = remainingIds.filter((id) => session?.players?.[id]);
+        if (!candidates.length) return;
+
+        spinning = true;
+        document.getElementById('modSpinBtn').disabled = true;
+        selectedSpeakerId = null;
+
+        const names = candidates.map((id) => session.players[id].name);
+        const winnerIdx = Math.floor(Math.random() * candidates.length);
+        const slice = (2 * Math.PI) / names.length;
+        const extraRotations = 4 + Math.floor(Math.random() * 3);
+        const targetSegmentCenter = winnerIdx * slice + slice / 2;
+        const correction =
+          ((2 * Math.PI - ((spinAngle + targetSegmentCenter) % (2 * Math.PI))) % (2 * Math.PI)) +
+          extraRotations * 2 * Math.PI;
+        const spinTarget = spinAngle + correction;
+
+        const duration = 2200;
+        const startTime = performance.now();
+        const startAngle = spinAngle;
+
+        function frame(now) {
+          const t = Math.min((now - startTime) / duration, 1);
+          const ease = 1 - Math.pow(1 - t, 3);
+          spinAngle = startAngle + (spinTarget - startAngle) * ease;
+          renderWheel(names, spinAngle);
+          if (t < 1) {
+            requestAnimationFrame(frame);
+            return;
+          }
+          spinAngle = spinTarget;
+          spinning = false;
+          selectedSpeakerId = candidates[winnerIdx];
+          document.getElementById('modSpinBtn').disabled = false;
+          patchSession({
+            patch: {
+              'game/currentSpeakerId': selectedSpeakerId,
+              'game/phase': 'spin',
+            },
+          })
+            .then(refreshSessionNow)
+            .catch(() => setError('Could not save selected speaker.'));
+        }
+
+        requestAnimationFrame(frame);
+      }
+
+      async function moderatorStartRound() {
+        if (role !== 'moderator') return;
+        const game = gameState();
+        const speakerId = game?.currentSpeakerId;
+        const speaker = speakerId ? session?.players?.[speakerId] : null;
+        if (!speaker?.submission?.ready) return;
+
+        const statements = speaker.submission.statements.map((text, originalIndex) => ({
+          text,
+          originalIndex,
+        }));
+        const shuffled = shuffle(statements);
+        const answerIndexInPresented = shuffled.findIndex(
+          (entry) => entry.originalIndex === Number(speaker.submission.lieIndex),
+        );
+        const roundId = generateId('round');
+
+        const patch = {
+          'game/phase': 'vote',
+          'game/currentRoundId': roundId,
+          'game/presentedStatements': shuffled,
+          'game/answerIndexInPresented': answerIndexInPresented,
+          'game/results': [],
+        };
+
+        activePlayers().forEach((p) => {
+          patch[`players/${p.id}/vote`] = null;
+        });
+
+        await patchSession({ patch });
+        await refreshSessionNow();
+      }
+
+      async function submitVote(statementIndex) {
+        if (role !== 'player') return;
+        const game = gameState();
+        if (!game || game.phase !== 'vote') return;
+        if (session?.players?.[playerId]?.vote?.roundId === game.currentRoundId) return;
+
+        await updatePlayer({
+          action: 'vote',
+          roundId: game.currentRoundId,
+          statementIndex,
+        });
+        await refreshSessionNow();
+      }
+
+      async function moderatorShowResults() {
+        if (role !== 'moderator') return;
+        const game = gameState();
+        if (!allVotesIn(game)) return;
+
+        const answer = Number(game.answerIndexInPresented);
+        const rows = [];
+        const statementBreakdown = Array.isArray(game?.presentedStatements)
+          ? game.presentedStatements.map((entry, index) => ({
+              text: entry?.text || '',
+              isLie: index === answer,
+              voters: [],
+            }))
+          : [];
+        const patch = {};
+
+        eligibleVoterIds(game).forEach((pid) => {
+          const entry = session?.players?.[pid];
+          const voteIndex = Number(entry?.vote?.statementIndex);
+          const correct = voteIndex === answer;
+          const currentScore = Number(entry?.score || 0);
+          const newScore = correct ? currentScore + 1 : currentScore;
+          patch[`players/${pid}/score`] = newScore;
+          rows.push({ name: entry?.name || 'Player', voteIndex, correct, score: newScore, playerId: pid });
+          if (statementBreakdown[voteIndex]) {
+            statementBreakdown[voteIndex].voters.push(entry?.name || 'Player');
+          }
+        });
+
+        const remaining = Array.isArray(game.remainingSpeakerIds)
+          ? game.remainingSpeakerIds.filter((id) => id !== game.currentSpeakerId)
+          : [];
+
+        patch['game/results'] = rows;
+        patch['game/statementBreakdown'] = statementBreakdown;
+        patch['game/remainingSpeakerIds'] = remaining;
+        patch['game/phase'] = 'results';
+
+        await patchSession({ patch });
+        await refreshSessionNow();
+      }
+
+      async function moderatorContinue() {
+        if (role !== 'moderator') return;
+        const game = gameState();
+        const activeIds = activePlayers().map((p) => p.id);
+        const remaining = Array.isArray(game?.remainingSpeakerIds) ? game.remainingSpeakerIds : [];
+
+        if (!remaining.length) {
+          await patchSession({
+            patch: {
+              'game/phase': 'leaderboard',
+              'game/currentSpeakerId': null,
+              'game/currentRoundId': null,
+              'game/remainingSpeakerIds': [],
+            },
+          });
+          await refreshSessionNow();
+          return;
+        }
+
+        await patchSession({
+          patch: {
+            'game/currentSpeakerId': null,
+            'game/currentRoundId': null,
+            'game/presentedStatements': [],
+            'game/answerIndexInPresented': null,
+            'game/results': [],
+            'game/statementBreakdown': [],
+            'game/phase': 'spin',
+          },
+        });
+        await refreshSessionNow();
+      }
+
+      async function moderatorStartNewGame() {
+        if (role !== 'moderator') return;
+        const patch = {
+          game: {
+            phase: 'lobby',
+            roundNumber: 1,
+            remainingSpeakerIds: [],
+            currentSpeakerId: null,
+            currentRoundId: null,
+            presentedStatements: [],
+            answerIndexInPresented: null,
+            results: [],
+            statementBreakdown: [],
+          },
+        };
+        activePlayers().forEach((entry) => {
+          patch[`players/${entry.id}/submission`] = null;
+          patch[`players/${entry.id}/vote`] = null;
+          patch[`players/${entry.id}/score`] = 0;
+        });
+        await patchSession({ status: 'lobby', patch });
+        await refreshSessionNow();
+      }
+
+      async function bootstrap() {
+        showScreen('loading');
+
+        const configured = await isMultiplayerConfigured();
+        if (!configured) {
+          setError('Multiplayer backend is not configured on this deployment.');
+          return;
+        }
+
+        const params = hashParams();
+        const joinCode = params.get('join');
+        const code = params.get('code');
+        const hashRole = params.get('role');
+        const pid = params.get('pid');
+
+        if (hashRole === 'player' && code && pid) {
+          await reconnectPlayer(code.toUpperCase(), pid);
+          await startPolling();
+          return;
+        }
+
+        if (joinCode) {
+          prepareJoinScreen(joinCode);
+          return;
+        }
+
+        if (hashRole === 'moderator' && code) {
+          await reconnectModerator(code.toUpperCase());
+        } else {
+          await createModeratorSession();
+        }
+
+        await startPolling();
+      }
+
+      document.getElementById('copyJoinLinkBtn').addEventListener('click', async () => {
+        const input = document.getElementById('joinLinkInput');
+        if (!input.value) return;
+        try {
+          await navigator.clipboard.writeText(input.value);
+          document.getElementById('modLobbyMessage').textContent = 'Join link copied.';
+        } catch {
+          document.getElementById('modLobbyMessage').textContent = 'Could not copy join link.';
+        }
+      });
+
+      document.getElementById('modStartGameBtn').addEventListener('click', () => {
+        moderatorStartGame().catch(() => setError('Could not start game.'));
+      });
+
+      document.getElementById('modSpinBtn').addEventListener('click', () => {
+        spinForSpeaker();
+      });
+
+      document.getElementById('modStartRoundBtn').addEventListener('click', () => {
+        moderatorStartRound().catch(() => setError('Could not start round.'));
+      });
+
+      document.getElementById('modShowResultsBtn').addEventListener('click', () => {
+        moderatorShowResults().catch(() => setError('Could not reveal results.'));
+      });
+
+      document.getElementById('modContinueBtn').addEventListener('click', () => {
+        moderatorContinue().catch(() => setError('Could not continue game.'));
+      });
+      document.getElementById('modNewGameBtn').addEventListener('click', () => {
+        moderatorStartNewGame().catch(() => setError('Could not start a new game.'));
+      });
+
+      document.querySelectorAll('[data-vote-index]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const index = Number(btn.dataset.voteIndex);
+          submitVote(index).catch(() => setError('Could not submit vote.'));
+        });
+      });
+
+      document.getElementById('joinSubmitBtn').addEventListener('click', async () => {
+        const joinMessage = document.getElementById('joinMessage');
+        const name = document.getElementById('joinNameInput').value.trim();
+        const statements = [
+          document.getElementById('joinStatement1').value.trim(),
+          document.getElementById('joinStatement2').value.trim(),
+          document.getElementById('joinStatement3').value.trim(),
+        ];
+        const lieIndex = Number(document.getElementById('joinLieSelect').value);
+
+        if (!name) {
+          joinMessage.textContent = 'Please enter your name.';
+          return;
+        }
+        if (statements.some((s) => !s)) {
+          joinMessage.textContent = 'Please fill in all three statements.';
+          return;
+        }
+
+        const btn = document.getElementById('joinSubmitBtn');
+        btn.disabled = true;
+        joinMessage.textContent = 'Joining room...';
+
+        try {
+          savePlayerName(name);
+          const joined = await joinSession(sessionCode, name);
+          playerId = joined.playerId;
+          role = 'player';
+
+          await updatePlayer({
+            action: 'submitStatements',
+            statements,
+            lieIndex,
+          });
+
+          const params = new URLSearchParams({ code: sessionCode, role: 'player', pid: playerId });
+          setHash(params);
+          await startPolling();
+        } catch (error) {
+          joinMessage.textContent = error.message || 'Unable to join room.';
+          btn.disabled = false;
+        }
+      });
+
+      document.getElementById('joinNameInput').addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          document.getElementById('joinSubmitBtn').click();
+        }
+      });
+
+      document.getElementById('playerSubmitStatementsBtn').addEventListener('click', async () => {
+        const statements = [
+          document.getElementById('playerStatement1').value.trim(),
+          document.getElementById('playerStatement2').value.trim(),
+          document.getElementById('playerStatement3').value.trim(),
+        ];
+        const lieIndex = Number(document.getElementById('playerLieSelect').value);
+        const messageEl = document.getElementById('playerSubmitMessage');
+        const button = document.getElementById('playerSubmitStatementsBtn');
+
+        if (statements.some((entry) => !entry)) {
+          messageEl.textContent = 'Please fill in all three statements.';
+          return;
+        }
+
+        button.disabled = true;
+        messageEl.textContent = 'Submitting...';
+        try {
+          await updatePlayer({ action: 'submitStatements', statements, lieIndex });
+          document.getElementById('playerStatement1').value = '';
+          document.getElementById('playerStatement2').value = '';
+          document.getElementById('playerStatement3').value = '';
+          messageEl.textContent = 'Submitted. Waiting for moderator to start.';
+          await refreshSessionNow();
+        } catch (error) {
+          messageEl.textContent = error.message || 'Unable to submit statements.';
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      bootstrap().catch(() => {
+        setError('Unable to initialize multiplayer room.');
+      });
+    </script>
+  </body>
+</html>

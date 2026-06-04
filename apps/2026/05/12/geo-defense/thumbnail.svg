@@ -1,0 +1,313 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a1020"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+
+    <!-- Path highlight gradient -->
+    <linearGradient id="pathGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.35"/>
+      <stop offset="50%" stop-color="#6366f1" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0.35"/>
+    </linearGradient>
+
+    <!-- Title gradient -->
+    <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+
+    <!-- Score glow -->
+    <filter id="scoreGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Title glow -->
+    <filter id="titleGlow" x="-20%" y="-50%" width="140%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Tower glow -->
+    <filter id="towerGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Enemy glow -->
+    <filter id="enemyGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Explosion glow -->
+    <filter id="explodeGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Radial grid vignette -->
+    <radialGradient id="vignette" cx="0.5" cy="0.5" r="0.7">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="100%" stop-color="#050c1a" stop-opacity="0.7"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)"/>
+
+  <!-- Grid lines -->
+  <g stroke="rgba(99,102,241,0.07)" stroke-width="0.5">
+    <!-- Vertical lines every 50px -->
+    <line x1="50" y1="0" x2="50" y2="450"/>
+    <line x1="100" y1="0" x2="100" y2="450"/>
+    <line x1="150" y1="0" x2="150" y2="450"/>
+    <line x1="200" y1="0" x2="200" y2="450"/>
+    <line x1="250" y1="0" x2="250" y2="450"/>
+    <line x1="300" y1="0" x2="300" y2="450"/>
+    <line x1="350" y1="0" x2="350" y2="450"/>
+    <line x1="400" y1="0" x2="400" y2="450"/>
+    <line x1="450" y1="0" x2="450" y2="450"/>
+    <line x1="500" y1="0" x2="500" y2="450"/>
+    <line x1="550" y1="0" x2="550" y2="450"/>
+    <line x1="600" y1="0" x2="600" y2="450"/>
+    <line x1="650" y1="0" x2="650" y2="450"/>
+    <line x1="700" y1="0" x2="700" y2="450"/>
+    <line x1="750" y1="0" x2="750" y2="450"/>
+    <!-- Horizontal lines every 50px -->
+    <line x1="0" y1="50" x2="800" y2="50"/>
+    <line x1="0" y1="100" x2="800" y2="100"/>
+    <line x1="0" y1="150" x2="800" y2="150"/>
+    <line x1="0" y1="200" x2="800" y2="200"/>
+    <line x1="0" y1="250" x2="800" y2="250"/>
+    <line x1="0" y1="300" x2="800" y2="300"/>
+    <line x1="0" y1="350" x2="800" y2="350"/>
+    <line x1="0" y1="400" x2="800" y2="400"/>
+  </g>
+
+  <!-- HUD bar -->
+  <rect x="0" y="0" width="800" height="44" fill="rgba(0,0,0,0.55)"/>
+  <line x1="0" y1="44" x2="800" y2="44" stroke="rgba(99,102,241,0.3)" stroke-width="1"/>
+
+  <!-- HUD: Score -->
+  <text x="80" y="14" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" font-weight="700"
+        fill="rgba(148,163,184,0.7)" letter-spacing="2">SCORE</text>
+  <text x="80" y="34" text-anchor="middle" font-family="'Courier New',monospace" font-size="20" font-weight="900"
+        fill="#f59e0b" filter="url(#scoreGlow)">4,280</text>
+
+  <!-- HUD: Wave -->
+  <text x="310" y="14" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" font-weight="700"
+        fill="rgba(148,163,184,0.7)" letter-spacing="2">WAVE</text>
+  <text x="310" y="34" text-anchor="middle" font-family="'Courier New',monospace" font-size="20" font-weight="900"
+        fill="#a78bfa" filter="url(#scoreGlow)">5</text>
+
+  <!-- HUD: Gold -->
+  <text x="490" y="14" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" font-weight="700"
+        fill="rgba(148,163,184,0.7)" letter-spacing="2">GOLD</text>
+  <text x="490" y="34" text-anchor="middle" font-family="'Courier New',monospace" font-size="20" font-weight="900"
+        fill="#fbbf24" filter="url(#scoreGlow)">240</text>
+
+  <!-- HUD: Lives -->
+  <text x="700" y="14" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" font-weight="700"
+        fill="rgba(148,163,184,0.7)" letter-spacing="2">LIVES</text>
+  <text x="700" y="34" text-anchor="middle" font-family="'Courier New',monospace" font-size="18" font-weight="900"
+        fill="#ef4444">♥♥♥</text>
+
+  <!-- ─── Path (winding S-shape) ───────────────────────────────────────────── -->
+  <!-- Path segments shaded -->
+  <!-- Segment 1: left entry row ~95, x:0..200 -->
+  <rect x="0" y="70" width="200" height="50" fill="rgba(99,102,241,0.12)"/>
+  <!-- Segment 2: vertical down x:175..225, y:70..220 -->
+  <rect x="175" y="70" width="50" height="150" fill="rgba(99,102,241,0.12)"/>
+  <!-- Segment 3: horizontal right x:200..500, y:195..245 -->
+  <rect x="175" y="195" width="325" height="50" fill="rgba(99,102,241,0.12)"/>
+  <!-- Segment 4: vertical up x:475..525, y:95..245 -->
+  <rect x="475" y="95" width="50" height="150" fill="rgba(99,102,241,0.12)"/>
+  <!-- Segment 5: horizontal right x:475..650, y:70..120 -->
+  <rect x="475" y="70" width="175" height="50" fill="rgba(99,102,241,0.12)"/>
+  <!-- Segment 6: vertical down x:625..675, y:70..360 -->
+  <rect x="625" y="70" width="50" height="290" fill="rgba(99,102,241,0.12)"/>
+  <!-- Segment 7: horizontal left x:450..675, y:335..385 -->
+  <rect x="450" y="335" width="225" height="50" fill="rgba(99,102,241,0.12)"/>
+  <!-- Segment 8: vertical up x:450..500, y:220..385 -->
+  <rect x="450" y="220" width="50" height="165" fill="rgba(99,102,241,0.12)"/>
+  <!-- Segment 9: horizontal left x:175..500, y:220..270 (already covered) -->
+  <!-- Segment 10: vertical down x:175..225, y:220..370 -->
+  <rect x="175" y="220" width="50" height="165" fill="rgba(99,102,241,0.12)"/>
+  <!-- Segment 11: horizontal right x:175..800, y:335..385 -->
+  <rect x="175" y="335" width="625" height="50" fill="rgba(99,102,241,0.12)"/>
+
+  <!-- Path center dashed lines -->
+  <g stroke="rgba(99,102,241,0.4)" stroke-width="1.5" stroke-dasharray="8,8" fill="none">
+    <!-- horizontal entry -->
+    <line x1="0" y1="95" x2="200" y2="95"/>
+    <!-- down -->
+    <line x1="200" y1="95" x2="200" y2="220"/>
+    <!-- right -->
+    <line x1="200" y1="220" x2="500" y2="220"/>
+    <!-- up -->
+    <line x1="500" y1="220" x2="500" y2="95"/>
+    <!-- right -->
+    <line x1="500" y1="95" x2="650" y2="95"/>
+    <!-- down -->
+    <line x1="650" y1="95" x2="650" y2="360"/>
+    <!-- left -->
+    <line x1="650" y1="360" x2="475" y2="360"/>
+    <!-- up -->
+    <line x1="475" y1="360" x2="475" y2="245"/>
+    <!-- left -->
+    <line x1="475" y1="245" x2="200" y2="245"/>
+    <!-- down -->
+    <line x1="200" y1="245" x2="200" y2="360"/>
+    <!-- right exit -->
+    <line x1="200" y1="360" x2="800" y2="360"/>
+  </g>
+
+  <!-- Start marker (green circle left) -->
+  <circle cx="10" cy="95" r="12" fill="#34d399" fill-opacity="0.85"/>
+  <!-- End marker (red triangle right) -->
+  <polygon points="795,350 795,370 808,360" fill="#ef4444" fill-opacity="0.85"/>
+
+  <!-- ─── Towers ─────────────────────────────────────────────────────────────── -->
+
+  <!-- Laser tower at (75, 150) — blue diamond -->
+  <g filter="url(#towerGlow)">
+    <polygon points="75,125 100,150 75,175 50,150" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="2"/>
+    <!-- upgrade dots -->
+    <circle cx="75" cy="120" r="3" fill="#38bdf8"/>
+    <circle cx="104" cy="160" r="3" fill="#38bdf8"/>
+  </g>
+
+  <!-- Cannon tower at (350, 145) — orange hexagon -->
+  <g filter="url(#towerGlow)">
+    <polygon points="350,118 374,131 374,158 350,171 326,158 326,131" fill="rgba(251,146,60,0.2)" stroke="#fb923c" stroke-width="2"/>
+    <circle cx="350" cy="112" r="3" fill="#fb923c"/>
+  </g>
+
+  <!-- Tesla tower at (75, 290) — purple triangle -->
+  <g filter="url(#towerGlow)">
+    <polygon points="75,260 105,315 45,315" fill="rgba(168,85,247,0.2)" stroke="#a855f7" stroke-width="2"/>
+    <circle cx="75" cy="254" r="3" fill="#a855f7"/>
+    <circle cx="108" cy="320" r="3" fill="#a855f7"/>
+    <circle cx="42" cy="320" r="3" fill="#a855f7"/>
+  </g>
+
+  <!-- Laser tower at (550, 150) — blue diamond -->
+  <g filter="url(#towerGlow)">
+    <polygon points="550,118 578,150 550,182 522,150" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="2"/>
+  </g>
+
+  <!-- Cannon tower at (350, 295) — orange hexagon -->
+  <g filter="url(#towerGlow)">
+    <polygon points="350,268 374,281 374,308 350,321 326,308 326,281" fill="rgba(251,146,60,0.2)" stroke="#fb923c" stroke-width="2"/>
+  </g>
+
+  <!-- ─── Enemies on path ───────────────────────────────────────────────────── -->
+
+  <!-- Enemy 1: Square advancing, x=140,y=95 -->
+  <g filter="url(#enemyGlow)">
+    <polygon points="140,78 158,78 158,112 140,112" fill="rgba(129,140,248,0.5)" stroke="#818cf8" stroke-width="1.5"/>
+    <!-- HP bar -->
+    <rect x="126" y="68" width="32" height="4" fill="rgba(0,0,0,0.6)"/>
+    <rect x="126" y="68" width="20" height="4" fill="#34d399"/>
+  </g>
+
+  <!-- Enemy 2: Pentagon, x=270,y=220 -->
+  <g filter="url(#enemyGlow)">
+    <polygon points="270,202 287,214 281,233 259,233 253,214" fill="rgba(129,140,248,0.5)" stroke="#818cf8" stroke-width="1.5"/>
+    <rect x="256" y="191" width="28" height="4" fill="rgba(0,0,0,0.6)"/>
+    <rect x="256" y="191" width="14" height="4" fill="#fbbf24"/>
+  </g>
+
+  <!-- Enemy 3 (tank): Hexagon, x=410,y=220 red -->
+  <g filter="url(#enemyGlow)">
+    <polygon points="410,196 431,208 431,232 410,244 389,232 389,208" fill="rgba(239,68,68,0.45)" stroke="#ef4444" stroke-width="2"/>
+    <rect x="390" y="184" width="40" height="5" fill="rgba(0,0,0,0.6)"/>
+    <rect x="390" y="184" width="28" height="5" fill="#ef4444"/>
+  </g>
+
+  <!-- Enemy 4 (flier): Triangle green, x=520,y=360 -->
+  <g filter="url(#enemyGlow)">
+    <polygon points="520,344 537,375 503,375" fill="rgba(52,211,153,0.5)" stroke="#34d399" stroke-width="1.5"/>
+    <rect x="506" y="334" width="28" height="3" fill="rgba(0,0,0,0.6)"/>
+    <rect x="506" y="334" width="24" height="3" fill="#34d399"/>
+  </g>
+
+  <!-- Enemy 5: Square, x=290,y=360 -->
+  <g filter="url(#enemyGlow)">
+    <polygon points="290,344 308,344 308,376 290,376" fill="rgba(129,140,248,0.5)" stroke="#818cf8" stroke-width="1.5"/>
+    <rect x="282" y="334" width="32" height="4" fill="rgba(0,0,0,0.6)"/>
+    <rect x="282" y="334" width="8" height="4" fill="#ef4444"/>
+  </g>
+
+  <!-- ─── Projectiles and effects ───────────────────────────────────────────── -->
+
+  <!-- Laser beam: tower(75,150) to enemy(140,95) -->
+  <line x1="75" y1="150" x2="140" y2="95" stroke="#38bdf8" stroke-width="2" opacity="0.85"
+        filter="url(#towerGlow)"/>
+
+  <!-- Tesla arc: tower(75,290) to enemy(270,220) jagged -->
+  <polyline points="75,285 110,262 145,275 185,248 220,258 255,235 270,222"
+            stroke="#a855f7" stroke-width="2" fill="none" opacity="0.8" filter="url(#towerGlow)"/>
+
+  <!-- Cannon projectile flying -->
+  <circle cx="310" cy="175" r="6" fill="#fb923c" filter="url(#towerGlow)" opacity="0.9"/>
+
+  <!-- Explosion at dying enemy location (x=390,y=175) -->
+  <g filter="url(#explodeGlow)" opacity="0.9">
+    <circle cx="390" cy="175" r="18" fill="rgba(251,146,60,0.25)" stroke="#fb923c" stroke-width="1.5"/>
+    <!-- Explosion rays -->
+    <line x1="390" y1="155" x2="390" y2="140" stroke="#fbbf24" stroke-width="2" opacity="0.9"/>
+    <line x1="405" y1="160" x2="415" y2="148" stroke="#fbbf24" stroke-width="2" opacity="0.8"/>
+    <line x1="410" y1="175" x2="425" y2="175" stroke="#fb923c" stroke-width="2" opacity="0.8"/>
+    <line x1="405" y1="190" x2="415" y2="202" stroke="#fb923c" stroke-width="1.5" opacity="0.7"/>
+    <line x1="390" y1="195" x2="390" y2="210" stroke="#fbbf24" stroke-width="1.5" opacity="0.7"/>
+    <line x1="375" y1="190" x2="365" y2="202" stroke="#fbbf24" stroke-width="1.5" opacity="0.6"/>
+    <line x1="370" y1="175" x2="355" y2="175" stroke="#fb923c" stroke-width="1.5" opacity="0.6"/>
+    <line x1="375" y1="160" x2="365" y2="148" stroke="#fbbf24" stroke-width="1.5" opacity="0.7"/>
+    <!-- Score floater -->
+    <text x="390" y="132" text-anchor="middle" font-family="'Courier New',monospace" font-size="14"
+          font-weight="900" fill="#fbbf24">+12g</text>
+  </g>
+
+  <!-- Particle debris from explosion -->
+  <circle cx="410" cy="158" r="3" fill="#fbbf24" opacity="0.9"/>
+  <circle cx="375" cy="145" r="2.5" fill="#fb923c" opacity="0.8"/>
+  <circle cx="420" cy="178" r="2" fill="#fbbf24" opacity="0.7"/>
+  <circle cx="368" cy="192" r="3" fill="#fb923c" opacity="0.75"/>
+  <circle cx="400" cy="210" r="2" fill="#fbbf24" opacity="0.6"/>
+
+  <!-- Combo badge: x3 kill streak -->
+  <rect x="286" y="152" width="86" height="26" rx="5" fill="rgba(0,0,0,0.75)" stroke="#34d399" stroke-width="1.2"/>
+  <text x="329" y="169" text-anchor="middle" font-family="'Courier New',monospace" font-size="13"
+        font-weight="900" fill="#34d399" filter="url(#scoreGlow)">x3 STREAK!</text>
+
+  <!-- Vignette -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#vignette)"/>
+
+  <!-- Border glow -->
+  <rect x="0" y="0" width="800" height="450" fill="none" stroke="#6366f1" stroke-width="3" stroke-opacity="0.35"/>
+
+  <!-- Bottom strip + title -->
+  <rect x="0" y="430" width="800" height="20" fill="rgba(0,0,0,0.6)"/>
+  <text x="400" y="443" text-anchor="middle" font-family="'Courier New',monospace" font-size="13"
+        font-weight="900" fill="url(#titleGrad)" filter="url(#titleGlow)" letter-spacing="4">GEO DEFENSE</text>
+</svg>

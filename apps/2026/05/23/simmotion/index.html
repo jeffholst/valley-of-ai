@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simmotion - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Simmotion" />
+    <meta name="voa-app-id" content="2026/05/23/simmotion" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --track: #38bdf8;
+        --track-glow: rgba(56, 189, 248, 0.4);
+        --gate-open: #4ade80;
+        --gate-closed: #f97316;
+        --ball-color: #fbbf24;
+        --ball-glow: rgba(251, 191, 36, 0.6);
+        --paddle-color: #a78bfa;
+        --paddle-glow: rgba(167, 139, 250, 0.5);
+        --danger: #ef4444;
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+        --track: #0284c7;
+        --track-glow: rgba(2, 132, 199, 0.3);
+        --gate-open: #16a34a;
+        --gate-closed: #ea580c;
+        --ball-color: #d97706;
+        --ball-glow: rgba(217, 119, 6, 0.5);
+        --paddle-color: #7c3aed;
+        --paddle-glow: rgba(124, 58, 237, 0.4);
+        --danger: #dc2626;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        overflow: hidden;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      #gameWrapper {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg);
+      }
+
+      #gameCanvas {
+        display: block;
+        cursor: none;
+        touch-action: none;
+      }
+
+      /* Overlay screens */
+      .screen {
+        display: none;
+        position: absolute;
+        inset: 0;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 16px;
+        background: rgba(0, 0, 0, 0.82);
+        z-index: 10;
+        padding: 24px;
+        text-align: center;
+      }
+      .screen.active {
+        display: flex;
+      }
+
+      .screen h1 {
+        font-size: clamp(28px, 6vw, 52px);
+        font-weight: 900;
+        letter-spacing: 0.05em;
+        color: var(--track);
+        text-shadow: 0 0 20px var(--track-glow), 0 0 40px var(--track-glow);
+      }
+
+      .screen h2 {
+        font-size: clamp(20px, 4vw, 32px);
+        font-weight: 700;
+        color: var(--ball-color);
+        text-shadow: 0 0 12px var(--ball-glow);
+      }
+
+      .screen p {
+        font-size: clamp(13px, 2.5vw, 17px);
+        color: rgba(255, 255, 255, 0.75);
+        max-width: 420px;
+        line-height: 1.6;
+      }
+
+      .screen .instructions {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: clamp(12px, 2vw, 15px);
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .screen .instructions span {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn {
+        margin-top: 8px;
+        padding: 14px 40px;
+        background: var(--track);
+        color: #0f172a;
+        font-size: clamp(14px, 2.5vw, 18px);
+        font-weight: 800;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        box-shadow: 0 0 20px var(--track-glow);
+        transition: transform 0.1s, box-shadow 0.1s;
+        min-width: 160px;
+        min-height: 48px;
+      }
+      .btn:hover,
+      .btn:focus {
+        transform: scale(1.05);
+        box-shadow: 0 0 32px var(--track-glow);
+        outline: none;
+      }
+      .btn:active {
+        transform: scale(0.97);
+      }
+
+      #finalScore {
+        font-size: clamp(36px, 8vw, 64px);
+        font-weight: 900;
+        color: var(--ball-color);
+        text-shadow: 0 0 20px var(--ball-glow);
+      }
+
+      .stat-row {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+        justify-content: center;
+        font-size: clamp(13px, 2vw, 16px);
+        color: rgba(255, 255, 255, 0.8);
+      }
+      .stat-row span {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+      }
+      .stat-row strong {
+        font-size: 1.4em;
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="gameWrapper">
+      <canvas id="gameCanvas"></canvas>
+
+      <!-- Start screen -->
+      <div id="startScreen" class="screen active">
+        <h1>SIMMOTION</h1>
+        <p>
+          Balls wind through a 9-gate roller coaster with 6 hidden exits. Catch them with your
+          paddle, then tap or press Space to relaunch — but beware: two balls on the paddle
+          at once costs a life!
+        </p>
+        <div class="instructions">
+          <span>🖱️ / 👆 Move paddle left and right</span>
+          <span>⚡ Gates flip when balls pass — some with random delays!</span>
+          <span>❤️ Miss a ball — lose a life (3 total)</span>
+          <span>🎳 3 balls launch at start, more follow every 15 seconds</span>
+          <span>🏐 Catch a ball → Tap or press Space to relaunch!</span>
+          <span>⚠️ Two balls on the paddle at once = lose a life!</span>
+        </div>
+        <button class="btn" id="startBtn">PLAY</button>
+      </div>
+
+      <!-- Game over screen -->
+      <div id="gameOverScreen" class="screen">
+        <h2>GAME OVER</h2>
+        <div id="finalScore">0</div>
+        <p>Time survived</p>
+        <div class="stat-row">
+          <span><strong id="goLives">0</strong>Lives lost</span>
+          <span><strong id="goBalls">0</strong>Balls caught</span>
+          <span><strong id="goMissed">0</strong>Missed</span>
+        </div>
+        <button class="btn" id="restartBtn">PLAY AGAIN</button>
+      </div>
+    </div>
+
+    <script>
+      'use strict';
+
+      // ─── Constants ────────────────────────────────────────────────────────────
+
+      const APP_NAME = 'Simmotion';
+      const SHELL_HEADER = 64;
+      const SHELL_FOOTER = 56;
+
+      // ─── Canvas setup ────────────────────────────────────────────────────────
+
+      const wrapper = document.getElementById('gameWrapper');
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+
+      let W = 0,
+        H = 0,
+        scale = 1;
+
+      /**
+       * Resize canvas to fill the safe zone between header and footer.
+       * The "logical" coordinate space is always 400×600; we scale to fit.
+       */
+      function resizeCanvas() {
+        const availW = wrapper.clientWidth;
+        const availH = wrapper.clientHeight;
+        scale = Math.min(availW / 400, availH / 600);
+        W = 400;
+        H = 600;
+        canvas.width = Math.floor(W * scale);
+        canvas.height = Math.floor(H * scale);
+        ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      }
+
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        buildTrack();
+      });
+      resizeCanvas();
+
+      // ─── Track definition ────────────────────────────────────────────────────
+
+      /**
+       * The track is a fixed network of segments. Each segment knows its start
+       * point, end point, and index of the "gate" at that junction (or -1 for a
+       * terminal segment). Segments are defined in logical 400×600 coords.
+       *
+       * Ball-on-segment progress: t in [0,1]. Position = lerp(start, end, t).
+       * When t >= 1 the ball transfers to the next segment chosen by the gate.
+       */
+
+      // Junction gate states: false = left branch, true = right branch
+      let gates = [];
+
+      let segments = [];
+
+      /**
+       * Build (or rebuild) the fixed track layout.
+       * Called once at startup and on resize (coords are logical, scale-invariant).
+       */
+      function buildTrack() {
+        // 9-gate network with 20 segments and 6 exits.
+        // Entry → Gate 0 → [Gate 1 | Gate 2] → Gate 3 merge → Gate 4
+        // → [Gate 5 | Gate 6] → [Gate 7 | center exits | Gate 8]
+        // → 6 exit positions at y≈540-545
+
+        segments = [
+          // 0: Entry straight drop → Gate 0
+          { from: { x: 200, y: 30 }, to: { x: 200, y: 115 }, gate: 0, type: 'drop' },
+
+          // Gate 0 → Gate 1 (left) or Gate 2 (right)
+          { from: { x: 200, y: 115 }, to: { x: 80, y: 200 }, gate: 1, type: 'ramp' },   // seg 1
+          { from: { x: 200, y: 115 }, to: { x: 320, y: 200 }, gate: 2, type: 'ramp' },  // seg 2
+
+          // Gate 1 at (80,200) → far-left ramp or center-merge flat
+          { from: { x: 80, y: 200 }, to: { x: 55, y: 265 }, gate: 3, type: 'ramp' },    // seg 3
+          { from: { x: 80, y: 200 }, to: { x: 195, y: 255 }, gate: 3, type: 'flat' },   // seg 4
+
+          // Gate 2 at (320,200) → center-merge flat or far-right ramp
+          { from: { x: 320, y: 200 }, to: { x: 205, y: 255 }, gate: 3, type: 'flat' },  // seg 5
+          { from: { x: 320, y: 200 }, to: { x: 345, y: 265 }, gate: 3, type: 'ramp' },  // seg 6
+
+          // Gate 3 merge paths → Gate 4 at (200,335)
+          { from: { x: 55, y: 265 }, to: { x: 200, y: 335 }, gate: 4, type: 'curve' },  // seg 7
+          { from: { x: 200, y: 255 }, to: { x: 200, y: 335 }, gate: 4, type: 'drop' },  // seg 8
+          { from: { x: 345, y: 265 }, to: { x: 200, y: 335 }, gate: 4, type: 'curve' }, // seg 9
+
+          // Gate 4 at (200,335) → Gate 5 (left) or Gate 6 (right)
+          { from: { x: 200, y: 335 }, to: { x: 100, y: 400 }, gate: 5, type: 'ramp' },  // seg 10
+          { from: { x: 200, y: 335 }, to: { x: 300, y: 400 }, gate: 6, type: 'ramp' },  // seg 11
+
+          // Gate 5 at (100,400) → Gate 7 (far-left) or center-left exit
+          { from: { x: 100, y: 400 }, to: { x: 55, y: 465 }, gate: 7, type: 'ramp' },   // seg 12
+          { from: { x: 100, y: 400 }, to: { x: 150, y: 540 }, gate: -1, type: 'drop' }, // seg 13 exit
+
+          // Gate 6 at (300,400) → center-right exit or Gate 8 (far-right)
+          { from: { x: 300, y: 400 }, to: { x: 250, y: 540 }, gate: -1, type: 'drop' }, // seg 14 exit
+          { from: { x: 300, y: 400 }, to: { x: 345, y: 465 }, gate: 8, type: 'ramp' },  // seg 15
+
+          // Gate 7 at (55,465) → far-far-left exit or left exit
+          { from: { x: 55, y: 465 }, to: { x: 30, y: 545 }, gate: -1, type: 'drop' },   // seg 16 exit
+          { from: { x: 55, y: 465 }, to: { x: 115, y: 545 }, gate: -1, type: 'drop' },  // seg 17 exit
+
+          // Gate 8 at (345,465) → right exit or far-far-right exit
+          { from: { x: 345, y: 465 }, to: { x: 285, y: 545 }, gate: -1, type: 'drop' }, // seg 18 exit
+          { from: { x: 345, y: 465 }, to: { x: 370, y: 545 }, gate: -1, type: 'drop' }, // seg 19 exit
+        ];
+
+        // 9 gates (0-8)
+        if (gates.length !== 9) {
+          gates = [false, false, true, false, true, false, true, false, true];
+        }
+      }
+
+      buildTrack();
+
+      // ─── Ball physics ────────────────────────────────────────────────────────
+
+      /**
+       * Each ball travels along segments. Physics:
+       * - Speed increases on 'drop'/'ramp' segments (gravity)
+       * - Speed decreases on 'flat' segments (friction)
+       * - Speed is clamped to [MIN_SPEED, MAX_SPEED]
+       */
+      const MIN_SPEED = 0.4;
+      const MAX_SPEED = 3.5; // base cap; escalates during play
+      let currentMaxSpeed = MAX_SPEED;
+
+      function segmentLength(seg) {
+        const dx = seg.to.x - seg.from.x;
+        const dy = seg.to.y - seg.from.y;
+        return Math.hypot(dx, dy);
+      }
+
+      function lerpPt(a, b, t) {
+        return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+      }
+
+      /**
+       * Gravity factor based on segment vertical drop relative to length.
+       * Positive = going down (accelerate), negative = going up (decelerate).
+       */
+      function gravityFactor(seg) {
+        const dy = seg.to.y - seg.from.y;
+        const len = segmentLength(seg);
+        return dy / (len || 1); // -1 to 1
+      }
+
+      /**
+       * Ball object shape:
+       * { segIdx, t, speed, alive, caught }
+       * segIdx = current segment index
+       * t = progress [0,1] along segment
+       * speed = units/frame along the normalized segment
+       */
+      function createBall(segIdx, launchDrift = 0) {
+        return { segIdx, t: 0, speed: MIN_SPEED + 0.5, alive: true, caught: false, launchDrift };
+      }
+
+      /**
+       * Maps charge amount (0-1) to a lateral drift value (-1 to +1).
+       * Sweet spot 0.4-0.6 = no drift. Outside = drift left (neg) or right (pos).
+       */
+      function computeDrift(charge) {
+        if (charge >= 0.4 && charge <= 0.6) return 0;
+        if (charge < 0.4) return -(0.4 - charge) / 0.4;
+        return (charge - 0.6) / 0.4;
+      }
+
+      function launchHeldBall() {
+        if (!heldBall) return;
+        balls.push(createBall(0, 0));
+        heldBall = null;
+        isCharging = false;
+        chargeAmount = 0;
+      }
+
+      let balls = [];
+      let ballSpawnTimer = 0;
+      const BALL_SPAWN_INTERVAL = 15; // seconds
+
+      /**
+       * Choose next segment from gate state.
+       * Accepts the ball so launch drift can override gate 0 routing.
+       * Returns segment index or -1 if ball exits the track.
+       */
+      function nextSegment(seg, ball) {
+        const gateIdx = seg.gate;
+        if (gateIdx < 0) return -1; // terminal
+
+        let gateState = gates[gateIdx];
+
+        // Launch drift overrides gate 0 for poorly-timed relaunches
+        if (gateIdx === 0 && ball && ball.launchDrift !== 0) {
+          gateState = ball.launchDrift > 0;
+          ball.launchDrift = 0;
+        }
+
+        const segIdx = segments.indexOf(seg);
+
+        // Gate 3 merge: output depends on which entry segment arrives
+        if (gateIdx === 3) {
+          if (segIdx === 3 || segIdx === 5) return gateState ? 8 : 7;
+          if (segIdx === 4) return gateState ? 9 : 8;
+          if (segIdx === 6) return gateState ? 9 : 7;
+          return 7;
+        }
+
+        const routing = {
+          0: { false: 1, true: 2 },
+          1: { false: 3, true: 4 },
+          2: { false: 5, true: 6 },
+          4: { false: 10, true: 11 },
+          5: { false: 12, true: 13 },
+          6: { false: 14, true: 15 },
+          7: { false: 16, true: 17 },
+          8: { false: 18, true: 19 },
+        };
+
+        const r = routing[gateIdx];
+        if (!r) return -1;
+        const next = r[String(gateState)];
+        return next !== undefined ? next : -1;
+      }
+
+      /**
+       * Advance a single ball by one frame's dt (seconds).
+       * Returns true if ball reached the paddle zone (y >= 550).
+       */
+      function advanceBall(ball, dt) {
+        if (!ball.alive) return false;
+
+        const seg = segments[ball.segIdx];
+        if (!seg) {
+          ball.alive = false;
+          return false;
+        }
+
+        const len = segmentLength(seg);
+        // Gravity / friction acceleration
+        const gf = gravityFactor(seg);
+        if (seg.type === 'flat') {
+          ball.speed = Math.max(MIN_SPEED, ball.speed - 1.5 * dt);
+        } else {
+          ball.speed = Math.min(currentMaxSpeed, Math.max(MIN_SPEED, ball.speed + gf * 4 * dt));
+        }
+
+        // Advance t
+        const dtT = (ball.speed * 60 * dt) / Math.max(len, 1);
+        ball.t += dtT;
+
+        while (ball.t >= 1 && ball.segIdx >= 0) {
+          const transSeg = segments[ball.segIdx];
+          if (!transSeg) { ball.alive = false; return false; }
+
+          // Flip the gate — lower-level gates (5-8) use random delays for unpredictability
+          const gateIdx = transSeg.gate;
+          if (gateIdx >= 0) {
+            if (gateIdx >= 5 && Math.random() < 0.5) {
+              pendingGateFlips.push({ gateIdx, flipAt: survivalTime + 0.4 + Math.random() * 0.8 });
+            } else {
+              gates[gateIdx] = !gates[gateIdx];
+            }
+          }
+
+          const nextIdx = nextSegment(transSeg, ball);
+          if (nextIdx < 0) {
+            // Ball has exited the track bottom
+            const pos = ballPosition(ball);
+            ball.segIdx = -1;
+            ball.alive = true; // still alive — now in free-fall toward paddle
+            ball.exitY = pos.y;
+            ball.x = pos.x;
+            ball.vy = ball.speed * 60;
+            ball.t = 1;
+            return true; // signal paddle-zone entry
+          }
+          ball.segIdx = nextIdx;
+          ball.t = ball.t - 1;
+        }
+
+        return false;
+      }
+
+      function ballPosition(ball) {
+        if (ball.segIdx < 0) {
+          // Free-fall after exit
+          return { x: ball.x, y: ball.exitY };
+        }
+        const seg = segments[ball.segIdx];
+        if (!seg) return { x: 200, y: 300 };
+        return lerpPt(seg.from, seg.to, Math.min(ball.t, 1));
+      }
+
+      // ─── Paddle ───────────────────────────────────────────────────────────────
+
+      const PADDLE_W = 80;
+      const PADDLE_H = 12;
+      const PADDLE_Y = 565;
+
+      let paddleX = 200; // center
+      let targetPaddleX = 200;
+      let currentPaddleW = PADDLE_W;
+      let speedTier = 0;
+
+      // ─── HUD state ────────────────────────────────────────────────────────────
+
+      let lives = 3;
+      let caught = 0;
+      let missed = 0;
+      let survivalTime = 0;
+      let gameRunning = false;
+      let lastTimestamp = 0;
+
+      // ─── Relaunch mechanic ────────────────────────────────────────────────────
+      let heldBall = null; // set when a caught ball awaits player relaunch
+      let isCharging = false; // player is holding to charge the power meter
+      let chargeStart = 0; // Date.now() when charging began
+      let chargeAmount = 0; // 0 to 1
+      let pendingGateFlips = []; // { gateIdx, flipAt } for delayed gate flips
+
+      // ─── Particle system ─────────────────────────────────────────────────────
+
+      let particles = [];
+
+      function spawnParticles(x, y, color, count) {
+        for (let i = 0; i < count; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 1 + Math.random() * 4;
+          particles.push({
+            x,
+            y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 2,
+            life: 1,
+            decay: 0.03 + Math.random() * 0.04,
+            r: 2 + Math.random() * 3,
+            color,
+          });
+        }
+      }
+
+      function updateParticles(dt) {
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.15;
+          p.life -= p.decay;
+          if (p.life <= 0) particles.splice(i, 1);
+        }
+      }
+
+      // ─── Rendering ────────────────────────────────────────────────────────────
+
+      const CSS = getComputedStyle(document.documentElement);
+
+      function cssVar(name) {
+        return CSS.getPropertyValue(name).trim();
+      }
+
+      function drawTrack() {
+        const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+        const trackColor = isDark ? '#38bdf8' : '#0284c7';
+        const glowColor = isDark ? 'rgba(56,189,248,0.35)' : 'rgba(2,132,199,0.25)';
+
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        for (let i = 0; i < segments.length; i++) {
+          const seg = segments[i];
+
+          // Glow pass
+          ctx.beginPath();
+          ctx.moveTo(seg.from.x, seg.from.y);
+          ctx.lineTo(seg.to.x, seg.to.y);
+          ctx.strokeStyle = glowColor;
+          ctx.lineWidth = 10;
+          ctx.stroke();
+
+          // Main track
+          ctx.beginPath();
+          ctx.moveTo(seg.from.x, seg.from.y);
+          ctx.lineTo(seg.to.x, seg.to.y);
+          ctx.strokeStyle = trackColor;
+          ctx.lineWidth = 4;
+          ctx.stroke();
+
+          // Track ties (crosshatch marks)
+          const len = segmentLength(seg);
+          const steps = Math.floor(len / 20);
+          const dx = (seg.to.x - seg.from.x) / len;
+          const dy = (seg.to.y - seg.from.y) / len;
+          const nx = -dy * 5;
+          const ny = dx * 5;
+          ctx.strokeStyle = isDark ? 'rgba(56,189,248,0.25)' : 'rgba(2,132,199,0.2)';
+          ctx.lineWidth = 2;
+          for (let s = 1; s < steps; s++) {
+            const t = s / steps;
+            const px = seg.from.x + (seg.to.x - seg.from.x) * t;
+            const py = seg.from.y + (seg.to.y - seg.from.y) * t;
+            ctx.beginPath();
+            ctx.moveTo(px - nx, py - ny);
+            ctx.lineTo(px + nx, py + ny);
+            ctx.stroke();
+          }
+        }
+      }
+
+      function drawGates() {
+        const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+
+        // Gates sit at junction points where segments branch
+        const junctionMap = {
+          0: { x: 200, y: 115 },
+          1: { x: 80, y: 200 },
+          2: { x: 320, y: 200 },
+          3: { x: 200, y: 255 },
+          4: { x: 200, y: 335 },
+          5: { x: 100, y: 400 },
+          6: { x: 300, y: 400 },
+          7: { x: 55, y: 465 },
+          8: { x: 345, y: 465 },
+        };
+
+        for (let i = 0; i < gates.length; i++) {
+          const jct = junctionMap[i];
+          if (!jct) continue;
+
+          // Only reveal gate direction when a ball is within 80 logical px
+          let nearBall = false;
+          for (const ball of balls) {
+            if (!ball.alive) continue;
+            const pos = ballPosition(ball);
+            if (Math.hypot(pos.x - jct.x, pos.y - jct.y) < 80) { nearBall = true; break; }
+          }
+          if (!nearBall) {
+            ctx.save();
+            ctx.fillStyle = isDark ? 'rgba(148,163,184,0.45)' : 'rgba(100,116,139,0.35)';
+            ctx.beginPath();
+            ctx.arc(jct.x, jct.y, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+            continue;
+          }
+
+          const state = gates[i];
+          const color = state
+            ? isDark
+              ? '#f97316'
+              : '#ea580c'
+            : isDark
+              ? '#4ade80'
+              : '#16a34a';
+          const glow = state ? 'rgba(249,115,22,0.5)' : 'rgba(74,222,128,0.5)';
+          const angle = state ? 0.4 : -0.4;
+
+          ctx.save();
+          ctx.translate(jct.x, jct.y);
+
+          // Gate lever arm
+          ctx.shadowColor = glow;
+          ctx.shadowBlur = 10;
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 4;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(-14 * Math.cos(angle), -14 * Math.sin(angle));
+          ctx.lineTo(14 * Math.cos(angle), 14 * Math.sin(angle));
+          ctx.stroke();
+
+          // Gate pivot dot
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.arc(0, 0, 5, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.restore();
+        }
+      }
+
+      function drawBalls() {
+        const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+        const ballColor = isDark ? '#fbbf24' : '#d97706';
+        const ballGlow = isDark ? 'rgba(251,191,36,0.6)' : 'rgba(217,119,6,0.5)';
+
+        for (const ball of balls) {
+          if (!ball.alive) continue;
+          let pos;
+          if (ball.segIdx < 0) {
+            // Free-fall
+            pos = { x: ball.x, y: ball.exitY };
+          } else {
+            pos = ballPosition(ball);
+          }
+
+          ctx.save();
+          ctx.shadowColor = ballGlow;
+          ctx.shadowBlur = 14;
+          ctx.fillStyle = ballColor;
+          ctx.beginPath();
+          ctx.arc(pos.x, pos.y, 9, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Shine highlight
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.6)';
+          ctx.beginPath();
+          ctx.arc(pos.x - 3, pos.y - 3, 3, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // Draw held ball resting on paddle
+        if (heldBall) {
+          const hy = PADDLE_Y - PADDLE_H / 2 - 9;
+          ctx.save();
+          ctx.shadowColor = ballGlow;
+          ctx.shadowBlur = 14;
+          ctx.fillStyle = ballColor;
+          ctx.beginPath();
+          ctx.arc(paddleX, hy, 9, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.6)';
+          ctx.beginPath();
+          ctx.arc(paddleX - 3, hy - 3, 3, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      function drawPaddle() {
+        const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+        const paddleColor = isDark ? '#a78bfa' : '#7c3aed';
+        const paddleGlow = isDark ? 'rgba(167,139,250,0.5)' : 'rgba(124,58,237,0.4)';
+
+        ctx.save();
+        ctx.shadowColor = paddleGlow;
+        ctx.shadowBlur = 16;
+        ctx.fillStyle = paddleColor;
+        ctx.beginPath();
+        ctx.roundRect(paddleX - currentPaddleW / 2, PADDLE_Y - PADDLE_H / 2, currentPaddleW, PADDLE_H, 6);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function drawParticles() {
+        for (const p of particles) {
+          ctx.save();
+          ctx.globalAlpha = p.life;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      function drawHUD() {
+        const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+
+        // Background strip
+        ctx.save();
+        ctx.fillStyle = isDark ? 'rgba(15,23,42,0.85)' : 'rgba(255,255,255,0.85)';
+        ctx.fillRect(0, 0, W, 28);
+        ctx.restore();
+
+        ctx.save();
+        ctx.font = 'bold 13px system-ui, sans-serif';
+        ctx.textBaseline = 'middle';
+
+        // Lives
+        ctx.fillStyle = isDark ? '#ef4444' : '#dc2626';
+        ctx.fillText('♥ ' + lives, 10, 14);
+
+        // Time
+        const mins = Math.floor(survivalTime / 60)
+          .toString()
+          .padStart(2, '0');
+        const secs = Math.floor(survivalTime % 60)
+          .toString()
+          .padStart(2, '0');
+        ctx.fillStyle = isDark ? '#f9fafb' : '#1f2937';
+        ctx.textAlign = 'center';
+        ctx.fillText(mins + ':' + secs, W / 2, 14);
+
+        // Caught / Missed
+        ctx.textAlign = 'right';
+        ctx.fillStyle = isDark ? '#4ade80' : '#16a34a';
+        ctx.fillText('✓ ' + caught + '  ✗ ' + missed, W - 10, 14);
+
+        ctx.restore();
+
+        // Entry arrow
+        ctx.save();
+        ctx.strokeStyle = isDark ? 'rgba(56,189,248,0.6)' : 'rgba(2,132,199,0.5)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(200, 5);
+        ctx.lineTo(200, 25);
+        ctx.stroke();
+        // arrowhead
+        ctx.setLineDash([]);
+        ctx.fillStyle = isDark ? 'rgba(56,189,248,0.6)' : 'rgba(2,132,199,0.5)';
+        ctx.beginPath();
+        ctx.moveTo(200, 26);
+        ctx.lineTo(196, 20);
+        ctx.lineTo(204, 20);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function drawBackground() {
+        const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+        // Subtle grid
+        ctx.save();
+        ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.04)';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < W; x += 40) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, H);
+          ctx.stroke();
+        }
+        for (let y = 0; y < H; y += 40) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(W, y);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      function drawPowerMeter() {
+        if (!heldBall) return;
+        const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+        ctx.save();
+        ctx.fillStyle = '#4ade80';
+        ctx.font = 'bold 11px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Tap / Space to launch!', paddleX, PADDLE_Y - PADDLE_H / 2 - 10);
+        ctx.restore();
+      }
+
+      function render() {
+        const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+        ctx.clearRect(0, 0, W, H);
+
+        ctx.fillStyle = isDark ? '#0f172a' : '#ffffff';
+        ctx.fillRect(0, 0, W, H);
+
+        drawBackground();
+        drawTrack();
+        drawGates();
+        drawBalls();
+        drawPaddle();
+        drawPowerMeter();
+        drawParticles();
+        drawHUD();
+      }
+
+      // ─── Free-fall physics ────────────────────────────────────────────────────
+
+      /** After exiting the track, balls free-fall with gravity toward the paddle. */
+      function updateFreeFall(ball, dt) {
+        if (ball.segIdx !== -1) return;
+        ball.vy = (ball.vy || 100) + 400 * dt;
+        ball.exitY += ball.vy * dt;
+      }
+
+      /** Check if a ball collides with the paddle. */
+      function checkPaddleCollision(ball) {
+        if (ball.segIdx !== -1) return false;
+        const bx = ball.x;
+        const by = ball.exitY;
+        if (by + 9 >= PADDLE_Y - PADDLE_H / 2 && by - 9 <= PADDLE_Y + PADDLE_H / 2) {
+          if (bx >= paddleX - currentPaddleW / 2 - 9 && bx <= paddleX + currentPaddleW / 2 + 9) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      // ─── Game loop ────────────────────────────────────────────────────────────
+
+      function gameOver() {
+        gameRunning = false;
+        document.getElementById('finalScore').textContent =
+          Math.floor(survivalTime / 60)
+            .toString()
+            .padStart(2, '0') +
+          ':' +
+          Math.floor(survivalTime % 60)
+            .toString()
+            .padStart(2, '0');
+        document.getElementById('goLives').textContent = 3 - lives;
+        document.getElementById('goBalls').textContent = caught;
+        document.getElementById('goMissed').textContent = missed;
+        document.getElementById('gameOverScreen').classList.add('active');
+
+        if (window.voaLeaderboard) {
+          window.voaLeaderboard.submit(Math.floor(survivalTime));
+        }
+      }
+
+      function resetGame() {
+        lives = 3;
+        caught = 0;
+        missed = 0;
+        survivalTime = 0;
+        ballSpawnTimer = 6;
+        balls = [];
+        particles = [];
+        gates = [false, false, true, false, true, false, true, false, true];
+        heldBall = null;
+        isCharging = false;
+        chargeAmount = 0;
+        pendingGateFlips = [];
+        paddleX = 200;
+        targetPaddleX = 200;
+        currentPaddleW = PADDLE_W;
+        currentMaxSpeed = MAX_SPEED;
+        speedTier = 0;
+        // Spawn 3 staggered balls at start
+        balls.push(createBall(0));
+        setTimeout(() => { if (gameRunning) balls.push(createBall(0)); }, 3000);
+        setTimeout(() => { if (gameRunning) balls.push(createBall(0)); }, 6000);
+      }
+
+      function update(dt) {
+        if (!gameRunning) return;
+
+        survivalTime += dt;
+        ballSpawnTimer += dt;
+
+        // Process deferred gate flips
+        for (let i = pendingGateFlips.length - 1; i >= 0; i--) {
+          if (survivalTime >= pendingGateFlips[i].flipAt) {
+            gates[pendingGateFlips[i].gateIdx] = !gates[pendingGateFlips[i].gateIdx];
+            pendingGateFlips.splice(i, 1);
+          }
+        }
+
+        // Speed escalation: +0.4 every 30s, cap at 6.0
+        const newSpeedTier = Math.floor(survivalTime / 30);
+        if (newSpeedTier > speedTier) {
+          speedTier = newSpeedTier;
+          currentMaxSpeed = Math.min(6.0, MAX_SPEED + speedTier * 0.4);
+        }
+
+        // Spawn a new ball every 15 seconds
+        if (ballSpawnTimer >= BALL_SPAWN_INTERVAL) {
+          ballSpawnTimer = 0;
+          balls.push(createBall(0));
+        }
+
+        // Smooth paddle toward target
+        const paddleSpeed = 400;
+        if (Math.abs(targetPaddleX - paddleX) > 1) {
+          const dir = targetPaddleX > paddleX ? 1 : -1;
+          paddleX += dir * Math.min(paddleSpeed * dt, Math.abs(targetPaddleX - paddleX));
+        }
+        paddleX = Math.max(currentPaddleW / 2, Math.min(W - currentPaddleW / 2, paddleX));
+
+        // Advance balls
+        for (const ball of balls) {
+          if (!ball.alive) continue;
+
+          if (ball.segIdx >= 0) {
+            advanceBall(ball, dt);
+          } else {
+            // Free-fall
+            updateFreeFall(ball, dt);
+
+            if (checkPaddleCollision(ball)) {
+              ball.alive = false;
+              ball.caught = true;
+              if (heldBall) {
+                // Two balls on paddle simultaneously — penalty
+                missed++;
+                lives--;
+                heldBall = null;
+                spawnParticles(ball.x, ball.exitY, '#ef4444', 20);
+                if (lives <= 0) { gameOver(); }
+              } else {
+                caught++;
+                spawnParticles(ball.x, ball.exitY, '#a78bfa', 16);
+                heldBall = { ready: true };
+              }
+              chargeAmount = 0;
+              isCharging = false;
+            } else if (ball.exitY > H + 20) {
+              // Missed!
+              ball.alive = false;
+              missed++;
+              lives--;
+              currentPaddleW = Math.max(40, currentPaddleW - 10);
+              spawnParticles(ball.x, H - 10, '#ef4444', 12);
+              if (lives <= 0) {
+                gameOver();
+              }
+            }
+          }
+        }
+
+        // Remove dead balls
+        balls = balls.filter((b) => b.alive);
+
+        updateParticles(dt);
+      }
+
+      let animId = null;
+
+      function loop(ts) {
+        const dt = Math.min((ts - lastTimestamp) / 1000, 0.05);
+        lastTimestamp = ts;
+        update(dt);
+        render();
+        animId = requestAnimationFrame(loop);
+      }
+
+      function startLoop() {
+        if (animId) cancelAnimationFrame(animId);
+        lastTimestamp = performance.now();
+        animId = requestAnimationFrame(loop);
+      }
+
+      // ─── Input handling ───────────────────────────────────────────────────────
+
+      function setPaddleFromEvent(clientX) {
+        const rect = canvas.getBoundingClientRect();
+        const lx = (clientX - rect.left) / scale;
+        targetPaddleX = Math.max(currentPaddleW / 2, Math.min(W - currentPaddleW / 2, lx));
+      }
+
+      canvas.addEventListener('mousemove', (e) => {
+        setPaddleFromEvent(e.clientX);
+      });
+
+      canvas.addEventListener('mousedown', () => {
+        if (heldBall && gameRunning) {
+          launchHeldBall();
+        }
+      });
+
+      canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (e.touches.length > 0) {
+          setPaddleFromEvent(e.touches[0].clientX);
+        }
+      }, { passive: false });
+
+      canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (e.touches.length > 0) {
+          setPaddleFromEvent(e.touches[0].clientX);
+          if (heldBall && gameRunning) {
+            launchHeldBall();
+          }
+        }
+      }, { passive: false });
+
+      canvas.addEventListener('touchend', (e) => {
+        e.preventDefault();
+      }, { passive: false });
+
+      document.addEventListener('keydown', (e) => {
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
+
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          targetPaddleX = Math.max(currentPaddleW / 2, targetPaddleX - 40);
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          targetPaddleX = Math.min(W - currentPaddleW / 2, targetPaddleX + 40);
+        } else if (e.key === ' ' && heldBall && gameRunning) {
+          e.preventDefault();
+          launchHeldBall();
+        }
+      });
+
+      // ─── UI wiring ────────────────────────────────────────────────────────────
+
+      document.getElementById('startBtn').addEventListener('click', () => {
+        document.getElementById('startScreen').classList.remove('active');
+        resetGame();
+        gameRunning = true;
+        startLoop();
+      });
+
+      document.getElementById('restartBtn').addEventListener('click', () => {
+        document.getElementById('gameOverScreen').classList.remove('active');
+        resetGame();
+        gameRunning = true;
+      });
+
+      // Keep rendering even before game starts (shows track preview)
+      startLoop();
+    </script>
+  </body>
+</html>

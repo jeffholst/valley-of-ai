@@ -55,5 +55,6 @@
     "totalTokensOut": 25000,
     "runId": "run-20260404T142245Z-4c93e0",
     "notes": "Built from approved community suggestion issue #277. Canvas-based chain reaction game with 5 ball types (Normal, Splitter, Shield, Ghost, Magnet, Golden), roguelite upgrade system (5 upgrades that stack), particle effects, shockwave rings, screen shake, parallax star background. Token counts are estimates."
-  }
+  },
+  "leaderboard": false
 }

@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rubric Showdown - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Rubric Showdown" />
+    <meta name="voa-app-id" content="2026/05/23/rubric-showdown" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #101319;
+        --text: #f7f3e8;
+        --surface: #191f29;
+        --surface-2: #222a36;
+        --panel: #121821;
+        --border: #334050;
+        --muted: #aab3bd;
+        --accent: #2dd4bf;
+        --accent-2: #f2b705;
+        --accent-3: #ff6b6b;
+        --accent-4: #74a7ff;
+        --good: #8ee274;
+        --shadow: 0 18px 55px rgba(0, 0, 0, 0.34);
+      }
+
+      [data-theme='light'] {
+        --bg: #f7f6ef;
+        --text: #1f2933;
+        --surface: #ffffff;
+        --surface-2: #ebe7dc;
+        --panel: #fbfaf5;
+        --border: #c9c2b0;
+        --muted: #5f6b76;
+        --accent: #007c78;
+        --accent-2: #bd7b00;
+        --accent-3: #ca3e47;
+        --accent-4: #2d62b5;
+        --good: #267a34;
+        --shadow: 0 16px 40px rgba(44, 38, 25, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        background: var(--bg);
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at 15% 8%, rgba(45, 212, 191, 0.18), transparent 28rem),
+          radial-gradient(circle at 90% 12%, rgba(242, 183, 5, 0.13), transparent 24rem),
+          linear-gradient(140deg, var(--bg), var(--panel));
+        color: var(--text);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        min-height: 44px;
+        border: 0;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      .app {
+        width: min(1480px, 100%);
+        margin: 0 auto;
+        padding: 16px;
+      }
+
+      .topbar {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: end;
+        margin-bottom: 14px;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(1.6rem, 4vw, 3.2rem);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .subtitle {
+        margin-top: 8px;
+        max-width: 68ch;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 0 12px;
+        color: var(--text);
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        transition:
+          transform 160ms ease,
+          border-color 160ms ease,
+          background 160ms ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+        border-color: var(--accent);
+      }
+
+      .btn.primary {
+        color: #081413;
+        background: linear-gradient(135deg, var(--accent), #8ef4e6);
+        border-color: transparent;
+        font-weight: 800;
+      }
+
+      [data-theme='light'] .btn.primary {
+        color: #ffffff;
+        background: linear-gradient(135deg, #007c78, #42a297);
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 380px minmax(0, 1fr);
+        gap: 14px;
+        align-items: start;
+      }
+
+      .panel {
+        background: color-mix(in srgb, var(--surface) 92%, transparent);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 14px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .panel-head h2 {
+        font-size: 1rem;
+      }
+
+      .panel-body {
+        padding: 14px;
+      }
+
+      .toolbar {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .field {
+        display: grid;
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+
+      label {
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        min-height: 44px;
+        color: var(--text);
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px 11px;
+      }
+
+      textarea {
+        min-height: 86px;
+        resize: vertical;
+      }
+
+      .criterion-name {
+        grid-column: 1 / -1;
+        min-height: 96px;
+        resize: vertical;
+      }
+
+      .confidence-control {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 76px;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .confidence-control input[type='number'] {
+        text-align: center;
+      }
+
+      .criteria-list,
+      .competitor-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .criterion,
+      .competitor-editor {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px;
+      }
+
+      .criterion.dragging {
+        opacity: 0.55;
+        outline: 2px solid var(--accent);
+      }
+
+      .criterion-grid {
+        display: grid;
+        grid-template-columns: 32px 1fr 72px 40px;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .drag-handle {
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 44px;
+        color: var(--muted);
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        cursor: grab;
+      }
+
+      .icon-btn {
+        width: 44px;
+        min-width: 44px;
+        height: 44px;
+        padding: 0;
+        color: var(--text);
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+      }
+
+      .sign-toggle.active {
+        color: #11140c;
+        background: var(--accent-2);
+        font-weight: 900;
+      }
+
+      .leaderboard {
+        display: grid;
+        gap: 10px;
+      }
+
+      .rank-card {
+        position: relative;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: center;
+        padding: 12px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+      }
+
+      .rank-card:first-child {
+        border-color: var(--accent-2);
+        box-shadow: inset 4px 0 0 var(--accent-2);
+      }
+
+      .rank {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        color: #11140c;
+        background: var(--accent-2);
+        border-radius: 50%;
+        font-weight: 900;
+      }
+
+      .score {
+        font-size: 1.45rem;
+        font-weight: 900;
+        white-space: nowrap;
+      }
+
+      .mini {
+        color: var(--muted);
+        font-size: 0.84rem;
+      }
+
+      .matrix {
+        overflow-x: auto;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+      }
+
+      table {
+        width: 100%;
+        min-width: 720px;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+      }
+
+      th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        color: var(--muted);
+        background: var(--surface);
+        font-size: 0.78rem;
+        text-transform: uppercase;
+      }
+
+      tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .slider-cell {
+        min-width: 180px;
+      }
+
+      input[type='range'] {
+        min-height: 24px;
+        padding: 0;
+        accent-color: var(--accent);
+      }
+
+      .range-wrap {
+        display: grid;
+        grid-template-columns: 1fr 32px;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 30px;
+        padding: 4px 9px;
+        color: var(--text);
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 800;
+      }
+
+      .verdict {
+        min-height: 62px;
+        padding: 14px;
+        color: var(--text);
+        background:
+          linear-gradient(135deg, rgba(45, 212, 191, 0.16), rgba(242, 183, 5, 0.11)),
+          var(--panel);
+        border: 1px solid color-mix(in srgb, var(--accent) 60%, var(--border));
+        border-radius: 8px;
+        line-height: 1.45;
+      }
+
+      .winner-overlay {
+        position: fixed;
+        inset: 64px 0 56px;
+        z-index: 9000;
+        display: none;
+        place-items: center;
+        padding: 18px;
+        background: rgba(8, 10, 14, 0.78);
+        overflow: hidden;
+      }
+
+      .winner-overlay.open {
+        display: grid;
+      }
+
+      .help-overlay {
+        position: fixed;
+        inset: 64px 0 56px;
+        z-index: 9001;
+        display: none;
+        place-items: center;
+        padding: 18px;
+        background: rgba(8, 10, 14, 0.78);
+        overflow: auto;
+      }
+
+      .help-overlay.open {
+        display: grid;
+      }
+
+      .help-card {
+        width: min(720px, 100%);
+        max-height: calc(100dvh - 160px);
+        overflow: auto;
+        padding: 22px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .help-card h2 {
+        margin-bottom: 10px;
+        font-size: clamp(1.4rem, 4vw, 2.2rem);
+      }
+
+      .help-card h3 {
+        margin: 18px 0 8px;
+        font-size: 1rem;
+      }
+
+      .help-card p,
+      .help-card li {
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .help-card ul {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .winner-card {
+        position: relative;
+        width: min(620px, 100%);
+        padding: 28px 20px;
+        text-align: center;
+        background:
+          radial-gradient(circle at 50% 0%, rgba(242, 183, 5, 0.24), transparent 16rem),
+          var(--surface);
+        border: 1px solid var(--accent-2);
+        border-radius: 8px;
+        box-shadow: 0 0 80px rgba(242, 183, 5, 0.24);
+      }
+
+      .trophy {
+        font-size: 4rem;
+        filter: drop-shadow(0 0 24px rgba(242, 183, 5, 0.54));
+        animation: trophyPop 900ms cubic-bezier(0.18, 1.45, 0.4, 1);
+      }
+
+      .winner-name {
+        margin-top: 8px;
+        font-size: clamp(2rem, 8vw, 4.4rem);
+        line-height: 0.95;
+      }
+
+      .confetti {
+        position: absolute;
+        top: -20px;
+        width: 10px;
+        height: 16px;
+        background: var(--accent);
+        animation: fall 2200ms linear forwards;
+      }
+
+      .toast {
+        position: fixed;
+        right: 16px;
+        bottom: 72px;
+        z-index: 9100;
+        max-width: min(340px, calc(100vw - 32px));
+        padding: 12px 14px;
+        color: #071313;
+        background: var(--accent);
+        border-radius: 8px;
+        font-weight: 800;
+        transform: translateY(18px);
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          transform 180ms ease,
+          opacity 180ms ease;
+      }
+
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      @keyframes trophyPop {
+        from {
+          transform: scale(0.45) rotate(-10deg);
+          opacity: 0;
+        }
+      }
+
+      @keyframes fall {
+        to {
+          transform: translateY(calc(100dvh - 110px)) rotate(720deg);
+          opacity: 0;
+        }
+      }
+
+      @media (max-width: 1040px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          grid-template-columns: 1fr;
+        }
+
+        .actions {
+          justify-content: flex-start;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .app {
+          padding: 12px;
+        }
+
+        .toolbar {
+          grid-template-columns: 1fr;
+        }
+
+        .criterion-grid {
+          grid-template-columns: 32px 1fr 62px 40px;
+          gap: 6px;
+        }
+
+        .criterion-grid input,
+        .criterion-grid select,
+        .criterion-grid textarea {
+          padding-inline: 8px;
+        }
+
+        .panel-body,
+        .panel-head {
+          padding: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <header class="topbar">
+        <div>
+          <h1>Rubric Showdown</h1>
+          <p class="subtitle">
+            Score competitors against weighted criteria, watch the leaderboard move, then reveal
+            the winner with a polished verdict and exportable scorecard.
+          </p>
+        </div>
+        <div class="actions" aria-label="Workspace actions">
+          <button class="btn" id="undoBtn" type="button" title="Undo">Undo</button>
+          <button class="btn" id="redoBtn" type="button" title="Redo">Redo</button>
+          <button class="btn" id="copyBtn" type="button">Copy Summary</button>
+          <button class="btn" id="exportBtn" type="button">Export PNG</button>
+          <button class="btn" id="helpBtn" type="button">Help</button>
+          <button class="btn primary" id="revealBtn" type="button">Reveal Winner</button>
+        </div>
+      </header>
+
+      <section class="layout">
+        <aside class="panel" aria-label="Rubric setup">
+          <div class="panel-head">
+            <h2>Rubric Builder</h2>
+            <span class="pill" id="autosaveLabel">Autosaved</span>
+          </div>
+          <div class="panel-body">
+            <div class="toolbar">
+              <button class="btn" id="addCriterionBtn" type="button">Add Criterion</button>
+              <button class="btn" id="addCompetitorBtn" type="button">Add Competitor</button>
+            </div>
+            <div class="criteria-list" id="criteriaList"></div>
+          </div>
+        </aside>
+
+        <section aria-label="Scoring workspace">
+          <article class="panel" style="margin-bottom: 14px">
+            <div class="panel-head">
+              <h2>Live Leaderboard</h2>
+              <span class="pill" id="leaderLabel">0 scored</span>
+            </div>
+            <div class="panel-body leaderboard" id="leaderboard"></div>
+          </article>
+
+          <p class="verdict" id="verdict" style="margin-bottom: 14px" aria-live="polite"></p>
+
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Score Matrix</h2>
+              <span class="pill">1-5 sliders</span>
+            </div>
+            <div class="matrix" id="matrix"></div>
+          </article>
+
+          <article class="panel" style="margin-top: 14px">
+            <div class="panel-head">
+              <h2>Competitor Notes</h2>
+              <span class="pill">Confidence weighted</span>
+            </div>
+            <div class="panel-body competitor-list" id="competitorList"></div>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <div class="winner-overlay" id="winnerOverlay" role="dialog" aria-modal="true">
+      <div class="winner-card">
+        <div class="trophy" aria-hidden="true">🏆</div>
+        <p class="mini">The rubric has spoken</p>
+        <h2 class="winner-name" id="winnerName"></h2>
+        <p class="verdict" id="winnerVerdict" style="margin-top: 16px"></p>
+        <div class="actions" style="justify-content: center; margin-top: 18px">
+          <button class="btn primary" id="shareBtn" type="button">Share Result</button>
+          <button class="btn" id="closeRevealBtn" type="button">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="help-overlay" id="helpOverlay" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <div class="help-card">
+        <h2 id="helpTitle">Rubric Showdown Help</h2>
+        <p>
+          Build a scoring rubric, compare named competitors, and use the leaderboard, notes, and reveal tools to make a decision.
+        </p>
+        <h3>Rubric Builder</h3>
+        <ul>
+          <li>Use Add Criterion to create a new scoring row.</li>
+          <li>Edit the full-width criterion name field for longer descriptions.</li>
+          <li>Drag the handle to reorder criteria.</li>
+          <li>Set each criterion to 1x, 2x, or 3x and toggle plus or minus.</li>
+          <li>Delete Criterion removes that criterion from every competitor score.</li>
+        </ul>
+        <h3>Scoring Competitors</h3>
+        <ul>
+          <li>Add Competitor creates a new competitor with 50% confidence.</li>
+          <li>Use each 1-5 slider in the score matrix to score the competitor on that criterion.</li>
+          <li>Adjust confidence with the slider or 0-100 number field.</li>
+          <li>Use notes to capture context, tradeoffs, or judging comments.</li>
+        </ul>
+        <h3>Results</h3>
+        <ul>
+          <li>The leaderboard updates as scores, weights, signs, and confidence change.</li>
+          <li>Reveal Winner opens a spotlight result with a verdict based on the leading score.</li>
+          <li>Copy Summary copies ranked results, and Export PNG downloads a scorecard.</li>
+          <li>Undo and Redo step through recent rubric, competitor, and scoring changes.</li>
+        </ul>
+        <div class="actions" style="justify-content: flex-end; margin-top: 18px">
+          <button class="btn primary" id="closeHelpBtn" type="button">Close Help</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      const APP_NAME = 'Rubric Showdown';
+      const STORAGE_KEY = 'voa:rubric-showdown:v1';
+      const palette = ['#2dd4bf', '#f2b705', '#ff6b6b', '#74a7ff', '#8ee274', '#d086ff'];
+      const defaultState = {
+        criteria: [
+          { id: crypto.randomUUID(), name: 'Originality', category: 'Creative', weight: 3, sign: 1 },
+          { id: crypto.randomUUID(), name: 'Execution', category: 'Craft', weight: 3, sign: 1 },
+          { id: crypto.randomUUID(), name: 'Clarity', category: 'Craft', weight: 2, sign: 1 },
+          { id: crypto.randomUUID(), name: 'Risk', category: 'Penalty', weight: 2, sign: -1 },
+          { id: crypto.randomUUID(), name: 'Impact', category: 'Value', weight: 3, sign: 1 },
+        ],
+        competitors: [
+          { id: crypto.randomUUID(), name: 'Aster Labs', confidence: 88, notes: 'Bold idea, crisp demo.' },
+          { id: crypto.randomUUID(), name: 'Northstar', confidence: 74, notes: 'Reliable, but less surprising.' },
+          { id: crypto.randomUUID(), name: 'Bright Forge', confidence: 82, notes: 'Strongest practical upside.' },
+        ],
+        scores: {},
+      };
+
+      let state = loadState();
+      let undoStack = [];
+      let redoStack = [];
+      let draggedCriterionId = null;
+      let lastWinner = null;
+
+      function clone(value) {
+        return JSON.parse(JSON.stringify(value));
+      }
+
+      function loadState() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+          if (saved?.criteria?.length && saved?.competitors?.length) return saved;
+        } catch (error) {
+          console.warn('Rubric Showdown save could not be loaded.', error);
+        }
+        const seeded = clone(defaultState);
+        seeded.competitors.forEach((competitor, cIndex) => {
+          seeded.criteria.forEach((criterion, rIndex) => {
+            seeded.scores[`${competitor.id}:${criterion.id}`] = Math.max(
+              1,
+              Math.min(5, 3 + ((cIndex + rIndex) % 3) - 1),
+            );
+          });
+        });
+        return seeded;
+      }
+
+      function commit(mutator) {
+        undoStack.push(clone(state));
+        redoStack = [];
+        mutator();
+        sanitizeScores();
+        saveAndRender();
+      }
+
+      function sanitizeScores() {
+        const valid = new Set();
+        state.competitors.forEach((competitor) => {
+          state.criteria.forEach((criterion) => valid.add(`${competitor.id}:${criterion.id}`));
+        });
+        Object.keys(state.scores).forEach((key) => {
+          if (!valid.has(key)) delete state.scores[key];
+        });
+        state.competitors.forEach((competitor) => {
+          state.criteria.forEach((criterion) => {
+            const key = `${competitor.id}:${criterion.id}`;
+            if (!state.scores[key]) state.scores[key] = 3;
+          });
+        });
+      }
+
+      function saveAndRender() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        render();
+        const label = document.getElementById('autosaveLabel');
+        label.textContent = 'Saved now';
+        setTimeout(() => {
+          label.textContent = 'Autosaved';
+        }, 900);
+      }
+
+      function rawCriterionScore(competitor, criterion) {
+        const value = Number(state.scores[`${competitor.id}:${criterion.id}`] || 3);
+        return value * Number(criterion.weight) * Number(criterion.sign);
+      }
+
+      function competitorTotal(competitor) {
+        const base = state.criteria.reduce((sum, criterion) => sum + rawCriterionScore(competitor, criterion), 0);
+        const confidenceBonus = (Number(competitor.confidence) - 50) / 10;
+        return Number((base + confidenceBonus).toFixed(1));
+      }
+
+      function maxPossible() {
+        const positive = state.criteria
+          .filter((criterion) => Number(criterion.sign) > 0)
+          .reduce((sum, criterion) => sum + 5 * Number(criterion.weight), 0);
+        return positive + 5;
+      }
+
+      function sortedCompetitors() {
+        return state.competitors
+          .map((competitor) => ({ ...competitor, total: competitorTotal(competitor) }))
+          .sort((a, b) => b.total - a.total);
+      }
+
+      function verdictFor(winner) {
+        const runnerUp = sortedCompetitors()[1];
+        const margin = runnerUp ? (winner.total - runnerUp.total).toFixed(1) : winner.total.toFixed(1);
+        return `${winner.name} leads with ${winner.total} points, a ${winner.confidence}% confidence signal, and a ${margin}-point edge over the nearest challenger.`;
+      }
+
+      function renderCriteria() {
+        const list = document.getElementById('criteriaList');
+        list.innerHTML = '';
+        state.criteria.forEach((criterion) => {
+          const row = document.createElement('article');
+          row.className = 'criterion';
+          row.dataset.id = criterion.id;
+          row.innerHTML = `
+            <div class="criterion-grid">
+              <textarea class="criterion-name" aria-label="Criterion name">${escapeHtml(criterion.name)}</textarea>
+              <button class="drag-handle" type="button" aria-label="Drag ${criterion.name}">↕</button>
+              <select aria-label="Weight">
+                <option value="1">1x</option>
+                <option value="2">2x</option>
+                <option value="3">3x</option>
+              </select>
+              <button class="icon-btn sign-toggle ${criterion.sign < 0 ? '' : 'active'}" type="button" aria-label="Toggle plus or minus">${criterion.sign < 0 ? '-' : '+'}</button>
+            </div>
+            <button class="btn" type="button" style="margin-top:8px;width:100%">Delete Criterion</button>
+          `;
+          const nameInput = row.querySelector('.criterion-name');
+          const weightSelect = row.querySelector('select');
+          weightSelect.value = criterion.weight;
+          nameInput.addEventListener('change', () =>
+            commit(() => {
+              criterion.name = nameInput.value.trim() || 'Untitled';
+            }),
+          );
+          weightSelect.addEventListener('change', () =>
+            commit(() => {
+              criterion.weight = Number(weightSelect.value);
+            }),
+          );
+          row.querySelector('.sign-toggle').addEventListener('click', () =>
+            commit(() => {
+              criterion.sign *= -1;
+            }),
+          );
+          row.querySelector('.btn').addEventListener('click', () =>
+            commit(() => {
+              state.criteria = state.criteria.filter((item) => item.id !== criterion.id);
+            }),
+          );
+          const dragHandle = row.querySelector('.drag-handle');
+          dragHandle.addEventListener('pointerdown', () => {
+            row.draggable = true;
+          });
+          dragHandle.addEventListener('pointerup', () => {
+            row.draggable = false;
+          });
+          row.addEventListener('dragstart', () => {
+            draggedCriterionId = criterion.id;
+            row.classList.add('dragging');
+          });
+          row.addEventListener('dragend', () => {
+            row.classList.remove('dragging');
+            row.draggable = false;
+          });
+          row.addEventListener('dragover', (event) => event.preventDefault());
+          row.addEventListener('drop', () => reorderCriterion(criterion.id));
+          list.append(row);
+        });
+      }
+
+      function reorderCriterion(targetId) {
+        if (!draggedCriterionId || draggedCriterionId === targetId) return;
+        commit(() => {
+          const from = state.criteria.findIndex((item) => item.id === draggedCriterionId);
+          const to = state.criteria.findIndex((item) => item.id === targetId);
+          const [item] = state.criteria.splice(from, 1);
+          state.criteria.splice(to, 0, item);
+        });
+        draggedCriterionId = null;
+      }
+
+      function renderLeaderboard() {
+        const list = document.getElementById('leaderboard');
+        const sorted = sortedCompetitors();
+        list.innerHTML = '';
+        sorted.forEach((competitor, index) => {
+          const card = document.createElement('article');
+          card.className = 'rank-card';
+          card.innerHTML = `
+            <div class="rank">${index + 1}</div>
+            <div>
+              <h3>${escapeHtml(competitor.name)}</h3>
+              <p class="mini">${competitor.confidence}% confidence</p>
+            </div>
+            <div class="score">${competitor.total}</div>
+          `;
+          list.append(card);
+        });
+        document.getElementById('leaderLabel').textContent = `${sorted.length} scored`;
+        document.getElementById('verdict').textContent = sorted[0] ? verdictFor(sorted[0]) : '';
+      }
+
+      function renderMatrix() {
+        const matrix = document.getElementById('matrix');
+        const heads = state.competitors.map((competitor) => `<th>${escapeHtml(competitor.name)}</th>`).join('');
+        const rows = state.criteria
+          .map((criterion) => {
+            const cells = state.competitors
+              .map((competitor) => {
+                const key = `${competitor.id}:${criterion.id}`;
+                return `
+                  <td class="slider-cell">
+                    <div class="range-wrap">
+                      <input type="range" min="1" max="5" value="${state.scores[key]}" data-key="${key}" aria-label="${escapeHtml(competitor.name)} ${escapeHtml(criterion.name)} score" />
+                      <strong>${state.scores[key]}</strong>
+                    </div>
+                  </td>
+                `;
+              })
+              .join('');
+            return `
+              <tr>
+                <td>
+                  <strong>${escapeHtml(criterion.name)}</strong>
+                  <div class="mini">${criterion.sign > 0 ? '+' : '-'}${criterion.weight}x</div>
+                </td>
+                ${cells}
+              </tr>
+            `;
+          })
+          .join('');
+        matrix.innerHTML = `
+          <table>
+            <thead><tr><th>Criterion</th>${heads}</tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        `;
+        matrix.querySelectorAll('input[type="range"]').forEach((input) => {
+          input.addEventListener('pointerdown', () => {
+            input.dataset.before = JSON.stringify(state);
+          });
+          input.addEventListener('keydown', () => {
+            if (!input.dataset.before) input.dataset.before = JSON.stringify(state);
+          });
+          input.addEventListener('input', () => {
+            state.scores[input.dataset.key] = Number(input.value);
+            input.nextElementSibling.textContent = input.value;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            renderLeaderboard();
+          });
+          input.addEventListener('change', () => {
+            if (input.dataset.before) undoStack.push(JSON.parse(input.dataset.before));
+            delete input.dataset.before;
+            redoStack = [];
+          });
+        });
+      }
+
+      function renderCompetitors() {
+        const list = document.getElementById('competitorList');
+        list.innerHTML = '';
+        state.competitors.forEach((competitor) => {
+          const card = document.createElement('article');
+          card.className = 'competitor-editor';
+          card.innerHTML = `
+            <div class="field">
+              <label>Name</label>
+              <input value="${escapeHtml(competitor.name)}" aria-label="Competitor name" />
+            </div>
+            <div class="field">
+              <label>Confidence: <span>${competitor.confidence}%</span></label>
+              <div class="confidence-control">
+                <input type="range" min="0" max="100" value="${competitor.confidence}" aria-label="${escapeHtml(competitor.name)} confidence" />
+                <input type="number" min="0" max="100" value="${competitor.confidence}" aria-label="${escapeHtml(competitor.name)} confidence value" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Notes</label>
+              <textarea aria-label="${escapeHtml(competitor.name)} notes">${escapeHtml(competitor.notes || '')}</textarea>
+            </div>
+            <button class="btn" type="button">Delete Competitor</button>
+          `;
+          const nameInput = card.querySelector('input:not([type="range"])');
+          const confidenceInput = card.querySelector('input[type="range"]');
+          const confidenceNumber = card.querySelector('input[type="number"]');
+          const confidenceLabel = card.querySelector('label span');
+          const notesInput = card.querySelector('textarea');
+          nameInput.addEventListener('change', () =>
+            commit(() => {
+              competitor.name = nameInput.value.trim() || 'Competitor';
+            }),
+          );
+          confidenceInput.addEventListener('pointerdown', () => {
+            confidenceInput.dataset.before = JSON.stringify(state);
+          });
+          confidenceInput.addEventListener('keydown', () => {
+            if (!confidenceInput.dataset.before) confidenceInput.dataset.before = JSON.stringify(state);
+          });
+          confidenceInput.addEventListener('input', () => {
+            updateConfidence(competitor, confidenceInput.value, confidenceLabel, confidenceNumber);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            renderLeaderboard();
+          });
+          confidenceInput.addEventListener('change', () => {
+            if (confidenceInput.dataset.before) undoStack.push(JSON.parse(confidenceInput.dataset.before));
+            delete confidenceInput.dataset.before;
+            redoStack = [];
+          });
+          confidenceNumber.addEventListener('change', () =>
+            commit(() => {
+              updateConfidence(competitor, confidenceNumber.value, confidenceLabel, confidenceInput);
+            }),
+          );
+          notesInput.addEventListener('change', () =>
+            commit(() => {
+              competitor.notes = notesInput.value;
+            }),
+          );
+          card.querySelector('button').addEventListener('click', () =>
+            commit(() => {
+              state.competitors = state.competitors.filter((item) => item.id !== competitor.id);
+            }),
+          );
+          list.append(card);
+        });
+      }
+
+      function updateConfidence(competitor, value, label, pairedInput) {
+        competitor.confidence = Math.max(0, Math.min(100, Number(value) || 0));
+        label.textContent = `${competitor.confidence}%`;
+        pairedInput.value = competitor.confidence;
+      }
+
+      function render() {
+        sanitizeScores();
+        renderCriteria();
+        renderLeaderboard();
+        renderMatrix();
+        renderCompetitors();
+        document.getElementById('undoBtn').disabled = undoStack.length === 0;
+        document.getElementById('redoBtn').disabled = redoStack.length === 0;
+      }
+
+      function addCriterion() {
+        commit(() => {
+          state.criteria.push({
+            id: crypto.randomUUID(),
+            name: `Criterion ${state.criteria.length + 1}`,
+            category: 'General',
+            weight: 1,
+            sign: 1,
+          });
+        });
+      }
+
+      function addCompetitor() {
+        commit(() => {
+          state.competitors.push({
+            id: crypto.randomUUID(),
+            name: `Competitor ${state.competitors.length + 1}`,
+            confidence: 50,
+            notes: '',
+          });
+        });
+      }
+
+      function revealWinner() {
+        const winner = sortedCompetitors()[0];
+        if (!winner) return;
+        lastWinner = winner;
+        document.getElementById('winnerName').textContent = winner.name;
+        document.getElementById('winnerVerdict').textContent = verdictFor(winner);
+        const overlay = document.getElementById('winnerOverlay');
+        overlay.classList.add('open');
+        overlay.querySelectorAll('.confetti').forEach((node) => node.remove());
+        for (let i = 0; i < 72; i += 1) {
+          const piece = document.createElement('span');
+          piece.className = 'confetti';
+          piece.style.left = `${Math.random() * 100}%`;
+          piece.style.background = palette[i % palette.length];
+          piece.style.animationDelay = `${Math.random() * 900}ms`;
+          piece.style.transform = `rotate(${Math.random() * 120}deg)`;
+          overlay.append(piece);
+        }
+      }
+
+      function summaryText() {
+        const sorted = sortedCompetitors();
+        const winner = sorted[0];
+        if (!winner) return `${APP_NAME}: no competitors scored yet.`;
+        const lines = sorted
+          .map((competitor, index) => `${index + 1}. ${competitor.name}: ${competitor.total}`)
+          .join('\n');
+        return `${APP_NAME} winner: ${winner.name}\n${verdictFor(winner)}\n\n${lines}`;
+      }
+
+      async function copySummary() {
+        await navigator.clipboard.writeText(summaryText());
+        showToast('Summary copied.');
+      }
+
+      function exportPng() {
+        const sorted = sortedCompetitors();
+        const canvas = document.createElement('canvas');
+        canvas.width = 1200;
+        canvas.height = 760;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#101319';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, '#2dd4bf33');
+        gradient.addColorStop(1, '#f2b70528');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#f7f3e8';
+        ctx.font = '800 58px Inter, sans-serif';
+        ctx.fillText(APP_NAME, 70, 96);
+        ctx.font = '400 25px Inter, sans-serif';
+        ctx.fillStyle = '#aab3bd';
+        ctx.fillText(verdictFor(sorted[0]), 72, 140, 1030);
+        sorted.slice(0, 5).forEach((competitor, index) => {
+          const y = 220 + index * 92;
+          ctx.fillStyle = index === 0 ? '#f2b705' : '#222a36';
+          roundRect(ctx, 70, y - 48, 1060, 70, 12);
+          ctx.fill();
+          ctx.fillStyle = index === 0 ? '#101319' : '#f7f3e8';
+          ctx.font = '800 30px Inter, sans-serif';
+          ctx.fillText(`${index + 1}. ${competitor.name}`, 96, y - 5);
+          const barWidth = Math.max(40, (competitor.total / maxPossible()) * 430);
+          ctx.fillStyle = index === 0 ? '#10131955' : '#2dd4bf';
+          roundRect(ctx, 520, y - 30, barWidth, 28, 8);
+          ctx.fill();
+          ctx.fillStyle = index === 0 ? '#101319' : '#f7f3e8';
+          ctx.fillText(String(competitor.total), 990, y - 5);
+        });
+        const link = document.createElement('a');
+        link.download = 'rubric-showdown-scorecard.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }
+
+      function roundRect(ctx, x, y, width, height, radius) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.arcTo(x + width, y, x + width, y + height, radius);
+        ctx.arcTo(x + width, y + height, x, y + height, radius);
+        ctx.arcTo(x, y + height, x, y, radius);
+        ctx.arcTo(x, y, x + width, y, radius);
+        ctx.closePath();
+      }
+
+      function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 1700);
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;');
+      }
+
+      document.getElementById('addCriterionBtn').addEventListener('click', addCriterion);
+      document.getElementById('addCompetitorBtn').addEventListener('click', addCompetitor);
+      document.getElementById('helpBtn').addEventListener('click', () => {
+        document.getElementById('helpOverlay').classList.add('open');
+        document.getElementById('closeHelpBtn').focus();
+      });
+      document.getElementById('closeHelpBtn').addEventListener('click', () => {
+        document.getElementById('helpOverlay').classList.remove('open');
+        document.getElementById('helpBtn').focus();
+      });
+      document.getElementById('helpOverlay').addEventListener('click', (event) => {
+        if (event.target.id === 'helpOverlay') {
+          document.getElementById('helpOverlay').classList.remove('open');
+          document.getElementById('helpBtn').focus();
+        }
+      });
+      document.getElementById('revealBtn').addEventListener('click', revealWinner);
+      document.getElementById('closeRevealBtn').addEventListener('click', () => {
+        document.getElementById('winnerOverlay').classList.remove('open');
+      });
+      document.getElementById('copyBtn').addEventListener('click', copySummary);
+      document.getElementById('exportBtn').addEventListener('click', exportPng);
+      document.getElementById('shareBtn').addEventListener('click', () => {
+        if (window.voaShare && lastWinner) {
+          window.voaShare({
+            text: `${lastWinner.name} won in ${APP_NAME}: ${lastWinner.total} points.`,
+          });
+        } else {
+          copySummary();
+        }
+      });
+      document.getElementById('undoBtn').addEventListener('click', () => {
+        if (!undoStack.length) return;
+        redoStack.push(clone(state));
+        state = undoStack.pop();
+        saveAndRender();
+      });
+      document.getElementById('redoBtn').addEventListener('click', () => {
+        if (!redoStack.length) return;
+        undoStack.push(clone(state));
+        state = redoStack.pop();
+        saveAndRender();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && document.getElementById('helpOverlay').classList.contains('open')) {
+          document.getElementById('helpOverlay').classList.remove('open');
+          document.getElementById('helpBtn').focus();
+        }
+      });
+      window.addEventListener('load', () => setTimeout(render, 80));
+      render();
+    </script>
+  </body>
+</html>

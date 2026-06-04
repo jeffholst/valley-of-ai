@@ -20,5 +20,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260312T234958Z-7f3934",
     "notes": "Built a mobile-first meeting burn-rate tool with attendee management, timer controls, planned-vs-live cost, and keyboard shortcuts."
-  }
+  },
+  "leaderboard": false
 }

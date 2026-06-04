@@ -1,0 +1,54 @@
+{
+  "id": "word-scramble",
+  "name": "Word Scramble Party",
+  "shortDescription": "A multiplayer icebreaker where moderators run timed word-scramble rounds, award points to the first responder, and finish with fair tie-aware rankings.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-03-06T14:30:00Z",
+  "category": "Icebreakers",
+  "visible": true,
+  "allowImprovements": true,
+  "status": "active",
+  "tags": ["icebreaker", "multiplayer", "word-game", "moderator", "party", "round-based"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "improvements": [
+    {
+      "issueNumber": 351,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/351",
+      "description": "Converted Word Scramble into a multiplayer icebreaker with participant setup, timed rounds, moderator winner assignment, answer panel window, and fair tie-ranked scoring.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-04-18T16:25:43Z",
+      "agentName": "GitHub Copilot",
+      "llmModel": "GPT-5.3-Codex"
+    },
+    {
+      "issueNumber": 354,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/354",
+      "description": "Manual round advancement with Start Next Round button; highlight empty tiles to show current entry position; display player scores on +1 buttons.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-04-18T17:01:51Z",
+      "agentName": "GitHub Copilot",
+      "llmModel": "Claude Haiku 4.5"
+    },
+    {
+      "issueNumber": 362,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/362",
+      "runId": "run-20260419T220321Z-f36990",
+      "description": "Migrated Word Scramble to multiplayer backend sessions with moderator share-link lobby, player name join, realtime synchronized rounds/scores, and automatic first-correct score awarding.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-04-19T22:03:21Z",
+      "agentName": "Codex",
+      "llmModel": "GPT-5.4"
+    }
+  ],
+  "generation": {
+    "agentName": "claude-opus-4.5",
+    "llmModel": "claude-opus-4.5",
+    "startTime": "2026-03-06T14:25:00Z",
+    "endTime": "2026-03-06T14:32:00Z",
+    "totalTokensIn": 8500,
+    "totalTokensOut": 12200,
+    "runId": "run-20260306T143200Z-318d76",
+    "notes": "Generated as a test of the full agent workflow including git operations and transactional logging."
+  }
+}

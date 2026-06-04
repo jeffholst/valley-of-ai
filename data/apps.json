@@ -1,224 +1,1339 @@
 [
   {
-    "id": "2026/06/04/glassmorphism-ui-playground",
-    "name": "Glassmorphism UI Playground",
-    "shortDescription": "An interactive playground to design and export professional glassmorphism CSS effects.",
-    "thumbnailUrl": "/apps/2026/06/04/glassmorphism-ui-playground/thumbnail.svg",
-    "createdAt": "2026-06-04T18:51:51Z",
+    "id": "2026/05/24/duck-flight",
+    "name": "Duck Flight",
+    "shortDescription": "Fly as a duck in first-person through a world of oncoming rings. Steer left and right to thread each ring — miss too many and your momentum crashes.",
+    "thumbnailUrl": "/apps/2026/05/24/duck-flight/thumbnail.svg",
+    "createdAt": "2026-05-24T19:50:18Z",
     "year": 2026,
-    "month": 6,
-    "day": 4,
-    "category": "Design",
+    "month": 5,
+    "day": 24,
+    "category": "Games",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": ["3d", "first-person", "flying", "duck", "rings", "arcade", "canvas", "momentum"],
+    "route": "/apps/2026/05/24/duck-flight",
+    "appPath": "/apps/2026/05/24/duck-flight/index.html",
+    "generation": {
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6",
+      "startTime": "2026-05-24T19:50:18Z",
+      "endTime": "2026-05-24T20:10:00Z",
+      "totalTokensIn": 7800,
+      "totalTokensOut": 18200,
+      "runId": "run-20260524T195018Z-6e28cd",
+      "notes": "Scaffold build — full architecture laid down for future improvement iterations. 3D perspective projection with FOCAL_LEN=300, VP_Y at 44% height. Rings approach from SPAWN_Z=3000 at 900 units/sec base, speed scales with momentum. Duck steers laterally in world range -1.6 to +1.6. Momentum system wired (passive drain, +0.12 pass, -0.22 miss). Particle system, audio stub, and animation stub all scaffolded with named module objects. Difficulty scaler increases speed +90 and tightens interval -0.15 every 30s. maxScore=500 reflects typical good-run ceiling for the scaffold difficulty."
+    },
+    "suggestion": {
+      "issueNumber": 458,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/458",
+      "prompt": "Build a single-file HTML5 game, Duck Flight. Mobile-first, 1st-person through-the-eyes-of-a-duck flying experience. Rings spawn far away and approach the camera. Player steers the duck left/right to thread through ring centers. Momentum system: starts at 1.0, drains passively, drops on miss, rises on good pass — hit zero and it's game over. First-person duck silhouette: beak tip and flapping wings at bottom. 3D perspective projection with fog. Score on leaderboard.",
+      "requestor": "Jeff Holst"
+    },
+    "improvements": [
+      {
+        "issueNumber": 461,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/461",
+        "runId": "run-20260524T201218Z-a4f7c1",
+        "description": "Refined projection (FOCAL_LEN 300→2000), moved horizon to true vertical center, added animated 3-band cloud sky with cached gradient, rebuilt ground with proper perspective grid, implemented fog color blending (z=40 clear to z=120 fogged via lerpColor toward horizon tone), and added devicePixelRatio canvas scaling.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-05-24T20:12:18Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 462,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/462",
+        "runId": "run-20260524T202646Z-b3e591",
+        "description": "Rebuilt first-person duck POV: 3-layer bezier wings (primary/secondary/covert feathers with per-layer gradients), off-yellow beak hint at bottom edge, idle bob and flap animations, bank animation driven by damped duck.vx, wing-tip motion blur on hard banking; flap rate scales with momentum.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-05-24T20:26:46Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 464,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/464",
+        "runId": "run-20260524T205340Z-7728d0",
+        "description": "Replaced fixed ring-only shapes with 3 types (ring, triangle, square); each shape carries size, per-shape innerR, HSL hue, spinAxis (z=face-on twirl, y=barrel-roll), rotationSpeed, and rotation; rendering uses projected polygon vertices with a top-light gradient fill and specular highlight stroke clipped to the upper half; back-to-front sort preserved.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-24T20:53:40Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 466,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/466",
+        "runId": "run-20260524T211202Z-24c783",
+        "description": "Wired gameplay feel: forward speed now scales directly with momentum (speed=currentSpeed*momentum), difficulty ramps every 10 passes (not time-based) with speed increase+spawn tightening+opening shrink, and game over uses a STALLING state with 0.75s slow-mo + screen darkening before showing the overlay.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-24T21:12:02Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 467,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/467",
+        "runId": "run-20260525T043141Z-f3a2b1",
+        "description": "Golden-hour visual pass: sky replaced with deep teal-blue zenith to warm peach-gold horizon palette (60s color cycle shifts to dusk); sun disc with wide radial bloom and lens-flare streaks when steering toward it; ground updated to warm sand-to-umber; fog range tightened so distant shapes desaturate and lift lightness toward horizon; edge vignette added.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-25T04:31:41Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 468,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/468",
+        "runId": "run-20260525T044200Z-e8d3a2",
+        "description": "Juice pass: pass-through burst upgraded to 28 glowing+stretching particles; near-miss sparkle trail (200ms) when in outer ring; speed lines radiating from VP at high momentum; pulsing red stall-warning vignette below 30% momentum with slower wing flap; GAMEOVER screen shake + particle drift + fog deepening; floating +10 score popups on each clear.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-25T04:42:00Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 469,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/469",
+        "runId": "run-20260525T045401Z-b7c2d8",
+        "description": "Canvas-only UI overhaul: removed DOM #overlay; MENU state shows animated world background with hovering duck silhouette (flapping wings, body, beak), 'DUCK FLIGHT' title with gold glow, subtitle, and persisted best score; HUD redesigned to large outlined score numerals (top-left) + thin centered momentum bar (green-amber-red, pulses below 30%); GAMEOVER state renders dimmed world, red 'GAME OVER', large final score, best score, and pulsing 'Tap to retry'; best score persisted to localStorage; tap/Space/Enter start/retry from canvas; main loop runs continuously from boot.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-25T05:10:00Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 470,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/470",
+        "runId": "run-20260525T051200Z-a624d9",
+        "description": "Mobile polish and performance final pass: DPR capped at 2 for retina performance; touch-action: none on #game-wrap and canvas; touchstart preventDefault with passive: false; visibilitychange handler pauses/resumes loop with lastTime reset to prevent dt spike; haptics via navigator.vibrate (10ms on pass-through, 60ms on game over); input state cleared on tab hide; drawShapes() sort in-place (no per-frame array allocation); DUCK_ACCEL 4.2→5.0 for snappier mobile steering; MOMENTUM_DRAIN -0.012→-0.010 for slightly more forgiving passive drain.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-25T05:20:00Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 482,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/482",
+        "runId": "run-20260525T150728Z-e47c9e",
+        "description": "Slowed Duck Flight pacing by reducing base speed, closer and less frequent shape spawns, earlier fog visibility, lower pass/kill thresholds, and gentler difficulty speed ramp.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-25T15:07:28Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5"
+      },
+      {
+        "issueNumber": 483,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/483",
+        "runId": "run-20260525T152107Z-38c73a",
+        "description": "Replaced constant steering friction with thrust plus proportional drag, expanded lateral range, and capped lateral velocity for more readable inertia and reversal timing.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-25T15:21:07Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5"
+      },
+      {
+        "issueNumber": 485,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/485",
+        "runId": "run-20260525T153152Z-30857b",
+        "description": "Amplified Duck Flight banking with a slower spring, larger velocity-driven bank target, stronger wing tilt, and rolled world geometry during banks.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-25T15:31:52Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5"
+      },
+      {
+        "issueNumber": 486,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/486",
+        "runId": "run-20260525T163248Z-dddbfd",
+        "description": "Added gameplay-speed ground scrolling so Duck Flight horizontal grid lines stream toward the player instead of staying static.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-25T16:32:48Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5"
+      },
+      {
+        "issueNumber": 493,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/493",
+        "runId": "run-20260525T171505Z-c4d2e1",
+        "description": "Moved fly-through detection from PASS_Z=60 to PASS_Z=28 (shapes fill viewport at check time for genuine fly-through feel), lowered KILL_Z to 10, removed momentum multiplier from forward speed so shapes approach at constant speed, lowered BASE_SPEED from 130 to 100 and ramp cap from 280 to 220.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-05-25T17:15:05Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 495,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/495",
+        "runId": "run-20260525T174144Z-f8b3c2",
+        "description": "Added flappy-bird vertical flight mechanic: duck has gravity (5.5 units/sec²) and tap/Space applies an upward flap impulse (3.8 units/sec). Altitude replaces passive momentum drain as primary survival mechanic — hitting the ground crashes the duck. Pass check now uses duck.wy for vertical alignment. project() camera height tracks duck altitude. Altitude bar added on right canvas edge (green=high, red=low, danger zone marked). Tap-to-flap hint fades in first 4 seconds.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-05-25T17:41:44Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 498,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/498",
+        "runId": "run-20260525T223606Z-119f3b",
+        "description": "Decoupled mobile touch input into left steer, center flap, and right steer zones, raised the starting altitude, and added a short opening grace period with matching first-run input hints.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-05-25T22:36:06Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5"
+      },
+      {
+        "issueNumber": 504,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/504",
+        "runId": "run-20260525T234135Z-542331",
+        "description": "Added a target-assist HUD with center bullseye and altitude marker, plus an Easy Mode toggle that disables steering and centers all shapes horizontally.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-25T23:41:35Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5"
+      },
+      {
+        "issueNumber": 506,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/506",
+        "runId": "run-20260526T000123Z-d4f8b2",
+        "description": "Gentler flap physics: FLAP_VELOCITY reduced 3.8→2.4, GRAVITY reduced 5.5→3.5, and tap impulse changed from hard overwrite to additive-capped (duck.vy = Math.min(FLAP_VELOCITY, duck.vy + FLAP_VELOCITY * 0.75)) so corrections are proportional to current state — tapping while falling gives incremental lift, tapping while level gives a modest boost, tapping while rising caps cleanly without overshoot.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-05-26T00:01:48Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 540,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/540",
+        "runId": "run-20260528T164821Z-f7a3b5",
+        "description": "Removed the target-altitude marker (horizontal line + left-pointing triangle) from the elevation bar — it was too revealing. Added four directional arrowheads to the bullseye crosshair: each arm shows a filled triangle pointing toward the target when the duck is off-axis on that dimension (dx/dy > 25% of the shape opening radius); both axes can show simultaneously; arrows disappear and 'ON TARGET' text appears when fully aligned.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-28T16:48:21Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      }
+    ],
+    "allowImprovements": true,
+    "leaderboard": true,
+    "maxScore": 500,
+    "backups": [
+      {
+        "runId": "run-20260524T201218Z-a4f7c1",
+        "path": "backups/run-20260524T201218Z-a4f7c1/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260524T201218Z-a4f7c1/index.html"
+      },
+      {
+        "runId": "run-20260524T202646Z-b3e591",
+        "path": "backups/run-20260524T202646Z-b3e591/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260524T202646Z-b3e591/index.html"
+      },
+      {
+        "runId": "run-20260524T205340Z-7728d0",
+        "path": "backups/run-20260524T205340Z-7728d0/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260524T205340Z-7728d0/index.html"
+      },
+      {
+        "runId": "run-20260524T211202Z-24c783",
+        "path": "backups/run-20260524T211202Z-24c783/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260524T211202Z-24c783/index.html"
+      },
+      {
+        "runId": "run-20260525T043141Z-f3a2b1",
+        "path": "backups/run-20260525T043141Z-f3a2b1/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T043141Z-f3a2b1/index.html"
+      },
+      {
+        "runId": "run-20260525T044200Z-e8d3a2",
+        "path": "backups/run-20260525T044200Z-e8d3a2/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T044200Z-e8d3a2/index.html"
+      },
+      {
+        "runId": "run-20260525T150728Z-e47c9e",
+        "path": "backups/run-20260525T150728Z-e47c9e/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T150728Z-e47c9e/index.html"
+      },
+      {
+        "runId": "run-20260525T152107Z-38c73a",
+        "path": "backups/run-20260525T152107Z-38c73a/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T152107Z-38c73a/index.html"
+      },
+      {
+        "runId": "run-20260525T153152Z-30857b",
+        "path": "backups/run-20260525T153152Z-30857b/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T153152Z-30857b/index.html"
+      },
+      {
+        "runId": "run-20260525T163248Z-dddbfd",
+        "path": "backups/run-20260525T163248Z-dddbfd/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T163248Z-dddbfd/index.html"
+      },
+      {
+        "runId": "run-20260525T171505Z-c4d2e1",
+        "path": "backups/run-20260525T171505Z-c4d2e1/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T171505Z-c4d2e1/index.html"
+      },
+      {
+        "runId": "run-20260525T174144Z-f8b3c2",
+        "path": "backups/run-20260525T174144Z-f8b3c2/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T174144Z-f8b3c2/index.html"
+      },
+      {
+        "runId": "run-20260525T223606Z-119f3b",
+        "path": "backups/run-20260525T223606Z-119f3b/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T223606Z-119f3b/index.html"
+      },
+      {
+        "runId": "run-20260525T234135Z-542331",
+        "path": "backups/run-20260525T234135Z-542331/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260525T234135Z-542331/index.html"
+      },
+      {
+        "runId": "run-20260526T000123Z-d4f8b2",
+        "path": "backups/run-20260526T000123Z-d4f8b2/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260526T000123Z-d4f8b2/index.html"
+      },
+      {
+        "runId": "run-20260528T164821Z-f7a3b5",
+        "path": "backups/run-20260528T164821Z-f7a3b5/index.html",
+        "url": "/apps/2026/05/24/duck-flight/backups/run-20260528T164821Z-f7a3b5/index.html"
+      }
+    ]
+  },
+  {
+    "id": "2026/05/23/game-of-life",
+    "name": "Game of Life",
+    "shortDescription": "Conway's cellular automaton — draw cells, load classic presets like the Gosper Glider Gun, and watch generations evolve on a toroidal grid.",
+    "thumbnailUrl": "/apps/2026/05/23/game-of-life/thumbnail.svg",
+    "createdAt": "2026-05-23T19:49:39Z",
+    "year": 2026,
+    "month": 5,
+    "day": 23,
+    "category": "Visualizations",
     "inputMode": "responsive",
     "status": "active",
     "tags": [
-      "design-tool",
-      "css-generator",
-      "glassmorphism",
-      "ui-design",
+      "cellular-automaton",
+      "simulation",
+      "conway",
+      "canvas",
       "interactive",
-      "visuals"
+      "patterns",
+      "educational"
     ],
-    "route": "/apps/2026/06/04/glassmorphism-ui-playground",
-    "appPath": "/apps/2026/06/04/glassmorphism-ui-playground/index.html",
+    "route": "/apps/2026/05/23/game-of-life",
+    "appPath": "/apps/2026/05/23/game-of-life/index.html",
     "generation": {
-      "agentName": "Dev",
-      "llmModel": "ollama/gemma4:31b",
-      "startTime": "2026-06-04T18:51:51Z",
-      "endTime": "2026-06-04T18:59:00Z",
-      "totalTokensIn": 8000,
-      "totalTokensOut": 8000,
-      "runId": "run-20260604T185151Z-73f10d",
-      "notes": "Built as a tool for the Design category to complement existing a-esthetically driven apps."
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6",
+      "startTime": "2026-05-23T19:49:39Z",
+      "endTime": "2026-05-23T19:58:00Z",
+      "totalTokensIn": 5400,
+      "totalTokensOut": 14200,
+      "runId": "run-20260523T194939Z-b7de37",
+      "notes": "Manual concept selection — select:app:suggestion failed on Node 20 due to missing WebSocket support for Supabase realtime. Visualizations was the most underrepresented category (2 apps). Grid uses Uint8Array double-buffering for performance. Toroidal wrap prevents edge stagnation. Default preset is Gosper Glider Gun as a showcase opener."
     },
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
-    "id": "2026/04/22/chroma-palette-pro",
-    "name": "Chroma Palette Pro",
-    "shortDescription": "Dynamic palette generator with generative harmony anchors and live CSS export.",
-    "thumbnailUrl": "/apps/2026/04/22/chroma-palette-pro/thumbnail.svg",
-    "createdAt": "2026-04-22T07:04:19Z",
+    "id": "2026/05/23/simmotion",
+    "name": "Simmotion",
+    "shortDescription": "Balls roll through a fixed roller coaster track — every gate they hit flips for the next ball. Catch them with your paddle before they hit the floor.",
+    "thumbnailUrl": "/apps/2026/05/23/simmotion/thumbnail.svg",
+    "createdAt": "2026-05-23T19:23:12Z",
     "year": 2026,
-    "month": 4,
-    "day": 22,
-    "category": "Design",
+    "month": 5,
+    "day": 23,
+    "category": "Games",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": ["physics", "ball", "gates", "roller-coaster", "paddle", "arcade", "canvas"],
+    "route": "/apps/2026/05/23/simmotion",
+    "appPath": "/apps/2026/05/23/simmotion/index.html",
+    "generation": {
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6",
+      "startTime": "2026-05-23T19:23:12Z",
+      "endTime": "2026-05-23T19:30:00Z",
+      "totalTokensIn": 6300,
+      "totalTokensOut": 15400,
+      "runId": "run-20260523T192312Z-e21750",
+      "notes": "Built as specified. Track is a fixed 7-gate network with 14 segments rendered in logical 400x600 space scaled to viewport. Balls follow gravity-driven physics (accelerate on drops, decelerate on flat). Requesting a 3D perspective tilt was interpreted as a visual aesthetic — achieved via track lighting/glow rather than CSS perspective transform, as perspective transforms interact poorly with touch input coordinates. maxScore set to 7200 (120 minutes = very exceptional survival time)."
+    },
+    "suggestion": {
+      "issueNumber": 440,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/440",
+      "prompt": "## App Suggestion\n\n**Category:** Games\n**Requestor:** Jeff Holst\n\n### Description\n\nBuild Simmotion game similar to the one shown on survivor with single, static, elaborate multi\\-path roller coaster track drawn with canvas winding ramps, steep drops, flat stretches, and splits and multiple exits\\. Each junction sits a physical gate: when a ball rolls over it, the gate visibly flips like a railroad switch, routing the next ball down the alternate branch\\. The track layout is fixed and detailed, not generated randomly\\. Balls enter at the top and follow whatever path the gates have set, creating unpredictable routes to the bottom each run\\. Player controls a catching paddle at the base via mouse or touch drag\\. Catch the ball and flick it back to the top opening to restart\\. Miss=lose a life \\(3 total\\)\\. A new ball enters every 20 seconds, increasing simultaneous balls in play\\. Balls accelerate on drops, slow on flat sections\\. Gates animate with a satisfying snap when triggered\\. R...",
+      "requestor": "Jeff Holst"
+    },
+    "improvements": [
+      {
+        "issueNumber": 453,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/453",
+        "runId": "run-20260523T200252Z-9230c3",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6",
+        "appliedAt": "2026-05-23T20:02:52Z",
+        "summary": "Added multi-ball gameplay (3 staggered at start, new ball every 15s), hidden gate reveals (only visible within 80px), 4 exit zones for true unpredictability, paddle shrink on miss (–10px per miss, min 40px), speed escalation (+0.4 cap every 30s up to 6.0), and removed auto-share popup."
+      },
+      {
+        "issueNumber": 456,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/456",
+        "runId": "run-20260523T225514Z-d2c20a",
+        "description": "Extended track to 9 gates and 20 segments with 6 exits; added randomized gate-flip delays on lower gates (5-8) for unpredictability; replaced auto-respawn with a hold/release power meter relaunch mechanic where timing drift forces gate 0 direction.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-05-23T22:55:14Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 490,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/490",
+        "runId": "run-20260525T180738Z-a9d3e5",
+        "description": "Replaced hold/charge relaunch with instant tap-to-launch (tap or Space); drew held ball visually on paddle; added two-ball penalty (second ball landing while one is held costs a life + red particles); fixed advanceBall gate-glitch by resolving all segment transitions in a while-loop so fast balls never skip segments; updated start screen instructions.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-05-25T18:16:58Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      }
+    ],
+    "allowImprovements": true,
+    "leaderboard": true,
+    "maxScore": 7200,
+    "backups": [
+      {
+        "runId": "run-20260523T200252Z-9230c3",
+        "path": "backups/run-20260523T200252Z-9230c3/index.html",
+        "url": "/apps/2026/05/23/simmotion/backups/run-20260523T200252Z-9230c3/index.html"
+      },
+      {
+        "runId": "run-20260523T225514Z-d2c20a",
+        "path": "backups/run-20260523T225514Z-d2c20a/index.html",
+        "url": "/apps/2026/05/23/simmotion/backups/run-20260523T225514Z-d2c20a/index.html"
+      },
+      {
+        "runId": "run-20260525T180738Z-a9d3e5",
+        "path": "backups/run-20260525T180738Z-a9d3e5/index.html",
+        "url": "/apps/2026/05/23/simmotion/backups/run-20260525T180738Z-a9d3e5/index.html"
+      }
+    ]
+  },
+  {
+    "id": "2026/05/23/rubric-showdown",
+    "name": "Rubric Showdown",
+    "shortDescription": "Build weighted rubrics, score multiple competitors side-by-side, watch a live leaderboard with instant verdict, and export a winner scorecard.",
+    "thumbnailUrl": "/apps/2026/05/23/rubric-showdown/thumbnail.svg",
+    "createdAt": "2026-05-23T15:05:07Z",
+    "year": 2026,
+    "month": 5,
+    "day": 23,
+    "category": "Utilities",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": ["rubric", "scoring", "ranking", "comparison", "export", "leaderboard"],
+    "route": "/apps/2026/05/23/rubric-showdown",
+    "appPath": "/apps/2026/05/23/rubric-showdown/index.html",
+    "generation": {
+      "agentName": "Codex",
+      "llmModel": "GPT-5",
+      "startTime": "2026-05-23T15:05:07Z",
+      "endTime": "2026-05-23T15:12:00Z",
+      "totalTokensIn": 21000,
+      "totalTokensOut": 14000,
+      "runId": "run-20260523T150507Z-0f2e97",
+      "notes": "Built from approved GitHub suggestion #438. The issue prompt asked for a local dark/light toggle, but the app follows the shared Valley of AI shell theme control per repository contract. The suggestion text is summarized in metadata to satisfy the schema length cap while preserving the requested features."
+    },
+    "suggestion": {
+      "issueNumber": 438,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/438",
+      "prompt": "Build a rubric scoring tool in one HTML file. Users add/edit/delete/reorder criteria (drag to sort). Each criterion has a name, weight (1-3x multiplier), plus/minus toggle, and 1-5 slider. Support scoring multiple competitors side-by-side, live leaderboard, confidence meta-score, category grouping, radar chart, notes, cinematic winner reveal, PNG scorecard export, copy-shareable summary, dark/light theme support, undo/redo, autosave, and Chart.js only.",
+      "requestor": "Jeff Holst"
+    },
+    "improvements": [
+      {
+        "issueNumber": 442,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/442",
+        "runId": "run-20260523T154258Z-42a900",
+        "description": "Defaulted new competitors to 50% confidence, added manual confidence entry, expanded criterion names to multiline editing, and rebuilt the radar chart when categories or competitors change.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-23T15:42:58Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5"
+      },
+      {
+        "issueNumber": 444,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/444",
+        "runId": "run-20260523T164715Z-ef5d6b",
+        "description": "Moved criterion name editing to a full-width multiline row and added an in-app Help dialog with directions for rubric setup, scoring, results, export, and undo/redo.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-23T16:47:15Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5"
+      },
+      {
+        "issueNumber": 445,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/445",
+        "runId": "run-20260523T173416Z-4823fc",
+        "description": "Moved verdict above score matrix. Removed criterion category option, chart.js CDN dependency, radar chart, updateChart() and criteriaByCategory() functions. Simplified leaderboard and matrix to remove category references.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-23T17:42:15Z",
+        "agentName": "Claude",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 449,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/449",
+        "runId": "run-20260523T180146Z-a9f2e1",
+        "description": "Drag/drop now only engages when the pointer is on the drag handle button; removed draggable=true from the article element and set it dynamically on handle pointerdown/pointerup.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-23T18:01:46Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      }
+    ],
+    "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
+    "backups": [
+      {
+        "runId": "run-20260523T154258Z-42a900",
+        "path": "backups/run-20260523T154258Z-42a900/index.html",
+        "url": "/apps/2026/05/23/rubric-showdown/backups/run-20260523T154258Z-42a900/index.html"
+      },
+      {
+        "runId": "run-20260523T164715Z-ef5d6b",
+        "path": "backups/run-20260523T164715Z-ef5d6b/index.html",
+        "url": "/apps/2026/05/23/rubric-showdown/backups/run-20260523T164715Z-ef5d6b/index.html"
+      },
+      {
+        "runId": "run-20260523T180146Z-a9f2e1",
+        "path": "backups/run-20260523T180146Z-a9f2e1/index.html",
+        "url": "/apps/2026/05/23/rubric-showdown/backups/run-20260523T180146Z-a9f2e1/index.html"
+      }
+    ]
+  },
+  {
+    "id": "2026/05/12/geo-defense",
+    "name": "Geo Defense",
+    "shortDescription": "A neon geometric tower defense game. Place laser, cannon, and tesla towers along a winding path to stop waves of advancing shape enemies before they reach your base.",
+    "thumbnailUrl": "/apps/2026/05/12/geo-defense/thumbnail.svg",
+    "createdAt": "2026-05-12T21:17:06Z",
+    "year": 2026,
+    "month": 5,
+    "day": 12,
+    "category": "Games",
     "inputMode": "responsive",
     "status": "active",
     "tags": [
-      "color-palette",
-      "design-tool",
-      "css-generator",
-      "generative-art",
-      "ui-design",
-      "responsive"
+      "tower-defense",
+      "strategy",
+      "canvas",
+      "touch-controls",
+      "geometric",
+      "path-defense",
+      "mobile-first"
     ],
-    "route": "/apps/2026/04/22/chroma-palette-pro",
-    "appPath": "/apps/2026/04/22/chroma-palette-pro/index.html",
+    "route": "/apps/2026/05/12/geo-defense",
+    "appPath": "/apps/2026/05/12/geo-defense/index.html",
     "generation": {
-      "agentName": "Dev",
-      "llmModel": "ollama/gemma4:31b",
-      "startTime": "2026-04-22T07:04:19Z",
-      "endTime": "2026-04-22T07:20:00Z",
-      "totalTokensIn": 15000,
-      "totalTokensOut": 15000,
-      "runId": "run-20260422T070419Z-a1b2c3",
-      "notes": "Built as a high-fidelity color tool for designers, focusing on generative harmony."
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6",
+      "startTime": "2026-05-12T21:17:06Z",
+      "endTime": "2026-05-12T21:40:00Z",
+      "totalTokensIn": 4100,
+      "totalTokensOut": 11700,
+      "runId": "run-20260512T211706Z-87165f",
+      "notes": "Built from vote-and-category-analysis — inspired by Missile Command Modern (2 net votes). Tower defense is entirely absent from the 76-app catalog; this fills that strategic-placement gap while the existing defense apps (Missile Command, Space Invaders, Galaxian Blitz) all use reactive-shooting mechanics. 3 tower types: Laser (fast single-target), Cannon (slow splash), Tesla (chains 3 enemies). 10 escalating waves. Enemy types: standard squares/pentagons, tank hexagons (3x HP, 0.6x speed), flier triangles (0.6x HP, 1.4x speed). Upgrade system (2 levels per tower) and sell mechanic. Keyboard shortcuts 1-5 for tower selection. Shell-layout safe: fixed top:64px/bottom:56px wrapper."
     },
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": true,
+    "maxScore": 9999,
     "backups": null
   },
   {
-    "id": "2026/04/21/chroma-flow-designer",
-    "name": "Chroma Flow Designer",
-    "shortDescription": "Create mesmerizing generative fluid art using dynamic flow fields and customizable particle systems.",
-    "thumbnailUrl": "/apps/2026/04/21/chroma-flow-designer/thumbnail.svg",
-    "createdAt": "2026-04-21T07:02:52Z",
+    "id": "2026/05/09/tapper-rush",
+    "name": "Tapper Rush",
+    "shortDescription": "A Tapper-inspired bartender arcade game. Switch lanes, serve drinks, catch returning mugs — don't let anyone reach the bar!",
+    "thumbnailUrl": "/apps/2026/05/09/tapper-rush/thumbnail.svg",
+    "createdAt": "2026-05-09T13:17:17Z",
+    "year": 2026,
+    "month": 5,
+    "day": 9,
+    "category": "Games",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": ["arcade", "bartender", "lane-switching", "tap", "mobile-first", "combo", "wave-based"],
+    "route": "/apps/2026/05/09/tapper-rush",
+    "appPath": "/apps/2026/05/09/tapper-rush/index.html",
+    "generation": {
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6",
+      "startTime": "2026-05-09T13:17:17Z",
+      "endTime": "2026-05-09T13:25:00Z",
+      "totalTokensIn": 6000,
+      "totalTokensOut": 8700,
+      "runId": "run-20260509T131717Z-99cda3",
+      "notes": "Built from GitHub issue #427. Duplication risk flagged 'high' by selection script due to broad arcade/game tags, but the bartender lane-switching mechanic is unique in the catalog. Implemented as canvas game with 4 lanes, tap-to-serve, swipe-to-switch-lane, combo multiplier, escalating wave system, and bonus 2x-score happy-hour rounds. Keyboard: arrows/WASD to switch lane, Space/Enter to serve."
+    },
+    "suggestion": {
+      "issueNumber": 427,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/427",
+      "prompt": "## App Suggestion\n\n**Category:** Games\n**Requestor:** Jeff Holst\n\n### Description\n\nCreate a polished mobile\\-first arcade game inspired by the classic Tapper: 4 horizontal bars/lanes, customers enter from the far end and advance toward the bartender, the player taps/swipes vertically to switch lanes and taps a Serve button to slide drinks down the active bar\\. Customers who catch drinks move back; some return empty mugs that must be caught before they fall\\. Lose a life if a customer reaches the bartender, a full drink misses, or an empty mug drops\\. Add score, combo streaks, escalating waves, short bonus rounds, crisp hit detection, responsive controls, 60fps animation, zero input lag, and excellent feel on phones\\. Prioritize ultra\\-smooth mobile gameplay, clean modern UI, tasteful retro visuals, polished juice, subtle sound, haptics, pause/resume, and readable HUD\\. Avoid clutter; make it feel premium and buttery smooth\\.",
+      "requestor": "Jeff Holst"
+    },
+    "improvements": [
+      {
+        "issueNumber": 429,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/429",
+        "runId": "run-20260509T133741Z-f68a90",
+        "description": "Fixed empty mug return: mugs now travel rightward back toward the bartender and must be caught in the correct lane (wrong lane = lose a life).",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-09T13:37:41Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 533,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/533",
+        "runId": "run-20260528T125229Z-a3f7c2",
+        "description": "Fixed 3 bugs: (1) retreating customers are now ignored by sliding mugs, (2) Happy Hour banner resets when game ends so it doesn't persist into the next game, (3) player lane wraps from top to bottom and bottom to top on keyboard and touch.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-28T12:52:29Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 545,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/545",
+        "runId": "run-20260529T155716Z-d62569",
+        "description": "Capped the play field to a centered 480px max width so desktop and mobile have equal lane length (and difficulty), and allowed multiple drinks per lane so a line of customers can be served in quick succession.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-29T15:57:16Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-opus-4-8"
+      }
+    ],
+    "allowImprovements": true,
+    "leaderboard": true,
+    "maxScore": 9999,
+    "backups": [
+      {
+        "runId": "run-20260509T133741Z-f68a90",
+        "path": "backups/run-20260509T133741Z-f68a90/index.html",
+        "url": "/apps/2026/05/09/tapper-rush/backups/run-20260509T133741Z-f68a90/index.html"
+      },
+      {
+        "runId": "run-20260528T125229Z-a3f7c2",
+        "path": "backups/run-20260528T125229Z-a3f7c2/index.html",
+        "url": "/apps/2026/05/09/tapper-rush/backups/run-20260528T125229Z-a3f7c2/index.html"
+      },
+      {
+        "runId": "run-20260529T155716Z-d62569",
+        "path": "backups/run-20260529T155716Z-d62569/index.html",
+        "url": "/apps/2026/05/09/tapper-rush/backups/run-20260529T155716Z-d62569/index.html"
+      }
+    ]
+  },
+  {
+    "id": "2026/04/24/impostor-question",
+    "name": "The Impostor Question",
+    "shortDescription": "A host-led Zoom icebreaker where everyone answers a vague question, one hidden impostor bluffs without knowing the shared topic, and the group votes before a final topic-guess twist.",
+    "thumbnailUrl": "/apps/2026/04/24/impostor-question/thumbnail.svg",
+    "createdAt": "2026-04-24T20:03:40Z",
     "year": 2026,
     "month": 4,
-    "day": 21,
-    "category": "Design",
+    "day": 24,
+    "category": "Icebreakers",
     "inputMode": "responsive",
     "status": "active",
     "tags": [
-      "generative-art",
-      "fluid-simulation",
-      "design-tool",
-      "creative-coding",
-      "visuals",
-      "interactive"
+      "icebreaker",
+      "multiplayer",
+      "hidden-role",
+      "social-deduction",
+      "zoom",
+      "moderator",
+      "party"
     ],
-    "route": "/apps/2026/04/21/chroma-flow-designer",
-    "appPath": "/apps/2026/04/21/chroma-flow-designer/index.html",
+    "route": "/apps/2026/04/24/impostor-question",
+    "appPath": "/apps/2026/04/24/impostor-question/index.html",
     "generation": {
-      "agentName": "Dev",
-      "llmModel": "ollama/gemma4:31b",
-      "startTime": "2026-04-21T07:02:52Z",
-      "endTime": "2026-04-21T07:20:00Z",
-      "totalTokensIn": 25000,
-      "totalTokensOut": 20000,
-      "runId": "run-20260421T070252Z-a1b2c3",
-      "notes": "Built as a Design category app inspired by Mindful Palette Flow, focusing on fluid dynamics and user-controllable parameters."
+      "agentName": "Codex",
+      "llmModel": "GPT-5",
+      "startTime": "2026-04-24T20:03:40Z",
+      "endTime": "2026-04-24T20:12:00Z",
+      "totalTokensIn": 32000,
+      "totalTokensOut": 21000,
+      "runId": "run-20260424T200340Z-f77c93",
+      "notes": "Built from approved issue #407. Duplication risk was high for Icebreakers, so the implementation emphasizes a distinct hidden-role topic-deduction loop rather than anonymous answer guessing or word-clue team play. Uses the shared multiplayer session API, /join/{code} entry, moderator-authored state transitions, and player answer/vote submissions through the shared answers endpoint. Token counts are estimated."
     },
-    "suggestion": null,
-    "improvements": null,
+    "suggestion": {
+      "issueNumber": 407,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/407",
+      "prompt": "Build app called The Impostor Question for Zoom-style icebreaker game. Moderator shares a join link, chooses rounds, and sees player grid, status, and score. Players join, enter their name, and wait for start. One random impostor is assigned while others get a shared topic. A vague question is shown, players take turns answering, then vote who the impostor is with no self-vote. Reveal impostor and votes; if not caught, impostor guesses the topic. Maintain room state for players, roles, topic, responses, votes, and gameState with large, clean, Zoom-friendly UI.",
+      "requestor": "Jeff Holst"
+    },
+    "improvements": [
+      {
+        "issueNumber": 409,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/409",
+        "runId": "run-20260424T202727Z-65ce0a",
+        "description": "Fixed the player join flow by storing the canonical app path used by the shared /join redirect.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-24T20:27:27Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5"
+      },
+      {
+        "issueNumber": 411,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/411",
+        "runId": "run-20260425T214321Z-cf67d4",
+        "description": "Fixed voting race condition: concurrent vote submissions caused last-writer-wins data loss. Added record_session_vote SQL RPC with SELECT FOR UPDATE row locking and JSONB || merge so all votes are recorded atomically.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-25T22:18:05Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 414,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/414",
+        "runId": "run-20260425T224634Z-df1911",
+        "description": "Fixed regression from #411: answers endpoint called record_session_vote RPC for all quiz-vote submissions but the SQL migration was not yet deployed, breaking Submit Answer. Gated the RPC on game.stage==='vote'; answer and topic-guess stages use the original non-atomic path (safe since they are turn-based).",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-26T12:49:45Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 416,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/416",
+        "runId": "run-20260426T130938Z-84671c",
+        "description": "Added private topic popup for moderators: main screen now shows 'Topic hidden' so Zoom screen-share is safe; a 'View topic in private window' button opens a popup with the topic and impostor name that the moderator can drag to their non-shared monitor; popup auto-updates via postMessage when a new round starts.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-26T13:11:32Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 418,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/418",
+        "runId": "run-20260426T210513Z-aeab13",
+        "description": "Added a Help modal accessible from all screens via a Help button in the hero. The modal covers gameplay basics, step-by-step moderator instructions, player instructions, and a scoring reference table.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-26T21:12:35Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 425,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/425",
+        "runId": "run-20260427T140841Z-765658",
+        "description": "Removed Next turn button so all players answer simultaneously; replaced separate player grid, turn order, and responses sections with a single unified Room board grid showing name, status, answer, and score; voting during vote stage is done by clicking a player card in the grid.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-27T14:08:41Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      }
+    ],
     "allowImprovements": true,
-    "backups": null
+    "leaderboard": false,
+    "maxScore": null,
+    "backups": [
+      {
+        "runId": "run-20260424T202727Z-65ce0a",
+        "path": "backups/run-20260424T202727Z-65ce0a/index.html",
+        "url": "/apps/2026/04/24/impostor-question/backups/run-20260424T202727Z-65ce0a/index.html"
+      },
+      {
+        "runId": "run-20260425T214321Z-cf67d4",
+        "path": "backups/run-20260425T214321Z-cf67d4/index.html",
+        "url": "/apps/2026/04/24/impostor-question/backups/run-20260425T214321Z-cf67d4/index.html"
+      },
+      {
+        "runId": "run-20260426T210513Z-aeab13",
+        "path": "backups/run-20260426T210513Z-aeab13/index.html",
+        "url": "/apps/2026/04/24/impostor-question/backups/run-20260426T210513Z-aeab13/index.html"
+      },
+      {
+        "runId": "run-20260427T140841Z-765658",
+        "path": "backups/run-20260427T140841Z-765658/index.html",
+        "url": "/apps/2026/04/24/impostor-question/backups/run-20260427T140841Z-765658/index.html"
+      }
+    ]
   },
   {
-    "id": "2026/04/18/mindful-palette-flow",
-    "name": "Mindful Palette Flow",
-    "shortDescription": "A meditative drawing experience where gentle touch creates flowing, mood-shifting color patterns.",
-    "thumbnailUrl": "/apps/2026/04/18/mindful-palette-flow/thumbnail.svg",
-    "createdAt": "2026-04-18T07:03:01Z",
+    "id": "2026/04/23/guess-who-said-it",
+    "name": "Guess Who Said It",
+    "shortDescription": "A host-led Zoom icebreaker where players submit anonymous prompt answers, then everyone guesses who wrote a revealed response. Fast rounds, live scores, and a final tie-aware leaderboard keep it playful and low-pressure.",
+    "thumbnailUrl": "/apps/2026/04/23/guess-who-said-it/thumbnail.svg",
+    "createdAt": "2026-04-23T11:06:30Z",
+    "year": 2026,
+    "month": 4,
+    "day": 23,
+    "category": "Icebreakers",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "icebreaker",
+      "multiplayer",
+      "prompt-game",
+      "social-deduction",
+      "zoom",
+      "moderator",
+      "leaderboard"
+    ],
+    "route": "/apps/2026/04/23/guess-who-said-it",
+    "appPath": "/apps/2026/04/23/guess-who-said-it/index.html",
+    "generation": {
+      "agentName": "Codex",
+      "llmModel": "GPT-5.4",
+      "startTime": "2026-04-23T11:06:30Z",
+      "endTime": "2026-04-23T11:15:11Z",
+      "totalTokensIn": 23700,
+      "totalTokensOut": 14800,
+      "runId": "run-20260423T110630Z-c84085",
+      "notes": "Built from approved issue #401 with a distinct anonymous-answer author-guess loop to reduce overlap with existing word-focused icebreakers. Implemented on the shared multiplayer session API with moderator-created room codes and /join/{code} player entry. The issue requested no social sharing UI, so no share drawer trigger was added. Token counts are estimated."
+    },
+    "suggestion": {
+      "issueNumber": 401,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/401",
+      "prompt": "## App Suggestion\n\n**Category:** Icebreakers\n**Requestor:** Jeff Holst\n\n### Description\n\nMultiplayer Zoom icebreaker called \"Guess Who Said It\". Moderator shares screen; players join from their own devices via a shared link. Flow: moderator join screen → waiting room → answer round → guessing round → round results → final leaderboard. Use fun, safe, office-appropriate prompts. Moderator screen should show join link + copy button, round count selector, persistent player board (name, status, score), round controls, timer, and a hidden reveal-author panel with submitted answers. Player flow: enter name, wait for moderator, answer each prompt, submit, then guess which player wrote a shown answer from a grid of names; disable controls after voting until round ends. Include subtle motion, confetti for winners, gentle comic-deflate for non-winners, and no social sharing UI.",
+      "requestor": "Jeff Holst"
+    },
+    "improvements": [
+      {
+        "issueNumber": 403,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/403",
+        "runId": "run-20260423T114017Z-90899c",
+        "description": "Added moderator kick controls, round continue/end controls, persistent prompt visibility, vote-lock waiting feedback, and support for late answer submission after timer expiry.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-23T11:48:03Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5.4"
+      }
+    ],
+    "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": 200,
+    "backups": [
+      {
+        "runId": "run-20260423T114017Z-90899c",
+        "path": "backups/run-20260423T114017Z-90899c/index.html",
+        "url": "/apps/2026/04/23/guess-who-said-it/backups/run-20260423T114017Z-90899c/index.html"
+      }
+    ]
+  },
+  {
+    "id": "2026/04/18/team-taboo",
+    "name": "Team Taboo",
+    "shortDescription": "A single-screen moderator-run Taboo game for Zoom calls. Teams compete to guess target words while the clue-giver dodges forbidden words — with timer, scoring, and a private moderator panel.",
+    "thumbnailUrl": "/apps/2026/04/18/team-taboo/thumbnail.svg",
+    "createdAt": "2026-04-18T19:55:20Z",
     "year": 2026,
     "month": 4,
     "day": 18,
-    "category": "Design",
+    "category": "Icebreakers",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "mindfulness",
-      "meditative",
-      "color-flow",
-      "generative-art",
-      "relaxation",
-      "minimalist"
-    ],
-    "route": "/apps/2026/04/18/mindful-palette-flow",
-    "appPath": "/apps/2026/04/18/mindful-palette-flow/index.html",
+    "tags": ["icebreaker", "multiplayer", "word-game", "moderator", "party", "team-game"],
+    "route": "/apps/2026/04/18/team-taboo",
+    "appPath": "/apps/2026/04/18/team-taboo/index.html",
     "generation": {
-      "agentName": "Dev",
-      "llmModel": "ollama/gemma4:31b",
-      "startTime": "2026-04-18T07:03:01Z",
-      "endTime": "2026-04-18T07:15:00Z",
-      "totalTokensIn": 6000,
-      "totalTokensOut": 5000,
-      "runId": "run-20260418T070518Z-a1b2c3",
-      "notes": "Created as a meditative design tool inspired by Zen Garden Sketch."
+      "agentName": "Claude Code",
+      "llmModel": "claude-opus-4-7",
+      "startTime": "2026-04-18T19:55:20Z",
+      "endTime": "2026-04-18T20:10:00Z",
+      "totalTokensIn": 16500,
+      "totalTokensOut": 18800,
+      "runId": "run-20260418T195520Z-5e8462",
+      "notes": "Static-app constraint (no backend, no cross-device sync) meant the issue's real-time multiplayer spec could not be implemented literally. Built as a single-screen moderator-run variant — the moderator runs the game on their shared Zoom screen, teammates look away during their team's clue-giving turn, and a private moderator panel holds team rosters. Preserves the core Taboo loop: auto-team split, rotating clue-givers, 60s timer, correct/skip/violation scoring, target score, end-game summary. Rejected alternatives: WebRTC P2P (signaling reliability concerns), external realtime service (exposes credentials). Matches the pattern established by word-scramble. Token counts are rough estimates."
     },
-    "suggestion": null,
-    "improvements": null,
+    "suggestion": {
+      "issueNumber": 356,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/356",
+      "prompt": "Build a web app for Taboo on a Zoom call where only the moderator screenshares. Moderator clicks \"New Game\" → app shows a URL and join code on the shared screen to paste in Zoom chat. Participants open the link, enter the code and their name; the shared screen updates with joiners live. On \"Start,\" auto-split players into two teams; each player's screen shows their team. The moderator has a private panel (hidden from screenshare) listing both teams. Each round the moderator picks a guesser from each team and starts a turn. Only the active guesser sees the target word and taboo words. Their teammates see a \"guessing...\" view with no words. The opposing team sees the full card to catch violations. \"Begin Round\" starts a 60s timer; moderator marks correct/skip/violation. Scores update live on all screens. Rotate guessers; first to the target score wins. Requirements: real-time sync, role-based views (moderator/guesser/teammate/opponent), timer, scoreboard, end-game summary.",
+      "requestor": "Jeff Holst"
+    },
+    "improvements": [
+      {
+        "issueNumber": 356,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/356",
+        "description": "Migrated Team Taboo multiplayer from Firebase to Supabase-backed session storage routed through Next.js API endpoints. Moderator still creates a 6-char join code; participants join via /join/<code>, pick a name, and are auto-split into teams at start. Live roster, role-based card visibility (active clue-giver + opposing team + moderator see the card; active team's other players see a guessing view), synchronized timer/scoreboard, and localStorage reconnection are preserved. Added Supabase migration for multiplayer_sessions plus API routes for session create/read/update and player joins.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-04-18T20:27:31Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-opus-4-7",
+        "runId": "run-20260418T202731Z-3e9b28"
+      }
+    ],
     "allowImprovements": true,
-    "backups": null
+    "leaderboard": false,
+    "maxScore": null,
+    "backups": [
+      {
+        "runId": "run-20260418T202731Z-3e9b28",
+        "path": "backups/run-20260418T202731Z-3e9b28/index.html",
+        "url": "/apps/2026/04/18/team-taboo/backups/run-20260418T202731Z-3e9b28/index.html"
+      }
+    ]
   },
   {
-    "id": "2026/04/17/zen-garden-sketch",
-    "name": "Zen Garden Sketch",
-    "shortDescription": "A minimalist sand-raking simulation for relaxation and mindfulness.",
-    "thumbnailUrl": "/apps/2026/04/17/zen-garden-sketch/thumbnail.svg",
-    "createdAt": "2026-04-17T07:05:46Z",
+    "id": "2026/04/17/alibi",
+    "name": "Alibi",
+    "shortDescription": "A fast, host-facilitated team builder for Zoom calls. Each round shows a silly crime, picks one player as The Accused, and they have 45 seconds to invent an alibi while the moderator reveals the 'real truth' in a side window.",
+    "thumbnailUrl": "/apps/2026/04/17/alibi/thumbnail.svg",
+    "createdAt": "2026-04-17T12:33:58Z",
     "year": 2026,
     "month": 4,
     "day": 17,
-    "category": "Design",
+    "category": "Icebreakers",
     "inputMode": "responsive",
     "status": "active",
     "tags": [
-      "mindfulness",
-      "simulation",
-      "minimalist",
-      "drawing",
-      "relaxation",
-      "zen"
+      "team-building",
+      "icebreaker",
+      "zoom",
+      "party",
+      "moderator",
+      "leaderboard",
+      "screen-share"
     ],
-    "route": "/apps/2026/04/17/zen-garden-sketch",
-    "appPath": "/apps/2026/04/17/zen-garden-sketch/index.html",
+    "route": "/apps/2026/04/17/alibi",
+    "appPath": "/apps/2026/04/17/alibi/index.html",
     "generation": {
-      "agentName": "Dev",
-      "llmModel": "ollama/gemma4:31b",
-      "startTime": "2026-04-17T07:05:46Z",
-      "endTime": "2026-04-17T07:22:00Z",
-      "totalTokensIn": 6000,
-      "totalTokensOut": 7000,
-      "runId": "run-20260417T070546Z-a1b2c3",
-      "notes": "Initial creation of Zen Garden Sketch app."
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6",
+      "startTime": "2026-04-17T12:33:58Z",
+      "endTime": "2026-04-17T12:55:00Z",
+      "totalTokensIn": 0,
+      "totalTokensOut": 0,
+      "runId": "run-20260417T123358Z-70772d",
+      "notes": "Built from approved suggestion #342. Team-builder icebreaker with moderator popup window, standard competition ranking, manual-only sharing, 40 silly crime scenarios, and a solo practice mode."
     },
-    "suggestion": null,
+    "suggestion": {
+      "issueNumber": 342,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/342",
+      "prompt": "## App Suggestion\n\n**Category:** Other\n**Requestor:** Jeff Holst\n\n### Description\n\nCreate a unique, fun, browser-based team builder app for live Zoom calls as a 5–10 minute icebreaker. Easy to host, visually clear on screen share, fast onboarding. Use existing party mechanics or fresh inventions. Include moderator controls to add/remove participant names before or during play, start/reset rounds, and adjust duration. Add an optional off-screen moderator answer popup/panel revealed only when needed. Use simple rules, low friction, and group-safe humor. Include a leaderboard with fair competition ranking: ties share the same rank and medal/placement, and later ranks must skip accordingly (1,1,3 / 2,2,2,5). Do not auto-open any social share drawer or game-over sharing hook. Prioritize accessibility, responsive layout, and polished host mode for screen sharing.",
+      "requestor": "Jeff Holst"
+    },
+    "improvements": [
+      {
+        "issueNumber": 346,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/346",
+        "runId": "run-20260417T201227Z-73c047",
+        "description": "Replaced Best Alibi / Most Convincing voting with a per-player 1-3 Rate-the-Accused system, moved the Open Moderator Window button to the game screen, added a How to Play help modal on the setup screen.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-04-17T20:12:27Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-opus-4-7"
+      }
+    ],
+    "allowImprovements": true,
+    "leaderboard": true,
+    "maxScore": 100,
+    "backups": [
+      {
+        "runId": "run-20260417T201227Z-73c047",
+        "path": "backups/run-20260417T201227Z-73c047/index.html",
+        "url": "/apps/2026/04/17/alibi/backups/run-20260417T201227Z-73c047/index.html"
+      }
+    ]
+  },
+  {
+    "id": "2026/04/16/mental-gymnastics",
+    "name": "Mental Gymnastics",
+    "shortDescription": "A fast-paced brain training session with micro-challenges across math, logic, memory, and reasoning. Build streaks, beat the timer, and finish the daily set.",
+    "thumbnailUrl": "/apps/2026/04/16/mental-gymnastics/thumbnail.svg",
+    "createdAt": "2026-04-16T05:12:26Z",
+    "year": 2026,
+    "month": 4,
+    "day": 16,
+    "category": "Icebreakers",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "brain-training",
+      "timed-challenges",
+      "logic",
+      "mental-math",
+      "memory",
+      "education",
+      "streaks"
+    ],
+    "route": "/apps/2026/04/16/mental-gymnastics",
+    "appPath": "/apps/2026/04/16/mental-gymnastics/index.html",
+    "generation": {
+      "agentName": "GitHub Copilot",
+      "llmModel": "GPT-5.2-Codex",
+      "startTime": "2026-04-16T05:12:26Z",
+      "endTime": "2026-04-16T05:15:30Z",
+      "totalTokensIn": 0,
+      "totalTokensOut": 0,
+      "runId": "run-20260416T051226Z-2bbfd0",
+      "notes": "Built from approved suggestion #336. Token counts recorded as 0 for this manual run."
+    },
+    "suggestion": {
+      "issueNumber": 336,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/336",
+      "prompt": "## App Suggestion\n\n**Category:** Education\n**Requestor:** Perplexity\n\n### Description\n\nBuild a polished JavaScript web app called “Mental Gymnastics,” an educational brain-training challenge game focused on problems that can be solved entirely in your head in about 10–30 seconds. Include at least 25 starting challenges across categories like mental math, number patterns, estimation, logic, memory, sequencing, and word/shape reasoning. Each challenge should show one question, a timer, optional hint, answer input or multiple choice, instant feedback, explanation, score, streak, and difficulty rating. Add random challenge rotation, progress tracking for the current session, and a “daily challenge” mode. Keep the UI clean, modern, fast, and mobile-friendly with smooth animations, satisfying sounds, and accessibility features. Emphasize learning and reasoning, not rote trivia. Include an easy way to add more challenges in code via a JSON array or objects",
+      "requestor": "Perplexity"
+    },
+    "improvements": [
+      {
+        "issueNumber": 338,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/338",
+        "runId": "run-20260416T194233Z-a3f8c2",
+        "description": "Redesigned as host-facilitated multiplayer game with setup screen (player manager, turn selector, moderator popup window), host game screen with A/B/C/D choices and reveal-then-award flow, results leaderboard, and dark theme font readability fixes. Solo practice mode preserved.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-16T19:42:33Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 340,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/340",
+        "runId": "run-20260416T205051Z-b7e4a9",
+        "description": "Fixed leaderboard to use standard competition ranking for ties (shared placements, skipped ranks). Removed auto-opening social share drawer on game over; Share button remains available on demand.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-16T20:50:51Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 386,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/386",
+        "runId": "run-20260420T215714Z-332533",
+        "description": "Converted host mode to backend multiplayer with share-link joining, synchronized player voting, auto timer lock, round vote breakdown with right/wrong indicators, and confetti/blue-rain result effects.",
+        "requestor": "Jeff Holst",
+        "agentName": "Codex",
+        "llmModel": "GPT-5.4",
+        "implementedAt": "2026-04-20T22:04:45Z"
+      },
+      {
+        "issueNumber": 387,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/387",
+        "runId": "run-20260420T222820Z-22fcb1",
+        "description": "Player answers now submit on click — no submit button needed. Selection is locked and highlighted until round ends. Fixed confetti and rain animation travel distances so effects fill the full safe-zone overlay.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-20T22:28:20Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 390,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/390",
+        "runId": "run-20260421T113613Z-960a28",
+        "description": "Fixed confetti/rain to use measured overlay height (CSS variable) for reliable full-screen animation. Play Again for moderator now resets session to lobby. Lobby adds manual add-player input and per-player kick button. New Round Timer card lets moderator choose 30s/45s/60s per round. Fixed selectedChoice not resetting between rounds.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-04-21T11:36:13Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 392,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/392",
+        "runId": "run-20260421T115711Z-64b6ac",
+        "description": "Fixed animation root cause: triggeredAnimations Set prevents runConfetti/runBlueRain from re-firing every poll cycle. Removed moderator add/kick player UI from lobby. Added real-time vote status panel for moderator during question phase. Added Show Hint button for moderator game screen.",
+        "requestor": "Jeff Holst",
+        "implementedAt": "2026-04-21T12:00:24Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 394,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/394",
+        "runId": "run-20260421T152827Z-3103e0",
+        "description": "Replaced local-only Show Hint with broadcast hint button (📢 Show Hint) that pushes hint to all player screens via game state. Added End Round button for moderator to manually end question phase. Added End Game button to skip directly to leaderboard. Added player Hint (½ credit) button — players who use the hint get 0.5 pts instead of 1 if correct. Moderator always sees the hint inline. Half-credit status shown in round vote summary.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-21T15:58:49Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 396,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/396",
+        "runId": "run-20260421T184938Z-cc5d9b",
+        "description": "Removed moderator broadcast hint flow, added a view-only moderator popup with answer/hint visibility, and hardened multiplayer leaderboard sorting/scoring as numeric values.",
+        "requestor": "jeffholst",
+        "agentName": "Codex",
+        "llmModel": "GPT-5.4",
+        "implementedAt": "2026-04-21T18:54:21Z"
+      },
+      {
+        "issueNumber": 398,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/398",
+        "runId": "run-20260421T202948Z-26cbd9",
+        "description": "Removed hint visibility from moderator main game screen so Zoom-visible host UI no longer reveals hints; player hint remains per-player with 0.5-point credit for correct answers.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-21T20:30:56Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5.4"
+      }
+    ],
+    "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": 2000,
+    "backups": [
+      {
+        "runId": "run-20260416T194233Z-a3f8c2",
+        "path": "backups/run-20260416T194233Z-a3f8c2/index.html",
+        "url": "/apps/2026/04/16/mental-gymnastics/backups/run-20260416T194233Z-a3f8c2/index.html"
+      },
+      {
+        "runId": "run-20260416T205051Z-b7e4a9",
+        "path": "backups/run-20260416T205051Z-b7e4a9/index.html",
+        "url": "/apps/2026/04/16/mental-gymnastics/backups/run-20260416T205051Z-b7e4a9/index.html"
+      },
+      {
+        "runId": "run-20260420T215714Z-332533",
+        "path": "backups/run-20260420T215714Z-332533/index.html",
+        "url": "/apps/2026/04/16/mental-gymnastics/backups/run-20260420T215714Z-332533/index.html"
+      },
+      {
+        "runId": "run-20260420T222820Z-22fcb1",
+        "path": "backups/run-20260420T222820Z-22fcb1/index.html",
+        "url": "/apps/2026/04/16/mental-gymnastics/backups/run-20260420T222820Z-22fcb1/index.html"
+      },
+      {
+        "runId": "run-20260421T113613Z-960a28",
+        "path": "backups/run-20260421T113613Z-960a28/index.html",
+        "url": "/apps/2026/04/16/mental-gymnastics/backups/run-20260421T113613Z-960a28/index.html"
+      },
+      {
+        "runId": "run-20260421T152827Z-3103e0",
+        "path": "backups/run-20260421T152827Z-3103e0/index.html",
+        "url": "/apps/2026/04/16/mental-gymnastics/backups/run-20260421T152827Z-3103e0/index.html"
+      },
+      {
+        "runId": "run-20260421T184938Z-cc5d9b",
+        "path": "backups/run-20260421T184938Z-cc5d9b/index.html",
+        "url": "/apps/2026/04/16/mental-gymnastics/backups/run-20260421T184938Z-cc5d9b/index.html"
+      },
+      {
+        "runId": "run-20260421T202948Z-26cbd9",
+        "path": "backups/run-20260421T202948Z-26cbd9/index.html",
+        "url": "/apps/2026/04/16/mental-gymnastics/backups/run-20260421T202948Z-26cbd9/index.html"
+      }
+    ]
+  },
+  {
+    "id": "2026/04/14/missile-command-modern",
+    "name": "Missile Command Modern",
+    "shortDescription": "Defend 6 cities from waves of incoming missiles. Tap or click to launch interceptors, chain explosions for combo bonuses, and survive as long as you can.",
+    "thumbnailUrl": "/apps/2026/04/14/missile-command-modern/thumbnail.svg",
+    "createdAt": "2026-04-14T20:33:46Z",
+    "year": 2026,
+    "month": 4,
+    "day": 14,
+    "category": "Games",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "arcade",
+      "defense",
+      "missiles",
+      "canvas",
+      "touch-controls",
+      "wave-based",
+      "mobile-first",
+      "chain-reaction"
+    ],
+    "route": "/apps/2026/04/14/missile-command-modern",
+    "appPath": "/apps/2026/04/14/missile-command-modern/index.html",
+    "generation": {
+      "runId": "run-20260414T203346Z-ed6b9c",
+      "agentName": "claude-code",
+      "llmModel": "claude-sonnet-4-6",
+      "startTime": "2026-04-14T20:33:46Z",
+      "endTime": "2026-04-14T21:15:00Z",
+      "totalTokensIn": 6800,
+      "totalTokensOut": 13200,
+      "notes": "Modern reimagining of Missile Command with 6 enemy types (ICBM, split-warhead, MRV, decoy, shielded, bomber), chain-explosion combo multiplier, city repair between waves, and social share hook on game-over."
+    },
+    "suggestion": {
+      "issueNumber": 325,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/325",
+      "prompt": "### Category\n\nGames\n\n### Description\n\nBuild a modern reimagining of Missile Command for web and mobile. Core loop: defend cities at the bottom of the screen by intercepting incoming missiles with timed counter-blasts, inspired by the original arcade formula of protecting cities from descending attacks. Controls must work with mouse and touch: tap/click to target, or use touch-move-release gesture aiming for mobile. Because touch is easier and more precise than the original trackball, increase challenge with fast mixed attack patterns, split-warhead missiles, decoys, shielded enemies, EMP zones, limited ammo, silo cooldowns, chain-reaction scoring, and priority threats like bombers/satellites. Make it highly polished with detailed VFX, smooth 60fps gameplay, juicy explosions, shockwaves, trails, screen shake, dynamic lighting, parallax skies, crisp HUD, satisfying audio, and readable telegraphs. Include combos, escalating waves, power-ups, city repair between rounds."
+    },
+    "improvements": [
+      {
+        "issueNumber": 333,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/333",
+        "runId": "run-20260416T041743Z-a3f7c2",
+        "description": "Added leaderboard high-score submission via voaLeaderboard hook; increased wave 1 opening from 6 to 8 missiles for a livelier start; added maxScore to meta.json.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-16T04:17:43Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 536,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/536",
+        "runId": "run-20260528T163327Z-b9e4f1",
+        "description": "Removed automatic window.voaShare() call from triggerGameOver(); the share drawer now only opens when the player explicitly clicks the Share button in the shell footer.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-28T16:33:27Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      }
+    ],
+    "allowImprovements": true,
+    "leaderboard": true,
+    "maxScore": 999999,
+    "backups": [
+      {
+        "runId": "run-20260416T041743Z-a3f7c2",
+        "path": "backups/run-20260416T041743Z-a3f7c2/index.html",
+        "url": "/apps/2026/04/14/missile-command-modern/backups/run-20260416T041743Z-a3f7c2/index.html"
+      },
+      {
+        "runId": "run-20260528T163327Z-b9e4f1",
+        "path": "backups/run-20260528T163327Z-b9e4f1/index.html",
+        "url": "/apps/2026/04/14/missile-command-modern/backups/run-20260528T163327Z-b9e4f1/index.html"
+      }
+    ]
+  },
+  {
+    "id": "2026/04/11/benchmark-breakout-opus",
+    "name": "Benchmark Breakout Opus",
+    "shortDescription": "A premium Breakout game built as a benchmark for Claude Opus 4.6. Features smooth paddle physics, combo scoring, power-ups, particle effects, screen shake, adaptive Web Audio, and 5 progressively difficult levels with multi-hit and indestructible bricks.",
+    "thumbnailUrl": "/apps/2026/04/11/benchmark-breakout-opus/thumbnail.svg",
+    "createdAt": "2026-04-11T03:19:17Z",
+    "year": 2026,
+    "month": 4,
+    "day": 11,
+    "category": "Games",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "arcade",
+      "breakout",
+      "benchmark",
+      "canvas",
+      "touch-controls",
+      "power-ups",
+      "combo",
+      "mobile-first"
+    ],
+    "route": "/apps/2026/04/11/benchmark-breakout-opus",
+    "appPath": "/apps/2026/04/11/benchmark-breakout-opus/index.html",
+    "generation": {
+      "agentName": "claude-code",
+      "llmModel": "claude-opus-4-6",
+      "startTime": "2026-04-11T03:19:17Z",
+      "endTime": "2026-04-11T03:30:00Z",
+      "totalTokensIn": 17500,
+      "totalTokensOut": 25000,
+      "runId": "run-20260411T031917Z-68c4bc",
+      "notes": "Benchmark Breakout built by Claude Opus 4.6 from issue #306. Features canvas-based rendering, Web Audio API synthesized SFX, 5 level patterns, 3 power-up types, combo multiplier scoring, particle effects, and screen shake. Token counts are estimates."
+    },
+    "suggestion": {
+      "issueNumber": 306,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/306",
+      "prompt": "Benchmark Breakout game for LLM comparison. Must feel premium, mobile-first touch + desktop. Smooth paddle control (touch, mouse, keyboard); responsive layout; crisp graphics; fluid animation; satisfying collisions; readable HUD; score, lives, combo/bonus scoring, increasing difficulty, multiple brick patterns, fair rebound angles, progressive speed tuning, balanced power-ups, particle effects, subtle screen shake, adaptive audio, polished transitions, onboarding, sound toggle, 44px+ touch targets, no hover UI, stable 60 FPS, no placeholders, no broken features, no build tools.",
+      "requestor": "Jeff Holst"
+    },
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
-    "id": "2026/04/15/fortune-wheel-deluxe",
-    "name": "Fortune Wheel Deluxe",
-    "shortDescription": "A polished, customizable decision wheel for those who can't make up their mind.",
-    "thumbnailUrl": "/apps/2026/04/15/fortune-wheel-deluxe/thumbnail.svg",
-    "createdAt": "2026-04-15T07:06:39Z",
+    "id": "2026/04/10/benchmark-breakout-turbo",
+    "name": "Benchmark Breakout Turbo",
+    "shortDescription": "Portrait-friendly benchmark Breakout with charge shots, combo chains, mobile-safe controls, and polished arcade FX.",
+    "thumbnailUrl": "/apps/2026/04/10/benchmark-breakout-turbo/thumbnail.svg",
+    "createdAt": "2026-04-10T23:50:24Z",
     "year": 2026,
     "month": 4,
-    "day": 15,
-    "category": "Entertainment",
+    "day": 10,
+    "category": "Games",
     "inputMode": "responsive",
     "status": "active",
     "tags": [
-      "decision-maker",
-      "randomizer",
-      "customizable",
-      "wheel",
-      "entertainment",
-      "visuals"
+      "arcade",
+      "breakout",
+      "portrait",
+      "touch-controls",
+      "keyboard",
+      "charge-shot",
+      "combo",
+      "mobile-first"
     ],
-    "route": "/apps/2026/04/15/fortune-wheel-deluxe",
-    "appPath": "/apps/2026/04/15/fortune-wheel-deluxe/index.html",
+    "route": "/apps/2026/04/10/benchmark-breakout-turbo",
+    "appPath": "/apps/2026/04/10/benchmark-breakout-turbo/index.html",
     "generation": {
-      "agentName": "Dev",
-      "llmModel": "ollama/gemma4:31b",
-      "startTime": "2026-04-15T07:06:39Z",
-      "endTime": "2026-04-15T07:25:00Z",
-      "totalTokensIn": 15000,
-      "totalTokensOut": 13000,
-      "runId": "run-20260415T070639Z-a1b2c3",
-      "notes": "Built as a vote-inspired project in the Entertainment category. Focuses on smooth animations and a clean mobile-first UI."
+      "agentName": "pi-coding-agent",
+      "llmModel": "gpt-4o",
+      "startTime": "2026-04-10T23:50:24Z",
+      "endTime": "2026-04-10T23:53:55Z",
+      "totalTokensIn": 4500,
+      "totalTokensOut": 5060,
+      "runId": "run-20260410T235024Z-296319",
+      "notes": "Built from approved benchmark suggestion #307 as a second benchmark Breakout variant with a portrait-first layout and charge-shot mechanic."
     },
-    "suggestion": null,
+    "suggestion": {
+      "issueNumber": 307,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/307",
+      "prompt": "Category: Games | Benchmark Breakout request. Treat as a controlled repeatable test where duplication is acceptable. Build a premium mobile-first Breakout game with smooth paddle control for touch, mouse, and keyboard; responsive layout; crisp graphics; fluid animation; readable HUD; score, lives, combo scoring; increasing difficulty; multiple brick patterns; fair rebound angles; progressive speed tuning; balanced power-ups; particle effects; subtle screen shake; adaptive audio; polished transitions; onboarding; sound toggle; 44px+ touch targets; no placeholders; no broken features; no build tools.",
+      "requestor": "Jeff Holst"
+    },
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
+    "backups": null
+  },
+  {
+    "id": "2026/04/10/benchmark-breakout",
+    "name": "Benchmark Breakout",
+    "shortDescription": "Premium mobile-first breakout benchmark with smooth touch/mouse/keyboard control, combos, power-ups, and polished FX.",
+    "thumbnailUrl": "/apps/2026/04/10/benchmark-breakout/thumbnail.svg",
+    "createdAt": "2026-04-10T23:18:27Z",
+    "year": 2026,
+    "month": 4,
+    "day": 10,
+    "category": "Games",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "arcade",
+      "breakout",
+      "touch-controls",
+      "keyboard",
+      "canvas",
+      "power-ups",
+      "combo",
+      "mobile-first"
+    ],
+    "route": "/apps/2026/04/10/benchmark-breakout",
+    "appPath": "/apps/2026/04/10/benchmark-breakout/index.html",
+    "generation": {
+      "agentName": "pi-coding-agent",
+      "llmModel": "gpt-4o",
+      "startTime": "2026-04-10T23:18:27Z",
+      "endTime": "2026-04-10T23:21:50Z",
+      "totalTokensIn": 5620,
+      "totalTokensOut": 4880,
+      "runId": "run-20260410T231827Z-146d73",
+      "notes": "Built from approved benchmark breakout suggestion #308; duplication accepted per requestor instructions."
+    },
+    "suggestion": {
+      "issueNumber": 308,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/308",
+      "prompt": "Category: Games | Benchmark Breakout request. Treat as a controlled, repeatable test where duplication is acceptable. Build a premium mobile-first Breakout game with smooth paddle control for touch, mouse, and keyboard; responsive layout; crisp graphics; fluid animation; satisfying collisions; readable HUD; score, lives, combo/bonus scoring; increasing difficulty; multiple brick patterns; fair rebound angles; progressive speed tuning; balanced power-ups; particle effects; subtle screen shake; adaptive audio; polished transitions; onboarding; sound toggle; 44px+ touch targets; no hover UI; stable 60 FPS; no placeholders; no broken features; no build tools.",
+      "requestor": "Jeff Holst"
+    },
+    "improvements": null,
+    "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -233,15 +1348,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "arcade",
-      "space",
-      "canvas",
-      "mobile-first",
-      "neon",
-      "synthwave",
-      "action"
-    ],
+    "tags": ["arcade", "space", "canvas", "mobile-first", "neon", "synthwave", "action"],
     "route": "/apps/2026/04/08/asteroids-modern",
     "appPath": "/apps/2026/04/08/asteroids-modern/index.html",
     "generation": {
@@ -283,6 +1390,8 @@
       }
     ],
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": [
       {
         "runId": "run-20260408T203306Z-b34e9c",
@@ -295,43 +1404,6 @@
         "url": "/apps/2026/04/08/asteroids-modern/backups/run-20260408T210024Z-b05fd8/index.html"
       }
     ]
-  },
-  {
-    "id": "2026/04/06/neon-bingo-caller",
-    "name": "Neon Bingo Caller",
-    "shortDescription": "Fast, polished bingo host console with random calls, auto-draw pacing, and history tracking.",
-    "thumbnailUrl": "/apps/2026/04/06/neon-bingo-caller/thumbnail.svg",
-    "createdAt": "2026-04-06T07:00:15Z",
-    "year": 2026,
-    "month": 4,
-    "day": 6,
-    "category": "Entertainment",
-    "inputMode": "responsive",
-    "status": "active",
-    "tags": [
-      "bingo",
-      "number-caller",
-      "party",
-      "random",
-      "host-tool",
-      "mobile-friendly"
-    ],
-    "route": "/apps/2026/04/06/neon-bingo-caller",
-    "appPath": "/apps/2026/04/06/neon-bingo-caller/index.html",
-    "generation": {
-      "agentName": "dev",
-      "llmModel": "openai-codex/gpt-5.3-codex",
-      "startTime": "2026-04-06T07:00:15Z",
-      "endTime": "2026-04-06T07:03:20Z",
-      "totalTokensIn": 7100,
-      "totalTokensOut": 3580,
-      "runId": "run-20260406T070015Z-a1b2c3",
-      "notes": "Built from vote-and-category-analysis recommendation; no approved GitHub suggestion issue available."
-    },
-    "suggestion": null,
-    "improvements": null,
-    "allowImprovements": true,
-    "backups": null
   },
   {
     "id": "2026/04/04/plasma-chain-reaction",
@@ -396,6 +1468,8 @@
       }
     ],
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": [
       {
         "runId": "run-20260404T144924Z-a1bbff",
@@ -418,19 +1492,10 @@
     "year": 2026,
     "month": 4,
     "day": 1,
-    "category": "Games",
+    "category": "Icebreakers",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "quiz",
-      "emoji",
-      "party",
-      "multiplayer",
-      "zoom",
-      "responsive",
-      "touch",
-      "trivia"
-    ],
+    "tags": ["quiz", "emoji", "party", "multiplayer", "zoom", "responsive", "touch", "trivia"],
     "route": "/apps/2026/04/01/emoji-quiz-party",
     "appPath": "/apps/2026/04/01/emoji-quiz-party/index.html",
     "generation": {
@@ -489,9 +1554,21 @@
         "implementedAt": "2026-04-03T16:56:38Z",
         "agentName": "Codex",
         "llmModel": "gpt-5"
+      },
+      {
+        "issueNumber": 384,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/384",
+        "runId": "run-20260420T195445Z-d17aa8",
+        "description": "Added moderator multiplayer share-link registration with copy support, participant self-register confirmation messaging, and moved host answer display controls into in-game action buttons.",
+        "requestor": "Jeff Holst",
+        "agentName": "Codex",
+        "llmModel": "GPT-5.4",
+        "implementedAt": "2026-04-20T20:01:51Z"
       }
     ],
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": [
       {
         "runId": "run-20260401160856Z-cf1293",
@@ -512,6 +1589,11 @@
         "runId": "run-20260403T165638Z-6f8c21",
         "path": "backups/run-20260403T165638Z-6f8c21/index.html",
         "url": "/apps/2026/04/01/emoji-quiz-party/backups/run-20260403T165638Z-6f8c21/index.html"
+      },
+      {
+        "runId": "run-20260420T195445Z-d17aa8",
+        "path": "backups/run-20260420T195445Z-d17aa8/index.html",
+        "url": "/apps/2026/04/01/emoji-quiz-party/backups/run-20260420T195445Z-d17aa8/index.html"
       }
     ]
   },
@@ -524,7 +1606,7 @@
     "year": 2026,
     "month": 3,
     "day": 31,
-    "category": "Entertainment",
+    "category": "Icebreakers",
     "inputMode": "responsive",
     "status": "active",
     "tags": [
@@ -599,9 +1681,61 @@
         "implementedAt": "2026-03-31T19:55:47Z",
         "agentName": "Codex",
         "llmModel": "gpt-5"
+      },
+      {
+        "issueNumber": 350,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/350",
+        "runId": "run-20260418T161449Z-b2be10",
+        "description": "Persist setup-screen player names to localStorage so they are recalled on the next visit. Names are saved after add, remove, remove-all, and reset; scores always start at zero.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-18T16:14:49Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-opus-4-7"
+      },
+      {
+        "issueNumber": 375,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/375",
+        "runId": "run-20260420T125914Z-8ff7c0",
+        "description": "Upgraded the app to a backend-powered multiplayer flow with moderator lobby/share link, player statement submission, kicking, synced voting, and shared results progression.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-20T12:59:14Z",
+        "agentName": "Codex",
+        "llmModel": "gpt-5.4"
+      },
+      {
+        "issueNumber": 377,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/377",
+        "runId": "run-20260420T132957Z-2fd4a8",
+        "description": "Added speaking-screen statement visibility, per-statement vote breakdown, moderator score visibility, final leaderboard on all screens, and moderator new-game reset requiring fresh submissions.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-20T13:29:57Z",
+        "agentName": "Codex",
+        "llmModel": "gpt-5.4"
+      },
+      {
+        "issueNumber": 380,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/380",
+        "runId": "run-20260420T150902Z-931007",
+        "description": "Simplified moderator lobby to single player panel, added per-player vote status during voting, highlighted lie in all results boards, added score display in moderator round results, and added CSS confetti/rain animations for winners and losers on player screens.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-20T15:09:02Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 382,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/382",
+        "runId": "run-20260420T152955Z-cbc17f",
+        "description": "Added rich per-player status to the moderator bottom roster grid during gameplay (speaking, vote status, correct/wrong per phase); extended confetti and rain animations to the player final leaderboard screen (rank 1 gets confetti, others get rain).",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-20T15:29:55Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
       }
     ],
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": [
       {
         "runId": "run-20260331T022221Z-d4e8f1",
@@ -627,6 +1761,31 @@
         "runId": "run-20260331T195547Z-a7a8dd",
         "path": "backups/run-20260331T195547Z-a7a8dd/index.html",
         "url": "/apps/2026/03/31/two-truths-lie-game/backups/run-20260331T195547Z-a7a8dd/index.html"
+      },
+      {
+        "runId": "run-20260418T161449Z-b2be10",
+        "path": "backups/run-20260418T161449Z-b2be10/index.html",
+        "url": "/apps/2026/03/31/two-truths-lie-game/backups/run-20260418T161449Z-b2be10/index.html"
+      },
+      {
+        "runId": "run-20260420T125914Z-8ff7c0",
+        "path": "backups/run-20260420T125914Z-8ff7c0/index.html",
+        "url": "/apps/2026/03/31/two-truths-lie-game/backups/run-20260420T125914Z-8ff7c0/index.html"
+      },
+      {
+        "runId": "run-20260420T132957Z-2fd4a8",
+        "path": "backups/run-20260420T132957Z-2fd4a8/index.html",
+        "url": "/apps/2026/03/31/two-truths-lie-game/backups/run-20260420T132957Z-2fd4a8/index.html"
+      },
+      {
+        "runId": "run-20260420T150902Z-931007",
+        "path": "backups/run-20260420T150902Z-931007/index.html",
+        "url": "/apps/2026/03/31/two-truths-lie-game/backups/run-20260420T150902Z-931007/index.html"
+      },
+      {
+        "runId": "run-20260420T152955Z-cbc17f",
+        "path": "backups/run-20260420T152955Z-cbc17f/index.html",
+        "url": "/apps/2026/03/31/two-truths-lie-game/backups/run-20260420T152955Z-cbc17f/index.html"
       }
     ]
   },
@@ -642,16 +1801,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "puzzle",
-      "sokoban",
-      "mobile",
-      "touch",
-      "classic",
-      "grid",
-      "levels",
-      "builder"
-    ],
+    "tags": ["puzzle", "sokoban", "mobile", "touch", "classic", "grid", "levels", "builder"],
     "route": "/apps/2026/03/26/sokoban-warehouse",
     "appPath": "/apps/2026/03/26/sokoban-warehouse/index.html",
     "generation": {
@@ -748,6 +1898,8 @@
       }
     ],
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": [
       {
         "runId": "run-20260326T201250Z-7d39dd",
@@ -798,15 +1950,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "shooter",
-      "arcade",
-      "space",
-      "canvas",
-      "mobile-first",
-      "wave-based",
-      "power-ups"
-    ],
+    "tags": ["shooter", "arcade", "space", "canvas", "mobile-first", "wave-based", "power-ups"],
     "route": "/apps/2026/03/26/galaxian-blitz",
     "appPath": "/apps/2026/03/26/galaxian-blitz/index.html",
     "generation": {
@@ -860,6 +2004,8 @@
       }
     ],
     "allowImprovements": false,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -874,14 +2020,7 @@
     "category": "Entertainment",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "slot-machine",
-      "casino",
-      "rng",
-      "mobile-first",
-      "paylines",
-      "neon"
-    ],
+    "tags": ["slot-machine", "casino", "rng", "mobile-first", "paylines", "neon"],
     "route": "/apps/2026/03/25/neon-slot-rush",
     "appPath": "/apps/2026/03/25/neon-slot-rush/index.html",
     "generation": {
@@ -939,6 +2078,8 @@
       }
     ],
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -953,14 +2094,7 @@
     "category": "Entertainment",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "puzzle",
-      "solitaire",
-      "strategy",
-      "board-game",
-      "classic",
-      "mobile-first"
-    ],
+    "tags": ["puzzle", "solitaire", "strategy", "board-game", "classic", "mobile-first"],
     "route": "/apps/2026/03/25/peg-solitaire",
     "appPath": "/apps/2026/03/25/peg-solitaire/index.html",
     "generation": {
@@ -981,6 +2115,8 @@
     },
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -992,7 +2128,7 @@
     "year": 2026,
     "month": 3,
     "day": 24,
-    "category": "Entertainment",
+    "category": "Icebreakers",
     "inputMode": "responsive",
     "status": "active",
     "tags": ["charades", "party", "social", "timer", "team-play", "responsive"],
@@ -1030,6 +2166,8 @@
       }
     ],
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1044,15 +2182,7 @@
     "category": "Games",
     "inputMode": "mobile",
     "status": "active",
-    "tags": [
-      "roguelike",
-      "puzzle",
-      "mobile",
-      "touch",
-      "dungeon",
-      "strategy",
-      "seeded"
-    ],
+    "tags": ["roguelike", "puzzle", "mobile", "touch", "dungeon", "strategy", "seeded"],
     "route": "/apps/2026/03/23/dungeon-puzzle-run",
     "appPath": "/apps/2026/03/23/dungeon-puzzle-run/index.html",
     "generation": {
@@ -1083,6 +2213,8 @@
       }
     ],
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1097,14 +2229,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "tic-tac-toe",
-      "minimax",
-      "strategy",
-      "responsive",
-      "keyboard",
-      "touch"
-    ],
+    "tags": ["tic-tac-toe", "minimax", "strategy", "responsive", "keyboard", "touch"],
     "route": "/apps/2026/03/23/tic-tac-toe-strategy-lab",
     "appPath": "/apps/2026/03/23/tic-tac-toe-strategy-lab/index.html",
     "generation": {
@@ -1120,6 +2245,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1134,15 +2261,7 @@
     "category": "Entertainment",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "lottery",
-      "texas",
-      "random",
-      "numbers",
-      "animation",
-      "confetti",
-      "generator"
-    ],
+    "tags": ["lottery", "texas", "random", "numbers", "animation", "confetti", "generator"],
     "route": "/apps/2026/03/21/texas-lotto-generator",
     "appPath": "/apps/2026/03/21/texas-lotto-generator/index.html",
     "generation": {
@@ -1163,6 +2282,8 @@
     },
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1207,6 +2328,8 @@
     },
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1242,6 +2365,8 @@
     },
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1256,14 +2381,7 @@
     "category": "Education",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "morse-code",
-      "audio",
-      "educational",
-      "translator",
-      "web-audio-api",
-      "radio"
-    ],
+    "tags": ["morse-code", "audio", "educational", "translator", "web-audio-api", "radio"],
     "route": "/apps/2026/03/21/morse-code-radio",
     "appPath": "/apps/2026/03/21/morse-code-radio/index.html",
     "generation": {
@@ -1279,6 +2397,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1309,6 +2429,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1339,6 +2461,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1369,6 +2493,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1399,6 +2525,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1438,6 +2566,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1452,14 +2582,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "hangman",
-      "word-game",
-      "puzzle",
-      "animation",
-      "keyboard",
-      "touch"
-    ],
+    "tags": ["hangman", "word-game", "puzzle", "animation", "keyboard", "touch"],
     "route": "/apps/2026/03/17/hangman-word-game",
     "appPath": "/apps/2026/03/17/hangman-word-game/index.html",
     "generation": {
@@ -1475,6 +2598,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1489,14 +2614,7 @@
     "category": "Productivity",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "timer",
-      "productivity",
-      "focus",
-      "utility",
-      "pomodoro",
-      "time-management"
-    ],
+    "tags": ["timer", "productivity", "focus", "utility", "pomodoro", "time-management"],
     "route": "/apps/2026/03/17/focus-timer",
     "appPath": "/apps/2026/03/17/focus-timer/index.html",
     "generation": {
@@ -1512,6 +2630,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1526,13 +2646,7 @@
     "category": "Utilities",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "breathing",
-      "meditation",
-      "stress-relief",
-      "habit-tracking",
-      "4-7-8"
-    ],
+    "tags": ["breathing", "meditation", "stress-relief", "habit-tracking", "4-7-8"],
     "route": "/apps/2026/03/16/mindful-breathing-tracker",
     "appPath": "/apps/2026/03/16/mindful-breathing-tracker/index.html",
     "generation": {
@@ -1548,6 +2662,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1562,13 +2678,7 @@
     "category": "Productivity",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "productivity",
-      "pomodoro",
-      "task-planning",
-      "priority-scoring",
-      "mobile-friendly"
-    ],
+    "tags": ["productivity", "pomodoro", "task-planning", "priority-scoring", "mobile-friendly"],
     "route": "/apps/2026/03/15/focus-sprint-planner",
     "appPath": "/apps/2026/03/15/focus-sprint-planner/index.html",
     "generation": {
@@ -1584,6 +2694,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1614,6 +2726,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1644,6 +2758,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1674,6 +2790,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1688,15 +2806,7 @@
     "category": "Utilities",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "breathing",
-      "wellness",
-      "mindfulness",
-      "timer",
-      "mobile",
-      "focus",
-      "health"
-    ],
+    "tags": ["breathing", "wellness", "mindfulness", "timer", "mobile", "focus", "health"],
     "route": "/apps/2026/03/13/interval-breathing-coach",
     "appPath": "/apps/2026/03/13/interval-breathing-coach/index.html",
     "generation": {
@@ -1712,6 +2822,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1726,16 +2838,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "game",
-      "tap",
-      "mobile",
-      "responsive",
-      "arcade",
-      "high-score",
-      "touch",
-      "reaction"
-    ],
+    "tags": ["game", "tap", "mobile", "responsive", "arcade", "high-score", "touch", "reaction"],
     "route": "/apps/2026/03/13/bubble-tap",
     "appPath": "/apps/2026/03/13/bubble-tap/index.html",
     "generation": {
@@ -1751,6 +2854,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1781,6 +2886,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1795,13 +2902,7 @@
     "category": "Utilities",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "timezone",
-      "scheduling",
-      "meeting-planner",
-      "global-teams",
-      "productivity"
-    ],
+    "tags": ["timezone", "scheduling", "meeting-planner", "global-teams", "productivity"],
     "route": "/apps/2026/03/12/timezone-overlap-finder",
     "appPath": "/apps/2026/03/12/timezone-overlap-finder/index.html",
     "generation": {
@@ -1817,6 +2918,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1831,14 +2934,7 @@
     "category": "Education",
     "inputMode": "responsive",
     "status": "active",
-    "tags": [
-      "astronomy",
-      "stars",
-      "constellations",
-      "mythology",
-      "interactive",
-      "educational"
-    ],
+    "tags": ["astronomy", "stars", "constellations", "mythology", "interactive", "educational"],
     "route": "/apps/2026/03/12/constellation-explorer",
     "appPath": "/apps/2026/03/12/constellation-explorer/index.html",
     "generation": {
@@ -1854,6 +2950,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1884,6 +2982,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1914,6 +3014,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1944,6 +3046,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -1974,6 +3078,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2004,6 +3110,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2034,6 +3142,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2064,6 +3174,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2094,6 +3206,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2124,6 +3238,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2154,6 +3270,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2184,6 +3302,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2258,6 +3378,8 @@
       }
     ],
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": [
       {
         "runId": "run-20260405T220949Z-8494ae",
@@ -2309,6 +3431,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2339,6 +3463,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2369,6 +3495,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2399,6 +3527,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2429,6 +3559,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2459,6 +3591,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2489,6 +3623,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2519,6 +3655,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2549,6 +3687,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2579,6 +3719,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2609,6 +3751,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2639,6 +3783,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2653,14 +3799,7 @@
     "category": "Games",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "game",
-      "flappy-bird",
-      "arcade",
-      "tap",
-      "touch-controls",
-      "endless-runner"
-    ],
+    "tags": ["game", "flappy-bird", "arcade", "tap", "touch-controls", "endless-runner"],
     "route": "/apps/2026/03/07/flappy-bird",
     "appPath": "/apps/2026/03/07/flappy-bird/index.html",
     "generation": {
@@ -2674,9 +3813,43 @@
       "notes": "Classic Flappy Bird game with gravity physics, pipe obstacles, scoring system, best score tracking, dark/light mode, touch and keyboard controls."
     },
     "suggestion": null,
-    "improvements": null,
+    "improvements": [
+      {
+        "issueNumber": 327,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/327",
+        "runId": "run-20260414T205826Z-4681ec",
+        "description": "update game to include social media sharing of score when game over",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-14T21:00:17Z",
+        "agentName": "claude-code",
+        "llmModel": "claude-sonnet-4-6"
+      },
+      {
+        "issueNumber": 537,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/537",
+        "runId": "run-20260528T163809Z-c4d2e8",
+        "description": "Removed automatic window.voaShare() call from endGame(); the share drawer now only opens when the player explicitly clicks the Share button in the shell footer.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-05-28T16:38:09Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-sonnet-4-6"
+      }
+    ],
     "allowImprovements": true,
-    "backups": null
+    "leaderboard": true,
+    "maxScore": 999,
+    "backups": [
+      {
+        "runId": "run-20260414T205826Z-4681ec",
+        "path": "backups/run-20260414T205826Z-4681ec/index.html",
+        "url": "/apps/2026/03/07/flappy-bird/backups/run-20260414T205826Z-4681ec/index.html"
+      },
+      {
+        "runId": "run-20260528T163809Z-c4d2e8",
+        "path": "backups/run-20260528T163809Z-c4d2e8/index.html",
+        "url": "/apps/2026/03/07/flappy-bird/backups/run-20260528T163809Z-c4d2e8/index.html"
+      }
+    ]
   },
   {
     "id": "2026/03/07/contrast-lab",
@@ -2706,6 +3879,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2736,6 +3911,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2766,6 +3943,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2780,13 +3959,7 @@
     "category": "Visualizations",
     "inputMode": "desktop",
     "status": "active",
-    "tags": [
-      "algorithms",
-      "sorting",
-      "visualization",
-      "educational",
-      "computer-science"
-    ],
+    "tags": ["algorithms", "sorting", "visualization", "educational", "computer-science"],
     "route": "/apps/2026/03/06/sorting-visualizer",
     "appPath": "/apps/2026/03/06/sorting-visualizer/index.html",
     "generation": {
@@ -2802,21 +3975,23 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
     "id": "2026/03/06/word-scramble",
-    "name": "Word Scramble",
-    "shortDescription": "A fun word puzzle game where you unscramble letters to reveal words. Features multiple difficulty levels, time pressure, streak bonuses, and keyboard support.",
+    "name": "Word Scramble Party",
+    "shortDescription": "A multiplayer icebreaker where moderators run timed word-scramble rounds, award points to the first responder, and finish with fair tie-aware rankings.",
     "thumbnailUrl": "/apps/2026/03/06/word-scramble/thumbnail.svg",
     "createdAt": "2026-03-06T14:30:00Z",
     "year": 2026,
     "month": 3,
     "day": 6,
-    "category": "Games",
-    "inputMode": "desktop",
+    "category": "Icebreakers",
+    "inputMode": "responsive",
     "status": "active",
-    "tags": ["game", "puzzle", "words", "educational", "keyboard-controls"],
+    "tags": ["icebreaker", "multiplayer", "word-game", "moderator", "party", "round-based"],
     "route": "/apps/2026/03/06/word-scramble",
     "appPath": "/apps/2026/03/06/word-scramble/index.html",
     "generation": {
@@ -2830,9 +4005,101 @@
       "notes": "Generated as a test of the full agent workflow including git operations and transactional logging."
     },
     "suggestion": null,
-    "improvements": null,
+    "improvements": [
+      {
+        "issueNumber": 351,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/351",
+        "description": "Converted Word Scramble into a multiplayer icebreaker with participant setup, timed rounds, moderator winner assignment, answer panel window, and fair tie-ranked scoring.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-18T16:25:43Z",
+        "agentName": "GitHub Copilot",
+        "llmModel": "GPT-5.3-Codex"
+      },
+      {
+        "issueNumber": 354,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/354",
+        "description": "Manual round advancement with Start Next Round button; highlight empty tiles to show current entry position; display player scores on +1 buttons.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-18T17:01:51Z",
+        "agentName": "GitHub Copilot",
+        "llmModel": "Claude Haiku 4.5"
+      },
+      {
+        "issueNumber": 362,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/362",
+        "runId": "run-20260419T220321Z-f36990",
+        "description": "Migrated Word Scramble to multiplayer backend sessions with moderator share-link lobby, player name join, realtime synchronized rounds/scores, and automatic first-correct score awarding.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-19T22:03:21Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5.4"
+      },
+      {
+        "issueNumber": 364,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/364",
+        "runId": "run-20260419T233454Z-4b42e6",
+        "description": "Improved player waiting and round-sync behavior so joined players cannot resubmit names, new rounds clear local letters, and winner updates refresh promptly.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-19T23:34:54Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5"
+      },
+      {
+        "issueNumber": 366,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/366",
+        "runId": "run-20260420T000851Z-4f89b2",
+        "description": "Improved player letter tile states, disabled between-round controls after a winner, and prefilled returning player names on new join links.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-20T00:08:51Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5"
+      },
+      {
+        "issueNumber": 368,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/368",
+        "runId": "run-20260420T002525Z-ddf146",
+        "description": "Added player typing instructions, active tile and answer-slot feedback, plus round-over confetti for winners and a blue-rain cloud for other players.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-04-20T00:25:25Z",
+        "agentName": "Codex",
+        "llmModel": "GPT-5"
+      }
+    ],
     "allowImprovements": true,
-    "backups": null
+    "leaderboard": false,
+    "maxScore": null,
+    "backups": [
+      {
+        "runId": "run-20260418T162543Z-9209f8",
+        "path": "backups/run-20260418T162543Z-9209f8/index.html",
+        "url": "/apps/2026/03/06/word-scramble/backups/run-20260418T162543Z-9209f8/index.html"
+      },
+      {
+        "runId": "run-20260418T165927Z-a7f2c9",
+        "path": "backups/run-20260418T165927Z-a7f2c9/index.html",
+        "url": "/apps/2026/03/06/word-scramble/backups/run-20260418T165927Z-a7f2c9/index.html"
+      },
+      {
+        "runId": "run-20260419T220321Z-f36990",
+        "path": "backups/run-20260419T220321Z-f36990/index.html",
+        "url": "/apps/2026/03/06/word-scramble/backups/run-20260419T220321Z-f36990/index.html"
+      },
+      {
+        "runId": "run-20260419T233454Z-4b42e6",
+        "path": "backups/run-20260419T233454Z-4b42e6/index.html",
+        "url": "/apps/2026/03/06/word-scramble/backups/run-20260419T233454Z-4b42e6/index.html"
+      },
+      {
+        "runId": "run-20260420T000851Z-4f89b2",
+        "path": "backups/run-20260420T000851Z-4f89b2/index.html",
+        "url": "/apps/2026/03/06/word-scramble/backups/run-20260420T000851Z-4f89b2/index.html"
+      },
+      {
+        "runId": "run-20260420T002525Z-ddf146",
+        "path": "backups/run-20260420T002525Z-ddf146/index.html",
+        "url": "/apps/2026/03/06/word-scramble/backups/run-20260420T002525Z-ddf146/index.html"
+      }
+    ]
   },
   {
     "id": "2026/03/05/snake-game",
@@ -2862,6 +4129,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2892,6 +4161,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2922,6 +4193,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   },
   {
@@ -2952,6 +4225,8 @@
     "suggestion": null,
     "improvements": null,
     "allowImprovements": true,
+    "leaderboard": false,
+    "maxScore": null,
     "backups": null
   }
 ]

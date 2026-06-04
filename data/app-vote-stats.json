@@ -1,0 +1,492 @@
+{
+  "generatedAt": "2026-05-25T21:49:05.906Z",
+  "recentWindowDays": 7,
+  "apps": {
+    "2026/05/24/duck-flight": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/05/23/game-of-life": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/05/23/simmotion": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/05/23/rubric-showdown": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/05/12/geo-defense": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/05/09/tapper-rush": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/04/24/impostor-question": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/04/23/guess-who-said-it": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/04/18/team-taboo": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/04/17/alibi": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/04/16/mental-gymnastics": {
+      "up": 1,
+      "down": 0,
+      "net": 1,
+      "recentNet": 0
+    },
+    "2026/04/14/missile-command-modern": {
+      "up": 2,
+      "down": 0,
+      "net": 2,
+      "recentNet": 0
+    },
+    "2026/04/11/benchmark-breakout-opus": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/04/10/benchmark-breakout-turbo": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/04/10/benchmark-breakout": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/04/08/asteroids-modern": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/04/04/plasma-chain-reaction": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/04/01/emoji-quiz-party": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/31/two-truths-lie-game": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/26/sokoban-warehouse": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/26/galaxian-blitz": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/25/neon-slot-rush": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/25/peg-solitaire": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/24/charades-chaos-deck": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/23/dungeon-puzzle-run": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/23/tic-tac-toe-strategy-lab": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/21/texas-lotto-generator": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/21/neighborhood-home-ranker": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/21/tetris-classic": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/21/morse-code-radio": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/21/pattern-pulse-memory": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/20/sudoku-sprint": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/19/slide-2048": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/19/orbit-memory-match": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/18/cyber-hop": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/17/hangman-word-game": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/17/focus-timer": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/16/mindful-breathing-tracker": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/15/focus-sprint-planner": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/15/hydration-nudge-tracker": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/14/decision-spinner": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/14/password-entropy-lab": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/13/interval-breathing-coach": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/13/bubble-tap": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/12/meeting-cost-calculator": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/12/timezone-overlap-finder": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/12/constellation-explorer": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/12/sorting-race-visualizer": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/11/lucky-decision-wheel": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/10/habit-streak-garden": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/10/neon-breakout": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/10/pixel-painter": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/09/gravity-dodge": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/08/typing-speed-sprint": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/08/daredevil-moto-jump": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/08/mini-putt-gauntlet": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/08/eagle-eye-teacher": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/08/logic-lights-out": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/08/space-invaders-clone": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/07/workout-timer-pulse": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/07/road-rage": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/07/fishing-frenzy": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/07/design-dash": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/07/realtor-tycoon": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/07/zorkish-text-adventure": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/07/halftime-hustle": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/07/pacman-classic": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/07/debug-rush": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/07/blackjack": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/07/archery-physics": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/07/disco-runner": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/07/flappy-bird": {
+      "up": 2,
+      "down": 0,
+      "net": 2,
+      "recentNet": 0
+    },
+    "2026/03/07/contrast-lab": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/06/word-weaver": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/06/memory-match": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/06/sorting-visualizer": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/06/word-scramble": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/05/snake-game": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/05/breathing-orb": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/05/pomodoro-timer": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    },
+    "2026/03/05/color-palette-generator": {
+      "up": 0,
+      "down": 0,
+      "net": 0,
+      "recentNet": 0
+    }
+  }
+}
