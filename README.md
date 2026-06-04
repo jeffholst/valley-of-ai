@@ -81,7 +81,7 @@ No setup required — visit **[valleyofai.com](https://www.valleyofai.com)** to 
 
 <table>
 <tr>
-<td><img src="https://img.shields.io/badge/Node.js-22+-339933?style=flat-square&logo=node.js&logoColor=white" /></td>
+<td><img src="https://img.shields.io/badge/Node.js-22.22%2B-339933?style=flat-square&logo=node.js&logoColor=white" /></td>
 <td><img src="https://img.shields.io/badge/npm-9+-CB3837?style=flat-square&logo=npm&logoColor=white" /></td>
 <td><img src="https://img.shields.io/badge/GitHub_CLI-required-181717?style=flat-square&logo=github&logoColor=white" /></td>
 <td><img src="https://img.shields.io/badge/git-required-F05032?style=flat-square&logo=git&logoColor=white" /></td>
@@ -91,7 +91,7 @@ No setup required — visit **[valleyofai.com](https://www.valleyofai.com)** to 
 
 | Tool                    | Required for                                                                                                 | Install                                                                 |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
-| **Node.js 22+**         | Running the dev server, all scripts                                                                          | [nodejs.org](https://nodejs.org)                                        |
+| **Node.js 22.22+**      | Running the dev server, all scripts                                                                          | [nodejs.org](https://nodejs.org)                                        |
 | **npm 9+**              | Installing dependencies, running scripts                                                                     | Bundled with Node.js                                                    |
 | **git**                 | All git operations in the agent pipelines                                                                    | [git-scm.com](https://git-scm.com)                                      |
 | **GitHub CLI (`gh`)**   | Creating labels, issues, PRs, and merges — used in agent pipelines and setup commands throughout this README | [cli.github.com](https://cli.github.com) — then run `gh auth login`     |
