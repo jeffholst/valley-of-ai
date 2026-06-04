@@ -1,5 +1,42 @@
 [
   {
+    "id": "2026/06/04/glassmorphism-ui-playground",
+    "name": "Glassmorphism UI Playground",
+    "shortDescription": "An interactive playground to design and export professional glassmorphism CSS effects.",
+    "thumbnailUrl": "/apps/2026/06/04/glassmorphism-ui-playground/thumbnail.svg",
+    "createdAt": "2026-06-04T18:51:51Z",
+    "year": 2026,
+    "month": 6,
+    "day": 4,
+    "category": "Design",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": [
+      "design-tool",
+      "css-generator",
+      "glassmorphism",
+      "ui-design",
+      "interactive",
+      "visuals"
+    ],
+    "route": "/apps/2026/06/04/glassmorphism-ui-playground",
+    "appPath": "/apps/2026/06/04/glassmorphism-ui-playground/index.html",
+    "generation": {
+      "agentName": "Dev",
+      "llmModel": "ollama/gemma4:31b",
+      "startTime": "2026-06-04T18:51:51Z",
+      "endTime": "2026-06-04T18:59:00Z",
+      "totalTokensIn": 8000,
+      "totalTokensOut": 8000,
+      "runId": "run-20260604T185151Z-73f10d",
+      "notes": "Built as a tool for the Design category to complement existing a-esthetically driven apps."
+    },
+    "suggestion": null,
+    "improvements": null,
+    "allowImprovements": true,
+    "backups": null
+  },
+  {
     "id": "2026/04/22/chroma-palette-pro",
     "name": "Chroma Palette Pro",
     "shortDescription": "Dynamic palette generator with generative harmony anchors and live CSS export.",
