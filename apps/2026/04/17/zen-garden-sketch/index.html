@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Zen Garden Sketch - __MAIN_SITE_NAME__</title>
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', '__GA_MEASUREMENT_ID__');
+  </script>
+
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+  <meta name="voa-github-url" content="__GITHUB_URL__" />
+  <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+  <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+  <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+  <meta name="application-name" content="Zen Garden Sketch" />
+  <meta name="voa-app-id" content="2026/04/17/zen-garden-sketch" />
+  <script src="/apps/shared/app-shell.js" defer></script>
+
+  <style>
+    :root {
+      --bg: #e5e7eb;
+      --text: #374151;
+      --surface: #f3f4f6;
+      --accent: #9ca3af;
+      --sand: #d1d5db;
+      --sand-dark: #9ca3af;
+      --stone: #4b5563;
+    }
+    [data-theme='dark'] {
+      --bg: #111827;
+      --text: #f9fafb;
+      --surface: #1f2937;
+      --accent: #4b5563;
+      --sand: #374151;
+      --sand-dark: #1f2937;
+      --stone: #9ca3af;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    #appWrapper {
+      position: fixed;
+      top: 64px;
+      bottom: 56px;
+      left: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .garden-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      aspect-ratio: 4/3;
+      background-color: var(--sand);
+      border: 12px solid var(--surface);
+      border-radius: 16px;
+      box-shadow: inset 0 0 50px rgba(0,0,0,0.1), 0 10px 25px rgba(0,0,0,0.1);
+      cursor: crosshair;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+    }
+
+    .controls {
+      margin-top: 24px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      padding: 12px 24px;
+      border-radius: 50px;
+      border: none;
+      background-color: var(--surface);
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      font-size: 14px;
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    button:hover {
+      background-color: var(--accent);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .tool-selector {
+      display: flex;
+      background: var(--surface);
+      padding: 4px;
+      border-radius: 50px;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .tool-btn {
+      padding: 8px 16px;
+      border-radius: 50px;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tool-btn.active {
+      background: var(--bg);
+      color: var(--text);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .instructions {
+      margin-bottom: 16px;
+      text-align: center;
+      font-size: 14px;
+      opacity: 0.8;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div id="appWrapper">
+    <div class="instructions">Rake the sand. Find your peace.</div>
+    
+    <div class="tool-selector">
+      <button class="tool-btn active" data-tool="rake">Traditional Rake</button>
+      <button class="tool-btn" data-tool="wide">Wide Comb</button>
+      <button class="tool-btn" data-tool="stone">Place Stone</button>
+    </div>
+
+    <div class="garden-container">
+      <canvas id="gardenCanvas"></canvas>
+    </div>
+
+    <div class="controls">
+      <button id="clearBtn">Clear Garden</button>
+      <button id="saveBtn">Snapshot</button>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('gardenCanvas');
+    const ctx = canvas.getContext('2d');
+    const clearBtn = document.getElementById('clearBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const toolBtns = document.querySelectorAll('.tool-btn');
+
+    let isDrawing = false;
+    let currentTool = 'rake';
+    let lastX = 0;
+    let lastY = 0;
+
+    function initCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * window.devicePixelRatio;
+      canvas.height = rect.height * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      
+      // Fill background
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--sand').trim();
+      ctx.fillRect(0, 0, rect.width, rect.height);
+      
+      // Initial texture
+      addSandTexture();
+    }
+
+    function addSandTexture() {
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--sand-dark').trim();
+      ctx.lineWidth = 0.5;
+      ctx.globalAlpha = 0.3;
+      for (let i = 0; i < canvas.width; i += 4) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i, canvas.height);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1.0;
+    }
+
+    function drawLine(x1, y1, x2, y2, tool) {
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      
+      if (tool === 'rake') {
+        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--sand-dark').trim();
+        ctx.lineWidth = 6;
+        ctx.globalAlpha = 0.4;
+        
+        // Draw multiple rake tines
+        for (let i = -4; i <= 4; i += 2) {
+          ctx.beginPath();
+          ctx.moveTo(x1 + i, y1 + i);
+          ctx.lineTo(x2 + i, y2 + i);
+          ctx.stroke();
+        }
+      } else if (tool === 'wide') {
+        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--sand-dark').trim();
+        ctx.lineWidth = 20;
+        ctx.globalAlpha = 0.2;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+      } else if (tool === 'stone') {
+        // Stone placement is handled by a click, not a line
+      }
+      ctx.globalAlpha = 1.0;
+    }
+
+    function placeStone(x, y) {
+      const stoneColor = getComputedStyle(document.documentElement).getPropertyValue('--stone').trim();
+      const size = 15 + Math.random() * 20;
+      
+      ctx.fillStyle = stoneColor;
+      ctx.beginPath();
+      ctx.ellipse(x, y, size, size * 0.8, Math.random() * Math.PI, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Add shadow/highlight
+      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      ctx.beginPath();
+      ctx.ellipse(x + 2, y + 2, size, size * 0.8, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function handleStart(e) {
+      isDrawing = true;
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX || e.touches[0].clientX) - rect.left;
+      const y = (e.clientY || e.touches[0].clientY) - rect.top;
+      
+      if (currentTool === 'stone') {
+        placeStone(x, y);
+      }
+      
+      [lastX, lastY] = [x, y];
+    }
+
+    function handleMove(e) {
+      if (!isDrawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+      const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+      
+      if (currentTool !== 'stone') {
+        drawLine(lastX, lastY, x, y, currentTool);
+      }
+      
+      [lastX, lastY] = [x, y];
+    }
+
+    function handleEnd() {
+      isDrawing = false;
+    }
+
+    // Tool switching
+    toolBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        toolBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentTool = btn.dataset.tool;
+      });
+    });
+
+    clearBtn.addEventListener('click', () => {
+      initCanvas();
+    });
+
+    saveBtn.addEventListener('click', () => {
+      const link = document.createElement('a');
+      link.download = 'my-zen-garden.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+
+    canvas.addEventListener('mousedown', handleStart);
+    canvas.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup', handleEnd);
+
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(e); }, { passive: false });
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); handleMove(e); }, { passive: false });
+    canvas.addEventListener('touchend', handleEnd);
+
+    window.addEventListener('resize', initCanvas);
+    initCanvas();
+  </script>
+</body>
+</html>

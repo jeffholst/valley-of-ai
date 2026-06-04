@@ -1,0 +1,29 @@
+{
+  "id": "chroma-flow-designer",
+  "name": "Chroma Flow Designer",
+  "shortDescription": "Create mesmerizing generative fluid art using dynamic flow fields and customizable particle systems.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-04-21T07:02:52Z",
+  "category": "Design",
+  "status": "active",
+  "tags": [
+    "generative-art",
+    "fluid-simulation",
+    "design-tool",
+    "creative-coding",
+    "visuals",
+    "interactive"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "Dev",
+    "llmModel": "ollama/gemma4:31b",
+    "startTime": "2026-04-21T07:02:52Z",
+    "endTime": "2026-04-21T07:20:00Z",
+    "totalTokensIn": 25000,
+    "totalTokensOut": 20000,
+    "runId": "run-20260421T070252Z-a1b2c3",
+    "notes": "Built as a Design category app inspired by Mindful Palette Flow, focusing on fluid dynamics and user-controllable parameters."
+  }
+}
