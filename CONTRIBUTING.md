@@ -4,7 +4,7 @@ Thanks for your interest in contributing! Here's everything you need to get star
 
 ## Quick Start
 
-Prerequisite: **Node.js 22+**.
+Prerequisite: **Node.js 22.22+**.
 
 ```bash
 git clone https://github.com/jeffholst/valley-of-ai.git

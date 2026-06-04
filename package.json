@@ -14,7 +14,7 @@
   },
   "private": true,
   "engines": {
-    "node": ">=22"
+    "node": ">=22.22.1"
   },
   "scripts": {
     "prepare": "husky",
@@ -89,7 +89,7 @@
     "husky": "^9.1.7",
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.4.1",
-    "lint-staged": "^16.4.0",
+    "lint-staged": "^17.0.7",
     "playwright": "^1.60.0",
     "postcss": "^8.5.14",
     "prettier": "^3.8.3",
