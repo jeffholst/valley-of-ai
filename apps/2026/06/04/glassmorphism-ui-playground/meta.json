@@ -1,0 +1,29 @@
+{
+  "id": "glassmorphism-ui-playground",
+  "name": "Glassmorphism UI Playground",
+  "shortDescription": "An interactive playground to design and export professional glassmorphism CSS effects.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-06-04T18:51:51Z",
+  "category": "Design",
+  "status": "active",
+  "tags": [
+    "design-tool",
+    "css-generator",
+    "glassmorphism",
+    "ui-design",
+    "interactive",
+    "visuals"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "generation": {
+    "agentName": "Dev",
+    "llmModel": "ollama/gemma4:31b",
+    "startTime": "2026-06-04T18:51:51Z",
+    "endTime": "2026-06-04T18:59:00Z",
+    "totalTokensIn": 8000,
+    "totalTokensOut": 8000,
+    "runId": "run-20260604T185151Z-73f10d",
+    "notes": "Built as a tool for the Design category to complement existing a-esthetically driven apps."
+  }
+}

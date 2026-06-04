@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Fortune Wheel Deluxe - __MAIN_SITE_NAME__</title>
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', '__GA_MEASUREMENT_ID__');
+  </script>
+
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+  <meta name="voa-github-url" content="__GITHUB_URL__" />
+  <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+  <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+  <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+  <meta name="application-name" content="Fortune Wheel Deluxe" />
+  <meta name="voa-app-id" content="2026/04/15/fortune-wheel-deluxe" />
+  <script src="/apps/shared/app-shell.js" defer></script>
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --text: #f9fafb;
+      --surface: #1e293b;
+      --primary: #f59e0b;
+      --primary-glow: rgba(245, 158, 11, 0.4);
+      --accent: #ef4444;
+      --wheel-border: #334155;
+    }
+    [data-theme='light'] {
+      --bg: #f8fafc;
+      --text: #0f172a;
+      --surface: #ffffff;
+      --primary: #d97706;
+      --primary-glow: rgba(217, 119, 6, 0.2);
+      --accent: #dc2626;
+      --wheel-border: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100dvh;
+    }
+
+    #appWrapper {
+      position: fixed;
+      top: 64px;
+      bottom: 56px;
+      left: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      gap: 2rem;
+    }
+
+    .game-container {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #wheelCanvas {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 20px var(--primary-glow));
+      border-radius: 50%;
+      border: 8px solid var(--wheel-border);
+      background: var(--surface);
+    }
+
+    .wheel-pointer {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-top: 40px solid var(--accent);
+      z-index: 10;
+      filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3));
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .input-group {
+      display: flex;
+      width: 100%;
+      gap: 10px;
+    }
+
+    input {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 2px solid var(--wheel-border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn {
+      cursor: pointer;
+      padding: 14px 28px;
+      border-radius: 12px;
+      border: none;
+      background: var(--primary);
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: transform 0.1s, filter 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 0 #b45309;
+      width: 100%;
+      max-width: 200px;
+    }
+    .btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #b45309;
+    }
+    .btn:disabled {
+      filter: grayscale(1);
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    #resultDisplay {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      min-height: 1.5em;
+      color: var(--primary);
+      text-shadow: 0 0 10px var(--primary-glow);
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .config-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: 400px;
+    }
+    .config-panel h3 {
+      margin: 0;
+      font-size: 14px;
+      text-transform: uppercase;
+      opacity: 0.7;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="appWrapper">
+    <div id="resultDisplay">Spin the wheel!</div>
+
+    <div class="game-container">
+      <div class="wheel-pointer"></div>
+      <canvas id="wheelCanvas" width="800" height="800"></canvas>
+    </div>
+
+    <div class="controls">
+      <button id="spinBtn" class="btn">SPIN!</button>
+      
+      <div class="config-panel">
+        <h3>Custom Options (comma separated)</h3>
+        <div class="input-group">
+          <input type="text" id="optionsInput" placeholder="Pizza, Sushi, Tacos, Salad..." value="Pizza, Sushi, Tacos, Salad, Burger, Pasta">
+          <button id="updateBtn" class="btn" style="width: auto; max-width: none; padding: 12px 20px; font-size: 14px; box-shadow: 0 4px 0 #4b5563; background: #6b7280;">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    const spinBtn = document.getElementById('spinBtn');
+    const updateBtn = document.getElementById('updateBtn');
+    const optionsInput = document.getElementById('optionsInput');
+    const resultDisplay = document.getElementById('resultDisplay');
+
+    let options = ['Pizza', 'Sushi', 'Tacos', 'Salad', 'Burger', 'Pasta'];
+    let colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
+    let currentRotation = 0;
+    let isSpinning = false;
+
+    function drawWheel() {
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = centerX - 20;
+      const sliceAngle = (2 * Math.PI) / options.length;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      options.forEach((opt, i) => {
+        const angle = currentRotation + i * sliceAngle;
+        
+        // Draw slice
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, angle, angle + sliceAngle);
+        ctx.closePath();
+        
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Draw text
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(angle + sliceAngle / 2);
+        ctx.textAlign = 'right';
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 32px sans-serif';
+        ctx.shadowColor = 'rgba(0,0,0,0.5)';
+        ctx.shadowBlur = 4;
+        ctx.fillText(opt, radius - 40, 10);
+        ctx.restore();
+      });
+
+      // Inner circle decoration
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 40, 0, 2 * Math.PI);
+      ctx.fillStyle = '#334155';
+      ctx.fill();
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 5;
+      ctx.stroke();
+    }
+
+    function spin() {
+      if (isSpinning) return;
+      isSpinning = true;
+      spinBtn.disabled = true;
+      resultDisplay.innerText = 'Good luck...';
+
+      const spinDuration = 4000; 
+      const startRotation = currentRotation;
+      const extraSpins = 5 + Math.random() * 5;
+      const targetRotation = startRotation + extraSpins * 2 * Math.PI;
+      
+      const startTime = performance.now();
+
+      function animate(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / spinDuration, 1);
+        
+        // Cubic ease-out
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        
+        currentRotation = startRotation + (targetRotation - startRotation) * easeOut;
+        drawWheel();
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          isSpinning = false;
+          spinBtn.disabled = false;
+          determineWinner();
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    function determineWinner() {
+      const sliceAngle = (2 * Math.PI) / options.length;
+      // Pointer is at top (3*PI/2 or -PI/2)
+      // Current rotation is in radians.
+      // Normalizing rotation to 0..2PI
+      const normalizedRotation = currentRotation % (2 * Math.PI);
+      
+      // The pointer is at -PI/2 (top).
+      // Slice at top is where (rotation + index * sliceAngle) is around -PI/2
+      // Angle of pointer relative to rotation:
+      const pointerAngle = (1.5 * Math.PI) - normalizedRotation;
+      let winningIndex = Math.floor((pointerAngle / sliceAngle) % options.length);
+      if (winningIndex < 0) winningIndex += options.length;
+      
+      const winner = options[winningIndex];
+      resultDisplay.innerText = `🎉 ${winner} 🎉`;
+    }
+
+    function updateOptions() {
+      const val = optionsInput.value.trim();
+      if (!val) return;
+      options = val.split(',').map(s => s.trim()).filter(s => s.length > 0);
+      if (options.length < 2) {
+        alert('Please enter at least 2 options');
+        return;
+      }
+      drawWheel();
+    }
+
+    spinBtn.addEventListener('click', spin);
+    updateBtn.addEventListener('click', updateOptions);
+
+    // Initial draw
+    drawWheel();
+  </script>
+</body>
+</html>

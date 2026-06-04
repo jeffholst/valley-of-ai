@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glassmorphism UI Playground - __MAIN_SITE_NAME__</title>
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', '__GA_MEASUREMENT_ID__');
+  </script>
+
+  <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+  <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+  <meta name="voa-github-url" content="__GITHUB_URL__" />
+  <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+  <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+  <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+  <meta name="application-name" content="Glassmorphism UI Playground" />
+  <meta name="voa-app-id" content="2026/06/04/glassmorphism-ui-playground" />
+  <script src="/apps/shared/app-shell.js" defer></script>
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --text: #f9fafb;
+      --surface: #1e293b;
+      --accent: #38bdf8;
+    }
+    [data-theme='light'] {
+      --bg: #f1f5f9;
+      --text: #0f172a;
+      --surface: #ffffff;
+      --accent: #0284c7;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      transition: background-color 0.3s ease;
+    }
+
+    #appWrapper {
+      position: fixed;
+      top: 64px;
+      bottom: 56px;
+      left: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .main-container {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 24px;
+      height: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .preview-area {
+      position: relative;
+      background: linear-gradient(45deg, #ee9ca7, #ffdde1, #2193b0, #6dd5ed);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 4px solid var(--surface);
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .glass-card {
+      padding: 40px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      text-align: center;
+      max-width: 300px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      transition: all 0.1s ease;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .controls-panel {
+      background: var(--surface);
+      padding: 24px;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .control-group label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      opacity: 0.9;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .code-output {
+      background: #000;
+      color: #10b981;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-top: auto;
+      border: 1px solid #334155;
+    }
+
+    .copy-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
+      transition: filter 0.2s;
+    }
+
+    .copy-btn:hover {
+      filter: brightness(1.1);
+    }
+
+    @media (max-width: 800px) {
+      .main-container {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+      }
+      #appWrapper {
+        position: relative;
+        top: 0;
+        bottom: 0;
+        height: auto;
+        overflow-y: auto;
+        padding-bottom: 100px;
+      }
+      .preview-area {
+        height: 300px;
+        margin-bottom: 24px;
+      }
+      .controls-panel {
+        margin-bottom: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="appWrapper">
+    <div class="main-container">
+      <div class="preview-area">
+        <div id="glassCard" class="glass-card">
+          <h2 style="margin-top:0">Glassmorphism</h2>
+          <p>Real-time CSS Playground</p>
+        </div>
+      </div>
+      <div class="controls-panel">
+        <div class="control-group">
+          <label>Blur (px): <span id="val-blur">10</span></label>
+          <input type="range" id="blur" min="0" max="40" value="10">
+        </div>
+        <div class="control-group">
+          <label>Transparency (Opacity): <span id="val-opacity">0.1</span></label>
+          <input type="range" id="opacity" min="0" max="1" step="0.01" value="0.1">
+        </div>
+        <div class="control-group">
+          <label>Border Radius (px): <span id="val-radius">24</span></label>
+          <input type="range" id="radius" min="0" max="100" value="24">
+        </div>
+        <div class="control-group">
+          <label>Border Opacity (0-1): <span id="val-border">0.3</span></label>
+          <input type="range" id="border" min="0" max="1" step="0.01" value="0.3">
+        </div>
+        <div class="control-group">
+          <label>Text Color: <span id="val-text">#ffffff</span></label>
+          <input type="color" id="textColor" value="#ffffff">
+        </div>
+        
+        <div class="code-output" id="codeOutput">
+          backdrop-filter: blur(10px);<br>
+          background: rgba(255, 255, 255, 0.1);<br>
+          border: 1px solid rgba(255, 255, 255, 0.3);
+        </div>
+        <button class="copy-btn" id="copyBtn">Copy CSS</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const card = document.getElementById('glassCard');
+    const codeOutput = document.getElementById('codeOutput');
+    const copyBtn = document.getElementById('copyBtn');
+
+    const inputs = {
+      blur: document.getElementById('blur'),
+      opacity: document.getElementById('opacity'),
+      border: document.getElementById('border'),
+      radius: document.getElementById('radius'),
+      textColor: document.getElementById('textColor')
+    };
+
+    const values = {
+      blur: document.getElementById('val-blur'),
+      opacity: document.getElementById('val-opacity'),
+      border: document.getElementById('val-border'),
+      radius: document.getElementById('val-radius'),
+      valText: document.getElementById('val-text')
+    };
+
+    function updateGlass() {
+      const b = inputs.blur.value;
+      const o = inputs.opacity.value;
+      const br = inputs.border.value;
+      const r = inputs.radius.value;
+      const tc = inputs.textColor.value;
+
+      card.style.backdropFilter = \`blur(\${b}px)\`;
+      card.style.backgroundColor = \`rgba(255, 255, 255, \${o})\`;
+      card.style.border = \`1px solid rgba(255, 255, 255, \${br})\`;
+      card.style.borderRadius = \`\${r}px\`;
+      card.style.color = tc;
+
+      const css = \`backdrop-filter: blur(\${b}px);\\nbackground: rgba(255, 255, 255, \${o});\\nborder: 1px solid rgba(255, 255, 255, \${br});\\nborder-radius: \${r}px;\\ncolor: \${tc};\`;
+      codeOutput.innerText = css;
+      
+      values.blur.innerText = b;
+      values.opacity.innerText = o;
+      values.border.innerText = br;
+      values.radius.innerText = r;
+      values.valText.innerText = tc;
+    }
+
+    Object.values(inputs).forEach(input => {
+      input.addEventListener('input', updateGlass());
+    });
+    
+    // Fix: The above loop was wrong. It should be a function reference.
+    // Correcting it:
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('input', updateGlass);
+    });
+
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(codeOutput.innerText);
+      copyBtn.innerText = 'Copied!';
+      setTimeout(() => {
+        copyBtn.innerText = 'Copy CSS';
+      }, 2000);
+    });
+
+    updateGlass();
+  </script>
+</body>
+</html>

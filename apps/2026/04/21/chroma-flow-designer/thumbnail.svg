@@ -1,0 +1,59 @@
+<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="textShadow">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feOffset dx="2" dy="2" result="offsetblur" />
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)" />
+
+  <!-- Decorative Grid -->
+  <path d="M0 100 L800 100 M0 200 L800 200 M0 300 L800 300 M100 0 L100 450 M200 0 L200 450 M300 0 L300 450 M400 0 L400 450 M500 0 L500 450 M600 0 L600 450 M700 0 L700 450" 
+        stroke="#334155" stroke-width="1" opacity="0.3" />
+
+  <!-- Flow Lines (simulating the app state) -->
+  <g filter="url(#glow)" stroke="#38bdf8" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8">
+    <path d="M100 300 Q 200 250, 300 300 T 500 250 T 700 300" />
+    <path d="M150 350 Q 250 300, 350 350 T 550 300 T 750 350" />
+    <path d="M50 200 Q 150 150, 250 200 T 450 150 T 650 200" />
+    <path d="M200 100 Q 300 50, 400 100 T 600 50 T 800 100" />
+  </g>
+
+  <!-- Particles (small glowing circles) -->
+  <circle cx="300" cy="300" r="4" fill="#7dd3fc" filter="url(#glow)" />
+  <circle cx="500" cy="250" r="3" fill="#7dd3fc" filter="url(#glow)" />
+  <circle cx="700" cy="300" r="5" fill="#7dd3fc" filter="url(#glow)" />
+  <circle cx="150" cy="150" r="4" fill="#7dd3fc" filter="url(#glow)" />
+  <circle cx="450" cy="150" r="3" fill="#7dd3fc" filter="url(#glow)" />
+
+  <!-- UI Elements (simulated control panel) -->
+  <rect x="50" y="340" width="300" height="70" rx="12" fill="#1e293b" stroke="#334155" stroke-width="2" />
+  <rect x="70" y="360" width="80" height="20" rx="4" fill="#334155" />
+  <rect x="170" y="360" width="80" height="20" rx="4" fill="#334155" />
+  <rect x="270" y="360" width="60" height="20" rx="4" fill="#38bdf8" />
+
+  <!-- Title -->
+  <text x="400" y="120" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="56" fill="#f9fafb" filter="url(#textShadow)">
+    Chroma Flow Designer
+  </text>
+  <text x="400" y="160" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#38bdf8" opacity="0.8">
+    Generative Fluid Art Engine
+  </text>
+
+  <!-- Frame accent -->
+  <rect x="0" y="0" width="800" height="450" fill="none" stroke="#38bdf8" stroke-width="10" opacity="0.2" />
+</svg>
