@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tapper Rush - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Tapper Rush" />
+    <meta name="voa-app-id" content="2026/05/09/tapper-rush" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        overflow: hidden;
+      }
+
+      #gameWrapper {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg);
+      }
+
+      canvas {
+        display: block;
+        touch-action: none;
+      }
+
+      /* HUD overlay */
+      #hud {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 12px;
+        pointer-events: none;
+        z-index: 10;
+      }
+
+      .hud-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1px;
+      }
+
+      .hud-label {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        opacity: 0.6;
+        color: var(--text);
+      }
+
+      .hud-value {
+        font-size: 20px;
+        font-weight: 900;
+        color: var(--text);
+        text-shadow: 0 0 12px currentColor;
+        line-height: 1;
+      }
+
+      #scoreDisplay { color: #f59e0b; }
+      #livesDisplay { color: #ef4444; }
+      #waveDisplay { color: #a78bfa; }
+
+      .hud-combo {
+        font-size: 13px;
+        font-weight: 800;
+        color: #34d399;
+        text-shadow: 0 0 10px #34d399;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .hud-combo.active { opacity: 1; }
+
+      /* Overlay screens */
+      .overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        background: rgba(10, 16, 35, 0.92);
+        z-index: 20;
+        padding: 24px;
+      }
+
+      .overlay.hidden { display: none; }
+
+      .overlay-title {
+        font-size: clamp(28px, 8vw, 48px);
+        font-weight: 900;
+        text-align: center;
+        background: linear-gradient(135deg, #f59e0b, #ef4444);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 0 16px rgba(245, 158, 11, 0.5));
+        line-height: 1.1;
+      }
+
+      .overlay-sub {
+        font-size: clamp(13px, 3.5vw, 16px);
+        text-align: center;
+        opacity: 0.75;
+        max-width: 320px;
+        line-height: 1.5;
+        color: var(--text);
+      }
+
+      .overlay-score {
+        font-size: clamp(36px, 10vw, 64px);
+        font-weight: 900;
+        color: #f59e0b;
+        text-shadow: 0 0 20px rgba(245, 158, 11, 0.8);
+        line-height: 1;
+      }
+
+      .btn-primary {
+        padding: 14px 40px;
+        font-size: 18px;
+        font-weight: 800;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        background: linear-gradient(135deg, #f59e0b, #ef4444);
+        color: #fff;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        box-shadow: 0 4px 20px rgba(245, 158, 11, 0.5);
+        transition: transform 0.1s, box-shadow 0.1s;
+        min-width: 160px;
+        min-height: 52px;
+        touch-action: manipulation;
+        letter-spacing: 0.5px;
+      }
+
+      .btn-primary:active {
+        transform: scale(0.95);
+        box-shadow: 0 2px 10px rgba(245, 158, 11, 0.4);
+      }
+
+      .btn-secondary {
+        padding: 10px 24px;
+        font-size: 15px;
+        font-weight: 700;
+        border: 2px solid rgba(255,255,255,0.25);
+        border-radius: 10px;
+        cursor: pointer;
+        background: transparent;
+        color: var(--text);
+        transition: border-color 0.2s, background 0.2s;
+        min-height: 44px;
+        touch-action: manipulation;
+      }
+
+      .btn-secondary:active {
+        background: rgba(255,255,255,0.08);
+      }
+
+      .instructions-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        max-width: 300px;
+        width: 100%;
+        font-size: 13px;
+      }
+
+      .inst-item {
+        background: rgba(255,255,255,0.06);
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        line-height: 1.4;
+        color: var(--text);
+        opacity: 0.85;
+      }
+
+      .inst-icon {
+        font-size: 20px;
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .stat-row {
+        display: flex;
+        gap: 32px;
+        justify-content: center;
+      }
+
+      .stat-item {
+        text-align: center;
+      }
+
+      .stat-label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        opacity: 0.5;
+        color: var(--text);
+      }
+
+      .stat-val {
+        font-size: 24px;
+        font-weight: 900;
+        margin-top: 2px;
+      }
+
+      /* Bonus round banner */
+      #bonusBanner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: clamp(18px, 5vw, 28px);
+        font-weight: 900;
+        color: #fde68a;
+        text-shadow: 0 0 24px #f59e0b;
+        background: rgba(10, 16, 35, 0.85);
+        border: 2px solid #f59e0b;
+        border-radius: 16px;
+        padding: 12px 24px;
+        z-index: 15;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s;
+        white-space: nowrap;
+        text-align: center;
+      }
+      #bonusBanner.visible { opacity: 1; }
+
+      /* Pause button */
+      #pauseBtn {
+        position: absolute;
+        top: 6px;
+        right: 12px;
+        width: 36px;
+        height: 36px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 8px;
+        cursor: pointer;
+        color: var(--text);
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 12;
+        touch-action: manipulation;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="gameWrapper">
+      <canvas id="gameCanvas"></canvas>
+
+      <!-- HUD -->
+      <div id="hud">
+        <div class="hud-block">
+          <span class="hud-label">Score</span>
+          <span class="hud-value" id="scoreDisplay">0</span>
+          <span class="hud-combo" id="comboDisplay">x2 COMBO!</span>
+        </div>
+        <div class="hud-block">
+          <span class="hud-label">Wave</span>
+          <span class="hud-value" id="waveDisplay">1</span>
+        </div>
+        <div class="hud-block">
+          <span class="hud-label">Lives</span>
+          <span class="hud-value" id="livesDisplay">❤️❤️❤️</span>
+        </div>
+      </div>
+
+      <button id="pauseBtn" aria-label="Pause">⏸</button>
+      <div id="bonusBanner">⭐ HAPPY HOUR! 2× Points! ⭐</div>
+
+      <!-- Start screen -->
+      <div class="overlay" id="startScreen">
+        <div class="overlay-title">🍺 Tapper Rush</div>
+        <div class="overlay-sub">Serve drinks before customers reach the bar. Catch returning mugs. Don't drop anything!</div>
+        <div class="instructions-grid">
+          <div class="inst-item"><span class="inst-icon">👆</span>Tap to serve</div>
+          <div class="inst-item"><span class="inst-icon">⬆⬇</span>Swipe to switch lane</div>
+          <div class="inst-item"><span class="inst-icon">🍺</span>Customers catch & retreat</div>
+          <div class="inst-item"><span class="inst-icon">🪣</span>Catch empty mugs!</div>
+        </div>
+        <button class="btn-primary" id="startBtn">Play</button>
+      </div>
+
+      <!-- Pause screen -->
+      <div class="overlay hidden" id="pauseScreen">
+        <div class="overlay-title">Paused</div>
+        <button class="btn-primary" id="resumeBtn">Resume</button>
+      </div>
+
+      <!-- Game over screen -->
+      <div class="overlay hidden" id="gameOverScreen">
+        <div class="overlay-title">Game Over</div>
+        <div class="overlay-score" id="finalScore">0</div>
+        <div class="stat-row">
+          <div class="stat-item">
+            <div class="stat-label">Wave</div>
+            <div class="stat-val" id="finalWave" style="color:#a78bfa">1</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Best Combo</div>
+            <div class="stat-val" id="finalCombo" style="color:#34d399">x1</div>
+          </div>
+        </div>
+        <button class="btn-primary" id="restartBtn">Play Again</button>
+        <button class="btn-secondary" id="shareBtn">Share Score</button>
+      </div>
+    </div>
+
+    <script>
+      'use strict';
+
+      // ─── Constants ────────────────────────────────────────────────────────────
+      const APP_NAME = 'Tapper Rush';
+      const LANE_COUNT = 4;
+      const LANE_COLORS_DARK = ['#1d4ed8', '#7c3aed', '#be185d', '#047857'];
+      const LANE_COLORS_LIGHT = ['#2563eb', '#7c3aed', '#db2777', '#059669'];
+      const DRINK_COLORS = ['#fbbf24', '#f472b6', '#f87171', '#34d399'];
+      const CUSTOMER_COLORS = ['#93c5fd', '#c4b5fd', '#fda4af', '#6ee7b7'];
+      const CUSTOMER_TYPES = ['👨', '👩', '🧔', '👱'];
+
+      // ─── State ────────────────────────────────────────────────────────────────
+      let state = 'start'; // 'start' | 'playing' | 'paused' | 'gameover'
+      let score = 0;
+      let lives = 3;
+      let wave = 1;
+      let combo = 0;
+      let bestCombo = 0;
+      let bonusActive = false;
+      let bonusTimer = 0;
+      let playerLane = 1; // 0-3
+      let waveMsgTimer = 0;
+      let frameId = null;
+      let lastTime = 0;
+      let waveCustomersServed = 0;
+      let waveCustomersNeeded = 5;
+
+      // Per-lane arrays
+      let customers = []; // { lane, x, speed, emoji, mugTimer, isMug }
+      let drinks = [];    // { lane, x, speed }
+      let particles = []; // { x, y, vx, vy, life, color, size }
+      let floatTexts = []; // { x, y, vy, text, color, life, size }
+
+      // Spawn timing
+      let spawnTimer = 0;
+      let mugTimer = 0;
+      let spawnInterval = 120; // frames
+
+      // ─── Canvas setup ────────────────────────────────────────────────────────
+      const wrapper = document.getElementById('gameWrapper');
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+
+      function resizeCanvas() {
+        const w = wrapper.clientWidth;
+        const h = wrapper.clientHeight;
+        canvas.width = w;
+        canvas.height = h;
+      }
+
+      resizeCanvas();
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        drawFrame(0);
+      });
+
+      // ─── Derived layout ──────────────────────────────────────────────────────
+      // HUD height reserved at top
+      const HUD_H = 48;
+      const LANE_LABEL_W = 0;
+
+      function layout() {
+        const w = canvas.width;
+        const h = canvas.height;
+        const laneH = (h - HUD_H) / LANE_COUNT;
+        return { w, h, laneH };
+      }
+
+      function laneCenterY(lane) {
+        const { h, laneH } = layout();
+        return HUD_H + lane * laneH + laneH / 2;
+      }
+
+      // Bartender position (right side)
+      function bartenderX() { return canvas.width - 56; }
+      // Customer spawn X (left side, off-screen)
+      function spawnX() { return -48; }
+
+      // ─── DOM refs ─────────────────────────────────────────────────────────────
+      const scoreDisplay = document.getElementById('scoreDisplay');
+      const waveDisplay = document.getElementById('waveDisplay');
+      const livesDisplay = document.getElementById('livesDisplay');
+      const comboDisplay = document.getElementById('comboDisplay');
+      const bonusBanner = document.getElementById('bonusBanner');
+      const startScreen = document.getElementById('startScreen');
+      const pauseScreen = document.getElementById('pauseScreen');
+      const gameOverScreen = document.getElementById('gameOverScreen');
+      const finalScore = document.getElementById('finalScore');
+      const finalWave = document.getElementById('finalWave');
+      const finalCombo = document.getElementById('finalCombo');
+      const pauseBtn = document.getElementById('pauseBtn');
+
+      // ─── UI helpers ──────────────────────────────────────────────────────────
+      function updateHUD() {
+        scoreDisplay.textContent = score.toLocaleString();
+        waveDisplay.textContent = wave;
+        livesDisplay.textContent = '❤️'.repeat(Math.max(0, lives));
+      }
+
+      function showCombo(val) {
+        if (val < 2) { comboDisplay.classList.remove('active'); return; }
+        comboDisplay.textContent = `×${val} COMBO!`;
+        comboDisplay.classList.add('active');
+        setTimeout(() => comboDisplay.classList.remove('active'), 900);
+      }
+
+      function isDark() {
+        return document.documentElement.getAttribute('data-theme') !== 'light';
+      }
+
+      function laneColor(lane) {
+        return isDark() ? LANE_COLORS_DARK[lane] : LANE_COLORS_LIGHT[lane];
+      }
+
+      // ─── Particle helpers ────────────────────────────────────────────────────
+      function spawnParticles(x, y, color, count = 8) {
+        for (let i = 0; i < count; i++) {
+          const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
+          const speed = 2 + Math.random() * 4;
+          particles.push({
+            x, y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            life: 1,
+            color,
+            size: 4 + Math.random() * 4,
+          });
+        }
+      }
+
+      function spawnFloat(x, y, text, color, size = 18) {
+        floatTexts.push({ x, y, vy: -1.8, text, color, life: 1, size });
+      }
+
+      // ─── Game logic ──────────────────────────────────────────────────────────
+      function resetGame() {
+        score = 0;
+        lives = 3;
+        wave = 1;
+        combo = 0;
+        bestCombo = 0;
+        bonusActive = false;
+        bonusTimer = 0;
+        playerLane = 1;
+        waveMsgTimer = 0;
+        waveCustomersServed = 0;
+        waveCustomersNeeded = 5;
+        customers = [];
+        drinks = [];
+        particles = [];
+        floatTexts = [];
+        spawnTimer = 0;
+        spawnInterval = 120;
+        updateHUD();
+      }
+
+      function addScore(base) {
+        const mult = bonusActive ? 2 : 1;
+        const comboMult = combo >= 5 ? 2 : combo >= 3 ? 1.5 : combo >= 2 ? 1.2 : 1;
+        return Math.round(base * mult * comboMult);
+      }
+
+      function spawnCustomer() {
+        const lane = Math.floor(Math.random() * LANE_COUNT);
+        const baseSpeed = 0.8 + wave * 0.18;
+        const speed = baseSpeed + Math.random() * 0.3;
+        const emoji = CUSTOMER_TYPES[Math.floor(Math.random() * CUSTOMER_TYPES.length)];
+        customers.push({ lane, x: spawnX(), speed, emoji, mugTimer: 0, isMug: false, served: false });
+      }
+
+      function serveDrink() {
+        // Check no drink already in this lane
+        const already = drinks.some(d => d.lane === playerLane);
+        if (already) return;
+
+        const speed = 6 + wave * 0.5;
+        drinks.push({ lane: playerLane, x: bartenderX() - 20, speed, fresh: true });
+
+        // Visual pulse on bartender
+        spawnParticles(bartenderX(), laneCenterY(playerLane), DRINK_COLORS[playerLane], 6);
+      }
+
+      function loseLife(reason) {
+        lives--;
+        combo = 0;
+        comboDisplay.classList.remove('active');
+        spawnParticles(
+          reason.x || canvas.width / 2,
+          reason.y || canvas.height / 2,
+          '#ef4444', 12
+        );
+        spawnFloat(reason.x || canvas.width / 2, reason.y || canvas.height / 2, '💔', '#ef4444', 28);
+        updateHUD();
+        if (lives <= 0) endGame();
+      }
+
+      function advanceWave() {
+        wave++;
+        waveCustomersServed = 0;
+        waveCustomersNeeded = 5 + wave * 2;
+        spawnInterval = Math.max(50, 120 - wave * 10);
+        // Trigger bonus every 3 waves
+        if (wave % 3 === 0) triggerBonus();
+        waveMsgTimer = 120;
+        updateHUD();
+      }
+
+      function triggerBonus() {
+        bonusActive = true;
+        bonusTimer = 300; // 5 seconds at 60fps
+        bonusBanner.classList.add('visible');
+      }
+
+      function endGame() {
+        state = 'gameover';
+        cancelAnimationFrame(frameId);
+        frameId = null;
+        finalScore.textContent = score.toLocaleString();
+        finalWave.textContent = wave;
+        finalCombo.textContent = `×${bestCombo}`;
+        gameOverScreen.classList.remove('hidden');
+
+        if (window.voaLeaderboard) {
+          window.voaLeaderboard.submit(score);
+        }
+      }
+
+      // ─── Per-frame update ────────────────────────────────────────────────────
+      function update(dt) {
+        // dt is in frames (~1 at 60fps)
+
+        // Spawn timer
+        spawnTimer += dt;
+        if (spawnTimer >= spawnInterval) {
+          spawnTimer = 0;
+          spawnCustomer();
+        }
+
+        // Bonus timer
+        if (bonusActive) {
+          bonusTimer -= dt;
+          if (bonusTimer <= 0) {
+            bonusActive = false;
+            bonusBanner.classList.remove('visible');
+          }
+        }
+
+        // Wave message
+        if (waveMsgTimer > 0) waveMsgTimer -= dt;
+
+        // Move drinks (leftward from bartender)
+        for (let i = drinks.length - 1; i >= 0; i--) {
+          const d = drinks[i];
+          d.x -= d.speed * dt;
+
+          // Off screen left → miss (lost drink)
+          if (d.x < -30) {
+            drinks.splice(i, 1);
+            loseLife({ x: 30, y: laneCenterY(d.lane) });
+            continue;
+          }
+
+          // Check collision with customers in same lane
+          for (let j = customers.length - 1; j >= 0; j--) {
+            const c = customers[j];
+            if (c.lane !== d.lane || c.isMug) continue;
+            const dx = Math.abs(c.x - d.x);
+            if (dx < 32) {
+              // Customer caught the drink!
+              const pts = addScore(10 + wave * 2);
+              score += pts;
+              combo++;
+              if (combo > bestCombo) bestCombo = combo;
+              showCombo(combo);
+              waveCustomersServed++;
+
+              spawnParticles(c.x, laneCenterY(c.lane), DRINK_COLORS[c.lane], 10);
+              spawnFloat(c.x, laneCenterY(c.lane) - 20, `+${pts}`, '#fbbf24');
+
+              // Customer retreats (or leaves with a mug)
+              c.served = true;
+              c.speed = -(c.speed * 1.2); // reverse fast
+              c.mugTimer = 80 + Math.random() * 60; // will return mug after this
+
+              drinks.splice(i, 1);
+              updateHUD();
+
+              if (waveCustomersServed >= waveCustomersNeeded) advanceWave();
+              break;
+            }
+          }
+        }
+
+        // Move customers (rightward toward bartender)
+        for (let i = customers.length - 1; i >= 0; i--) {
+          const c = customers[i];
+          c.x += c.speed * dt;
+
+          if (c.isMug) {
+            // Mug moving right (returning toward bartender) — catch only if in correct lane
+            if (c.x >= bartenderX() - 20) {
+              if (c.lane === playerLane) {
+                const pts = addScore(5);
+                score += pts;
+                combo++;
+                if (combo > bestCombo) bestCombo = combo;
+                spawnParticles(bartenderX(), laneCenterY(c.lane), '#fbbf24', 6);
+                spawnFloat(bartenderX() - 30, laneCenterY(c.lane) - 20, `+${pts}`, '#fbbf24');
+                updateHUD();
+              } else {
+                loseLife({ x: bartenderX(), y: laneCenterY(c.lane) });
+              }
+              customers.splice(i, 1);
+              continue;
+            }
+          } else if (c.served) {
+            // Retreating customer with mug
+            c.mugTimer -= dt;
+            if (c.mugTimer <= 0) {
+              // Customer throws empty mug back toward the bartender (rightward)
+              c.isMug = true;
+              c.speed = 1.5 + Math.random(); // move right, back toward bartender
+              c.served = false;
+              c.emoji = '🪣';
+            }
+            // Still retreating
+            if (c.x < -60) {
+              customers.splice(i, 1);
+              continue;
+            }
+          } else {
+            // Customer advancing normally
+            if (c.x >= bartenderX() - 24) {
+              // Reached bartender!
+              customers.splice(i, 1);
+              loseLife({ x: bartenderX(), y: laneCenterY(c.lane) });
+              combo = 0;
+              continue;
+            }
+          }
+        }
+
+        // Particles
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx * dt;
+          p.y += p.vy * dt;
+          p.vy += 0.15 * dt;
+          p.life -= 0.04 * dt;
+          if (p.life <= 0) particles.splice(i, 1);
+        }
+
+        // Float texts
+        for (let i = floatTexts.length - 1; i >= 0; i--) {
+          const f = floatTexts[i];
+          f.y += f.vy * dt;
+          f.life -= 0.025 * dt;
+          if (f.life <= 0) floatTexts.splice(i, 1);
+        }
+      }
+
+      // ─── Rendering ───────────────────────────────────────────────────────────
+      function drawFrame(timestamp) {
+        const dt = lastTime ? Math.min((timestamp - lastTime) / (1000 / 60), 3) : 1;
+        lastTime = timestamp;
+
+        const { w, h, laneH } = layout();
+        const dark = isDark();
+
+        ctx.clearRect(0, 0, w, h);
+
+        // Background
+        const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+        bgGrad.addColorStop(0, dark ? '#0a1020' : '#e8f0fe');
+        bgGrad.addColorStop(1, dark ? '#0f172a' : '#f0f4ff');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, w, h);
+
+        // Lanes
+        for (let lane = 0; lane < LANE_COUNT; lane++) {
+          const y = HUD_H + lane * laneH;
+          const cy = y + laneH / 2;
+          const col = laneColor(lane);
+
+          // Lane background
+          const laneGrad = ctx.createLinearGradient(0, y, 0, y + laneH);
+          laneGrad.addColorStop(0, dark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)');
+          laneGrad.addColorStop(1, dark ? 'rgba(255,255,255,0.01)' : 'rgba(0,0,0,0.01)');
+          ctx.fillStyle = laneGrad;
+          ctx.fillRect(0, y, w, laneH);
+
+          // Lane divider
+          if (lane > 0) {
+            ctx.strokeStyle = dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.1)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([6, 8]);
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(w, y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+          }
+
+          // Bar counter (long horizontal line)
+          ctx.strokeStyle = col;
+          ctx.globalAlpha = 0.35;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(40, cy);
+          ctx.lineTo(w - 60, cy);
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+
+          // Glow on active lane
+          if (lane === playerLane) {
+            ctx.strokeStyle = col;
+            ctx.globalAlpha = 0.2;
+            ctx.lineWidth = laneH - 4;
+            ctx.beginPath();
+            ctx.moveTo(0, cy);
+            ctx.lineTo(w, cy);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+          }
+        }
+
+        // Bartender area
+        {
+          const bx = bartenderX();
+          ctx.fillStyle = dark ? '#1e293b' : '#e2e8f0';
+          ctx.beginPath();
+          ctx.roundRect(bx - 28, HUD_H + 4, 56, h - HUD_H - 8, 8);
+          ctx.fill();
+
+          // Bartender indicator (highlight for active lane)
+          const cy = laneCenterY(playerLane);
+          const col = laneColor(playerLane);
+          const glowGrad = ctx.createRadialGradient(bx, cy, 0, bx, cy, 30);
+          glowGrad.addColorStop(0, col + 'cc');
+          glowGrad.addColorStop(1, col + '00');
+          ctx.fillStyle = glowGrad;
+          ctx.fillRect(bx - 32, cy - 30, 64, 60);
+
+          // Bartender emoji
+          ctx.font = '26px serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('🍺', bx, cy);
+        }
+
+        // Drinks
+        for (const d of drinks) {
+          const cy = laneCenterY(d.lane);
+          const col = DRINK_COLORS[d.lane];
+
+          // Glow
+          const grd = ctx.createRadialGradient(d.x, cy, 0, d.x, cy, 18);
+          grd.addColorStop(0, col + '99');
+          grd.addColorStop(1, col + '00');
+          ctx.fillStyle = grd;
+          ctx.fillRect(d.x - 18, cy - 18, 36, 36);
+
+          ctx.font = '22px serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('🥤', d.x, cy);
+        }
+
+        // Customers
+        for (const c of customers) {
+          const cy = laneCenterY(c.lane);
+          ctx.font = '26px serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(c.emoji, c.x, cy);
+        }
+
+        // Particles
+        for (const p of particles) {
+          ctx.globalAlpha = Math.max(0, p.life);
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+
+        // Float texts
+        for (const f of floatTexts) {
+          ctx.globalAlpha = Math.max(0, f.life);
+          ctx.fillStyle = f.color;
+          ctx.font = `bold ${f.size}px system-ui`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.shadowColor = f.color;
+          ctx.shadowBlur = 8;
+          ctx.fillText(f.text, f.x, f.y);
+          ctx.shadowBlur = 0;
+        }
+        ctx.globalAlpha = 1;
+
+        // Wave announcement
+        if (waveMsgTimer > 0) {
+          const alpha = Math.min(1, waveMsgTimer / 30);
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = '#a78bfa';
+          ctx.font = `bold clamp(18px, 5vw, 28px) system-ui`;
+          ctx.font = 'bold 26px system-ui';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.shadowColor = '#a78bfa';
+          ctx.shadowBlur = 20;
+          ctx.fillText(`⭐ Wave ${wave} ⭐`, w / 2, h / 2);
+          ctx.shadowBlur = 0;
+          ctx.globalAlpha = 1;
+        }
+
+        if (state === 'playing') {
+          update(dt);
+          frameId = requestAnimationFrame(drawFrame);
+        }
+      }
+
+      // ─── Input ───────────────────────────────────────────────────────────────
+      let touchStartY = null;
+      let touchStartX = null;
+
+      canvas.addEventListener('touchstart', e => {
+        if (state !== 'playing') return;
+        const t = e.changedTouches[0];
+        touchStartY = t.clientY;
+        touchStartX = t.clientX;
+      }, { passive: true });
+
+      canvas.addEventListener('touchend', e => {
+        if (state !== 'playing') return;
+        const t = e.changedTouches[0];
+        const dy = t.clientY - touchStartY;
+        const dx = t.clientX - touchStartX;
+
+        if (Math.abs(dy) > 30 && Math.abs(dy) > Math.abs(dx)) {
+          // Vertical swipe = switch lane
+          if (dy < 0 && playerLane > 0) playerLane--;
+          else if (dy > 0 && playerLane < LANE_COUNT - 1) playerLane++;
+        } else {
+          // Tap = serve
+          serveDrink();
+        }
+        touchStartY = null;
+        touchStartX = null;
+      }, { passive: true });
+
+      document.addEventListener('keydown', e => {
+        // Guard: never act when input/textarea focused
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        // Guard: never act when shell overlay is open
+        if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
+
+        if (state === 'playing') {
+          if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+            e.preventDefault();
+            if (playerLane > 0) playerLane--;
+          } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+            e.preventDefault();
+            if (playerLane < LANE_COUNT - 1) playerLane++;
+          } else if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            serveDrink();
+          } else if (e.key === 'p' || e.key === 'P' || e.key === 'Escape') {
+            togglePause();
+          }
+        } else if (state === 'paused') {
+          if (e.key === 'Escape' || e.key === 'p' || e.key === 'P') togglePause();
+        }
+      });
+
+      // ─── Buttons ─────────────────────────────────────────────────────────────
+      document.getElementById('startBtn').addEventListener('click', startGame);
+      document.getElementById('resumeBtn').addEventListener('click', togglePause);
+      document.getElementById('restartBtn').addEventListener('click', startGame);
+      pauseBtn.addEventListener('click', togglePause);
+
+      document.getElementById('shareBtn').addEventListener('click', () => {
+        if (window.voaShare) {
+          window.voaShare({ text: `I scored ${score.toLocaleString()} in ${APP_NAME}! Can you beat it?` });
+        }
+      });
+
+      function startGame() {
+        resetGame();
+        startScreen.classList.add('hidden');
+        gameOverScreen.classList.add('hidden');
+        pauseScreen.classList.add('hidden');
+        pauseBtn.textContent = '⏸';
+        state = 'playing';
+        lastTime = 0;
+        frameId = requestAnimationFrame(drawFrame);
+      }
+
+      function togglePause() {
+        if (state === 'playing') {
+          state = 'paused';
+          cancelAnimationFrame(frameId);
+          frameId = null;
+          pauseScreen.classList.remove('hidden');
+          pauseBtn.textContent = '▶';
+        } else if (state === 'paused') {
+          state = 'playing';
+          pauseScreen.classList.add('hidden');
+          pauseBtn.textContent = '⏸';
+          lastTime = 0;
+          frameId = requestAnimationFrame(drawFrame);
+        }
+      }
+
+      // ─── Initial render ───────────────────────────────────────────────────────
+      requestAnimationFrame(ts => { lastTime = ts; drawFrame(ts); });
+    </script>
+  </body>
+</html>

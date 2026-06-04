@@ -20,5 +20,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260307T230000Z-ff0b4b",
     "notes": "Fishing arcade game with casting mechanics and time challenge."
-  }
+  },
+  "leaderboard": false
 }

@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#060b18"/>
+      <stop offset="100%" stop-color="#0c1428"/>
+    </linearGradient>
+    <radialGradient id="glowTL" cx="0.25" cy="0.2" r="0.5">
+      <stop offset="0%" stop-color="rgba(0,212,255,0.12)"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+    <radialGradient id="glowBR" cx="0.75" cy="0.8" r="0.5">
+      <stop offset="0%" stop-color="rgba(168,85,247,0.08)"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+    <radialGradient id="ballGrad" cx="0.35" cy="0.35" r="0.65">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#00d4ff"/>
+      <stop offset="100%" stop-color="#0099cc"/>
+    </radialGradient>
+    <linearGradient id="paddleGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="titleGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)"/>
+  <rect x="0" y="0" width="800" height="450" fill="url(#glowTL)"/>
+  <rect x="0" y="0" width="800" height="450" fill="url(#glowBR)"/>
+
+  <!-- Subtle grid -->
+  <g stroke="rgba(255,255,255,0.03)" stroke-width="0.5">
+    <line x1="0" y1="60" x2="800" y2="60"/>
+    <line x1="0" y1="120" x2="800" y2="120"/>
+    <line x1="0" y1="180" x2="800" y2="180"/>
+    <line x1="0" y1="240" x2="800" y2="240"/>
+    <line x1="0" y1="300" x2="800" y2="300"/>
+    <line x1="0" y1="360" x2="800" y2="360"/>
+    <line x1="100" y1="0" x2="100" y2="450"/>
+    <line x1="200" y1="0" x2="200" y2="450"/>
+    <line x1="300" y1="0" x2="300" y2="450"/>
+    <line x1="400" y1="0" x2="400" y2="450"/>
+    <line x1="500" y1="0" x2="500" y2="450"/>
+    <line x1="600" y1="0" x2="600" y2="450"/>
+    <line x1="700" y1="0" x2="700" y2="450"/>
+  </g>
+
+  <!-- HUD background -->
+  <rect x="60" y="12" width="680" height="32" rx="8" fill="rgba(12,20,40,0.7)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+
+  <!-- HUD text -->
+  <text x="100" y="33" font-family="system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.5)" font-weight="600" text-anchor="start">SCORE</text>
+  <text x="155" y="33" font-family="system-ui, sans-serif" font-size="13" fill="#00d4ff" font-weight="700" text-anchor="start">4,280</text>
+  <text x="320" y="33" font-family="system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.5)" font-weight="600" text-anchor="start">COMBO</text>
+  <text x="372" y="33" font-family="system-ui, sans-serif" font-size="13" fill="#fbbf24" font-weight="700" text-anchor="start">x5</text>
+  <text x="500" y="33" font-family="system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.5)" font-weight="600" text-anchor="start">LEVEL</text>
+  <text x="550" y="33" font-family="system-ui, sans-serif" font-size="13" fill="#00d4ff" font-weight="700" text-anchor="start">3</text>
+  <text x="640" y="33" font-family="system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.5)" font-weight="600" text-anchor="start">LIVES</text>
+  <text x="690" y="33" font-family="system-ui, sans-serif" font-size="13" fill="#f43f5e" font-weight="700" text-anchor="start">&#9829;&#9829;</text>
+
+  <!-- Brick rows: mid-game state with some destroyed -->
+  <!-- Row 0: red (some missing) -->
+  <rect x="90" y="60" width="58" height="18" rx="3" fill="#f43f5e"/>
+  <rect x="152" y="60" width="58" height="18" rx="3" fill="#f43f5e"/>
+  <rect x="276" y="60" width="58" height="18" rx="3" fill="#f43f5e"/>
+  <rect x="400" y="60" width="58" height="18" rx="3" fill="#f43f5e"/>
+  <rect x="462" y="60" width="58" height="18" rx="3" fill="#f43f5e"/>
+  <rect x="586" y="60" width="58" height="18" rx="3" fill="#f43f5e"/>
+  <rect x="648" y="60" width="58" height="18" rx="3" fill="#f43f5e"/>
+
+  <!-- Row 1: orange (more missing) -->
+  <rect x="152" y="82" width="58" height="18" rx="3" fill="#fb923c"/>
+  <rect x="214" y="82" width="58" height="18" rx="3" fill="#fb923c"/>
+  <rect x="338" y="82" width="58" height="18" rx="3" fill="#fb923c"/>
+  <rect x="524" y="82" width="58" height="18" rx="3" fill="#fb923c"/>
+  <rect x="648" y="82" width="58" height="18" rx="3" fill="#fb923c"/>
+
+  <!-- Row 2: yellow -->
+  <rect x="90" y="104" width="58" height="18" rx="3" fill="#fbbf24"/>
+  <rect x="214" y="104" width="58" height="18" rx="3" fill="#fbbf24"/>
+  <rect x="276" y="104" width="58" height="18" rx="3" fill="#fbbf24"/>
+  <rect x="400" y="104" width="58" height="18" rx="3" fill="#fbbf24"/>
+  <rect x="462" y="104" width="58" height="18" rx="3" fill="#fbbf24"/>
+  <rect x="586" y="104" width="58" height="18" rx="3" fill="#fbbf24"/>
+
+  <!-- Row 3: green (mostly intact) -->
+  <rect x="90" y="126" width="58" height="18" rx="3" fill="#4ade80"/>
+  <rect x="152" y="126" width="58" height="18" rx="3" fill="#4ade80"/>
+  <rect x="214" y="126" width="58" height="18" rx="3" fill="#4ade80"/>
+  <rect x="276" y="126" width="58" height="18" rx="3" fill="#4ade80"/>
+  <rect x="338" y="126" width="58" height="18" rx="3" fill="#4ade80"/>
+  <rect x="400" y="126" width="58" height="18" rx="3" fill="#4ade80"/>
+  <rect x="462" y="126" width="58" height="18" rx="3" fill="#4ade80"/>
+  <rect x="524" y="126" width="58" height="18" rx="3" fill="#4ade80"/>
+  <rect x="586" y="126" width="58" height="18" rx="3" fill="#4ade80"/>
+  <rect x="648" y="126" width="58" height="18" rx="3" fill="#4ade80"/>
+
+  <!-- Row 4: blue (fully intact) -->
+  <rect x="90" y="148" width="58" height="18" rx="3" fill="#38bdf8"/>
+  <rect x="152" y="148" width="58" height="18" rx="3" fill="#38bdf8"/>
+  <rect x="214" y="148" width="58" height="18" rx="3" fill="#38bdf8"/>
+  <rect x="276" y="148" width="58" height="18" rx="3" fill="#38bdf8"/>
+  <rect x="338" y="148" width="58" height="18" rx="3" fill="#38bdf8"/>
+  <rect x="400" y="148" width="58" height="18" rx="3" fill="#38bdf8"/>
+  <rect x="462" y="148" width="58" height="18" rx="3" fill="#38bdf8"/>
+  <rect x="524" y="148" width="58" height="18" rx="3" fill="#38bdf8"/>
+  <rect x="586" y="148" width="58" height="18" rx="3" fill="#38bdf8"/>
+  <rect x="648" y="148" width="58" height="18" rx="3" fill="#38bdf8"/>
+
+  <!-- Brick shine overlays on a few bricks -->
+  <rect x="90" y="60" width="58" height="9" rx="3" fill="rgba(255,255,255,0.15)"/>
+  <rect x="276" y="104" width="58" height="9" rx="3" fill="rgba(255,255,255,0.15)"/>
+  <rect x="338" y="126" width="58" height="9" rx="3" fill="rgba(255,255,255,0.15)"/>
+  <rect x="400" y="148" width="58" height="9" rx="3" fill="rgba(255,255,255,0.15)"/>
+
+  <!-- Destruction particles (scattered near missing bricks) -->
+  <rect x="220" y="65" width="3" height="3" fill="#f43f5e" opacity="0.7"/>
+  <rect x="355" y="58" width="2" height="2" fill="#f43f5e" opacity="0.5"/>
+  <rect x="540" y="72" width="3" height="3" fill="#f43f5e" opacity="0.6"/>
+  <rect x="385" y="88" width="2" height="2" fill="#fb923c" opacity="0.5"/>
+  <rect x="445" y="95" width="3" height="3" fill="#fb923c" opacity="0.4"/>
+  <rect x="155" y="110" width="2" height="2" fill="#fbbf24" opacity="0.4"/>
+
+  <!-- Power-up drop (green circle with W) -->
+  <circle cx="350" cy="220" r="10" fill="#4ade80" filter="url(#softGlow)"/>
+  <text x="350" y="224" font-family="system-ui, sans-serif" font-size="9" fill="#fff" font-weight="700" text-anchor="middle">W</text>
+
+  <!-- Ball with trail -->
+  <circle cx="390" cy="300" r="4" fill="rgba(0,212,255,0.08)"/>
+  <circle cx="395" cy="290" r="4.5" fill="rgba(0,212,255,0.12)"/>
+  <circle cx="400" cy="280" r="5" fill="rgba(0,212,255,0.18)"/>
+  <circle cx="405" cy="270" r="5.5" fill="rgba(0,212,255,0.25)"/>
+  <circle cx="410" cy="260" r="6" fill="url(#ballGrad)" filter="url(#glow)"/>
+
+  <!-- Paddle -->
+  <rect x="340" y="380" width="120" height="16" rx="8" fill="url(#paddleGrad)" filter="url(#glow)"/>
+  <rect x="344" y="380" width="112" height="8" rx="6" fill="rgba(255,255,255,0.2)"/>
+
+  <!-- Title text -->
+  <text x="400" y="430" font-family="system-ui, sans-serif" font-size="22" fill="#00d4ff" font-weight="800" text-anchor="middle" letter-spacing="2" filter="url(#titleGlow)">BENCHMARK BREAKOUT OPUS</text>
+
+  <!-- Corner accents -->
+  <line x1="20" y1="20" x2="60" y2="20" stroke="#00d4ff" stroke-width="2" opacity="0.4"/>
+  <line x1="20" y1="20" x2="20" y2="60" stroke="#00d4ff" stroke-width="2" opacity="0.4"/>
+  <line x1="780" y1="20" x2="740" y2="20" stroke="#a855f7" stroke-width="2" opacity="0.4"/>
+  <line x1="780" y1="20" x2="780" y2="60" stroke="#a855f7" stroke-width="2" opacity="0.4"/>
+  <line x1="20" y1="430" x2="60" y2="430" stroke="#a855f7" stroke-width="2" opacity="0.4"/>
+  <line x1="20" y1="430" x2="20" y2="390" stroke="#a855f7" stroke-width="2" opacity="0.4"/>
+  <line x1="780" y1="430" x2="740" y2="430" stroke="#00d4ff" stroke-width="2" opacity="0.4"/>
+  <line x1="780" y1="430" x2="780" y2="390" stroke="#00d4ff" stroke-width="2" opacity="0.4"/>
+</svg>

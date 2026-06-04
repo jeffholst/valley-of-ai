@@ -15,12 +15,17 @@ describe('Environment template', () => {
     envExample = parse(raw);
   });
 
-  it('includes Supabase URL', () => {
-    expect(envExample.NEXT_PUBLIC_SUPABASE_URL).toBeDefined();
+  it('includes Supabase URL (server-only)', () => {
+    expect(envExample.SUPABASE_URL).toBeDefined();
   });
 
-  it('includes Supabase anon key', () => {
-    expect(envExample.NEXT_PUBLIC_SUPABASE_ANON_KEY).toBeDefined();
+  it('includes Supabase secret key', () => {
+    expect(envExample.SUPABASE_SECRET_KEY).toBeDefined();
+  });
+
+  it('does not include NEXT_PUBLIC Supabase vars', () => {
+    expect(envExample.NEXT_PUBLIC_SUPABASE_URL).toBeUndefined();
+    expect(envExample.NEXT_PUBLIC_SUPABASE_ANON_KEY).toBeUndefined();
   });
 
   it('includes GA measurement ID', () => {
@@ -32,7 +37,7 @@ describe('Environment template', () => {
   });
 
   it('uses a valid placeholder format for Supabase URL', () => {
-    expect(envExample.NEXT_PUBLIC_SUPABASE_URL).toMatch(/^https?:\/\//);
+    expect(envExample.SUPABASE_URL).toMatch(/^https?:\/\//);
   });
 
   it('uses a valid placeholder format for GA measurement ID', () => {

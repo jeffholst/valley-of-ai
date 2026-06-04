@@ -1,5 +1,5 @@
 /**
- * Tests for scripts/issues/lib/issue-selection-heuristics.js
+ * Tests for scripts/issues/lib/issue-selection-heuristics.mjs
  *
  * Covers the four pure functions with no external dependencies:
  *   - computeSaturatedTags
@@ -15,7 +15,7 @@ import {
   extractAppPath,
   computeImprovementSanity,
   SANITY_DEFAULTS,
-} from '../../../../scripts/issues/lib/issue-selection-heuristics.js';
+} from '../../../../scripts/issues/lib/issue-selection-heuristics.mjs';
 
 // ---------------------------------------------------------------------------
 // Helpers

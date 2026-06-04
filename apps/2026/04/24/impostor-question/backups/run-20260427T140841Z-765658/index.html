@@ -1,0 +1,1703 @@
+<!doctype html>
+<html lang="en" data-theme="auto">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Impostor Question - __MAIN_SITE_NAME__</title>
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="The Impostor Question" />
+    <meta name="voa-app-id" content="2026/04/24/impostor-question" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #111827;
+        --text: #f8fafc;
+        --surface: #1f2937;
+        --card: #172033;
+        --card-strong: #22304a;
+        --border: #40506f;
+        --muted: #aab8d3;
+        --accent: #2dd4bf;
+        --accent-strong: #14b8a6;
+        --gold: #fbbf24;
+        --danger: #fb7185;
+        --good: #86efac;
+        --ink: #08111f;
+        --shadow: 0 18px 34px rgb(0 0 0 / 30%);
+      }
+
+      [data-theme='light'] {
+        --bg: #f4f7fb;
+        --text: #132033;
+        --surface: #ffffff;
+        --card: #ffffff;
+        --card-strong: #e8f2ff;
+        --border: #c5d2e6;
+        --muted: #5d6f8c;
+        --accent: #0f766e;
+        --accent-strong: #0d9488;
+        --gold: #b7791f;
+        --danger: #be123c;
+        --good: #15803d;
+        --ink: #ffffff;
+        --shadow: 0 12px 24px rgb(31 41 55 / 12%);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        min-width: 320px;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 18% 8%, rgb(45 212 191 / 18%), transparent 34%),
+          radial-gradient(circle at 82% 2%, rgb(251 191 36 / 14%), transparent 32%),
+          linear-gradient(135deg, var(--bg), #0b1120);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        line-height: 1.42;
+      }
+
+      #app {
+        position: fixed;
+        top: 64px;
+        right: 0;
+        bottom: 56px;
+        left: 0;
+        overflow: auto;
+      }
+
+      .wrap {
+        width: min(1060px, 100%);
+        margin: 0 auto;
+        padding: 14px 12px 20px;
+        display: grid;
+        gap: 12px;
+      }
+
+      .hero,
+      .card,
+      .panel {
+        background: linear-gradient(180deg, rgb(255 255 255 / 5%), transparent 60%), var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        box-shadow: var(--shadow);
+      }
+
+      .hero {
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(1.4rem, 4.8vw, 2rem);
+        line-height: 1.08;
+      }
+
+      .subtitle {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .badge,
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 30px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--card-strong);
+        color: var(--muted);
+        padding: 5px 10px;
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .badge.live {
+        color: var(--ink);
+        background: linear-gradient(135deg, var(--accent), #99f6e4);
+        border-color: transparent;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.65fr) minmax(280px, 0.9fr);
+        gap: 12px;
+        align-items: start;
+      }
+
+      .card,
+      .panel {
+        padding: 14px;
+      }
+
+      .screen {
+        display: none;
+      }
+
+      .screen.active {
+        display: block;
+        animation: rise 180ms ease-out;
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .stack {
+        display: grid;
+        gap: 10px;
+      }
+
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      label {
+        display: block;
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+      }
+
+      select,
+      input,
+      textarea {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        background: var(--surface);
+        color: var(--text);
+        font: inherit;
+        min-height: 44px;
+        padding: 10px 12px;
+      }
+
+      textarea {
+        min-height: 96px;
+        resize: vertical;
+      }
+
+      select:focus,
+      input:focus,
+      textarea:focus,
+      button:focus-visible {
+        outline: 3px solid rgb(45 212 191 / 45%);
+        outline-offset: 2px;
+      }
+
+      .btn {
+        appearance: none;
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        background: var(--surface);
+        color: var(--text);
+        cursor: pointer;
+        font: inherit;
+        font-weight: 800;
+        min-height: 44px;
+        padding: 10px 14px;
+        transition:
+          transform 90ms ease,
+          filter 140ms ease,
+          background 140ms ease;
+      }
+
+      .btn:hover:not(:disabled) {
+        filter: brightness(1.08);
+      }
+
+      .btn:active:not(:disabled) {
+        transform: translateY(1px);
+      }
+
+      .btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.52;
+      }
+
+      .btn.primary {
+        background: linear-gradient(135deg, var(--accent), #99f6e4);
+        color: var(--ink);
+        border-color: transparent;
+      }
+
+      .btn.gold {
+        background: linear-gradient(135deg, var(--gold), #fde68a);
+        color: #201400;
+        border-color: transparent;
+      }
+
+      .btn.danger {
+        background: var(--danger);
+        color: white;
+        border-color: transparent;
+      }
+
+      .join-url {
+        overflow-wrap: anywhere;
+        border: 1px dashed var(--border);
+        border-radius: 12px;
+        background: var(--card-strong);
+        color: var(--accent);
+        font-size: clamp(1rem, 3.4vw, 1.35rem);
+        font-weight: 900;
+        padding: 11px 12px;
+      }
+
+      .player-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(136px, 1fr));
+        gap: 8px;
+      }
+
+      .player {
+        min-height: 72px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--card-strong);
+        padding: 10px;
+        display: grid;
+        gap: 4px;
+      }
+
+      .player.me {
+        border-color: var(--accent);
+        box-shadow: inset 0 0 0 1px rgb(45 212 191 / 28%);
+      }
+
+      .player.impostor {
+        border-color: var(--danger);
+      }
+
+      .name {
+        font-weight: 900;
+        overflow-wrap: anywhere;
+      }
+
+      .small,
+      .muted {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .big-card {
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background:
+          linear-gradient(135deg, rgb(45 212 191 / 16%), transparent 48%),
+          var(--card-strong);
+        padding: 16px;
+        min-height: 150px;
+        display: grid;
+        gap: 8px;
+        align-content: center;
+      }
+
+      .role-card {
+        border-color: var(--accent);
+      }
+
+      .role-card.impostor {
+        border-color: var(--danger);
+        background:
+          linear-gradient(135deg, rgb(251 113 133 / 18%), transparent 50%),
+          var(--card-strong);
+      }
+
+      .role-title {
+        color: var(--muted);
+        font-size: 0.8rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .role-value {
+        font-size: clamp(1.45rem, 5vw, 2.4rem);
+        font-weight: 950;
+        line-height: 1.05;
+      }
+
+      .question {
+        color: var(--gold);
+        font-size: clamp(1.35rem, 5vw, 2.1rem);
+        font-weight: 950;
+      }
+
+      .turn-list {
+        display: grid;
+        gap: 7px;
+      }
+
+      .turn-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        background: rgb(255 255 255 / 4%);
+        padding: 8px 10px;
+      }
+
+      .turn-item.current {
+        border-color: var(--gold);
+        background: rgb(251 191 36 / 12%);
+      }
+
+      .answer-list,
+      .vote-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .answer {
+        border-left: 4px solid var(--accent);
+        border-radius: 10px;
+        background: rgb(255 255 255 / 5%);
+        padding: 9px 10px;
+      }
+
+      .vote-option {
+        text-align: left;
+        padding: 14px 16px;
+        font-size: 1rem;
+        width: 100%;
+      }
+
+      .vote-option:not(:disabled):not(.gold) {
+        border-color: rgb(45 212 191 / 40%);
+        background: rgb(45 212 191 / 6%);
+      }
+
+      .result-banner {
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        background: linear-gradient(135deg, rgb(251 191 36 / 16%), rgb(45 212 191 / 12%));
+        padding: 16px;
+      }
+
+      .score-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        border-bottom: 1px solid rgb(255 255 255 / 9%);
+        padding: 8px 0;
+      }
+
+      .score-row:last-child {
+        border-bottom: 0;
+      }
+
+      .empty {
+        border: 1px dashed var(--border);
+        border-radius: 12px;
+        color: var(--muted);
+        padding: 12px;
+        text-align: center;
+      }
+
+      .hide {
+        display: none !important;
+      }
+
+      .role-value.mod-hidden {
+        color: var(--muted);
+        font-size: 1rem;
+        font-style: italic;
+      }
+
+      .btn.reveal {
+        background: linear-gradient(135deg, rgb(45 212 191 / 18%), rgb(45 212 191 / 8%));
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .btn.help {
+        border-radius: 999px;
+        font-size: 0.82rem;
+        min-height: 30px;
+        padding: 4px 12px;
+      }
+
+      .help-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        background: rgb(0 0 0 / 60%);
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 72px 12px 64px;
+        overflow-y: auto;
+      }
+
+      .help-modal {
+        width: min(680px, 100%);
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        padding: 20px;
+        display: grid;
+        gap: 18px;
+      }
+
+      .help-section {
+        display: grid;
+        gap: 8px;
+      }
+
+      .help-section h3 {
+        color: var(--accent);
+        font-size: 0.8rem;
+        font-weight: 900;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .help-steps {
+        display: grid;
+        gap: 5px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .help-steps li {
+        display: flex;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 0.93rem;
+        line-height: 1.5;
+      }
+
+      .help-steps li::before {
+        content: '›';
+        color: var(--accent);
+        font-weight: 900;
+        flex-shrink: 0;
+      }
+
+      .help-score-row {
+        align-items: center;
+        background: rgb(255 255 255 / 4%);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        display: flex;
+        font-size: 0.9rem;
+        gap: 12px;
+        justify-content: space-between;
+        padding: 7px 10px;
+      }
+
+      .help-pts {
+        color: var(--gold);
+        font-weight: 900;
+        white-space: nowrap;
+      }
+
+      @media (max-width: 760px) {
+        .hero {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        .wrap {
+          padding: 10px 10px 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main id="app">
+      <div class="wrap">
+        <section class="hero">
+          <div>
+            <h1>The Impostor Question</h1>
+            <p class="subtitle">One player is bluffing. Everyone else shares the same secret topic.</p>
+          </div>
+          <div class="row" style="flex-wrap:nowrap;align-items:center">
+            <button class="btn help" id="helpBtn" type="button">Help</button>
+            <span class="badge live" id="roomBadge">Room setup</span>
+          </div>
+        </section>
+
+        <section class="screen active" id="loadingScreen">
+          <div class="card stack">
+            <h2>Preparing the room...</h2>
+            <p class="muted">Creating a moderator session and checking multiplayer availability.</p>
+          </div>
+        </section>
+
+        <section class="screen" id="configErrorScreen">
+          <div class="card stack">
+            <h2>Multiplayer is unavailable</h2>
+            <p class="muted">This site is missing the shared multiplayer configuration.</p>
+          </div>
+        </section>
+
+        <section class="screen" id="lobbyScreen">
+          <div class="grid">
+            <div class="card stack">
+              <h2>Moderator Lobby</h2>
+              <div class="stack" id="moderatorSetup">
+                <div>
+                  <label for="roundCount">Rounds</label>
+                  <select id="roundCount">
+                    <option value="3">3 rounds</option>
+                    <option value="5" selected>5 rounds</option>
+                    <option value="7">7 rounds</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="topicPack">Topic pack</label>
+                  <select id="topicPack">
+                    <option value="work" selected>Office friendly</option>
+                    <option value="travel">Travel and weekends</option>
+                    <option value="food">Food and rituals</option>
+                  </select>
+                </div>
+                <div>
+                  <label>Share link</label>
+                  <div class="join-url" id="joinUrl">/join/------</div>
+                </div>
+                <div class="row">
+                  <button class="btn primary" id="copyLinkBtn" type="button">Copy join link</button>
+                  <button class="btn gold" id="startBtn" type="button">Start game</button>
+                </div>
+                <p class="muted" id="lobbyHint">Need at least 3 active players to start.</p>
+              </div>
+              <div class="stack hide" id="playerWaiting">
+                <h2>You are in.</h2>
+                <p class="muted">Waiting for the moderator to start the first round. Keep this tab open.</p>
+              </div>
+            </div>
+
+            <aside class="panel stack">
+              <div class="row">
+                <span class="pill" id="playerCount">0 players</span>
+                <span class="pill" id="roundPill">Lobby</span>
+              </div>
+              <div class="player-grid" id="playerGrid"></div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="screen" id="gameScreen">
+          <div class="grid">
+            <div class="card stack">
+              <div class="row">
+                <span class="pill" id="stagePill">Question round</span>
+                <span class="pill" id="turnPill">Turn 1</span>
+              </div>
+              <div class="big-card role-card" id="roleCard">
+                <div class="role-title" id="roleTitle">Your role</div>
+                <div class="role-value" id="roleValue">Topic loading</div>
+                <p class="muted" id="roleHint">Answer naturally, but not too obviously.</p>
+              </div>
+              <button class="btn reveal hide" id="topicPopupBtn" type="button">View topic in private window</button>
+              <div class="big-card">
+                <div class="role-title">Question</div>
+                <div class="question" id="questionText">What is your favorite?</div>
+                <p class="muted" id="phaseHint">Take turns giving short answers out loud or in the app.</p>
+              </div>
+
+              <form class="stack" id="answerForm">
+                <label for="answerInput">Your answer</label>
+                <textarea id="answerInput" maxlength="140" placeholder="A careful answer that fits your role..."></textarea>
+                <button class="btn primary" id="answerBtn" type="submit">Submit answer</button>
+              </form>
+
+              <div class="stack hide" id="voteBox">
+                <h2>Who is the impostor?</h2>
+                <p class="muted" id="voteInstruction">Select the player you think is bluffing — you cannot vote for yourself.</p>
+                <div class="vote-list" id="voteChoices"></div>
+                <div class="big-card hide" id="impostorWait" style="text-align:center">
+                  <div class="role-title">You are the impostor</div>
+                  <p class="muted" style="margin-top:8px">Stay quiet — your role prevents you from voting. Wait while the others cast their votes.</p>
+                  <p class="small" id="impostorVoteStatus" style="margin-top:10px;color:var(--accent)"></p>
+                  <button class="btn primary" id="impostorContinueBtn" type="button" style="margin-top:12px">Continue</button>
+                </div>
+              </div>
+
+              <form class="stack hide" id="guessForm">
+                <h2>Impostor topic guess</h2>
+                <p class="muted">The impostor escaped the vote. One exact topic guess can steal the round.</p>
+                <input id="topicGuessInput" maxlength="80" placeholder="Guess the shared topic..." />
+                <button class="btn gold" id="topicGuessBtn" type="submit">Submit topic guess</button>
+              </form>
+
+              <div class="stack hide" id="resultsBox">
+                <div class="result-banner stack">
+                  <h2 id="resultTitle">Round reveal</h2>
+                  <p id="resultText"></p>
+                </div>
+                <div class="row" id="resultActions">
+                  <button class="btn primary" id="nextRoundBtn" type="button">Next round</button>
+                  <button class="btn gold" id="endGameBtn" type="button">Show final scores</button>
+                </div>
+              </div>
+            </div>
+
+            <aside class="panel stack">
+              <h2>Room board</h2>
+              <div class="player-grid" id="gamePlayerGrid"></div>
+              <h3 id="turnListLabel">Turn order</h3>
+              <div class="turn-list" id="turnList"></div>
+              <h3>Responses</h3>
+              <div class="answer-list" id="answerList"></div>
+              <div class="row" id="moderatorControls">
+                <button class="btn primary" id="nextTurnBtn" type="button">Next turn</button>
+                <button class="btn gold" id="openVoteBtn" type="button">Open voting</button>
+                <button class="btn primary" id="revealVotesBtn" type="button">Reveal votes</button>
+                <button class="btn gold" id="finishGuessBtn" type="button">Reveal topic guess</button>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="screen" id="finalScreen">
+          <div class="grid">
+            <div class="card stack">
+              <h2>Final scores</h2>
+              <p class="muted">Shared placements are used for ties.</p>
+              <div id="finalScores"></div>
+              <div class="hide" id="finalTopicSection">
+                <div class="big-card role-card">
+                  <div class="role-title">Last round topic</div>
+                  <div class="role-value mod-hidden">Topic hidden</div>
+                </div>
+                <button class="btn reveal" id="finalTopicPopupBtn" type="button">View topic in private window</button>
+              </div>
+              <div class="row">
+                <button class="btn primary" id="playAgainBtn" type="button">Back to lobby</button>
+              </div>
+            </div>
+            <aside class="panel stack">
+              <h2>Players</h2>
+              <div class="player-grid" id="finalPlayerGrid"></div>
+            </aside>
+          </div>
+        </section>
+
+        <div class="help-overlay hide" id="helpOverlay" role="dialog" aria-modal="true" aria-label="How to play">
+          <div class="help-modal">
+            <div class="row" style="justify-content:space-between;align-items:center;flex-wrap:nowrap">
+              <h2>How to Play</h2>
+              <button class="btn" id="helpCloseBtn" type="button" aria-label="Close help">✕</button>
+            </div>
+
+            <div class="help-section">
+              <h3>The Basics</h3>
+              <ul class="help-steps">
+                <li>One player is secretly the <strong>impostor</strong> — they don't know the shared topic.</li>
+                <li>Everyone else knows the topic and must answer a vague question naturally.</li>
+                <li>After all answers, players vote for who they think is the impostor.</li>
+                <li>If the impostor is caught, the other players score. If not, the impostor gets one topic guess.</li>
+              </ul>
+            </div>
+
+            <div class="help-section">
+              <h3>For Moderators</h3>
+              <ul class="help-steps">
+                <li>The room is created automatically when you open the app. Share the join link in the lobby.</li>
+                <li>Choose the number of rounds and a topic pack, then click <strong>Start game</strong>.</li>
+                <li>During the answer phase, click <strong>Next turn</strong> after each player finishes.</li>
+                <li>Once all players have answered, click <strong>Open voting</strong>.</li>
+                <li>After all votes are in, click <strong>Reveal votes</strong> to show results.</li>
+                <li>If the impostor escapes the vote, wait for their topic guess, then click <strong>Reveal topic guess</strong>.</li>
+                <li>Use <strong>Next round</strong> to continue or <strong>Show final scores</strong> to end the game.</li>
+                <li>Click <strong>View topic in private window</strong> to see the secret topic safely during screen share.</li>
+              </ul>
+            </div>
+
+            <div class="help-section">
+              <h3>For Players</h3>
+              <ul class="help-steps">
+                <li>Join via the link shared by the moderator, enter your name, and wait in the lobby.</li>
+                <li>Your role card shows either the <strong>shared topic</strong> (you're an insider) or <strong>You are the impostor</strong>.</li>
+                <li>When it's your turn, type a short answer and click <strong>Submit answer</strong>.</li>
+                <li>After all answers, vote for who you think is the impostor — you cannot vote for yourself.</li>
+                <li>If you are the impostor and survive the vote, guess the shared topic to earn bonus points.</li>
+              </ul>
+            </div>
+
+            <div class="help-section">
+              <h3>Scoring</h3>
+              <div style="display:grid;gap:6px">
+                <div class="help-score-row">
+                  <span>Impostor caught by the vote</span>
+                  <span class="help-pts">+2 pts each non-impostor</span>
+                </div>
+                <div class="help-score-row">
+                  <span>Impostor guesses topic correctly</span>
+                  <span class="help-pts">+4 pts for impostor</span>
+                </div>
+                <div class="help-score-row">
+                  <span>Impostor survives but guesses wrong</span>
+                  <span class="help-pts">+1 pt for impostor</span>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn primary" id="helpCloseBtnBottom" type="button">Got it, let's play</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      (() => {
+        const APP_ID = '2026/04/24/impostor-question';
+        const APP_NAME = 'The Impostor Question';
+        const APP_PATH = '2026/04/24/impostor-question';
+        const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        const TOPICS = {
+          work: [
+            { topic: 'Coffee', question: "What's your favorite way to start the day?" },
+            { topic: 'Team chat', question: 'What do you check too often?' },
+            { topic: 'Calendar invites', question: 'What needs better boundaries?' },
+            { topic: 'Desk snacks', question: 'What saves a long afternoon?' },
+            { topic: 'Brainstorming', question: 'What works best with a group?' },
+            { topic: 'Headphones', question: 'What helps you focus?' }
+          ],
+          travel: [
+            { topic: 'Beach trips', question: "What's your ideal pace?" },
+            { topic: 'Museums', question: 'What makes a day memorable?' },
+            { topic: 'Road trips', question: 'What belongs in the plan?' },
+            { topic: 'Hotel breakfast', question: 'What is surprisingly important?' },
+            { topic: 'City walks', question: 'What do you notice first?' },
+            { topic: 'Packing cubes', question: 'What keeps chaos away?' }
+          ],
+          food: [
+            { topic: 'Pizza', question: 'What is worth debating?' },
+            { topic: 'Tacos', question: 'What needs the right balance?' },
+            { topic: 'Ice cream', question: 'What flavor has range?' },
+            { topic: 'Soup', question: 'What is underrated when shared?' },
+            { topic: 'Brunch', question: 'What makes a weekend feel real?' },
+            { topic: 'Leftovers', question: 'What gets better tomorrow?' }
+          ]
+        };
+
+        const els = {
+          roomBadge: document.getElementById('roomBadge'),
+          loadingScreen: document.getElementById('loadingScreen'),
+          configErrorScreen: document.getElementById('configErrorScreen'),
+          lobbyScreen: document.getElementById('lobbyScreen'),
+          gameScreen: document.getElementById('gameScreen'),
+          finalScreen: document.getElementById('finalScreen'),
+          moderatorSetup: document.getElementById('moderatorSetup'),
+          playerWaiting: document.getElementById('playerWaiting'),
+          roundCount: document.getElementById('roundCount'),
+          topicPack: document.getElementById('topicPack'),
+          joinUrl: document.getElementById('joinUrl'),
+          copyLinkBtn: document.getElementById('copyLinkBtn'),
+          startBtn: document.getElementById('startBtn'),
+          lobbyHint: document.getElementById('lobbyHint'),
+          playerCount: document.getElementById('playerCount'),
+          roundPill: document.getElementById('roundPill'),
+          playerGrid: document.getElementById('playerGrid'),
+          gamePlayerGrid: document.getElementById('gamePlayerGrid'),
+          finalPlayerGrid: document.getElementById('finalPlayerGrid'),
+          stagePill: document.getElementById('stagePill'),
+          turnPill: document.getElementById('turnPill'),
+          roleCard: document.getElementById('roleCard'),
+          roleTitle: document.getElementById('roleTitle'),
+          roleValue: document.getElementById('roleValue'),
+          roleHint: document.getElementById('roleHint'),
+          questionText: document.getElementById('questionText'),
+          phaseHint: document.getElementById('phaseHint'),
+          answerForm: document.getElementById('answerForm'),
+          answerInput: document.getElementById('answerInput'),
+          answerBtn: document.getElementById('answerBtn'),
+          voteBox: document.getElementById('voteBox'),
+          voteChoices: document.getElementById('voteChoices'),
+          voteInstruction: document.getElementById('voteInstruction'),
+          impostorWait: document.getElementById('impostorWait'),
+          impostorVoteStatus: document.getElementById('impostorVoteStatus'),
+          impostorContinueBtn: document.getElementById('impostorContinueBtn'),
+          guessForm: document.getElementById('guessForm'),
+          topicGuessInput: document.getElementById('topicGuessInput'),
+          topicGuessBtn: document.getElementById('topicGuessBtn'),
+          resultsBox: document.getElementById('resultsBox'),
+          resultTitle: document.getElementById('resultTitle'),
+          resultText: document.getElementById('resultText'),
+          resultActions: document.getElementById('resultActions'),
+          nextRoundBtn: document.getElementById('nextRoundBtn'),
+          endGameBtn: document.getElementById('endGameBtn'),
+          turnList: document.getElementById('turnList'),
+          answerList: document.getElementById('answerList'),
+          moderatorControls: document.getElementById('moderatorControls'),
+          nextTurnBtn: document.getElementById('nextTurnBtn'),
+          openVoteBtn: document.getElementById('openVoteBtn'),
+          revealVotesBtn: document.getElementById('revealVotesBtn'),
+          finishGuessBtn: document.getElementById('finishGuessBtn'),
+          finalScores: document.getElementById('finalScores'),
+          finalTopicSection: document.getElementById('finalTopicSection'),
+          finalTopicPopupBtn: document.getElementById('finalTopicPopupBtn'),
+          turnListLabel: document.getElementById('turnListLabel'),
+          playAgainBtn: document.getElementById('playAgainBtn'),
+          topicPopupBtn: document.getElementById('topicPopupBtn'),
+          helpBtn: document.getElementById('helpBtn'),
+          helpOverlay: document.getElementById('helpOverlay'),
+          helpCloseBtn: document.getElementById('helpCloseBtn'),
+          helpCloseBtnBottom: document.getElementById('helpCloseBtnBottom')
+        };
+
+        let role = 'moderator';
+        let sessionCode = null;
+        let moderatorId = null;
+        let playerId = null;
+        let session = null;
+        let pollHandle = null;
+        let topicPopup = null;
+
+        function generateCode() {
+          return Array.from({ length: 6 }, () => CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)]).join('');
+        }
+
+        function generateId(prefix) {
+          const random = Math.random().toString(36).slice(2, 12);
+          return `${prefix}_${Date.now().toString(36)}_${random}`;
+        }
+
+        function parseHash() {
+          const params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+          return {
+            code: (params.get('code') || '').toUpperCase(),
+            pid: params.get('pid') || '',
+            role: params.get('role') || ''
+          };
+        }
+
+        function moderatorStorageKey(code) {
+          return `voa:${APP_ID}:moderator:${code}`;
+        }
+
+        function saveModeratorRecord(code, id) {
+          try {
+            localStorage.setItem(moderatorStorageKey(code), JSON.stringify({ moderatorId: id }));
+          } catch {
+            // Local persistence is nice to have; the game can still run without it.
+          }
+        }
+
+        function loadModeratorRecord(code) {
+          try {
+            const raw = localStorage.getItem(moderatorStorageKey(code));
+            return raw ? JSON.parse(raw) : null;
+          } catch {
+            return null;
+          }
+        }
+
+        async function fetchJson(url, options) {
+          const response = await fetch(url, options);
+          let payload = null;
+          try {
+            payload = await response.json();
+          } catch {
+            payload = null;
+          }
+          if (!response.ok) {
+            throw new Error(payload?.error || `Request failed (${response.status})`);
+          }
+          return payload;
+        }
+
+        async function checkStatus() {
+          try {
+            const result = await fetchJson('/api/multiplayer/status', { cache: 'no-store' });
+            return Boolean(result?.configured);
+          } catch {
+            return false;
+          }
+        }
+
+        async function loadSession(code) {
+          const payload = await fetchJson(`/api/multiplayer/sessions/${code}`, { cache: 'no-store' });
+          return payload?.session || null;
+        }
+
+        async function patchSession(patch, status = null) {
+          if (!sessionCode || !moderatorId) return;
+          const body = { moderatorId, patch };
+          if (status) body.status = status;
+          await fetchJson(`/api/multiplayer/sessions/${sessionCode}`, {
+            method: 'PATCH',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+        }
+
+        async function submitValue(value) {
+          if (!sessionCode || !playerId) return;
+          await fetchJson(`/api/multiplayer/sessions/${sessionCode}/answers`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ playerId, guess: value })
+          });
+        }
+
+        async function createSession() {
+          for (let attempt = 0; attempt < 8; attempt += 1) {
+            const code = generateCode();
+            const modId = generateId('mod');
+            try {
+              await fetchJson('/api/multiplayer/sessions', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({
+                  code,
+                  moderatorId: modId,
+                  appId: APP_ID,
+                  appName: APP_NAME,
+                  appPath: APP_PATH,
+                  settings: {
+                    roundsTotal: Number.parseInt(els.roundCount.value, 10) || 5,
+                    topicPack: els.topicPack.value || 'work'
+                  }
+                })
+              });
+              return { code, moderatorId: modId };
+            } catch (error) {
+              if (!String(error.message).toLowerCase().includes('already exists')) throw error;
+            }
+          }
+          throw new Error('Could not create a unique room code');
+        }
+
+        function sortedPlayers() {
+          return Object.values(session?.players || {})
+            .filter((player) => player && !player.kicked)
+            .sort((a, b) => (a.joinedAt || '').localeCompare(b.joinedAt || ''));
+        }
+
+        function activeIds() {
+          return sortedPlayers().map((player) => player.id);
+        }
+
+        function playerName(id) {
+          return session?.players?.[id]?.name || 'Player';
+        }
+
+        function normalize(value) {
+          return String(value || '')
+            .trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9 ]/g, '')
+            .replace(/\s+/g, ' ');
+        }
+
+        function stageLabel(stage) {
+          return {
+            lobby: 'Lobby',
+            answer: 'Question round',
+            vote: 'Voting',
+            topicGuess: 'Impostor guess',
+            results: 'Reveal',
+            ended: 'Final scores'
+          }[stage || 'lobby'];
+        }
+
+        function toScreen(id) {
+          for (const screen of [els.loadingScreen, els.configErrorScreen, els.lobbyScreen, els.gameScreen, els.finalScreen]) {
+            screen.classList.toggle('active', screen.id === id);
+          }
+        }
+
+        function rankScores(scores) {
+          const rows = sortedPlayers()
+            .map((player) => ({ id: player.id, name: player.name, score: Number(scores?.[player.id] || 0) }))
+            .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+          let lastScore = null;
+          let lastRank = 0;
+          return rows.map((row, index) => {
+            const rank = row.score === lastScore ? lastRank : index + 1;
+            lastScore = row.score;
+            lastRank = rank;
+            return { ...row, rank };
+          });
+        }
+
+        function renderPlayers(target, revealRoles = false) {
+          const game = session?.game || {};
+          const scores = game.scores || {};
+          const players = sortedPlayers();
+          if (!players.length) {
+            target.innerHTML = '<div class="empty">No players yet.</div>';
+            return;
+          }
+          target.innerHTML = players
+            .map((player) => {
+              const isImpostor = revealRoles && player.id === game.impostorId;
+              const hasResponse = Boolean(game.responses?.[player.id]);
+              const status =
+                game.stage === 'vote'
+                  ? hasResponse ? 'voted' : 'waiting'
+                  : player.id === game.currentTurnId ? 'answering' : hasResponse ? 'submitted' : 'waiting';
+              return `<div class="player ${player.id === playerId ? 'me' : ''} ${isImpostor ? 'impostor' : ''}">
+                <div class="name">${escapeHtml(player.name || 'Player')}</div>
+                <div class="small">${Number(scores[player.id] || 0)} pts</div>
+                <div class="small">${isImpostor ? 'impostor' : status}</div>
+              </div>`;
+            })
+            .join('');
+        }
+
+        function escapeHtml(value) {
+          return String(value || '').replace(/[&<>"']/g, (char) => {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
+          });
+        }
+
+        function openTopicPopup(topic, impostorName) {
+          const safeTopic = escapeHtml(topic || '');
+          const safeImpostor = escapeHtml(impostorName || '');
+          const html =
+            '<!doctype html><html lang="en"><head>' +
+            '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+            '<title>SECRET — Do not share</title>' +
+            '<style>' +
+            '*{box-sizing:border-box;margin:0;padding:0}' +
+            'body{min-height:100vh;background:#0b1120;color:#f8fafc;display:flex;flex-direction:column;' +
+            'align-items:center;justify-content:center;font-family:Inter,system-ui,sans-serif;' +
+            'text-align:center;gap:24px;padding:32px}' +
+            '.warn{position:fixed;top:0;left:0;right:0;background:#fb7185;color:#1f0010;' +
+            'font-size:0.72rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;padding:8px 12px;text-align:center}' +
+            '.label{color:#aab8d3;font-size:0.78rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px}' +
+            '.topic{font-size:clamp(2.8rem,14vw,5rem);font-weight:950;color:#2dd4bf;line-height:1;word-break:break-word}' +
+            '.divider{width:48px;height:2px;background:#40506f;border-radius:2px}' +
+            '.impostor{font-size:clamp(1.2rem,5vw,1.8rem);font-weight:800;color:#fb7185}' +
+            '</style></head><body>' +
+            '<div class="warn">Do not share this window on Zoom</div>' +
+            '<div><div class="label">Shared topic</div><div class="topic" id="t">' + safeTopic + '</div></div>' +
+            '<div class="divider"></div>' +
+            '<div><div class="label">Impostor</div><div class="impostor" id="i">' + safeImpostor + '</div></div>' +
+            '<script>window.addEventListener("message",function(e){' +
+            'if(e.data&&typeof e.data.topic==="string")document.getElementById("t").textContent=e.data.topic;' +
+            'if(e.data&&typeof e.data.impostorName==="string")document.getElementById("i").textContent=e.data.impostorName;' +
+            '});<\/script>' +
+            '</body></html>';
+
+          if (topicPopup && !topicPopup.closed) {
+            topicPopup.postMessage({ topic: topic || '', impostorName: impostorName || '' }, '*');
+            topicPopup.focus();
+          } else {
+            topicPopup = window.open(
+              '',
+              'impostor_topic',
+              'width=540,height=400,menubar=no,toolbar=no,status=no,resizable=yes'
+            );
+            if (topicPopup) {
+              topicPopup.document.open();
+              topicPopup.document.write(html);
+              topicPopup.document.close();
+            }
+          }
+        }
+
+        function renderLobby() {
+          toScreen('lobbyScreen');
+          els.roomBadge.textContent = sessionCode ? `Room ${sessionCode}` : 'Lobby';
+          els.joinUrl.textContent = `${window.location.origin}/join/${sessionCode}`;
+          els.moderatorSetup.classList.toggle('hide', role !== 'moderator');
+          els.playerWaiting.classList.toggle('hide', role !== 'player');
+          const players = sortedPlayers();
+          els.playerCount.textContent = `${players.length} player${players.length === 1 ? '' : 's'}`;
+          els.roundPill.textContent = 'Lobby';
+          els.startBtn.disabled = role !== 'moderator' || players.length < 3;
+          els.lobbyHint.textContent =
+            players.length < 3 ? 'Need at least 3 active players to start.' : 'Ready for a suspiciously normal question.';
+          renderPlayers(els.playerGrid);
+        }
+
+        function renderTurnList() {
+          const game = session?.game || {};
+          const isVoteStage = game.stage === 'vote';
+          els.turnListLabel.textContent = isVoteStage ? 'Vote status' : 'Turn order';
+          els.turnList.innerHTML = sortedPlayers()
+            .map((player, index) => {
+              let statusText;
+              if (isVoteStage) {
+                statusText = game.responses?.[player.id] ? 'voted' : 'waiting';
+              } else {
+                const answered = game.answers?.[player.id] || game.responses?.[player.id];
+                statusText = answered ? 'answered' : 'waiting';
+              }
+              const isCurrent = !isVoteStage && player.id === game.currentTurnId;
+              return `<div class="turn-item ${isCurrent ? 'current' : ''}">
+                <strong>${index + 1}. ${escapeHtml(player.name)}</strong>
+                <span class="small">${statusText}</span>
+              </div>`;
+            })
+            .join('');
+        }
+
+        function renderAnswers() {
+          const game = session?.game || {};
+          const answers = game.answers || (game.stage === 'answer' ? game.responses || {} : {});
+          const rows = Object.entries(answers).filter(([id]) => session?.players?.[id] && !session.players[id].kicked);
+          els.answerList.innerHTML = rows.length
+            ? rows
+                .map(([id, answer]) => `<div class="answer"><strong>${escapeHtml(playerName(id))}:</strong> ${escapeHtml(answer)}</div>`)
+                .join('')
+            : '<div class="empty">Answers will appear here as players submit.</div>';
+        }
+
+        function renderGame() {
+          const game = session?.game || {};
+          const players = sortedPlayers();
+          const myRole = game.roles?.[playerId];
+          const mySubmitted = Boolean(game.responses?.[playerId]);
+          const isMyTurn = game.currentTurnId === playerId;
+          const isImpostor = myRole === 'impostor';
+          const isModerator = role === 'moderator';
+          const stage = game.stage || 'lobby';
+
+          if (stage === 'ended') {
+            renderFinal();
+            return;
+          }
+          if (stage === 'lobby') {
+            renderLobby();
+            return;
+          }
+
+          toScreen('gameScreen');
+          els.roomBadge.textContent = `Room ${sessionCode}`;
+          els.stagePill.textContent = stageLabel(stage);
+          els.turnPill.textContent = `Round ${Number(game.logicalRound || 0) + 1} of ${Number(session?.settings?.roundsTotal || 5)}`;
+          els.questionText.textContent = game.question || 'What is your favorite?';
+
+          els.roleCard.classList.toggle('impostor', role === 'player' && isImpostor);
+          els.topicPopupBtn.classList.toggle('hide', role !== 'moderator');
+          if (role === 'moderator') {
+            els.roleTitle.textContent = 'Moderator view';
+            els.roleValue.textContent = 'Topic hidden';
+            els.roleValue.classList.add('mod-hidden');
+            els.roleHint.textContent = 'Keep this screen shared. Open a private window to see the topic and impostor.';
+            if (topicPopup && !topicPopup.closed) {
+              topicPopup.postMessage(
+                { topic: game.topic || '', impostorName: playerName(game.impostorId) },
+                '*'
+              );
+            }
+          } else if (isImpostor) {
+            els.roleValue.classList.remove('mod-hidden');
+            els.roleTitle.textContent = 'Your secret role';
+            els.roleValue.textContent = 'You are the impostor';
+            els.roleHint.textContent = 'Answer vaguely, listen closely, then guess the topic if you survive.';
+          } else {
+            els.roleValue.classList.remove('mod-hidden');
+            els.roleTitle.textContent = 'Your shared topic';
+            els.roleValue.textContent = game.topic || 'Topic';
+            els.roleHint.textContent = 'Give a real answer that proves you know the topic without making it too easy.';
+          }
+
+          const canAnswer = role === 'player' && stage === 'answer' && isMyTurn && !mySubmitted;
+          els.answerForm.classList.toggle('hide', stage !== 'answer' || role !== 'player');
+          els.answerBtn.disabled = !canAnswer;
+          els.answerInput.disabled = !canAnswer;
+          els.answerInput.placeholder = isMyTurn ? 'Your short, slightly strategic answer...' : 'Wait for your turn...';
+          els.phaseHint.textContent =
+            stage === 'answer'
+              ? `${playerName(game.currentTurnId)} is answering.`
+              : stage === 'vote'
+                ? 'Vote privately. You cannot vote for yourself.'
+                : stage === 'topicGuess'
+                  ? 'The impostor gets one topic guess.'
+                  : 'Review the reveal and scores.';
+
+          els.voteBox.classList.toggle('hide', stage !== 'vote' || role !== 'player');
+          renderVoteChoices();
+
+          els.guessForm.classList.toggle('hide', stage !== 'topicGuess' || role !== 'player' || !isImpostor);
+          els.topicGuessBtn.disabled = role !== 'player' || !isImpostor || Boolean(game.responses?.[playerId]);
+
+          els.resultsBox.classList.toggle('hide', stage !== 'results');
+          if (stage === 'results') {
+            renderResults();
+          }
+
+          els.moderatorControls.classList.toggle('hide', !isModerator);
+          els.nextTurnBtn.classList.toggle('hide', stage !== 'answer');
+          els.openVoteBtn.classList.toggle('hide', stage !== 'answer');
+          els.revealVotesBtn.classList.toggle('hide', stage !== 'vote');
+          els.finishGuessBtn.classList.toggle('hide', stage !== 'topicGuess');
+          els.nextTurnBtn.disabled = !game.responses?.[game.currentTurnId];
+          els.openVoteBtn.disabled = players.some((player) => !game.responses?.[player.id]);
+          els.revealVotesBtn.disabled = players.some((player) => player.id !== game.impostorId && !game.responses?.[player.id]);
+          els.finishGuessBtn.disabled = !game.responses?.[game.impostorId];
+
+          renderPlayers(els.gamePlayerGrid, stage === 'results' || stage === 'ended');
+          renderTurnList();
+          renderAnswers();
+        }
+
+        function renderVoteChoices() {
+          const game = session?.game || {};
+          const isImpostorPlayer = game.roles?.[playerId] === 'impostor';
+          const locked = game.responses?.[playerId];
+
+          els.voteInstruction.classList.toggle('hide', isImpostorPlayer);
+          els.voteChoices.classList.toggle('hide', isImpostorPlayer);
+          els.impostorWait.classList.toggle('hide', !isImpostorPlayer);
+
+          if (isImpostorPlayer) {
+            const voters = sortedPlayers().filter((p) => p.id !== game.impostorId);
+            const votedCount = voters.filter((p) => game.responses?.[p.id]).length;
+            els.impostorVoteStatus.textContent = `${votedCount} of ${voters.length} votes cast.`;
+            els.impostorContinueBtn.disabled = Boolean(locked);
+            els.impostorContinueBtn.textContent = locked ? 'Waiting for votes…' : 'Continue';
+            return;
+          }
+
+          els.voteChoices.innerHTML = sortedPlayers()
+            .map((player) => {
+              const disabled = player.id === playerId || Boolean(locked);
+              const isVoted = locked === player.id;
+              const suffix = player.id === playerId ? ' (you)' : '';
+              return `<button class="btn vote-option ${isVoted ? 'gold' : ''}" type="button"
+                data-vote="${escapeHtml(player.id)}" ${disabled ? 'disabled' : ''}>
+                ${escapeHtml(player.name || 'Player')}${suffix}
+              </button>`;
+            })
+            .join('');
+        }
+
+        function renderResults() {
+          const game = session?.game || {};
+          const caught = Boolean(game.caught);
+          const guessed = Boolean(game.topicGuessed);
+          els.resultTitle.textContent = caught ? 'The table caught the impostor.' : 'The impostor slipped through.';
+          els.resultText.textContent = caught
+            ? `${playerName(game.impostorId)} was the impostor. The topic was ${game.topic}.`
+            : guessed
+              ? `${playerName(game.impostorId)} escaped the vote and guessed "${game.topic}".`
+              : `${playerName(game.impostorId)} escaped the vote but missed the topic: ${game.topic}.`;
+          els.resultActions.classList.toggle('hide', role !== 'moderator');
+        }
+
+        function renderFinal() {
+          const game = session?.game || {};
+          toScreen('finalScreen');
+          els.roomBadge.textContent = `Room ${sessionCode}`;
+          renderPlayers(els.finalPlayerGrid, true);
+          const ranked = rankScores(game.scores || {});
+          els.finalScores.innerHTML = ranked
+            .map(
+              (row) => `<div class="score-row">
+                <strong>#${row.rank} ${escapeHtml(row.name)}</strong>
+                <span>${row.score} pts</span>
+              </div>`
+            )
+            .join('');
+          els.playAgainBtn.classList.toggle('hide', role !== 'moderator');
+          els.finalTopicSection.classList.toggle('hide', role !== 'moderator');
+          if (role === 'moderator' && topicPopup && !topicPopup.closed) {
+            topicPopup.postMessage({ topic: game.topic || '', impostorName: playerName(game.impostorId) }, '*');
+          }
+        }
+
+        function render() {
+          if (!session) return;
+          const stage = session.game?.stage || 'lobby';
+          if (session.status === 'ended' || stage === 'ended') renderFinal();
+          else if (stage === 'lobby') renderLobby();
+          else renderGame();
+        }
+
+        function toggleHelp(show) {
+          els.helpOverlay.classList.toggle('hide', !show);
+        }
+
+        function pickTopic(pack, usedTopics = []) {
+          const pool = TOPICS[pack] || TOPICS.work;
+          const fresh = pool.filter((item) => !usedTopics.includes(item.topic));
+          const options = fresh.length ? fresh : pool;
+          return options[Math.floor(Math.random() * options.length)];
+        }
+
+        async function startGame() {
+          const players = sortedPlayers();
+          if (players.length < 3) return;
+          const pack = els.topicPack.value || 'work';
+          const topic = pickTopic(pack);
+          const impostor = players[Math.floor(Math.random() * players.length)];
+          const roles = {};
+          const scores = {};
+          players.forEach((player) => {
+            roles[player.id] = player.id === impostor.id ? 'impostor' : 'insider';
+            scores[player.id] = 0;
+          });
+          await patchSession(
+            {
+              'settings/roundsTotal': Number.parseInt(els.roundCount.value, 10) || 5,
+              'settings/topicPack': pack,
+              'game/mode': 'quiz-vote',
+              'game/phase': 'question',
+              'game/stage': 'answer',
+              'game/logicalRound': 0,
+              'game/roundIndex': 0,
+              'game/usedTopics': [topic.topic],
+              'game/topic': topic.topic,
+              'game/question': topic.question,
+              'game/impostorId': impostor.id,
+              'game/roles': roles,
+              'game/turnOrder': players.map((player) => player.id),
+              'game/currentTurnIndex': 0,
+              'game/currentTurnId': players[0].id,
+              'game/responses': {},
+              'game/answers': {},
+              'game/votes': {},
+              'game/scores': scores,
+              'game/roundGains': {},
+              'game/caught': false,
+              'game/topicGuessed': false
+            },
+            'playing'
+          );
+        }
+
+        async function nextTurn() {
+          const game = session?.game || {};
+          const order = game.turnOrder || activeIds();
+          const nextIndex = Math.min(Number(game.currentTurnIndex || 0) + 1, order.length - 1);
+          await patchSession({
+            'game/currentTurnIndex': nextIndex,
+            'game/currentTurnId': order[nextIndex]
+          });
+        }
+
+        async function openVoting() {
+          const game = session?.game || {};
+          await patchSession({
+            'game/stage': 'vote',
+            'game/phase': 'question',
+            'game/roundIndex': Number(game.logicalRound || 0) * 3 + 1,
+            'game/answers': game.responses || {},
+            'game/responses': {},
+            'game/votes': {}
+          });
+        }
+
+        function computeVoteReveal() {
+          const game = session?.game || {};
+          const votes = game.responses || {};
+          const totals = {};
+          Object.values(votes)
+            .filter((target) => target !== '__skip__')
+            .forEach((target) => {
+              totals[target] = (totals[target] || 0) + 1;
+            });
+          const maxVotes = Math.max(0, ...Object.values(totals));
+          const accused = Object.entries(totals)
+            .filter(([, count]) => count === maxVotes)
+            .map(([id]) => id);
+          return { votes, totals, accused, caught: accused.includes(game.impostorId) && maxVotes > 0 };
+        }
+
+        async function revealVotes() {
+          const game = session?.game || {};
+          const reveal = computeVoteReveal();
+          if (!reveal.caught) {
+            await patchSession({
+              'game/stage': 'topicGuess',
+              'game/phase': 'question',
+              'game/roundIndex': Number(game.logicalRound || 0) * 3 + 2,
+              'game/votes': reveal.votes,
+              'game/voteTotals': reveal.totals,
+              'game/accused': reveal.accused,
+              'game/caught': false,
+              'game/responses': {}
+            });
+            return;
+          }
+          const scores = { ...(game.scores || {}) };
+          activeIds().forEach((id) => {
+            if (id !== game.impostorId) scores[id] = Number(scores[id] || 0) + 2;
+          });
+          await patchSession({
+            'game/stage': 'results',
+            'game/phase': 'results',
+            'game/votes': reveal.votes,
+            'game/voteTotals': reveal.totals,
+            'game/accused': reveal.accused,
+            'game/caught': true,
+            'game/topicGuessed': false,
+            'game/scores': scores,
+            'game/responses': {}
+          });
+        }
+
+        async function finishTopicGuess() {
+          const game = session?.game || {};
+          const guess = game.responses?.[game.impostorId] || '';
+          const guessed = normalize(guess) === normalize(game.topic);
+          const scores = { ...(game.scores || {}) };
+          if (guessed) {
+            scores[game.impostorId] = Number(scores[game.impostorId] || 0) + 4;
+          } else {
+            scores[game.impostorId] = Number(scores[game.impostorId] || 0) + 1;
+          }
+          await patchSession({
+            'game/stage': 'results',
+            'game/phase': 'results',
+            'game/topicGuess': guess,
+            'game/topicGuessed': guessed,
+            'game/scores': scores
+          });
+        }
+
+        async function nextRound() {
+          const game = session?.game || {};
+          const next = Number(game.logicalRound || 0) + 1;
+          const total = Number(session?.settings?.roundsTotal || 5);
+          if (next >= total) {
+            await endGame();
+            return;
+          }
+          const players = sortedPlayers();
+          const pack = session?.settings?.topicPack || 'work';
+          const topic = pickTopic(pack, game.usedTopics || []);
+          const impostor = players[Math.floor(Math.random() * players.length)];
+          const roles = {};
+          players.forEach((player) => {
+            roles[player.id] = player.id === impostor.id ? 'impostor' : 'insider';
+          });
+          await patchSession({
+            'game/stage': 'answer',
+            'game/phase': 'question',
+            'game/logicalRound': next,
+            'game/roundIndex': next * 3,
+            'game/usedTopics': [...(game.usedTopics || []), topic.topic],
+            'game/topic': topic.topic,
+            'game/question': topic.question,
+            'game/impostorId': impostor.id,
+            'game/roles': roles,
+            'game/turnOrder': players.map((player) => player.id),
+            'game/currentTurnIndex': 0,
+            'game/currentTurnId': players[0]?.id || null,
+            'game/responses': {},
+            'game/answers': {},
+            'game/votes': {},
+            'game/voteTotals': {},
+            'game/accused': [],
+            'game/caught': false,
+            'game/topicGuessed': false,
+            'game/topicGuess': ''
+          });
+        }
+
+        async function endGame() {
+          await patchSession({ 'game/stage': 'ended', 'game/phase': 'ended' }, 'ended');
+        }
+
+        async function resetLobby() {
+          await patchSession(
+            {
+              'game/stage': 'lobby',
+              'game/phase': 'lobby',
+              'game/responses': {},
+              'game/answers': {},
+              'game/votes': {},
+              'game/scores': {},
+              'game/roles': {},
+              'game/topic': '',
+              'game/question': '',
+              'game/impostorId': null
+            },
+            'lobby'
+          );
+        }
+
+        async function refreshSession() {
+          if (!sessionCode) return;
+          try {
+            session = await loadSession(sessionCode);
+            render();
+          } catch (error) {
+            console.error('Failed to refresh session', error);
+          }
+        }
+
+        function bindEvents() {
+          els.copyLinkBtn.addEventListener('click', async () => {
+            const url = `${window.location.origin}/join/${sessionCode}`;
+            try {
+              await navigator.clipboard.writeText(url);
+              els.lobbyHint.textContent = 'Join link copied.';
+            } catch {
+              els.lobbyHint.textContent = url;
+            }
+          });
+
+          els.startBtn.addEventListener('click', () => startGame().catch(console.error));
+          els.roundCount.addEventListener('change', () => {
+            if (role === 'moderator') {
+              patchSession({ 'settings/roundsTotal': Number.parseInt(els.roundCount.value, 10) || 5 }).catch(() => {});
+            }
+          });
+          els.topicPack.addEventListener('change', () => {
+            if (role === 'moderator') {
+              patchSession({ 'settings/topicPack': els.topicPack.value || 'work' }).catch(() => {});
+            }
+          });
+
+          els.answerForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const value = els.answerInput.value.trim();
+            if (!value) return;
+            submitValue(value)
+              .then(() => {
+                els.answerInput.value = '';
+                return refreshSession();
+              })
+              .catch(console.error);
+          });
+
+          els.voteChoices.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-vote]');
+            if (!button) return;
+            submitValue(button.getAttribute('data-vote')).then(refreshSession).catch(console.error);
+          });
+
+          els.guessForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const value = els.topicGuessInput.value.trim();
+            if (!value) return;
+            submitValue(value)
+              .then(() => {
+                els.topicGuessInput.value = '';
+                return refreshSession();
+              })
+              .catch(console.error);
+          });
+
+          els.topicPopupBtn.addEventListener('click', () => {
+            const game = session?.game || {};
+            openTopicPopup(game.topic || '', playerName(game.impostorId));
+          });
+          els.finalTopicPopupBtn.addEventListener('click', () => {
+            const game = session?.game || {};
+            openTopicPopup(game.topic || '', playerName(game.impostorId));
+          });
+
+          els.impostorContinueBtn.addEventListener('click', () => {
+            submitValue('__skip__').then(refreshSession).catch(console.error);
+          });
+          els.nextTurnBtn.addEventListener('click', () => nextTurn().catch(console.error));
+          els.openVoteBtn.addEventListener('click', () => openVoting().catch(console.error));
+          els.revealVotesBtn.addEventListener('click', () => revealVotes().catch(console.error));
+          els.finishGuessBtn.addEventListener('click', () => finishTopicGuess().catch(console.error));
+          els.nextRoundBtn.addEventListener('click', () => nextRound().catch(console.error));
+          els.endGameBtn.addEventListener('click', () => endGame().catch(console.error));
+          els.playAgainBtn.addEventListener('click', () => resetLobby().catch(console.error));
+          els.helpBtn.addEventListener('click', () => toggleHelp(true));
+          els.helpCloseBtn.addEventListener('click', () => toggleHelp(false));
+          els.helpCloseBtnBottom.addEventListener('click', () => toggleHelp(false));
+          els.helpOverlay.addEventListener('click', (event) => {
+            if (event.target === els.helpOverlay) toggleHelp(false);
+          });
+        }
+
+        async function bootstrap() {
+          bindEvents();
+          const configured = await checkStatus();
+          if (!configured) {
+            toScreen('configErrorScreen');
+            return;
+          }
+
+          const hash = parseHash();
+          if (hash.role === 'player' && hash.code && hash.pid) {
+            role = 'player';
+            sessionCode = hash.code;
+            playerId = hash.pid;
+          } else {
+            role = 'moderator';
+            const stored = hash.code ? loadModeratorRecord(hash.code) : null;
+            if (hash.code && stored?.moderatorId) {
+              sessionCode = hash.code;
+              moderatorId = stored.moderatorId;
+            } else {
+              const created = await createSession();
+              sessionCode = created.code;
+              moderatorId = created.moderatorId;
+              saveModeratorRecord(sessionCode, moderatorId);
+              window.location.hash = `code=${sessionCode}&role=moderator`;
+            }
+          }
+
+          await refreshSession();
+          pollHandle = setInterval(refreshSession, 1000);
+        }
+
+        window.addEventListener('beforeunload', () => {
+          if (pollHandle) clearInterval(pollHandle);
+        });
+
+        bootstrap().catch((error) => {
+          console.error('Bootstrap failed', error);
+          toScreen('configErrorScreen');
+        });
+      })();
+    </script>
+  </body>
+</html>

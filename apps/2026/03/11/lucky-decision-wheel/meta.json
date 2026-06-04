@@ -22,5 +22,6 @@
     "notes": "Concept generated autonomously; token counts are estimated from generation steps and may vary slightly from provider accounting. Runtime smoke test passed for spin controls, winner state updates, and repeated restart via consecutive spins."
   },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://valleyofai.com/schemas/meta.json"
+  "$id": "https://valleyofai.com/schemas/meta.json",
+  "leaderboard": false
 }

@@ -1,0 +1,242 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a1628"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="trackGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <radialGradient id="ballGrad" cx="35%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#fde68a"/>
+      <stop offset="60%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </radialGradient>
+    <linearGradient id="paddleGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c4b5fd"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="meterFill" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="40%" stop-color="#4ade80"/>
+      <stop offset="60%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+    <filter id="titleGlow" x="-20%" y="-50%" width="140%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="trackGlow" x="-20%" y="-50%" width="140%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="ballGlow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="paddleGlow" x="-20%" y="-100%" width="140%" height="300%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="meterGlow" x="-10%" y="-50%" width="120%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.4)"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)"/>
+  <rect x="0" y="0" width="800" height="450" fill="url(#grid)"/>
+  <rect x="0" y="0" width="800" height="450" fill="url(#vignette)"/>
+
+  <!-- ── TRACK (9-gate, 20-segment, 6-exit layout) ── -->
+  <!-- Scale: game 400x600 → thumbnail x*2, y=33+(game_y-30)*0.723 -->
+
+  <!-- Glow layer -->
+  <!-- Entry drop -->
+  <line x1="400" y1="33" x2="400" y2="94" stroke="rgba(56,189,248,0.3)" stroke-width="12" stroke-linecap="round"/>
+  <!-- Gate 0 → Gate 1/2 -->
+  <line x1="400" y1="94" x2="160" y2="156" stroke="rgba(56,189,248,0.28)" stroke-width="10" stroke-linecap="round"/>
+  <line x1="400" y1="94" x2="640" y2="156" stroke="rgba(56,189,248,0.28)" stroke-width="10" stroke-linecap="round"/>
+  <!-- Gate 1 sub-branches -->
+  <line x1="160" y1="156" x2="110" y2="196" stroke="rgba(56,189,248,0.25)" stroke-width="9" stroke-linecap="round"/>
+  <line x1="160" y1="156" x2="390" y2="191" stroke="rgba(56,189,248,0.2)" stroke-width="7" stroke-linecap="round"/>
+  <!-- Gate 2 sub-branches -->
+  <line x1="640" y1="156" x2="410" y2="191" stroke="rgba(56,189,248,0.2)" stroke-width="7" stroke-linecap="round"/>
+  <line x1="640" y1="156" x2="690" y2="196" stroke="rgba(56,189,248,0.25)" stroke-width="9" stroke-linecap="round"/>
+  <!-- Gate 3 merges → Gate 4 -->
+  <line x1="110" y1="196" x2="400" y2="253" stroke="rgba(56,189,248,0.25)" stroke-width="9" stroke-linecap="round"/>
+  <line x1="400" y1="191" x2="400" y2="253" stroke="rgba(56,189,248,0.2)" stroke-width="7" stroke-linecap="round"/>
+  <line x1="690" y1="196" x2="400" y2="253" stroke="rgba(56,189,248,0.25)" stroke-width="9" stroke-linecap="round"/>
+  <!-- Gate 4 → Gate 5/6 -->
+  <line x1="400" y1="253" x2="200" y2="301" stroke="rgba(56,189,248,0.28)" stroke-width="10" stroke-linecap="round"/>
+  <line x1="400" y1="253" x2="600" y2="301" stroke="rgba(56,189,248,0.28)" stroke-width="10" stroke-linecap="round"/>
+  <!-- Gate 5 → Gate 7 / center-left exit -->
+  <line x1="200" y1="301" x2="110" y2="347" stroke="rgba(56,189,248,0.25)" stroke-width="9" stroke-linecap="round"/>
+  <line x1="200" y1="301" x2="300" y2="402" stroke="rgba(56,189,248,0.22)" stroke-width="8" stroke-linecap="round"/>
+  <!-- Gate 6 → center-right exit / Gate 8 -->
+  <line x1="600" y1="301" x2="500" y2="402" stroke="rgba(56,189,248,0.22)" stroke-width="8" stroke-linecap="round"/>
+  <line x1="600" y1="301" x2="690" y2="347" stroke="rgba(56,189,248,0.25)" stroke-width="9" stroke-linecap="round"/>
+  <!-- Gate 7 → 2 exits -->
+  <line x1="110" y1="347" x2="60" y2="405" stroke="rgba(56,189,248,0.25)" stroke-width="9" stroke-linecap="round"/>
+  <line x1="110" y1="347" x2="230" y2="405" stroke="rgba(56,189,248,0.22)" stroke-width="8" stroke-linecap="round"/>
+  <!-- Gate 8 → 2 exits -->
+  <line x1="690" y1="347" x2="570" y2="405" stroke="rgba(56,189,248,0.22)" stroke-width="8" stroke-linecap="round"/>
+  <line x1="690" y1="347" x2="740" y2="405" stroke="rgba(56,189,248,0.25)" stroke-width="9" stroke-linecap="round"/>
+
+  <!-- Main track lines -->
+  <line x1="400" y1="33" x2="400" y2="94" stroke="url(#trackGrad)" stroke-width="4" stroke-linecap="round"/>
+  <line x1="400" y1="94" x2="160" y2="156" stroke="url(#trackGrad)" stroke-width="4" stroke-linecap="round"/>
+  <line x1="400" y1="94" x2="640" y2="156" stroke="url(#trackGrad)" stroke-width="4" stroke-linecap="round"/>
+  <line x1="160" y1="156" x2="110" y2="196" stroke="url(#trackGrad)" stroke-width="4" stroke-linecap="round"/>
+  <line x1="160" y1="156" x2="390" y2="191" stroke="url(#trackGrad)" stroke-width="3" stroke-linecap="round"/>
+  <line x1="640" y1="156" x2="410" y2="191" stroke="url(#trackGrad)" stroke-width="3" stroke-linecap="round"/>
+  <line x1="640" y1="156" x2="690" y2="196" stroke="url(#trackGrad)" stroke-width="4" stroke-linecap="round"/>
+  <line x1="110" y1="196" x2="400" y2="253" stroke="url(#trackGrad)" stroke-width="4" stroke-linecap="round"/>
+  <line x1="400" y1="191" x2="400" y2="253" stroke="url(#trackGrad)" stroke-width="3" stroke-linecap="round"/>
+  <line x1="690" y1="196" x2="400" y2="253" stroke="url(#trackGrad)" stroke-width="4" stroke-linecap="round"/>
+  <line x1="400" y1="253" x2="200" y2="301" stroke="url(#trackGrad)" stroke-width="4" stroke-linecap="round"/>
+  <line x1="400" y1="253" x2="600" y2="301" stroke="url(#trackGrad)" stroke-width="4" stroke-linecap="round"/>
+  <line x1="200" y1="301" x2="110" y2="347" stroke="url(#trackGrad)" stroke-width="4" stroke-linecap="round"/>
+  <line x1="200" y1="301" x2="300" y2="402" stroke="url(#trackGrad)" stroke-width="3" stroke-linecap="round"/>
+  <line x1="600" y1="301" x2="500" y2="402" stroke="url(#trackGrad)" stroke-width="3" stroke-linecap="round"/>
+  <line x1="600" y1="301" x2="690" y2="347" stroke="url(#trackGrad)" stroke-width="4" stroke-linecap="round"/>
+  <line x1="110" y1="347" x2="60" y2="405" stroke="url(#trackGrad)" stroke-width="4" stroke-linecap="round"/>
+  <line x1="110" y1="347" x2="230" y2="405" stroke="url(#trackGrad)" stroke-width="3" stroke-linecap="round"/>
+  <line x1="690" y1="347" x2="570" y2="405" stroke="url(#trackGrad)" stroke-width="3" stroke-linecap="round"/>
+  <line x1="690" y1="347" x2="740" y2="405" stroke="url(#trackGrad)" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- ── GATES ── -->
+  <!-- Gate 0: hidden -->
+  <circle cx="400" cy="94" r="5" fill="rgba(148,163,184,0.45)"/>
+  <!-- Gate 1: hidden -->
+  <circle cx="160" cy="156" r="5" fill="rgba(148,163,184,0.45)"/>
+  <!-- Gate 2: revealed (ball nearby) — orange -->
+  <g filter="url(#trackGlow)">
+    <line x1="629" y1="151" x2="651" y2="161" stroke="#f97316" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="640" cy="156" r="6" fill="#f97316"/>
+  </g>
+  <!-- Gate 3: hidden -->
+  <circle cx="400" cy="196" r="5" fill="rgba(148,163,184,0.45)"/>
+  <!-- Gate 4: hidden -->
+  <circle cx="400" cy="253" r="5" fill="rgba(148,163,184,0.45)"/>
+  <!-- Gate 5: hidden -->
+  <circle cx="200" cy="301" r="5" fill="rgba(148,163,184,0.45)"/>
+  <!-- Gate 6: hidden -->
+  <circle cx="600" cy="301" r="5" fill="rgba(148,163,184,0.45)"/>
+  <!-- Gate 7: revealed (ball nearby) — green -->
+  <g filter="url(#trackGlow)">
+    <line x1="99" y1="342" x2="121" y2="352" stroke="#4ade80" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="110" cy="347" r="6" fill="#4ade80"/>
+  </g>
+  <!-- Gate 8: hidden -->
+  <circle cx="690" cy="347" r="5" fill="rgba(148,163,184,0.45)"/>
+
+  <!-- ── 6 EXIT MARKERS ── -->
+  <line x1="60" y1="405" x2="60" y2="420" stroke="rgba(56,189,248,0.4)" stroke-width="3" stroke-dasharray="3 2"/>
+  <line x1="230" y1="405" x2="230" y2="420" stroke="rgba(56,189,248,0.4)" stroke-width="3" stroke-dasharray="3 2"/>
+  <line x1="300" y1="402" x2="300" y2="420" stroke="rgba(56,189,248,0.4)" stroke-width="3" stroke-dasharray="3 2"/>
+  <line x1="500" y1="402" x2="500" y2="420" stroke="rgba(56,189,248,0.4)" stroke-width="3" stroke-dasharray="3 2"/>
+  <line x1="570" y1="405" x2="570" y2="420" stroke="rgba(56,189,248,0.4)" stroke-width="3" stroke-dasharray="3 2"/>
+  <line x1="740" y1="405" x2="740" y2="420" stroke="rgba(56,189,248,0.4)" stroke-width="3" stroke-dasharray="3 2"/>
+
+  <!-- ── BALLS ── -->
+  <!-- Ball 1: on track between gate 0 and gate 2 -->
+  <g filter="url(#ballGlow)">
+    <circle cx="554" cy="136" r="11" fill="url(#ballGrad)"/>
+    <circle cx="550" cy="132" r="4" fill="rgba(255,255,255,0.55)"/>
+  </g>
+
+  <!-- Ball 2: exiting track near gate 7, free-falling (speed trail) -->
+  <ellipse cx="90" cy="368" rx="7" ry="12" fill="rgba(251,191,36,0.2)"/>
+  <g filter="url(#ballGlow)">
+    <circle cx="90" cy="380" r="10" fill="url(#ballGrad)"/>
+    <circle cx="86" cy="376" r="3" fill="rgba(255,255,255,0.55)"/>
+  </g>
+
+  <!-- ── PADDLE with POWER METER (player caught a ball) ── -->
+  <!-- Power meter -->
+  <g filter="url(#meterGlow)">
+    <rect x="330" y="404" width="80" height="8" rx="3" fill="rgba(0,0,0,0.6)"/>
+    <!-- Charge fill at 50% (sweet spot = green) -->
+    <rect x="330" y="404" width="40" height="8" rx="3" fill="#4ade80"/>
+    <!-- Sweet spot bracket -->
+    <rect x="362" y="403" width="16" height="10" rx="1" fill="none" stroke="#fbbf24" stroke-width="1.5"/>
+  </g>
+  <text x="370" y="400" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#4ade80" text-anchor="middle">RELEASE NOW!</text>
+  <!-- Paddle -->
+  <g filter="url(#paddleGlow)">
+    <rect x="335" y="425" width="70" height="13" rx="6" fill="url(#paddleGrad)"/>
+    <rect x="343" y="427" width="30" height="4" rx="2" fill="rgba(255,255,255,0.3)"/>
+  </g>
+
+  <!-- ── HUD strip ── -->
+  <rect x="0" y="0" width="800" height="32" fill="rgba(15,23,42,0.88)"/>
+  <text x="16" y="21" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#ef4444">❤️ ❤️</text>
+  <text x="400" y="21" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#f9fafb" text-anchor="middle">⏱ 01:12</text>
+  <text x="784" y="21" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#4ade80" text-anchor="end">✓ 7  ✗ 1</text>
+
+  <!-- Ball spawn entry arrow -->
+  <line x1="400" y1="6" x2="400" y2="28" stroke="rgba(56,189,248,0.55)" stroke-width="2" stroke-dasharray="4 3"/>
+  <polygon points="400,30 395,23 405,23" fill="rgba(56,189,248,0.55)"/>
+
+  <!-- ── TITLE ── -->
+  <rect x="0" y="0" width="800" height="450" fill="none" stroke="rgba(56,189,248,0.15)" stroke-width="3"/>
+  <text
+    x="580"
+    y="195"
+    font-family="'Segoe UI', system-ui, sans-serif"
+    font-size="48"
+    font-weight="900"
+    letter-spacing="3"
+    fill="#38bdf8"
+    text-anchor="middle"
+    filter="url(#titleGlow)"
+  >SIMMOTION</text>
+  <text
+    x="580"
+    y="216"
+    font-family="'Segoe UI', system-ui, sans-serif"
+    font-size="13"
+    font-weight="500"
+    letter-spacing="3"
+    fill="rgba(56,189,248,0.65)"
+    text-anchor="middle"
+  >9-GATE ROLLER COASTER</text>
+
+  <!-- Info card -->
+  <rect x="490" y="232" width="190" height="90" rx="8" fill="rgba(30,41,59,0.82)" stroke="rgba(56,189,248,0.2)" stroke-width="1"/>
+  <circle cx="503" cy="249" r="4" fill="#fbbf24"/>
+  <text x="513" y="253" font-family="system-ui" font-size="12" fill="rgba(255,255,255,0.65)">3 balls · more every 15s</text>
+  <circle cx="503" cy="269" r="4" fill="rgba(148,163,184,0.6)"/>
+  <text x="513" y="273" font-family="system-ui" font-size="12" fill="rgba(255,255,255,0.65)">Gates hidden until close</text>
+  <circle cx="503" cy="289" r="4" fill="#a78bfa"/>
+  <text x="513" y="293" font-family="system-ui" font-size="12" fill="rgba(255,255,255,0.65)">Hold &amp; release to relaunch</text>
+  <circle cx="503" cy="309" r="4" fill="#f97316"/>
+  <text x="513" y="313" font-family="system-ui" font-size="12" fill="rgba(255,255,255,0.65)">6 exits — predict nothing</text>
+</svg>

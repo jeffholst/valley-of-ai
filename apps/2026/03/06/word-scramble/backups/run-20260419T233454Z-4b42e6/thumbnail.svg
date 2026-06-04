@@ -1,0 +1,54 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Word Scramble Party multiplayer lobby and live round">
+  <defs>
+    <linearGradient id="bg" x1="120" y1="40" x2="1080" y2="590" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1732"/>
+      <stop offset="1" stop-color="#102A4F"/>
+    </linearGradient>
+    <linearGradient id="card" x1="240" y1="120" x2="980" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#152946"/>
+      <stop offset="1" stop-color="#1B3558"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#38BDF8"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="160" cy="120" r="120" fill="#22D3EE" fill-opacity="0.14"/>
+  <circle cx="1060" cy="90" r="140" fill="#38BDF8" fill-opacity="0.12"/>
+
+  <rect x="118" y="82" width="964" height="466" rx="28" fill="url(#card)" stroke="#2E4A70" stroke-width="2"/>
+
+  <text x="164" y="152" fill="#F8FAFC" font-size="56" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">Word Scramble Party</text>
+  <text x="164" y="190" fill="#A5B4CF" font-size="24" font-family="Trebuchet MS, Segoe UI, sans-serif">Multiplayer host link + realtime first-correct scoring</text>
+
+  <rect x="164" y="230" width="430" height="278" rx="18" fill="#0E223C" stroke="#2F4F75"/>
+  <text x="192" y="270" fill="#67E8F9" font-size="26" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">Lobby</text>
+  <text x="192" y="307" fill="#E2E8F0" font-size="20" font-family="Trebuchet MS, Segoe UI, sans-serif">Join URL: ...#join=AB3K9Q</text>
+  <rect x="192" y="330" width="182" height="46" rx="10" fill="url(#accent)"/>
+  <text x="224" y="360" fill="#042035" font-size="22" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">Start Game</text>
+  <text x="192" y="407" fill="#A5B4CF" font-size="20" font-family="Trebuchet MS, Segoe UI, sans-serif">Players: Alex, Kim, Sam</text>
+  <text x="192" y="439" fill="#A5B4CF" font-size="20" font-family="Trebuchet MS, Segoe UI, sans-serif">Rounds: 6</text>
+
+  <rect x="618" y="230" width="420" height="278" rx="18" fill="#0E223C" stroke="#2F4F75"/>
+  <text x="646" y="270" fill="#67E8F9" font-size="26" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">Live Round</text>
+  <text x="646" y="306" fill="#E2E8F0" font-size="20" font-family="Trebuchet MS, Segoe UI, sans-serif">Hint: Earth is one of these</text>
+
+  <rect x="646" y="330" width="50" height="58" rx="10" fill="url(#accent)"/>
+  <rect x="703" y="330" width="50" height="58" rx="10" fill="url(#accent)"/>
+  <rect x="760" y="330" width="50" height="58" rx="10" fill="url(#accent)"/>
+  <rect x="817" y="330" width="50" height="58" rx="10" fill="url(#accent)"/>
+  <rect x="874" y="330" width="50" height="58" rx="10" fill="url(#accent)"/>
+  <rect x="931" y="330" width="50" height="58" rx="10" fill="url(#accent)"/>
+
+  <text x="661" y="368" fill="#06223A" font-size="28" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">P</text>
+  <text x="718" y="368" fill="#06223A" font-size="28" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">A</text>
+  <text x="775" y="368" fill="#06223A" font-size="28" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">T</text>
+  <text x="832" y="368" fill="#06223A" font-size="28" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">N</text>
+  <text x="889" y="368" fill="#06223A" font-size="28" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">L</text>
+  <text x="946" y="368" fill="#06223A" font-size="28" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">E</text>
+
+  <text x="646" y="430" fill="#A7F3D0" font-size="22" font-family="Trebuchet MS, Segoe UI, sans-serif" font-weight="700">Alex answered correctly first!</text>
+  <text x="646" y="463" fill="#A5B4CF" font-size="20" font-family="Trebuchet MS, Segoe UI, sans-serif">Score auto-awarded +1</text>
+</svg>

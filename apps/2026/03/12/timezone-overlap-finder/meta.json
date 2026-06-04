@@ -20,5 +20,6 @@
     "totalTokensOut": 6800,
     "runId": "run-20260312T233733Z-5e2c9a",
     "notes": "Built a utility app to compare three timezone schedules with work-hour sliders, real-time local clocks, and a UTC overlap timeline. Token counts are estimated from generation phases."
-  }
+  },
+  "leaderboard": false
 }

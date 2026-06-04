@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Duck Flight - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Duck Flight" />
+    <meta name="voa-app-id" content="2026/05/24/duck-flight" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+      }
+
+      body {
+        background: #000;
+        color: var(--text);
+        font-family: system-ui, sans-serif;
+        overflow: hidden;
+        touch-action: none;
+        user-select: none;
+      }
+
+      #game-wrap {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000;
+      }
+
+      canvas {
+        display: block;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+      }
+
+      #overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.72);
+        gap: 16px;
+        padding: 24px;
+      }
+
+      #overlay.hidden { display: none; }
+
+      #overlay h1 {
+        font-size: clamp(28px, 7vw, 48px);
+        font-weight: 900;
+        letter-spacing: -1px;
+        color: #fbbf24;
+        text-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+      }
+
+      #overlay p {
+        font-size: clamp(13px, 3.5vw, 17px);
+        color: #cbd5e1;
+        text-align: center;
+        max-width: 340px;
+        line-height: 1.55;
+      }
+
+      #overlay .score-display {
+        font-size: clamp(22px, 6vw, 38px);
+        font-weight: 800;
+        color: #fbbf24;
+      }
+
+      #start-btn {
+        margin-top: 8px;
+        padding: 14px 36px;
+        font-size: 18px;
+        font-weight: 700;
+        border: none;
+        border-radius: 10px;
+        background: #f59e0b;
+        color: #000;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      #start-btn:hover { background: #fbbf24; }
+    </style>
+  </head>
+  <body>
+    <div id="game-wrap">
+      <canvas id="canvas"></canvas>
+      <div id="overlay">
+        <h1>🦆 Duck Flight</h1>
+        <p>Fly through rings as a duck in first-person view.<br>
+           Steer left/right to pass through rings.<br>
+           Miss too many and you lose momentum — crash!</p>
+        <p><strong>Desktop:</strong> Arrow keys or A/D<br>
+           <strong>Mobile:</strong> Tap left/right side of screen</p>
+        <button id="start-btn">Start Flying</button>
+      </div>
+    </div>
+
+    <script>
+    'use strict';
+
+    // ─── Constants ───────────────────────────────────────────────────────────────
+    const LOGICAL_W = 400;
+    const LOGICAL_H = 650;
+    const FOCAL_LEN = 300;          // perspective focal length
+    const VP_X = LOGICAL_W / 2;     // vanishing point x (center)
+    const VP_Y = LOGICAL_H * 0.44;  // vanishing point y (slightly above center)
+
+    const SPAWN_Z = 3000;           // world units from camera when ring spawns
+    const KILL_Z = 40;              // world units — ring passes camera (miss check)
+    const PASS_Z = 80;              // world units — ring considered "passed through"
+
+    const RING_OUTER_R = 0.9;       // ring outer radius in world units
+    const RING_INNER_R = 0.28;      // inner radius (pass threshold)
+    const RING_THICKNESS = 0.62;    // outer - inner
+
+    const DUCK_X_MIN = -1.6;        // world units lateral range
+    const DUCK_X_MAX = 1.6;
+    const DUCK_ACCEL = 4.2;         // lateral acceleration (world units/sec²)
+    const DUCK_FRICTION = 6.0;      // passive friction
+
+    const BASE_SPEED = 900;         // ring approach speed (world units/sec)
+    const SPAWN_INTERVAL = 2.2;     // seconds between ring spawns (base)
+
+    const MOMENTUM_START = 1.0;
+    const MOMENTUM_MAX = 1.5;
+    const MOMENTUM_MIN = 0.0;
+    const MOMENTUM_PASS = 0.12;     // gain on good pass
+    const MOMENTUM_MISS = -0.22;    // loss on miss
+    const MOMENTUM_DRAIN = -0.012;  // passive drain per second
+
+    const MAX_MISSES = 5;           // total misses before momentum bottoms out (tracked separately)
+
+    // ─── State ───────────────────────────────────────────────────────────────────
+    const STATE = { MENU: 0, PLAYING: 1, GAMEOVER: 2 };
+    let state = STATE.MENU;
+
+    let duck = null;    // { x, vx, momentum, score, misses }
+    let rings = [];     // array of ring objects
+    let particles = []; // particle system array
+    let lastTime = 0;
+    let spawnTimer = 0;
+    let difficultyTimer = 0;
+    let currentSpeed = BASE_SPEED;
+    let currentInterval = SPAWN_INTERVAL;
+    let animId = null;
+    let scoreSubmitted = false;
+
+    // Input state
+    const input = {
+      left: false,
+      right: false,
+      pointerLeft: false,
+      pointerRight: false,
+    };
+
+    // ─── Canvas setup ────────────────────────────────────────────────────────────
+    const wrap = document.getElementById('game-wrap');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let scale = 1;
+
+    function resizeCanvas() {
+      const ww = wrap.clientWidth;
+      const wh = wrap.clientHeight;
+      scale = Math.min(ww / LOGICAL_W, wh / LOGICAL_H);
+      canvas.width = LOGICAL_W;
+      canvas.height = LOGICAL_H;
+      canvas.style.width = Math.floor(LOGICAL_W * scale) + 'px';
+      canvas.style.height = Math.floor(LOGICAL_H * scale) + 'px';
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // ─── 3D Projection ───────────────────────────────────────────────────────────
+    // Projects a world-space point (wx, wy, wz) onto canvas.
+    // Camera is at world (duck.x, 0, 0) looking toward +z.
+    // Returns { sx, sy, s } where s = scale factor (0 at horizon, large when close).
+    function project(wx, wy, wz) {
+      const relX = wx - (duck ? duck.x : 0);
+      const s = FOCAL_LEN / Math.max(wz, 1);
+      const sx = VP_X + relX * s;
+      const sy = VP_Y - wy * s;
+      return { sx, sy, s };
+    }
+
+    // ─── Ring Factory ─────────────────────────────────────────────────────────────
+    let ringIdCounter = 0;
+    function createRing(z) {
+      // Place ring at a random world x,y offset so the player must steer
+      const wx = (Math.random() * 2 - 1) * 1.2;
+      const wy = (Math.random() * 2 - 1) * 0.4;
+      return {
+        id: ringIdCounter++,
+        wx, wy,
+        wz: z,
+        passed: false,
+        missed: false,
+        color: randomRingColor(),
+      };
+    }
+
+    function randomRingColor() {
+      const colors = ['#fbbf24', '#34d399', '#60a5fa', '#f472b6', '#a78bfa'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    // ─── Duck Factory ─────────────────────────────────────────────────────────────
+    function createDuck() {
+      return {
+        x: 0,
+        vx: 0,
+        momentum: MOMENTUM_START,
+        score: 0,
+        misses: 0,
+      };
+    }
+
+    // ─── Difficulty Scaler ────────────────────────────────────────────────────────
+    function updateDifficulty(dt) {
+      difficultyTimer += dt;
+      // Every 30 seconds, speed increases slightly and intervals tighten
+      if (difficultyTimer >= 30) {
+        difficultyTimer = 0;
+        currentSpeed = Math.min(currentSpeed + 90, 2200);
+        currentInterval = Math.max(currentInterval - 0.15, 1.0);
+      }
+    }
+
+    // ─── Particle System (stub — scaffold for future improvements) ────────────────
+    function spawnParticles(sx, sy, color, count) {
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 60 + Math.random() * 120;
+        particles.push({
+          x: sx, y: sy,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 1.0,
+          decay: 1.2 + Math.random() * 0.8,
+          r: 2 + Math.random() * 3,
+          color,
+        });
+      }
+    }
+
+    function updateParticles(dt) {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.vy += 120 * dt; // gravity
+        p.life -= p.decay * dt;
+        if (p.life <= 0) particles.splice(i, 1);
+      }
+    }
+
+    function drawParticles() {
+      for (const p of particles) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    // ─── Audio stub ───────────────────────────────────────────────────────────────
+    const Audio = {
+      // Stub — future improvement will wire Web Audio API here
+      play(sound) { /* stub */ },
+    };
+
+    // ─── Animation helpers (stub) ─────────────────────────────────────────────────
+    const Anim = {
+      // Stub — reserved for wing flap animation timing
+      wingPhase: 0,
+      update(dt) {
+        this.wingPhase = (this.wingPhase + dt * 4) % (Math.PI * 2);
+      },
+    };
+
+    // ─── Input ────────────────────────────────────────────────────────────────────
+    function setupInput() {
+      window.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') input.left = true;
+        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') input.right = true;
+      });
+      window.addEventListener('keyup', e => {
+        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') input.left = false;
+        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') input.right = false;
+      });
+
+      canvas.addEventListener('pointerdown', e => {
+        const rect = canvas.getBoundingClientRect();
+        const cx = (e.clientX - rect.left) / scale;
+        if (cx < LOGICAL_W / 2) {
+          input.pointerLeft = true;
+        } else {
+          input.pointerRight = true;
+        }
+      });
+      canvas.addEventListener('pointermove', e => {
+        if (e.buttons === 0) return;
+        const rect = canvas.getBoundingClientRect();
+        const cx = (e.clientX - rect.left) / scale;
+        input.pointerLeft = cx < LOGICAL_W / 2;
+        input.pointerRight = cx >= LOGICAL_W / 2;
+      });
+      canvas.addEventListener('pointerup', () => {
+        input.pointerLeft = false;
+        input.pointerRight = false;
+      });
+      canvas.addEventListener('pointercancel', () => {
+        input.pointerLeft = false;
+        input.pointerRight = false;
+      });
+    }
+
+    function isLeft() { return input.left || input.pointerLeft; }
+    function isRight() { return input.right || input.pointerRight; }
+
+    // ─── Update ───────────────────────────────────────────────────────────────────
+    function updateDuck(dt) {
+      let ax = 0;
+      if (isLeft()) ax -= DUCK_ACCEL;
+      if (isRight()) ax += DUCK_ACCEL;
+
+      // Friction
+      const friction = DUCK_FRICTION * Math.sign(duck.vx) * dt;
+      if (Math.abs(friction) > Math.abs(duck.vx)) {
+        duck.vx = 0;
+      } else {
+        duck.vx -= friction;
+      }
+
+      duck.vx += ax * dt;
+      duck.x = Math.max(DUCK_X_MIN, Math.min(DUCK_X_MAX, duck.x + duck.vx * dt));
+
+      // Momentum drains passively
+      duck.momentum = Math.max(
+        MOMENTUM_MIN,
+        Math.min(MOMENTUM_MAX, duck.momentum + MOMENTUM_DRAIN * dt)
+      );
+    }
+
+    function updateRings(dt) {
+      const speed = currentSpeed * (0.5 + duck.momentum * 0.5); // speed tied to momentum
+      for (let i = rings.length - 1; i >= 0; i--) {
+        const ring = rings[i];
+        ring.wz -= speed * dt;
+
+        // Pass check: duck is inside the inner ring when it passes
+        if (!ring.passed && !ring.missed && ring.wz <= PASS_Z) {
+          const dx = duck.x - ring.wx;
+          const dy = 0 - ring.wy; // duck is always at world y=0
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist <= RING_INNER_R) {
+            // Good pass!
+            ring.passed = true;
+            duck.score += 10;
+            duck.momentum = Math.min(MOMENTUM_MAX, duck.momentum + MOMENTUM_PASS);
+            const { sx, sy } = project(ring.wx, ring.wy, PASS_Z);
+            spawnParticles(sx, sy, ring.color, 18);
+            Audio.play('pass');
+          } else {
+            // Miss
+            ring.missed = true;
+            duck.misses++;
+            duck.momentum = Math.max(MOMENTUM_MIN, duck.momentum + MOMENTUM_MISS);
+            const { sx, sy } = project(ring.wx, ring.wy, PASS_Z);
+            spawnParticles(sx, sy, '#ef4444', 10);
+            Audio.play('miss');
+          }
+        }
+
+        if (ring.wz <= -50) rings.splice(i, 1);
+      }
+    }
+
+    function spawnRingIfNeeded(dt) {
+      spawnTimer -= dt;
+      if (spawnTimer <= 0) {
+        rings.push(createRing(SPAWN_Z));
+        spawnTimer = currentInterval * (0.8 + Math.random() * 0.4);
+      }
+    }
+
+    function checkGameOver() {
+      if (duck.momentum <= MOMENTUM_MIN) {
+        endGame();
+      }
+    }
+
+    // ─── Draw ─────────────────────────────────────────────────────────────────────
+    function drawSky() {
+      const grad = ctx.createLinearGradient(0, 0, 0, VP_Y);
+      grad.addColorStop(0, '#1e3a5f');
+      grad.addColorStop(1, '#6ab0de');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, LOGICAL_W, VP_Y);
+    }
+
+    function drawGround() {
+      const grad = ctx.createLinearGradient(0, VP_Y, 0, LOGICAL_H);
+      grad.addColorStop(0, '#4a7c3f');
+      grad.addColorStop(1, '#2d4a25');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, VP_Y, LOGICAL_W, LOGICAL_H - VP_Y);
+
+      // Ground grid lines (perspective) — gives depth sense
+      ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+      ctx.lineWidth = 0.8;
+      for (let wz = 200; wz <= 2800; wz += 200) {
+        const s = FOCAL_LEN / wz;
+        const screenY = VP_Y + s * 1.8; // ground is slightly below VP
+        if (screenY > LOGICAL_H) break;
+        ctx.beginPath();
+        ctx.moveTo(0, screenY);
+        ctx.lineTo(LOGICAL_W, screenY);
+        ctx.stroke();
+      }
+
+      // Vertical perspective lines
+      for (let wx = -3; wx <= 3; wx++) {
+        ctx.beginPath();
+        ctx.moveTo(VP_X, VP_Y);
+        ctx.lineTo(VP_X + wx * 80, LOGICAL_H);
+        ctx.stroke();
+      }
+    }
+
+    function drawFog(wz, alpha) {
+      // Fog falloff — rings far away are dimmed
+      return Math.max(0, Math.min(1, 1 - (wz - 200) / (SPAWN_Z - 200))) * alpha;
+    }
+
+    function drawRing(ring) {
+      if (ring.wz <= 0) return;
+      const { sx: cx, sy: cy, s } = project(ring.wx, ring.wy, ring.wz);
+      const outerR = RING_OUTER_R * s;
+      const innerR = RING_INNER_R * s;
+
+      if (outerR < 1) return; // too small to draw
+
+      const fogAlpha = drawFog(ring.wz, 1.0);
+      if (fogAlpha < 0.02) return;
+
+      ctx.save();
+      ctx.globalAlpha = fogAlpha;
+
+      // Outer ring (colored)
+      ctx.beginPath();
+      ctx.arc(cx, cy, outerR, 0, Math.PI * 2);
+      ctx.arc(cx, cy, innerR, 0, Math.PI * 2, true); // hole
+      ctx.fillStyle = ring.passed ? '#6ee7b7' : ring.missed ? '#fca5a5' : ring.color;
+      ctx.fill('evenodd');
+
+      // Ring glow
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = ring.color;
+      ctx.strokeStyle = ring.color;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(cx, cy, (outerR + innerR) / 2, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawRings() {
+      // Draw far-to-near for correct painter's order
+      const sorted = [...rings].sort((a, b) => b.wz - a.wz);
+      for (const ring of sorted) drawRing(ring);
+    }
+
+    function drawDuckPOV() {
+      // First-person duck silhouette: beak tip at center, wings flanking
+      const bx = VP_X;
+      const by = VP_Y + 60;
+
+      // Wing flap using Anim.wingPhase
+      const flapOffset = Math.sin(Anim.wingPhase) * 14;
+
+      ctx.save();
+      ctx.globalAlpha = 0.92;
+
+      // Left wing
+      ctx.fillStyle = '#78350f';
+      ctx.beginPath();
+      ctx.moveTo(bx - 20, by + 10);
+      ctx.quadraticCurveTo(bx - 90, by - 30 + flapOffset, bx - 140, by + 20 + flapOffset);
+      ctx.quadraticCurveTo(bx - 70, by + 45, bx - 20, by + 30);
+      ctx.closePath();
+      ctx.fill();
+
+      // Right wing
+      ctx.beginPath();
+      ctx.moveTo(bx + 20, by + 10);
+      ctx.quadraticCurveTo(bx + 90, by - 30 + flapOffset, bx + 140, by + 20 + flapOffset);
+      ctx.quadraticCurveTo(bx + 70, by + 45, bx + 20, by + 30);
+      ctx.closePath();
+      ctx.fill();
+
+      // Beak (orange triangle tip)
+      ctx.fillStyle = '#f97316';
+      ctx.beginPath();
+      ctx.moveTo(bx, by - 8);
+      ctx.lineTo(bx - 10, by + 8);
+      ctx.lineTo(bx + 10, by + 8);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    function drawHUD() {
+      // Score
+      ctx.save();
+      ctx.fillStyle = '#fbbf24';
+      ctx.font = 'bold 22px system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('Score: ' + duck.score, 14, 32);
+
+      // Momentum bar
+      const barW = 120;
+      const barH = 10;
+      const bx = LOGICAL_W - barW - 14;
+      const by = 18;
+
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.beginPath();
+      ctx.roundRect(bx, by, barW, barH, 4);
+      ctx.fill();
+
+      const pct = duck.momentum / MOMENTUM_MAX;
+      const barColor = pct > 0.6 ? '#34d399' : pct > 0.3 ? '#fbbf24' : '#ef4444';
+      ctx.fillStyle = barColor;
+      ctx.beginPath();
+      ctx.roundRect(bx, by, barW * pct, barH, 4);
+      ctx.fill();
+
+      ctx.fillStyle = '#f9fafb';
+      ctx.font = '11px system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('Momentum', bx - 6, by + 9);
+
+      // Misses
+      ctx.textAlign = 'left';
+      ctx.font = '13px system-ui, sans-serif';
+      ctx.fillStyle = '#fca5a5';
+      ctx.fillText('Misses: ' + duck.misses, 14, 52);
+
+      ctx.restore();
+    }
+
+    function drawInputHints() {
+      // Mobile tap zones (subtle)
+      ctx.save();
+      ctx.globalAlpha = isLeft() ? 0.12 : 0.04;
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, LOGICAL_W / 2, LOGICAL_H);
+
+      ctx.globalAlpha = isRight() ? 0.12 : 0.04;
+      ctx.fillRect(LOGICAL_W / 2, 0, LOGICAL_W / 2, LOGICAL_H);
+      ctx.restore();
+    }
+
+    // ─── Game loop ────────────────────────────────────────────────────────────────
+    function update(ts) {
+      const dt = Math.min((ts - lastTime) / 1000, 0.1);
+      lastTime = ts;
+
+      if (state !== STATE.PLAYING) return;
+
+      updateDuck(dt);
+      updateRings(dt);
+      spawnRingIfNeeded(dt);
+      updateDifficulty(dt);
+      updateParticles(dt);
+      Anim.update(dt);
+      checkGameOver();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, LOGICAL_W, LOGICAL_H);
+      drawSky();
+      drawGround();
+      drawRings();
+      drawDuckPOV();
+      drawParticles();
+      drawInputHints();
+      if (state === STATE.PLAYING) drawHUD();
+    }
+
+    function loop(ts) {
+      update(ts);
+      draw();
+      animId = requestAnimationFrame(loop);
+    }
+
+    // ─── Game lifecycle ───────────────────────────────────────────────────────────
+    function startGame() {
+      duck = createDuck();
+      rings = [];
+      particles = [];
+      spawnTimer = 0.8;
+      difficultyTimer = 0;
+      currentSpeed = BASE_SPEED;
+      currentInterval = SPAWN_INTERVAL;
+      scoreSubmitted = false;
+      state = STATE.PLAYING;
+      document.getElementById('overlay').classList.add('hidden');
+      lastTime = performance.now();
+      if (animId) cancelAnimationFrame(animId);
+      animId = requestAnimationFrame(loop);
+    }
+
+    function endGame() {
+      state = STATE.GAMEOVER;
+      showGameOver();
+
+      if (!scoreSubmitted && duck.score > 0) {
+        scoreSubmitted = true;
+        if (window.voaLeaderboard) {
+          window.voaLeaderboard.submit(duck.score);
+        }
+      }
+    }
+
+    function showGameOver() {
+      const overlay = document.getElementById('overlay');
+      overlay.innerHTML = `
+        <h1>Game Over</h1>
+        <p class="score-display">Score: ${duck.score}</p>
+        <p>Misses: ${duck.misses}<br>You ran out of momentum!</p>
+        <button id="start-btn">Fly Again</button>
+      `;
+      overlay.classList.remove('hidden');
+      document.getElementById('start-btn').addEventListener('click', startGame);
+    }
+
+    // ─── Boot ─────────────────────────────────────────────────────────────────────
+    setupInput();
+    document.getElementById('start-btn').addEventListener('click', startGame);
+
+    // Idle render loop while on menu/gameover (so background animates)
+    function idleDraw(ts) {
+      if (state !== STATE.PLAYING) {
+        ctx.clearRect(0, 0, LOGICAL_W, LOGICAL_H);
+        // Simple animated sky for menu
+        const t = ts / 1000;
+        const grad = ctx.createLinearGradient(0, 0, 0, LOGICAL_H);
+        grad.addColorStop(0, '#0f2a4a');
+        grad.addColorStop(0.5, '#1e4a7a');
+        grad.addColorStop(1, '#2d4a25');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
+
+        // Slowly drifting clouds (visual interest while on menu)
+        drawIdleClouds(t);
+      }
+      if (state !== STATE.PLAYING) requestAnimationFrame(idleDraw);
+    }
+
+    function drawIdleClouds(t) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(255,255,255,0.07)';
+      for (let i = 0; i < 5; i++) {
+        const x = ((i * 97 + t * 18) % (LOGICAL_W + 120)) - 60;
+        const y = 60 + i * 40;
+        ctx.beginPath();
+        ctx.ellipse(x, y, 60, 22, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    requestAnimationFrame(idleDraw);
+    </script>
+  </body>
+</html>

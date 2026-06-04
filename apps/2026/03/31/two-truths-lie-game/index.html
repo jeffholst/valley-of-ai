@@ -27,7 +27,6 @@
     <script src="/apps/shared/app-shell.js" defer></script>
 
     <style>
-      /* ── Theme variables ── */
       :root {
         --bg: #0f172a;
         --text: #f9fafb;
@@ -39,7 +38,6 @@
         --surface: #f3f4f6;
       }
 
-      /* ── App-specific palette ── */
       :root {
         --accent: #8b5cf6;
         --accent-bright: #a78bfa;
@@ -70,7 +68,6 @@
         min-height: 100dvh;
       }
 
-      /* ── Viewport wrapper — accounts for 64px header + 56px footer ── */
       #app {
         position: fixed;
         top: 64px;
@@ -81,30 +78,17 @@
         padding: 16px;
       }
 
-      /* ── Screens ── */
       .screen {
         display: none;
         flex-direction: column;
         align-items: center;
         gap: 16px;
-        max-width: 640px;
+        max-width: 760px;
         margin: 0 auto;
         padding-bottom: 16px;
       }
       .screen.active {
         display: flex;
-        animation: fadeIn 0.2s ease;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(8px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
       }
 
       h1 {
@@ -118,16 +102,15 @@
         font-weight: 600;
         text-align: center;
       }
-      h3 {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: var(--text-muted);
-        text-align: center;
-        text-transform: uppercase;
-        letter-spacing: 0.07em;
+
+      .card {
+        background: var(--card);
+        border: 1.5px solid var(--card-border);
+        border-radius: 12px;
+        padding: 16px;
+        width: 100%;
       }
 
-      /* ── Buttons ── */
       .btn {
         display: inline-flex;
         align-items: center;
@@ -141,174 +124,164 @@
         cursor: pointer;
         transition: all 0.15s ease;
         min-height: 48px;
-        min-width: 44px;
       }
       .btn:active {
-        transform: scale(0.97);
+        transform: scale(0.98);
       }
       .btn-primary {
         background: var(--accent);
-        color: white;
+        color: #fff;
       }
       .btn-primary:hover {
         background: var(--accent-dark);
       }
       .btn-success {
         background: var(--success);
-        color: white;
-      }
-      .btn-success:hover {
-        filter: brightness(0.9);
+        color: #fff;
       }
       .btn-danger {
         background: var(--danger);
-        color: white;
-      }
-      .btn-danger:hover {
-        filter: brightness(0.9);
+        color: #fff;
       }
       .btn-ghost {
         background: transparent;
         color: var(--text-muted);
         border: 1.5px solid var(--card-border);
       }
-      .btn-ghost:hover {
-        background: var(--surface);
-        color: var(--text);
-      }
-      .btn-lg {
-        font-size: 1.15rem;
-        padding: 14px 32px;
-      }
       .btn-sm {
-        font-size: 0.875rem;
-        padding: 8px 14px;
-        min-height: 38px;
+        min-height: 36px;
+        padding: 8px 12px;
+        font-size: 0.85rem;
       }
       .btn:disabled {
         opacity: 0.45;
         cursor: not-allowed;
         transform: none;
       }
-      .full-width {
-        width: 100%;
-      }
 
-      /* ── Cards ── */
-      .card {
-        background: var(--card);
-        border: 1.5px solid var(--card-border);
-        border-radius: 12px;
-        padding: 16px;
+      .input,
+      .textarea,
+      .select {
         width: 100%;
-      }
-
-      /* ── Input ── */
-      .input {
-        width: 100%;
-        padding: 12px 14px;
+        padding: 11px 12px;
         background: var(--bg);
         border: 1.5px solid var(--card-border);
         border-radius: 8px;
         color: var(--text);
         font-size: 1rem;
-        outline: none;
-        transition: border-color 0.15s;
       }
-      .input:focus {
-        border-color: var(--accent);
+      .textarea {
+        min-height: 72px;
+        resize: vertical;
+      }
+
+      .muted {
+        color: var(--text-muted);
+        font-size: 0.92rem;
+      }
+
+      .full {
+        width: 100%;
       }
 
       .row {
         display: flex;
-        gap: 8px;
-        width: 100%;
+        gap: 10px;
         align-items: center;
+        width: 100%;
       }
-      .row .input {
-        flex: 1;
-      }
-
-      /* ── Player chips ── */
-      .player-list {
-        display: flex;
+      .row.wrap {
         flex-wrap: wrap;
+      }
+
+      .pill {
+        border: 1.5px solid var(--card-border);
+        border-radius: 999px;
+        padding: 5px 10px;
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        background: var(--surface);
+      }
+
+      .players {
+        display: flex;
+        flex-direction: column;
         gap: 8px;
-        width: 100%;
       }
-      .player-chip {
-        display: flex;
+      .player-row {
+        display: grid;
+        grid-template-columns: 1fr auto auto auto;
+        gap: 10px;
         align-items: center;
-        gap: 6px;
         background: var(--surface);
         border: 1.5px solid var(--card-border);
-        border-radius: 20px;
-        padding: 6px 12px;
-        font-size: 0.9rem;
+        border-radius: 10px;
+        padding: 10px 12px;
       }
-      .player-chip button {
-        background: none;
-        border: none;
-        color: var(--text-muted);
-        cursor: pointer;
-        font-size: 1rem;
-        line-height: 1;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 24px;
-        min-width: 24px;
-        border-radius: 50%;
-      }
-      .player-chip button:hover {
-        color: var(--danger);
-      }
-
-      /* ── Round badge ── */
-      .round-badge {
-        background: var(--surface);
-        border: 1.5px solid var(--card-border);
-        border-radius: 20px;
-        padding: 4px 14px;
-        font-size: 0.85rem;
-        color: var(--text-muted);
-      }
-
-      /* ── Timer ring ── */
-      .timer-ring {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .timer-ring svg {
-        transform: rotate(-90deg);
-      }
-      .timer-number {
-        position: absolute;
-        font-size: clamp(2.5rem, 10vw, 4rem);
+      .score-chip {
+        font-size: 0.8rem;
         font-weight: 700;
         color: var(--accent-bright);
       }
-      #timerCircle {
-        transition: stroke-dashoffset 1s linear;
-        stroke-linecap: round;
+      .status-ready {
+        color: var(--success);
+        font-weight: 600;
+      }
+      .status-waiting {
+        color: var(--warning);
+        font-weight: 600;
       }
 
-      /* ── Spinner wheel ── */
-      .wheel-container {
+      .statement-list,
+      .vote-list,
+      .result-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .statement-item,
+      .vote-row,
+      .result-row {
         display: flex;
         align-items: center;
-        justify-content: center;
-        width: 100%;
+        gap: 10px;
+        background: var(--surface);
+        border: 1.5px solid var(--card-border);
+        border-radius: 10px;
+        padding: 10px 12px;
       }
-      .wheel-wrapper {
+
+      .vote-buttons {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .vote-btn {
+        min-height: 52px;
+        border-radius: 10px;
+        border: 1.5px solid var(--card-border);
+        background: var(--bg);
+        color: var(--text);
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .vote-btn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .vote-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .wheel-wrap {
         position: relative;
         display: inline-block;
       }
       #spinCanvas {
-        display: block;
         border-radius: 50%;
         max-width: 100%;
       }
@@ -324,865 +297,691 @@
         filter: drop-shadow(0 0 4px var(--accent));
       }
 
-      /* ── Speaker name ── */
-      .winner-name {
-        font-size: clamp(1.8rem, 6vw, 2.8rem);
+      .big-name {
+        text-align: center;
+        font-size: clamp(1.6rem, 6vw, 2.7rem);
         font-weight: 700;
         color: var(--accent-bright);
-        text-align: center;
-        text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
       }
 
-      @keyframes spinResult {
-        0%,
-        100% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.05);
-        }
-      }
-      .spin-result {
-        animation: spinResult 0.4s ease;
-      }
-
-      /* ── Guess grid ── */
-      .guess-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        width: 100%;
-      }
-      .guess-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        background: var(--card);
-        border: 1.5px solid var(--card-border);
-        border-radius: 10px;
-        padding: 10px 14px;
-      }
-      .guess-row.correct {
+      .result-good {
         border-color: var(--success);
         background: rgba(16, 185, 129, 0.1);
       }
-      .guess-row.wrong {
+      .result-bad {
         border-color: var(--danger);
-        background: rgba(239, 68, 68, 0.08);
-      }
-      .guess-name {
-        flex: 1;
-        font-weight: 600;
-        font-size: 1rem;
-      }
-      .guess-btns {
-        display: flex;
-        gap: 6px;
-      }
-      .guess-btn {
-        width: 52px;
-        height: 52px;
-        border-radius: 10px;
-        border: 2px solid var(--card-border);
-        background: var(--bg);
-        color: var(--text-muted);
-        font-size: 1.1rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.15s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-      }
-      .guess-btn:hover {
-        border-color: var(--accent);
-        color: var(--accent-bright);
-        background: rgba(139, 92, 246, 0.12);
-        transform: scale(1.05);
-      }
-      .guess-btn.selected {
-        background: var(--accent);
-        border-color: var(--accent);
-        color: white;
-        box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
-        transform: scale(1.1);
-      }
-      .guess-btn.selected::after {
-        content: '✓';
-        position: absolute;
-        top: -6px;
-        right: -6px;
-        background: var(--success);
-        color: white;
-        border-radius: 50%;
-        width: 16px;
-        height: 16px;
-        font-size: 9px;
-        font-weight: 900;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        line-height: 1;
-      }
-      .guess-row.has-guess {
-        border-color: var(--accent-dark);
-        background: rgba(139, 92, 246, 0.06);
-      }
-      /* Winners banner */
-      .winners-banner {
-        width: 100%;
-        background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05));
-        border: 2px solid var(--success);
-        border-radius: 14px;
-        padding: 16px;
-        text-align: center;
-      }
-      .winners-banner h2 {
-        color: var(--success);
-        margin-bottom: 10px;
-        filter: drop-shadow(0 0 6px rgba(16,185,129,0.4));
-      }
-      .winners-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        justify-content: center;
-      }
-      .winner-chip {
-        background: var(--success);
-        color: white;
-        border-radius: 20px;
-        padding: 6px 14px;
-        font-weight: 700;
-        font-size: 1rem;
-      }
-      .no-winners-banner {
-        width: 100%;
-        background: rgba(148, 163, 184, 0.08);
-        border: 2px solid var(--card-border);
-        border-radius: 14px;
-        padding: 14px;
-        text-align: center;
-        color: var(--text-muted);
-        font-size: 1rem;
-      }
-      .guess-icon {
-        font-size: 1.2rem;
-        min-width: 24px;
-        text-align: center;
+        background: rgba(239, 68, 68, 0.1);
       }
 
-      /* ── Scoreboard table ── */
-      .score-table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      .score-table th,
-      .score-table td {
-        padding: 10px 14px;
-        text-align: left;
-        border-bottom: 1px solid var(--card-border);
-      }
-      .score-table th {
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-muted);
-      }
-      .score-table tr:last-child td {
-        border-bottom: none;
-      }
-      .score-rank {
-        font-size: 1.2rem;
-        min-width: 30px;
-      }
-      .score-points {
-        font-weight: 700;
-        font-size: 1.1rem;
-        color: var(--accent-bright);
+      .hidden {
+        display: none !important;
       }
 
-      /* ── Instructions ── */
-      .instructions {
-        list-style: none;
+      .leaderboard-list {
         display: flex;
         flex-direction: column;
+        gap: 8px;
+      }
+      .leaderboard-row {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
         gap: 10px;
-        width: 100%;
-      }
-      .instructions li {
-        display: flex;
-        gap: 12px;
-        align-items: flex-start;
-        background: var(--surface);
-        border-radius: 10px;
-        padding: 12px 14px;
-        font-size: 0.95rem;
-        line-height: 1.45;
-      }
-      .instructions li .num {
-        background: var(--accent);
-        color: white;
-        border-radius: 50%;
-        width: 24px;
-        height: 24px;
-        display: flex;
         align-items: center;
-        justify-content: center;
-        font-size: 0.8rem;
+        background: var(--surface);
+        border: 1.5px solid var(--card-border);
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+      .leaderboard-rank {
+        width: 30px;
+        text-align: center;
         font-weight: 700;
-        flex-shrink: 0;
-        margin-top: 1px;
+      }
+      .leaderboard-score {
+        color: var(--accent-bright);
+        font-weight: 700;
+      }
+      .statement-breakdown-card {
+        border: 1.5px solid var(--card-border);
+        border-radius: 10px;
+        padding: 10px 12px;
+        background: var(--surface);
+      }
+      .statement-breakdown-lie {
+        border-color: var(--danger);
+        background: rgba(239, 68, 68, 0.12);
+      }
+      .lie-badge {
+        display: inline-block;
+        background: var(--danger);
+        color: #fff;
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 1px 6px;
+        border-radius: 4px;
+        margin-left: 6px;
+        vertical-align: middle;
+      }
+      .vote-status-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 6px;
+      }
+      .vote-status-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.88rem;
+        padding: 3px 0;
+      }
+      .voted-yes {
+        color: var(--success);
+        font-weight: 600;
+      }
+      .voted-no {
+        color: var(--warning);
+      }
+      #animOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 100;
+      }
+      .confetti-piece {
+        position: absolute;
+        top: -20px;
+        animation: confettiFall linear forwards;
+        border-radius: 2px;
+      }
+      @keyframes confettiFall {
+        to {
+          transform: translateY(110vh) rotate(720deg);
+        }
+      }
+      .rain-drop {
+        position: absolute;
+        top: -60px;
+        width: 2px;
+        border-radius: 2px;
+        animation: rainFall linear infinite;
+      }
+      @keyframes rainFall {
+        to {
+          transform: translateY(110vh);
+        }
       }
 
-      /* ── Utility ── */
-      .text-center {
-        text-align: center;
-      }
-      .text-muted {
-        color: var(--text-muted);
-        font-size: 0.9rem;
-      }
-      .flex-row {
-        display: flex;
-        gap: 10px;
-        width: 100%;
-      }
-      .flex-row .btn {
-        flex: 1;
+      @media (max-width: 640px) {
+        .player-row {
+          grid-template-columns: 1fr auto;
+        }
+        .vote-buttons {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
       }
     </style>
   </head>
   <body>
     <div id="app">
-      <!-- ── SCREEN: Setup ── -->
-      <div id="screenSetup" class="screen active">
+      <div id="animOverlay"></div>
+      <div id="screenLoading" class="screen active">
         <h1>2 Truths and a Lie</h1>
-        <p class="text-muted text-center">Add everyone who's playing, then start.</p>
+        <p class="muted">Connecting to multiplayer room...</p>
+      </div>
 
+      <div id="screenError" class="screen">
+        <h1>Connection Error</h1>
+        <div class="card"><p id="errorText" class="muted"></p></div>
+      </div>
+
+      <div id="screenJoin" class="screen">
+        <h1>Join 2 Truths and a Lie</h1>
         <div class="card">
-          <div class="row">
-            <input
-              id="nameInput"
-              class="input"
-              type="text"
-              placeholder="Enter player name…"
-              maxlength="30"
-              autocomplete="off"
-            />
-            <button class="btn btn-primary" onclick="addPlayer()">Add</button>
+          <p class="muted" style="margin-bottom: 8px">Code: <strong id="joinCodeLabel"></strong></p>
+          <div class="row wrap" style="margin-bottom: 8px">
+            <input id="joinNameInput" class="input" maxlength="30" placeholder="Your name" />
           </div>
-        </div>
-
-        <div id="playerList" class="player-list"></div>
-        <div style="display: flex; align-items: center; gap: 10px; width: 100%">
-          <p id="playerCountMsg" class="text-muted" style="display: none; flex: 1; margin: 0"></p>
-          <button
-            id="removeAllBtn"
-            class="btn btn-ghost btn-sm"
-            style="display: none; color: var(--danger)"
-            onclick="removeAllPlayers()"
+          <p class="muted" style="margin-bottom: 6px">Enter two truths and one lie.</p>
+          <div class="statement-list" style="margin-bottom: 10px">
+            <textarea id="joinStatement1" class="textarea" maxlength="180" placeholder="Statement 1"></textarea>
+            <textarea id="joinStatement2" class="textarea" maxlength="180" placeholder="Statement 2"></textarea>
+            <textarea id="joinStatement3" class="textarea" maxlength="180" placeholder="Statement 3"></textarea>
+          </div>
+          <label class="muted" for="joinLieSelect" style="display: block; margin-bottom: 6px"
+            >Which statement is the lie?</label
           >
-            Remove All
-          </button>
+          <select id="joinLieSelect" class="select" style="margin-bottom: 12px">
+            <option value="0">Statement 1</option>
+            <option value="1">Statement 2</option>
+            <option value="2">Statement 3</option>
+          </select>
+          <button id="joinSubmitBtn" class="btn btn-primary full">Submit and Join</button>
+          <p id="joinMessage" class="muted" style="margin-top: 8px"></p>
         </div>
-
-        <button id="startBtn" class="btn btn-primary btn-lg full-width" onclick="startGame()" disabled>
-          Start Game
-        </button>
       </div>
 
-      <!-- ── SCREEN: Think Time (round 1 only) ── -->
-      <div id="screenThink" class="screen">
-        <h1>Think Time!</h1>
-        <h2>Everyone: write your 3 statements</h2>
-
-        <div class="timer-ring">
-          <svg width="180" height="180" viewBox="0 0 180 180">
-            <circle cx="90" cy="90" r="80" fill="none" stroke="var(--card-border)" stroke-width="10" />
-            <circle
-              id="timerCircle"
-              cx="90"
-              cy="90"
-              r="80"
-              fill="none"
-              stroke-width="10"
-              stroke-dasharray="502.65"
-              stroke-dashoffset="0"
-            />
-          </svg>
-          <span class="timer-number" id="timerNum">60</span>
+      <div id="screenModerator" class="screen">
+        <h1>2 Truths and a Lie</h1>
+        <div class="row wrap">
+          <span class="pill">Moderator</span>
+          <span class="pill" id="modCodePill">Code: ----</span>
+          <span class="pill" id="modPhasePill">Lobby</span>
         </div>
 
-        <ul class="instructions">
-          <li><span class="num">1</span>Write 2 TRUE statements about yourself</li>
-          <li><span class="num">2</span>Write 1 LIE — make it believable!</li>
-          <li>
-            <span class="num">3</span>When time's up, the host spins to pick the first speaker
-          </li>
-        </ul>
-
-        <button class="btn btn-ghost full-width" onclick="skipTimer()">Skip Timer →</button>
-      </div>
-
-      <!-- ── SCREEN: Spinner ── -->
-      <div id="screenSpin" class="screen">
-        <div class="round-badge" id="roundBadgeSpin"></div>
-        <h2 id="spinTitle">Who goes next?</h2>
-
-        <div class="wheel-container">
-          <div class="wheel-wrapper" id="wheelWrapper">
-            <canvas id="spinCanvas" width="280" height="280"></canvas>
-            <div class="wheel-pointer" id="wheelPointer"></div>
+        <div id="modLobbyPanel" class="card full">
+          <h2>Lobby</h2>
+          <p class="muted" style="margin: 6px 0 10px">Share this link with players.</p>
+          <div class="row wrap" style="margin-bottom: 10px">
+            <input id="joinLinkInput" class="input" readonly />
+            <button id="copyJoinLinkBtn" class="btn btn-ghost btn-sm">Copy Link</button>
           </div>
-        </div>
-
-        <button id="spinBtn" class="btn btn-primary btn-lg" onclick="spinWheel()">🎡 Spin!</button>
-        <div id="spinResult" class="winner-name" style="display: none"></div>
-        <button
-          id="goTurnBtn"
-          class="btn btn-success btn-lg full-width"
-          style="display: none"
-          onclick="goToTurn()"
-        >
-          It's their turn →
-        </button>
-        <button
-          class="btn btn-ghost btn-sm"
-          style="margin-top: 8px; opacity: 0.7"
-          onclick="endRoundEarly()"
-        >
-          End Game
-        </button>
-      </div>
-
-      <!-- ── SCREEN: Turn (record guesses) ── -->
-      <div id="screenTurn" class="screen">
-        <div class="round-badge" id="roundBadgeTurn"></div>
-        <h3>Now speaking…</h3>
-        <div class="winner-name" id="turnSpeakerName"></div>
-
-        <!-- Phase 1: host enters the 3 statements -->
-        <div id="statementCapture" class="card">
-          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px">
-            Ask <strong id="turnSpeakerName2"></strong> to share their 3 statements, then type them
-            in below.
+          <p id="modLobbyMessage" class="muted" style="margin-bottom: 8px">
+            Players appear here as they submit their two truths and a lie.
           </p>
-          <div style="display: flex; flex-direction: column; gap: 10px">
-            <div style="display: flex; gap: 10px; align-items: center">
-              <span
-                style="
-                  background: var(--accent);
-                  color: white;
-                  border-radius: 50%;
-                  width: 28px;
-                  height: 28px;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-weight: 700;
-                  flex-shrink: 0;
-                "
-                >1</span
-              >
-              <input
-                id="stmt1"
-                class="input"
-                type="text"
-                placeholder="Statement 1…"
-                maxlength="140"
-                autocomplete="off"
-              />
-            </div>
-            <div style="display: flex; gap: 10px; align-items: center">
-              <span
-                style="
-                  background: var(--accent);
-                  color: white;
-                  border-radius: 50%;
-                  width: 28px;
-                  height: 28px;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-weight: 700;
-                  flex-shrink: 0;
-                "
-                >2</span
-              >
-              <input
-                id="stmt2"
-                class="input"
-                type="text"
-                placeholder="Statement 2…"
-                maxlength="140"
-                autocomplete="off"
-              />
-            </div>
-            <div style="display: flex; gap: 10px; align-items: center">
-              <span
-                style="
-                  background: var(--accent);
-                  color: white;
-                  border-radius: 50%;
-                  width: 28px;
-                  height: 28px;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-weight: 700;
-                  flex-shrink: 0;
-                "
-                >3</span
-              >
-              <input
-                id="stmt3"
-                class="input"
-                type="text"
-                placeholder="Statement 3…"
-                maxlength="140"
-                autocomplete="off"
-              />
-            </div>
-          </div>
-          <button
-            id="showStatementsBtn"
-            class="btn btn-primary full-width"
-            style="margin-top: 14px"
-            onclick="submitStatements()"
-            disabled
-          >
-            Show Statements on Screen →
+          <div id="modLobbyPlayers" class="players"></div>
+          <button id="modStartGameBtn" class="btn btn-success full" style="margin-top: 12px" disabled>
+            Start Game
           </button>
         </div>
 
-        <!-- Phase 2: statements displayed + guess recording (shown after submitStatements) -->
-        <div id="statementsDisplay" style="display: none; width: 100%">
-          <div class="card">
-            <h3 style="margin-bottom: 10px">Statements</h3>
-            <div style="display: flex; flex-direction: column; gap: 8px">
-              <div class="guess-row" style="border-color: var(--accent-dark)">
-                <span
-                  style="
-                    background: var(--accent);
-                    color: white;
-                    border-radius: 50%;
-                    width: 28px;
-                    height: 28px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-weight: 700;
-                    flex-shrink: 0;
-                  "
-                  >1</span
-                >
-                <span id="stmtDisplay1" class="guess-name" style="font-weight: 400"></span>
-              </div>
-              <div class="guess-row" style="border-color: var(--accent-dark)">
-                <span
-                  style="
-                    background: var(--accent);
-                    color: white;
-                    border-radius: 50%;
-                    width: 28px;
-                    height: 28px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-weight: 700;
-                    flex-shrink: 0;
-                  "
-                  >2</span
-                >
-                <span id="stmtDisplay2" class="guess-name" style="font-weight: 400"></span>
-              </div>
-              <div class="guess-row" style="border-color: var(--accent-dark)">
-                <span
-                  style="
-                    background: var(--accent);
-                    color: white;
-                    border-radius: 50%;
-                    width: 28px;
-                    height: 28px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-weight: 700;
-                    flex-shrink: 0;
-                  "
-                  >3</span
-                >
-                <span id="stmtDisplay3" class="guess-name" style="font-weight: 400"></span>
-              </div>
-            </div>
+        <div id="modSpinPanel" class="card full hidden">
+          <h2>Pick the next speaker</h2>
+          <div class="wheel-wrap" style="margin: 10px auto; width: 280px">
+            <canvas id="spinCanvas" width="280" height="280"></canvas>
+            <div id="wheelPointer" class="wheel-pointer"></div>
           </div>
-
-          <div class="card" style="margin-top: 0">
-            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px">
-              Each player: which number is the lie?
-            </p>
-            <div class="guess-grid" id="guessGrid"></div>
+          <div id="modSelectedSpeaker" class="big-name" style="display: none"></div>
+          <div class="row wrap" style="margin-top: 12px">
+            <button id="modSpinBtn" class="btn btn-primary">Spin Wheel</button>
+            <button id="modStartRoundBtn" class="btn btn-success" disabled>Start Round</button>
           </div>
+        </div>
 
-          <div class="card" style="margin-top: 0">
-            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px">
-              Which statement was the LIE?
-            </p>
-            <div class="flex-row" id="lieButtons">
-              <button class="btn btn-ghost" onclick="selectLie(1)">Statement 1</button>
-              <button class="btn btn-ghost" onclick="selectLie(2)">Statement 2</button>
-              <button class="btn btn-ghost" onclick="selectLie(3)">Statement 3</button>
-            </div>
-            <p
-              id="lieSelectedMsg"
-              style="display: none; margin-top: 8px; font-size: 0.9rem; color: var(--success); font-weight: 600"
-            ></p>
-          </div>
-
-          <button
-            id="revealBtn"
-            class="btn btn-success btn-lg full-width"
-            onclick="revealLie()"
-            disabled
-          >
-            Show the Winners!
+        <div id="modVotePanel" class="card full hidden">
+          <h2 id="modVoteTitle">Vote on the lie</h2>
+          <p class="muted" id="modVoteHint" style="margin: 6px 0 10px"></p>
+          <div id="modStatements" class="statement-list"></div>
+          <div id="modVoteProgress" class="muted" style="margin-top: 10px"></div>
+          <button id="modShowResultsBtn" class="btn btn-primary full" style="margin-top: 12px" disabled>
+            Show Results
           </button>
         </div>
-      </div>
 
-      <!-- ── SCREEN: Reveal ── -->
-      <div id="screenReveal" class="screen">
-        <div class="round-badge" id="roundBadgeReveal"></div>
-        <h2>The Lie was Statement <span id="lieNumDisplay"></span>!</h2>
-        <p class="text-center" id="revealSpeakerNote" style="color: var(--text-muted)"></p>
-
-        <div id="revealStatements" class="card" style="display: none; width: 100%">
-          <div style="display: flex; flex-direction: column; gap: 8px" id="revealStmtList"></div>
+        <div id="modResultsPanel" class="card full hidden">
+          <h2>Round Results</h2>
+          <p id="modResultSummary" class="muted" style="margin: 6px 0 10px"></p>
+          <div id="modStatementBreakdown" class="statement-list" style="margin-bottom: 10px"></div>
+          <div id="modResultsRows" class="result-list"></div>
+          <button id="modContinueBtn" class="btn btn-success full" style="margin-top: 12px">
+            Continue
+          </button>
         </div>
 
-        <div id="winnersBanner"></div>
-
-        <div class="guess-grid" id="revealGrid"></div>
-
-        <button id="nextTurnBtn" class="btn btn-primary btn-lg full-width" onclick="nextTurn()"></button>
-      </div>
-
-      <!-- ── SCREEN: Round End Scoreboard ── -->
-      <div id="screenRoundEnd" class="screen">
-        <h1>Round <span id="roundEndNum"></span> Complete!</h1>
-        <div class="card">
-          <table class="score-table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Player</th>
-                <th>Points</th>
-              </tr>
-            </thead>
-            <tbody id="roundEndScores"></tbody>
-          </table>
+        <div id="modLeaderboardPanel" class="card full hidden">
+          <h2>Leaderboard</h2>
+          <p class="muted" style="margin: 6px 0 10px">Final standings for this game.</p>
+          <div id="modLeaderboardRows" class="leaderboard-list"></div>
+          <button id="modNewGameBtn" class="btn btn-primary full" style="margin-top: 12px">
+            Start New Game
+          </button>
         </div>
-        <div class="flex-row">
-          <button class="btn btn-ghost" onclick="returnToSetup()">End Game</button>
-          <button class="btn btn-primary" onclick="nextRound()">Next Round →</button>
+
+        <div id="modRosterCard" class="card full">
+          <h2>Players</h2>
+          <div id="modRosterPlayers" class="players"></div>
         </div>
       </div>
 
-      <!-- ── SCREEN: Final Scores ── -->
-      <div id="screenFinal" class="screen">
-        <h1>🏆 Final Scores</h1>
-        <div class="card">
-          <table class="score-table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Player</th>
-                <th>Points</th>
-              </tr>
-            </thead>
-            <tbody id="finalScores"></tbody>
-          </table>
+      <div id="screenPlayer" class="screen">
+        <h1>2 Truths and a Lie</h1>
+        <div class="row wrap">
+          <span class="pill">Player</span>
+          <span class="pill" id="playerNamePill">Joined</span>
+          <span class="pill" id="playerPhasePill">Waiting</span>
         </div>
-        <button class="btn btn-primary btn-lg full-width" onclick="resetGame()">Play Again</button>
+
+        <div id="playerWaitingPanel" class="card full">
+          <h2 id="playerWaitingTitle">Waiting for moderator</h2>
+          <p id="playerWaitingText" class="muted" style="margin-top: 6px"></p>
+          <div id="playerSpeakerStatements" class="statement-list" style="margin-top: 10px"></div>
+        </div>
+
+        <div id="playerSubmissionPanel" class="card full hidden">
+          <h2>Submit Statements</h2>
+          <p class="muted" style="margin: 6px 0 8px">Enter two truths and one lie for this game.</p>
+          <div class="statement-list" style="margin-bottom: 10px">
+            <textarea
+              id="playerStatement1"
+              class="textarea"
+              maxlength="180"
+              placeholder="Statement 1"
+            ></textarea>
+            <textarea
+              id="playerStatement2"
+              class="textarea"
+              maxlength="180"
+              placeholder="Statement 2"
+            ></textarea>
+            <textarea
+              id="playerStatement3"
+              class="textarea"
+              maxlength="180"
+              placeholder="Statement 3"
+            ></textarea>
+          </div>
+          <label class="muted" for="playerLieSelect" style="display: block; margin-bottom: 6px"
+            >Which statement is the lie?</label
+          >
+          <select id="playerLieSelect" class="select" style="margin-bottom: 12px">
+            <option value="0">Statement 1</option>
+            <option value="1">Statement 2</option>
+            <option value="2">Statement 3</option>
+          </select>
+          <button id="playerSubmitStatementsBtn" class="btn btn-primary full">Submit Statements</button>
+          <p id="playerSubmitMessage" class="muted" style="margin-top: 8px"></p>
+        </div>
+
+        <div id="playerVotePanel" class="card full hidden">
+          <h2 id="playerVoteTitle">Which statement is the lie?</h2>
+          <div id="playerStatements" class="statement-list" style="margin-top: 8px"></div>
+          <p id="playerVoteMessage" class="muted" style="margin: 10px 0 8px"></p>
+          <div class="vote-buttons">
+            <button class="vote-btn" data-vote-index="0">1</button>
+            <button class="vote-btn" data-vote-index="1">2</button>
+            <button class="vote-btn" data-vote-index="2">3</button>
+          </div>
+        </div>
+
+        <div id="playerResultsPanel" class="card full hidden">
+          <h2>Results Board</h2>
+          <p id="playerResultSummary" class="muted" style="margin: 6px 0 10px"></p>
+          <div id="playerStatementBreakdown" class="statement-list" style="margin-bottom: 10px"></div>
+          <div id="playerResultsRows" class="result-list"></div>
+        </div>
+
+        <div id="playerLeaderboardPanel" class="card full hidden">
+          <h2>Leaderboard</h2>
+          <p class="muted" style="margin: 6px 0 10px">Final standings for this game.</p>
+          <div id="playerLeaderboardRows" class="leaderboard-list"></div>
+        </div>
       </div>
     </div>
 
     <script>
-      /**
-       * 2 Truths and a Lie — Game Controller
-       *
-       * Flow:
-       *   Setup → Think Time (round 1) → Spinner → Turn → Reveal
-       *   → (repeat Spinner/Turn/Reveal for each speaker)
-       *   → Round End Scoreboard → (next round or Final Scores)
-       *
-       * Scoring: 1 point per correct guess. The speaker earns no points.
-       */
+      const APP_ID = 'two-truths-lie-game';
+      const APP_NAME = '2 Truths and a Lie';
+      const APP_PATH = '/apps/2026/03/31/two-truths-lie-game';
+      const STORAGE_PREFIX = 'voa-mp-2tl';
+      const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      const SESSION_POLL_MS = 1800;
+      const WHEEL_COLORS = ['#7c3aed', '#2563eb', '#059669', '#d97706', '#dc2626', '#0891b2'];
 
-      // ── State ──────────────────────────────────────────────────────────────
-      /** @type {{ name: string, points: number }[]} */
-      let players = [];
+      const screens = {
+        loading: document.getElementById('screenLoading'),
+        error: document.getElementById('screenError'),
+        join: document.getElementById('screenJoin'),
+        moderator: document.getElementById('screenModerator'),
+        player: document.getElementById('screenPlayer'),
+      };
 
-      let round = 1;
-
-      /** Names of players yet to speak this round. */
-      let speakerQueue = [];
-
-      /** Name of the player currently speaking. */
-      let currentSpeaker = null;
-
-      /** Which statement number (1, 2, or 3) is the lie for this turn. */
-      let currentLie = null;
-
-      /** Map of guesser name → guessed statement number. */
-      let guesses = {};
-
-      /** The 3 statements entered by the host for the current speaker. */
-      let currentStatements = ['', '', ''];
-
-      let timerInterval = null;
-      let timerSecs = 60;
-
-      /** Whether the wheel is currently animating. */
+      let sessionCode = null;
+      let session = null;
+      let role = null;
+      let moderatorId = null;
+      let playerId = null;
+      let pollHandle = null;
       let spinning = false;
-
-      /** Current wheel rotation in radians. */
       let spinAngle = 0;
+      let selectedSpeakerId = null;
+      let animState = null;
+      let animForRound = null;
 
-      // ── Screen management ──────────────────────────────────────────────────
-
-      /**
-       * Activate a screen by ID and hide all others.
-       * @param {string} id - The ID of the screen element to show.
-       */
-      function showScreen(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
+      function showScreen(name) {
+        Object.entries(screens).forEach(([key, el]) => {
+          el.classList.toggle('active', key === name);
+        });
       }
 
-      // ── Setup screen ───────────────────────────────────────────────────────
+      function setError(message) {
+        document.getElementById('errorText').textContent = message;
+        showScreen('error');
+      }
 
-      const nameInput = document.getElementById('nameInput');
-      nameInput.addEventListener('keydown', e => {
-        if (e.key === 'Enter') addPlayer();
-      });
+      function hashParams() {
+        return new URLSearchParams(window.location.hash.replace(/^#/, ''));
+      }
 
-      /**
-       * Add the name from the input field to the player list.
-       * Ignores empty strings and duplicate names (case-insensitive).
-       */
-      function addPlayer() {
-        const name = nameInput.value.trim();
-        if (!name) return;
-        if (players.find(p => p.name.toLowerCase() === name.toLowerCase())) {
-          nameInput.select();
+      function setHash(params) {
+        window.location.hash = params.toString();
+      }
+
+      function localKey(key) {
+        return `${STORAGE_PREFIX}:${key}`;
+      }
+
+      function saveModeratorRecord(code, id) {
+        try {
+          window.localStorage.setItem(localKey(`mod:${code}`), JSON.stringify({ moderatorId: id }));
+        } catch {
+          // no-op
+        }
+      }
+
+      function loadModeratorRecord(code) {
+        try {
+          const raw = window.localStorage.getItem(localKey(`mod:${code}`));
+          return raw ? JSON.parse(raw) : null;
+        } catch {
+          return null;
+        }
+      }
+
+      function savePlayerName(name) {
+        try {
+          window.localStorage.setItem(localKey('playerName'), name);
+        } catch {
+          // no-op
+        }
+      }
+
+      function loadPlayerName() {
+        try {
+          return window.localStorage.getItem(localKey('playerName')) || '';
+        } catch {
+          return '';
+        }
+      }
+
+      function generateSessionCode(length = 6) {
+        let code = '';
+        for (let i = 0; i < length; i += 1) {
+          code += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
+        }
+        return code;
+      }
+
+      function generateId(prefix = 'id') {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+          return `${prefix}-${crypto.randomUUID()}`;
+        }
+        return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+      }
+
+      async function isMultiplayerConfigured() {
+        const response = await fetch('/api/multiplayer/status', { cache: 'no-store' });
+        if (!response.ok) return false;
+        const payload = await response.json();
+        return Boolean(payload?.configured);
+      }
+
+      async function fetchSession(code) {
+        const response = await fetch(`/api/multiplayer/sessions/${code}`, { cache: 'no-store' });
+        if (response.status === 404) return null;
+        if (!response.ok) throw new Error('Failed to fetch session');
+        const payload = await response.json();
+        return payload?.session || null;
+      }
+
+      async function createSession(code, modId) {
+        const response = await fetch('/api/multiplayer/sessions', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            code,
+            appId: APP_ID,
+            appName: APP_NAME,
+            appPath: APP_PATH,
+            moderatorId: modId,
+            settings: {},
+          }),
+        });
+        if (response.status === 409) return false;
+        if (!response.ok) throw new Error('Failed to create session');
+        return true;
+      }
+
+      function flattenPatch(prefix, value, out) {
+        if (value === null || value === undefined) {
+          out[prefix] = value;
           return;
         }
-        players.push({ name, points: 0 });
-        nameInput.value = '';
-        nameInput.focus();
-        renderPlayerList();
+        const isObject = typeof value === 'object' && !Array.isArray(value);
+        if (!isObject) {
+          out[prefix] = value;
+          return;
+        }
+        const entries = Object.entries(value);
+        if (entries.length === 0) {
+          out[prefix] = {};
+          return;
+        }
+        entries.forEach(([key, child]) => {
+          flattenPatch(`${prefix}/${key}`, child, out);
+        });
       }
 
-      /**
-       * Remove a player by name from the list.
-       * @param {string} name - Exact player name to remove.
-       */
-      function removePlayer(name) {
-        players = players.filter(p => p.name !== name);
-        renderPlayerList();
-      }
-
-      /**
-       * Re-render the player chips and update the start button state.
-       * Requires at least 2 players to enable the start button.
-       */
-      function renderPlayerList() {
-        const list = document.getElementById('playerList');
-        const msg = document.getElementById('playerCountMsg');
-        const btn = document.getElementById('startBtn');
-
-        list.innerHTML = players
-          .map(
-            p =>
-              `<div class="player-chip">
-              <span>${escHtml(p.name)}</span>
-              <button data-remove="${escHtml(p.name)}">✕</button>
-            </div>`,
-          )
-          .join('');
-
-        // Attach remove listeners (avoids inline onclick quoting issues)
-        list.querySelectorAll('[data-remove]').forEach(btn => {
-          btn.addEventListener('click', () => removePlayer(btn.dataset.remove));
+      async function patchSession({ status = null, patch = {} } = {}) {
+        if (!sessionCode || !moderatorId) return;
+        const normalizedPatch = {};
+        Object.entries(patch).forEach(([key, value]) => {
+          if (key.includes('/')) {
+            normalizedPatch[key] = value;
+          } else {
+            flattenPatch(key, value, normalizedPatch);
+          }
         });
 
-        const n = players.length;
-        const removeAllBtn = document.getElementById('removeAllBtn');
-        if (n > 0) {
-          msg.style.display = 'block';
-          msg.textContent = n === 1 ? '1 player added — need at least 2' : `${n} players`;
-          removeAllBtn.style.display = 'inline-flex';
-        } else {
-          msg.style.display = 'none';
-          removeAllBtn.style.display = 'none';
+        const response = await fetch(`/api/multiplayer/sessions/${sessionCode}`, {
+          method: 'PATCH',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ moderatorId, status, patch: normalizedPatch }),
+        });
+        if (!response.ok) {
+          throw new Error('Failed to update session');
         }
-        btn.disabled = n < 2;
       }
 
-      /**
-       * Escape HTML special characters to safely insert user input into innerHTML.
-       * @param {string} s - Raw string.
-       * @returns {string} HTML-escaped string.
-       */
-      function escHtml(s) {
-        return s
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#39;');
+      async function joinSession(code, name) {
+        const response = await fetch(`/api/multiplayer/sessions/${code}/players`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ name }),
+        });
+        if (!response.ok) {
+          const payload = await response.json().catch(() => ({}));
+          throw new Error(payload?.error || 'Unable to join session');
+        }
+        return response.json();
       }
 
-      /**
-       * Convert a player name to a DOM-safe ID fragment (alphanumeric + underscore).
-       * @param {string} name
-       * @returns {string}
-       */
-      function idSafe(name) {
-        return name.replace(/[^a-zA-Z0-9]/g, '_');
+      async function updatePlayer(playerPatch) {
+        if (!sessionCode || !playerId) return;
+        const response = await fetch(`/api/multiplayer/sessions/${sessionCode}/players/${playerId}`, {
+          method: 'PATCH',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(playerPatch),
+        });
+        if (!response.ok) {
+          const payload = await response.json().catch(() => ({}));
+          throw new Error(payload?.error || 'Unable to update player');
+        }
       }
 
-      // ── Game start ─────────────────────────────────────────────────────────
-
-      /**
-       * Reset scores and begin a new game from round 1.
-       * Shows the think-time screen (60-second countdown) for round 1.
-       */
-      function startGame() {
-        round = 1;
-        players.forEach(p => (p.points = 0));
-        buildSpeakerQueue();
-        showScreen('screenThink');
-        startTimer();
+      function activePlayers() {
+        if (!session?.players) return [];
+        return Object.values(session.players)
+          .filter((entry) => entry && entry.id)
+          .sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')));
       }
 
-      /**
-       * Fill the speaker queue with all player names in their current order.
-       */
-      function buildSpeakerQueue() {
-        speakerQueue = players.map(p => p.name);
+      function gameState() {
+        return session?.game || null;
       }
 
-      // ── Think-time timer ───────────────────────────────────────────────────
+      function eligibleVoterIds(game) {
+        const speakerId = game?.currentSpeakerId || null;
+        return activePlayers()
+          .filter((p) => p.id !== speakerId)
+          .map((p) => p.id);
+      }
 
-      const TIMER_CIRCUMFERENCE = 2 * Math.PI * 80; // r=80 matches the SVG
+      function allVotesIn(game) {
+        if (!game || game.phase !== 'vote') return false;
+        const voters = eligibleVoterIds(game);
+        return voters.every((pid) => session?.players?.[pid]?.vote?.roundId === game.currentRoundId);
+      }
 
-      /**
-       * Start the 60-second countdown and update the ring + number each second.
-       * Automatically transitions to the spinner when time expires.
-       */
-      function startTimer() {
-        timerSecs = 60;
-        updateTimerDisplay(60);
-        clearInterval(timerInterval);
-        timerInterval = setInterval(() => {
-          timerSecs--;
-          updateTimerDisplay(timerSecs);
-          if (timerSecs <= 0) {
-            clearInterval(timerInterval);
-            showSpinner();
+      function shuffle(array) {
+        const copy = [...array];
+        for (let i = copy.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      }
+
+      function updateJoinLink() {
+        const input = document.getElementById('joinLinkInput');
+        if (!sessionCode || !input) return;
+        input.value = `${window.location.origin}${window.location.pathname}#join=${sessionCode}`;
+      }
+
+      function kickButtonHtml(entry) {
+        if (role !== 'moderator') return '';
+        return `<button type="button" class="btn btn-danger btn-sm" data-kick="${entry.id}">Kick</button>`;
+      }
+
+      function playerStatusLabel(entry) {
+        if (!entry?.submission?.ready) return '<span class="status-waiting">Joined</span>';
+        return '<span class="status-ready">Ready</span>';
+      }
+
+      function bindKickButtons(container) {
+        container.querySelectorAll('[data-kick]').forEach((btn) => {
+          btn.addEventListener('click', () => kickPlayer(btn.dataset.kick));
+        });
+      }
+
+      function playerGameStatusHtml(entry, phase, game) {
+        const speakerId = game?.currentSpeakerId;
+        if (phase === 'spin') {
+          if (entry.id === speakerId) return '<span class="status-ready">🎤 Speaking</span>';
+          return '<span class="muted">Waiting</span>';
+        }
+        if (phase === 'vote') {
+          if (entry.id === speakerId) return '<span class="status-ready">🎤 Speaking</span>';
+          const hasVoted = entry?.vote?.roundId === game?.currentRoundId;
+          return hasVoted
+            ? '<span class="voted-yes">✓ Voted</span>'
+            : '<span class="voted-no">⋯ Voting</span>';
+        }
+        if (phase === 'results') {
+          if (entry.id === speakerId) return '<span class="muted">Speaker</span>';
+          const result = Array.isArray(game?.results)
+            ? game.results.find((r) => r.playerId === entry.id)
+            : null;
+          if (result) {
+            return result.correct
+              ? '<span class="status-ready">✓ Correct</span>'
+              : '<span class="status-waiting">✗ Wrong</span>';
           }
-        }, 1000);
+          return '<span class="muted">—</span>';
+        }
+        return playerStatusLabel(entry);
       }
 
-      /**
-       * Update the SVG ring progress and numeric label.
-       * Ring turns yellow below 20s and red below 10s.
-       * @param {number} secs - Seconds remaining.
-       */
-      function updateTimerDisplay(secs) {
-        document.getElementById('timerNum').textContent = secs;
-        const offset = TIMER_CIRCUMFERENCE * (1 - secs / 60);
-        const circle = document.getElementById('timerCircle');
-        circle.style.strokeDashoffset = offset;
-        circle.style.stroke =
-          secs <= 10 ? 'var(--danger)' : secs <= 20 ? 'var(--warning)' : 'var(--accent)';
+      function renderModeratorPlayers(containerId, gameCtx) {
+        const container = document.getElementById(containerId);
+        const players = activePlayers();
+        if (!players.length) {
+          container.innerHTML = '<p class="muted">No players joined yet.</p>';
+          return;
+        }
+        const { phase, game } = gameCtx || {};
+        container.innerHTML = players
+          .map((entry) => {
+            const statusHtml = gameCtx
+              ? playerGameStatusHtml(entry, phase, game)
+              : playerStatusLabel(entry);
+            return `<div class="player-row"><div>${esc(entry.name)}</div><div>${statusHtml}</div><div class="score-chip">${Number(entry.score || 0)} pts</div><div>${kickButtonHtml(entry)}</div></div>`;
+          })
+          .join('');
+        bindKickButtons(container);
       }
 
-      /**
-       * Skip the think-time countdown and go directly to the spinner.
-       */
-      function skipTimer() {
-        clearInterval(timerInterval);
-        showSpinner();
+      function getLeaderboardRows() {
+        const sorted = [...activePlayers()].sort((a, b) => {
+          const scoreDiff = Number(b.score || 0) - Number(a.score || 0);
+          if (scoreDiff !== 0) return scoreDiff;
+          return String(a.name || '').localeCompare(String(b.name || ''));
+        });
+
+        let lastScore = null;
+        let lastRank = 0;
+        return sorted.map((entry, index) => {
+          const score = Number(entry.score || 0);
+          const rank = score === lastScore ? lastRank : index + 1;
+          lastScore = score;
+          lastRank = rank;
+          return { rank, name: entry.name || 'Player', score };
+        });
       }
 
-      // ── Spinner wheel ──────────────────────────────────────────────────────
-
-      /** Segment fill colors for the wheel, cycled for any player count. */
-      const WHEEL_COLORS = [
-        '#7c3aed',
-        '#2563eb',
-        '#059669',
-        '#d97706',
-        '#dc2626',
-        '#0891b2',
-        '#65a30d',
-        '#ea580c',
-        '#9333ea',
-        '#0f766e',
-      ];
-
-      /**
-       * Show the spinner screen, reset result area, and draw the wheel.
-       */
-      function showSpinner() {
-        document.getElementById('roundBadgeSpin').textContent = `Round ${round}`;
-        document.getElementById('spinTitle').textContent =
-          speakerQueue.length < players.length ? 'Who goes next?' : 'Who goes first?';
-        document.getElementById('spinResult').style.display = 'none';
-        document.getElementById('goTurnBtn').style.display = 'none';
-        document.getElementById('spinBtn').disabled = false;
-        showScreen('screenSpin');
-        drawWheel(spinAngle);
-        positionPointer();
+      function renderLeaderboard(containerId) {
+        const container = document.getElementById(containerId);
+        const rows = getLeaderboardRows();
+        container.innerHTML = rows
+          .map(
+            (row) =>
+              `<div class="leaderboard-row"><div class="leaderboard-rank">#${row.rank}</div><div>${esc(row.name)}</div><div class="leaderboard-score">${row.score} pts</div></div>`,
+          )
+          .join('');
       }
 
-      /**
-       * Position the arrow pointer flush against the right edge of the wheel canvas.
-       */
-      function positionPointer() {
+      function renderStatementBreakdown(containerId, game) {
+        const container = document.getElementById(containerId);
+        const breakdown = Array.isArray(game?.statementBreakdown) ? game.statementBreakdown : [];
+        if (!breakdown.length) {
+          container.innerHTML = '';
+          return;
+        }
+        container.innerHTML = breakdown
+          .map((entry, index) => {
+            const voters = Array.isArray(entry.voters) ? entry.voters : [];
+            const lieClass = entry.isLie ? ' statement-breakdown-lie' : '';
+            const lieBadge = entry.isLie ? '<span class="lie-badge">LIE</span>' : '';
+            return `<div class="statement-breakdown-card${lieClass}">
+              <div><strong>${index + 1}.</strong> ${esc(entry.text || '')}${lieBadge}</div>
+              <div class="muted" style="margin-top:6px">${entry.isLie ? 'Lie' : 'Truth'} • Votes: ${voters.length ? voters.map(esc).join(', ') : 'none'}</div>
+            </div>`;
+          })
+          .join('');
+      }
+
+      function renderWheel(names, angle = 0) {
         const canvas = document.getElementById('spinCanvas');
-        const r = canvas.width / 2;
         const pointer = document.getElementById('wheelPointer');
-        pointer.style.left = `calc(50% + ${r - 12}px)`;
-      }
-
-      /**
-       * Draw the spinner wheel at a given rotation angle.
-       * Each segment gets a label truncated to 12 characters.
-       * @param {number} angle - Wheel rotation in radians.
-       */
-      function drawWheel(angle) {
-        const canvas = document.getElementById('spinCanvas');
+        if (!canvas || !pointer) return;
         const ctx = canvas.getContext('2d');
         const cx = canvas.width / 2;
         const cy = canvas.height / 2;
-        const r = cx - 6;
-        const names = speakerQueue;
-        const n = names.length;
-        const slice = (2 * Math.PI) / n;
+        const r = cx - 8;
+
+        pointer.style.left = `calc(50% + ${r - 10}px)`;
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (!names.length) return;
 
-        for (let i = 0; i < n; i++) {
+        const slice = (2 * Math.PI) / names.length;
+        for (let i = 0; i < names.length; i += 1) {
           const start = angle + i * slice;
           const end = start + slice;
 
-          // Segment fill
           ctx.beginPath();
           ctx.moveTo(cx, cy);
           ctx.arc(cx, cy, r, start, end);
@@ -1190,450 +989,814 @@
           ctx.fillStyle = WHEEL_COLORS[i % WHEEL_COLORS.length];
           ctx.fill();
           ctx.strokeStyle = 'rgba(0,0,0,0.25)';
-          ctx.lineWidth = 1.5;
           ctx.stroke();
 
-          // Segment label — rotated to read along the slice midpoint
           ctx.save();
           ctx.translate(cx, cy);
           ctx.rotate(start + slice / 2);
           ctx.textAlign = 'right';
           ctx.fillStyle = 'white';
-          const fs = Math.min(16, Math.max(9, 220 / n));
-          ctx.font = `600 ${fs}px system-ui, sans-serif`;
-          ctx.shadowColor = 'rgba(0,0,0,0.6)';
-          ctx.shadowBlur = 4;
-          const label = names[i].length > 12 ? names[i].slice(0, 11) + '…' : names[i];
-          ctx.fillText(label, r - 8, 5);
+          ctx.font = `600 ${Math.max(10, Math.min(15, 220 / names.length))}px system-ui, sans-serif`;
+          const label = names[i].length > 12 ? `${names[i].slice(0, 11)}...` : names[i];
+          ctx.fillText(label, r - 8, 4);
           ctx.restore();
         }
 
-        // Center hub
         ctx.beginPath();
         ctx.arc(cx, cy, 18, 0, 2 * Math.PI);
         ctx.fillStyle = '#1e293b';
         ctx.fill();
-        ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-        ctx.lineWidth = 2;
-        ctx.stroke();
       }
 
-      /**
-       * Animate the wheel with cubic ease-out over ~3.5s.
-       * Randomly selects a winner from the remaining speakerQueue.
-       * After landing, displays the winner's name and reveals the "go to turn" button.
-       */
-      function spinWheel() {
-        if (spinning || speakerQueue.length === 0) return;
+      function esc(value) {
+        return String(value || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      async function createModeratorSession() {
+        for (let attempt = 0; attempt < 8; attempt += 1) {
+          const code = generateSessionCode(6);
+          const modId = generateId('mod');
+          // eslint-disable-next-line no-await-in-loop
+          const created = await createSession(code, modId);
+          if (!created) continue;
+          sessionCode = code;
+          moderatorId = modId;
+          role = 'moderator';
+          saveModeratorRecord(code, modId);
+          const params = new URLSearchParams({ code, role: 'moderator' });
+          setHash(params);
+          return;
+        }
+        throw new Error('Could not create session');
+      }
+
+      async function reconnectModerator(code) {
+        const existing = await fetchSession(code);
+        const saved = loadModeratorRecord(code);
+        if (!existing || !saved?.moderatorId || existing.moderatorId !== saved.moderatorId) {
+          await createModeratorSession();
+          return;
+        }
+        sessionCode = code;
+        moderatorId = saved.moderatorId;
+        role = 'moderator';
+      }
+
+      async function reconnectPlayer(code, pid) {
+        const existing = await fetchSession(code);
+        if (!existing || !existing.players?.[pid]) {
+          const params = new URLSearchParams({ join: code });
+          setHash(params);
+          prepareJoinScreen(code);
+          return;
+        }
+        sessionCode = code;
+        playerId = pid;
+        role = 'player';
+      }
+
+      function prepareJoinScreen(code) {
+        sessionCode = code.toUpperCase();
+        role = 'player';
+        playerId = null;
+        session = null;
+        document.getElementById('joinCodeLabel').textContent = sessionCode;
+        document.getElementById('joinNameInput').value = loadPlayerName();
+        document.getElementById('joinMessage').textContent = '';
+        showScreen('join');
+      }
+
+      function clearAnimation() {
+        if (!animState) return;
+        const overlay = document.getElementById('animOverlay');
+        if (overlay) overlay.innerHTML = '';
+        animState = null;
+        animForRound = null;
+      }
+
+      function startConfetti(roundId) {
+        if (animState === 'confetti' && animForRound === roundId) return;
+        clearAnimation();
+        animState = 'confetti';
+        animForRound = roundId;
+        const overlay = document.getElementById('animOverlay');
+        if (!overlay) return;
+        const colors = ['#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#ec4899', '#a78bfa', '#34d399'];
+        const pieces = [];
+        for (let i = 0; i < 80; i += 1) {
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          const left = Math.random() * 100;
+          const delay = Math.random() * 3;
+          const duration = 2.5 + Math.random() * 2;
+          const size = 7 + Math.floor(Math.random() * 10);
+          const round = Math.random() > 0.5 ? '50%' : '2px';
+          pieces.push(
+            `<div class="confetti-piece" style="left:${left}%;width:${size}px;height:${size}px;background:${color};border-radius:${round};animation-duration:${duration}s;animation-delay:${delay}s"></div>`,
+          );
+        }
+        overlay.innerHTML = pieces.join('');
+      }
+
+      function startBlueRain(roundId) {
+        if (animState === 'rain' && animForRound === roundId) return;
+        clearAnimation();
+        animState = 'rain';
+        animForRound = roundId;
+        const overlay = document.getElementById('animOverlay');
+        if (!overlay) return;
+        const drops = [];
+        for (let i = 0; i < 70; i += 1) {
+          const left = Math.random() * 100;
+          const delay = Math.random() * 2;
+          const duration = 0.7 + Math.random() * 0.8;
+          const height = 20 + Math.floor(Math.random() * 35);
+          const alpha = (0.3 + Math.random() * 0.5).toFixed(2);
+          drops.push(
+            `<div class="rain-drop" style="left:${left}%;height:${height}px;background:linear-gradient(to bottom,rgba(59,130,246,0),rgba(59,130,246,${alpha}),rgba(147,197,253,${alpha}));animation-duration:${duration}s;animation-delay:${delay}s"></div>`,
+          );
+        }
+        overlay.innerHTML = drops.join('');
+      }
+
+      function updateModeratorUi() {
+        showScreen('moderator');
+        const game = gameState();
+        const phase = game?.phase || 'lobby';
+
+        document.getElementById('modCodePill').textContent = `Code: ${sessionCode}`;
+        document.getElementById('modPhasePill').textContent = phase[0].toUpperCase() + phase.slice(1);
+        updateJoinLink();
+        renderModeratorPlayers('modLobbyPlayers');
+        renderModeratorPlayers('modRosterPlayers', { phase, game });
+
+        document.getElementById('modLobbyPanel').classList.toggle('hidden', phase !== 'lobby');
+        document.getElementById('modSpinPanel').classList.toggle('hidden', phase !== 'spin');
+        document.getElementById('modVotePanel').classList.toggle('hidden', phase !== 'vote');
+        document.getElementById('modResultsPanel').classList.toggle('hidden', phase !== 'results');
+        document.getElementById('modLeaderboardPanel').classList.toggle('hidden', phase !== 'leaderboard');
+        document.getElementById('modRosterCard').classList.toggle('hidden', phase === 'lobby');
+
+        const players = activePlayers();
+        const readyCount = players.filter((p) => p?.submission?.ready).length;
+        const canStart = players.length >= 2 && readyCount === players.length;
+        document.getElementById('modStartGameBtn').disabled = !canStart;
+        document.getElementById('modLobbyMessage').textContent = `${readyCount}/${players.length} players ready.`;
+
+        const remainingIds = Array.isArray(game?.remainingSpeakerIds) ? game.remainingSpeakerIds : [];
+        const remainingNames = remainingIds
+          .map((id) => session?.players?.[id]?.name)
+          .filter(Boolean);
+
+        renderWheel(remainingNames, spinAngle);
+
+        const selectedSpeaker = game?.currentSpeakerId ? session?.players?.[game.currentSpeakerId] : null;
+        const speakerBox = document.getElementById('modSelectedSpeaker');
+        if (selectedSpeaker) {
+          speakerBox.style.display = 'block';
+          speakerBox.textContent = selectedSpeaker.name;
+        } else {
+          speakerBox.style.display = 'none';
+          speakerBox.textContent = '';
+        }
+
+        document.getElementById('modStartRoundBtn').disabled = !selectedSpeaker;
+
+        const statements = Array.isArray(game?.presentedStatements) ? game.presentedStatements : [];
+        document.getElementById('modStatements').innerHTML = statements
+          .map(
+            (entry, index) => `<div class="statement-item"><strong>${index + 1}.</strong> <span>${esc(entry.text)}</span></div>`,
+          )
+          .join('');
+
+        const voters = eligibleVoterIds(game);
+        const voted = voters.filter((pid) => session?.players?.[pid]?.vote?.roundId === game?.currentRoundId).length;
+        document.getElementById('modVoteHint').textContent =
+          selectedSpeaker ? `${selectedSpeaker.name} is speaking. Players are voting now.` : 'Waiting for speaker.';
+        const voteStatusHtml = voters.length
+          ? `<div class="vote-status-list">${voters
+              .map((pid) => {
+                const p = session?.players?.[pid];
+                const hasVoted = p?.vote?.roundId === game?.currentRoundId;
+                return `<div class="vote-status-row"><span>${esc(p?.name || 'Player')}</span><span class="${hasVoted ? 'voted-yes' : 'voted-no'}">${hasVoted ? '✓ Voted' : '⋯ Waiting'}</span></div>`;
+              })
+              .join('')}</div>`
+          : '';
+        document.getElementById('modVoteProgress').innerHTML = voteStatusHtml;
+        document.getElementById('modShowResultsBtn').disabled = !allVotesIn(game);
+
+        const results = Array.isArray(game?.results) ? game.results : [];
+        renderStatementBreakdown('modStatementBreakdown', game);
+        document.getElementById('modResultsRows').innerHTML = results
+          .map(
+            (row) =>
+              `<div class="result-row ${row.correct ? 'result-good' : 'result-bad'}"><strong>${esc(row.name)}</strong><span class="muted">voted #${Number(row.voteIndex) + 1}</span><span>${row.correct ? 'Correct' : 'Wrong'}</span>${row.score != null ? `<span class="score-chip">${row.score} pts</span>` : ''}</div>`,
+          )
+          .join('');
+        const answerIndex = Number(game?.answerIndexInPresented);
+        document.getElementById('modResultSummary').textContent = Number.isFinite(answerIndex)
+          ? `Lie was statement #${answerIndex + 1}.`
+          : '';
+
+        if (phase === 'leaderboard') {
+          renderLeaderboard('modLeaderboardRows');
+        }
+      }
+
+      function updatePlayerUi() {
+        showScreen('player');
+        const player = session?.players?.[playerId];
+        const game = gameState();
+        const phase = game?.phase || 'lobby';
+
+        if (!player) {
+          setError('You were removed by the moderator.');
+          return;
+        }
+
+        document.getElementById('playerNamePill').textContent = player.name;
+        document.getElementById('playerPhasePill').textContent = phase[0].toUpperCase() + phase.slice(1);
+
+        const waitingPanel = document.getElementById('playerWaitingPanel');
+        const submissionPanel = document.getElementById('playerSubmissionPanel');
+        const votePanel = document.getElementById('playerVotePanel');
+        const resultsPanel = document.getElementById('playerResultsPanel');
+        const leaderboardPanel = document.getElementById('playerLeaderboardPanel');
+        const speakerStatements = document.getElementById('playerSpeakerStatements');
+
+        waitingPanel.classList.add('hidden');
+        submissionPanel.classList.add('hidden');
+        votePanel.classList.add('hidden');
+        resultsPanel.classList.add('hidden');
+        leaderboardPanel.classList.add('hidden');
+        speakerStatements.innerHTML = '';
+        if (phase !== 'results' && phase !== 'leaderboard') clearAnimation();
+
+        if (phase === 'lobby' || phase === 'spin') {
+          if (phase === 'lobby' && !player?.submission?.ready) {
+            submissionPanel.classList.remove('hidden');
+            document.getElementById('playerSubmitMessage').textContent =
+              'Submit your statements to be marked ready.';
+          } else {
+            waitingPanel.classList.remove('hidden');
+            const title = document.getElementById('playerWaitingTitle');
+            const text = document.getElementById('playerWaitingText');
+            title.textContent = phase === 'lobby' ? 'Waiting in lobby' : 'Moderator is selecting speaker';
+            text.textContent =
+              phase === 'lobby'
+                ? 'Your statements are submitted. Waiting for the moderator to start.'
+                : 'The moderator is spinning for the next speaker.';
+          }
+          return;
+        }
+
+        if (phase === 'vote') {
+          const speakerId = game?.currentSpeakerId;
+          const speaker = speakerId ? session?.players?.[speakerId] : null;
+          if (speakerId === playerId) {
+            waitingPanel.classList.remove('hidden');
+            document.getElementById('playerWaitingTitle').textContent = 'You are speaking';
+            document.getElementById('playerWaitingText').textContent =
+              'Tell everyone your statements while players vote for the lie.';
+            const ownStatements = Array.isArray(player?.submission?.statements)
+              ? player.submission.statements
+              : [];
+            speakerStatements.innerHTML = ownStatements
+              .map(
+                (text, index) => `<div class="statement-item"><strong>${index + 1}.</strong><span>${esc(text)}</span></div>`,
+              )
+              .join('');
+            return;
+          }
+
+          votePanel.classList.remove('hidden');
+          document.getElementById('playerVoteTitle').textContent = speaker
+            ? `${speaker.name}'s statements`
+            : 'Statements';
+
+          const statements = Array.isArray(game?.presentedStatements) ? game.presentedStatements : [];
+          document.getElementById('playerStatements').innerHTML = statements
+            .map(
+              (entry, index) => `<div class="statement-item"><strong>${index + 1}.</strong><span>${esc(entry.text)}</span></div>`,
+            )
+            .join('');
+
+          const existingVote = player?.vote?.roundId === game?.currentRoundId ? player.vote.statementIndex : null;
+          document.querySelectorAll('[data-vote-index]').forEach((btn) => {
+            const idx = Number(btn.dataset.voteIndex);
+            btn.classList.toggle('active', idx === existingVote);
+            const locked = existingVote !== null;
+            btn.disabled = locked;
+          });
+          document.getElementById('playerVoteMessage').textContent =
+            existingVote !== null
+              ? `Vote submitted: statement #${existingVote + 1}. Waiting for everyone else.`
+              : 'Pick the statement you think is the lie.';
+          return;
+        }
+
+        if (phase === 'results') {
+          resultsPanel.classList.remove('hidden');
+          const answerIndex = Number(game?.answerIndexInPresented);
+          document.getElementById('playerResultSummary').textContent = Number.isFinite(answerIndex)
+            ? `Lie was statement #${answerIndex + 1}.`
+            : '';
+          const rows = Array.isArray(game?.results) ? game.results : [];
+          renderStatementBreakdown('playerStatementBreakdown', game);
+          document.getElementById('playerResultsRows').innerHTML = rows
+            .map(
+              (row) => `<div class="result-row ${row.correct ? 'result-good' : 'result-bad'}"><strong>${esc(row.name)}</strong><span class="muted">voted #${Number(row.voteIndex) + 1}</span><span>${row.correct ? 'Correct' : 'Wrong'}</span></div>`,
+            )
+            .join('');
+          // Show win/lose animation for eligible voters
+          const myResult = rows.find((r) => r.playerId === playerId);
+          const roundId = game?.currentRoundId || 'results';
+          if (myResult) {
+            if (myResult.correct) {
+              startConfetti(roundId);
+            } else {
+              startBlueRain(roundId);
+            }
+          }
+          return;
+        }
+
+        if (phase === 'leaderboard') {
+          leaderboardPanel.classList.remove('hidden');
+          renderLeaderboard('playerLeaderboardRows');
+          const myPlayer = session?.players?.[playerId];
+          if (myPlayer) {
+            const lbRows = getLeaderboardRows();
+            const myRow = lbRows.find((r) => r.name === (myPlayer.name || ''));
+            if (myRow) {
+              if (myRow.rank === 1) {
+                startConfetti('leaderboard');
+              } else {
+                startBlueRain('leaderboard');
+              }
+            }
+          }
+        }
+      }
+
+      function updateScreenBySession() {
+        if (!session) return;
+        if (role === 'moderator') {
+          updateModeratorUi();
+        } else if (role === 'player') {
+          updatePlayerUi();
+        }
+      }
+
+      async function refreshSessionNow() {
+        if (!sessionCode) return;
+        const next = await fetchSession(sessionCode);
+        if (!next) {
+          setError('Session no longer exists.');
+          return;
+        }
+        session = next;
+        updateScreenBySession();
+      }
+
+      async function startPolling() {
+        if (pollHandle) {
+          clearInterval(pollHandle);
+        }
+        const tick = async () => {
+          if (!sessionCode) return;
+          try {
+            const next = await fetchSession(sessionCode);
+            if (!next) {
+              setError('Session no longer exists.');
+              return;
+            }
+            session = next;
+            updateScreenBySession();
+          } catch {
+            setError('Connection lost while syncing multiplayer state.');
+          }
+        };
+        await tick();
+        pollHandle = setInterval(tick, SESSION_POLL_MS);
+      }
+
+      async function kickPlayer(pid) {
+        if (role !== 'moderator' || !pid) return;
+        const entry = session?.players?.[pid];
+        if (!entry) return;
+        if (!window.confirm(`Kick ${entry.name}?`)) return;
+
+        const game = gameState() || {};
+        const remaining = Array.isArray(game.remainingSpeakerIds)
+          ? game.remainingSpeakerIds.filter((id) => id !== pid)
+          : [];
+
+        const patch = {
+          [`players/${pid}`]: null,
+          'game/remainingSpeakerIds': remaining,
+        };
+
+        if (game.currentSpeakerId === pid) {
+          patch['game/currentSpeakerId'] = null;
+          patch['game/phase'] = 'spin';
+          patch['game/presentedStatements'] = [];
+          patch['game/currentRoundId'] = null;
+          patch['game/results'] = [];
+        }
+
+        await patchSession({ patch });
+        await refreshSessionNow();
+      }
+
+      async function moderatorStartGame() {
+        if (role !== 'moderator') return;
+        const players = activePlayers();
+        const playerIds = players.map((p) => p.id);
+        const allReady = players.length >= 2 && players.every((p) => p?.submission?.ready);
+        if (!allReady) return;
+
+        selectedSpeakerId = null;
+        await patchSession({
+          status: 'playing',
+          patch: {
+            game: {
+              phase: 'spin',
+              roundNumber: 1,
+              remainingSpeakerIds: playerIds,
+              currentSpeakerId: null,
+              currentRoundId: null,
+              presentedStatements: [],
+              answerIndexInPresented: null,
+              results: [],
+            },
+          },
+        });
+        await refreshSessionNow();
+      }
+
+      async function spinForSpeaker() {
+        if (role !== 'moderator' || spinning) return;
+        const game = gameState();
+        const remainingIds = Array.isArray(game?.remainingSpeakerIds) ? game.remainingSpeakerIds : [];
+        const candidates = remainingIds.filter((id) => session?.players?.[id]);
+        if (!candidates.length) return;
+
         spinning = true;
-        document.getElementById('spinBtn').disabled = true;
-        document.getElementById('spinResult').style.display = 'none';
-        document.getElementById('goTurnBtn').style.display = 'none';
+        document.getElementById('modSpinBtn').disabled = true;
+        selectedSpeakerId = null;
 
-        const names = speakerQueue;
-        const n = names.length;
-        const slice = (2 * Math.PI) / n;
-
-        // Pick a random target segment
-        const winnerIdx = Math.floor(Math.random() * n);
-        // Use an integer number of extra rotations so the correction math is exact.
-        const extraRotations = 3 + Math.floor(Math.random() * 4); // 3, 4, 5, or 6
+        const names = candidates.map((id) => session.players[id].name);
+        const winnerIdx = Math.floor(Math.random() * candidates.length);
+        const slice = (2 * Math.PI) / names.length;
+        const extraRotations = 4 + Math.floor(Math.random() * 3);
         const targetSegmentCenter = winnerIdx * slice + slice / 2;
-        // Compute how much we need to rotate from the current position so that
-        // segment winnerIdx's center lands at angle 0 (where the pointer is).
-        // We want: (spinAngle + delta + targetSegmentCenter) ≡ 0 (mod 2π)
-        // → delta = -spinAngle - targetSegmentCenter + k*2π for the smallest positive k
         const correction =
-          ((2 * Math.PI - ((spinAngle + targetSegmentCenter) % (2 * Math.PI))) %
-            (2 * Math.PI)) +
+          ((2 * Math.PI - ((spinAngle + targetSegmentCenter) % (2 * Math.PI))) % (2 * Math.PI)) +
           extraRotations * 2 * Math.PI;
         const spinTarget = spinAngle + correction;
 
-        const duration = 3500;
+        const duration = 2200;
         const startTime = performance.now();
         const startAngle = spinAngle;
 
-        /**
-         * Animation frame: advances the wheel with cubic ease-out.
-         * @param {number} now - Current timestamp from requestAnimationFrame.
-         */
         function frame(now) {
           const t = Math.min((now - startTime) / duration, 1);
           const ease = 1 - Math.pow(1 - t, 3);
           spinAngle = startAngle + (spinTarget - startAngle) * ease;
-          drawWheel(spinAngle);
-
+          renderWheel(names, spinAngle);
           if (t < 1) {
             requestAnimationFrame(frame);
-          } else {
-            spinning = false;
-            spinAngle = spinTarget;
-            currentSpeaker = names[winnerIdx];
-            showSpinResult(currentSpeaker);
+            return;
           }
+          spinAngle = spinTarget;
+          spinning = false;
+          selectedSpeakerId = candidates[winnerIdx];
+          document.getElementById('modSpinBtn').disabled = false;
+          patchSession({
+            patch: {
+              'game/currentSpeakerId': selectedSpeakerId,
+              'game/phase': 'spin',
+            },
+          })
+            .then(refreshSessionNow)
+            .catch(() => setError('Could not save selected speaker.'));
         }
 
         requestAnimationFrame(frame);
       }
 
-      /**
-       * Display the spin result with a bounce animation and show the turn button.
-       * @param {string} name - The selected player's name.
-       */
-      function showSpinResult(name) {
-        const el = document.getElementById('spinResult');
-        el.textContent = `🎉 ${name}!`;
-        el.style.display = 'block';
-        el.classList.remove('spin-result');
-        void el.offsetWidth; // trigger reflow to restart animation
-        el.classList.add('spin-result');
-        document.getElementById('goTurnBtn').style.display = 'flex';
-      }
+      async function moderatorStartRound() {
+        if (role !== 'moderator') return;
+        const game = gameState();
+        const speakerId = game?.currentSpeakerId;
+        const speaker = speakerId ? session?.players?.[speakerId] : null;
+        if (!speaker?.submission?.ready) return;
 
-      // ── Turn screen ────────────────────────────────────────────────────────
-
-      /**
-       * Transition to the turn screen for the current speaker.
-       * Shows the statement-capture phase first; guess grid is hidden until statements are submitted.
-       */
-      function goToTurn() {
-        guesses = {};
-        currentLie = null;
-        currentStatements = ['', '', ''];
-        document.getElementById('roundBadgeTurn').textContent = `Round ${round}`;
-        document.getElementById('turnSpeakerName').textContent = currentSpeaker;
-        document.getElementById('turnSpeakerName2').textContent = currentSpeaker;
-
-        // Reset statement inputs
-        ['stmt1', 'stmt2', 'stmt3'].forEach(id => {
-          const el = document.getElementById(id);
-          el.value = '';
-          el.disabled = false;
-        });
-        document.getElementById('showStatementsBtn').disabled = true;
-        document.getElementById('statementCapture').style.display = 'block';
-        document.getElementById('statementsDisplay').style.display = 'none';
-
-        resetLieButtons();
-        showScreen('screenTurn');
-
-        // Enable submit button when all 3 statements are non-empty
-        ['stmt1', 'stmt2', 'stmt3'].forEach(id => {
-          document.getElementById(id).addEventListener('input', checkStatementsReady);
-        });
-      }
-
-      /**
-       * Enable the "Show Statements" button only when all 3 inputs have content.
-       */
-      function checkStatementsReady() {
-        const all = ['stmt1', 'stmt2', 'stmt3'].every(
-          id => document.getElementById(id).value.trim().length > 0,
+        const statements = speaker.submission.statements.map((text, originalIndex) => ({
+          text,
+          originalIndex,
+        }));
+        const shuffled = shuffle(statements);
+        const answerIndexInPresented = shuffled.findIndex(
+          (entry) => entry.originalIndex === Number(speaker.submission.lieIndex),
         );
-        document.getElementById('showStatementsBtn').disabled = !all;
-      }
+        const roundId = generateId('round');
 
-      /**
-       * Lock the statement inputs, display them numbered on screen, and reveal the guess grid.
-       */
-      function submitStatements() {
-        currentStatements = ['stmt1', 'stmt2', 'stmt3'].map(id =>
-          document.getElementById(id).value.trim(),
-        );
-
-        // Lock inputs
-        ['stmt1', 'stmt2', 'stmt3'].forEach(id => {
-          document.getElementById(id).disabled = true;
-        });
-
-        // Display numbered statements
-        ['stmtDisplay1', 'stmtDisplay2', 'stmtDisplay3'].forEach((id, i) => {
-          document.getElementById(id).textContent = currentStatements[i];
-        });
-
-        // Switch phases
-        document.getElementById('statementCapture').style.display = 'none';
-        document.getElementById('statementsDisplay').style.display = 'block';
-
-        buildGuessGrid();
-        document.getElementById('revealBtn').disabled = true;
-      }
-
-      /**
-       * Build the guess entry grid: one row per non-speaker player.
-       * Each row has three numbered buttons (1, 2, 3) to record a guess.
-       * Uses data-* attributes + addEventListener to avoid inline onclick quoting issues.
-       */
-      function buildGuessGrid() {
-        const grid = document.getElementById('guessGrid');
-        const guessers = players.filter(p => p.name !== currentSpeaker);
-        grid.innerHTML = guessers
-          .map(
-            p =>
-              `<div class="guess-row" id="gr-${idSafe(p.name)}">
-              <span class="guess-name">${escHtml(p.name)}</span>
-              <div class="guess-btns">
-                ${[1, 2, 3]
-                  .map(
-                    n =>
-                      `<button class="guess-btn" id="gb-${idSafe(p.name)}-${n}"
-                        data-player="${escHtml(p.name)}" data-num="${n}">${n}</button>`,
-                  )
-                  .join('')}
-              </div>
-              <span class="guess-icon" id="gi-${idSafe(p.name)}"></span>
-            </div>`,
-          )
-          .join('');
-
-        // Attach click listeners after building HTML — avoids inline onclick quoting bugs
-        grid.querySelectorAll('.guess-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            recordGuess(btn.dataset.player, parseInt(btn.dataset.num, 10));
-          });
-        });
-      }
-
-      /**
-       * Record a player's guess and highlight their selected button.
-       * Checks whether the reveal button should be enabled.
-       * @param {string} name - The guesser's name.
-       * @param {number} num - The guessed statement number (1, 2, or 3).
-       */
-      function recordGuess(name, num) {
-        guesses[name] = num;
-        [1, 2, 3].forEach(n => {
-          const btn = document.getElementById(`gb-${idSafe(name)}-${n}`);
-          if (btn) btn.classList.toggle('selected', n === num);
-        });
-        // Highlight the whole row once a guess has been made
-        const row = document.getElementById(`gr-${idSafe(name)}`);
-        if (row) row.classList.add('has-guess');
-        checkRevealReady();
-      }
-
-      /**
-       * Enable the reveal button once the lie statement has been selected.
-       * Players who haven't recorded a guess are counted as wrong on reveal.
-       */
-      function checkRevealReady() {
-        document.getElementById('revealBtn').disabled = currentLie === null;
-      }
-
-      /**
-       * Mark a statement as the lie and highlight the corresponding button.
-       * @param {number} num - The lie statement number (1, 2, or 3).
-       */
-      function selectLie(num) {
-        currentLie = num;
-        const btns = document.getElementById('lieButtons').querySelectorAll('.btn');
-        btns.forEach((btn, i) => {
-          btn.classList.toggle('btn-danger', i + 1 === num);
-          btn.classList.toggle('btn-ghost', i + 1 !== num);
-        });
-        document.getElementById('lieSelectedMsg').style.display = 'block';
-        document.getElementById('lieSelectedMsg').textContent = `Statement ${num} is the lie.`;
-        checkRevealReady();
-      }
-
-      /**
-       * Reset all lie-selection buttons to their default ghost state.
-       */
-      function resetLieButtons() {
-        document.getElementById('lieButtons').querySelectorAll('.btn').forEach(btn => {
-          btn.classList.remove('btn-danger');
-          btn.classList.add('btn-ghost');
-        });
-        document.getElementById('lieSelectedMsg').style.display = 'none';
-      }
-
-      // ── Reveal screen ──────────────────────────────────────────────────────
-
-      /**
-       * Reveal the lie, award points to correct guessers, and show the reveal screen.
-       * Removes the current speaker from the queue after this turn.
-       */
-      function revealLie() {
-        document.getElementById('roundBadgeReveal').textContent = `Round ${round}`;
-        document.getElementById('lieNumDisplay').textContent = currentLie;
-        document.getElementById('revealSpeakerNote').textContent =
-          `${currentSpeaker}'s lie was statement ${currentLie}`;
-
-        // Show the 3 statements on the reveal screen if they were captured
-        const revealStmts = document.getElementById('revealStatements');
-        const revealList = document.getElementById('revealStmtList');
-        if (currentStatements.some(s => s.length > 0)) {
-          revealList.innerHTML = currentStatements
-            .map((s, i) => {
-              const isLie = i + 1 === currentLie;
-              return `<div class="guess-row ${isLie ? 'wrong' : 'correct'}">
-                <span style="background:${isLie ? 'var(--danger)' : 'var(--success)'};color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0">${i + 1}</span>
-                <span style="flex:1;font-size:0.95rem">${escHtml(s)}</span>
-                <span>${isLie ? '🤥' : '✓'}</span>
-              </div>`;
-            })
-            .join('');
-          revealStmts.style.display = 'block';
-        } else {
-          revealStmts.style.display = 'none';
-        }
-
-        const guessers = players.filter(p => p.name !== currentSpeaker);
-        let correct = 0;
-        const winners = [];
-
-        document.getElementById('revealGrid').innerHTML = guessers
-          .map(p => {
-            const isCorrect = guesses[p.name] === currentLie;
-            if (isCorrect) {
-              p.points++;
-              correct++;
-              winners.push(p.name);
-            }
-            const guessLabel =
-              guesses[p.name] !== undefined ? `guessed #${guesses[p.name]}` : 'no guess';
-            return `<div class="guess-row ${isCorrect ? 'correct' : 'wrong'}">
-            <span class="guess-name">${escHtml(p.name)}</span>
-            <span style="color:var(--text-muted);font-size:0.9rem">${guessLabel}</span>
-            <span class="guess-icon">${isCorrect ? '✅' : '❌'}</span>
-          </div>`;
-          })
-          .join('');
-
-        // Winners banner
-        const banner = document.getElementById('winnersBanner');
-        if (winners.length > 0) {
-          banner.innerHTML = `<div class="winners-banner">
-            <h2>🏆 Winner${winners.length > 1 ? 's' : ''}!</h2>
-            <div class="winners-list">
-              ${winners.map(n => `<span class="winner-chip">${escHtml(n)}</span>`).join('')}
-            </div>
-          </div>`;
-        } else {
-          banner.innerHTML = `<div class="no-winners-banner">😅 Nobody guessed the lie!</div>`;
-        }
-
-        // Remove speaker from the queue
-        speakerQueue = speakerQueue.filter(n => n !== currentSpeaker);
-
-        document.getElementById('nextTurnBtn').textContent =
-          speakerQueue.length > 0 ? 'Next Speaker →' : 'Round Complete →';
-
-        showScreen('screenReveal');
-      }
-
-      /**
-       * Advance from the reveal screen.
-       * Spins again if speakers remain; otherwise shows the round-end scoreboard.
-       */
-      function nextTurn() {
-        if (speakerQueue.length > 0) {
-          showSpinner();
-        } else {
-          showRoundEnd();
-        }
-      }
-
-      // ── Round end ──────────────────────────────────────────────────────────
-
-      /**
-       * Show the end-of-round scoreboard with current cumulative scores.
-       */
-      function showRoundEnd() {
-        document.getElementById('roundEndNum').textContent = round;
-        renderScoreTable('roundEndScores');
-        showScreen('screenRoundEnd');
-      }
-
-      /**
-       * Start the next round. Rebuilds the speaker queue; no think timer after round 1.
-       */
-      function nextRound() {
-        round++;
-        buildSpeakerQueue();
-        showSpinner();
-      }
-
-      /**
-       * End the current round early from the spinner screen.
-       * Clears the remaining speaker queue and shows the round-end scoreboard.
-       */
-      function endRoundEarly() {
-        speakerQueue = [];
-        showRoundEnd();
-      }
-
-      /**
-       * Return to the setup screen with player names preserved but scores reset.
-       */
-      function returnToSetup() {
-        round = 1;
-        spinAngle = 0;
-        currentStatements = ['', '', ''];
-        players.forEach(p => (p.points = 0));
-        renderPlayerList();
-        showScreen('screenSetup');
-      }
-
-      /**
-       * Remove all players from the list.
-       */
-      function removeAllPlayers() {
-        players = [];
-        renderPlayerList();
-      }
-
-      /**
-       * Skip to the final scores screen immediately.
-       */
-      function endGame() {
-        renderScoreTable('finalScores');
-        showScreen('screenFinal');
-      }
-
-      // ── Final scores ───────────────────────────────────────────────────────
-
-      /**
-       * Render players sorted by score descending into a score table body.
-       * @param {string} tbodyId - ID of the <tbody> element to populate.
-       */
-      function renderScoreTable(tbodyId) {
-        const sorted = [...players].sort((a, b) => b.points - a.points);
-        const medalByRank = {
-          1: '🥇',
-          2: '🥈',
-          3: '🥉',
+        const patch = {
+          'game/phase': 'vote',
+          'game/currentRoundId': roundId,
+          'game/presentedStatements': shuffled,
+          'game/answerIndexInPresented': answerIndexInPresented,
+          'game/results': [],
         };
-        let lastPoints = null;
-        let lastRank = 0;
-        document.getElementById(tbodyId).innerHTML = sorted
-          .map(
-            (p, i) => {
-              const rank = p.points === lastPoints ? lastRank : i + 1;
-              lastPoints = p.points;
-              lastRank = rank;
 
-              return `<tr>
-            <td class="score-rank">${medalByRank[rank] || rank}</td>
-            <td>${escHtml(p.name)}</td>
-            <td class="score-points">${p.points}</td>
-          </tr>`;
+        activePlayers().forEach((p) => {
+          patch[`players/${p.id}/vote`] = null;
+        });
+
+        await patchSession({ patch });
+        await refreshSessionNow();
+      }
+
+      async function submitVote(statementIndex) {
+        if (role !== 'player') return;
+        const game = gameState();
+        if (!game || game.phase !== 'vote') return;
+        if (session?.players?.[playerId]?.vote?.roundId === game.currentRoundId) return;
+
+        await updatePlayer({
+          action: 'vote',
+          roundId: game.currentRoundId,
+          statementIndex,
+        });
+        await refreshSessionNow();
+      }
+
+      async function moderatorShowResults() {
+        if (role !== 'moderator') return;
+        const game = gameState();
+        if (!allVotesIn(game)) return;
+
+        const answer = Number(game.answerIndexInPresented);
+        const rows = [];
+        const statementBreakdown = Array.isArray(game?.presentedStatements)
+          ? game.presentedStatements.map((entry, index) => ({
+              text: entry?.text || '',
+              isLie: index === answer,
+              voters: [],
+            }))
+          : [];
+        const patch = {};
+
+        eligibleVoterIds(game).forEach((pid) => {
+          const entry = session?.players?.[pid];
+          const voteIndex = Number(entry?.vote?.statementIndex);
+          const correct = voteIndex === answer;
+          const currentScore = Number(entry?.score || 0);
+          const newScore = correct ? currentScore + 1 : currentScore;
+          patch[`players/${pid}/score`] = newScore;
+          rows.push({ name: entry?.name || 'Player', voteIndex, correct, score: newScore, playerId: pid });
+          if (statementBreakdown[voteIndex]) {
+            statementBreakdown[voteIndex].voters.push(entry?.name || 'Player');
+          }
+        });
+
+        const remaining = Array.isArray(game.remainingSpeakerIds)
+          ? game.remainingSpeakerIds.filter((id) => id !== game.currentSpeakerId)
+          : [];
+
+        patch['game/results'] = rows;
+        patch['game/statementBreakdown'] = statementBreakdown;
+        patch['game/remainingSpeakerIds'] = remaining;
+        patch['game/phase'] = 'results';
+
+        await patchSession({ patch });
+        await refreshSessionNow();
+      }
+
+      async function moderatorContinue() {
+        if (role !== 'moderator') return;
+        const game = gameState();
+        const activeIds = activePlayers().map((p) => p.id);
+        const remaining = Array.isArray(game?.remainingSpeakerIds) ? game.remainingSpeakerIds : [];
+
+        if (!remaining.length) {
+          await patchSession({
+            patch: {
+              'game/phase': 'leaderboard',
+              'game/currentSpeakerId': null,
+              'game/currentRoundId': null,
+              'game/remainingSpeakerIds': [],
             },
-          )
-          .join('');
+          });
+          await refreshSessionNow();
+          return;
+        }
+
+        await patchSession({
+          patch: {
+            'game/currentSpeakerId': null,
+            'game/currentRoundId': null,
+            'game/presentedStatements': [],
+            'game/answerIndexInPresented': null,
+            'game/results': [],
+            'game/statementBreakdown': [],
+            'game/phase': 'spin',
+          },
+        });
+        await refreshSessionNow();
       }
 
-      /**
-       * Reset the entire game: clear players and scores, return to setup screen.
-       */
-      function resetGame() {
-        players = [];
-        round = 1;
-        spinAngle = 0;
-        currentStatements = ['', '', ''];
-        renderPlayerList();
-        showScreen('screenSetup');
+      async function moderatorStartNewGame() {
+        if (role !== 'moderator') return;
+        const patch = {
+          game: {
+            phase: 'lobby',
+            roundNumber: 1,
+            remainingSpeakerIds: [],
+            currentSpeakerId: null,
+            currentRoundId: null,
+            presentedStatements: [],
+            answerIndexInPresented: null,
+            results: [],
+            statementBreakdown: [],
+          },
+        };
+        activePlayers().forEach((entry) => {
+          patch[`players/${entry.id}/submission`] = null;
+          patch[`players/${entry.id}/vote`] = null;
+          patch[`players/${entry.id}/score`] = 0;
+        });
+        await patchSession({ status: 'lobby', patch });
+        await refreshSessionNow();
       }
+
+      async function bootstrap() {
+        showScreen('loading');
+
+        const configured = await isMultiplayerConfigured();
+        if (!configured) {
+          setError('Multiplayer backend is not configured on this deployment.');
+          return;
+        }
+
+        const params = hashParams();
+        const joinCode = params.get('join');
+        const code = params.get('code');
+        const hashRole = params.get('role');
+        const pid = params.get('pid');
+
+        if (hashRole === 'player' && code && pid) {
+          await reconnectPlayer(code.toUpperCase(), pid);
+          await startPolling();
+          return;
+        }
+
+        if (joinCode) {
+          prepareJoinScreen(joinCode);
+          return;
+        }
+
+        if (hashRole === 'moderator' && code) {
+          await reconnectModerator(code.toUpperCase());
+        } else {
+          await createModeratorSession();
+        }
+
+        await startPolling();
+      }
+
+      document.getElementById('copyJoinLinkBtn').addEventListener('click', async () => {
+        const input = document.getElementById('joinLinkInput');
+        if (!input.value) return;
+        try {
+          await navigator.clipboard.writeText(input.value);
+          document.getElementById('modLobbyMessage').textContent = 'Join link copied.';
+        } catch {
+          document.getElementById('modLobbyMessage').textContent = 'Could not copy join link.';
+        }
+      });
+
+      document.getElementById('modStartGameBtn').addEventListener('click', () => {
+        moderatorStartGame().catch(() => setError('Could not start game.'));
+      });
+
+      document.getElementById('modSpinBtn').addEventListener('click', () => {
+        spinForSpeaker();
+      });
+
+      document.getElementById('modStartRoundBtn').addEventListener('click', () => {
+        moderatorStartRound().catch(() => setError('Could not start round.'));
+      });
+
+      document.getElementById('modShowResultsBtn').addEventListener('click', () => {
+        moderatorShowResults().catch(() => setError('Could not reveal results.'));
+      });
+
+      document.getElementById('modContinueBtn').addEventListener('click', () => {
+        moderatorContinue().catch(() => setError('Could not continue game.'));
+      });
+      document.getElementById('modNewGameBtn').addEventListener('click', () => {
+        moderatorStartNewGame().catch(() => setError('Could not start a new game.'));
+      });
+
+      document.querySelectorAll('[data-vote-index]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const index = Number(btn.dataset.voteIndex);
+          submitVote(index).catch(() => setError('Could not submit vote.'));
+        });
+      });
+
+      document.getElementById('joinSubmitBtn').addEventListener('click', async () => {
+        const joinMessage = document.getElementById('joinMessage');
+        const name = document.getElementById('joinNameInput').value.trim();
+        const statements = [
+          document.getElementById('joinStatement1').value.trim(),
+          document.getElementById('joinStatement2').value.trim(),
+          document.getElementById('joinStatement3').value.trim(),
+        ];
+        const lieIndex = Number(document.getElementById('joinLieSelect').value);
+
+        if (!name) {
+          joinMessage.textContent = 'Please enter your name.';
+          return;
+        }
+        if (statements.some((s) => !s)) {
+          joinMessage.textContent = 'Please fill in all three statements.';
+          return;
+        }
+
+        const btn = document.getElementById('joinSubmitBtn');
+        btn.disabled = true;
+        joinMessage.textContent = 'Joining room...';
+
+        try {
+          savePlayerName(name);
+          const joined = await joinSession(sessionCode, name);
+          playerId = joined.playerId;
+          role = 'player';
+
+          await updatePlayer({
+            action: 'submitStatements',
+            statements,
+            lieIndex,
+          });
+
+          const params = new URLSearchParams({ code: sessionCode, role: 'player', pid: playerId });
+          setHash(params);
+          await startPolling();
+        } catch (error) {
+          joinMessage.textContent = error.message || 'Unable to join room.';
+          btn.disabled = false;
+        }
+      });
+
+      document.getElementById('joinNameInput').addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          document.getElementById('joinSubmitBtn').click();
+        }
+      });
+
+      document.getElementById('playerSubmitStatementsBtn').addEventListener('click', async () => {
+        const statements = [
+          document.getElementById('playerStatement1').value.trim(),
+          document.getElementById('playerStatement2').value.trim(),
+          document.getElementById('playerStatement3').value.trim(),
+        ];
+        const lieIndex = Number(document.getElementById('playerLieSelect').value);
+        const messageEl = document.getElementById('playerSubmitMessage');
+        const button = document.getElementById('playerSubmitStatementsBtn');
+
+        if (statements.some((entry) => !entry)) {
+          messageEl.textContent = 'Please fill in all three statements.';
+          return;
+        }
+
+        button.disabled = true;
+        messageEl.textContent = 'Submitting...';
+        try {
+          await updatePlayer({ action: 'submitStatements', statements, lieIndex });
+          document.getElementById('playerStatement1').value = '';
+          document.getElementById('playerStatement2').value = '';
+          document.getElementById('playerStatement3').value = '';
+          messageEl.textContent = 'Submitted. Waiting for moderator to start.';
+          await refreshSessionNow();
+        } catch (error) {
+          messageEl.textContent = error.message || 'Unable to submit statements.';
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      bootstrap().catch(() => {
+        setError('Unable to initialize multiplayer room.');
+      });
     </script>
   </body>
 </html>

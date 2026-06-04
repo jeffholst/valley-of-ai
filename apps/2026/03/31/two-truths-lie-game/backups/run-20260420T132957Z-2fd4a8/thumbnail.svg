@@ -1,0 +1,68 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="2 Truths and a Lie multiplayer thumbnail">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1f2f4a" />
+      <stop offset="100%" stop-color="#0f1f33" />
+    </linearGradient>
+    <radialGradient id="wheelGlow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0" />
+    </radialGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" fill="url(#bg)" />
+  <circle cx="356" cy="194" r="118" fill="url(#wheelGlow)" />
+
+  <rect x="34" y="58" width="444" height="396" rx="26" fill="url(#panel)" stroke="#334155" stroke-width="3" />
+
+  <text x="56" y="104" fill="#c4b5fd" font-family="Segoe UI, sans-serif" font-size="28" font-weight="700" filter="url(#softGlow)">
+    2 Truths and a Lie
+  </text>
+  <text x="56" y="132" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="16">
+    Multiplayer Lobby + Live Voting
+  </text>
+
+  <rect x="56" y="156" width="220" height="174" rx="14" fill="#111d31" stroke="#334155" />
+  <text x="72" y="184" fill="#a78bfa" font-family="Segoe UI, sans-serif" font-size="15" font-weight="700">Players</text>
+
+  <rect x="72" y="198" width="188" height="30" rx="8" fill="#1e293b" stroke="#334155" />
+  <text x="84" y="218" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="13">Alex</text>
+  <text x="210" y="218" fill="#10b981" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700">READY</text>
+
+  <rect x="72" y="236" width="188" height="30" rx="8" fill="#1e293b" stroke="#334155" />
+  <text x="84" y="256" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="13">Jordan</text>
+  <text x="199" y="256" fill="#10b981" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700">READY</text>
+
+  <rect x="72" y="274" width="188" height="30" rx="8" fill="#1e293b" stroke="#334155" />
+  <text x="84" y="294" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="13">Taylor</text>
+  <text x="205" y="294" fill="#f59e0b" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700">VOTING</text>
+
+  <circle cx="356" cy="226" r="92" fill="#0f172a" stroke="#334155" stroke-width="4" />
+  <path d="M356 226 L356 134 A92 92 0 0 1 435 184 Z" fill="#7c3aed" />
+  <path d="M356 226 L435 184 A92 92 0 0 1 434 269 Z" fill="#2563eb" />
+  <path d="M356 226 L434 269 A92 92 0 0 1 356 318 Z" fill="#059669" />
+  <path d="M356 226 L356 318 A92 92 0 0 1 279 268 Z" fill="#d97706" />
+  <path d="M356 226 L279 268 A92 92 0 0 1 279 183 Z" fill="#dc2626" />
+  <path d="M356 226 L279 183 A92 92 0 0 1 356 134 Z" fill="#0891b2" />
+  <circle cx="356" cy="226" r="14" fill="#1e293b" stroke="#c4b5fd" stroke-width="2" />
+  <polygon points="463,226 438,214 438,238" fill="#a78bfa" filter="url(#softGlow)" />
+
+  <rect x="56" y="348" width="400" height="86" rx="14" fill="#111d31" stroke="#334155" />
+  <text x="72" y="378" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="14" font-weight="700">
+    Results Board
+  </text>
+  <text x="72" y="404" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="13">
+    Lie was statement #2 • Continue to next participant
+  </text>
+</svg>

@@ -20,5 +20,6 @@
     "totalTokensOut": 10000,
     "runId": "run-20260307T183500Z-5b69aa",
     "notes": "Realistic archery game with projectile motion physics including gravity, air resistance, and wind effects. Features power-based bow draw, trajectory preview, and target scoring zones."
-  }
+  },
+  "leaderboard": false
 }

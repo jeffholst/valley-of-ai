@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://valleyofai.com/schemas/versus.json",
+  "title": "Valley of AI Versus Competition",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "title", "prompt", "createdAt", "category", "entries"],
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+        "description": "Unique competition ID, lowercase kebab-case."
+      },
+      "title": {
+        "type": "string",
+        "minLength": 5,
+        "maxLength": 100,
+        "description": "Human-readable competition title."
+      },
+      "prompt": {
+        "type": "string",
+        "minLength": 20,
+        "maxLength": 2000,
+        "description": "The exact prompt given to all models."
+      },
+      "createdAt": {
+        "type": "string",
+        "format": "date-time",
+        "description": "UTC timestamp when the competition was created."
+      },
+      "category": {
+        "type": "string",
+        "enum": [
+          "Games",
+          "Productivity",
+          "Utilities",
+          "Design",
+          "Education",
+          "Entertainment",
+          "Visualizations",
+          "Icebreakers"
+        ]
+      },
+      "entries": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 8,
+        "items": {
+          "type": "object",
+          "required": ["appId"],
+          "properties": {
+            "appId": {
+              "type": "string",
+              "description": "App ID matching an entry in data/apps.json (e.g. '2026/03/06/sorting-visualizer')."
+            }
+          },
+          "additionalProperties": false
+        },
+        "description": "Competing app entries. Each references an existing app by ID."
+      }
+    },
+    "additionalProperties": false
+  }
+}

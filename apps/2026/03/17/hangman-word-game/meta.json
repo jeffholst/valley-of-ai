@@ -27,5 +27,6 @@
     "keyboardNavigation": true,
     "darkModeSupport": true,
     "motionPreferences": false
-  }
+  },
+  "leaderboard": false
 }

@@ -20,5 +20,6 @@
     "totalTokensOut": 9000,
     "runId": "run-20260307T190500Z-0afa75",
     "notes": "Classic blackjack game with spectacular blackjack celebration animations including fireworks, sparks, falling coins, and rotating light rays. Features proper casino rules with 3:2 blackjack payout."
-  }
+  },
+  "leaderboard": false
 }

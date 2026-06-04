@@ -1,0 +1,13 @@
+[
+  {
+    "id": "benchmark-breakout-battle",
+    "title": "Benchmark Breakout Battle",
+    "prompt": "Build a premium mobile-first Breakout game with smooth paddle control for touch, mouse, and keyboard; responsive layout; crisp graphics; fluid animation; satisfying collisions; readable HUD; score, lives, combo/bonus scoring; increasing difficulty; multiple brick patterns; fair rebound angles; progressive speed tuning; balanced power-ups; particle effects; subtle screen shake; adaptive audio; polished transitions; onboarding; sound toggle; 44px+ touch targets; no hover UI; stable 60 FPS; no placeholders; no broken features; no build tools.",
+    "createdAt": "2026-04-18T12:00:00Z",
+    "category": "Games",
+    "entries": [
+      { "appId": "2026/04/10/benchmark-breakout-turbo" },
+      { "appId": "2026/04/11/benchmark-breakout-opus" }
+    ]
+  }
+]

@@ -4,7 +4,7 @@
   "shortDescription": "A presenter-driven emoji guessing game for Zoom calls. Players guess movies, songs, and phrases from emoji combos while a 30-second timer reveals progressive clues.",
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-04-01T14:04:48Z",
-  "category": "Games",
+  "category": "Icebreakers",
   "status": "active",
   "tags": ["quiz", "emoji", "party", "multiplayer", "zoom", "responsive", "touch", "trivia"],
   "homepagePath": "index.html",
@@ -55,6 +55,16 @@
       "implementedAt": "2026-04-03T16:56:38Z",
       "agentName": "Codex",
       "llmModel": "gpt-5"
+    },
+    {
+      "issueNumber": 384,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/384",
+      "runId": "run-20260420T195445Z-d17aa8",
+      "description": "Added moderator multiplayer share-link registration with copy support, participant self-register confirmation messaging, and moved host answer display controls into in-game action buttons.",
+      "requestor": "Jeff Holst",
+      "agentName": "Codex",
+      "llmModel": "GPT-5.4",
+      "implementedAt": "2026-04-20T20:01:51Z"
     }
   ],
   "generation": {
@@ -66,5 +76,6 @@
     "totalTokensOut": 30000,
     "runId": "run-20260401T140448Z-e3970d",
     "notes": "Built from community suggestion #259. Emoji quiz party game with setup/game/scoreboard screens, 20 preloaded quiz rounds, progressive clue timer, and confetti celebration. Token counts are estimates."
-  }
+  },
+  "leaderboard": false
 }

@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { supabase } from '@/lib/supabase';
 import { storagePrefix } from '@/lib/siteConfig';
 
 const STORAGE_KEY = `${storagePrefix}_votes_v2`;
@@ -53,14 +52,11 @@ export function useVotes(appId) {
     async function fetchVotes() {
       setIsLoading(true);
       try {
-        const { data, error } = await supabase
-          .from('votes')
-          .select('vote_type')
-          .eq('app_id', appId);
-
-        if (error) {
-          throw error;
+        const res = await fetch(`/api/votes?appId=${encodeURIComponent(appId)}`);
+        if (!res.ok) {
+          throw new Error(`Failed to fetch votes: ${res.status}`);
         }
+        const data = await res.json();
 
         const ups = data?.filter((r) => r.vote_type === 'up').length ?? 0;
         const downs = data?.filter((r) => r.vote_type === 'down').length ?? 0;
@@ -95,9 +91,13 @@ export function useVotes(appId) {
       setMyVote(type);
 
       try {
-        const { error } = await supabase.from('votes').insert({ app_id: appId, vote_type: type });
-        if (error) {
-          throw error;
+        const res = await fetch('/api/votes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ appId, voteType: type }),
+        });
+        if (!res.ok) {
+          throw new Error(`Vote failed: ${res.status}`);
         }
         saveVoteRecord(appId, type);
         return true;
@@ -121,8 +121,8 @@ export function useVotes(appId) {
   return { upvoteCount, downvoteCount, myVote, isLoading, isVoting, vote };
 }
 
-// Hook for gallery cards — initializes counts from bulk data (no per-card Supabase SELECT).
-// The voting mutation (INSERT) still runs per-card when a user votes.
+// Hook for gallery cards — initializes counts from bulk data (no per-card fetch).
+// The voting mutation (POST) still runs per-card when a user votes.
 export function useVotesMutation(appId, initialCounts) {
   const [upvoteCount, setUpvoteCount] = useState(0);
   const [downvoteCount, setDownvoteCount] = useState(0);
@@ -160,9 +160,13 @@ export function useVotesMutation(appId, initialCounts) {
       }
       setMyVote(type);
       try {
-        const { error } = await supabase.from('votes').insert({ app_id: appId, vote_type: type });
-        if (error) {
-          throw error;
+        const res = await fetch('/api/votes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ appId, voteType: type }),
+        });
+        if (!res.ok) {
+          throw new Error(`Vote failed: ${res.status}`);
         }
         saveVoteRecord(appId, type);
         return true;
@@ -186,7 +190,9 @@ export function useVotesMutation(appId, initialCounts) {
   return { upvoteCount, downvoteCount, myVote, isLoading: false, isVoting, vote };
 }
 
-// Hook for fetching vote counts for multiple apps (used by gallery for "Highest rated" sort)
+// Hook for fetching vote counts for multiple apps (used by gallery sorts).
+// Returns { up, down, net, recentNet } per app where recentNet is the net
+// votes cast in the last 7 days — used by the Trending sort.
 export function useAllVoteCounts(appIds) {
   const [voteCounts, setVoteCounts] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -200,29 +206,31 @@ export function useAllVoteCounts(appIds) {
 
       setIsLoading(true);
       try {
-        const { data, error } = await supabase
-          .from('votes')
-          .select('app_id, vote_type')
-          .in('app_id', appIds);
-
-        if (error) {
-          throw error;
+        const res = await fetch(`/api/votes?appIds=${encodeURIComponent(appIds.join(','))}`);
+        if (!res.ok) {
+          throw new Error(`Failed to fetch votes: ${res.status}`);
         }
+        const data = await res.json();
 
+        const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
         const counts = {};
         appIds.forEach((id) => {
-          counts[id] = { up: 0, down: 0, net: 0 };
+          counts[id] = { up: 0, down: 0, net: 0, recentNet: 0 };
         });
         data?.forEach((row) => {
           if (!counts[row.app_id]) {
-            counts[row.app_id] = { up: 0, down: 0, net: 0 };
+            counts[row.app_id] = { up: 0, down: 0, net: 0, recentNet: 0 };
           }
-          if (row.vote_type === 'up') {
+          const isUp = row.vote_type === 'up';
+          if (isUp) {
             counts[row.app_id].up += 1;
           } else {
             counts[row.app_id].down += 1;
           }
           counts[row.app_id].net = counts[row.app_id].up - counts[row.app_id].down;
+          if (row.created_at && new Date(row.created_at).getTime() >= sevenDaysAgo) {
+            counts[row.app_id].recentNet += isUp ? 1 : -1;
+          }
         });
 
         setVoteCounts(counts);

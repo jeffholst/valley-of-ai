@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Guess Who Said It thumbnail">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#101a33" />
+      <stop offset="100%" stop-color="#1a2a4c" />
+    </linearGradient>
+    <radialGradient id="glowOne" cx="0.14" cy="0.12" r="0.45">
+      <stop offset="0%" stop-color="#ffc857" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#ffc857" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowTwo" cx="0.9" cy="0.1" r="0.36">
+      <stop offset="0%" stop-color="#6fa8ff" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#6fa8ff" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffc857" />
+      <stop offset="100%" stop-color="#ff9f1c" />
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur" />
+      <feOffset in="blur" dx="0" dy="4" result="offset" />
+      <feMerge>
+        <feMergeNode in="offset" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="titleGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="g" />
+      <feMerge>
+        <feMergeNode in="g" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)" />
+  <rect x="0" y="0" width="800" height="450" fill="url(#glowOne)" />
+  <rect x="0" y="0" width="800" height="450" fill="url(#glowTwo)" />
+
+  <rect x="12" y="12" width="776" height="426" rx="22" fill="none" stroke="#355186" stroke-width="2" opacity="0.9" />
+
+  <rect x="28" y="28" width="744" height="64" rx="16" fill="#152441" stroke="#355186" filter="url(#softShadow)" />
+  <text x="48" y="66" fill="#f4f7ff" font-family="Trebuchet MS, Avenir Next, sans-serif" font-size="30" font-weight="700" filter="url(#titleGlow)">
+    Guess Who Said It
+  </text>
+  <rect x="624" y="44" width="128" height="32" rx="16" fill="#22345d" stroke="#355186" />
+  <text x="688" y="65" text-anchor="middle" fill="#abc2ea" font-family="Trebuchet MS, sans-serif" font-size="14" font-weight="700" letter-spacing="1.1">
+    GUESSING
+  </text>
+
+  <rect x="28" y="104" width="516" height="318" rx="16" fill="#152441" stroke="#355186" filter="url(#softShadow)" />
+  <text x="48" y="138" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="24" font-weight="700">Who wrote this?</text>
+
+  <rect x="420" y="122" width="104" height="34" rx="17" fill="#22345d" stroke="#355186" />
+  <text x="472" y="145" text-anchor="middle" fill="#ffba49" font-family="Trebuchet MS, sans-serif" font-size="19" font-weight="800">00:12</text>
+
+  <rect x="48" y="162" width="476" height="88" rx="14" fill="#22345d" stroke="#355186" />
+  <text x="66" y="190" fill="#abc2ea" font-family="Trebuchet MS, sans-serif" font-size="15" font-weight="700">Anonymous answer</text>
+  <text x="66" y="222" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="24" font-weight="700">
+    "My warning label would be: do not
+  </text>
+  <text x="66" y="246" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="24" font-weight="700">
+    ask me to estimate time on Fridays."
+  </text>
+
+  <rect x="48" y="268" width="226" height="54" rx="10" fill="#22345d" stroke="#355186" />
+  <text x="66" y="302" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="22" font-weight="700">Nina</text>
+
+  <rect x="298" y="268" width="226" height="54" rx="10" fill="url(#accentGrad)" stroke="#ffcf73" />
+  <text x="316" y="302" fill="#241802" font-family="Trebuchet MS, sans-serif" font-size="22" font-weight="800">Sam ✓</text>
+
+  <rect x="48" y="334" width="226" height="54" rx="10" fill="#22345d" stroke="#355186" />
+  <text x="66" y="368" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="22" font-weight="700">Lara</text>
+
+  <rect x="298" y="334" width="226" height="54" rx="10" fill="#22345d" stroke="#355186" />
+  <text x="316" y="368" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="22" font-weight="700">Diego</text>
+
+  <rect x="560" y="104" width="212" height="318" rx="16" fill="#152441" stroke="#355186" filter="url(#softShadow)" />
+  <text x="578" y="138" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="22" font-weight="700">Player Board</text>
+
+  <rect x="578" y="158" width="176" height="50" rx="10" fill="#22345d" stroke="#355186" />
+  <text x="592" y="184" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="17" font-weight="700">Nina</text>
+  <text x="592" y="202" fill="#abc2ea" font-family="Trebuchet MS, sans-serif" font-size="12" font-weight="700" letter-spacing="0.7">LOCKED</text>
+  <rect x="715" y="171" width="31" height="24" rx="12" fill="#1a2a4c" stroke="#355186" />
+  <text x="730" y="188" text-anchor="middle" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="13" font-weight="800">4</text>
+
+  <rect x="578" y="216" width="176" height="50" rx="10" fill="#22345d" stroke="#355186" />
+  <text x="592" y="242" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="17" font-weight="700">Sam</text>
+  <text x="592" y="260" fill="#abc2ea" font-family="Trebuchet MS, sans-serif" font-size="12" font-weight="700" letter-spacing="0.7">AUTHOR</text>
+  <rect x="715" y="229" width="31" height="24" rx="12" fill="#1a2a4c" stroke="#355186" />
+  <text x="730" y="246" text-anchor="middle" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="13" font-weight="800">7</text>
+
+  <rect x="578" y="274" width="176" height="50" rx="10" fill="#22345d" stroke="#355186" />
+  <text x="592" y="300" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="17" font-weight="700">Lara</text>
+  <text x="592" y="318" fill="#abc2ea" font-family="Trebuchet MS, sans-serif" font-size="12" font-weight="700" letter-spacing="0.7">LOCKED</text>
+  <rect x="715" y="287" width="31" height="24" rx="12" fill="#1a2a4c" stroke="#355186" />
+  <text x="730" y="304" text-anchor="middle" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="13" font-weight="800">5</text>
+
+  <rect x="578" y="332" width="176" height="50" rx="10" fill="#22345d" stroke="#355186" />
+  <text x="592" y="358" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="17" font-weight="700">Diego</text>
+  <text x="592" y="376" fill="#abc2ea" font-family="Trebuchet MS, sans-serif" font-size="12" font-weight="700" letter-spacing="0.7">LOCKED</text>
+  <rect x="715" y="345" width="31" height="24" rx="12" fill="#1a2a4c" stroke="#355186" />
+  <text x="730" y="362" text-anchor="middle" fill="#f4f7ff" font-family="Trebuchet MS, sans-serif" font-size="13" font-weight="800">2</text>
+</svg>

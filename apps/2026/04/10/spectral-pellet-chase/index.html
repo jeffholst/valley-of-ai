@@ -1,0 +1,847 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Spectral Pellet Chase - __MAIN_SITE_NAME__</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%230a1022'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23ffd447'/%3E%3C/svg%3E"
+    />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Spectral Pellet Chase" />
+    <meta name="voa-app-id" content="2026/04/10/spectral-pellet-chase" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #061125;
+        --text: #e9f1ff;
+        --surface: #0f1f39;
+        --accent: #9ee7ff;
+        --line: #27416e;
+      }
+
+      [data-theme='light'] {
+        --bg: #eef4ff;
+        --text: #1b2840;
+        --surface: #ffffff;
+        --accent: #0f6ac7;
+        --line: #b8d2f0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+        background:
+          radial-gradient(circle at 22% 18%, #193568 0%, rgba(25, 53, 104, 0) 34%),
+          radial-gradient(circle at 80% 84%, #112a4e 0%, rgba(17, 42, 78, 0) 40%),
+          var(--bg);
+        color: var(--text);
+      }
+
+      #app {
+        position: fixed;
+        top: 64px;
+        right: 0;
+        bottom: 56px;
+        left: 0;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 10px;
+        padding: 10px;
+      }
+
+      .panel {
+        background: color-mix(in oklab, var(--surface) 85%, black);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+      }
+
+      .hud {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        align-items: center;
+        padding: 10px;
+      }
+
+      .hud h1 {
+        margin: 0;
+        font-size: clamp(1rem, 3.8vw, 1.3rem);
+        letter-spacing: 0.04em;
+      }
+
+      .stats {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .pill {
+        min-width: 76px;
+        padding: 6px 8px;
+        font-size: 0.82rem;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: color-mix(in oklab, var(--surface) 65%, black);
+        text-align: center;
+      }
+
+      .arena {
+        min-height: 0;
+        display: grid;
+        place-items: center;
+        padding: 6px;
+      }
+
+      canvas {
+        width: min(100%, 640px);
+        height: auto;
+        max-height: 100%;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: #030917;
+        box-shadow: inset 0 0 30px rgba(30, 124, 230, 0.2);
+      }
+
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+      }
+
+      .helper {
+        margin: 0;
+        font-size: 0.84rem;
+        line-height: 1.35;
+        opacity: 0.9;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      button {
+        border: 1px solid var(--line);
+        background: color-mix(in oklab, var(--surface) 80%, black);
+        color: var(--text);
+        border-radius: 10px;
+        font: inherit;
+        min-height: 44px;
+        padding: 0 14px;
+        cursor: pointer;
+        transition: transform 120ms ease, background-color 120ms ease;
+      }
+
+      button:hover,
+      button:focus-visible {
+        transform: translateY(-1px);
+        background: color-mix(in oklab, var(--surface) 70%, var(--accent));
+        outline: none;
+      }
+
+      .dpad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 8px;
+        margin-left: auto;
+      }
+
+      .dpad button {
+        min-width: 52px;
+        min-height: 52px;
+        padding: 0;
+        font-size: 1.15rem;
+      }
+
+      #up {
+        grid-column: 2;
+      }
+      #left {
+        grid-column: 1;
+      }
+      #down {
+        grid-column: 2;
+      }
+      #right {
+        grid-column: 3;
+      }
+
+      @media (max-width: 720px) {
+        .hud {
+          grid-template-columns: 1fr;
+        }
+
+        .stats {
+          justify-content: flex-start;
+        }
+
+        .controls {
+          grid-template-columns: 1fr;
+        }
+
+        .buttons {
+          justify-content: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main id="app" aria-label="Spectral Pellet Chase game">
+      <section class="panel hud" aria-live="polite">
+        <h1>Spectral Pellet Chase</h1>
+        <div class="stats">
+          <div class="pill">Score: <strong id="score">0</strong></div>
+          <div class="pill">Lives: <strong id="lives">3</strong></div>
+          <div class="pill">Pellets: <strong id="pellets">0</strong></div>
+          <div class="pill">State: <strong id="state">READY</strong></div>
+        </div>
+      </section>
+
+      <section class="panel arena">
+        <canvas id="game" width="456" height="456" aria-label="Maze game board"></canvas>
+      </section>
+
+      <section class="panel controls">
+        <p class="helper" id="helperText">
+          Use arrow keys, WASD, or touch controls. Collect every pellet and avoid non-frightened
+          ghosts.
+        </p>
+        <div class="buttons">
+          <button id="startBtn" type="button">Start</button>
+          <button id="restartBtn" type="button">Restart</button>
+          <div class="dpad" role="group" aria-label="Touch direction controls">
+            <button id="up" type="button" aria-label="Move up">▲</button>
+            <button id="left" type="button" aria-label="Move left">◀</button>
+            <button id="down" type="button" aria-label="Move down">▼</button>
+            <button id="right" type="button" aria-label="Move right">▶</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        'use strict';
+
+        const TILE = 24;
+        const PLAYER_SPEED = 5.1;
+        const GHOST_SPEED = 4.5;
+        const FRIGHTENED_SPEED = 3.3;
+        const POWER_SECONDS = 8;
+
+        const DIRS = {
+          up: { x: 0, y: -1, key: 'up' },
+          down: { x: 0, y: 1, key: 'down' },
+          left: { x: -1, y: 0, key: 'left' },
+          right: { x: 1, y: 0, key: 'right' },
+        };
+
+        const OPPOSITE = {
+          up: 'down',
+          down: 'up',
+          left: 'right',
+          right: 'left',
+        };
+
+        const MAP_TEMPLATE = [
+          '###################',
+          '#o.......#.......o#',
+          '#.###.##.#.##.###.#',
+          '#.# #.##.#.##.# #.#',
+          '#.....##...##.....#',
+          '#.###.#.###.#.###.#',
+          '#.....#.. ..#.....#',
+          '#####.## # ##.#####',
+          '#.....   G   .....#',
+          '#####.## # ##.#####',
+          '#.....##...##.....#',
+          '#.###.#.###.#.###.#',
+          '#...#.#..P..#.#...#',
+          '#o#.#.##.#.##.#.#o#',
+          '#.#...##.#.##...#.#',
+          '#.###.##.#.##.###.#',
+          '#.................#',
+          '###################',
+        ];
+
+        const canvas = document.getElementById('game');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const livesEl = document.getElementById('lives');
+        const pelletsEl = document.getElementById('pellets');
+        const stateEl = document.getElementById('state');
+        const helperText = document.getElementById('helperText');
+        const startBtn = document.getElementById('startBtn');
+        const restartBtn = document.getElementById('restartBtn');
+
+        const map = [];
+        let pellets = 0;
+        let score = 0;
+        let lives = 3;
+        let gameState = 'start';
+        let frightenedUntil = 0;
+        let modeClock = 0;
+        let modeIndex = 0;
+        let lastTs = 0;
+        let queuedDir = 'left';
+
+        const modeSchedule = [7, 20, 7, 20, 5, 20, 5, 999];
+
+        const player = {
+          x: 1,
+          y: 1,
+          dir: 'left',
+          nextDir: 'left',
+          spawn: { x: 1, y: 1 },
+        };
+
+        const ghosts = [
+          {
+            id: 'blaze',
+            color: '#ff6262',
+            x: 9,
+            y: 8,
+            dir: 'left',
+            spawn: { x: 9, y: 8 },
+            scatter: { x: 17, y: 1 },
+            style: 'direct',
+          },
+          {
+            id: 'mist',
+            color: '#ffc7ff',
+            x: 9,
+            y: 9,
+            dir: 'right',
+            spawn: { x: 9, y: 9 },
+            scatter: { x: 1, y: 1 },
+            style: 'ambush',
+          },
+          {
+            id: 'ripple',
+            color: '#7ff8ff',
+            x: 8,
+            y: 9,
+            dir: 'up',
+            spawn: { x: 8, y: 9 },
+            scatter: { x: 17, y: 16 },
+            style: 'vector',
+          },
+          {
+            id: 'ember',
+            color: '#ffae66',
+            x: 10,
+            y: 9,
+            dir: 'down',
+            spawn: { x: 10, y: 9 },
+            scatter: { x: 1, y: 16 },
+            style: 'shy',
+          },
+        ];
+
+        function deepCopyRows(rows) {
+          return rows.map((row) => row.split(''));
+        }
+
+        function isWall(row, col) {
+          return map[row]?.[col] === '#';
+        }
+
+        function isCentered(entity) {
+          const dx = Math.abs(entity.x - Math.round(entity.x));
+          const dy = Math.abs(entity.y - Math.round(entity.y));
+          return dx < 0.08 && dy < 0.08;
+        }
+
+        function availableTurns(entity, includeReverse) {
+          const row = Math.round(entity.y);
+          const col = Math.round(entity.x);
+          const options = [];
+          for (const [name, dir] of Object.entries(DIRS)) {
+            if (!includeReverse && OPPOSITE[entity.dir] === name) {
+              continue;
+            }
+            const nr = row + dir.y;
+            const nc = col + dir.x;
+            if (!isWall(nr, nc)) {
+              options.push(name);
+            }
+          }
+          return options;
+        }
+
+        function stepEntity(entity, speed, dt) {
+          const d = DIRS[entity.dir];
+          const nx = entity.x + d.x * speed * dt;
+          const ny = entity.y + d.y * speed * dt;
+          const sampleRow = Math.round(ny);
+          const sampleCol = Math.round(nx);
+
+          if (!isWall(sampleRow, sampleCol)) {
+            entity.x = nx;
+            entity.y = ny;
+          } else {
+            entity.x = Math.round(entity.x);
+            entity.y = Math.round(entity.y);
+          }
+        }
+
+        function distanceSq(a, b) {
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          return dx * dx + dy * dy;
+        }
+
+        function modeType() {
+          if (frightenedUntil > performance.now()) {
+            return 'frightened';
+          }
+          return modeIndex % 2 === 0 ? 'scatter' : 'chase';
+        }
+
+        function clampTarget(target) {
+          return {
+            x: Math.max(1, Math.min(map[0].length - 2, target.x)),
+            y: Math.max(1, Math.min(map.length - 2, target.y)),
+          };
+        }
+
+        function ghostTarget(ghost) {
+          const mode = modeType();
+          if (mode === 'scatter') {
+            return ghost.scatter;
+          }
+          if (mode === 'frightened') {
+            return {
+              x: Math.random() * (map[0].length - 1),
+              y: Math.random() * (map.length - 1),
+            };
+          }
+
+          if (ghost.style === 'direct') {
+            return { x: player.x, y: player.y };
+          }
+
+          if (ghost.style === 'ambush') {
+            const pDir = DIRS[player.dir];
+            return clampTarget({
+              x: player.x + pDir.x * 3,
+              y: player.y + pDir.y * 3,
+            });
+          }
+
+          if (ghost.style === 'vector') {
+            const lead = DIRS[player.dir];
+            const leadTile = {
+              x: player.x + lead.x * 2,
+              y: player.y + lead.y * 2,
+            };
+            const red = ghosts[0];
+            return clampTarget({
+              x: leadTile.x + (leadTile.x - red.x),
+              y: leadTile.y + (leadTile.y - red.y),
+            });
+          }
+
+          const d = Math.sqrt(distanceSq(ghost, player));
+          if (d > 6) {
+            return { x: player.x, y: player.y };
+          }
+          return ghost.scatter;
+        }
+
+        function chooseGhostDirection(ghost) {
+          const options = availableTurns(ghost, false);
+          if (options.length === 0) {
+            const reverseOnly = availableTurns(ghost, true);
+            if (reverseOnly.length > 0) {
+              ghost.dir = reverseOnly[0];
+            }
+            return;
+          }
+
+          const target = ghostTarget(ghost);
+          let best = options[0];
+          let bestScore = Number.POSITIVE_INFINITY;
+          for (const option of options) {
+            const dir = DIRS[option];
+            const probe = {
+              x: Math.round(ghost.x) + dir.x,
+              y: Math.round(ghost.y) + dir.y,
+            };
+            const score = distanceSq(probe, target);
+            if (score < bestScore) {
+              best = option;
+              bestScore = score;
+            }
+          }
+          ghost.dir = best;
+        }
+
+        function applyPlayerTurn() {
+          if (!isCentered(player)) {
+            return;
+          }
+          const row = Math.round(player.y);
+          const col = Math.round(player.x);
+          const dir = DIRS[player.nextDir];
+          if (!isWall(row + dir.y, col + dir.x)) {
+            player.dir = player.nextDir;
+          }
+        }
+
+        function collectPellet() {
+          const row = Math.round(player.y);
+          const col = Math.round(player.x);
+          const cell = map[row][col];
+          if (cell === '.') {
+            map[row][col] = ' ';
+            pellets -= 1;
+            score += 10;
+          }
+          if (cell === 'o') {
+            map[row][col] = ' ';
+            pellets -= 1;
+            score += 50;
+            frightenedUntil = performance.now() + POWER_SECONDS * 1000;
+            ghosts.forEach((ghost) => {
+              ghost.dir = OPPOSITE[ghost.dir] || 'left';
+            });
+          }
+        }
+
+        function resetPositions() {
+          player.x = player.spawn.x;
+          player.y = player.spawn.y;
+          player.dir = 'left';
+          player.nextDir = 'left';
+          queuedDir = 'left';
+          ghosts.forEach((ghost) => {
+            ghost.x = ghost.spawn.x;
+            ghost.y = ghost.spawn.y;
+            ghost.dir = 'left';
+          });
+        }
+
+        function collideGhosts() {
+          for (const ghost of ghosts) {
+            const d = Math.sqrt(distanceSq(player, ghost));
+            if (d < 0.52) {
+              if (modeType() === 'frightened') {
+                score += 200;
+                ghost.x = ghost.spawn.x;
+                ghost.y = ghost.spawn.y;
+                ghost.dir = 'left';
+              } else {
+                lives -= 1;
+                if (lives <= 0) {
+                  gameState = 'gameover';
+                  helperText.textContent =
+                    'Game over. Press Restart to run another maze escape.';
+                } else {
+                  helperText.textContent =
+                    'Caught by a ghost. Press Start to continue with remaining lives.';
+                  gameState = 'start';
+                  resetPositions();
+                }
+                break;
+              }
+            }
+          }
+        }
+
+        function updateHud() {
+          scoreEl.textContent = String(score);
+          livesEl.textContent = String(lives);
+          pelletsEl.textContent = String(pellets);
+          const stateLabel =
+            gameState === 'start'
+              ? 'READY'
+              : gameState === 'playing'
+                ? modeType().toUpperCase()
+                : gameState === 'win'
+                  ? 'WIN'
+                  : 'GAME OVER';
+          stateEl.textContent = stateLabel;
+        }
+
+        function drawMap() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          gradient.addColorStop(0, '#061532');
+          gradient.addColorStop(1, '#040b18');
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          for (let row = 0; row < map.length; row += 1) {
+            for (let col = 0; col < map[row].length; col += 1) {
+              const x = col * TILE;
+              const y = row * TILE;
+              const cell = map[row][col];
+
+              if (cell === '#') {
+                ctx.fillStyle = '#1d53a8';
+                ctx.fillRect(x + 1, y + 1, TILE - 2, TILE - 2);
+                ctx.strokeStyle = '#4fa4ff';
+                ctx.strokeRect(x + 4, y + 4, TILE - 8, TILE - 8);
+              }
+
+              if (cell === '.' || cell === 'o') {
+                const radius = cell === 'o' ? 4.5 : 2.6;
+                ctx.beginPath();
+                ctx.fillStyle = cell === 'o' ? '#ffd783' : '#ffd447';
+                ctx.arc(x + TILE / 2, y + TILE / 2, radius, 0, Math.PI * 2);
+                ctx.fill();
+              }
+            }
+          }
+        }
+
+        function drawPlayer() {
+          const px = player.x * TILE + TILE / 2;
+          const py = player.y * TILE + TILE / 2;
+          const open = 0.22 + Math.sin(performance.now() / 70) * 0.1;
+          let angle = 0;
+          if (player.dir === 'right') angle = 0;
+          if (player.dir === 'left') angle = Math.PI;
+          if (player.dir === 'up') angle = -Math.PI / 2;
+          if (player.dir === 'down') angle = Math.PI / 2;
+
+          ctx.fillStyle = '#ffe356';
+          ctx.beginPath();
+          ctx.moveTo(px, py);
+          ctx.arc(px, py, TILE * 0.42, angle + open, angle - open + Math.PI * 2);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        function drawGhost(ghost) {
+          const gx = ghost.x * TILE + TILE / 2;
+          const gy = ghost.y * TILE + TILE / 2;
+          const frightened = modeType() === 'frightened';
+          ctx.fillStyle = frightened ? '#446fff' : ghost.color;
+          ctx.beginPath();
+          ctx.arc(gx, gy - 2, TILE * 0.36, Math.PI, 0);
+          ctx.lineTo(gx + TILE * 0.36, gy + TILE * 0.34);
+          ctx.lineTo(gx + TILE * 0.18, gy + TILE * 0.2);
+          ctx.lineTo(gx, gy + TILE * 0.34);
+          ctx.lineTo(gx - TILE * 0.18, gy + TILE * 0.2);
+          ctx.lineTo(gx - TILE * 0.36, gy + TILE * 0.34);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(gx - 5, gy - 2, 3.5, 0, Math.PI * 2);
+          ctx.arc(gx + 5, gy - 2, 3.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#111827';
+          ctx.beginPath();
+          ctx.arc(gx - 5, gy - 2, 1.8, 0, Math.PI * 2);
+          ctx.arc(gx + 5, gy - 2, 1.8, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        function drawOverlay(text) {
+          ctx.fillStyle = 'rgba(4, 8, 16, 0.62)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = '#f2f7ff';
+          ctx.font = 'bold 30px Trebuchet MS';
+          ctx.textAlign = 'center';
+          ctx.fillText(text, canvas.width / 2, canvas.height / 2 - 8);
+          ctx.font = '17px Trebuchet MS';
+          ctx.fillText('Press Start or tap any direction to play', canvas.width / 2, canvas.height / 2 + 22);
+        }
+
+        function drawFrame() {
+          drawMap();
+          drawPlayer();
+          ghosts.forEach(drawGhost);
+
+          if (gameState === 'start') {
+            drawOverlay('Maze Ready');
+          }
+          if (gameState === 'win') {
+            drawOverlay('You Cleared The Maze');
+          }
+          if (gameState === 'gameover') {
+            drawOverlay('Ghosts Win This Round');
+          }
+        }
+
+        function updateMode(dt) {
+          if (modeType() === 'frightened') {
+            return;
+          }
+          modeClock += dt;
+          if (modeClock >= modeSchedule[modeIndex]) {
+            modeClock = 0;
+            modeIndex += 1;
+            ghosts.forEach((ghost) => {
+              ghost.dir = OPPOSITE[ghost.dir] || ghost.dir;
+            });
+          }
+        }
+
+        function setDirection(dir) {
+          player.nextDir = dir;
+          queuedDir = dir;
+          if (gameState === 'start') {
+            gameState = 'playing';
+            helperText.textContent =
+              'Clear every pellet. Power pellets make ghosts vulnerable for a short burst.';
+          }
+        }
+
+        function tick(ts) {
+          if (!lastTs) {
+            lastTs = ts;
+          }
+          const dt = Math.min((ts - lastTs) / 1000, 0.03);
+          lastTs = ts;
+
+          if (gameState === 'playing') {
+            updateMode(dt);
+
+            applyPlayerTurn();
+            stepEntity(player, PLAYER_SPEED, dt);
+            collectPellet();
+
+            ghosts.forEach((ghost) => {
+              if (isCentered(ghost)) {
+                chooseGhostDirection(ghost);
+              }
+              const speed = modeType() === 'frightened' ? FRIGHTENED_SPEED : GHOST_SPEED;
+              stepEntity(ghost, speed, dt);
+            });
+
+            collideGhosts();
+
+            if (pellets === 0 && gameState === 'playing') {
+              gameState = 'win';
+              helperText.textContent =
+                'You won. Press Restart for another run through the maze.';
+            }
+          }
+
+          updateHud();
+          drawFrame();
+          requestAnimationFrame(tick);
+        }
+
+        function parseMapAndSpawns() {
+          const rows = deepCopyRows(MAP_TEMPLATE);
+          pellets = 0;
+          for (let row = 0; row < rows.length; row += 1) {
+            for (let col = 0; col < rows[row].length; col += 1) {
+              const cell = rows[row][col];
+              if (cell === 'P') {
+                player.spawn = { x: col, y: row };
+                rows[row][col] = ' ';
+              }
+              if (cell === 'G') {
+                rows[row][col] = ' ';
+              }
+              if (cell === '.' || cell === 'o') {
+                pellets += 1;
+              }
+            }
+          }
+          map.splice(0, map.length, ...rows);
+          canvas.width = map[0].length * TILE;
+          canvas.height = map.length * TILE;
+        }
+
+        function hardReset() {
+          parseMapAndSpawns();
+          score = 0;
+          lives = 3;
+          gameState = 'start';
+          modeClock = 0;
+          modeIndex = 0;
+          frightenedUntil = 0;
+          helperText.textContent =
+            'Use arrow keys, WASD, or touch controls. Collect every pellet and avoid non-frightened ghosts.';
+          resetPositions();
+          updateHud();
+          drawFrame();
+        }
+
+        function bindInputs() {
+          const keyMap = {
+            ArrowUp: 'up',
+            ArrowDown: 'down',
+            ArrowLeft: 'left',
+            ArrowRight: 'right',
+            w: 'up',
+            a: 'left',
+            s: 'down',
+            d: 'right',
+          };
+
+          window.addEventListener('keydown', (event) => {
+            const direction = keyMap[event.key];
+            if (direction) {
+              event.preventDefault();
+              setDirection(direction);
+            }
+          });
+
+          [['up', 'up'], ['left', 'left'], ['down', 'down'], ['right', 'right']].forEach(
+            ([id, direction]) => {
+              const btn = document.getElementById(id);
+              btn.addEventListener('click', () => setDirection(direction));
+              btn.addEventListener('touchstart', (event) => {
+                event.preventDefault();
+                setDirection(direction);
+              });
+            }
+          );
+
+          startBtn.addEventListener('click', () => {
+            if (gameState === 'start') {
+              gameState = 'playing';
+              setDirection(queuedDir);
+            }
+          });
+
+          restartBtn.addEventListener('click', hardReset);
+        }
+
+        bindInputs();
+        hardReset();
+        requestAnimationFrame(tick);
+      })();
+    </script>
+  </body>
+</html>

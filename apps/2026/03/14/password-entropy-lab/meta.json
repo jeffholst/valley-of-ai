@@ -20,5 +20,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260314T070102Z-48238d",
     "notes": "Inspired by zxcvbn-style strength meters; added attack-rate controls and entropy/keyspace visibility for educational use."
-  }
+  },
+  "leaderboard": false
 }

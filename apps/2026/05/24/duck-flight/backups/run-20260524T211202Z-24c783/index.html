@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Duck Flight - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Duck Flight" />
+    <meta name="voa-app-id" content="2026/05/24/duck-flight" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+      }
+
+      body {
+        background: #000;
+        color: var(--text);
+        font-family: system-ui, sans-serif;
+        overflow: hidden;
+        touch-action: none;
+        user-select: none;
+      }
+
+      #game-wrap {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000;
+      }
+
+      canvas {
+        display: block;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+      }
+
+      #overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.72);
+        gap: 16px;
+        padding: 24px;
+      }
+
+      #overlay.hidden { display: none; }
+
+      #overlay h1 {
+        font-size: clamp(28px, 7vw, 48px);
+        font-weight: 900;
+        letter-spacing: -1px;
+        color: #fbbf24;
+        text-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+      }
+
+      #overlay p {
+        font-size: clamp(13px, 3.5vw, 17px);
+        color: #cbd5e1;
+        text-align: center;
+        max-width: 340px;
+        line-height: 1.55;
+      }
+
+      #overlay .score-display {
+        font-size: clamp(22px, 6vw, 38px);
+        font-weight: 800;
+        color: #fbbf24;
+      }
+
+      #start-btn {
+        margin-top: 8px;
+        padding: 14px 36px;
+        font-size: 18px;
+        font-weight: 700;
+        border: none;
+        border-radius: 10px;
+        background: #f59e0b;
+        color: #000;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      #start-btn:hover { background: #fbbf24; }
+    </style>
+  </head>
+  <body>
+    <div id="game-wrap">
+      <canvas id="canvas"></canvas>
+      <div id="overlay">
+        <h1>🦆 Duck Flight</h1>
+        <p>Fly through rings as a duck in first-person view.<br>
+           Steer left/right to pass through rings.<br>
+           Miss too many and you lose momentum — crash!</p>
+        <p><strong>Desktop:</strong> Arrow keys or A/D<br>
+           <strong>Mobile:</strong> Tap left/right side of screen</p>
+        <button id="start-btn">Start Flying</button>
+      </div>
+    </div>
+
+    <script>
+    'use strict';
+
+    // ─── Constants ───────────────────────────────────────────────────────────────
+    const LOGICAL_W = 400;
+    const LOGICAL_H = 650;
+    // focalLength tuned so a 1-unit shape at z=20 spans ~100px in logical 400px canvas
+    const FOCAL_LEN = 2000;
+    const VP_X = LOGICAL_W / 2;     // vanishing point x (horizontal center)
+    const VP_Y = LOGICAL_H / 2;     // vanishing point y (horizon at true vertical center)
+    const HORIZON_COLOR = '#8ec6e0'; // fog target — matches sky horizon tone
+
+    const SPAWN_Z = 3000;           // world units from camera when ring spawns
+    const KILL_Z = 40;              // world units — ring passes camera (miss check)
+    const PASS_Z = 80;              // world units — ring considered "passed through"
+
+    const DUCK_X_MIN = -1.6;        // world units lateral range
+    const DUCK_X_MAX = 1.6;
+    const DUCK_ACCEL = 4.2;         // lateral acceleration (world units/sec²)
+    const DUCK_FRICTION = 6.0;      // passive friction
+
+    const BASE_SPEED = 900;         // ring approach speed (world units/sec)
+    const SPAWN_INTERVAL = 2.2;     // seconds between ring spawns (base)
+
+    const MOMENTUM_START = 1.0;
+    const MOMENTUM_MAX = 1.5;
+    const MOMENTUM_MIN = 0.0;
+    const MOMENTUM_PASS = 0.12;     // gain on good pass
+    const MOMENTUM_MISS = -0.22;    // loss on miss
+    const MOMENTUM_DRAIN = -0.012;  // passive drain per second
+
+    const MAX_MISSES = 5;           // total misses before momentum bottoms out (tracked separately)
+
+    // ─── State ───────────────────────────────────────────────────────────────────
+    const STATE = { MENU: 0, PLAYING: 1, GAMEOVER: 2 };
+    let state = STATE.MENU;
+
+    let duck = null;    // { x, vx, momentum, score, misses }
+    let shapes = [];    // array of shape objects (ring | triangle | square)
+    let particles = []; // particle system array
+    let cachedSkyGrad = null;    // invalidated on resize
+    let cachedGroundGrad = null; // invalidated on resize
+    let lastTime = 0;
+    let spawnTimer = 0;
+    let difficultyTimer = 0;
+    let currentSpeed = BASE_SPEED;
+    let currentInterval = SPAWN_INTERVAL;
+    let animId = null;
+    let scoreSubmitted = false;
+
+    // Input state
+    const input = {
+      left: false,
+      right: false,
+      pointerLeft: false,
+      pointerRight: false,
+    };
+
+    // ─── Canvas setup ────────────────────────────────────────────────────────────
+    const wrap = document.getElementById('game-wrap');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let scale = 1;
+
+    function resizeCanvas() {
+      const ww = wrap.clientWidth;
+      const wh = wrap.clientHeight;
+      scale = Math.min(ww / LOGICAL_W, wh / LOGICAL_H);
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(LOGICAL_W * dpr);
+      canvas.height = Math.floor(LOGICAL_H * dpr);
+      canvas.style.width = Math.floor(LOGICAL_W * scale) + 'px';
+      canvas.style.height = Math.floor(LOGICAL_H * scale) + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // Invalidate cached gradients — tied to specific canvas pixel dimensions
+      cachedSkyGrad = null;
+      cachedGroundGrad = null;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // ─── 3D Projection ───────────────────────────────────────────────────────────
+    // Projects a world-space point (wx, wy, wz) onto canvas.
+    // Camera is at world (duck.x, 0, 0) looking toward +z.
+    // Returns { sx, sy, scale } where scale = focalLength / z.
+    function project(wx, wy, wz) {
+      const relX = wx - (duck ? duck.x : 0);
+      const scale = FOCAL_LEN / Math.max(wz, 1);
+      const sx = VP_X + relX * scale;
+      const sy = VP_Y - wy * scale;
+      return { sx, sy, scale };
+    }
+
+    // Linearly interpolates between two #rrggbb colors; t=0 returns from, t=1 returns to.
+    function lerpColor(hexFrom, hexTo, t) {
+      if (t <= 0) return hexFrom;
+      if (t >= 1) return hexTo;
+      const p = c => [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)];
+      const [r1, g1, b1] = p(hexFrom);
+      const [r2, g2, b2] = p(hexTo);
+      return `rgb(${Math.round(r1 + (r2 - r1) * t)},${Math.round(g1 + (g2 - g1) * t)},${Math.round(b1 + (b2 - b1) * t)})`;
+    }
+
+    // ─── Shape Factory ────────────────────────────────────────────────────────────
+    const SHAPE_TYPES = ['ring', 'triangle', 'square'];
+    let shapeIdCounter = 0;
+
+    function createShape(z) {
+      const type = SHAPE_TYPES[Math.floor(Math.random() * 3)];
+      const size = 0.65 + Math.random() * 0.55;          // 0.65–1.2 world units outer size
+      const innerR = size * 0.47;                         // inner opening ~47% of outer size
+      const hue = Math.floor(Math.random() * 360);
+      const color = `hsl(${hue}, 85%, 58%)`;              // HSL with saturation pop (particles)
+      const wx = (Math.random() * 2 - 1) * 1.2;
+      const wy = (Math.random() * 2 - 1) * 0.4;
+      const spinAxis = Math.random() < 0.5 ? 'z' : 'y';  // z=face-on twirl, y=barrel-roll
+      const rotationSpeed = (0.4 + Math.random() * 0.8) * (Math.random() < 0.5 ? 1 : -1);
+      return {
+        id: shapeIdCounter++,
+        type,
+        wx, wy,
+        wz: z,
+        size,
+        innerR,
+        hue,
+        color,
+        rotationSpeed,
+        spinAxis,
+        rotation: Math.random() * Math.PI * 2,            // random start angle
+        passed: false,
+        missed: false,
+      };
+    }
+
+    // ─── Duck Factory ─────────────────────────────────────────────────────────────
+    function createDuck() {
+      return {
+        x: 0,
+        vx: 0,
+        momentum: MOMENTUM_START,
+        score: 0,
+        misses: 0,
+      };
+    }
+
+    // ─── Difficulty Scaler ────────────────────────────────────────────────────────
+    function updateDifficulty(dt) {
+      difficultyTimer += dt;
+      // Every 30 seconds, speed increases slightly and intervals tighten
+      if (difficultyTimer >= 30) {
+        difficultyTimer = 0;
+        currentSpeed = Math.min(currentSpeed + 90, 2200);
+        currentInterval = Math.max(currentInterval - 0.15, 1.0);
+      }
+    }
+
+    // ─── Particle System (stub — scaffold for future improvements) ────────────────
+    function spawnParticles(sx, sy, color, count) {
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 60 + Math.random() * 120;
+        particles.push({
+          x: sx, y: sy,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 1.0,
+          decay: 1.2 + Math.random() * 0.8,
+          r: 2 + Math.random() * 3,
+          color,
+        });
+      }
+    }
+
+    function updateParticles(dt) {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.vy += 120 * dt; // gravity
+        p.life -= p.decay * dt;
+        if (p.life <= 0) particles.splice(i, 1);
+      }
+    }
+
+    function drawParticles() {
+      for (const p of particles) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    // ─── Audio stub ───────────────────────────────────────────────────────────────
+    const Audio = {
+      // Stub — future improvement will wire Web Audio API here
+      play(sound) { /* stub */ },
+    };
+
+    // ─── Animation state ──────────────────────────────────────────────────────────
+    const Anim = {
+      wingPhase: 0,   // drives flap vertical oscillation
+      bobPhase: 0,    // drives gentle body bob
+      bankAngle: 0,   // smoothed lateral tilt (damped from duck.vx)
+      update(dt) {
+        // Flap rate scales with momentum — faster flying = faster flapping
+        const flapRate = duck ? 2.5 + duck.momentum * 2.5 : 4;
+        this.wingPhase = (this.wingPhase + dt * flapRate) % (Math.PI * 2);
+        this.bobPhase  = (this.bobPhase  + dt * 1.2)     % (Math.PI * 2);
+        // Bank damps toward duck.vx with a weighted spring so it feels weighty
+        const targetBank = duck ? duck.vx * 0.32 : 0;
+        this.bankAngle += (targetBank - this.bankAngle) * Math.min(dt * 4.5, 1);
+      },
+    };
+
+    // ─── Input ────────────────────────────────────────────────────────────────────
+    function setupInput() {
+      window.addEventListener('keydown', e => {
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
+        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') input.left = true;
+        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') input.right = true;
+      });
+      window.addEventListener('keyup', e => {
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
+        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') input.left = false;
+        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') input.right = false;
+      });
+
+      canvas.addEventListener('pointerdown', e => {
+        const rect = canvas.getBoundingClientRect();
+        const cx = (e.clientX - rect.left) / scale;
+        if (cx < LOGICAL_W / 2) {
+          input.pointerLeft = true;
+        } else {
+          input.pointerRight = true;
+        }
+      });
+      canvas.addEventListener('pointermove', e => {
+        if (e.buttons === 0) return;
+        const rect = canvas.getBoundingClientRect();
+        const cx = (e.clientX - rect.left) / scale;
+        input.pointerLeft = cx < LOGICAL_W / 2;
+        input.pointerRight = cx >= LOGICAL_W / 2;
+      });
+      canvas.addEventListener('pointerup', () => {
+        input.pointerLeft = false;
+        input.pointerRight = false;
+      });
+      canvas.addEventListener('pointercancel', () => {
+        input.pointerLeft = false;
+        input.pointerRight = false;
+      });
+    }
+
+    function isLeft() { return input.left || input.pointerLeft; }
+    function isRight() { return input.right || input.pointerRight; }
+
+    // ─── Update ───────────────────────────────────────────────────────────────────
+    function updateDuck(dt) {
+      let ax = 0;
+      if (isLeft()) ax -= DUCK_ACCEL;
+      if (isRight()) ax += DUCK_ACCEL;
+
+      // Friction
+      const friction = DUCK_FRICTION * Math.sign(duck.vx) * dt;
+      if (Math.abs(friction) > Math.abs(duck.vx)) {
+        duck.vx = 0;
+      } else {
+        duck.vx -= friction;
+      }
+
+      duck.vx += ax * dt;
+      duck.x = Math.max(DUCK_X_MIN, Math.min(DUCK_X_MAX, duck.x + duck.vx * dt));
+
+      // Momentum drains passively
+      duck.momentum = Math.max(
+        MOMENTUM_MIN,
+        Math.min(MOMENTUM_MAX, duck.momentum + MOMENTUM_DRAIN * dt)
+      );
+    }
+
+    function updateShapes(dt) {
+      const speed = currentSpeed * (0.5 + duck.momentum * 0.5); // speed tied to momentum
+      for (let i = shapes.length - 1; i >= 0; i--) {
+        const shape = shapes[i];
+        shape.wz -= speed * dt;
+        shape.rotation += shape.rotationSpeed * dt;        // advance spin
+
+        // Pass check: duck is within the inner opening when the shape passes
+        if (!shape.passed && !shape.missed && shape.wz <= PASS_Z) {
+          const dx = duck.x - shape.wx;
+          const dy = 0 - shape.wy; // duck is always at world y=0
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist <= shape.innerR) {
+            // Good pass!
+            shape.passed = true;
+            duck.score += 10;
+            duck.momentum = Math.min(MOMENTUM_MAX, duck.momentum + MOMENTUM_PASS);
+            const { sx, sy } = project(shape.wx, shape.wy, PASS_Z);
+            spawnParticles(sx, sy, shape.color, 18);
+            Audio.play('pass');
+          } else {
+            // Miss
+            shape.missed = true;
+            duck.misses++;
+            duck.momentum = Math.max(MOMENTUM_MIN, duck.momentum + MOMENTUM_MISS);
+            const { sx, sy } = project(shape.wx, shape.wy, PASS_Z);
+            spawnParticles(sx, sy, '#ef4444', 10);
+            Audio.play('miss');
+          }
+        }
+
+        if (shape.wz <= -50) shapes.splice(i, 1);
+      }
+    }
+
+    function spawnShapeIfNeeded(dt) {
+      spawnTimer -= dt;
+      if (spawnTimer <= 0) {
+        shapes.push(createShape(SPAWN_Z));
+        spawnTimer = currentInterval * (0.8 + Math.random() * 0.4);
+      }
+    }
+
+    function checkGameOver() {
+      if (duck.momentum <= MOMENTUM_MIN) {
+        endGame();
+      }
+    }
+
+    // ─── Draw ─────────────────────────────────────────────────────────────────────
+    function drawSky() {
+      if (!cachedSkyGrad) {
+        cachedSkyGrad = ctx.createLinearGradient(0, 0, 0, VP_Y);
+        cachedSkyGrad.addColorStop(0, '#0d2137');   // deep blue zenith
+        cachedSkyGrad.addColorStop(0.55, '#1a4a7a'); // mid sky
+        cachedSkyGrad.addColorStop(1, HORIZON_COLOR); // horizon
+      }
+      ctx.fillStyle = cachedSkyGrad;
+      ctx.fillRect(0, 0, LOGICAL_W, VP_Y);
+
+      // Banded clouds drifting right-to-left (3 altitudes, different speeds)
+      const t = performance.now() / 1000;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, 0, LOGICAL_W, VP_Y - 2);
+      ctx.clip();
+      const bands = [
+        { y: VP_Y * 0.18, h: 16, speed: 13, op: 0.11, count: 4 },
+        { y: VP_Y * 0.44, h: 11, speed: 20, op: 0.08, count: 5 },
+        { y: VP_Y * 0.68, h: 7,  speed: 28, op: 0.06, count: 6 },
+      ];
+      for (const band of bands) {
+        ctx.fillStyle = `rgba(255,255,255,${band.op})`;
+        for (let i = 0; i < band.count; i++) {
+          const seedX = (i * 137 + i * 23) % (LOGICAL_W + 200);
+          const x = ((seedX - t * band.speed) % (LOGICAL_W + 200) + LOGICAL_W + 200) % (LOGICAL_W + 200) - 100;
+          ctx.beginPath();
+          ctx.ellipse(x, band.y, 65 + (i * 19 % 38), band.h, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      ctx.restore();
+    }
+
+    function drawGround() {
+      if (!cachedGroundGrad) {
+        cachedGroundGrad = ctx.createLinearGradient(0, VP_Y, 0, LOGICAL_H);
+        cachedGroundGrad.addColorStop(0, '#7aaa60');  // warm horizon green
+        cachedGroundGrad.addColorStop(0.28, '#4a7c3f'); // mid green
+        cachedGroundGrad.addColorStop(1, '#182810');    // dark base
+      }
+      ctx.fillStyle = cachedGroundGrad;
+      ctx.fillRect(0, VP_Y, LOGICAL_W, LOGICAL_H - VP_Y);
+
+      // Perspective grid: camera is 0.9 world units above the ground plane (wy = -0.9).
+      // Ground at wy=-0.9 projects to: sy = VP_Y + FOCAL_LEN/wz * 0.9
+      ctx.save();
+      ctx.strokeStyle = 'rgba(0,0,0,0.18)';
+      ctx.lineWidth = 0.7;
+
+      // Horizontal lines at increasing depth intervals (denser near horizon)
+      for (const wz of [8, 11, 16, 24, 36, 58, 95, 160, 280]) {
+        const sy = VP_Y + (FOCAL_LEN / wz) * 0.9;
+        if (sy > LOGICAL_H) break;
+        ctx.beginPath();
+        ctx.moveTo(0, sy);
+        ctx.lineTo(LOGICAL_W, sy);
+        ctx.stroke();
+      }
+
+      // Vertical lines converging to vanishing point (VP_X, VP_Y)
+      const duckX = duck ? duck.x : 0;
+      for (const wx of [-3, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 3]) {
+        const nearZ = 8;
+        const nearSx = VP_X + (wx - duckX) * (FOCAL_LEN / nearZ);
+        const nearSy = VP_Y + (FOCAL_LEN / nearZ) * 0.9;
+        ctx.beginPath();
+        ctx.moveTo(Math.max(-80, Math.min(LOGICAL_W + 80, nearSx)), Math.min(nearSy, LOGICAL_H));
+        ctx.lineTo(VP_X, VP_Y);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // Returns fog interpolation factor: 0 = fully clear (z≤40), 1 = fully fogged (z≥120).
+    function fogFactor(wz) {
+      return Math.max(0, Math.min(1, (wz - 40) / 80));
+    }
+
+    // Returns outer and inner polygon vertices in local XY space with spin applied.
+    function getShapeVerts(shape) {
+      const r = shape.size;
+      const ratio = shape.innerR / r;
+      const rot = shape.rotation;
+
+      let N, offset;
+      if (shape.type === 'ring') {
+        N = 32; offset = 0;
+      } else if (shape.type === 'triangle') {
+        N = 3; offset = -Math.PI / 2;  // point at top
+      } else {                          // square
+        N = 4; offset = -Math.PI / 4;  // flat sides
+      }
+
+      const rawOuter = [];
+      for (let i = 0; i < N; i++) {
+        const a = offset + (i / N) * Math.PI * 2;
+        rawOuter.push([Math.cos(a) * r, Math.sin(a) * r]);
+      }
+      const rawInner = rawOuter.map(([lx, ly]) => [lx * ratio, ly * ratio]);
+
+      const spin = ([lx, ly]) => {
+        if (shape.spinAxis === 'z') {
+          const c = Math.cos(rot), s = Math.sin(rot);
+          return [lx * c - ly * s, lx * s + ly * c];
+        }
+        return [lx * Math.cos(rot), ly]; // y-axis barrel roll: squish X
+      };
+
+      return { outer: rawOuter.map(spin), inner: rawInner.map(spin) };
+    }
+
+    function drawShape(shape) {
+      if (shape.wz <= 0) return;
+
+      const fogT = fogFactor(shape.wz);
+      if (fogT >= 1) return;
+
+      // Early-out if projected size is too small to see
+      const { sx: cx, sy: cy, scale: sc } = project(shape.wx, shape.wy, shape.wz);
+      if (shape.size * sc < 1) return;
+
+      const { outer, inner } = getShapeVerts(shape);
+
+      // Project local vertices to screen space
+      const projPt = ([lx, ly]) => {
+        const { sx, sy } = project(shape.wx + lx, shape.wy + ly, shape.wz);
+        return [sx, sy];
+      };
+      const outerScreen = outer.map(projPt);
+      const innerScreen = inner.map(projPt);
+
+      // Bounding Y range for top-light gradient
+      const minY = Math.min(...outerScreen.map(p => p[1]));
+      const maxY = Math.max(...outerScreen.map(p => p[1]));
+
+      // Passed/missed tint: green, red, or original hue
+      const h = shape.passed ? 145 : shape.missed ? 0 : shape.hue;
+      const alpha = 1 - fogT * 0.75;
+
+      ctx.save();
+
+      // Gradient fill: lighter top (fake top-down light) → darker bottom
+      const grad = ctx.createLinearGradient(0, minY, 0, maxY);
+      grad.addColorStop(0, `hsl(${h}, 80%, 68%)`);
+      grad.addColorStop(1, `hsl(${h}, 80%, 28%)`);
+
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = grad;
+
+      // Outer polygon as first subpath, inner polygon as second (hole via evenodd)
+      ctx.beginPath();
+      ctx.moveTo(...outerScreen[0]);
+      for (let i = 1; i < outerScreen.length; i++) ctx.lineTo(...outerScreen[i]);
+      ctx.closePath();
+      ctx.moveTo(...innerScreen[0]);
+      for (let i = 1; i < innerScreen.length; i++) ctx.lineTo(...innerScreen[i]);
+      ctx.closePath();
+      ctx.fill('evenodd');
+
+      // Specular highlight: thin bright stroke clipped to the upper half of the shape
+      const midY = (minY + maxY) / 2;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, -10, LOGICAL_W, midY + 10);
+      ctx.clip();
+      ctx.globalAlpha = alpha * 0.50;
+      ctx.strokeStyle = `hsl(${h}, 55%, 88%)`;
+      ctx.lineWidth = Math.max(0.8, sc * 0.08);
+      ctx.beginPath();
+      ctx.moveTo(...outerScreen[0]);
+      for (let i = 1; i < outerScreen.length; i++) ctx.lineTo(...outerScreen[i]);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.restore();
+    }
+
+    function drawShapes() {
+      // Sort back-to-front (painter's algorithm) so near shapes occlude far ones
+      const sorted = [...shapes].sort((a, b) => b.wz - a.wz);
+      for (const shape of sorted) drawShape(shape);
+    }
+
+    function drawDuckPOV() {
+      const W = LOGICAL_W;
+      const H = LOGICAL_H;
+
+      // Idle animations
+      const flap = Math.sin(Anim.wingPhase) * 20;    // vertical wing-tip oscillation
+      const bob  = Math.sin(Anim.bobPhase)  * 5;     // gentle body bob
+      const bank = Anim.bankAngle;                    // lateral tilt (+right, -left)
+
+      // Wing anchor line near the bottom edge of canvas
+      const baseY = H - 18 + bob;
+
+      // Left wing: anchor at bottom-left, tip in lower-left quadrant
+      const lAnchorX = W * 0.04;
+      const lAnchorY = baseY;
+      const lShoulderX = W * 0.20;
+      const lShoulderY = baseY - 65 - bank * 28;
+      const lTipX = W * 0.37;
+      const lTipY = baseY - 118 + flap - bank * 46;
+
+      // Right wing: mirror
+      const rAnchorX = W * 0.96;
+      const rAnchorY = baseY;
+      const rShoulderX = W * 0.80;
+      const rShoulderY = baseY - 65 + bank * 28;
+      const rTipX = W * 0.63;
+      const rTipY = baseY - 118 + flap + bank * 46;
+
+      ctx.save();
+
+      // ── Motion blur streaks ──────────────────────────────────────────────────────
+      // Faint ellipse trail behind the banking-down wing tip
+      const bankMag = Math.abs(bank);
+      if (bankMag > 0.25) {
+        const blurAlpha = Math.min((bankMag - 0.25) / 0.6, 1) * 0.28;
+        ctx.globalAlpha = blurAlpha;
+        ctx.fillStyle = '#92400e';
+        if (bank > 0) {
+          // Banking right → right tip dips; blur trails behind it
+          ctx.beginPath();
+          ctx.ellipse(rTipX + 18, rTipY - 6, 30, 9, 0.25, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          // Banking left → left tip dips
+          ctx.beginPath();
+          ctx.ellipse(lTipX - 18, lTipY - 6, 30, 9, -0.25, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      // ── Left wing ────────────────────────────────────────────────────────────────
+      // Primary feathers (outermost layer)
+      const lgPri = ctx.createLinearGradient(lAnchorX, lAnchorY, lTipX, lTipY);
+      lgPri.addColorStop(0, '#3d1505');
+      lgPri.addColorStop(0.55, '#78350f');
+      lgPri.addColorStop(1, '#a35215');
+      ctx.fillStyle = lgPri;
+      ctx.beginPath();
+      ctx.moveTo(lAnchorX, lAnchorY);
+      ctx.bezierCurveTo(lAnchorX + 18, lAnchorY - 38, lShoulderX - 18, lShoulderY - 12, lTipX, lTipY);
+      ctx.bezierCurveTo(lTipX + 28, lTipY + 22, lShoulderX + 12, lShoulderY + 28, lAnchorX + 32, lAnchorY + 6);
+      ctx.closePath();
+      ctx.fill();
+
+      // Secondary feathers (inner layer, slightly lighter)
+      const lgSec = ctx.createLinearGradient(lAnchorX + 32, lAnchorY, lTipX - 18, lTipY + 12);
+      lgSec.addColorStop(0, '#5c2108');
+      lgSec.addColorStop(1, '#c2620a');
+      ctx.fillStyle = lgSec;
+      ctx.globalAlpha = 0.82;
+      ctx.beginPath();
+      ctx.moveTo(lAnchorX + 32, lAnchorY - 4);
+      ctx.bezierCurveTo(lAnchorX + 52, lAnchorY - 32, lShoulderX + 2, lShoulderY - 4, lTipX - 14, lTipY + 9);
+      ctx.bezierCurveTo(lTipX + 10, lTipY + 24, lShoulderX + 22, lShoulderY + 20, lAnchorX + 58, lAnchorY + 3);
+      ctx.closePath();
+      ctx.fill();
+
+      // Covert feathers (short inner rounded shapes for texture)
+      ctx.fillStyle = '#d97706';
+      ctx.globalAlpha = 0.50;
+      ctx.beginPath();
+      ctx.moveTo(lAnchorX + 58, lAnchorY - 6);
+      ctx.bezierCurveTo(lAnchorX + 82, lAnchorY - 38, lShoulderX + 8, lShoulderY + 2, lShoulderX + 28, lShoulderY + 14);
+      ctx.bezierCurveTo(lShoulderX + 18, lShoulderY + 28, lAnchorX + 84, lAnchorY + 10, lAnchorX + 58, lAnchorY - 6);
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // ── Right wing (mirrored geometry) ───────────────────────────────────────────
+      const rgPri = ctx.createLinearGradient(rAnchorX, rAnchorY, rTipX, rTipY);
+      rgPri.addColorStop(0, '#3d1505');
+      rgPri.addColorStop(0.55, '#78350f');
+      rgPri.addColorStop(1, '#a35215');
+      ctx.fillStyle = rgPri;
+      ctx.beginPath();
+      ctx.moveTo(rAnchorX, rAnchorY);
+      ctx.bezierCurveTo(rAnchorX - 18, rAnchorY - 38, rShoulderX + 18, rShoulderY - 12, rTipX, rTipY);
+      ctx.bezierCurveTo(rTipX - 28, rTipY + 22, rShoulderX - 12, rShoulderY + 28, rAnchorX - 32, rAnchorY + 6);
+      ctx.closePath();
+      ctx.fill();
+
+      const rgSec = ctx.createLinearGradient(rAnchorX - 32, rAnchorY, rTipX + 18, rTipY + 12);
+      rgSec.addColorStop(0, '#5c2108');
+      rgSec.addColorStop(1, '#c2620a');
+      ctx.fillStyle = rgSec;
+      ctx.globalAlpha = 0.82;
+      ctx.beginPath();
+      ctx.moveTo(rAnchorX - 32, rAnchorY - 4);
+      ctx.bezierCurveTo(rAnchorX - 52, rAnchorY - 32, rShoulderX - 2, rShoulderY - 4, rTipX + 14, rTipY + 9);
+      ctx.bezierCurveTo(rTipX - 10, rTipY + 24, rShoulderX - 22, rShoulderY + 20, rAnchorX - 58, rAnchorY + 3);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#d97706';
+      ctx.globalAlpha = 0.50;
+      ctx.beginPath();
+      ctx.moveTo(rAnchorX - 58, rAnchorY - 6);
+      ctx.bezierCurveTo(rAnchorX - 82, rAnchorY - 38, rShoulderX - 8, rShoulderY + 2, rShoulderX - 28, rShoulderY + 14);
+      ctx.bezierCurveTo(rShoulderX - 18, rShoulderY + 28, rAnchorX - 84, rAnchorY + 10, rAnchorX - 58, rAnchorY - 6);
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // ── Beak ─────────────────────────────────────────────────────────────────────
+      // Subtle off-yellow hint peeking from the very bottom edge
+      const bkX = W / 2;
+      const bkY = H - 12 + bob;
+      const bkGrad = ctx.createLinearGradient(bkX, bkY - 26, bkX, bkY + 4);
+      bkGrad.addColorStop(0, '#e8c84a');
+      bkGrad.addColorStop(1, '#c49a10');
+      ctx.fillStyle = bkGrad;
+      ctx.globalAlpha = 0.80;
+      ctx.beginPath();
+      ctx.moveTo(bkX, bkY - 26);
+      ctx.bezierCurveTo(bkX - 9, bkY - 16, bkX - 13, bkY - 5, bkX - 8, bkY + 3);
+      ctx.bezierCurveTo(bkX - 2, bkY + 7, bkX + 2, bkY + 7, bkX + 8, bkY + 3);
+      ctx.bezierCurveTo(bkX + 13, bkY - 5, bkX + 9, bkY - 16, bkX, bkY - 26);
+      ctx.fill();
+      // Upper/lower beak split line
+      ctx.globalAlpha = 0.45;
+      ctx.strokeStyle = '#9a6e06';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(bkX - 12, bkY - 8);
+      ctx.bezierCurveTo(bkX - 4, bkY - 3, bkX + 4, bkY - 3, bkX + 12, bkY - 8);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawHUD() {
+      // Score
+      ctx.save();
+      ctx.fillStyle = '#fbbf24';
+      ctx.font = 'bold 22px system-ui, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('Score: ' + duck.score, 14, 32);
+
+      // Momentum bar
+      const barW = 120;
+      const barH = 10;
+      const bx = LOGICAL_W - barW - 14;
+      const by = 18;
+
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.beginPath();
+      ctx.roundRect(bx, by, barW, barH, 4);
+      ctx.fill();
+
+      const pct = duck.momentum / MOMENTUM_MAX;
+      const barColor = pct > 0.6 ? '#34d399' : pct > 0.3 ? '#fbbf24' : '#ef4444';
+      ctx.fillStyle = barColor;
+      ctx.beginPath();
+      ctx.roundRect(bx, by, barW * pct, barH, 4);
+      ctx.fill();
+
+      ctx.fillStyle = '#f9fafb';
+      ctx.font = '11px system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('Momentum', bx - 6, by + 9);
+
+      // Misses
+      ctx.textAlign = 'left';
+      ctx.font = '13px system-ui, sans-serif';
+      ctx.fillStyle = '#fca5a5';
+      ctx.fillText('Misses: ' + duck.misses, 14, 52);
+
+      ctx.restore();
+    }
+
+    function drawInputHints() {
+      // Mobile tap zones (subtle)
+      ctx.save();
+      ctx.globalAlpha = isLeft() ? 0.12 : 0.04;
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, LOGICAL_W / 2, LOGICAL_H);
+
+      ctx.globalAlpha = isRight() ? 0.12 : 0.04;
+      ctx.fillRect(LOGICAL_W / 2, 0, LOGICAL_W / 2, LOGICAL_H);
+      ctx.restore();
+    }
+
+    // ─── Game loop ────────────────────────────────────────────────────────────────
+    function update(ts) {
+      const dt = Math.min((ts - lastTime) / 1000, 0.1);
+      lastTime = ts;
+
+      if (state !== STATE.PLAYING) return;
+
+      updateDuck(dt);
+      updateShapes(dt);
+      spawnShapeIfNeeded(dt);
+      updateDifficulty(dt);
+      updateParticles(dt);
+      Anim.update(dt);
+      checkGameOver();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, LOGICAL_W, LOGICAL_H);
+      drawSky();
+      drawGround();
+      drawShapes();
+      drawParticles();
+      drawDuckPOV();    // screen-space last, after all world content
+      drawInputHints();
+      if (state === STATE.PLAYING) drawHUD();
+    }
+
+    function loop(ts) {
+      update(ts);
+      draw();
+      animId = requestAnimationFrame(loop);
+    }
+
+    // ─── Game lifecycle ───────────────────────────────────────────────────────────
+    function startGame() {
+      duck = createDuck();
+      shapes = [];
+      particles = [];
+      spawnTimer = 0.8;
+      difficultyTimer = 0;
+      currentSpeed = BASE_SPEED;
+      currentInterval = SPAWN_INTERVAL;
+      scoreSubmitted = false;
+      state = STATE.PLAYING;
+      document.getElementById('overlay').classList.add('hidden');
+      lastTime = performance.now();
+      if (animId) cancelAnimationFrame(animId);
+      animId = requestAnimationFrame(loop);
+    }
+
+    function endGame() {
+      state = STATE.GAMEOVER;
+      showGameOver();
+
+      if (!scoreSubmitted && duck.score > 0) {
+        scoreSubmitted = true;
+        if (window.voaLeaderboard) {
+          window.voaLeaderboard.submit(duck.score);
+        }
+      }
+    }
+
+    function showGameOver() {
+      const overlay = document.getElementById('overlay');
+      overlay.innerHTML = `
+        <h1>Game Over</h1>
+        <p class="score-display">Score: ${duck.score}</p>
+        <p>Misses: ${duck.misses}<br>You ran out of momentum!</p>
+        <button id="start-btn">Fly Again</button>
+      `;
+      overlay.classList.remove('hidden');
+      document.getElementById('start-btn').addEventListener('click', startGame);
+    }
+
+    // ─── Boot ─────────────────────────────────────────────────────────────────────
+    setupInput();
+    document.getElementById('start-btn').addEventListener('click', startGame);
+
+    // Idle render loop while on menu/gameover (so background animates)
+    function idleDraw() {
+      if (state !== STATE.PLAYING) {
+        ctx.clearRect(0, 0, LOGICAL_W, LOGICAL_H);
+        drawSky();   // reuse the shared sky (includes animated clouds)
+        drawGround();
+      }
+      if (state !== STATE.PLAYING) requestAnimationFrame(idleDraw);
+    }
+
+    requestAnimationFrame(idleDraw);
+    </script>
+  </body>
+</html>

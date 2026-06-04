@@ -20,5 +20,6 @@
     "totalTokensOut": 4800,
     "runId": "run-20260305T233000Z-1cf987",
     "notes": "Original creation - classic Snake game with modern polish, touch support, and progressive difficulty."
-  }
+  },
+  "leaderboard": false
 }

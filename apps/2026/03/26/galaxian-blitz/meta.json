@@ -59,5 +59,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260326T111937Z-a4f8c2",
     "notes": "Built from approved community suggestion issue #216. Galaxian-style shooter with formation-breaking dive-bomb AI, 3 distinct enemy types (scout/bomber/elite), 3 power-up types (rapid fire/spread shot/shield), particle explosion system, and wave-based difficulty scaling. Differentiated from existing Space Invaders Clone via dynamic dive-bomb behavior and power-up system."
-  }
+  },
+  "leaderboard": false
 }

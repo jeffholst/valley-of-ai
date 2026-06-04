@@ -1,0 +1,236 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a1020"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+
+    <!-- Lane gradients -->
+    <linearGradient id="lane0Grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.08"/>
+      <stop offset="60%" stop-color="#1d4ed8" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#1d4ed8" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="lane1Grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.2"/>
+      <stop offset="60%" stop-color="#7c3aed" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="lane2Grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#be185d" stop-opacity="0.08"/>
+      <stop offset="60%" stop-color="#be185d" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#be185d" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="lane3Grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#047857" stop-opacity="0.08"/>
+      <stop offset="60%" stop-color="#047857" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#047857" stop-opacity="0.05"/>
+    </linearGradient>
+
+    <!-- Title gradient -->
+    <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+
+    <!-- Score glow filter -->
+    <filter id="scoreGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Title glow filter -->
+    <filter id="titleGlow" x="-20%" y="-50%" width="140%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Bartender panel glow -->
+    <filter id="panelGlow" x="-10%" y="-5%" width="120%" height="110%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Customer glow -->
+    <filter id="drinkGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Active lane radial -->
+    <radialGradient id="activeLaneGlow" cx="0.85" cy="0.5" r="0.3">
+      <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Combo glow -->
+    <radialGradient id="comboGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#34d399" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#34d399" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)"/>
+
+  <!-- Subtle grid texture -->
+  <g stroke="rgba(255,255,255,0.03)" stroke-width="1">
+    <line x1="0" y1="75" x2="800" y2="75"/>
+    <line x1="0" y1="150" x2="800" y2="150"/>
+    <line x1="0" y1="225" x2="800" y2="225"/>
+    <line x1="0" y1="300" x2="800" y2="300"/>
+    <line x1="0" y1="375" x2="800" y2="375"/>
+  </g>
+
+  <!-- HUD area background -->
+  <rect x="0" y="0" width="800" height="48" fill="rgba(0,0,0,0.3)"/>
+
+  <!-- 4 lanes -->
+  <!-- Lane 0 (y=48..160) -->
+  <rect x="0" y="48" width="800" height="112" fill="url(#lane0Grad)"/>
+  <!-- Lane 1 (y=160..272) - active, has glow -->
+  <rect x="0" y="160" width="800" height="112" fill="url(#lane1Grad)"/>
+  <rect x="0" y="160" width="800" height="112" fill="url(#activeLaneGlow)"/>
+  <!-- Lane 2 (y=272..384) -->
+  <rect x="0" y="272" width="800" height="112" fill="url(#lane2Grad)"/>
+  <!-- Lane 3 (y=384..450) -->
+  <rect x="0" y="384" width="800" height="66" fill="url(#lane3Grad)"/>
+
+  <!-- Lane dividers (dashed lines) -->
+  <g stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="8,10">
+    <line x1="0" y1="160" x2="800" y2="160"/>
+    <line x1="0" y1="272" x2="800" y2="272"/>
+    <line x1="0" y1="384" x2="800" y2="384"/>
+  </g>
+
+  <!-- Bar counters (horizontal lines down each lane center) -->
+  <!-- Lane 0 center y=104 -->
+  <line x1="40" y1="104" x2="730" y2="104" stroke="#1d4ed8" stroke-width="3" stroke-opacity="0.4"/>
+  <!-- Lane 1 center y=216 -->
+  <line x1="40" y1="216" x2="730" y2="216" stroke="#7c3aed" stroke-width="3" stroke-opacity="0.5"/>
+  <!-- Lane 2 center y=328 -->
+  <line x1="40" y1="328" x2="730" y2="328" stroke="#be185d" stroke-width="3" stroke-opacity="0.4"/>
+  <!-- Lane 3 center y=417 -->
+  <line x1="40" y1="417" x2="730" y2="417" stroke="#047857" stroke-width="3" stroke-opacity="0.4"/>
+
+  <!-- Bartender panel -->
+  <rect x="710" y="56" width="72" height="388" rx="10" fill="#1e293b" filter="url(#panelGlow)"/>
+  <rect x="710" y="56" width="72" height="388" rx="10" fill="none" stroke="#7c3aed" stroke-width="2" stroke-opacity="0.6"/>
+
+  <!-- Active lane indicator on bartender -->
+  <rect x="708" y="168" width="76" height="96" rx="6" fill="#7c3aed" fill-opacity="0.25"/>
+
+  <!-- Bartender emoji labels (beer mugs) -->
+  <text x="746" y="116" text-anchor="middle" dominant-baseline="middle" font-size="30" font-family="serif">🍺</text>
+  <text x="746" y="228" text-anchor="middle" dominant-baseline="middle" font-size="30" font-family="serif">🍺</text>
+  <text x="746" y="340" text-anchor="middle" dominant-baseline="middle" font-size="30" font-family="serif">🍺</text>
+  <text x="746" y="426" text-anchor="middle" dominant-baseline="middle" font-size="28" font-family="serif">🍺</text>
+
+  <!-- Customers (walking right in lanes) -->
+  <!-- Lane 0: customer at x=480 -->
+  <text x="480" y="107" text-anchor="middle" dominant-baseline="middle" font-size="32" font-family="serif">👨</text>
+  <!-- Lane 0: another customer at x=280 -->
+  <text x="280" y="107" text-anchor="middle" dominant-baseline="middle" font-size="28" font-family="serif">👩</text>
+
+  <!-- Lane 1: customer at x=380 (just got served - retreating) -->
+  <text x="380" y="219" text-anchor="middle" dominant-baseline="middle" font-size="32" font-family="serif">🧔</text>
+
+  <!-- Lane 2: customer at x=520 -->
+  <text x="520" y="331" text-anchor="middle" dominant-baseline="middle" font-size="30" font-family="serif">👱</text>
+  <!-- Lane 2: mug returning -->
+  <text x="200" y="331" text-anchor="middle" dominant-baseline="middle" font-size="28" font-family="serif">🪣</text>
+
+  <!-- Lane 3: customer at x=340 -->
+  <text x="340" y="420" text-anchor="middle" dominant-baseline="middle" font-size="28" font-family="serif">👨</text>
+
+  <!-- Drinks flying left toward customers -->
+  <!-- Lane 0 drink at x=600 -->
+  <g filter="url(#drinkGlow)">
+    <circle cx="600" cy="104" r="16" fill="#fbbf24" fill-opacity="0.35"/>
+    <text x="600" y="107" text-anchor="middle" dominant-baseline="middle" font-size="26" font-family="serif">🥤</text>
+  </g>
+
+  <!-- Lane 1 drink at x=500 (mid-lane) -->
+  <g filter="url(#drinkGlow)">
+    <circle cx="500" cy="216" r="16" fill="#c4b5fd" fill-opacity="0.4"/>
+    <text x="500" y="219" text-anchor="middle" dominant-baseline="middle" font-size="26" font-family="serif">🥤</text>
+  </g>
+
+  <!-- Lane 3 drink at x=450 -->
+  <g filter="url(#drinkGlow)">
+    <circle cx="450" cy="417" r="14" fill="#6ee7b7" fill-opacity="0.35"/>
+    <text x="450" y="420" text-anchor="middle" dominant-baseline="middle" font-size="24" font-family="serif">🥤</text>
+  </g>
+
+  <!-- Score particles burst (lane 1 served) -->
+  <circle cx="378" cy="185" r="5" fill="#34d399" fill-opacity="0.9"/>
+  <circle cx="355" cy="200" r="4" fill="#34d399" fill-opacity="0.7"/>
+  <circle cx="400" cy="192" r="4" fill="#fbbf24" fill-opacity="0.8"/>
+  <circle cx="365" cy="170" r="3" fill="#34d399" fill-opacity="0.6"/>
+  <circle cx="395" cy="172" r="3" fill="#fbbf24" fill-opacity="0.7"/>
+
+  <!-- Combo display floating above lane 1 customer -->
+  <rect x="310" y="180" width="88" height="28" rx="6" fill="rgba(0,0,0,0.7)" stroke="#34d399" stroke-width="1.5"/>
+  <text x="354" y="197" text-anchor="middle" dominant-baseline="middle"
+        font-family="system-ui, sans-serif" font-size="14" font-weight="900" fill="#34d399"
+        filter="url(#scoreGlow)">x3 COMBO!</text>
+
+  <!-- Score float +32 -->
+  <text x="380" y="162" text-anchor="middle" dominant-baseline="middle"
+        font-family="system-ui, sans-serif" font-size="18" font-weight="900" fill="#fbbf24"
+        filter="url(#scoreGlow)">+32</text>
+
+  <!-- HUD -->
+  <!-- Score label + value -->
+  <text x="80" y="16" text-anchor="middle" dominant-baseline="middle"
+        font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="rgba(249,250,251,0.55)"
+        letter-spacing="2">SCORE</text>
+  <text x="80" y="34" text-anchor="middle" dominant-baseline="middle"
+        font-family="system-ui, sans-serif" font-size="22" font-weight="900" fill="#f59e0b"
+        filter="url(#scoreGlow)">1,240</text>
+
+  <!-- Wave -->
+  <text x="400" y="16" text-anchor="middle" dominant-baseline="middle"
+        font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="rgba(249,250,251,0.55)"
+        letter-spacing="2">WAVE</text>
+  <text x="400" y="34" text-anchor="middle" dominant-baseline="middle"
+        font-family="system-ui, sans-serif" font-size="22" font-weight="900" fill="#a78bfa"
+        filter="url(#scoreGlow)">3</text>
+
+  <!-- Lives -->
+  <text x="680" y="16" text-anchor="middle" dominant-baseline="middle"
+        font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="rgba(249,250,251,0.55)"
+        letter-spacing="2">LIVES</text>
+  <text x="680" y="34" text-anchor="middle" dominant-baseline="middle"
+        font-family="system-ui, sans-serif" font-size="18" font-weight="900" fill="#ef4444">❤️❤️❤️</text>
+
+  <!-- Edge glow frame -->
+  <rect x="0" y="0" width="800" height="450"
+        fill="none" stroke="#7c3aed" stroke-width="4" stroke-opacity="0.3"
+        rx="0"/>
+
+  <!-- Title text -->
+  <text x="400" y="448" text-anchor="middle" dominant-baseline="auto"
+        font-family="system-ui, sans-serif" font-size="0" fill="url(#titleGrad)">hidden</text>
+
+  <!-- Title overlay (bottom strip) -->
+  <rect x="0" y="432" width="800" height="18" fill="rgba(0,0,0,0.5)"/>
+
+  <!-- App title at bottom -->
+  <text x="400" y="443" text-anchor="middle" dominant-baseline="middle"
+        font-family="system-ui, sans-serif" font-size="13" font-weight="900"
+        fill="url(#titleGrad)" filter="url(#titleGlow)" letter-spacing="3">🍺 TAPPER RUSH</text>
+</svg>

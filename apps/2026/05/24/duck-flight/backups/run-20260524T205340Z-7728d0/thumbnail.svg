@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <!-- Sky gradient -->
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d2137"/>
+      <stop offset="55%" stop-color="#1a4a7a"/>
+      <stop offset="100%" stop-color="#8ec6e0"/>
+    </linearGradient>
+    <!-- Ground gradient -->
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7aaa60"/>
+      <stop offset="28%" stop-color="#4a7c3f"/>
+      <stop offset="100%" stop-color="#182810"/>
+    </linearGradient>
+    <!-- Left wing primary feathers -->
+    <linearGradient id="lwPri" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3d1505"/>
+      <stop offset="55%" stop-color="#78350f"/>
+      <stop offset="100%" stop-color="#a35215"/>
+    </linearGradient>
+    <!-- Left wing secondary feathers -->
+    <linearGradient id="lwSec" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#5c2108"/>
+      <stop offset="100%" stop-color="#c2620a"/>
+    </linearGradient>
+    <!-- Right wing primary feathers -->
+    <linearGradient id="rwPri" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0%" stop-color="#3d1505"/>
+      <stop offset="55%" stop-color="#78350f"/>
+      <stop offset="100%" stop-color="#a35215"/>
+    </linearGradient>
+    <!-- Right wing secondary feathers -->
+    <linearGradient id="rwSec" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0%" stop-color="#5c2108"/>
+      <stop offset="100%" stop-color="#c2620a"/>
+    </linearGradient>
+    <!-- Beak gradient -->
+    <linearGradient id="beak" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8c84a"/>
+      <stop offset="100%" stop-color="#c49a10"/>
+    </linearGradient>
+    <!-- Ring glow filter -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Wing highlight filter -->
+    <filter id="wglow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- HUD panel -->
+    <linearGradient id="hudpanel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(0,0,0,0.65)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.4)"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect x="0" y="0" width="800" height="225" fill="url(#sky)"/>
+
+  <!-- Cloud bands -->
+  <g opacity="0.10" fill="white">
+    <ellipse cx="100" cy="44" rx="68" ry="13"/>
+    <ellipse cx="330" cy="44" rx="60" ry="13"/>
+    <ellipse cx="570" cy="44" rx="72" ry="13"/>
+    <ellipse cx="730" cy="44" rx="52" ry="13"/>
+  </g>
+  <g opacity="0.08" fill="white">
+    <ellipse cx="55"  cy="100" rx="52" ry="9"/>
+    <ellipse cx="240" cy="100" rx="65" ry="9"/>
+    <ellipse cx="460" cy="100" rx="58" ry="9"/>
+    <ellipse cx="655" cy="100" rx="70" ry="9"/>
+  </g>
+
+  <!-- Horizon -->
+  <line x1="0" y1="225" x2="800" y2="225" stroke="#8ec6e0" stroke-width="1" opacity="0.45"/>
+
+  <!-- Ground -->
+  <rect x="0" y="225" width="800" height="225" fill="url(#ground)"/>
+
+  <!-- Perspective grid -->
+  <g stroke="rgba(0,0,0,0.17)" stroke-width="0.8">
+    <line x1="0" y1="286" x2="800" y2="286"/>
+    <line x1="0" y1="310" x2="800" y2="310"/>
+    <line x1="0" y1="344" x2="800" y2="344"/>
+    <line x1="0" y1="388" x2="800" y2="388"/>
+    <line x1="0"   y1="450" x2="400" y2="225"/>
+    <line x1="135" y1="450" x2="400" y2="225"/>
+    <line x1="270" y1="450" x2="400" y2="225"/>
+    <line x1="400" y1="450" x2="400" y2="225"/>
+    <line x1="530" y1="450" x2="400" y2="225"/>
+    <line x1="665" y1="450" x2="400" y2="225"/>
+    <line x1="800" y1="450" x2="400" y2="225"/>
+  </g>
+
+  <!-- Far ring (fogged) -->
+  <circle cx="388" cy="213" r="10" fill="none" stroke="#9cc8dd" stroke-width="3" opacity="0.28"/>
+
+  <!-- Mid ring (yellow) -->
+  <g filter="url(#glow)" opacity="0.52">
+    <circle cx="435" cy="200" r="28" fill="none" stroke="#c8a830" stroke-width="7"/>
+    <circle cx="435" cy="200" r="7" fill="rgba(251,191,36,0.12)"/>
+  </g>
+
+  <!-- Near ring (green, bright) -->
+  <g filter="url(#glow)">
+    <circle cx="350" cy="178" r="68" fill="none" stroke="#34d399" stroke-width="15"/>
+    <circle cx="350" cy="178" r="68" fill="none" stroke="rgba(52,211,153,0.22)" stroke-width="28"/>
+    <circle cx="350" cy="178" r="18" fill="rgba(52,211,153,0.14)" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4 4"/>
+  </g>
+
+  <!-- Pass particles -->
+  <g opacity="0.85">
+    <circle cx="304" cy="152" r="4" fill="#34d399"/>
+    <circle cx="292" cy="167" r="3" fill="#34d399"/>
+    <circle cx="310" cy="143" r="2" fill="#fff"/>
+    <circle cx="396" cy="155" r="4" fill="#34d399"/>
+    <circle cx="408" cy="170" r="3" fill="#34d399"/>
+    <circle cx="386" cy="146" r="2" fill="#fff"/>
+    <circle cx="349" cy="117" r="4" fill="#34d399"/>
+    <circle cx="340" cy="108" r="3" fill="#6ee7b7"/>
+  </g>
+
+  <!-- Motion blur streak (banking right — right wing dipping) -->
+  <ellipse cx="622" cy="367" rx="36" ry="11" fill="#92400e" opacity="0.22" transform="rotate(8, 622, 367)"/>
+
+  <!-- ── LEFT WING (banking slightly left — left wing slightly lower) ── -->
+  <g filter="url(#wglow)">
+    <!-- Primary feathers -->
+    <path d="M 30 445  C 48 406 145 368 298 342  C 328 372 300 400 258 418  Z"
+          fill="url(#lwPri)"/>
+    <!-- Secondary feathers -->
+    <path d="M 88 445  C 108 412 190 380 308 358  C 326 380 308 400 278 414  Z"
+          fill="url(#lwSec)" opacity="0.82"/>
+    <!-- Covert feathers -->
+    <path d="M 160 445  C 175 420 234 396 280 388  C 274 408 240 426 180 440  Z"
+          fill="#d97706" opacity="0.48"/>
+  </g>
+
+  <!-- ── RIGHT WING (banking right — dipping slightly) ── -->
+  <g filter="url(#wglow)">
+    <!-- Primary feathers -->
+    <path d="M 770 445  C 752 400 650 358 502 342  C 472 376 504 408 548 422  Z"
+          fill="url(#rwPri)"/>
+    <!-- Secondary feathers -->
+    <path d="M 712 445  C 692 408 610 374 492 356  C 474 380 494 406 524 420  Z"
+          fill="url(#rwSec)" opacity="0.82"/>
+    <!-- Covert feathers -->
+    <path d="M 640 445  C 625 416 566 392 520 384  C 526 406 560 428 620 442  Z"
+          fill="#d97706" opacity="0.48"/>
+  </g>
+
+  <!-- ── BEAK ── -->
+  <path d="M 400 420  C 391 428 387 437 392 443  C 396 447 404 447 408 443  C 413 437 409 428 400 420  Z"
+        fill="url(#beak)" opacity="0.82"/>
+  <!-- Beak split line -->
+  <path d="M 388 436  C 394 433 406 433 412 436" fill="none" stroke="#9a6e06" stroke-width="1.2" opacity="0.42"/>
+
+  <!-- HUD panel -->
+  <rect x="10" y="10" width="155" height="58" rx="8" fill="url(#hudpanel)"/>
+  <text x="20" y="33" font-family="system-ui,sans-serif" font-weight="700" font-size="18" fill="#fbbf24">Score: 140</text>
+  <text x="20" y="54" font-family="system-ui,sans-serif" font-size="12" fill="#fca5a5">Misses: 1</text>
+
+  <!-- Momentum bar -->
+  <text x="638" y="24" font-family="system-ui,sans-serif" font-size="11" fill="#cbd5e1" text-anchor="end">Momentum</text>
+  <rect x="642" y="14" width="146" height="10" rx="5" fill="rgba(0,0,0,0.5)"/>
+  <rect x="642" y="14" width="112" height="10" rx="5" fill="#34d399"/>
+
+  <!-- Title -->
+  <text x="400" y="444" font-family="system-ui,sans-serif" font-size="13" fill="rgba(255,255,255,0.25)" text-anchor="middle">Duck Flight</text>
+</svg>

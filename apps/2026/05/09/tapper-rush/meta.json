@@ -1,0 +1,62 @@
+{
+  "id": "tapper-rush",
+  "name": "Tapper Rush",
+  "shortDescription": "A Tapper-inspired bartender arcade game. Switch lanes, serve drinks, catch returning mugs — don't let anyone reach the bar!",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-05-09T13:17:17Z",
+  "category": "Games",
+  "status": "active",
+  "tags": ["arcade", "bartender", "lane-switching", "tap", "mobile-first", "combo", "wave-based"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "maxScore": 9999,
+  "suggestion": {
+    "issueNumber": 427,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/427",
+    "prompt": "## App Suggestion\n\n**Category:** Games\n**Requestor:** Jeff Holst\n\n### Description\n\nCreate a polished mobile\\-first arcade game inspired by the classic Tapper: 4 horizontal bars/lanes, customers enter from the far end and advance toward the bartender, the player taps/swipes vertically to switch lanes and taps a Serve button to slide drinks down the active bar\\. Customers who catch drinks move back; some return empty mugs that must be caught before they fall\\. Lose a life if a customer reaches the bartender, a full drink misses, or an empty mug drops\\. Add score, combo streaks, escalating waves, short bonus rounds, crisp hit detection, responsive controls, 60fps animation, zero input lag, and excellent feel on phones\\. Prioritize ultra\\-smooth mobile gameplay, clean modern UI, tasteful retro visuals, polished juice, subtle sound, haptics, pause/resume, and readable HUD\\. Avoid clutter; make it feel premium and buttery smooth\\.",
+    "requestor": "Jeff Holst"
+  },
+  "generation": {
+    "agentName": "Claude Code",
+    "llmModel": "claude-sonnet-4-6",
+    "startTime": "2026-05-09T13:17:17Z",
+    "endTime": "2026-05-09T13:25:00Z",
+    "totalTokensIn": 6000,
+    "totalTokensOut": 8700,
+    "runId": "run-20260509T131717Z-99cda3",
+    "notes": "Built from GitHub issue #427. Duplication risk flagged 'high' by selection script due to broad arcade/game tags, but the bartender lane-switching mechanic is unique in the catalog. Implemented as canvas game with 4 lanes, tap-to-serve, swipe-to-switch-lane, combo multiplier, escalating wave system, and bonus 2x-score happy-hour rounds. Keyboard: arrows/WASD to switch lane, Space/Enter to serve."
+  },
+  "leaderboard": true,
+  "improvements": [
+    {
+      "issueNumber": 429,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/429",
+      "runId": "run-20260509T133741Z-f68a90",
+      "description": "Fixed empty mug return: mugs now travel rightward back toward the bartender and must be caught in the correct lane (wrong lane = lose a life).",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-05-09T13:37:41Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
+    },
+    {
+      "issueNumber": 533,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/533",
+      "runId": "run-20260528T125229Z-a3f7c2",
+      "description": "Fixed 3 bugs: (1) retreating customers are now ignored by sliding mugs, (2) Happy Hour banner resets when game ends so it doesn't persist into the next game, (3) player lane wraps from top to bottom and bottom to top on keyboard and touch.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-05-28T12:52:29Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
+    },
+    {
+      "issueNumber": 545,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/545",
+      "runId": "run-20260529T155716Z-d62569",
+      "description": "Capped the play field to a centered 480px max width so desktop and mobile have equal lane length (and difficulty), and allowed multiple drinks per lane so a line of customers can be served in quick succession.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-05-29T15:57:16Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-opus-4-8"
+    }
+  ]
+}

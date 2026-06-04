@@ -20,5 +20,6 @@
     "totalTokensOut": 12000,
     "runId": "run-20260307T194000Z-d3b9f1",
     "notes": "Inspired by computer programmers debugging code as quickly as possible. Features 20 real-world coding bugs across JavaScript and Python with syntax highlighting and time pressure."
-  }
+  },
+  "leaderboard": false
 }

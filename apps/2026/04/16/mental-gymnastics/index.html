@@ -1,0 +1,2888 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Mental Gymnastics" />
+    <meta name="voa-app-id" content="2026/04/16/mental-gymnastics" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <title>Mental Gymnastics - __MAIN_SITE_NAME__</title>
+
+    <style>
+      /* ── Theme variables ────────────────────────────── */
+      :root {
+        --bg: #0f172a;
+        --text: #f1f5f9;
+        --text-muted: #94a3b8;
+        --surface: #1e293b;
+        --surface-soft: #293548;
+        --border: #334155;
+        --accent: #38bdf8;
+        --accent-strong: #0ea5e9;
+        --good: #22c55e;
+        --good-bg: rgba(34, 197, 94, 0.15);
+        --warn: #f59e0b;
+        --bad: #ef4444;
+        --bad-bg: rgba(239, 68, 68, 0.15);
+      }
+      [data-theme='light'] {
+        --bg: #f8fafc;
+        --text: #0f172a;
+        --text-muted: #475569;
+        --surface: #ffffff;
+        --surface-soft: #f1f5f9;
+        --border: #e2e8f0;
+        --accent: #2563eb;
+        --accent-strong: #1d4ed8;
+        --good: #16a34a;
+        --good-bg: rgba(22, 163, 74, 0.12);
+        --warn: #d97706;
+        --bad: #dc2626;
+        --bad-bg: rgba(220, 38, 38, 0.12);
+      }
+
+      /* ── Reset ────────────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        font-size: 16px;
+        line-height: 1.5;
+      }
+
+      /* ── Shell layout ────────────────────────────── */
+      #app {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        overflow-y: auto;
+      }
+
+      .screen {
+        display: none;
+        min-height: 100%;
+        padding: 20px 18px 36px;
+        max-width: 720px;
+        margin: 0 auto;
+      }
+      .screen.active {
+        display: block;
+      }
+
+      /* ── Typography ──────────────────────────────── */
+      h1 {
+        font-size: clamp(1.8rem, 2vw + 1rem, 2.5rem);
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+      h2 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 10px;
+      }
+      .subtitle {
+        font-size: 1rem;
+        color: var(--text-muted);
+        margin-top: 6px;
+        margin-bottom: 20px;
+      }
+
+      /* ── Cards ────────────────────────────────────── */
+      .card {
+        background: var(--surface);
+        border-radius: 18px;
+        padding: 18px;
+        border: 1px solid var(--border);
+        margin-bottom: 14px;
+      }
+
+      /* ── Buttons ─────────────────────────────────── */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 11px 18px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        background: var(--surface-soft);
+        color: var(--text);
+        transition: opacity 0.15s, transform 0.1s;
+        text-align: center;
+      }
+      .btn:hover:not(:disabled) {
+        opacity: 0.82;
+      }
+      .btn:active:not(:disabled) {
+        transform: scale(0.97);
+      }
+      .btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      .btn.primary {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+      .btn.primary:hover:not(:disabled) {
+        background: var(--accent-strong);
+        border-color: var(--accent-strong);
+      }
+      .btn.large {
+        font-size: 1.1rem;
+        padding: 14px 26px;
+        border-radius: 14px;
+      }
+      .btn.full {
+        width: 100%;
+      }
+
+      /* ── Mode tabs ──────────────────────────────── */
+      .mode-tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 2px solid var(--border);
+        margin-bottom: 18px;
+      }
+      .tab-btn {
+        border: none;
+        background: none;
+        padding: 10px 18px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -2px;
+        transition: color 0.15s, border-color 0.15s;
+      }
+      .tab-btn.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+      .tab-panel {
+        display: none;
+      }
+      .tab-panel.active {
+        display: block;
+      }
+
+      /* ── Player manager ─────────────────────────── */
+      .player-input-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .player-input-row input {
+        flex: 1;
+        padding: 11px 13px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--surface-soft);
+        color: var(--text);
+        font-size: 1rem;
+      }
+      .player-input-row input:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: -1px;
+      }
+      .player-input-row input::placeholder {
+        color: var(--text-muted);
+      }
+      .player-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        max-height: 210px;
+        overflow-y: auto;
+      }
+      .player-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 13px;
+        background: var(--surface-soft);
+        border-radius: 10px;
+        border: 1px solid var(--border);
+      }
+      .player-item-name {
+        font-weight: 600;
+        color: var(--text);
+        font-size: 0.95rem;
+      }
+      .player-remove {
+        border: none;
+        background: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 1rem;
+        padding: 2px 7px;
+        border-radius: 6px;
+        transition: color 0.15s, background 0.15s;
+        min-height: 32px;
+      }
+      .player-remove:hover {
+        color: var(--bad);
+        background: var(--bad-bg);
+      }
+      .player-empty {
+        padding: 10px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      /* ── Turn selector ──────────────────────────── */
+      .turn-selector {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+      }
+      .turn-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--surface-soft);
+        color: var(--text);
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s, border-color 0.15s;
+      }
+      .turn-btn.selected {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+      .preset-btn {
+        height: 44px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--surface-soft);
+        color: var(--text);
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 0 16px;
+        transition: background 0.15s, color 0.15s, border-color 0.15s;
+      }
+      .preset-btn.selected {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+
+      /* ── Toggle row ─────────────────────────────── */
+      .toggle-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        color: var(--text);
+        user-select: none;
+      }
+      .toggle-row input[type='checkbox'] {
+        width: 20px;
+        height: 20px;
+        accent-color: var(--accent);
+        cursor: pointer;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      /* ── Host game screen ─────────────────────── */
+      .game-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .round-badge {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 6px 14px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .category-badge {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        font-weight: 600;
+      }
+      .timer-display {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: var(--text);
+        min-width: 52px;
+        text-align: right;
+      }
+      .timer-display.warn {
+        color: var(--warn);
+      }
+      .timer-display.danger {
+        color: var(--bad);
+      }
+
+      .question-text {
+        font-size: clamp(1.25rem, 1rem + 1.5vw, 1.85rem);
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.45;
+        margin-bottom: 18px;
+      }
+
+      /* ── A/B/C/D choices ────────────────────────── */
+      .choices-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+        margin-bottom: 16px;
+      }
+      .choice-tile {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 13px 14px;
+        border-radius: 14px;
+        border: 2px solid var(--border);
+        background: var(--surface-soft);
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text);
+        text-align: left;
+        min-height: 54px;
+        transition: border-color 0.2s, background 0.2s;
+        cursor: default;
+      }
+      .choice-tile.correct {
+        border-color: var(--good);
+        background: var(--good-bg);
+        color: var(--good);
+        font-weight: 700;
+      }
+      .choice-letter {
+        font-weight: 800;
+        font-size: 1rem;
+        min-width: 22px;
+        flex-shrink: 0;
+        color: var(--text-muted);
+      }
+
+      /* ── Award section ─────────────────────────── */
+      .award-section {
+        border-top: 1px solid var(--border);
+        padding-top: 14px;
+        margin-top: 4px;
+      }
+      .award-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        margin-bottom: 10px;
+      }
+      .player-award-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin-bottom: 10px;
+      }
+      .player-award-btn {
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        padding: 11px 18px;
+        font-size: 1rem;
+        font-weight: 700;
+        background: var(--surface-soft);
+        color: var(--text);
+        cursor: pointer;
+        transition: border-color 0.15s, background 0.15s, color 0.15s, transform 0.1s;
+        min-height: 46px;
+      }
+      .player-award-btn:not(:disabled):hover {
+        border-color: var(--good);
+        background: var(--good-bg);
+        color: var(--good);
+      }
+      .player-award-btn:not(:disabled):active {
+        transform: scale(0.96);
+      }
+      .player-award-btn.awarded {
+        border-color: var(--good);
+        background: var(--good-bg);
+        color: var(--good);
+      }
+
+      /* ── Results screen ────────────────────────── */
+      .results-header {
+        text-align: center;
+        margin-bottom: 22px;
+      }
+      .results-trophy {
+        font-size: 2.8rem;
+        display: block;
+        margin-bottom: 8px;
+      }
+      .leaderboard-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        margin-bottom: 22px;
+      }
+      .leaderboard-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 15px 18px;
+        background: var(--surface);
+        border-radius: 16px;
+        border: 1px solid var(--border);
+      }
+      .leaderboard-rank {
+        font-size: 1.3rem;
+        min-width: 32px;
+        text-align: center;
+      }
+      .leaderboard-name {
+        flex: 1;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .leaderboard-score {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: var(--accent);
+      }
+      .leaderboard-score.zero {
+        color: var(--text-muted);
+      }
+      .results-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      /* ── Solo game ─────────────────────────────── */
+      .solo-stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+      .solo-stat {
+        background: var(--surface-soft);
+        border-radius: 12px;
+        padding: 10px 11px;
+        border: 1px solid var(--border);
+      }
+      .solo-stat-label {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+        font-weight: 600;
+      }
+      .solo-stat-value {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: var(--text);
+        margin-top: 2px;
+      }
+      .solo-progress-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+        font-weight: 600;
+      }
+      .solo-progress-bar {
+        height: 6px;
+        background: var(--border);
+        border-radius: 99px;
+        overflow: hidden;
+        margin-bottom: 14px;
+      }
+      .solo-progress-fill {
+        height: 100%;
+        background: var(--accent);
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+      .solo-question {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.45;
+        margin-bottom: 14px;
+      }
+      .solo-choices {
+        display: grid;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .solo-choice {
+        border: 1px solid var(--border);
+        background: var(--surface-soft);
+        padding: 12px 14px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--text);
+        text-align: left;
+        transition: border-color 0.15s, background 0.15s, color 0.15s;
+      }
+      .solo-choice:hover:not(:disabled) {
+        border-color: var(--accent);
+      }
+      .solo-choice.correct {
+        background: var(--good-bg);
+        border-color: var(--good);
+        color: var(--good);
+        font-weight: 700;
+      }
+      .solo-choice.wrong {
+        background: var(--bad-bg);
+        border-color: var(--bad);
+        color: var(--bad);
+      }
+      .solo-input-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .solo-input-row input {
+        flex: 1;
+        padding: 11px 13px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--surface-soft);
+        color: var(--text);
+        font-size: 1rem;
+      }
+      .solo-input-row input::placeholder {
+        color: var(--text-muted);
+      }
+      .solo-hint {
+        background: rgba(56, 189, 248, 0.1);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        border-radius: 10px;
+        padding: 10px 13px;
+        font-size: 0.9rem;
+        color: var(--text);
+        margin-bottom: 10px;
+      }
+      .solo-feedback {
+        border-left: 4px solid var(--border);
+        padding: 10px 13px;
+        border-radius: 10px;
+        background: var(--surface-soft);
+        font-size: 0.9rem;
+        color: var(--text);
+        margin-bottom: 10px;
+        line-height: 1.5;
+      }
+      .solo-feedback.good {
+        border-left-color: var(--good);
+      }
+      .solo-feedback.bad {
+        border-left-color: var(--bad);
+      }
+      .solo-footer {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 4px;
+      }
+      .solo-memory-reveal {
+        background: rgba(56, 189, 248, 0.1);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text);
+        letter-spacing: 0.08em;
+        margin-bottom: 12px;
+        text-align: center;
+      }
+
+      .share-link-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      .share-link-row input {
+        flex: 1;
+        min-width: 220px;
+      }
+      .share-note {
+        margin-top: 8px;
+        font-size: 0.88rem;
+        color: var(--text-muted);
+      }
+      .game-status {
+        font-size: 0.92rem;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+      }
+      .choice-tile.selectable {
+        cursor: pointer;
+      }
+      .choice-tile.selected {
+        border-color: var(--accent);
+        background: rgba(56, 189, 248, 0.1);
+      }
+      .choice-tile.correct {
+        border-color: var(--good);
+        background: rgba(34, 197, 94, 0.15);
+      }
+      .choice-tile.wrong {
+        border-color: var(--bad);
+        background: rgba(239, 68, 68, 0.15);
+      }
+      .round-votes {
+        margin-top: 12px;
+        border-top: 1px solid var(--line);
+        padding-top: 10px;
+        display: none;
+      }
+      .round-votes.visible {
+        display: block;
+      }
+      .vote-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 8px 10px;
+        margin-bottom: 6px;
+      }
+      .vote-badge.good {
+        color: var(--good);
+        font-weight: 700;
+      }
+      .vote-badge.bad {
+        color: #60a5fa;
+        font-weight: 700;
+      }
+      .mod-vote-status {
+        margin-top: 10px;
+        padding: 10px 13px;
+        background: rgba(56, 189, 248, 0.07);
+        border: 1px solid rgba(56, 189, 248, 0.2);
+        border-radius: 10px;
+        font-size: 0.88rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+      }
+      .mod-vote-label {
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 2px;
+      }
+      .mod-player-grid {
+        margin-top: 10px;
+        padding: 10px 12px;
+        background: rgba(56, 189, 248, 0.05);
+        border: 1px solid rgba(56, 189, 248, 0.2);
+        border-radius: 10px;
+      }
+      .mod-player-grid-title {
+        font-size: 0.9rem;
+        font-weight: 800;
+        margin-bottom: 8px;
+      }
+      .mod-player-grid-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.84rem;
+      }
+      .mod-player-grid-table th,
+      .mod-player-grid-table td {
+        text-align: left;
+        padding: 6px 5px;
+        border-bottom: 1px solid var(--line);
+      }
+      .mod-player-grid-table th {
+        color: var(--text-muted);
+        font-weight: 700;
+      }
+      .mod-player-grid-table tr:last-child td {
+        border-bottom: 0;
+      }
+      .mod-player-status {
+        text-transform: capitalize;
+        font-weight: 700;
+      }
+      .hint-panel {
+        margin-top: 8px;
+        padding: 10px 13px;
+        background: rgba(167, 139, 250, 0.1);
+        border: 1px solid rgba(167, 139, 250, 0.25);
+        border-radius: 10px;
+        font-size: 0.9rem;
+        color: var(--text);
+      }
+      .half-credit-notice {
+        font-size: 0.78rem;
+        color: var(--warn);
+        font-weight: 700;
+        margin-top: 5px;
+      }
+      .btn.danger {
+        background: var(--bad);
+        color: #fff;
+        border-color: var(--bad);
+      }
+      .btn.danger:hover:not(:disabled) {
+        background: #dc2626;
+        border-color: #dc2626;
+      }
+      .reveal-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .join-card {
+        width: min(560px, 100%);
+      }
+      .overlay {
+        position: fixed;
+        inset: 64px 0 56px 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 40;
+      }
+      .confetti-piece {
+        position: absolute;
+        top: -20px;
+        border-radius: 2px;
+        animation: confettiFall linear forwards;
+      }
+      @keyframes confettiFall {
+        to {
+          transform: translateY(calc(var(--overlay-h, 100vh) + 50px)) rotate(480deg);
+          opacity: 0;
+        }
+      }
+      .rain-drop {
+        position: absolute;
+        top: -60px;
+        width: 2px;
+        border-radius: 999px;
+        animation: rainFall linear infinite;
+      }
+      @keyframes rainFall {
+        to {
+          transform: translateY(calc(var(--overlay-h, 100vh) + 80px));
+        }
+      }
+
+      /* ── Responsive ──────────────────────────── */
+      @media (max-width: 540px) {
+        .choices-grid {
+          grid-template-columns: 1fr;
+        }
+        .solo-stats-row {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .screen {
+          padding: 14px 13px 32px;
+        }
+        .turn-btn {
+          width: 40px;
+          height: 40px;
+          font-size: 0.9rem;
+        }
+        .results-actions {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <!-- ══════════════════════════════
+           SETUP SCREEN
+      ══════════════════════════════ -->
+      <div id="screen-setup" class="screen active">
+        <h1>Mental Gymnastics</h1>
+        <p class="subtitle">Brain challenges for teams — great for Zoom &amp; remote sessions</p>
+
+        <div class="mode-tabs">
+          <button class="tab-btn active" id="tabHost">Host Mode</button>
+          <button class="tab-btn" id="tabSolo">Solo Practice</button>
+        </div>
+
+        <!-- HOST TAB -->
+        <div class="tab-panel active" id="panelHost">
+          <div class="card">
+            <h2>Multiplayer Lobby</h2>
+            <p class="share-note">Share the join link so players can register their name.</p>
+            <div class="share-link-row">
+              <input type="text" id="joinLinkInput" readonly />
+              <button class="btn primary" id="copyJoinLinkBtn">Copy Link</button>
+            </div>
+            <p class="share-note" id="hostLobbyMessage">Setting up multiplayer room...</p>
+            <ul class="player-list" id="playerList">
+              <li class="player-empty" id="playerEmpty">No players joined yet.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>Rounds</h2>
+            <div class="turn-selector" id="turnSelector"></div>
+          </div>
+
+          <div class="card">
+            <h2>Round Timer</h2>
+            <div class="turn-selector" id="timerPresetRow"></div>
+          </div>
+
+          <div class="card">
+            <label class="toggle-row">
+              <input type="checkbox" id="moderatorOnlyToggle" />
+              <span>
+                Open moderator screen only
+                <span style="display: block; font-size: 0.82rem; color: var(--text-muted); font-weight: 400; margin-top: 2px"
+                  >Launches a dedicated moderator popup with controls and private answer details.</span
+                >
+              </span>
+            </label>
+          </div>
+
+          <button class="btn primary large full" id="startHostBtn" disabled>Start Host Game</button>
+        </div>
+
+        <!-- SOLO TAB -->
+        <div class="tab-panel" id="panelSolo">
+          <div class="card">
+            <p style="color: var(--text-muted); margin-bottom: 14px; font-size: 0.95rem">
+              Quick individual practice — no players needed. Pick a mode and go.
+            </p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap">
+              <button class="btn primary" id="startPracticeBtn">Start Practice</button>
+              <button class="btn" id="startDailyBtn">Daily Challenge</button>
+            </div>
+          </div>
+          <div class="card">
+            <label class="toggle-row">
+              <input type="checkbox" id="soundToggle" checked />
+              <span>Sounds</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════
+           HOST GAME SCREEN
+      ══════════════════════════════ -->
+      <div id="screen-game" class="screen">
+        <div class="game-header">
+          <span class="round-badge" id="roundLabel">Round 1 of 5</span>
+          <span class="category-badge" id="gameCategoryBadge">Category</span>
+          <span class="timer-display" id="gameTimer">0:30</span>
+        </div>
+
+        <div class="card">
+          <div class="game-status" id="gameStatus">Waiting for round to begin.</div>
+          <div class="question-text" id="gameQuestion">Loading…</div>
+
+          <div class="choices-grid" id="gameChoices"></div>
+
+          <div class="reveal-row">
+            <button class="btn primary" id="submitVoteBtn" disabled>Submit Vote</button>
+            <button class="btn" id="nextRoundBtn" style="display: none">Next Round</button>
+            <button class="btn" id="showResultsBtn" style="display: none">Show Results</button>
+            <button class="btn" id="openModPopupBtn" style="display: none">🪟 Moderator Popup</button>
+            <button class="btn" id="endRoundBtn" style="display: none">End Round</button>
+            <button class="btn danger" id="endGameBtn" style="display: none">End Game</button>
+            <button class="btn" id="playerHintBtn" style="display: none">💡 Hint (½ credit)</button>
+          </div>
+
+          <div class="mod-vote-status" id="modVoteStatus" style="display:none"></div>
+          <div class="mod-player-grid" id="modPlayerGrid" style="display:none">
+            <div class="mod-player-grid-title">Player Grid</div>
+            <div id="modPlayerGridBody"></div>
+          </div>
+          <div class="hint-panel" id="hintPanel" style="display:none"></div>
+
+          <div class="round-votes" id="roundVotes">
+            <div class="award-label">Round Votes</div>
+            <div id="roundVotesList"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="screen-join" class="screen">
+        <div class="card join-card">
+          <h2>Join Mental Gymnastics</h2>
+          <p class="share-note">Code: <strong id="joinCodeLabel"></strong></p>
+          <div class="player-input-row" style="margin-top: 8px">
+            <input type="text" id="joinNameInput" maxlength="30" placeholder="Your name" autocomplete="off" />
+            <button class="btn primary" id="joinSubmitBtn">Join</button>
+          </div>
+          <p class="share-note" id="joinMessage"></p>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════
+           SOLO GAME SCREEN
+      ══════════════════════════════ -->
+      <div id="screen-solo" class="screen">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px">
+          <button class="btn" id="soloBackBtn">← Back</button>
+          <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-muted)" id="soloModeLabel"
+            >Practice</span
+          >
+        </div>
+
+        <div class="card">
+          <div class="solo-stats-row">
+            <div class="solo-stat">
+              <div class="solo-stat-label">Score</div>
+              <div class="solo-stat-value" id="soloScore">0</div>
+            </div>
+            <div class="solo-stat">
+              <div class="solo-stat-label">Streak</div>
+              <div class="solo-stat-value" id="soloStreak">0</div>
+            </div>
+            <div class="solo-stat">
+              <div class="solo-stat-label">Accuracy</div>
+              <div class="solo-stat-value" id="soloAccuracy">—</div>
+            </div>
+            <div class="solo-stat">
+              <div class="solo-stat-label">Timer</div>
+              <div class="solo-stat-value" id="soloTimer">—</div>
+            </div>
+          </div>
+
+          <div class="solo-progress-row">
+            <span id="soloCategoryBadge">Category</span>
+            <span id="soloProgressLabel">1 of 10</span>
+          </div>
+          <div class="solo-progress-bar">
+            <div class="solo-progress-fill" id="soloProgressFill"></div>
+          </div>
+
+          <div class="solo-memory-reveal" id="soloMemoryReveal" style="display: none"></div>
+          <div class="solo-question" id="soloQuestion">Loading…</div>
+
+          <div class="solo-choices" id="soloChoices"></div>
+
+          <form class="solo-input-row" id="soloInputRow" style="display: none">
+            <input type="text" id="soloAnswerInput" placeholder="Type your answer…" autocomplete="off" />
+            <button class="btn primary" type="submit">Submit</button>
+          </form>
+
+          <div class="solo-hint" id="soloHint" style="display: none"></div>
+          <div class="solo-feedback" id="soloFeedback" style="display: none"></div>
+
+          <div class="solo-footer">
+            <button class="btn" id="soloHintBtn" disabled>Show Hint</button>
+            <button class="btn primary" id="soloNextBtn" style="display: none">Next</button>
+            <button class="btn" id="soloEndBtn" style="display: none">End Session</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════
+           RESULTS SCREEN
+      ══════════════════════════════ -->
+      <div id="screen-results" class="screen">
+        <div class="results-header">
+          <span class="results-trophy">🏆</span>
+          <h1>Final Results</h1>
+          <p class="subtitle" id="resultsSubtitle">Game complete!</p>
+        </div>
+
+        <ul class="leaderboard-list" id="resultsList"></ul>
+
+        <div class="results-actions">
+          <button class="btn primary large" id="playAgainBtn">Play Again</button>
+          <button class="btn large" id="shareResultsBtn">Share</button>
+        </div>
+      </div>
+    </div>
+    <div id="fxOverlay" class="overlay"></div>
+
+    <script>
+      /* ══════════════════════════════════════════════
+         CHALLENGE BANK — 33 challenges, all MCQ-compatible
+      ══════════════════════════════════════════════ */
+      const CHALLENGES = [
+       {
+          id: 'math-1',
+          category: 'Mental Math',
+          type: 'mcq',
+          question: '27 × 3 = ?',
+          options: ['72', '78', '81', '87'],
+          answer: '81',
+          hint: 'Think of 30 × 3 minus 9.',
+          explanation: '30 × 3 = 90. Subtract 9 to get 81.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'math-2',
+          category: 'Mental Math',
+          type: 'mcq',
+          question: '145 − 78 = ?',
+          options: ['64', '67', '70', '73'],
+          answer: '67',
+          hint: 'Subtract 80, then add 2 back.',
+          explanation: '145 − 80 = 65, plus 2 = 67.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'math-3',
+          category: 'Mental Math',
+          type: 'mcq',
+          question: '15% of 260 = ?',
+          options: ['32', '36', '39', '42'],
+          answer: '39',
+          hint: '10% is 26, and 5% is 13.',
+          explanation: '26 + 13 = 39.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'math-4',
+          category: 'Mental Math',
+          type: 'mcq',
+          question: '12 × 12 = ?',
+          options: ['132', '138', '144', '150'],
+          answer: '144',
+          hint: 'The square of 12.',
+          explanation: '12 × 12 = 144.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'math-5',
+          category: 'Mental Math',
+          type: 'mcq',
+          question: '7/8 as a decimal (2 decimal places)?',
+          options: ['0.75', '0.83', '0.88', '0.93'],
+          answer: '0.88',
+          hint: '0.875 rounds to two decimals.',
+          explanation: '7 ÷ 8 = 0.875 ≈ 0.88.',
+          difficulty: 3,
+          timeLimit: 30,
+        },
+        {
+          id: 'math-6',
+          category: 'Mental Math',
+          type: 'mcq',
+          question: '18 × 7 = ?',
+          options: ['116', '121', '126', '133'],
+          answer: '126',
+          hint: '20 × 7 minus 2 × 7.',
+          explanation: '140 − 14 = 126.',
+          difficulty: 2,
+          timeLimit: 20,
+        },
+        {
+          id: 'math-7',
+          category: 'Mental Math',
+          type: 'mcq',
+          question: '60% of 45 = ?',
+          options: ['22', '25', '27', '30'],
+          answer: '27',
+          hint: '50% is 22.5, and 10% is 4.5.',
+          explanation: '45 × 0.6 = 27.',
+          difficulty: 2,
+          timeLimit: 20,
+        },
+        {
+          id: 'pattern-1',
+          category: 'Number Patterns',
+          type: 'mcq',
+          question: '2, 6, 12, 20, 30, ? (next number)',
+          options: ['40', '42', '44', '46'],
+          answer: '42',
+          hint: 'The gaps grow by 2 each time.',
+          explanation: 'Differences: +4, +6, +8, +10, +12. Next = 30 + 12 = 42.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'pattern-2',
+          category: 'Number Patterns',
+          type: 'mcq',
+          question: '3, 9, 27, ?, 243',
+          options: ['54', '72', '81', '90'],
+          answer: '81',
+          hint: 'Multiply by 3 each time.',
+          explanation: '27 × 3 = 81.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'pattern-3',
+          category: 'Number Patterns',
+          type: 'mcq',
+          question: '1, 1, 2, 3, 5, 8, ? (next number)',
+          options: ['11', '12', '13', '14'],
+          answer: '13',
+          hint: 'Add the two previous numbers.',
+          explanation: 'Fibonacci sequence: 5 + 8 = 13.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'pattern-4',
+          category: 'Number Patterns',
+          type: 'mcq',
+          question: '10, 9, 7, 4, 0, ? (next number)',
+          options: ['-2', '-3', '-4', '-5'],
+          answer: '-5',
+          hint: 'Subtract 1, 2, 3, 4, …',
+          explanation: 'Differences: -1, -2, -3, -4, -5.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'estimate-1',
+          category: 'Estimation',
+          type: 'mcq',
+          question: 'Estimate 19 × 52.',
+          options: ['500', '1000', '1500', '2000'],
+          answer: '1000',
+          hint: 'Round to 20 × 50.',
+          explanation: '20 × 50 = 1000; exact is 988.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'estimate-2',
+          category: 'Estimation',
+          type: 'mcq',
+          question: 'Estimate 398 + 604.',
+          options: ['900', '1000', '1100', '1200'],
+          answer: '1000',
+          hint: 'Round to 400 + 600.',
+          explanation: '400 + 600 = 1000; exact is 1002.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'estimate-3',
+          category: 'Estimation',
+          type: 'mcq',
+          question: 'Estimate 6.2 × 48.',
+          options: ['200', '300', '400', '500'],
+          answer: '300',
+          hint: 'Round to 6 × 50.',
+          explanation: '6 × 50 = 300; exact is 297.6.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'logic-1',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'All bloops are razzies. All razzies are lazzies. Are all bloops lazzies?',
+          options: ['Yes', 'No', 'Only some', 'Cannot determine'],
+          answer: 'Yes',
+          hint: 'Chain: bloops → razzies → lazzies.',
+          explanation: 'If all bloops are razzies and all razzies are lazzies, then all bloops are lazzies.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'logic-2',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'If today is Tuesday, what day will it be 3 days after tomorrow?',
+          options: ['Friday', 'Saturday', 'Sunday', 'Monday'],
+          answer: 'Saturday',
+          hint: 'Tomorrow is Wednesday.',
+          explanation: 'Tomorrow = Wednesday. Three days later = Saturday.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'logic-3',
+          category: 'Logic',
+          type: 'mcq',
+          question: '5 machines make 5 widgets in 5 minutes. How long for 10 machines to make 10 widgets?',
+          options: ['5 minutes', '10 minutes', '15 minutes', '20 minutes'],
+          answer: '5 minutes',
+          hint: 'Each machine makes 1 widget in 5 minutes.',
+          explanation: '10 machines each make 1 widget in 5 min = 10 widgets total.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'logic-4',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'Which must be true if all cats are mammals?',
+          options: ['All mammals are cats', 'All cats are mammals', 'No cats are mammals', 'Some mammals are not cats'],
+          answer: 'All cats are mammals',
+          hint: 'The original statement is the answer.',
+          explanation: 'The given statement itself is the required truth.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'logic-5',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'A is taller than B, and B is taller than C. Who is shortest?',
+          options: ['A', 'B', 'C', 'Cannot determine'],
+          answer: 'C',
+          hint: 'Order: A > B > C.',
+          explanation: 'C is shortest.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'logic-6',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'If it rains, the ground is wet. The ground is wet. What can we conclude?',
+          options: ['It rained', 'It may have rained', 'It did not rain', 'Raining is impossible'],
+          answer: 'It may have rained',
+          hint: 'Wet ground has more than one cause.',
+          explanation: 'Wet ground does not guarantee rain — other causes exist.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'logic-7',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'Some singers are dancers. Some dancers are painters. Must some singers be painters?',
+          options: ['Yes', 'No', 'Only if all dancers sing', 'Only if all singers dance'],
+          answer: 'No',
+          hint: 'The overlapping dancers could be different people.',
+          explanation: 'The two dancer groups may not overlap, so no guarantee.',
+          difficulty: 3,
+          timeLimit: 30,
+        },
+        {
+          id: 'sequence-1',
+          category: 'Sequencing',
+          type: 'mcq',
+          question: 'Arrange from smallest to largest: 0.4, 2/5, 0.39, 0.41',
+          options: ['0.39, 0.4, 2/5, 0.41', '0.39, 2/5, 0.4, 0.41', '2/5, 0.39, 0.4, 0.41', '0.4, 0.39, 2/5, 0.41'],
+          answer: '0.39, 0.4, 2/5, 0.41',
+          hint: '2/5 = 0.4 exactly.',
+          explanation: '0.39 < 0.4 = 2/5 < 0.41.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'sequence-2',
+          category: 'Sequencing',
+          type: 'mcq',
+          question: 'What comes next in the alphabet sequence? C, F, I, L, ?',
+          options: ['M', 'N', 'O', 'P'],
+          answer: 'O',
+          hint: 'Skip two letters each time.',
+          explanation: '+3 each step: C → F → I → L → O.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'sequence-3',
+          category: 'Sequencing',
+          type: 'mcq',
+          question: 'Which is the correct order of operations?',
+          options: [
+            'Multiply, add, subtract, divide',
+            'Parentheses, exponents, multiply/divide, add/subtract',
+            'Add/subtract, multiply/divide, exponents',
+            'Exponents, parentheses, add/subtract, multiply/divide',
+          ],
+          answer: 'Parentheses, exponents, multiply/divide, add/subtract',
+          hint: 'Remember PEMDAS.',
+          explanation: 'PEMDAS: Parentheses, Exponents, Multiply/Divide, Add/Subtract.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'sequence-4',
+          category: 'Sequencing',
+          type: 'mcq',
+          question: 'Chronological order: Middle Ages, Renaissance, Industrial Revolution, Digital Age.',
+          options: [
+            'Renaissance, Middle Ages, Industrial Revolution, Digital Age',
+            'Middle Ages, Renaissance, Industrial Revolution, Digital Age',
+            'Middle Ages, Industrial Revolution, Renaissance, Digital Age',
+            'Renaissance, Industrial Revolution, Middle Ages, Digital Age',
+          ],
+          answer: 'Middle Ages, Renaissance, Industrial Revolution, Digital Age',
+          hint: 'Medieval, then rebirth, then machines, then computers.',
+          explanation: 'Middle Ages → Renaissance → Industrial Revolution → Digital Age.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'word-1',
+          category: 'Word Reasoning',
+          type: 'mcq',
+          question: 'Which word does NOT belong?',
+          options: ['Triangle', 'Square', 'Circle', 'Purple'],
+          answer: 'Purple',
+          hint: 'Three are shapes.',
+          explanation: 'Triangle, square, and circle are shapes; purple is a color.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'word-2',
+          category: 'Word Reasoning',
+          type: 'mcq',
+          question: 'Choose the best synonym for "brief".',
+          options: ['Tiny', 'Short', 'Speedy', 'Quiet'],
+          answer: 'Short',
+          hint: 'Think about duration.',
+          explanation: 'Brief means short in duration.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'word-3',
+          category: 'Word Reasoning',
+          type: 'mcq',
+          question: 'Book is to Reading as Fork is to ___.',
+          options: ['Cooking', 'Eating', 'Shopping', 'Writing'],
+          answer: 'Eating',
+          hint: 'Forks are used while doing this.',
+          explanation: 'Fork is used for eating, just as a book is used for reading.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'word-4',
+          category: 'Word Reasoning',
+          type: 'mcq',
+          question: 'Which pair are opposites?',
+          options: ['Bright/Dull', 'Large/Wide', 'Quick/Swift', 'Silent/Quiet'],
+          answer: 'Bright/Dull',
+          hint: 'True contrasts, not synonyms.',
+          explanation: 'Bright and dull are opposites; the others are synonyms.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'shape-1',
+          category: 'Shape Reasoning',
+          type: 'mcq',
+          question: 'A square is rotated 45°. How many sides does it still have?',
+          options: ['3', '4', '5', '8'],
+          answer: '4',
+          hint: 'Rotation does not change the number of sides.',
+          explanation: 'A square remains 4-sided after any rotation.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'shape-2',
+          category: 'Shape Reasoning',
+          type: 'mcq',
+          question: 'How many corners does a hexagon have?',
+          options: ['4', '5', '6', '8'],
+          answer: '6',
+          hint: 'Hex means six.',
+          explanation: 'A hexagon has 6 corners.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'memory-1',
+          category: 'Memory',
+          type: 'memory',
+          memorize: 'K  ·  T  ·  9  ·  R  ·  2',
+          question: 'What was the THIRD item in the sequence?',
+          options: ['K', 'T', '9', 'R'],
+          answer: '9',
+          hint: 'Count from the start: K (1st), T (2nd), …',
+          explanation: 'The third item was 9.',
+          difficulty: 2,
+          timeLimit: 20,
+        },
+        {
+          id: 'memory-2',
+          category: 'Memory',
+          type: 'memory',
+          memorize: 'Blue  ·  Amber  ·  Green  ·  Violet',
+          question: 'Which color was LAST in the sequence?',
+          options: ['Blue', 'Amber', 'Green', 'Violet'],
+          answer: 'Violet',
+          hint: 'It is a purple shade.',
+          explanation: 'The last color was Violet.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'memory-3',
+          category: 'Memory',
+          type: 'memory',
+          memorize: 'Orbit  ·  Ladder  ·  Signal  ·  Bridge',
+          question: 'What was the FIRST word in the sequence?',
+          options: ['Orbit', 'Ladder', 'Signal', 'Bridge'],
+          answer: 'Orbit',
+          hint: 'Think of space.',
+          explanation: 'The first word was Orbit.',
+          difficulty: 1,
+          timeLimit: 20,
+        }, 
+      ];
+
+      /* ══════════════════════════════════════════════
+         UTILITIES
+      ══════════════════════════════════════════════ */
+
+      function mulberry32(seed) {
+        return function () {
+          let t = (seed += 0x6d2b79f5);
+          t = Math.imul(t ^ (t >>> 15), t | 1);
+          t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+
+      function seededShuffle(list, seed) {
+        const rng = mulberry32(seed);
+        const arr = [...list];
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(rng() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      function getDailySeed() {
+        const now = new Date();
+        const key = `${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${now.getUTCDate()}`;
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+          hash = (hash << 5) - hash + key.charCodeAt(i);
+          hash |= 0;
+        }
+        return Math.abs(hash);
+      }
+
+      function escHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function toNumericScore(value) {
+        const numeric = Number(value);
+        return Number.isFinite(numeric) ? numeric : 0;
+      }
+
+      function playTone(freq, dur) {
+        const soundEl = document.getElementById('soundToggle');
+        if (soundEl && !soundEl.checked) return;
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          gain.gain.value = 0.12;
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + dur / 1000);
+        } catch (_) {}
+      }
+
+      function showScreen(id) {
+        document.querySelectorAll('.screen').forEach((s) => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+      }
+
+      /* ══════════════════════════════════════════════
+         TAB SWITCHING
+      ══════════════════════════════════════════════ */
+      const APP_ID = 'mental-gymnastics';
+      const APP_NAME = 'Mental Gymnastics';
+      const APP_PATH = '2026/04/16/mental-gymnastics';
+      const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      const MOD_KEY_PREFIX = 'mg-mod';
+      const NAME_KEY_PREFIX = 'mg-player-name';
+
+      const TIMER_PRESETS = { short: 30, medium: 45, long: 60 };
+      const MEMORY_MEMORIZE_SECONDS = 6;
+      const MEMORY_INSTRUCTION_SECONDS = 3;
+      const triggeredAnimations = new Set();
+      let timerPreset = 'medium';
+      let lastKnownRoundIndex = -1;
+
+      let selectedTurns = 5;
+      let role = null;
+      let sessionCode = '';
+      let moderatorId = null;
+      let playerId = null;
+      let moderatorPopupRef = null;
+      let session = null;
+      let pollingTimer = null;
+      let selectedChoice = null;
+
+      function localKey(key) {
+        return `${APP_ID}:${key}`;
+      }
+
+      function hashParams() {
+        return new URLSearchParams(window.location.hash.replace(/^#/, ''));
+      }
+
+      function setHash(params) {
+        window.location.hash = params.toString();
+      }
+
+      function generateCode(length = 6) {
+        let code = '';
+        for (let i = 0; i < length; i += 1) {
+          code += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
+        }
+        return code;
+      }
+
+      function generateId(prefix = 'id') {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+          return `${prefix}-${crypto.randomUUID()}`;
+        }
+        return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+      }
+
+      function normalize(value) {
+        return String(value || '')
+          .trim()
+          .toLowerCase();
+      }
+
+      function challengeById(id) {
+        return CHALLENGES.find((c) => c.id === id) || null;
+      }
+
+      function parseMemorizeItems(challenge) {
+        if (!challenge?.memorize) return [];
+        const raw = String(challenge.memorize);
+        const parts = raw.includes('·') ? raw.split('·') : raw.split(',');
+        return parts.map((entry) => entry.trim()).filter(Boolean);
+      }
+
+      function memoryMemorizeConfig(challenge) {
+        const items = parseMemorizeItems(challenge);
+        const baseItemMs = items.length
+          ? (MEMORY_MEMORIZE_SECONDS * 1000) / items.length
+          : MEMORY_MEMORIZE_SECONDS * 1000;
+        const itemMs = baseItemMs + 1000;
+        const instructionMs = MEMORY_INSTRUCTION_SECONDS * 1000;
+        const totalMs = instructionMs + itemMs * items.length;
+        return { items, itemMs, instructionMs, totalMs };
+      }
+
+      function currentMemorizeStep(challenge, game) {
+        const { items, itemMs, instructionMs, totalMs } = memoryMemorizeConfig(challenge);
+        if (!items.length) {
+          return { stage: 'instructions', item: '', index: 0, total: 0 };
+        }
+
+        if (game?.phase !== 'memorize' || !game.timerEndsAt) {
+          return { stage: 'item', item: items[0], index: 0, total: items.length };
+        }
+
+        const remainingMs = Math.max(0, new Date(game.timerEndsAt).getTime() - Date.now());
+        const elapsedMs = Math.min(totalMs, Math.max(0, totalMs - remainingMs));
+        if (elapsedMs < instructionMs) {
+          return { stage: 'instructions', item: '', index: 0, total: items.length };
+        }
+        const cycleElapsedMs = elapsedMs - instructionMs;
+        const index = Math.min(items.length - 1, Math.floor(cycleElapsedMs / itemMs));
+        return { stage: 'item', item: items[index], index, total: items.length };
+      }
+
+      function currentPlayers() {
+        if (!session?.players) return [];
+        return Object.values(session.players)
+          .filter((p) => p && p.id)
+          .sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')));
+      }
+
+      async function isMultiplayerConfigured() {
+        const response = await fetch('/api/multiplayer/status', { cache: 'no-store' });
+        if (!response.ok) return false;
+        const payload = await response.json();
+        return Boolean(payload?.configured);
+      }
+
+      async function fetchSession(code) {
+        const response = await fetch(`/api/multiplayer/sessions/${code}`, { cache: 'no-store' });
+        if (response.status === 404) return null;
+        if (!response.ok) throw new Error('Failed to fetch session');
+        const payload = await response.json();
+        return payload?.session || null;
+      }
+
+      async function createSession(code, modId) {
+        const response = await fetch('/api/multiplayer/sessions', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            code,
+            appId: APP_ID,
+            appName: APP_NAME,
+            appPath: APP_PATH,
+            moderatorId: modId,
+            settings: {},
+            status: 'lobby',
+          }),
+        });
+        if (response.status === 409) return false;
+        if (!response.ok) throw new Error('Failed to create session');
+        return true;
+      }
+
+      function flattenPatch(prefix, value, out) {
+        if (value === null || value === undefined) {
+          out[prefix] = value;
+          return;
+        }
+        const isObject = typeof value === 'object' && !Array.isArray(value);
+        if (!isObject) {
+          out[prefix] = value;
+          return;
+        }
+        const entries = Object.entries(value);
+        if (!entries.length) {
+          out[prefix] = {};
+          return;
+        }
+        entries.forEach(([key, child]) => {
+          flattenPatch(`${prefix}/${key}`, child, out);
+        });
+      }
+
+      async function patchSession({ status = null, patch = {} } = {}) {
+        if (!sessionCode || !moderatorId) return;
+        const normalizedPatch = {};
+        Object.entries(patch).forEach(([key, value]) => {
+          if (key.includes('/')) {
+            normalizedPatch[key] = value;
+          } else {
+            flattenPatch(key, value, normalizedPatch);
+          }
+        });
+        const response = await fetch(`/api/multiplayer/sessions/${sessionCode}`, {
+          method: 'PATCH',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ moderatorId, status, patch: normalizedPatch }),
+        });
+        if (!response.ok) throw new Error('Failed to update session');
+      }
+
+      async function joinSession(code, name) {
+        const response = await fetch(`/api/multiplayer/sessions/${code}/players`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ name }),
+        });
+        if (!response.ok) {
+          const payload = await response.json().catch(() => ({}));
+          throw new Error(payload?.error || 'Unable to join session');
+        }
+        return response.json();
+      }
+
+      async function submitVote(value) {
+        const response = await fetch(`/api/multiplayer/sessions/${sessionCode}/answers`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ playerId, guess: value }),
+        });
+        if (!response.ok) throw new Error('Vote failed');
+        return response.json();
+      }
+
+      function runConfetti(roundId) {
+        const overlay = document.getElementById('fxOverlay');
+        overlay.style.setProperty('--overlay-h', overlay.clientHeight + 'px');
+        const colors = ['#22c55e', '#f59e0b', '#38bdf8', '#a78bfa', '#f43f5e'];
+        const pieces = [];
+        for (let i = 0; i < 70; i += 1) {
+          const left = Math.random() * 100;
+          const size = 5 + Math.random() * 8;
+          const duration = 1.2 + Math.random() * 1.2;
+          const delay = Math.random() * 0.25;
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          pieces.push(
+            `<div class="confetti-piece" data-round="${roundId}" style="left:${left}%;width:${size}px;height:${size}px;background:${color};animation-duration:${duration}s;animation-delay:${delay}s"></div>`
+          );
+        }
+        overlay.innerHTML = pieces.join('');
+        window.setTimeout(() => {
+          if (overlay.innerHTML.includes(`data-round="${roundId}"`)) overlay.innerHTML = '';
+        }, 2500);
+      }
+
+      function runBlueRain(roundId) {
+        const overlay = document.getElementById('fxOverlay');
+        overlay.style.setProperty('--overlay-h', overlay.clientHeight + 'px');
+        const drops = [];
+        for (let i = 0; i < 85; i += 1) {
+          const left = Math.random() * 100;
+          const height = 30 + Math.random() * 50;
+          const duration = 0.8 + Math.random() * 0.8;
+          const delay = Math.random() * 0.6;
+          drops.push(
+            `<div class="rain-drop" data-round="${roundId}" style="left:${left}%;height:${height}px;background:linear-gradient(to bottom,rgba(59,130,246,0),rgba(59,130,246,0.65),rgba(147,197,253,0.8));animation-duration:${duration}s;animation-delay:${delay}s"></div>`
+          );
+        }
+        overlay.innerHTML = drops.join('');
+        window.setTimeout(() => {
+          if (overlay.innerHTML.includes(`data-round="${roundId}"`)) overlay.innerHTML = '';
+        }, 2600);
+      }
+
+      function renderLobbyPlayers() {
+        const list = document.getElementById('playerList');
+        const players = currentPlayers();
+        list.innerHTML = '';
+        if (!players.length) {
+          list.innerHTML = '<li class="player-empty">No players joined yet.</li>';
+        } else {
+          players.forEach((p) => {
+            const li = document.createElement('li');
+            li.className = 'player-item';
+            li.innerHTML = `<span class="player-item-name">${escHtml(p.name)}</span>`;
+            list.appendChild(li);
+          });
+        }
+        document.getElementById('startHostBtn').disabled = players.length === 0;
+      }
+
+      function renderTimerPreset() {
+        const row = document.getElementById('timerPresetRow');
+        if (!row) return;
+        const labels = { short: 'Short (30s)', medium: 'Medium (45s)', long: 'Long (60s)' };
+        row.innerHTML = '';
+        Object.keys(TIMER_PRESETS).forEach((key) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'preset-btn' + (key === timerPreset ? ' selected' : '');
+          btn.textContent = labels[key];
+          btn.dataset.preset = key;
+          row.appendChild(btn);
+        });
+      }
+
+      function renderTurnSelector() {
+        const sel = document.getElementById('turnSelector');
+        sel.innerHTML = '';
+        for (let i = 1; i <= 10; i += 1) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'turn-btn' + (i === selectedTurns ? ' selected' : '');
+          btn.textContent = i;
+          btn.dataset.turns = i;
+          sel.appendChild(btn);
+        }
+      }
+
+      function renderResults() {
+        const list = document.getElementById('resultsList');
+        const subtitle = document.getElementById('resultsSubtitle');
+        const scores = session?.game?.scores || {};
+        const players = currentPlayers();
+        const sorted = players
+          .map((p) => ({ ...p, score: toNumericScore(scores[p.id]) }))
+          .sort((a, b) => b.score - a.score || String(a.name || '').localeCompare(String(b.name || '')));
+        const MEDAL = { 1: '🥇', 2: '🥈', 3: '🥉' };
+        let rankCursor = 1;
+        sorted.forEach((entry, idx) => {
+          entry.rank = idx > 0 && entry.score === sorted[idx - 1].score ? sorted[idx - 1].rank : rankCursor;
+          rankCursor = idx + 2;
+        });
+        list.innerHTML = sorted
+          .map(
+            (entry) => `
+          <li class="leaderboard-item">
+            <span class="leaderboard-rank">${MEDAL[entry.rank] || `${entry.rank}.`}</span>
+            <span class="leaderboard-name">${escHtml(entry.name)}</span>
+            <span class="leaderboard-score${entry.score === 0 ? ' zero' : ''}">${entry.score} pt${entry.score !== 1 ? 's' : ''}</span>
+          </li>`
+          )
+          .join('');
+        const top = sorted[0]?.score ?? 0;
+        const winners = sorted.filter((p) => p.score === top && sorted.length);
+        if (winners.length > 1) {
+          subtitle.textContent = `${winners.map((p) => p.name).join(' & ')} tied for 1st with ${top} pts!`;
+        } else if (winners.length === 1) {
+          subtitle.textContent = `${winners[0].name} wins with ${top} point${top !== 1 ? 's' : ''}!`;
+        } else {
+          subtitle.textContent = 'Game complete!';
+        }
+
+        const finalKey = `final-${sessionCode}`;
+        if (!triggeredAnimations.has(finalKey)) {
+          triggeredAnimations.add(finalKey);
+          if (role === 'player') {
+            const me = winners.some((p) => p.id === playerId);
+            if (me) runConfetti(finalKey);
+            else runBlueRain(finalKey);
+          } else {
+            runConfetti(finalKey);
+          }
+        }
+      }
+
+      function renderRoundVotes(challenge, responses, summary) {
+        const wrap = document.getElementById('roundVotes');
+        const list = document.getElementById('roundVotesList');
+        wrap.classList.add('visible');
+        list.innerHTML = (summary || [])
+          .map((entry) => {
+            const answer = entry.answer || 'No answer';
+            const badgeText = entry.correct ? (entry.usedHint ? 'Correct (½)' : 'Correct') : 'Wrong';
+            return `<div class="vote-row">
+              <span>${escHtml(entry.name)} — ${escHtml(answer)}</span>
+              <span class="vote-badge ${entry.correct ? 'good' : 'bad'}">${badgeText}</span>
+            </div>`;
+          })
+          .join('');
+      }
+
+      function renderGameScreen() {
+        const game = session?.game || {};
+        const challenge = challengeById(game.currentChallengeId);
+        const isMemoryChallenge = challenge?.type === 'memory';
+        const memoryStep = isMemoryChallenge ? currentMemorizeStep(challenge, game) : null;
+        const roundIndex = Number(game.roundIndex || 0);
+        if (roundIndex !== lastKnownRoundIndex) {
+          lastKnownRoundIndex = roundIndex;
+          selectedChoice = null;
+          triggeredAnimations.clear();
+        }
+        const timerEl = document.getElementById('gameTimer');
+        const questionEl = document.getElementById('gameQuestion');
+        const statusEl = document.getElementById('gameStatus');
+        const roundLabel = document.getElementById('roundLabel');
+        const categoryBadge = document.getElementById('gameCategoryBadge');
+        const choicesEl = document.getElementById('gameChoices');
+        const submitBtn = document.getElementById('submitVoteBtn');
+        const nextRoundBtn = document.getElementById('nextRoundBtn');
+        const showResultsBtn = document.getElementById('showResultsBtn');
+        const isModerator = role === 'moderator';
+        const isModeratorView = role === 'moderator-view';
+
+        if (isModeratorView) {
+          document.getElementById('gameStatus').style.display = 'none';
+          document.getElementById('gameQuestion').style.display = 'none';
+          document.getElementById('gameChoices').style.display = 'none';
+        } else {
+          document.getElementById('gameStatus').style.display = '';
+          document.getElementById('gameQuestion').style.display = '';
+          document.getElementById('gameChoices').style.display = '';
+        }
+
+        roundLabel.textContent = `Round ${Number(game.roundIndex || 0)} of ${Number(game.roundsTotal || 0)}`;
+        categoryBadge.textContent = challenge?.category || 'Category';
+        if (isMemoryChallenge && game.phase === 'memorize') {
+          if (memoryStep.stage === 'instructions') {
+            questionEl.textContent = 'Memory Challenge: Get ready to memorize the next sequence.';
+          } else {
+            questionEl.textContent = `Memory Challenge: Memorize item ${memoryStep.index + 1} of ${memoryStep.total}.`;
+          }
+        } else {
+          questionEl.textContent = challenge?.question || 'Waiting for moderator...';
+        }
+
+        const now = Date.now();
+        const ends = game.timerEndsAt ? new Date(game.timerEndsAt).getTime() : now;
+        const left = Math.max(0, Math.ceil((ends - now) / 1000));
+        timerEl.textContent = `0:${String(left).padStart(2, '0')}`;
+        timerEl.classList.toggle('warn', left <= 7 && left > 3);
+        timerEl.classList.toggle('danger', left <= 3);
+
+        const responses = game.responses || {};
+        const myAnswer = responses[playerId] || null;
+        if (session.status === 'lobby') {
+          statusEl.textContent = 'Waiting for moderator to start game.';
+        } else if (game.phase === 'memorize') {
+          if (memoryStep.stage === 'instructions') {
+            statusEl.textContent = 'Memory round starts in 3 seconds.';
+          } else {
+            statusEl.textContent =
+              role === 'player'
+                ? 'Memory round: focus on the current item.'
+                : 'Memory round in progress.';
+          }
+        } else if (game.phase === 'question') {
+          statusEl.textContent =
+            role === 'player' && !myAnswer && left > 0
+              ? 'Tap your answer to lock it in.'
+              : myAnswer
+                ? 'Answer locked. Waiting for round to finish.'
+                : 'Question is active.';
+        } else if (game.phase === 'results') {
+          statusEl.textContent = 'Round complete — review votes and results.';
+        } else {
+          statusEl.textContent = 'Game state updating...';
+        }
+
+        choicesEl.innerHTML = '';
+        const revealOnly = isMemoryChallenge && game.phase === 'memorize';
+        if (revealOnly) {
+          const revealCard = document.createElement('div');
+          revealCard.className = 'game-status';
+          revealCard.style.margin = '0';
+          revealCard.style.padding = '14px';
+          revealCard.style.border = '1px dashed var(--border)';
+          revealCard.style.borderRadius = '12px';
+          revealCard.style.textAlign = 'center';
+          if (memoryStep.stage === 'instructions') {
+            revealCard.innerHTML =
+              '<strong>Memory Challenge</strong><div style="margin-top:8px">Get ready. Memorize items will appear one at a time.</div>';
+          } else {
+            revealCard.innerHTML =
+              `<div style="font-size:0.9rem;opacity:0.9;margin-bottom:8px">Memorize Item ${memoryStep.index + 1}/${memoryStep.total}</div>` +
+              `<div style="font-size:clamp(2.2rem,8vw,4.8rem);font-weight:900;line-height:1.05;letter-spacing:0.03em">${escHtml(memoryStep.item)}</div>`;
+          }
+          choicesEl.appendChild(revealCard);
+        }
+
+        (revealOnly ? [] : challenge?.options || []).forEach((opt, idx) => {
+          const tile = document.createElement('div');
+          tile.className = 'choice-tile';
+          if (game.phase === 'question' && role === 'player' && !myAnswer && left > 0) {
+            tile.classList.add('selectable');
+            tile.addEventListener('click', async () => {
+              if (selectedChoice) return;
+              selectedChoice = opt;
+              document.querySelectorAll('#gameChoices .choice-tile').forEach((node) =>
+                node.classList.remove('selectable', 'selected')
+              );
+              tile.classList.add('selected');
+              try {
+                await submitVote(opt);
+                playTone(640, 90);
+                await refreshSessionLoop();
+              } catch (_) {
+                selectedChoice = null;
+              }
+            });
+          }
+          if (myAnswer && myAnswer === opt) {
+            tile.classList.add('selected');
+          }
+          if (game.phase === 'results') {
+            if (opt === challenge.answer) tile.classList.add('correct');
+            else if (myAnswer === opt) tile.classList.add('wrong');
+          }
+          tile.innerHTML = `<span class="choice-letter">${String.fromCharCode(65 + idx)}.</span><span>${escHtml(opt)}</span>`;
+          choicesEl.appendChild(tile);
+        });
+
+        const openModPopupBtn = document.getElementById('openModPopupBtn');
+        const endRoundBtn = document.getElementById('endRoundBtn');
+        const endGameBtn = document.getElementById('endGameBtn');
+        const playerHintBtn = document.getElementById('playerHintBtn');
+        const hintPanel = document.getElementById('hintPanel');
+
+        submitBtn.style.display = 'none';
+        nextRoundBtn.style.display = isModerator && game.phase === 'results' ? 'inline-flex' : 'none';
+        showResultsBtn.style.display =
+          isModerator &&
+          game.phase === 'results' &&
+          Number(game.roundIndex || 0) >= Number(game.roundsTotal || 0)
+            ? 'inline-flex'
+            : 'none';
+        openModPopupBtn.style.display = isModerator && session.status === 'playing' ? 'inline-flex' : 'none';
+        endRoundBtn.style.display = isModerator && game.phase === 'question' ? 'inline-flex' : 'none';
+        endGameBtn.style.display = isModerator && session.status === 'playing' ? 'inline-flex' : 'none';
+
+        const playerUsedHint = !!(game.hintUsedBy || {})[playerId];
+        playerHintBtn.style.display =
+          role === 'player' && game.phase === 'question' && challenge?.hint && !playerUsedHint
+            ? 'inline-flex'
+            : 'none';
+
+        const modVoteStatus = document.getElementById('modVoteStatus');
+        const modPlayerGrid = document.getElementById('modPlayerGrid');
+        const modPlayerGridBody = document.getElementById('modPlayerGridBody');
+        if (isModerator && game.phase === 'question') {
+          const allPlayers = currentPlayers();
+          const voted = allPlayers.filter((p) => responses[p.id]);
+          const waiting = allPlayers.filter((p) => !responses[p.id]);
+          modVoteStatus.style.display = 'block';
+          modVoteStatus.innerHTML = `<div class="mod-vote-label">Votes: ${voted.length} / ${allPlayers.length}</div><div>${waiting.length ? 'Waiting: ' + waiting.map((p) => escHtml(p.name)).join(', ') : 'All players have voted!'}</div>`;
+        } else {
+          modVoteStatus.style.display = 'none';
+        }
+
+        if (isModerator) {
+          const allPlayers = currentPlayers();
+          const scores = game.scores || {};
+          const summaryByPlayer = new Map((game.roundSummary || []).map((row) => [row.playerId, row]));
+          const statusFor = (playerIdToCheck) => {
+            if (session.status === 'lobby') return 'waiting';
+            if (game.phase === 'memorize') return 'memorizing';
+            if (game.phase === 'question') return responses[playerIdToCheck] ? 'voted' : 'waiting';
+            if (game.phase === 'results') {
+              const row = summaryByPlayer.get(playerIdToCheck);
+              if (!row) return 'no answer';
+              return row.correct ? 'right' : 'wrong';
+            }
+            if (game.phase === 'final') return 'final';
+            return 'waiting';
+          };
+
+          if (!allPlayers.length) {
+            modPlayerGridBody.innerHTML = '<div style="font-size:0.84rem;color:var(--text-muted)">No players yet.</div>';
+          } else {
+            modPlayerGridBody.innerHTML = `
+              <table class="mod-player-grid-table">
+                <thead>
+                  <tr>
+                    <th>Player</th>
+                    <th>Status</th>
+                    <th>Answer</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${allPlayers
+                    .map((p) => {
+                      const roundOver = game.phase === 'results' || game.phase === 'final';
+                      const usedHint = !!(game.hintUsedBy || {})[p.id];
+                      const rawAnswer = responses[p.id] || '\u2014';
+                      const answer = roundOver
+                        ? rawAnswer !== '\u2014' && usedHint
+                          ? `${rawAnswer} (hint)`
+                          : rawAnswer
+                        : 'Hidden';
+                      const totalScore = Number(scores[p.id] || 0);
+                      return `<tr>
+                        <td>${escHtml(p.name)}</td>
+                        <td><span class="mod-player-status">${escHtml(statusFor(p.id))}</span></td>
+                        <td>${escHtml(answer)}</td>
+                        <td>${Number.isInteger(totalScore) ? totalScore : totalScore.toFixed(1)}</td>
+                      </tr>`;
+                    })
+                    .join('')}
+                </tbody>
+              </table>
+            `;
+          }
+          modPlayerGrid.style.display = 'block';
+        } else {
+          modPlayerGrid.style.display = 'none';
+        }
+
+        if (isModeratorView && challenge) {
+          const memoryLine =
+            challenge.type === 'memory'
+              ? `<strong>Memorize:</strong> ${escHtml(challenge.memorize || '')}<br />`
+              : '';
+          hintPanel.innerHTML = `${memoryLine}<strong>Answer:</strong> ${escHtml(challenge.answer)}<br /><strong>Hint:</strong> ${escHtml(challenge.hint || 'No hint for this question.')}`;
+          hintPanel.style.display = 'block';
+        } else if (role === 'player' && game.phase === 'memorize' && challenge?.type === 'memory') {
+          if (memoryStep.stage === 'instructions') {
+            hintPanel.innerHTML = '<strong>Memory Challenge</strong><div>Memorize items will start in 3 seconds.</div>';
+          } else {
+            hintPanel.innerHTML = `<strong>Memory Challenge</strong><div>Item ${memoryStep.index + 1}/${memoryStep.total}: ${escHtml(memoryStep.item)}</div>`;
+          }
+          hintPanel.style.display = 'block';
+        } else if (role === 'player' && game.phase === 'question' && playerUsedHint && challenge?.hint) {
+          hintPanel.innerHTML = `<strong>💡 Hint:</strong> ${escHtml(challenge.hint)}<div class="half-credit-notice">⚠️ Half credit awarded for correct answers</div>`;
+          hintPanel.style.display = 'block';
+        } else {
+          hintPanel.style.display = 'none';
+        }
+
+        const votesWrap = document.getElementById('roundVotes');
+        votesWrap.classList.remove('visible');
+        if (game.phase === 'results' && role === 'player') {
+          renderRoundVotes(challenge, responses, game.roundSummary || []);
+          const summaryMine = (game.roundSummary || []).find((row) => row.playerId === playerId);
+          if (role === 'player' && summaryMine) {
+            const roundKey = `round-${game.roundIndex}-${playerId}`;
+            if (!triggeredAnimations.has(roundKey)) {
+              triggeredAnimations.add(roundKey);
+              if (summaryMine.correct) runConfetti(roundKey);
+              else runBlueRain(roundKey);
+            }
+          }
+        } else if (isModeratorView) {
+          votesWrap.classList.remove('visible');
+          votesWrap.style.display = 'none';
+        } else {
+          votesWrap.style.display = '';
+        }
+      }
+
+      function applyRoleScreens() {
+        if (!session) return;
+        if (session.status === 'ended' || session?.game?.phase === 'final') {
+          renderResults();
+          showScreen('screen-results');
+          return;
+        }
+
+        if (role === 'moderator' && session.status === 'lobby') {
+          document.getElementById('hostLobbyMessage').textContent =
+            'Players can join now. Start when everyone is ready.';
+          renderLobbyPlayers();
+          showScreen('screen-setup');
+          return;
+        }
+
+        if (role === 'player' && session.status === 'lobby') {
+          showScreen('screen-game');
+          renderGameScreen();
+          return;
+        }
+
+        showScreen('screen-game');
+        renderGameScreen();
+      }
+
+      function computeRoundResults(game, challenge) {
+        const players = currentPlayers();
+        const responses = game.responses || {};
+        const hintUsedBy = game.hintUsedBy || {};
+        const nextScores = { ...(game.scores || {}) };
+        const summary = players.map((p) => {
+          const answer = responses[p.id] || null;
+          const correct = answer === challenge.answer;
+          const usedHint = !!hintUsedBy[p.id];
+          if (correct) nextScores[p.id] = Number(nextScores[p.id] || 0) + (usedHint ? 0.5 : 1);
+          return { playerId: p.id, name: p.name, answer, correct, usedHint };
+        });
+        return { nextScores, summary };
+      }
+
+      async function maybeAutoAdvanceToResults() {
+        if (role !== 'moderator' || !session) return;
+        if (session.status !== 'playing') return;
+        const game = session.game || {};
+        if (!game.timerEndsAt) return;
+        if (Date.now() < new Date(game.timerEndsAt).getTime()) return;
+
+        const challenge = challengeById(game.currentChallengeId);
+        if (!challenge) return;
+        if (game.phase === 'memorize') {
+          await patchSession({
+            patch: {
+              game: {
+                phase: 'question',
+                timerEndsAt: new Date(Date.now() + TIMER_PRESETS[timerPreset] * 1000).toISOString(),
+                announcement: 'Memorize phase complete — answer now.',
+              },
+            },
+          });
+          return;
+        }
+        if (game.phase !== 'question') return;
+        const { nextScores, summary } = computeRoundResults(game, challenge);
+        await patchSession({
+          patch: {
+            game: {
+              phase: 'results',
+              scores: nextScores,
+              roundSummary: summary,
+              announcement: 'Time is up — round results are live.',
+            },
+          },
+        });
+      }
+
+      async function startRound(roundIndex, roundsTotal, queue, scores) {
+        const challengeId = queue[roundIndex - 1];
+        const challenge = challengeById(challengeId);
+        if (!challenge) return;
+        const isMemoryChallenge = challenge.type === 'memory';
+        const phase = isMemoryChallenge ? 'memorize' : 'question';
+        const durationMs = isMemoryChallenge
+          ? memoryMemorizeConfig(challenge).totalMs
+          : TIMER_PRESETS[timerPreset] * 1000;
+        await patchSession({
+          patch: {
+            game: {
+              mode: 'quiz-vote',
+              roundsTotal,
+              roundIndex,
+              queue,
+              currentChallengeId: challengeId,
+              phase,
+              responses: {},
+              roundSummary: [],
+              timerEndsAt: new Date(Date.now() + durationMs).toISOString(),
+              scores,
+              announcement: isMemoryChallenge
+                ? `Round ${roundIndex} started — memorize now.`
+                : `Round ${roundIndex} started`,
+              hintUsedBy: {},
+            },
+          },
+        });
+      }
+
+      async function startHostGame() {
+        if (role !== 'moderator' || !session) return;
+        const players = currentPlayers();
+        if (!players.length) return;
+        const turns = selectedTurns;
+        const queue = seededShuffle(CHALLENGES, Date.now())
+          .slice(0, turns)
+          .map((c) => c.id);
+        const scores = {};
+        players.forEach((p) => {
+          scores[p.id] = 0;
+        });
+        await patchSession({
+          status: 'playing',
+          patch: {
+            game: {
+              mode: 'quiz-vote',
+              roundsTotal: turns,
+              roundIndex: 0,
+              queue,
+              scores,
+              phase: 'question',
+            },
+          },
+        });
+        await startRound(1, turns, queue, scores);
+
+        if (document.getElementById('moderatorOnlyToggle').checked) {
+          openModeratorPopup();
+        }
+      }
+
+      async function nextRound() {
+        if (role !== 'moderator' || !session) return;
+        const game = session.game || {};
+        const next = Number(game.roundIndex || 0) + 1;
+        const total = Number(game.roundsTotal || 0);
+        const queue = game.queue || [];
+        if (next > total) {
+          await patchSession({ status: 'ended', patch: { game: { phase: 'final' } } });
+          return;
+        }
+        await startRound(next, total, queue, game.scores || {});
+      }
+
+      async function showFinalResultsNow() {
+        if (role !== 'moderator') return;
+        await patchSession({ status: 'ended', patch: { game: { phase: 'final' } } });
+      }
+
+      async function endRoundNow() {
+        if (role !== 'moderator' || !session) return;
+        const game = session.game || {};
+        if (game.phase !== 'question') return;
+        const challenge = challengeById(game.currentChallengeId);
+        if (!challenge) return;
+        const { nextScores, summary } = computeRoundResults(game, challenge);
+        await patchSession({
+          patch: {
+            game: {
+              phase: 'results',
+              scores: nextScores,
+              roundSummary: summary,
+              announcement: 'Round ended by moderator.',
+            },
+          },
+        });
+        await refreshSessionLoop();
+      }
+
+      async function endGame() {
+        if (role !== 'moderator') return;
+        await patchSession({ status: 'ended', patch: { game: { phase: 'final' } } });
+        await refreshSessionLoop();
+      }
+
+      async function requestPlayerHint() {
+        if (role !== 'player' || !session || !playerId) return;
+        const response = await fetch(`/api/multiplayer/sessions/${sessionCode}/players/${playerId}`, {
+          method: 'PATCH',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ action: 'requestHint' }),
+        });
+        if (!response.ok) throw new Error('Failed to request hint');
+        await refreshSessionLoop();
+      }
+
+      function openModeratorPopup() {
+        if (!sessionCode) return;
+        const params = new URLSearchParams({ code: sessionCode, role: 'moderator-view' });
+        const url = `${window.location.origin}${window.location.pathname}#${params.toString()}`;
+        moderatorPopupRef = window.open(
+          url,
+          'mg-moderator-popup',
+          'width=980,height=760,toolbar=no,menubar=no'
+        );
+        if (moderatorPopupRef) {
+          moderatorPopupRef.focus();
+        }
+      }
+
+      async function resetToLobby() {
+        if (role !== 'moderator' || !session) return;
+        await patchSession({
+          status: 'lobby',
+          patch: {
+            game: {
+              phase: null,
+              roundIndex: 0,
+              roundsTotal: 0,
+              responses: {},
+              scores: {},
+              roundSummary: [],
+              queue: [],
+              currentChallengeId: null,
+              timerEndsAt: null,
+            },
+          },
+        });
+        selectedChoice = null;
+        lastKnownRoundIndex = -1;
+        triggeredAnimations.clear();
+        await refreshSessionLoop();
+      }
+
+      async function refreshSessionLoop() {
+        if (!sessionCode) return;
+        const next = await fetchSession(sessionCode);
+        if (!next) {
+          session = null;
+          return;
+        }
+        session = next;
+        await maybeAutoAdvanceToResults();
+        applyRoleScreens();
+      }
+
+      async function startPolling() {
+        clearInterval(pollingTimer);
+        await refreshSessionLoop();
+        pollingTimer = setInterval(() => {
+          refreshSessionLoop().catch(() => {});
+        }, 1000);
+      }
+
+      async function createLobbyForModerator() {
+        const configured = await isMultiplayerConfigured();
+        if (!configured) {
+          document.getElementById('hostLobbyMessage').textContent =
+            'Multiplayer backend is not configured on this deployment.';
+          return;
+        }
+
+        moderatorId = localStorage.getItem(localKey(MOD_KEY_PREFIX)) || generateId('mod');
+        localStorage.setItem(localKey(MOD_KEY_PREFIX), moderatorId);
+        let created = false;
+        for (let i = 0; i < 8 && !created; i += 1) {
+          const code = generateCode(6);
+          created = await createSession(code, moderatorId);
+          if (created) {
+            sessionCode = code;
+          }
+        }
+        if (!sessionCode) {
+          document.getElementById('hostLobbyMessage').textContent = 'Unable to initialize multiplayer room.';
+          return;
+        }
+
+        role = 'moderator';
+        const joinLink = `${window.location.origin}${window.location.pathname}#join=${sessionCode}`;
+        document.getElementById('joinLinkInput').value = joinLink;
+        document.getElementById('hostLobbyMessage').textContent = 'Share this link so players can join.';
+        setHash(new URLSearchParams({ code: sessionCode, role: 'moderator' }));
+        await startPolling();
+      }
+
+      function prepareJoin(code) {
+        role = 'player';
+        sessionCode = code.toUpperCase();
+        playerId = null;
+        document.getElementById('joinCodeLabel').textContent = sessionCode;
+        document.getElementById('joinNameInput').value = localStorage.getItem(localKey(NAME_KEY_PREFIX)) || '';
+        document.getElementById('joinMessage').textContent = '';
+        showScreen('screen-join');
+      }
+
+      async function resumeFromHash() {
+        const params = hashParams();
+        const hashRole = params.get('role');
+        const code = (params.get('code') || '').toUpperCase();
+        const joinCode = (params.get('join') || '').toUpperCase();
+        const pid = params.get('pid');
+
+        renderTurnSelector();
+        document.getElementById('turnSelector').addEventListener('click', (e) => {
+          const btn = e.target.closest('.turn-btn');
+          if (!btn) return;
+          selectedTurns = Number(btn.dataset.turns);
+          renderTurnSelector();
+        });
+
+        renderTimerPreset();
+        document.getElementById('timerPresetRow').addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-preset]');
+          if (!btn) return;
+          timerPreset = btn.dataset.preset;
+          renderTimerPreset();
+        });
+
+        if (joinCode) {
+          prepareJoin(joinCode);
+          return;
+        }
+
+        if (hashRole === 'player' && code && pid) {
+          role = 'player';
+          sessionCode = code;
+          playerId = pid;
+          await startPolling();
+          return;
+        }
+
+        if (hashRole === 'moderator' && code) {
+          role = 'moderator';
+          sessionCode = code;
+          moderatorId = localStorage.getItem(localKey(MOD_KEY_PREFIX));
+          if (!moderatorId) {
+            document.getElementById('hostLobbyMessage').textContent =
+              'Moderator credentials not found in this browser.';
+            showScreen('screen-setup');
+            return;
+          }
+          await startPolling();
+          return;
+        }
+
+        if (hashRole === 'moderator-view' && code) {
+          role = 'moderator-view';
+          sessionCode = code;
+          await startPolling();
+          return;
+        }
+
+        await createLobbyForModerator();
+      }
+
+      document.getElementById('tabHost').addEventListener('click', () => {
+        document.getElementById('tabHost').classList.add('active');
+        document.getElementById('tabSolo').classList.remove('active');
+        document.getElementById('panelHost').classList.add('active');
+        document.getElementById('panelSolo').classList.remove('active');
+      });
+
+      document.getElementById('tabSolo').addEventListener('click', () => {
+        document.getElementById('tabSolo').classList.add('active');
+        document.getElementById('tabHost').classList.remove('active');
+        document.getElementById('panelSolo').classList.add('active');
+        document.getElementById('panelHost').classList.remove('active');
+      });
+
+      document.getElementById('copyJoinLinkBtn').addEventListener('click', async () => {
+        const input = document.getElementById('joinLinkInput');
+        if (!input.value) return;
+        try {
+          await navigator.clipboard.writeText(input.value);
+          document.getElementById('hostLobbyMessage').textContent = 'Join link copied.';
+        } catch (_) {
+          document.getElementById('hostLobbyMessage').textContent = 'Could not copy join link.';
+        }
+      });
+
+      document.getElementById('startHostBtn').addEventListener('click', () => {
+        startHostGame().catch(() => {
+          document.getElementById('hostLobbyMessage').textContent = 'Could not start game.';
+        });
+      });
+
+      document.getElementById('submitVoteBtn').addEventListener('click', async () => {
+        if (!selectedChoice) return;
+        try {
+          await submitVote(selectedChoice);
+          playTone(640, 90);
+          selectedChoice = null;
+          await refreshSessionLoop();
+        } catch (_) {}
+      });
+
+      document.getElementById('openModPopupBtn').addEventListener('click', () => {
+        openModeratorPopup();
+      });
+      document.getElementById('endRoundBtn').addEventListener('click', () => {
+        endRoundNow().catch(() => {});
+      });
+      document.getElementById('endGameBtn').addEventListener('click', () => {
+        endGame().catch(() => {});
+      });
+      document.getElementById('playerHintBtn').addEventListener('click', () => {
+        requestPlayerHint().catch(() => {});
+      });
+
+      document.getElementById('nextRoundBtn').addEventListener('click', () => {
+        nextRound().catch(() => {});
+      });
+      document.getElementById('showResultsBtn').addEventListener('click', () => {
+        showFinalResultsNow().catch(() => {});
+      });
+
+      document.getElementById('joinSubmitBtn').addEventListener('click', async () => {
+        const name = document.getElementById('joinNameInput').value.trim();
+        if (!name) {
+          document.getElementById('joinMessage').textContent = 'Please enter your name.';
+          return;
+        }
+        document.getElementById('joinMessage').textContent = 'Joining room...';
+        try {
+          const joined = await joinSession(sessionCode, name);
+          playerId = joined.playerId;
+          localStorage.setItem(localKey(NAME_KEY_PREFIX), name);
+          setHash(new URLSearchParams({ code: sessionCode, role: 'player', pid: playerId }));
+          await startPolling();
+        } catch (err) {
+          document.getElementById('joinMessage').textContent = err.message || 'Unable to join.';
+        }
+      });
+
+      document.getElementById('joinNameInput').addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          document.getElementById('joinSubmitBtn').click();
+        }
+      });
+
+      document.getElementById('playAgainBtn').addEventListener('click', () => {
+        if (role === 'moderator') {
+          resetToLobby().catch(() => {});
+        } else if (!role || !session) {
+          showScreen('screen-setup');
+        }
+        // Players: do nothing — polling handles navigation when moderator resets
+      });
+
+      resumeFromHash().catch(() => {
+        document.getElementById('hostLobbyMessage').textContent = 'Unable to initialize multiplayer room.';
+      });
+
+      /* ══════════════════════════════════════════════
+         SOLO GAME
+      ══════════════════════════════════════════════ */
+
+      const solo = {
+        mode: 'Practice',
+        queue: [],
+        index: 0,
+        score: 0,
+        streak: 0,
+        correct: 0,
+        total: 0,
+        timerId: null,
+        timeLeft: 0,
+        answered: false,
+        hintRevealed: false,
+      };
+
+      const sEl = {
+        score: document.getElementById('soloScore'),
+        streak: document.getElementById('soloStreak'),
+        accuracy: document.getElementById('soloAccuracy'),
+        timer: document.getElementById('soloTimer'),
+        categoryBadge: document.getElementById('soloCategoryBadge'),
+        progressLabel: document.getElementById('soloProgressLabel'),
+        progressFill: document.getElementById('soloProgressFill'),
+        memoryReveal: document.getElementById('soloMemoryReveal'),
+        question: document.getElementById('soloQuestion'),
+        choices: document.getElementById('soloChoices'),
+        inputRow: document.getElementById('soloInputRow'),
+        answerInput: document.getElementById('soloAnswerInput'),
+        hint: document.getElementById('soloHint'),
+        feedback: document.getElementById('soloFeedback'),
+        hintBtn: document.getElementById('soloHintBtn'),
+        nextBtn: document.getElementById('soloNextBtn'),
+        endBtn: document.getElementById('soloEndBtn'),
+        modeLabel: document.getElementById('soloModeLabel'),
+      };
+
+      function startSoloSession(mode) {
+        const seed = mode === 'Daily' ? getDailySeed() : Date.now();
+        solo.queue = seededShuffle(CHALLENGES, seed).slice(0, 10);
+        solo.mode = mode;
+        solo.index = 0;
+        solo.score = 0;
+        solo.streak = 0;
+        solo.correct = 0;
+        solo.total = 0;
+        sEl.modeLabel.textContent = mode === 'Daily' ? 'Daily Challenge' : 'Practice';
+        showScreen('screen-solo');
+        renderSoloChallenge();
+      }
+
+      document.getElementById('startPracticeBtn').addEventListener('click', () => startSoloSession('Practice'));
+      document.getElementById('startDailyBtn').addEventListener('click', () => startSoloSession('Daily'));
+
+      document.getElementById('soloBackBtn').addEventListener('click', () => {
+        clearInterval(solo.timerId);
+        showScreen('screen-setup');
+      });
+
+      function updateSoloStats() {
+        sEl.score.textContent = solo.score;
+        sEl.streak.textContent = solo.streak;
+        sEl.accuracy.textContent = solo.total ? `${Math.round((solo.correct / solo.total) * 100)}%` : '—';
+      }
+
+      function renderSoloChallenge() {
+        const ch = solo.queue[solo.index];
+        if (!ch) return;
+
+        solo.answered = false;
+        solo.hintRevealed = false;
+
+        sEl.categoryBadge.textContent = ch.category;
+        sEl.progressLabel.textContent = `${solo.index + 1} of ${solo.queue.length}`;
+        sEl.progressFill.style.width = `${((solo.index + 1) / solo.queue.length) * 100}%`;
+
+        sEl.question.textContent = ch.question;
+        sEl.memoryReveal.style.display = 'none';
+        sEl.hint.style.display = 'none';
+        sEl.feedback.style.display = 'none';
+        sEl.feedback.className = 'solo-feedback';
+        sEl.choices.innerHTML = '';
+        sEl.inputRow.style.display = 'none';
+        sEl.hintBtn.disabled = false;
+        sEl.nextBtn.style.display = 'none';
+        sEl.endBtn.style.display = 'inline-flex';
+
+        if (ch.type === 'mcq' || ch.type === 'memory') {
+          ch.options.forEach((opt) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'solo-choice';
+            btn.textContent = opt;
+            btn.addEventListener('click', () => handleSoloAnswer(opt));
+            sEl.choices.appendChild(btn);
+          });
+        } else {
+          sEl.inputRow.style.display = 'flex';
+          sEl.answerInput.value = '';
+          sEl.answerInput.focus();
+        }
+
+        /* Memory challenges: show sequence, hide after 3 seconds, then start timer */
+        if (ch.type === 'memory') {
+          sEl.memoryReveal.style.display = 'block';
+          sEl.memoryReveal.textContent = `Memorize: ${ch.memorize}`;
+          /* Disable choices during memorize phase */
+          Array.from(sEl.choices.children).forEach((b) => {
+            b.disabled = true;
+          });
+          setTimeout(() => {
+            if (solo.queue[solo.index]?.id !== ch.id) return;
+            sEl.memoryReveal.style.display = 'none';
+            Array.from(sEl.choices.children).forEach((b) => {
+              b.disabled = false;
+            });
+            startSoloTimer(ch.timeLimit);
+          }, 3000);
+        } else {
+          startSoloTimer(ch.timeLimit);
+        }
+
+        updateSoloStats();
+      }
+
+      function startSoloTimer(limit) {
+        clearInterval(solo.timerId);
+        solo.timeLeft = limit;
+        renderSoloTimer();
+        solo.timerId = setInterval(() => {
+          solo.timeLeft = Math.max(0, solo.timeLeft - 1);
+          renderSoloTimer();
+          if (solo.timeLeft <= 0) handleSoloAnswer(null, true);
+        }, 1000);
+      }
+
+      function renderSoloTimer() {
+        sEl.timer.textContent = `0:${String(solo.timeLeft).padStart(2, '0')}`;
+      }
+
+      function handleSoloAnswer(value, timedOut = false) {
+        if (solo.answered) return;
+        solo.answered = true;
+        clearInterval(solo.timerId);
+
+        const ch = solo.queue[solo.index];
+        solo.total++;
+
+        const isCorrect = !timedOut && value !== null && String(value).trim() === String(ch.answer).trim();
+
+        if (isCorrect) {
+          solo.score += 10 * ch.difficulty + Math.max(0, Math.floor(solo.timeLeft));
+          solo.streak++;
+          solo.correct++;
+          playTone(660, 150);
+        } else {
+          solo.streak = 0;
+          playTone(220, 180);
+        }
+
+        updateSoloStats();
+
+        /* Highlight choices */
+        if (ch.type === 'mcq' || ch.type === 'memory') {
+          Array.from(sEl.choices.children).forEach((btn) => {
+            if (btn.textContent === ch.answer) btn.classList.add('correct');
+            else if (btn.textContent === value) btn.classList.add('wrong');
+            btn.disabled = true;
+          });
+        }
+
+        const msg = timedOut ? 'Time is up.' : isCorrect ? 'Correct!' : `Not quite. Answer: ${ch.answer}.`;
+        sEl.feedback.style.display = 'block';
+        sEl.feedback.className = `solo-feedback ${isCorrect ? 'good' : 'bad'}`;
+        sEl.feedback.innerHTML = `<strong>${escHtml(msg)}</strong><br>${escHtml(ch.explanation)}`;
+
+        sEl.hintBtn.disabled = true;
+        sEl.nextBtn.style.display = 'inline-flex';
+        sEl.nextBtn.textContent = solo.index + 1 >= solo.queue.length ? 'See Results' : 'Next';
+      }
+
+      sEl.hintBtn.addEventListener('click', () => {
+        if (solo.hintRevealed) return;
+        const ch = solo.queue[solo.index];
+        if (!ch) return;
+        sEl.hint.textContent = `Hint: ${ch.hint}`;
+        sEl.hint.style.display = 'block';
+        solo.hintRevealed = true;
+      });
+
+      sEl.nextBtn.addEventListener('click', () => {
+        if (solo.index + 1 >= solo.queue.length) {
+          showSoloResults();
+        } else {
+          solo.index++;
+          renderSoloChallenge();
+        }
+      });
+
+      sEl.endBtn.addEventListener('click', () => {
+        clearInterval(solo.timerId);
+        showSoloResults();
+      });
+
+      sEl.inputRow.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!solo.answered) handleSoloAnswer(sEl.answerInput.value);
+      });
+
+      function showSoloResults() {
+        clearInterval(solo.timerId);
+        const accuracy = solo.total ? Math.round((solo.correct / solo.total) * 100) : 0;
+
+        const list = document.getElementById('resultsList');
+        list.innerHTML = '';
+
+        const scoreLi = document.createElement('li');
+        scoreLi.className = 'leaderboard-item';
+        scoreLi.innerHTML = `
+          <span class="leaderboard-rank">🏅</span>
+          <span class="leaderboard-name">Your Score</span>
+          <span class="leaderboard-score">${solo.score} pts</span>
+        `;
+        list.appendChild(scoreLi);
+
+        const statsLi = document.createElement('li');
+        statsLi.className = 'leaderboard-item';
+        statsLi.innerHTML = `
+          <span class="leaderboard-rank" style="font-size:1rem">📊</span>
+          <span class="leaderboard-name" style="font-size:0.95rem; font-weight:600; color:var(--text-muted)">
+            Accuracy: ${accuracy}% &nbsp;·&nbsp; Streak: ${solo.streak} &nbsp;·&nbsp; ${solo.correct}/${solo.total} correct
+          </span>
+        `;
+        list.appendChild(statsLi);
+
+        document.getElementById('resultsSubtitle').textContent = `Score: ${solo.score} — ${accuracy}% accuracy`;
+
+        showScreen('screen-results');
+
+      }
+
+      /* ══════════════════════════════════════════════
+         RESULTS SCREEN ACTIONS
+      ══════════════════════════════════════════════ */
+
+      document.getElementById('shareResultsBtn').addEventListener('click', () => {
+        if (window.voaShare) {
+          window.voaShare({ text: 'Just played Mental Gymnastics! Can you beat my score?' });
+        }
+      });
+    </script>
+  </body>
+</html>

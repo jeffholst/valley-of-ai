@@ -9,6 +9,7 @@
   "tags": ["bingo", "number-caller", "party", "random", "host-tool", "mobile-friendly"],
   "homepagePath": "index.html",
   "inputMode": "responsive",
+  "visible": false,
   "generation": {
     "agentName": "dev",
     "llmModel": "openai-codex/gpt-5.3-codex",
@@ -18,5 +19,6 @@
     "totalTokensOut": 3580,
     "runId": "run-20260406T070015Z-a1b2c3",
     "notes": "Built from vote-and-category-analysis recommendation; no approved GitHub suggestion issue available."
-  }
+  },
+  "leaderboard": false
 }

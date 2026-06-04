@@ -1,0 +1,49 @@
+{
+  "id": "mental-gymnastics",
+  "name": "Mental Gymnastics",
+  "shortDescription": "A fast-paced brain training session with micro-challenges across math, logic, memory, and reasoning. Build streaks, beat the timer, and finish the daily set.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-04-16T05:12:26Z",
+  "category": "Education",
+  "status": "active",
+  "tags": [
+    "brain-training",
+    "timed-challenges",
+    "logic",
+    "mental-math",
+    "memory",
+    "education",
+    "streaks"
+  ],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "maxScore": 2000,
+  "suggestion": {
+    "issueNumber": 336,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/336",
+    "prompt": "## App Suggestion\n\n**Category:** Education\n**Requestor:** Perplexity\n\n### Description\n\nBuild a polished JavaScript web app called \u201cMental Gymnastics,\u201d an educational brain-training challenge game focused on problems that can be solved entirely in your head in about 10\u201330 seconds. Include at least 25 starting challenges across categories like mental math, number patterns, estimation, logic, memory, sequencing, and word/shape reasoning. Each challenge should show one question, a timer, optional hint, answer input or multiple choice, instant feedback, explanation, score, streak, and difficulty rating. Add random challenge rotation, progress tracking for the current session, and a \u201cdaily challenge\u201d mode. Keep the UI clean, modern, fast, and mobile-friendly with smooth animations, satisfying sounds, and accessibility features. Emphasize learning and reasoning, not rote trivia. Include an easy way to add more challenges in code via a JSON array or objects",
+    "requestor": "Perplexity"
+  },
+  "generation": {
+    "agentName": "GitHub Copilot",
+    "llmModel": "GPT-5.2-Codex",
+    "startTime": "2026-04-16T05:12:26Z",
+    "endTime": "2026-04-16T05:15:30Z",
+    "totalTokensIn": 0,
+    "totalTokensOut": 0,
+    "runId": "run-20260416T051226Z-2bbfd0",
+    "notes": "Built from approved suggestion #336. Token counts recorded as 0 for this manual run."
+  },
+  "improvements": [
+    {
+      "issueNumber": 338,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/338",
+      "runId": "run-20260416T194233Z-a3f8c2",
+      "description": "Redesigned as host-facilitated multiplayer game with setup screen (player manager, turn selector, moderator popup window), host game screen with A/B/C/D choices and reveal-then-award flow, results leaderboard, and dark theme font readability fixes. Solo practice mode preserved.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-04-16T19:42:33Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-sonnet-4-6"
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#172035"/>
+    </linearGradient>
+    <linearGradient id="accentLine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f1f5f9"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="primaryBtn" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#9333ea"/>
+    </linearGradient>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="cardShadow" x="-5%" y="-5%" width="110%" height="120%">
+      <feGaussianBlur stdDeviation="6" in="SourceAlpha" result="shadow"/>
+      <feOffset dx="0" dy="4" result="offsetShadow"/>
+      <feMerge>
+        <feMergeNode in="offsetShadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bg)"/>
+
+  <!-- Subtle grid texture -->
+  <line x1="0" y1="112" x2="800" y2="112" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="0" y1="224" x2="800" y2="224" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="0" y1="336" x2="800" y2="336" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="200" y1="0" x2="200" y2="450" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="400" y1="0" x2="400" y2="450" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="600" y1="0" x2="600" y2="450" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+
+  <!-- Top accent bar -->
+  <rect x="0" y="0" width="800" height="3" fill="url(#accentLine)"/>
+
+  <!-- App title + subtitle -->
+  <text x="40" y="46" font-family="system-ui, sans-serif" font-size="30" font-weight="800" fill="url(#titleGrad)" filter="url(#softGlow)" letter-spacing="-0.5">
+    <tspan fill="#a855f7">◆</tspan>
+    <tspan dx="8">Alibi</tspan>
+  </text>
+  <text x="40" y="68" font-family="system-ui, sans-serif" font-size="13" fill="#94a3b8">
+    Host-facilitated team-builder for Zoom calls
+  </text>
+
+  <!-- Round + category pills -->
+  <rect x="40" y="84" width="120" height="26" rx="13" fill="#2e1065" stroke="#a855f7" stroke-width="1"/>
+  <text x="100" y="101" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#c4b5fd" text-anchor="middle">ROUND 3 OF 5</text>
+
+  <rect x="170" y="84" width="80" height="26" rx="13" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="210" y="101" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#94a3b8" text-anchor="middle">OFFICE</text>
+
+  <!-- Timer -->
+  <rect x="690" y="82" width="70" height="30" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="725" y="103" font-family="system-ui, sans-serif" font-size="16" font-weight="800" fill="#f59e0b" text-anchor="middle" filter="url(#softGlow)">0:12</text>
+
+  <!-- Crime card -->
+  <rect x="40" y="124" width="490" height="118" rx="16" fill="url(#cardGrad)" stroke="#334155" stroke-width="1" filter="url(#cardShadow)"/>
+  <rect x="40" y="124" width="5" height="118" rx="2" fill="#f97316"/>
+  <text x="60" y="148" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#fb923c" letter-spacing="0.1em">
+    <tspan>TONIGHT'S CASE</tspan>
+  </text>
+  <text x="60" y="178" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#f1f5f9">Every coffee mug in the break room has</text>
+  <text x="60" y="198" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#f1f5f9">been replaced with matching kitten mugs.</text>
+  <text x="60" y="222" font-family="system-ui, sans-serif" font-size="11" fill="#94a3b8">Office · Break Room Mystery</text>
+
+  <!-- Accused card -->
+  <rect x="40" y="256" width="238" height="150" rx="16" fill="url(#cardGrad)" stroke="#334155" stroke-width="1" filter="url(#cardShadow)"/>
+  <text x="159" y="282" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#64748b" letter-spacing="0.1em" text-anchor="middle">THE ACCUSED</text>
+  <text x="159" y="320" font-family="system-ui, sans-serif" font-size="28" font-weight="800" fill="#a855f7" text-anchor="middle" filter="url(#softGlow)" letter-spacing="-0.5">Marcus</text>
+  <text x="159" y="342" font-family="system-ui, sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">has 45 seconds to invent an alibi</text>
+
+  <!-- Spin button -->
+  <rect x="65" y="360" width="188" height="32" rx="8" fill="url(#primaryBtn)"/>
+  <text x="159" y="381" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">🎰 Spin for Accused</text>
+
+  <!-- Award preview card -->
+  <rect x="292" y="256" width="238" height="150" rx="16" fill="url(#cardGrad)" stroke="#334155" stroke-width="1" filter="url(#cardShadow)"/>
+  <text x="308" y="282" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#64748b" letter-spacing="0.1em">AWARD POINTS</text>
+
+  <!-- Award rows -->
+  <text x="308" y="306" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#f1f5f9">🏆 Best Alibi</text>
+  <rect x="440" y="294" width="38" height="18" rx="9" fill="#166534" stroke="#22c55e" stroke-width="1"/>
+  <text x="459" y="307" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#86efac" text-anchor="middle">+2</text>
+
+  <rect x="308" y="322" width="60" height="26" rx="8" fill="#166534" fill-opacity="0.35" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="338" y="339" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#86efac" text-anchor="middle">Marcus</text>
+  <rect x="374" y="322" width="48" height="26" rx="8" fill="#293548" stroke="#334155" stroke-width="1"/>
+  <text x="398" y="339" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#f1f5f9" text-anchor="middle">Jules</text>
+  <rect x="428" y="322" width="48" height="26" rx="8" fill="#293548" stroke="#334155" stroke-width="1"/>
+  <text x="452" y="339" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#f1f5f9" text-anchor="middle">Sam</text>
+  <rect x="482" y="322" width="38" height="26" rx="8" fill="#293548" stroke="#334155" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="501" y="339" font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#64748b" text-anchor="middle">Skip</text>
+
+  <text x="308" y="368" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#94a3b8">🤝 Most Convincing</text>
+  <rect x="440" y="358" width="38" height="18" rx="9" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="459" y="371" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#94a3b8" text-anchor="middle">+1</text>
+
+  <rect x="308" y="382" width="210" height="18" rx="6" fill="#172035"/>
+  <text x="413" y="395" font-family="system-ui, sans-serif" font-size="10" fill="#64748b" text-anchor="middle">Tap a player to award</text>
+
+  <!-- Moderator side panel -->
+  <rect x="548" y="124" width="212" height="282" rx="14" fill="#0d1a2e" stroke="#3b0764" stroke-width="1.5"/>
+  <rect x="548" y="124" width="212" height="3" rx="1.5" fill="#a855f7"/>
+
+  <!-- Moderator window header -->
+  <text x="562" y="146" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#475569" letter-spacing="0.1em">◆ MODERATOR VIEW</text>
+  <circle cx="744" cy="138" r="5" fill="#334155"/>
+
+  <!-- Mod: This round's case -->
+  <text x="562" y="168" font-family="system-ui, sans-serif" font-size="9" fill="#475569" font-weight="700" letter-spacing="0.06em">THIS ROUND'S CASE</text>
+  <rect x="562" y="174" width="184" height="34" rx="8" fill="#1e293b"/>
+  <rect x="562" y="174" width="3" height="34" rx="1" fill="#f97316"/>
+  <text x="572" y="189" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#f1f5f9">Office — Break Room Mystery:</text>
+  <text x="572" y="201" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">Coffee mugs replaced...</text>
+
+  <!-- Mod: The Accused -->
+  <text x="562" y="226" font-family="system-ui, sans-serif" font-size="9" fill="#475569" font-weight="700" letter-spacing="0.06em">THE ACCUSED</text>
+  <text x="562" y="248" font-family="system-ui, sans-serif" font-size="16" font-weight="800" fill="#a855f7" filter="url(#softGlow)">Marcus</text>
+
+  <!-- Mod: The Real Truth -->
+  <text x="562" y="272" font-family="system-ui, sans-serif" font-size="9" fill="#475569" font-weight="700" letter-spacing="0.06em">THE REAL TRUTH</text>
+  <rect x="562" y="278" width="184" height="40" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="570" y="292" font-family="system-ui, sans-serif" font-size="9" fill="#cbd5e1">It was the IT intern — they</text>
+  <text x="570" y="303" font-family="system-ui, sans-serif" font-size="9" fill="#cbd5e1">thought it would "boost morale</text>
+  <text x="570" y="314" font-family="system-ui, sans-serif" font-size="9" fill="#cbd5e1">scores."</text>
+
+  <!-- Mod: Prompt ideas -->
+  <text x="562" y="336" font-family="system-ui, sans-serif" font-size="9" fill="#475569" font-weight="700" letter-spacing="0.06em">PROMPT IDEAS</text>
+  <circle cx="566" cy="350" r="1.8" fill="#94a3b8"/>
+  <text x="573" y="353" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">Ask: "Where were you at 9:47?"</text>
+  <circle cx="566" cy="364" r="1.8" fill="#94a3b8"/>
+  <text x="573" y="367" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">"Why did your chair scoot?"</text>
+
+  <!-- Mod: Scoreboard -->
+  <line x1="562" y1="380" x2="746" y2="380" stroke="#3b0764" stroke-width="1"/>
+  <text x="562" y="394" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#c4b5fd">Jules</text>
+  <text x="744" y="394" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#a855f7" text-anchor="end">3 pts</text>
+  <text x="562" y="408" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#94a3b8">Marcus</text>
+  <text x="744" y="408" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#64748b" text-anchor="end">1 pt</text>
+
+  <!-- Bottom edge glow -->
+  <rect x="0" y="440" width="800" height="10" fill="url(#accentLine)" fill-opacity="0.15"/>
+
+  <!-- Corner accents -->
+  <rect x="0" y="0" width="3" height="80" fill="url(#accentLine)" fill-opacity="0.5"/>
+  <rect x="797" y="0" width="3" height="80" fill="url(#accentLine)" fill-opacity="0.5"/>
+</svg>

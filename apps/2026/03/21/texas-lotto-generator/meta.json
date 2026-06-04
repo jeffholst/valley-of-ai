@@ -26,5 +26,6 @@
     "totalTokensOut": 8700,
     "runId": "run-20260321T181439Z-a7f3c2",
     "notes": "All 8 major Texas Lottery games included. Animated ball machine with bouncing balls. One-at-a-time draw reveal with pop animation. Full confetti celebration on draw complete. Mobile-first responsive design."
-  }
+  },
+  "leaderboard": false
 }

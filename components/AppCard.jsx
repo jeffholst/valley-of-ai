@@ -18,7 +18,13 @@ export default function AppCard({ app, initialCounts }) {
 
   return (
     <div className="card overflow-hidden group">
-      <Link href={`/showcase/${app.id}`} className="block" tabIndex={-1} aria-hidden="true">
+      <a
+        href={app.appPath}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+        aria-label={`Launch ${app.name}`}
+      >
         <div className="aspect-video bg-gradient-to-br from-primary-400 to-primary-600 relative overflow-hidden">
           {app.thumbnailUrl ? (
             <img
@@ -34,7 +40,7 @@ export default function AppCard({ app, initialCounts }) {
             <span className="text-4xl opacity-50">🤖</span>
           </div>
         </div>
-      </Link>
+      </a>
 
       <div className="p-4">
         <div className="flex items-start justify-between gap-2 mb-2">
@@ -61,10 +67,21 @@ export default function AppCard({ app, initialCounts }) {
           {app.shortDescription}
         </p>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <span className="inline-block px-2 py-1 text-xs font-medium bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 rounded-full">
             {app.category}
           </span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">{formattedDate}</span>
+        </div>
+
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <Link
+            href={`/showcase/${app.id}`}
+            className="inline-flex items-center gap-0.5 text-[0.72rem] font-semibold tracking-wide text-indigo-950 bg-gradient-to-r from-violet-300 to-sky-300 rounded-full px-2 py-0.5 whitespace-nowrap transition-transform hover:scale-105"
+            title={`View details for ${app.name}`}
+          >
+            🧠 Details
+          </Link>
           <div className="flex items-center gap-2">
             {app.allowImprovements !== false ? (
               <Link
@@ -82,7 +99,6 @@ export default function AppCard({ app, initialCounts }) {
                 🔒 Locked
               </span>
             )}
-            <span className="text-xs text-gray-500 dark:text-gray-400">{formattedDate}</span>
           </div>
         </div>
       </div>

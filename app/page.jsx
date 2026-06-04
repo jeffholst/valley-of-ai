@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import DonateModal from '@/components/DonateModal';
+import WelcomeModal from '@/components/WelcomeModal';
 import GalleryFilters from '@/components/GalleryFilters';
 import GalleryGrid from '@/components/GalleryGrid';
 import GalleryPagination, { PER_PAGE_OPTIONS } from '@/components/GalleryPagination';
@@ -10,8 +11,11 @@ import OptionsDrawer from '@/components/OptionsDrawer';
 import PaymentSuccessModal from '@/components/PaymentSuccessModal';
 import PterodactylSky from '@/components/PterodactylSky';
 import { usePterodactyls } from '@/hooks/usePterodactyls';
-import { useAllVoteCounts } from '@/hooks/useVotes';
+import { trendingScore } from '@/lib/trendingScore';
 import appsData from '@/data/apps.json';
+import appVoteStats from '@/data/app-vote-stats.json';
+import postsData from '@/data/posts.json';
+import BlogPostCard from '@/components/BlogPostCard';
 
 const OPTIONS_STORAGE_KEY = 'voa-page-options';
 const FILTERS_STORAGE_KEY = 'voa-gallery-filters';
@@ -38,10 +42,12 @@ const DEFAULT_OPTIONS = {
   earthquake: false,
 };
 
-const allAppIds = appsData.map((app) => app.id);
+const staticVoteCounts = appVoteStats.apps ?? {};
+const staticVoteStatsTime = new Date(appVoteStats.generatedAt).getTime();
 
 export default function HomePage() {
   const [showDonateModal, setShowDonateModal] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [paymentType, setPaymentType] = useState('tip');
   const [sortBy, setSortBy] = useState('newest');
@@ -56,9 +62,15 @@ export default function HomePage() {
   const [inputModeFilter, setInputModeFilter] = useState('');
 
   const { pterodactyls, handleKill } = usePterodactyls();
-  const { voteCounts, isLoading: _votesLoading } = useAllVoteCounts(allAppIds);
+  const voteCounts = staticVoteCounts;
 
   // Open donate modal if ?donate=1 is in the URL
+  useEffect(() => {
+    if (!localStorage.getItem('voa-welcome-dismissed')) {
+      setShowWelcomeModal(true);
+    }
+  }, []);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('donate') === '1') {
@@ -206,6 +218,27 @@ export default function HomePage() {
     if (sortBy === 'highest') {
       return apps.sort((a, b) => (voteCounts[b.id]?.net ?? 0) - (voteCounts[a.id]?.net ?? 0));
     }
+    if (sortBy === 'trending') {
+      const now = Number.isFinite(staticVoteStatsTime) ? staticVoteStatsTime : Date.now();
+      return apps.sort((a, b) => {
+        const scoreA = trendingScore(a.createdAt, voteCounts[a.id]?.recentNet ?? 0, now);
+        const scoreB = trendingScore(b.createdAt, voteCounts[b.id]?.recentNet ?? 0, now);
+        if (scoreB !== scoreA) {
+          return scoreB - scoreA;
+        }
+        const recentNetA = voteCounts[a.id]?.recentNet ?? 0;
+        const recentNetB = voteCounts[b.id]?.recentNet ?? 0;
+        if (recentNetB !== recentNetA) {
+          return recentNetB - recentNetA;
+        }
+        const netA = voteCounts[a.id]?.net ?? 0;
+        const netB = voteCounts[b.id]?.net ?? 0;
+        if (netB !== netA) {
+          return netB - netA;
+        }
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
+    }
     return apps.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }, [filteredApps, sortBy, voteCounts]);
 
@@ -240,6 +273,26 @@ export default function HomePage() {
     setCurrentPage(1);
     setSortBy(DEFAULT_FILTERS.sortBy);
     setPerPage(DEFAULT_FILTERS.perPage);
+  };
+
+  const showTrending = () => {
+    setSearchQuery('');
+    setCategoryFilter('');
+    setAgentFilter('');
+    setModelFilter('');
+    setInputModeFilter('');
+    setCurrentPage(1);
+    setSortBy('trending');
+  };
+
+  const showNewest = () => {
+    setSearchQuery('');
+    setCategoryFilter('');
+    setAgentFilter('');
+    setModelFilter('');
+    setInputModeFilter('');
+    setCurrentPage(1);
+    setSortBy('newest');
   };
 
   const handleFilterChange = (setter) => (value) => {
@@ -290,20 +343,6 @@ export default function HomePage() {
               💡 Keep the lights on
             </button>
           </div>
-          <p className="text-lg text-gray-900 dark:text-gray-300 max-w-2xl mx-auto mb-4">
-            A new AI-generated app is published every night. Come back daily to discover what our AI
-            agents have built — from games to utilities to creative tools.
-          </p>
-          <p className="text-gray-900 dark:text-gray-300 max-w-2xl mx-auto">
-            Vote for your favorites and help shape what gets built next.{' '}
-            <Link
-              href="/suggest"
-              className="text-primary-600 dark:text-primary-400 hover:underline font-medium"
-            >
-              Suggest an app idea
-            </Link>{' '}
-            and our AI might bring it to life.
-          </p>
         </div>
 
         <GalleryFilters
@@ -319,6 +358,8 @@ export default function HomePage() {
           onInputModeChange={handleFilterChange(setInputModeFilter)}
           activeFilterCount={activeFilterCount}
           onReset={resetFilters}
+          sortBy={sortBy}
+          onSortChange={handleFilterChange(setSortBy)}
         />
 
         <GalleryPagination
@@ -329,6 +370,8 @@ export default function HomePage() {
           perPage={perPage}
           sortBy={sortBy}
           onPageChange={goToPage}
+          onTrendingShortcut={showTrending}
+          onNewestShortcut={showNewest}
           onPerPageChange={(val) => {
             setPerPage(val);
             setCurrentPage(1);
@@ -365,9 +408,32 @@ export default function HomePage() {
             setCurrentPage(1);
           }}
         />
+
+        {/* Experiment Log — recent posts */}
+        {postsData.length > 0 && (
+          <section className="mt-16 pt-10 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                The Experiment Blog
+              </h2>
+              <Link
+                href="/blog"
+                className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+              >
+                All posts →
+              </Link>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {postsData.slice(0, 3).map((post) => (
+                <BlogPostCard key={post.slug} post={post} />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
 
       {mounted && <OptionsDrawer options={options} onToggle={handleOptionToggle} />}
+      {showWelcomeModal && <WelcomeModal onClose={() => setShowWelcomeModal(false)} />}
       {showDonateModal && <DonateModal onClose={() => setShowDonateModal(false)} />}
       {showPaymentSuccess && (
         <PaymentSuccessModal type={paymentType} onClose={() => setShowPaymentSuccess(false)} />

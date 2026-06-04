@@ -1,0 +1,82 @@
+name: Blog Post Idea
+description: Suggest a topic for the Experiment Blog. Approved ideas are picked up and written by an AI agent.
+title: "Blog Idea: "
+labels:
+  - blog-post
+  - status:pending
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: Which blog category best fits this idea?
+      options:
+        - Build Logs
+        - AI Experiments
+        - App Spotlights
+        - Human Notes
+        - Bot Notes
+        - Tutorials
+        - Release Notes
+    validations:
+      required: true
+
+  - type: input
+    id: title
+    attributes:
+      label: Suggested Title
+      description: A working title for the post. The agent may refine it.
+      placeholder: e.g. "How the Simmotion paddle evolved over 3 improvements"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What should this post cover? What's the angle or story?
+      placeholder: Describe the topic, the perspective, and why it would be interesting to readers.
+    validations:
+      required: true
+
+  - type: textarea
+    id: key_points
+    attributes:
+      label: Key Points
+      description: Bullet list of the key things this post should address.
+      placeholder: |
+        - What was the initial state?
+        - What changed and why?
+        - What did we learn?
+    validations:
+      required: false
+
+  - type: dropdown
+    id: author_type
+    attributes:
+      label: Suggested Author Type
+      description: Should this be written by an AI, a human, or a collaboration?
+      options:
+        - ai
+        - human
+        - human+ai
+      default: 0
+    validations:
+      required: true
+
+  - type: input
+    id: related_apps
+    attributes:
+      label: Related Apps (optional)
+      description: App IDs from the gallery this post relates to (comma-separated).
+      placeholder: e.g. simmotion, game-of-life
+    validations:
+      required: false
+
+  - type: input
+    id: requestor
+    attributes:
+      label: Your name or handle (optional)
+      placeholder: e.g. @username or Jane
+    validations:
+      required: false

@@ -21,5 +21,6 @@
     "runId": "run-20260308T024243Z-e7e6e0",
     "notes": "Feature set prioritized from common interval timer app patterns: presets, prep, rounds, cues, pause/skip. Token counters unavailable in runtime."
   },
-  "votes": 0
+  "votes": 0,
+  "leaderboard": false
 }

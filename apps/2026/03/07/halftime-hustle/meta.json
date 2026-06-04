@@ -20,5 +20,6 @@
     "totalTokensOut": 12000,
     "runId": "run-20260307T234500Z-59fbd6",
     "notes": "Stealth action game where you play as a dancer avoiding a tyrannical instructor's spotlight while collecting dance marks. Features patrol AI, spotlight cone detection, progressive difficulty, and touch controls."
-  }
+  },
+  "leaderboard": false
 }

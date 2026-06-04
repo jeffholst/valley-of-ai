@@ -20,5 +20,6 @@
     "totalTokensOut": 12000,
     "runId": "run-20260308T020940Z-60cf1d",
     "notes": "Vertical scrolling racing game with 4-lane highway, enemy traffic, wet spots causing spin-outs, score/distance/speed tracking, and responsive touch controls."
-  }
+  },
+  "leaderboard": false
 }

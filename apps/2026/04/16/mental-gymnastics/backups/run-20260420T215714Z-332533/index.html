@@ -1,0 +1,1974 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Mental Gymnastics" />
+    <meta name="voa-app-id" content="2026/04/16/mental-gymnastics" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <title>Mental Gymnastics - __MAIN_SITE_NAME__</title>
+
+    <style>
+      /* ── Theme variables ────────────────────────────── */
+      :root {
+        --bg: #0f172a;
+        --text: #f1f5f9;
+        --text-muted: #94a3b8;
+        --surface: #1e293b;
+        --surface-soft: #293548;
+        --border: #334155;
+        --accent: #38bdf8;
+        --accent-strong: #0ea5e9;
+        --good: #22c55e;
+        --good-bg: rgba(34, 197, 94, 0.15);
+        --warn: #f59e0b;
+        --bad: #ef4444;
+        --bad-bg: rgba(239, 68, 68, 0.15);
+      }
+      [data-theme='light'] {
+        --bg: #f8fafc;
+        --text: #0f172a;
+        --text-muted: #475569;
+        --surface: #ffffff;
+        --surface-soft: #f1f5f9;
+        --border: #e2e8f0;
+        --accent: #2563eb;
+        --accent-strong: #1d4ed8;
+        --good: #16a34a;
+        --good-bg: rgba(22, 163, 74, 0.12);
+        --warn: #d97706;
+        --bad: #dc2626;
+        --bad-bg: rgba(220, 38, 38, 0.12);
+      }
+
+      /* ── Reset ────────────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        font-size: 16px;
+        line-height: 1.5;
+      }
+
+      /* ── Shell layout ────────────────────────────── */
+      #app {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        overflow-y: auto;
+      }
+
+      .screen {
+        display: none;
+        min-height: 100%;
+        padding: 20px 18px 36px;
+        max-width: 720px;
+        margin: 0 auto;
+      }
+      .screen.active {
+        display: block;
+      }
+
+      /* ── Typography ──────────────────────────────── */
+      h1 {
+        font-size: clamp(1.8rem, 2vw + 1rem, 2.5rem);
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+      h2 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 10px;
+      }
+      .subtitle {
+        font-size: 1rem;
+        color: var(--text-muted);
+        margin-top: 6px;
+        margin-bottom: 20px;
+      }
+
+      /* ── Cards ────────────────────────────────────── */
+      .card {
+        background: var(--surface);
+        border-radius: 18px;
+        padding: 18px;
+        border: 1px solid var(--border);
+        margin-bottom: 14px;
+      }
+
+      /* ── Buttons ─────────────────────────────────── */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 11px 18px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        background: var(--surface-soft);
+        color: var(--text);
+        transition: opacity 0.15s, transform 0.1s;
+        text-align: center;
+      }
+      .btn:hover:not(:disabled) {
+        opacity: 0.82;
+      }
+      .btn:active:not(:disabled) {
+        transform: scale(0.97);
+      }
+      .btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      .btn.primary {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+      .btn.primary:hover:not(:disabled) {
+        background: var(--accent-strong);
+        border-color: var(--accent-strong);
+      }
+      .btn.large {
+        font-size: 1.1rem;
+        padding: 14px 26px;
+        border-radius: 14px;
+      }
+      .btn.full {
+        width: 100%;
+      }
+
+      /* ── Mode tabs ──────────────────────────────── */
+      .mode-tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 2px solid var(--border);
+        margin-bottom: 18px;
+      }
+      .tab-btn {
+        border: none;
+        background: none;
+        padding: 10px 18px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -2px;
+        transition: color 0.15s, border-color 0.15s;
+      }
+      .tab-btn.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+      .tab-panel {
+        display: none;
+      }
+      .tab-panel.active {
+        display: block;
+      }
+
+      /* ── Player manager ─────────────────────────── */
+      .player-input-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .player-input-row input {
+        flex: 1;
+        padding: 11px 13px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--surface-soft);
+        color: var(--text);
+        font-size: 1rem;
+      }
+      .player-input-row input:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: -1px;
+      }
+      .player-input-row input::placeholder {
+        color: var(--text-muted);
+      }
+      .player-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        max-height: 210px;
+        overflow-y: auto;
+      }
+      .player-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 13px;
+        background: var(--surface-soft);
+        border-radius: 10px;
+        border: 1px solid var(--border);
+      }
+      .player-item-name {
+        font-weight: 600;
+        color: var(--text);
+        font-size: 0.95rem;
+      }
+      .player-remove {
+        border: none;
+        background: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 1rem;
+        padding: 2px 7px;
+        border-radius: 6px;
+        transition: color 0.15s, background 0.15s;
+        min-height: 32px;
+      }
+      .player-remove:hover {
+        color: var(--bad);
+        background: var(--bad-bg);
+      }
+      .player-empty {
+        padding: 10px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      /* ── Turn selector ──────────────────────────── */
+      .turn-selector {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+      }
+      .turn-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--surface-soft);
+        color: var(--text);
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s, border-color 0.15s;
+      }
+      .turn-btn.selected {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+
+      /* ── Toggle row ─────────────────────────────── */
+      .toggle-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        color: var(--text);
+        user-select: none;
+      }
+      .toggle-row input[type='checkbox'] {
+        width: 20px;
+        height: 20px;
+        accent-color: var(--accent);
+        cursor: pointer;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      /* ── Host game screen ─────────────────────── */
+      .game-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .round-badge {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 6px 14px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .category-badge {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        font-weight: 600;
+      }
+      .timer-display {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: var(--text);
+        min-width: 52px;
+        text-align: right;
+      }
+      .timer-display.warn {
+        color: var(--warn);
+      }
+      .timer-display.danger {
+        color: var(--bad);
+      }
+
+      .question-text {
+        font-size: clamp(1.25rem, 1rem + 1.5vw, 1.85rem);
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.45;
+        margin-bottom: 18px;
+      }
+
+      /* ── A/B/C/D choices ────────────────────────── */
+      .choices-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+        margin-bottom: 16px;
+      }
+      .choice-tile {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 13px 14px;
+        border-radius: 14px;
+        border: 2px solid var(--border);
+        background: var(--surface-soft);
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text);
+        text-align: left;
+        min-height: 54px;
+        transition: border-color 0.2s, background 0.2s;
+        cursor: default;
+      }
+      .choice-tile.correct {
+        border-color: var(--good);
+        background: var(--good-bg);
+        color: var(--good);
+        font-weight: 700;
+      }
+      .choice-letter {
+        font-weight: 800;
+        font-size: 1rem;
+        min-width: 22px;
+        flex-shrink: 0;
+        color: var(--text-muted);
+      }
+
+      /* ── Award section ─────────────────────────── */
+      .reveal-row {
+        margin-bottom: 16px;
+      }
+      .award-section {
+        border-top: 1px solid var(--border);
+        padding-top: 14px;
+        margin-top: 4px;
+      }
+      .award-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        margin-bottom: 10px;
+      }
+      .player-award-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin-bottom: 10px;
+      }
+      .player-award-btn {
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        padding: 11px 18px;
+        font-size: 1rem;
+        font-weight: 700;
+        background: var(--surface-soft);
+        color: var(--text);
+        cursor: pointer;
+        transition: border-color 0.15s, background 0.15s, color 0.15s, transform 0.1s;
+        min-height: 46px;
+      }
+      .player-award-btn:not(:disabled):hover {
+        border-color: var(--good);
+        background: var(--good-bg);
+        color: var(--good);
+      }
+      .player-award-btn:not(:disabled):active {
+        transform: scale(0.96);
+      }
+      .player-award-btn.awarded {
+        border-color: var(--good);
+        background: var(--good-bg);
+        color: var(--good);
+      }
+
+      /* ── Results screen ────────────────────────── */
+      .results-header {
+        text-align: center;
+        margin-bottom: 22px;
+      }
+      .results-trophy {
+        font-size: 2.8rem;
+        display: block;
+        margin-bottom: 8px;
+      }
+      .leaderboard-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        margin-bottom: 22px;
+      }
+      .leaderboard-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 15px 18px;
+        background: var(--surface);
+        border-radius: 16px;
+        border: 1px solid var(--border);
+      }
+      .leaderboard-rank {
+        font-size: 1.3rem;
+        min-width: 32px;
+        text-align: center;
+      }
+      .leaderboard-name {
+        flex: 1;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .leaderboard-score {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: var(--accent);
+      }
+      .leaderboard-score.zero {
+        color: var(--text-muted);
+      }
+      .results-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      /* ── Solo game ─────────────────────────────── */
+      .solo-stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+      .solo-stat {
+        background: var(--surface-soft);
+        border-radius: 12px;
+        padding: 10px 11px;
+        border: 1px solid var(--border);
+      }
+      .solo-stat-label {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+        font-weight: 600;
+      }
+      .solo-stat-value {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: var(--text);
+        margin-top: 2px;
+      }
+      .solo-progress-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+        font-weight: 600;
+      }
+      .solo-progress-bar {
+        height: 6px;
+        background: var(--border);
+        border-radius: 99px;
+        overflow: hidden;
+        margin-bottom: 14px;
+      }
+      .solo-progress-fill {
+        height: 100%;
+        background: var(--accent);
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+      .solo-question {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.45;
+        margin-bottom: 14px;
+      }
+      .solo-choices {
+        display: grid;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .solo-choice {
+        border: 1px solid var(--border);
+        background: var(--surface-soft);
+        padding: 12px 14px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--text);
+        text-align: left;
+        transition: border-color 0.15s, background 0.15s, color 0.15s;
+      }
+      .solo-choice:hover:not(:disabled) {
+        border-color: var(--accent);
+      }
+      .solo-choice.correct {
+        background: var(--good-bg);
+        border-color: var(--good);
+        color: var(--good);
+        font-weight: 700;
+      }
+      .solo-choice.wrong {
+        background: var(--bad-bg);
+        border-color: var(--bad);
+        color: var(--bad);
+      }
+      .solo-input-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .solo-input-row input {
+        flex: 1;
+        padding: 11px 13px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--surface-soft);
+        color: var(--text);
+        font-size: 1rem;
+      }
+      .solo-input-row input::placeholder {
+        color: var(--text-muted);
+      }
+      .solo-hint {
+        background: rgba(56, 189, 248, 0.1);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        border-radius: 10px;
+        padding: 10px 13px;
+        font-size: 0.9rem;
+        color: var(--text);
+        margin-bottom: 10px;
+      }
+      .solo-feedback {
+        border-left: 4px solid var(--border);
+        padding: 10px 13px;
+        border-radius: 10px;
+        background: var(--surface-soft);
+        font-size: 0.9rem;
+        color: var(--text);
+        margin-bottom: 10px;
+        line-height: 1.5;
+      }
+      .solo-feedback.good {
+        border-left-color: var(--good);
+      }
+      .solo-feedback.bad {
+        border-left-color: var(--bad);
+      }
+      .solo-footer {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 4px;
+      }
+      .solo-memory-reveal {
+        background: rgba(56, 189, 248, 0.1);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text);
+        letter-spacing: 0.08em;
+        margin-bottom: 12px;
+        text-align: center;
+      }
+
+      /* ── Responsive ──────────────────────────── */
+      @media (max-width: 540px) {
+        .choices-grid {
+          grid-template-columns: 1fr;
+        }
+        .solo-stats-row {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .screen {
+          padding: 14px 13px 32px;
+        }
+        .turn-btn {
+          width: 40px;
+          height: 40px;
+          font-size: 0.9rem;
+        }
+        .results-actions {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <!-- ══════════════════════════════
+           SETUP SCREEN
+      ══════════════════════════════ -->
+      <div id="screen-setup" class="screen active">
+        <h1>Mental Gymnastics</h1>
+        <p class="subtitle">Brain challenges for teams — great for Zoom &amp; remote sessions</p>
+
+        <div class="mode-tabs">
+          <button class="tab-btn active" id="tabHost">Host Mode</button>
+          <button class="tab-btn" id="tabSolo">Solo Practice</button>
+        </div>
+
+        <!-- HOST TAB -->
+        <div class="tab-panel active" id="panelHost">
+          <div class="card">
+            <h2>Players</h2>
+            <div class="player-input-row">
+              <input
+                type="text"
+                id="playerNameInput"
+                placeholder="Add player name…"
+                maxlength="30"
+                autocomplete="off"
+              />
+              <button class="btn primary" id="addPlayerBtn">Add</button>
+            </div>
+            <ul class="player-list" id="playerList">
+              <li class="player-empty" id="playerEmpty">No players yet — add at least one to start.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>Rounds</h2>
+            <div class="turn-selector" id="turnSelector"></div>
+          </div>
+
+          <div class="card">
+            <label class="toggle-row">
+              <input type="checkbox" id="moderatorToggle" />
+              <span>
+                Open moderator popup window
+                <span style="display: block; font-size: 0.82rem; color: var(--text-muted); font-weight: 400; margin-top: 2px"
+                  >Shows correct answers privately — screen share the main window to players</span
+                >
+              </span>
+            </label>
+          </div>
+
+          <button class="btn primary large full" id="startHostBtn" disabled>Start Host Game</button>
+        </div>
+
+        <!-- SOLO TAB -->
+        <div class="tab-panel" id="panelSolo">
+          <div class="card">
+            <p style="color: var(--text-muted); margin-bottom: 14px; font-size: 0.95rem">
+              Quick individual practice — no players needed. Pick a mode and go.
+            </p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap">
+              <button class="btn primary" id="startPracticeBtn">Start Practice</button>
+              <button class="btn" id="startDailyBtn">Daily Challenge</button>
+            </div>
+          </div>
+          <div class="card">
+            <label class="toggle-row">
+              <input type="checkbox" id="soundToggle" checked />
+              <span>Sounds</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════
+           HOST GAME SCREEN
+      ══════════════════════════════ -->
+      <div id="screen-game" class="screen">
+        <div class="game-header">
+          <span class="round-badge" id="roundLabel">Round 1 of 5</span>
+          <span class="category-badge" id="gameCategoryBadge">Category</span>
+          <span class="timer-display" id="gameTimer">0:30</span>
+        </div>
+
+        <div class="card">
+          <div class="question-text" id="gameQuestion">Loading…</div>
+
+          <div class="choices-grid" id="gameChoices"></div>
+
+          <div class="reveal-row">
+            <button class="btn primary" id="revealAnswerBtn">Reveal Answer</button>
+          </div>
+
+          <div class="award-section">
+            <div class="award-label">Award point to:</div>
+            <div class="player-award-grid" id="playerAwardGrid"></div>
+            <button class="btn" id="skipRoundBtn" disabled>No one got it — next round</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════
+           SOLO GAME SCREEN
+      ══════════════════════════════ -->
+      <div id="screen-solo" class="screen">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px">
+          <button class="btn" id="soloBackBtn">← Back</button>
+          <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-muted)" id="soloModeLabel"
+            >Practice</span
+          >
+        </div>
+
+        <div class="card">
+          <div class="solo-stats-row">
+            <div class="solo-stat">
+              <div class="solo-stat-label">Score</div>
+              <div class="solo-stat-value" id="soloScore">0</div>
+            </div>
+            <div class="solo-stat">
+              <div class="solo-stat-label">Streak</div>
+              <div class="solo-stat-value" id="soloStreak">0</div>
+            </div>
+            <div class="solo-stat">
+              <div class="solo-stat-label">Accuracy</div>
+              <div class="solo-stat-value" id="soloAccuracy">—</div>
+            </div>
+            <div class="solo-stat">
+              <div class="solo-stat-label">Timer</div>
+              <div class="solo-stat-value" id="soloTimer">—</div>
+            </div>
+          </div>
+
+          <div class="solo-progress-row">
+            <span id="soloCategoryBadge">Category</span>
+            <span id="soloProgressLabel">1 of 10</span>
+          </div>
+          <div class="solo-progress-bar">
+            <div class="solo-progress-fill" id="soloProgressFill"></div>
+          </div>
+
+          <div class="solo-memory-reveal" id="soloMemoryReveal" style="display: none"></div>
+          <div class="solo-question" id="soloQuestion">Loading…</div>
+
+          <div class="solo-choices" id="soloChoices"></div>
+
+          <form class="solo-input-row" id="soloInputRow" style="display: none">
+            <input type="text" id="soloAnswerInput" placeholder="Type your answer…" autocomplete="off" />
+            <button class="btn primary" type="submit">Submit</button>
+          </form>
+
+          <div class="solo-hint" id="soloHint" style="display: none"></div>
+          <div class="solo-feedback" id="soloFeedback" style="display: none"></div>
+
+          <div class="solo-footer">
+            <button class="btn" id="soloHintBtn" disabled>Show Hint</button>
+            <button class="btn primary" id="soloNextBtn" style="display: none">Next</button>
+            <button class="btn" id="soloEndBtn" style="display: none">End Session</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════
+           RESULTS SCREEN
+      ══════════════════════════════ -->
+      <div id="screen-results" class="screen">
+        <div class="results-header">
+          <span class="results-trophy">🏆</span>
+          <h1>Final Results</h1>
+          <p class="subtitle" id="resultsSubtitle">Game complete!</p>
+        </div>
+
+        <ul class="leaderboard-list" id="resultsList"></ul>
+
+        <div class="results-actions">
+          <button class="btn primary large" id="playAgainBtn">Play Again</button>
+          <button class="btn large" id="shareResultsBtn">Share</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* ══════════════════════════════════════════════
+         CHALLENGE BANK — 33 challenges, all MCQ-compatible
+      ══════════════════════════════════════════════ */
+      const CHALLENGES = [
+        {
+          id: 'math-1',
+          category: 'Mental Math',
+          type: 'mcq',
+          question: '27 × 3 = ?',
+          options: ['72', '78', '81', '87'],
+          answer: '81',
+          hint: 'Think of 30 × 3 minus 9.',
+          explanation: '30 × 3 = 90. Subtract 9 to get 81.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'math-2',
+          category: 'Mental Math',
+          type: 'mcq',
+          question: '145 − 78 = ?',
+          options: ['64', '67', '70', '73'],
+          answer: '67',
+          hint: 'Subtract 80, then add 2 back.',
+          explanation: '145 − 80 = 65, plus 2 = 67.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'math-3',
+          category: 'Mental Math',
+          type: 'mcq',
+          question: '15% of 260 = ?',
+          options: ['32', '36', '39', '42'],
+          answer: '39',
+          hint: '10% is 26, and 5% is 13.',
+          explanation: '26 + 13 = 39.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'math-4',
+          category: 'Mental Math',
+          type: 'mcq',
+          question: '12 × 12 = ?',
+          options: ['132', '138', '144', '150'],
+          answer: '144',
+          hint: 'The square of 12.',
+          explanation: '12 × 12 = 144.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'math-5',
+          category: 'Mental Math',
+          type: 'mcq',
+          question: '7/8 as a decimal (2 decimal places)?',
+          options: ['0.75', '0.83', '0.88', '0.93'],
+          answer: '0.88',
+          hint: '0.875 rounds to two decimals.',
+          explanation: '7 ÷ 8 = 0.875 ≈ 0.88.',
+          difficulty: 3,
+          timeLimit: 30,
+        },
+        {
+          id: 'math-6',
+          category: 'Mental Math',
+          type: 'mcq',
+          question: '18 × 7 = ?',
+          options: ['116', '121', '126', '133'],
+          answer: '126',
+          hint: '20 × 7 minus 2 × 7.',
+          explanation: '140 − 14 = 126.',
+          difficulty: 2,
+          timeLimit: 20,
+        },
+        {
+          id: 'math-7',
+          category: 'Mental Math',
+          type: 'mcq',
+          question: '60% of 45 = ?',
+          options: ['22', '25', '27', '30'],
+          answer: '27',
+          hint: '50% is 22.5, and 10% is 4.5.',
+          explanation: '45 × 0.6 = 27.',
+          difficulty: 2,
+          timeLimit: 20,
+        },
+        {
+          id: 'pattern-1',
+          category: 'Number Patterns',
+          type: 'mcq',
+          question: '2, 6, 12, 20, 30, ? (next number)',
+          options: ['40', '42', '44', '46'],
+          answer: '42',
+          hint: 'The gaps grow by 2 each time.',
+          explanation: 'Differences: +4, +6, +8, +10, +12. Next = 30 + 12 = 42.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'pattern-2',
+          category: 'Number Patterns',
+          type: 'mcq',
+          question: '3, 9, 27, ?, 243',
+          options: ['54', '72', '81', '90'],
+          answer: '81',
+          hint: 'Multiply by 3 each time.',
+          explanation: '27 × 3 = 81.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'pattern-3',
+          category: 'Number Patterns',
+          type: 'mcq',
+          question: '1, 1, 2, 3, 5, 8, ? (next number)',
+          options: ['11', '12', '13', '14'],
+          answer: '13',
+          hint: 'Add the two previous numbers.',
+          explanation: 'Fibonacci sequence: 5 + 8 = 13.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'pattern-4',
+          category: 'Number Patterns',
+          type: 'mcq',
+          question: '10, 9, 7, 4, 0, ? (next number)',
+          options: ['-2', '-3', '-4', '-5'],
+          answer: '-5',
+          hint: 'Subtract 1, 2, 3, 4, …',
+          explanation: 'Differences: -1, -2, -3, -4, -5.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'estimate-1',
+          category: 'Estimation',
+          type: 'mcq',
+          question: 'Estimate 19 × 52.',
+          options: ['500', '1000', '1500', '2000'],
+          answer: '1000',
+          hint: 'Round to 20 × 50.',
+          explanation: '20 × 50 = 1000; exact is 988.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'estimate-2',
+          category: 'Estimation',
+          type: 'mcq',
+          question: 'Estimate 398 + 604.',
+          options: ['900', '1000', '1100', '1200'],
+          answer: '1000',
+          hint: 'Round to 400 + 600.',
+          explanation: '400 + 600 = 1000; exact is 1002.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'estimate-3',
+          category: 'Estimation',
+          type: 'mcq',
+          question: 'Estimate 6.2 × 48.',
+          options: ['200', '300', '400', '500'],
+          answer: '300',
+          hint: 'Round to 6 × 50.',
+          explanation: '6 × 50 = 300; exact is 297.6.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'logic-1',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'All bloops are razzies. All razzies are lazzies. Are all bloops lazzies?',
+          options: ['Yes', 'No', 'Only some', 'Cannot determine'],
+          answer: 'Yes',
+          hint: 'Chain: bloops → razzies → lazzies.',
+          explanation: 'If all bloops are razzies and all razzies are lazzies, then all bloops are lazzies.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'logic-2',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'If today is Tuesday, what day will it be 3 days after tomorrow?',
+          options: ['Friday', 'Saturday', 'Sunday', 'Monday'],
+          answer: 'Saturday',
+          hint: 'Tomorrow is Wednesday.',
+          explanation: 'Tomorrow = Wednesday. Three days later = Saturday.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'logic-3',
+          category: 'Logic',
+          type: 'mcq',
+          question: '5 machines make 5 widgets in 5 minutes. How long for 10 machines to make 10 widgets?',
+          options: ['5 minutes', '10 minutes', '15 minutes', '20 minutes'],
+          answer: '5 minutes',
+          hint: 'Each machine makes 1 widget in 5 minutes.',
+          explanation: '10 machines each make 1 widget in 5 min = 10 widgets total.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'logic-4',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'Which must be true if all cats are mammals?',
+          options: ['All mammals are cats', 'All cats are mammals', 'No cats are mammals', 'Some mammals are not cats'],
+          answer: 'All cats are mammals',
+          hint: 'The original statement is the answer.',
+          explanation: 'The given statement itself is the required truth.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'logic-5',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'A is taller than B, and B is taller than C. Who is shortest?',
+          options: ['A', 'B', 'C', 'Cannot determine'],
+          answer: 'C',
+          hint: 'Order: A > B > C.',
+          explanation: 'C is shortest.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'logic-6',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'If it rains, the ground is wet. The ground is wet. What can we conclude?',
+          options: ['It rained', 'It may have rained', 'It did not rain', 'Raining is impossible'],
+          answer: 'It may have rained',
+          hint: 'Wet ground has more than one cause.',
+          explanation: 'Wet ground does not guarantee rain — other causes exist.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'logic-7',
+          category: 'Logic',
+          type: 'mcq',
+          question: 'Some singers are dancers. Some dancers are painters. Must some singers be painters?',
+          options: ['Yes', 'No', 'Only if all dancers sing', 'Only if all singers dance'],
+          answer: 'No',
+          hint: 'The overlapping dancers could be different people.',
+          explanation: 'The two dancer groups may not overlap, so no guarantee.',
+          difficulty: 3,
+          timeLimit: 30,
+        },
+        {
+          id: 'sequence-1',
+          category: 'Sequencing',
+          type: 'mcq',
+          question: 'Arrange from smallest to largest: 0.4, 2/5, 0.39, 0.41',
+          options: ['0.39, 0.4, 2/5, 0.41', '0.39, 2/5, 0.4, 0.41', '2/5, 0.39, 0.4, 0.41', '0.4, 0.39, 2/5, 0.41'],
+          answer: '0.39, 0.4, 2/5, 0.41',
+          hint: '2/5 = 0.4 exactly.',
+          explanation: '0.39 < 0.4 = 2/5 < 0.41.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'sequence-2',
+          category: 'Sequencing',
+          type: 'mcq',
+          question: 'What comes next in the alphabet sequence? C, F, I, L, ?',
+          options: ['M', 'N', 'O', 'P'],
+          answer: 'O',
+          hint: 'Skip two letters each time.',
+          explanation: '+3 each step: C → F → I → L → O.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'sequence-3',
+          category: 'Sequencing',
+          type: 'mcq',
+          question: 'Which is the correct order of operations?',
+          options: [
+            'Multiply, add, subtract, divide',
+            'Parentheses, exponents, multiply/divide, add/subtract',
+            'Add/subtract, multiply/divide, exponents',
+            'Exponents, parentheses, add/subtract, multiply/divide',
+          ],
+          answer: 'Parentheses, exponents, multiply/divide, add/subtract',
+          hint: 'Remember PEMDAS.',
+          explanation: 'PEMDAS: Parentheses, Exponents, Multiply/Divide, Add/Subtract.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'sequence-4',
+          category: 'Sequencing',
+          type: 'mcq',
+          question: 'Chronological order: Middle Ages, Renaissance, Industrial Revolution, Digital Age.',
+          options: [
+            'Renaissance, Middle Ages, Industrial Revolution, Digital Age',
+            'Middle Ages, Renaissance, Industrial Revolution, Digital Age',
+            'Middle Ages, Industrial Revolution, Renaissance, Digital Age',
+            'Renaissance, Industrial Revolution, Middle Ages, Digital Age',
+          ],
+          answer: 'Middle Ages, Renaissance, Industrial Revolution, Digital Age',
+          hint: 'Medieval, then rebirth, then machines, then computers.',
+          explanation: 'Middle Ages → Renaissance → Industrial Revolution → Digital Age.',
+          difficulty: 2,
+          timeLimit: 25,
+        },
+        {
+          id: 'word-1',
+          category: 'Word Reasoning',
+          type: 'mcq',
+          question: 'Which word does NOT belong?',
+          options: ['Triangle', 'Square', 'Circle', 'Purple'],
+          answer: 'Purple',
+          hint: 'Three are shapes.',
+          explanation: 'Triangle, square, and circle are shapes; purple is a color.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'word-2',
+          category: 'Word Reasoning',
+          type: 'mcq',
+          question: 'Choose the best synonym for "brief".',
+          options: ['Tiny', 'Short', 'Speedy', 'Quiet'],
+          answer: 'Short',
+          hint: 'Think about duration.',
+          explanation: 'Brief means short in duration.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'word-3',
+          category: 'Word Reasoning',
+          type: 'mcq',
+          question: 'Book is to Reading as Fork is to ___.',
+          options: ['Cooking', 'Eating', 'Shopping', 'Writing'],
+          answer: 'Eating',
+          hint: 'Forks are used while doing this.',
+          explanation: 'Fork is used for eating, just as a book is used for reading.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'word-4',
+          category: 'Word Reasoning',
+          type: 'mcq',
+          question: 'Which pair are opposites?',
+          options: ['Bright/Dull', 'Large/Wide', 'Quick/Swift', 'Silent/Quiet'],
+          answer: 'Bright/Dull',
+          hint: 'True contrasts, not synonyms.',
+          explanation: 'Bright and dull are opposites; the others are synonyms.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'shape-1',
+          category: 'Shape Reasoning',
+          type: 'mcq',
+          question: 'A square is rotated 45°. How many sides does it still have?',
+          options: ['3', '4', '5', '8'],
+          answer: '4',
+          hint: 'Rotation does not change the number of sides.',
+          explanation: 'A square remains 4-sided after any rotation.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'shape-2',
+          category: 'Shape Reasoning',
+          type: 'mcq',
+          question: 'How many corners does a hexagon have?',
+          options: ['4', '5', '6', '8'],
+          answer: '6',
+          hint: 'Hex means six.',
+          explanation: 'A hexagon has 6 corners.',
+          difficulty: 1,
+          timeLimit: 15,
+        },
+        {
+          id: 'memory-1',
+          category: 'Memory',
+          type: 'memory',
+          memorize: 'K  ·  T  ·  9  ·  R  ·  2',
+          question: 'What was the THIRD item in the sequence?',
+          options: ['K', 'T', '9', 'R'],
+          answer: '9',
+          hint: 'Count from the start: K (1st), T (2nd), …',
+          explanation: 'The third item was 9.',
+          difficulty: 2,
+          timeLimit: 20,
+        },
+        {
+          id: 'memory-2',
+          category: 'Memory',
+          type: 'memory',
+          memorize: 'Blue  ·  Amber  ·  Green  ·  Violet',
+          question: 'Which color was LAST in the sequence?',
+          options: ['Blue', 'Amber', 'Green', 'Violet'],
+          answer: 'Violet',
+          hint: 'It is a purple shade.',
+          explanation: 'The last color was Violet.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+        {
+          id: 'memory-3',
+          category: 'Memory',
+          type: 'memory',
+          memorize: 'Orbit  ·  Ladder  ·  Signal  ·  Bridge',
+          question: 'What was the FIRST word in the sequence?',
+          options: ['Orbit', 'Ladder', 'Signal', 'Bridge'],
+          answer: 'Orbit',
+          hint: 'Think of space.',
+          explanation: 'The first word was Orbit.',
+          difficulty: 1,
+          timeLimit: 20,
+        },
+      ];
+
+      /* ══════════════════════════════════════════════
+         UTILITIES
+      ══════════════════════════════════════════════ */
+
+      function mulberry32(seed) {
+        return function () {
+          let t = (seed += 0x6d2b79f5);
+          t = Math.imul(t ^ (t >>> 15), t | 1);
+          t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+
+      function seededShuffle(list, seed) {
+        const rng = mulberry32(seed);
+        const arr = [...list];
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(rng() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      function getDailySeed() {
+        const now = new Date();
+        const key = `${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${now.getUTCDate()}`;
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+          hash = (hash << 5) - hash + key.charCodeAt(i);
+          hash |= 0;
+        }
+        return Math.abs(hash);
+      }
+
+      function escHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function playTone(freq, dur) {
+        const soundEl = document.getElementById('soundToggle');
+        if (soundEl && !soundEl.checked) return;
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          gain.gain.value = 0.12;
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + dur / 1000);
+        } catch (_) {}
+      }
+
+      function showScreen(id) {
+        document.querySelectorAll('.screen').forEach((s) => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+      }
+
+      /* ══════════════════════════════════════════════
+         TAB SWITCHING
+      ══════════════════════════════════════════════ */
+
+      document.getElementById('tabHost').addEventListener('click', () => {
+        document.getElementById('tabHost').classList.add('active');
+        document.getElementById('tabSolo').classList.remove('active');
+        document.getElementById('panelHost').classList.add('active');
+        document.getElementById('panelSolo').classList.remove('active');
+      });
+
+      document.getElementById('tabSolo').addEventListener('click', () => {
+        document.getElementById('tabSolo').classList.add('active');
+        document.getElementById('tabHost').classList.remove('active');
+        document.getElementById('panelSolo').classList.add('active');
+        document.getElementById('panelHost').classList.remove('active');
+      });
+
+      /* ══════════════════════════════════════════════
+         PLAYER MANAGER
+      ══════════════════════════════════════════════ */
+
+      const STORAGE_KEY = 'mg-players-v2';
+      let players = [];
+      try {
+        players = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      } catch (_) {}
+
+      function savePlayers() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(players));
+        } catch (_) {}
+      }
+
+      function renderPlayerList() {
+        const list = document.getElementById('playerList');
+        const empty = document.getElementById('playerEmpty');
+        list.innerHTML = '';
+
+        if (players.length === 0) {
+          const li = document.createElement('li');
+          li.id = 'playerEmpty';
+          li.className = 'player-empty';
+          li.textContent = 'No players yet — add at least one to start.';
+          list.appendChild(li);
+        } else {
+          players.forEach((name, i) => {
+            const li = document.createElement('li');
+            li.className = 'player-item';
+            li.innerHTML = `<span class="player-item-name">${escHtml(name)}</span>
+              <button class="player-remove" data-idx="${i}" aria-label="Remove ${escHtml(name)}">✕</button>`;
+            list.appendChild(li);
+          });
+        }
+
+        document.getElementById('startHostBtn').disabled = players.length === 0;
+      }
+
+      document.getElementById('playerList').addEventListener('click', (e) => {
+        const btn = e.target.closest('.player-remove');
+        if (!btn) return;
+        players.splice(Number(btn.dataset.idx), 1);
+        savePlayers();
+        renderPlayerList();
+      });
+
+      function addPlayer() {
+        const input = document.getElementById('playerNameInput');
+        const name = input.value.trim();
+        if (!name) return;
+        if (players.map((p) => p.toLowerCase()).includes(name.toLowerCase())) {
+          input.focus();
+          return;
+        }
+        players.push(name);
+        savePlayers();
+        renderPlayerList();
+        input.value = '';
+        input.focus();
+      }
+
+      document.getElementById('addPlayerBtn').addEventListener('click', addPlayer);
+      document.getElementById('playerNameInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          addPlayer();
+        }
+      });
+
+      /* ══════════════════════════════════════════════
+         TURN SELECTOR
+      ══════════════════════════════════════════════ */
+
+      let selectedTurns = 5;
+
+      (function buildTurnSelector() {
+        const sel = document.getElementById('turnSelector');
+        for (let i = 1; i <= 10; i++) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'turn-btn' + (i === 5 ? ' selected' : '');
+          btn.textContent = i;
+          btn.dataset.turns = i;
+          sel.appendChild(btn);
+        }
+        sel.addEventListener('click', (e) => {
+          const btn = e.target.closest('.turn-btn');
+          if (!btn) return;
+          selectedTurns = Number(btn.dataset.turns);
+          sel.querySelectorAll('.turn-btn').forEach((b) => b.classList.toggle('selected', b === btn));
+        });
+      })();
+
+      /* ══════════════════════════════════════════════
+         MODERATOR POPUP
+      ══════════════════════════════════════════════ */
+
+      let modWindow = null;
+
+      function openModeratorWindow() {
+        if (!document.getElementById('moderatorToggle').checked) return;
+        modWindow = window.open('', 'mg-moderator', 'width=700,height=500,toolbar=no,menubar=no,scrollbars=no');
+        if (!modWindow) return;
+        modWindow.document.write(`<!doctype html><html lang="en"><head>
+          <meta charset="UTF-8">
+          <title>Moderator View — Mental Gymnastics</title>
+          <style>
+            body { margin:0; font-family: system-ui, sans-serif; background:#0a0f1e; color:#f1f5f9;
+              padding: 28px 32px; box-sizing:border-box; }
+            .label { font-size:0.75rem; font-weight:700; text-transform:uppercase;
+              letter-spacing:0.1em; color:#475569; margin-bottom:8px; }
+            #mod-question { font-size:1.5rem; font-weight:700; margin-bottom:20px;
+              line-height:1.45; color:#f1f5f9; }
+            #mod-answer { font-size:2rem; font-weight:800; color:#22c55e; margin-bottom:6px; }
+            #mod-explanation { font-size:1rem; color:#94a3b8; line-height:1.5; margin-bottom:20px; }
+            #mod-round { font-size:0.85rem; color:#334155; margin-bottom:20px;
+              background:#1e293b; padding:8px 14px; border-radius:8px; display:inline-block; }
+          </style>
+        </head><body>
+          <div id="mod-round">Waiting for game…</div>
+          <div class="label">Question</div>
+          <div id="mod-question">—</div>
+          <div class="label">Correct Answer</div>
+          <div id="mod-answer">—</div>
+          <div class="label">Explanation</div>
+          <div id="mod-explanation">—</div>
+        </body></html>`);
+        modWindow.document.close();
+      }
+
+      function updateModeratorWindow(challenge, round, total) {
+        if (!modWindow || modWindow.closed) return;
+        const d = modWindow.document;
+        const LETTERS = ['A', 'B', 'C', 'D'];
+        const letterIdx = challenge.options.indexOf(challenge.answer);
+        const letter = letterIdx >= 0 ? LETTERS[letterIdx] : '';
+        const setText = (id, text) => {
+          const el = d.getElementById(id);
+          if (el) el.textContent = text;
+        };
+        setText('mod-round', `Round ${round} of ${total} — ${challenge.category}`);
+        setText('mod-question', challenge.question);
+        setText('mod-answer', letter ? `${letter}. ${challenge.answer}` : challenge.answer);
+        setText('mod-explanation', challenge.explanation);
+      }
+
+      /* ══════════════════════════════════════════════
+         HOST GAME STATE
+      ══════════════════════════════════════════════ */
+
+      const host = {
+        queue: [],
+        round: 0,
+        turns: 5,
+        scores: {},
+        timerId: null,
+        timeLeft: 0,
+        answerRevealed: false,
+        awarded: false,
+      };
+
+      document.getElementById('startHostBtn').addEventListener('click', () => {
+        host.turns = selectedTurns;
+        host.queue = seededShuffle(CHALLENGES, Date.now()).slice(0, host.turns);
+        host.round = 0;
+        host.scores = {};
+        players.forEach((p) => {
+          host.scores[p] = 0;
+        });
+        openModeratorWindow();
+        showScreen('screen-game');
+        loadHostRound();
+      });
+
+      function loadHostRound() {
+        host.round++;
+        host.answerRevealed = false;
+        host.awarded = false;
+
+        const ch = host.queue[host.round - 1];
+        const LETTERS = ['A', 'B', 'C', 'D'];
+
+        document.getElementById('roundLabel').textContent = `Round ${host.round} of ${host.turns}`;
+        document.getElementById('gameCategoryBadge').textContent = ch.category;
+        document.getElementById('gameQuestion').textContent = ch.question;
+
+        /* Build A/B/C/D tiles */
+        const choicesEl = document.getElementById('gameChoices');
+        choicesEl.innerHTML = '';
+        ch.options.forEach((opt, i) => {
+          const div = document.createElement('div');
+          div.className = 'choice-tile';
+          div.innerHTML = `<span class="choice-letter">${LETTERS[i]}.</span><span>${escHtml(opt)}</span>`;
+          choicesEl.appendChild(div);
+        });
+
+        /* Reveal button */
+        const revealBtn = document.getElementById('revealAnswerBtn');
+        revealBtn.textContent = 'Reveal Answer';
+        revealBtn.disabled = false;
+
+        /* Player award buttons */
+        const grid = document.getElementById('playerAwardGrid');
+        grid.innerHTML = '';
+        players.forEach((name) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'player-award-btn';
+          btn.textContent = `${name} (${host.scores[name]})`;
+          btn.disabled = true;
+          btn.dataset.player = name;
+          btn.addEventListener('click', () => awardPoint(name));
+          grid.appendChild(btn);
+        });
+
+        /* Skip button */
+        const skipBtn = document.getElementById('skipRoundBtn');
+        skipBtn.disabled = true;
+        skipBtn.textContent = 'No one got it — next round';
+
+        updateModeratorWindow(ch, host.round, host.turns);
+        startHostTimer(ch.timeLimit);
+      }
+
+      function startHostTimer(limit) {
+        clearInterval(host.timerId);
+        host.timeLeft = limit;
+        renderHostTimer();
+        host.timerId = setInterval(() => {
+          host.timeLeft = Math.max(0, host.timeLeft - 1);
+          renderHostTimer();
+        }, 1000);
+      }
+
+      function renderHostTimer() {
+        const el = document.getElementById('gameTimer');
+        const s = host.timeLeft;
+        el.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+        el.classList.toggle('warn', s <= 7 && s > 3);
+        el.classList.toggle('danger', s <= 3);
+      }
+
+      document.getElementById('revealAnswerBtn').addEventListener('click', () => {
+        if (host.answerRevealed) return;
+        host.answerRevealed = true;
+        clearInterval(host.timerId);
+
+        const ch = host.queue[host.round - 1];
+
+        /* Highlight correct answer tile */
+        document.querySelectorAll('#gameChoices .choice-tile').forEach((tile, i) => {
+          if (ch.options[i] === ch.answer) tile.classList.add('correct');
+        });
+
+        /* Enable player award buttons and skip */
+        document.querySelectorAll('#playerAwardGrid .player-award-btn').forEach((btn) => {
+          btn.disabled = false;
+        });
+        document.getElementById('skipRoundBtn').disabled = false;
+        document.getElementById('revealAnswerBtn').disabled = true;
+        document.getElementById('revealAnswerBtn').textContent = '✓ Answer revealed';
+
+        playTone(440, 120);
+      });
+
+      function awardPoint(playerName) {
+        if (host.awarded) return;
+        host.awarded = true;
+        host.scores[playerName]++;
+
+        playTone(660, 150);
+
+        document.querySelectorAll('#playerAwardGrid .player-award-btn').forEach((btn) => {
+          if (btn.dataset.player === playerName) {
+            btn.classList.add('awarded');
+            btn.textContent = `${playerName} ✓ +1`;
+          }
+          btn.disabled = true;
+        });
+        document.getElementById('skipRoundBtn').disabled = true;
+
+        setTimeout(advanceHostRound, 1400);
+      }
+
+      document.getElementById('skipRoundBtn').addEventListener('click', () => {
+        if (host.awarded) return;
+        host.awarded = true;
+        clearInterval(host.timerId);
+        document.querySelectorAll('#playerAwardGrid .player-award-btn').forEach((btn) => {
+          btn.disabled = true;
+        });
+        document.getElementById('skipRoundBtn').disabled = true;
+        setTimeout(advanceHostRound, 500);
+      });
+
+      function advanceHostRound() {
+        clearInterval(host.timerId);
+        if (host.round >= host.turns) {
+          showHostResults();
+        } else {
+          loadHostRound();
+        }
+      }
+
+      function showHostResults() {
+        if (modWindow && !modWindow.closed) modWindow.close();
+
+        const sorted = players
+          .map((name) => ({ name, score: host.scores[name] }))
+          .sort((a, b) => b.score - a.score);
+
+        /* Standard competition ranking: ties share rank, next rank skips occupied positions */
+        const MEDAL_ICONS = { 1: '🥇', 2: '🥈', 3: '🥉' };
+        let currentRank = 1;
+        sorted.forEach((entry, i) => {
+          entry.rank = i > 0 && entry.score === sorted[i - 1].score ? sorted[i - 1].rank : currentRank;
+          currentRank = i + 2;
+        });
+
+        const list = document.getElementById('resultsList');
+        list.innerHTML = '';
+
+        sorted.forEach((entry) => {
+          const li = document.createElement('li');
+          li.className = 'leaderboard-item';
+          const rankIcon = MEDAL_ICONS[entry.rank] || `${entry.rank}.`;
+          li.innerHTML = `
+            <span class="leaderboard-rank">${rankIcon}</span>
+            <span class="leaderboard-name">${escHtml(entry.name)}</span>
+            <span class="leaderboard-score${entry.score === 0 ? ' zero' : ''}">${entry.score} pt${entry.score !== 1 ? 's' : ''}</span>
+          `;
+          list.appendChild(li);
+        });
+
+        const topScore = sorted[0]?.score ?? 0;
+        const topPlayers = sorted.filter((e) => e.score === topScore);
+        let subtitle;
+        if (topPlayers.length > 1) {
+          const names = topPlayers.map((p) => p.name).join(' & ');
+          subtitle = `${names} tied for 1st with ${topScore} pt${topScore !== 1 ? 's' : ''}!`;
+        } else if (topPlayers.length === 1) {
+          subtitle = `${topPlayers[0].name} wins with ${topScore} point${topScore !== 1 ? 's' : ''}!`;
+        } else {
+          subtitle = 'Game complete!';
+        }
+        document.getElementById('resultsSubtitle').textContent = subtitle;
+
+        showScreen('screen-results');
+      }
+
+      /* ══════════════════════════════════════════════
+         SOLO GAME
+      ══════════════════════════════════════════════ */
+
+      const solo = {
+        mode: 'Practice',
+        queue: [],
+        index: 0,
+        score: 0,
+        streak: 0,
+        correct: 0,
+        total: 0,
+        timerId: null,
+        timeLeft: 0,
+        answered: false,
+        hintRevealed: false,
+      };
+
+      const sEl = {
+        score: document.getElementById('soloScore'),
+        streak: document.getElementById('soloStreak'),
+        accuracy: document.getElementById('soloAccuracy'),
+        timer: document.getElementById('soloTimer'),
+        categoryBadge: document.getElementById('soloCategoryBadge'),
+        progressLabel: document.getElementById('soloProgressLabel'),
+        progressFill: document.getElementById('soloProgressFill'),
+        memoryReveal: document.getElementById('soloMemoryReveal'),
+        question: document.getElementById('soloQuestion'),
+        choices: document.getElementById('soloChoices'),
+        inputRow: document.getElementById('soloInputRow'),
+        answerInput: document.getElementById('soloAnswerInput'),
+        hint: document.getElementById('soloHint'),
+        feedback: document.getElementById('soloFeedback'),
+        hintBtn: document.getElementById('soloHintBtn'),
+        nextBtn: document.getElementById('soloNextBtn'),
+        endBtn: document.getElementById('soloEndBtn'),
+        modeLabel: document.getElementById('soloModeLabel'),
+      };
+
+      function startSoloSession(mode) {
+        const seed = mode === 'Daily' ? getDailySeed() : Date.now();
+        solo.queue = seededShuffle(CHALLENGES, seed).slice(0, 10);
+        solo.mode = mode;
+        solo.index = 0;
+        solo.score = 0;
+        solo.streak = 0;
+        solo.correct = 0;
+        solo.total = 0;
+        sEl.modeLabel.textContent = mode === 'Daily' ? 'Daily Challenge' : 'Practice';
+        showScreen('screen-solo');
+        renderSoloChallenge();
+      }
+
+      document.getElementById('startPracticeBtn').addEventListener('click', () => startSoloSession('Practice'));
+      document.getElementById('startDailyBtn').addEventListener('click', () => startSoloSession('Daily'));
+
+      document.getElementById('soloBackBtn').addEventListener('click', () => {
+        clearInterval(solo.timerId);
+        showScreen('screen-setup');
+      });
+
+      function updateSoloStats() {
+        sEl.score.textContent = solo.score;
+        sEl.streak.textContent = solo.streak;
+        sEl.accuracy.textContent = solo.total ? `${Math.round((solo.correct / solo.total) * 100)}%` : '—';
+      }
+
+      function renderSoloChallenge() {
+        const ch = solo.queue[solo.index];
+        if (!ch) return;
+
+        solo.answered = false;
+        solo.hintRevealed = false;
+
+        sEl.categoryBadge.textContent = ch.category;
+        sEl.progressLabel.textContent = `${solo.index + 1} of ${solo.queue.length}`;
+        sEl.progressFill.style.width = `${((solo.index + 1) / solo.queue.length) * 100}%`;
+
+        sEl.question.textContent = ch.question;
+        sEl.memoryReveal.style.display = 'none';
+        sEl.hint.style.display = 'none';
+        sEl.feedback.style.display = 'none';
+        sEl.feedback.className = 'solo-feedback';
+        sEl.choices.innerHTML = '';
+        sEl.inputRow.style.display = 'none';
+        sEl.hintBtn.disabled = false;
+        sEl.nextBtn.style.display = 'none';
+        sEl.endBtn.style.display = 'inline-flex';
+
+        if (ch.type === 'mcq' || ch.type === 'memory') {
+          ch.options.forEach((opt) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'solo-choice';
+            btn.textContent = opt;
+            btn.addEventListener('click', () => handleSoloAnswer(opt));
+            sEl.choices.appendChild(btn);
+          });
+        } else {
+          sEl.inputRow.style.display = 'flex';
+          sEl.answerInput.value = '';
+          sEl.answerInput.focus();
+        }
+
+        /* Memory challenges: show sequence, hide after 3 seconds, then start timer */
+        if (ch.type === 'memory') {
+          sEl.memoryReveal.style.display = 'block';
+          sEl.memoryReveal.textContent = `Memorize: ${ch.memorize}`;
+          /* Disable choices during memorize phase */
+          Array.from(sEl.choices.children).forEach((b) => {
+            b.disabled = true;
+          });
+          setTimeout(() => {
+            if (solo.queue[solo.index]?.id !== ch.id) return;
+            sEl.memoryReveal.style.display = 'none';
+            Array.from(sEl.choices.children).forEach((b) => {
+              b.disabled = false;
+            });
+            startSoloTimer(ch.timeLimit);
+          }, 3000);
+        } else {
+          startSoloTimer(ch.timeLimit);
+        }
+
+        updateSoloStats();
+      }
+
+      function startSoloTimer(limit) {
+        clearInterval(solo.timerId);
+        solo.timeLeft = limit;
+        renderSoloTimer();
+        solo.timerId = setInterval(() => {
+          solo.timeLeft = Math.max(0, solo.timeLeft - 1);
+          renderSoloTimer();
+          if (solo.timeLeft <= 0) handleSoloAnswer(null, true);
+        }, 1000);
+      }
+
+      function renderSoloTimer() {
+        sEl.timer.textContent = `0:${String(solo.timeLeft).padStart(2, '0')}`;
+      }
+
+      function handleSoloAnswer(value, timedOut = false) {
+        if (solo.answered) return;
+        solo.answered = true;
+        clearInterval(solo.timerId);
+
+        const ch = solo.queue[solo.index];
+        solo.total++;
+
+        const isCorrect = !timedOut && value !== null && String(value).trim() === String(ch.answer).trim();
+
+        if (isCorrect) {
+          solo.score += 10 * ch.difficulty + Math.max(0, Math.floor(solo.timeLeft));
+          solo.streak++;
+          solo.correct++;
+          playTone(660, 150);
+        } else {
+          solo.streak = 0;
+          playTone(220, 180);
+        }
+
+        updateSoloStats();
+
+        /* Highlight choices */
+        if (ch.type === 'mcq' || ch.type === 'memory') {
+          Array.from(sEl.choices.children).forEach((btn) => {
+            if (btn.textContent === ch.answer) btn.classList.add('correct');
+            else if (btn.textContent === value) btn.classList.add('wrong');
+            btn.disabled = true;
+          });
+        }
+
+        const msg = timedOut ? 'Time is up.' : isCorrect ? 'Correct!' : `Not quite. Answer: ${ch.answer}.`;
+        sEl.feedback.style.display = 'block';
+        sEl.feedback.className = `solo-feedback ${isCorrect ? 'good' : 'bad'}`;
+        sEl.feedback.innerHTML = `<strong>${escHtml(msg)}</strong><br>${escHtml(ch.explanation)}`;
+
+        sEl.hintBtn.disabled = true;
+        sEl.nextBtn.style.display = 'inline-flex';
+        sEl.nextBtn.textContent = solo.index + 1 >= solo.queue.length ? 'See Results' : 'Next';
+      }
+
+      sEl.hintBtn.addEventListener('click', () => {
+        if (solo.hintRevealed) return;
+        const ch = solo.queue[solo.index];
+        if (!ch) return;
+        sEl.hint.textContent = `Hint: ${ch.hint}`;
+        sEl.hint.style.display = 'block';
+        solo.hintRevealed = true;
+      });
+
+      sEl.nextBtn.addEventListener('click', () => {
+        if (solo.index + 1 >= solo.queue.length) {
+          showSoloResults();
+        } else {
+          solo.index++;
+          renderSoloChallenge();
+        }
+      });
+
+      sEl.endBtn.addEventListener('click', () => {
+        clearInterval(solo.timerId);
+        showSoloResults();
+      });
+
+      sEl.inputRow.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!solo.answered) handleSoloAnswer(sEl.answerInput.value);
+      });
+
+      function showSoloResults() {
+        clearInterval(solo.timerId);
+        const accuracy = solo.total ? Math.round((solo.correct / solo.total) * 100) : 0;
+
+        const list = document.getElementById('resultsList');
+        list.innerHTML = '';
+
+        const scoreLi = document.createElement('li');
+        scoreLi.className = 'leaderboard-item';
+        scoreLi.innerHTML = `
+          <span class="leaderboard-rank">🏅</span>
+          <span class="leaderboard-name">Your Score</span>
+          <span class="leaderboard-score">${solo.score} pts</span>
+        `;
+        list.appendChild(scoreLi);
+
+        const statsLi = document.createElement('li');
+        statsLi.className = 'leaderboard-item';
+        statsLi.innerHTML = `
+          <span class="leaderboard-rank" style="font-size:1rem">📊</span>
+          <span class="leaderboard-name" style="font-size:0.95rem; font-weight:600; color:var(--text-muted)">
+            Accuracy: ${accuracy}% &nbsp;·&nbsp; Streak: ${solo.streak} &nbsp;·&nbsp; ${solo.correct}/${solo.total} correct
+          </span>
+        `;
+        list.appendChild(statsLi);
+
+        document.getElementById('resultsSubtitle').textContent = `Score: ${solo.score} — ${accuracy}% accuracy`;
+
+        showScreen('screen-results');
+
+        if (window.voaLeaderboard) {
+          window.voaLeaderboard.submit(solo.score, { label: 'points' });
+        }
+      }
+
+      /* ══════════════════════════════════════════════
+         RESULTS SCREEN ACTIONS
+      ══════════════════════════════════════════════ */
+
+      document.getElementById('playAgainBtn').addEventListener('click', () => {
+        showScreen('screen-setup');
+      });
+
+      document.getElementById('shareResultsBtn').addEventListener('click', () => {
+        if (window.voaShare) {
+          window.voaShare({ text: 'Just played Mental Gymnastics! Can you beat my score?' });
+        }
+      });
+
+      /* ══════════════════════════════════════════════
+         INIT
+      ══════════════════════════════════════════════ */
+      renderPlayerList();
+    </script>
+  </body>
+</html>

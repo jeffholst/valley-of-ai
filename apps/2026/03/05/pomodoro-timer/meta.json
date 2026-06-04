@@ -20,5 +20,6 @@
     "totalTokensOut": 4200,
     "runId": "run-20260305T220000Z-0b56cb",
     "notes": "Implemented from user suggestion 2026-03-05-003. Added circular progress indicator, settings panel, and Web Audio API notifications."
-  }
+  },
+  "leaderboard": false
 }

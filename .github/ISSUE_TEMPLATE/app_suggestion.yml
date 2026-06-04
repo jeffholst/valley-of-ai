@@ -1,0 +1,30 @@
+name: App Suggestion
+description: Suggest a new mini-app for AI to build
+title: 'Suggestion: '
+labels:
+  - suggestion
+  - status:pending
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Games
+        - Productivity
+        - Utilities
+        - Design
+        - Education
+        - Entertainment
+        - Visualizations
+        - Icebreakers
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What should this app do? Describe the core experience in 1,000 characters or less.
+    validations:
+      required: true

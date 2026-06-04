@@ -20,5 +20,6 @@
     "totalTokensOut": 0,
     "runId": "run-20260314T215059Z-ccf7ac",
     "notes": "Inspired by wheel-based picker UX with weighted entries; added fairness penalty to reduce repetitive winners."
-  }
+  },
+  "leaderboard": false
 }

@@ -1,0 +1,30 @@
+{
+  "id": "simmotion",
+  "name": "Simmotion",
+  "shortDescription": "Balls roll through a fixed roller coaster track — every gate they hit flips for the next ball. Catch them with your paddle before they hit the floor.",
+  "category": "Games",
+  "tags": ["physics", "ball", "gates", "roller-coaster", "paddle", "arcade", "canvas"],
+  "thumbnail": "thumbnail.svg",
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "createdAt": "2026-05-23T19:23:12Z",
+  "status": "active",
+  "maxScore": 7200,
+  "suggestion": {
+    "issueNumber": 440,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/440",
+    "prompt": "## App Suggestion\n\n**Category:** Games\n**Requestor:** Jeff Holst\n\n### Description\n\nBuild Simmotion game similar to the one shown on survivor with single, static, elaborate multi\\-path roller coaster track drawn with canvas winding ramps, steep drops, flat stretches, and splits and multiple exits\\. Each junction sits a physical gate: when a ball rolls over it, the gate visibly flips like a railroad switch, routing the next ball down the alternate branch\\. The track layout is fixed and detailed, not generated randomly\\. Balls enter at the top and follow whatever path the gates have set, creating unpredictable routes to the bottom each run\\. Player controls a catching paddle at the base via mouse or touch drag\\. Catch the ball and flick it back to the top opening to restart\\. Miss=lose a life \\(3 total\\)\\. A new ball enters every 20 seconds, increasing simultaneous balls in play\\. Balls accelerate on drops, slow on flat sections\\. Gates animate with a satisfying snap when triggered\\. R...",
+    "requestor": "Jeff Holst"
+  },
+  "generation": {
+    "agentName": "Claude Code",
+    "llmModel": "claude-sonnet-4-6",
+    "startTime": "2026-05-23T19:23:12Z",
+    "endTime": "2026-05-23T19:30:00Z",
+    "totalTokensIn": 6300,
+    "totalTokensOut": 15400,
+    "runId": "run-20260523T192312Z-e21750",
+    "notes": "Built as specified. Track is a fixed 7-gate network with 14 segments rendered in logical 400x600 space scaled to viewport. Balls follow gravity-driven physics (accelerate on drops, decelerate on flat). Requesting a 3D perspective tilt was interpreted as a visual aesthetic — achieved via track lighting/glow rather than CSS perspective transform, as perspective transforms interact poorly with touch input coordinates. maxScore set to 7200 (120 minutes = very exceptional survival time)."
+  },
+  "leaderboard": true
+}
