@@ -1,0 +1,30 @@
+{
+  "id": "virus-vials",
+  "name": "Virus Vials",
+  "shortDescription": "A neon-lab capsule puzzle: drop two-tone pills and line up 4+ matching colors to wipe out the viruses across ever-faster levels.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-06-13T15:36:14Z",
+  "category": "Games",
+  "status": "active",
+  "tags": ["puzzle", "match", "falling-blocks", "capsules", "cascade", "touch-controls"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "leaderboard": true,
+  "maxScore": 999999,
+  "suggestion": {
+    "issueNumber": 563,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/563",
+    "prompt": "Build a fully playable Dr. Mario clone. GAMEPLAY: Falling 2-segment capsules (4 colors), match 4+ same-color pieces horizontally/vertically to eliminate viruses. Standard Dr. Mario rules with increasing speed levels. VISUALS (highest priority): glossy pill capsules with specular highlights and shadows; viruses with expressive animated faces (idle bobbing, death burst); glowing grid with a deep medical/lab aesthetic — dark background, neon accents; smooth drop/lock animations, cascade chain reactions with screen shake; particle effects on every clear; level-up fanfare. MOBILE: full touch — tap to rotate, swipe to move/drop, large targets, no overflow. DESKTOP: keyboard (arrows + Z/X), centered layout. Polish: score, level counter, next capsule preview, game over / win screen with restart. 60fps target.",
+    "requestor": "Jeff Holst"
+  },
+  "generation": {
+    "agentName": "Claude Code",
+    "llmModel": "claude-opus-4-8",
+    "startTime": "2026-06-13T15:36:14Z",
+    "endTime": "2026-06-13T16:10:00Z",
+    "totalTokensIn": 36000,
+    "totalTokensOut": 38000,
+    "runId": "run-20260613T153614Z-4e4e44",
+    "notes": "Dr. Mario-style falling-capsule match puzzle, renamed 'Virus Vials' to avoid the Dr. Mario trademark while implementing the requested mechanic. 8x16 vial, 4 capsule colors per the request (classic Dr. Mario uses 3). Capsule halves stored with link metadata so connected pairs render seamlessly and fall together under gravity; orphaned halves fall solo, enabling cascade chain reactions with escalating score multipliers and screen shake. Viruses drawn as vector spiky bodies with bobbing animated faces (NOT canvas emoji fillText, which renders blank on Safari). Clears spawn particle bursts. Win = all viruses removed -> level-clear fanfare -> next level with more viruses and faster drop. Controls: arrows + Z/X + ArrowUp rotate on desktop; on-screen pad plus board gestures (tap=rotate, swipe=move, swipe-down=soft-drop) on mobile. Leaderboard + share hooks wired with guards; keydown guards skip inputs and open shell overlays."
+  }
+}
