@@ -68,7 +68,7 @@
     "gray-matter": "^4.0.3",
     "next": "^16.2.7",
     "react": "^19.2.7",
-    "react-dom": "^19.2.6",
+    "react-dom": "^19.2.7",
     "react-turnstile": "^1.1.5",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1",
