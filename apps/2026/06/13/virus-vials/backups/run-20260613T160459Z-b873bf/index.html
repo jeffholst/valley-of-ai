@@ -503,11 +503,8 @@
 
       function canPlace(r, c, orient) {
         for (const [cr, cc] of capsuleCells(r, c, orient)) {
-          // Reject any cell outside the vial — including above the ceiling
-          // (cr < 0), so rotating at the top row triggers the wall kick below
-          // instead of pushing a half off-screen.
-          if (cc < 0 || cc >= COLS || cr < 0 || cr >= ROWS) return false;
-          if (grid[cr][cc]) return false;
+          if (cc < 0 || cc >= COLS || cr >= ROWS) return false;
+          if (cr >= 0 && grid[cr][cc]) return false;
         }
         return true;
       }
@@ -522,37 +519,20 @@
         return false;
       }
 
-      // Rotate the capsule 90 degrees. A two-segment capsule has four
-      // distinct states; a single orientation toggle only reaches two of
-      // them, so we also swap the color order to cycle through all four.
-      // Color convention: horizontal => [left, right]; vertical => [bottom, top].
-      //   CW:  h->v swaps colors, v->h keeps them.
-      //   CCW: h->v keeps colors,  v->h swaps them.
-      // `dir` is 'cw' (default) or 'ccw'.
-      function rotateActive(dir) {
+      function rotateActive() {
         if (!active) return;
-        const ccw = dir === 'ccw';
         const next = active.orient === 'h' ? 'v' : 'h';
-        const swap = active.orient === 'h' ? !ccw : ccw;
-        const newColors = swap ? [active.color[1], active.color[0]] : active.color;
-
-        // Find a valid placement, applying a wall kick if the in-place
-        // rotation collides with a wall or settled cell.
-        let nr = active.r;
-        let nc = active.c;
+        // When rotating to horizontal we may need a left "wall kick".
         if (canPlace(active.r, active.c, next)) {
-          // in place
+          active.orient = next;
         } else if (next === 'h' && canPlace(active.r, active.c - 1, next)) {
-          nc = active.c - 1; // kick left off the right wall
-        } else if (next === 'v' && canPlace(active.r + 1, active.c, next)) {
-          nr = active.r + 1; // kick down off the ceiling
-        } else {
-          return; // no room to rotate here
+          active.c -= 1;
+          active.orient = next;
+        } else if (next === 'v' && active.r === 0 && canPlace(active.r + 1, active.c, next)) {
+          // Can't rotate vertical at the very top — nudge down one if possible.
+          active.r += 1;
+          active.orient = next;
         }
-        active.orient = next;
-        active.color = newColors;
-        active.r = nr;
-        active.c = nc;
       }
 
       // Lock the active capsule into the grid as two linked halves.
@@ -1230,12 +1210,12 @@
           case 'Z':
           case 'ArrowUp':
             e.preventDefault();
-            rotateActive('cw');
+            rotateActive();
             break;
           case 'x':
           case 'X':
             e.preventDefault();
-            rotateActive('ccw');
+            rotateActive();
             break;
           default:
             break;
@@ -1269,7 +1249,7 @@
       bindHold('cLeft', () => state === 'playing' && moveActive(0, -1), true);
       bindHold('cRight', () => state === 'playing' && moveActive(0, 1), true);
       bindHold('cDown', softDrop, true);
-      bindHold('cRotate', () => state === 'playing' && rotateActive('cw'), false);
+      bindHold('cRotate', () => state === 'playing' && rotateActive(), false);
 
       // Touch gestures on the board: tap = rotate, swipe = move, swipe down = drop.
       let touchStart = null;
@@ -1313,7 +1293,7 @@
         () => {
           if (!touchStart) return;
           const quick = Date.now() - touchStart.time < 250;
-          if (quick && !touchStart.moved && state === 'playing') rotateActive('cw');
+          if (quick && !touchStart.moved && state === 'playing') rotateActive();
           touchStart = null;
         },
         { passive: true }
