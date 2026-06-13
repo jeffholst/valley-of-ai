@@ -33,7 +33,7 @@ export async function POST(request) {
     return Response.json({ error: 'Missing issueNumber for tip' }, { status: 400 });
   }
 
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2026-05-27.dahlia' });
 
   const envBaseUrl = process.env.NEXT_PUBLIC_MAIN_SITE_URL || process.env.SITE_URL;
   const headerProto = request.headers.get('x-forwarded-proto')?.split(',')[0] || null;
