@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Virus Vials - __MAIN_SITE_NAME__</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Virus Vials" />
+    <meta name="voa-app-id" content="2026/06/13/virus-vials" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --accent: #36e0c8;
+        --accent-2: #7c5cff;
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+        --accent: #0c8f7e;
+        --accent-2: #5b3ff0;
+      }
+
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        overscroll-behavior: none;
+      }
+
+      /* Full-viewport wrapper anchored between the shell header (64px) and footer (56px) */
+      #wrap {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        background:
+          radial-gradient(900px 500px at 50% -10%, rgba(124, 92, 255, 0.18), transparent 70%),
+          radial-gradient(700px 500px at 50% 110%, rgba(54, 224, 200, 0.14), transparent 70%);
+      }
+
+      /* HUD */
+      #hud {
+        width: 100%;
+        max-width: 460px;
+        display: flex;
+        align-items: stretch;
+        gap: 8px;
+      }
+
+      .stats {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 6px;
+      }
+
+      .stat {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.18));
+        border: 1px solid rgba(54, 224, 200, 0.28);
+        border-radius: 10px;
+        padding: 5px 6px;
+        text-align: center;
+        min-width: 0;
+      }
+      .stat .label {
+        font-size: 9px;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        opacity: 0.7;
+      }
+      .stat .value {
+        font-size: 17px;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        color: var(--accent);
+        text-shadow: 0 0 8px rgba(54, 224, 200, 0.4);
+      }
+
+      #nextBox {
+        width: 78px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.18));
+        border: 1px solid rgba(124, 92, 255, 0.35);
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+      }
+      #nextBox .label {
+        font-size: 9px;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        opacity: 0.7;
+        margin-bottom: 2px;
+      }
+      #nextCanvas {
+        display: block;
+      }
+
+      /* Board */
+      #boardArea {
+        position: relative;
+        flex: 1;
+        width: 100%;
+        max-width: 460px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 0;
+      }
+      #board {
+        display: block;
+        border-radius: 12px;
+        background: rgba(3, 8, 20, 0.6);
+        box-shadow:
+          0 0 0 2px rgba(54, 224, 200, 0.25),
+          0 0 28px rgba(54, 224, 200, 0.18),
+          inset 0 0 40px rgba(0, 0, 0, 0.55);
+        touch-action: none;
+      }
+
+      /* Overlays (start / game over / level clear) */
+      .overlay {
+        position: absolute;
+        inset: 0;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 18px;
+        background: rgba(5, 9, 22, 0.82);
+        backdrop-filter: blur(4px);
+        border-radius: 12px;
+        z-index: 5;
+      }
+      .overlay.show {
+        display: flex;
+        animation: fade 0.25s ease;
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .overlay h1 {
+        margin: 0 0 6px;
+        font-size: 30px;
+        letter-spacing: 1px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .overlay p {
+        margin: 4px 0;
+        font-size: 14px;
+        opacity: 0.85;
+        max-width: 300px;
+      }
+      .overlay .big {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--accent);
+        margin: 8px 0;
+      }
+      .btn {
+        margin-top: 14px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 700;
+        color: #04121a;
+        padding: 12px 26px;
+        min-height: 46px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--accent), #5fe6ff);
+        box-shadow: 0 6px 18px rgba(54, 224, 200, 0.4);
+        transition:
+          transform 0.12s ease,
+          box-shadow 0.12s ease;
+      }
+      .btn:active {
+        transform: translateY(2px) scale(0.98);
+      }
+      .btn.secondary {
+        background: linear-gradient(90deg, var(--accent-2), #a98bff);
+        color: #fff;
+        box-shadow: 0 6px 18px rgba(124, 92, 255, 0.4);
+        margin-left: 8px;
+      }
+      .btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      /* Mobile control pad */
+      #controls {
+        width: 100%;
+        max-width: 460px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+      }
+      .ctrl {
+        min-height: 50px;
+        border-radius: 12px;
+        border: 1px solid rgba(124, 92, 255, 0.4);
+        background: linear-gradient(180deg, rgba(124, 92, 255, 0.2), rgba(0, 0, 0, 0.25));
+        color: var(--text);
+        font-size: 22px;
+        font-weight: 800;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        touch-action: manipulation;
+        transition: transform 0.08s ease;
+      }
+      .ctrl:active {
+        transform: scale(0.94);
+        background: linear-gradient(180deg, rgba(124, 92, 255, 0.4), rgba(0, 0, 0, 0.2));
+      }
+      .ctrl .sub {
+        font-size: 9px;
+        opacity: 0.65;
+        font-weight: 600;
+        margin-left: 4px;
+      }
+      .hint {
+        font-size: 11px;
+        opacity: 0.55;
+        text-align: center;
+      }
+      @media (min-width: 720px) {
+        #controls {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrap">
+      <div id="hud">
+        <div class="stats">
+          <div class="stat">
+            <div class="label">Score</div>
+            <div class="value" id="scoreEl">0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Level</div>
+            <div class="value" id="levelEl">1</div>
+          </div>
+          <div class="stat">
+            <div class="label">Virus</div>
+            <div class="value" id="virusEl">0</div>
+          </div>
+        </div>
+        <div id="nextBox">
+          <div class="label">Next</div>
+          <canvas id="nextCanvas" width="56" height="32"></canvas>
+        </div>
+      </div>
+
+      <div id="boardArea">
+        <canvas id="board"></canvas>
+
+        <div class="overlay show" id="startScreen">
+          <h1>Virus Vials</h1>
+          <p>Drop two-tone capsules and line up <b>4+</b> matching colors to wipe out the viruses.</p>
+          <p class="hint">Keys: ← → move · ↓ drop · Z / X rotate · or use the pad below</p>
+          <button class="btn" id="startBtn">Start</button>
+        </div>
+
+        <div class="overlay" id="levelScreen">
+          <h1>Vial Cleared!</h1>
+          <div class="big" id="levelMsg">Level 1 complete</div>
+          <p>The lab is virus-free. Time for a tougher batch.</p>
+          <button class="btn" id="nextLevelBtn">Next Level</button>
+        </div>
+
+        <div class="overlay" id="overScreen">
+          <h1>Contaminated</h1>
+          <div class="big" id="finalMsg">Score: 0</div>
+          <p id="overSub">The vial overflowed. Try again, doctor.</p>
+          <div class="btn-row">
+            <button class="btn" id="restartBtn">Play Again</button>
+            <button class="btn secondary" id="shareBtn">Share</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="controls">
+        <button class="ctrl" id="cLeft" aria-label="Move left">◀</button>
+        <button class="ctrl" id="cRotate" aria-label="Rotate">⟳</button>
+        <button class="ctrl" id="cRight" aria-label="Move right">▶</button>
+        <button class="ctrl" id="cDown" aria-label="Soft drop">▼</button>
+      </div>
+      <div class="hint" id="touchHint">Tap board to rotate · swipe to move · swipe down to drop</div>
+    </div>
+
+    <script>
+      'use strict';
+
+      /* ------------------------------------------------------------------ *
+       * Virus Vials — a Dr. Mario–style falling-capsule match puzzle.
+       *
+       * Grid is COLS x ROWS. Each cell is null (empty) or an object:
+       *   { color: 0..3, type: 'virus' | 'half', link: null | 'L'|'R'|'U'|'D' }
+       * For capsule halves, `link` points to the partner half's direction
+       * (a left half has link 'R', its right partner has link 'L', etc.).
+       * When a half's partner is cleared, link becomes null (it falls solo).
+       * ------------------------------------------------------------------ */
+
+      const COLS = 8;
+      const ROWS = 16;
+      const NUM_COLORS = 4;
+
+      // Neon "medical lab" palette. Each color has base / light / dark stops
+      // used to render glossy capsules and viruses with depth.
+      const COLORS = [
+        { base: '#ff3b6b', light: '#ff90ad', dark: '#b21340', glow: 'rgba(255,59,107,0.6)' }, // red
+        { base: '#3b9bff', light: '#9cc9ff', dark: '#1559b8', glow: 'rgba(59,155,255,0.6)' }, // blue
+        { base: '#ffd23b', light: '#ffe89a', dark: '#b8902a', glow: 'rgba(255,210,59,0.6)' }, // yellow
+        { base: '#3bff9b', light: '#9affc9', dark: '#13a861', glow: 'rgba(59,255,155,0.6)' }, // green
+      ];
+
+      // --- DOM refs ---
+      const boardCanvas = document.getElementById('board');
+      const ctx = boardCanvas.getContext('2d');
+      const nextCanvas = document.getElementById('nextCanvas');
+      const nctx = nextCanvas.getContext('2d');
+      const scoreEl = document.getElementById('scoreEl');
+      const levelEl = document.getElementById('levelEl');
+      const virusEl = document.getElementById('virusEl');
+      const startScreen = document.getElementById('startScreen');
+      const levelScreen = document.getElementById('levelScreen');
+      const overScreen = document.getElementById('overScreen');
+      const levelMsg = document.getElementById('levelMsg');
+      const finalMsg = document.getElementById('finalMsg');
+
+      // --- Game state ---
+      let grid = [];
+      let active = null; // { color:[c0,c1], r, c, orient:'h'|'v' }
+      let nextColors = null;
+      let score = 0;
+      let level = 1;
+      let virusCount = 0;
+      let cell = 24; // pixel size of a cell (computed on resize)
+      let state = 'idle'; // idle | playing | resolving | levelclear | gameover
+      let particles = [];
+      let popAnims = []; // shrinking cells being cleared
+      let shake = 0;
+      let dropTimer = 0;
+      let dropInterval = 800;
+      let lastTime = 0;
+      let popups = []; // floating score / fanfare text
+
+      const APP_NAME = 'Virus Vials';
+      const MAX_SCORE = 999999;
+
+      // ---------------------------------------------------------------- //
+      // Grid helpers
+      // ---------------------------------------------------------------- //
+      function newGrid() {
+        grid = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+      }
+
+      function inBounds(r, c) {
+        return r >= 0 && r < ROWS && c >= 0 && c < COLS;
+      }
+
+      function cellAt(r, c) {
+        return inBounds(r, c) ? grid[r][c] : undefined;
+      }
+
+      // ---------------------------------------------------------------- //
+      // Level setup — scatter viruses across the lower portion of the vial.
+      // ---------------------------------------------------------------- //
+      function setupLevel(lvl) {
+        newGrid();
+        // Virus quantity scales with level but is capped so the board stays solvable.
+        const target = Math.min(4 + lvl * 4, 64);
+        // Viruses only spawn below this row (keeps the top clear to play).
+        const minRow = Math.max(4, ROWS - 4 - lvl);
+        let placed = 0;
+        let guard = 0;
+        while (placed < target && guard < 2000) {
+          guard++;
+          const r = minRow + Math.floor(Math.random() * (ROWS - minRow));
+          const c = Math.floor(Math.random() * COLS);
+          if (grid[r][c]) continue;
+          // Avoid creating an immediate 3-in-a-row of viruses of the same color.
+          const color = pickVirusColor(r, c);
+          if (color === -1) continue;
+          grid[r][c] = { color, type: 'virus', link: null };
+          placed++;
+        }
+        virusCount = placed;
+        // Speed ramps up each level.
+        dropInterval = Math.max(140, 820 - lvl * 55);
+      }
+
+      // Choose a virus color that doesn't make 3 same-colored in any line.
+      function pickVirusColor(r, c) {
+        const banned = new Set();
+        const lines = [
+          [
+            [r, c - 1],
+            [r, c - 2],
+          ],
+          [
+            [r - 1, c],
+            [r - 2, c],
+          ],
+        ];
+        for (const pair of lines) {
+          const a = cellAt(pair[0][0], pair[0][1]);
+          const b = cellAt(pair[1][0], pair[1][1]);
+          if (a && b && a.color === b.color) banned.add(a.color);
+        }
+        const choices = [];
+        for (let i = 0; i < NUM_COLORS; i++) if (!banned.has(i)) choices.push(i);
+        if (!choices.length) return -1;
+        return choices[Math.floor(Math.random() * choices.length)];
+      }
+
+      // ---------------------------------------------------------------- //
+      // Capsule spawning & movement
+      // ---------------------------------------------------------------- //
+      function randColor() {
+        return Math.floor(Math.random() * NUM_COLORS);
+      }
+
+      function spawnCapsule() {
+        const colors = nextColors || [randColor(), randColor()];
+        nextColors = [randColor(), randColor()];
+        active = { color: colors, r: 0, c: 3, orient: 'h' };
+        drawNext();
+        // If the spawn cells are occupied, the vial has overflowed → game over.
+        if (!canPlace(active.r, active.c, active.orient)) {
+          gameOver();
+          return false;
+        }
+        return true;
+      }
+
+      // Cells occupied by a capsule at a given position/orientation.
+      function capsuleCells(r, c, orient) {
+        return orient === 'h'
+          ? [
+              [r, c],
+              [r, c + 1],
+            ]
+          : [
+              [r, c],
+              [r - 1, c],
+            ];
+      }
+
+      function canPlace(r, c, orient) {
+        for (const [cr, cc] of capsuleCells(r, c, orient)) {
+          if (cc < 0 || cc >= COLS || cr >= ROWS) return false;
+          if (cr >= 0 && grid[cr][cc]) return false;
+        }
+        return true;
+      }
+
+      function moveActive(dr, dc) {
+        if (!active) return false;
+        if (canPlace(active.r + dr, active.c + dc, active.orient)) {
+          active.r += dr;
+          active.c += dc;
+          return true;
+        }
+        return false;
+      }
+
+      function rotateActive() {
+        if (!active) return;
+        const next = active.orient === 'h' ? 'v' : 'h';
+        // When rotating to horizontal we may need a left "wall kick".
+        if (canPlace(active.r, active.c, next)) {
+          active.orient = next;
+        } else if (next === 'h' && canPlace(active.r, active.c - 1, next)) {
+          active.c -= 1;
+          active.orient = next;
+        } else if (next === 'v' && active.r === 0 && canPlace(active.r + 1, active.c, next)) {
+          // Can't rotate vertical at the very top — nudge down one if possible.
+          active.r += 1;
+          active.orient = next;
+        }
+      }
+
+      // Lock the active capsule into the grid as two linked halves.
+      function lockCapsule() {
+        const [a, b] = active.color;
+        if (active.orient === 'h') {
+          place(active.r, active.c, a, 'R');
+          place(active.r, active.c + 1, b, 'L');
+        } else {
+          // vertical: (r,c) is bottom, (r-1,c) is top
+          place(active.r, active.c, a, 'D'); // bottom links up to top
+          place(active.r - 1, active.c, b, 'U'); // top links down to bottom
+        }
+        active = null;
+      }
+
+      function place(r, c, color, link) {
+        if (r < 0) return; // half locked above the ceiling is discarded
+        grid[r][c] = { color, type: 'half', link };
+      }
+
+      // ---------------------------------------------------------------- //
+      // Match detection — find runs of 4+ same color (viruses + halves).
+      // ---------------------------------------------------------------- //
+      function findMatches() {
+        const clear = new Set();
+        // Horizontal runs
+        for (let r = 0; r < ROWS; r++) {
+          let run = 1;
+          for (let c = 1; c <= COLS; c++) {
+            const cur = c < COLS ? grid[r][c] : null;
+            const prev = grid[r][c - 1];
+            if (cur && prev && cur.color === prev.color) {
+              run++;
+            } else {
+              if (run >= 4) for (let k = c - run; k < c; k++) clear.add(r + ',' + k);
+              run = 1;
+            }
+          }
+        }
+        // Vertical runs
+        for (let c = 0; c < COLS; c++) {
+          let run = 1;
+          for (let r = 1; r <= ROWS; r++) {
+            const cur = r < ROWS ? grid[r][c] : null;
+            const prev = grid[r - 1][c];
+            if (cur && prev && cur.color === prev.color) {
+              run++;
+            } else {
+              if (run >= 4) for (let k = r - run; k < r; k++) clear.add(k + ',' + c);
+              run = 1;
+            }
+          }
+        }
+        return clear;
+      }
+
+      // Remove matched cells, spawn particles, sever partner links, score.
+      function clearCells(clearSet, chain) {
+        let viralCleared = 0;
+        let totalCleared = 0;
+        for (const key of clearSet) {
+          const [r, c] = key.split(',').map(Number);
+          const cellObj = grid[r][c];
+          if (!cellObj) continue;
+          totalCleared++;
+          if (cellObj.type === 'virus') viralCleared++;
+          spawnBurst(r, c, cellObj.color, cellObj.type === 'virus');
+          // Sever the partner half (if it survives) so it falls solo.
+          const partner = partnerOf(r, c, cellObj);
+          if (partner && !clearSet.has(partner.r + ',' + partner.c)) {
+            const pc = grid[partner.r][partner.c];
+            if (pc) pc.link = null;
+          }
+          // Pop animation: a shrinking ghost of the cleared cell.
+          popAnims.push({ r, c, color: cellObj.color, t: 0, virus: cellObj.type === 'virus' });
+          grid[r][c] = null;
+        }
+        virusCount -= viralCleared;
+        if (virusCount < 0) virusCount = 0;
+
+        // Scoring: viruses are worth more; chains multiply.
+        const mult = Math.pow(2, Math.max(0, chain - 1));
+        const gained = (totalCleared * 20 + viralCleared * 80) * mult;
+        if (gained > 0) {
+          score += gained;
+          if (chain >= 2) {
+            const { x, y } = cellCenterFromSet(clearSet);
+            popups.push({ text: 'CHAIN x' + chain, x, y, t: 0, color: '#ffd23b', size: 22 });
+          }
+        }
+        if (viralCleared > 0) shake = Math.min(16, shake + 4 + viralCleared * 2);
+        updateHud();
+        return viralCleared;
+      }
+
+      function partnerOf(r, c, cellObj) {
+        switch (cellObj.link) {
+          case 'L':
+            return { r, c: c - 1 };
+          case 'R':
+            return { r, c: c + 1 };
+          case 'U':
+            return { r: r + 1, c };
+          case 'D':
+            return { r: r - 1, c };
+          default:
+            return null;
+        }
+      }
+
+      function cellCenterFromSet(set) {
+        let sr = 0,
+          sc = 0,
+          n = 0;
+        for (const key of set) {
+          const [r, c] = key.split(',').map(Number);
+          sr += r;
+          sc += c;
+          n++;
+        }
+        const r = sr / n,
+          c = sc / n;
+        return { x: ox + (c + 0.5) * cell, y: oy + (r + 0.5) * cell };
+      }
+
+      // ---------------------------------------------------------------- //
+      // Gravity — drop floating halves (viruses never move). Connected
+      // halves fall together; orphaned halves fall solo. One step per pass.
+      // ---------------------------------------------------------------- //
+      function applyGravity() {
+        let moved = false;
+        let changed = true;
+        while (changed) {
+          changed = false;
+          for (let r = ROWS - 2; r >= 0; r--) {
+            for (let c = 0; c < COLS; c++) {
+              const obj = grid[r][c];
+              if (!obj || obj.type === 'virus') continue;
+              // Skip cells handled by their partner: 'L' (right half of a
+              // horizontal pair) and 'U' (top half of a vertical pair).
+              if (obj.link === 'L' || obj.link === 'U') continue;
+
+              if (obj.link === 'R') {
+                // Horizontal pair: this is the left half, partner to the right.
+                if (r + 1 < ROWS && !grid[r + 1][c] && !grid[r + 1][c + 1]) {
+                  grid[r + 1][c] = obj;
+                  grid[r + 1][c + 1] = grid[r][c + 1];
+                  grid[r][c] = null;
+                  grid[r][c + 1] = null;
+                  changed = true;
+                  moved = true;
+                }
+              } else if (obj.link === 'D') {
+                // Vertical pair: this is the bottom half, partner (top) at r-1.
+                // The pair falls when the cell below the bottom is empty.
+                if (r + 1 < ROWS && !grid[r + 1][c]) {
+                  grid[r + 1][c] = obj; // bottom moves down, keeps link 'D'
+                  grid[r][c] = grid[r - 1][c]; // top moves down, keeps link 'U'
+                  grid[r - 1][c] = null;
+                  changed = true;
+                  moved = true;
+                }
+              } else {
+                // Orphan single half.
+                if (r + 1 < ROWS && !grid[r + 1][c]) {
+                  grid[r + 1][c] = obj;
+                  grid[r][c] = null;
+                  changed = true;
+                  moved = true;
+                }
+              }
+            }
+          }
+        }
+        return moved;
+      }
+
+      // ---------------------------------------------------------------- //
+      // Resolution loop — clear matches, settle gravity, cascade.
+      // ---------------------------------------------------------------- //
+      function resolveBoard() {
+        state = 'resolving';
+        let chain = 0;
+        function step() {
+          const matches = findMatches();
+          if (matches.size > 0) {
+            chain++;
+            clearCells(matches, chain);
+            // Let pop animation play briefly, then settle and re-check.
+            setTimeout(() => {
+              applyGravity();
+              setTimeout(step, 110);
+            }, 150);
+          } else {
+            // Stable. Win or continue.
+            if (virusCount <= 0) {
+              levelClear();
+            } else {
+              state = 'playing';
+              spawnCapsule();
+            }
+          }
+        }
+        step();
+      }
+
+      // ---------------------------------------------------------------- //
+      // Game flow
+      // ---------------------------------------------------------------- //
+      function startGame() {
+        score = 0;
+        level = 1;
+        state = 'playing';
+        particles = [];
+        popAnims = [];
+        popups = [];
+        nextColors = [randColor(), randColor()];
+        setupLevel(level);
+        updateHud();
+        hideOverlays();
+        spawnCapsule();
+        dropTimer = 0;
+      }
+
+      function levelClear() {
+        state = 'levelclear';
+        active = null;
+        score += 500 + level * 100; // level clear bonus
+        updateHud();
+        levelMsg.textContent = 'Level ' + level + ' complete · +' + (500 + level * 100);
+        showOverlay(levelScreen);
+        // Celebratory confetti.
+        for (let i = 0; i < 60; i++) {
+          spawnBurst(
+            Math.floor(Math.random() * ROWS),
+            Math.floor(Math.random() * COLS),
+            Math.floor(Math.random() * NUM_COLORS),
+            true
+          );
+        }
+      }
+
+      function nextLevel() {
+        level++;
+        state = 'playing';
+        setupLevel(level);
+        updateHud();
+        hideOverlays();
+        spawnCapsule();
+        dropTimer = 0;
+      }
+
+      function gameOver() {
+        state = 'gameover';
+        active = null;
+        finalMsg.textContent = 'Score: ' + score.toLocaleString();
+        showOverlay(overScreen);
+        // Submit the final score to the shared leaderboard (guarded).
+        if (window.voaLeaderboard) {
+          window.voaLeaderboard.submit(score);
+        }
+      }
+
+      function updateHud() {
+        scoreEl.textContent = score.toLocaleString();
+        levelEl.textContent = level;
+        virusEl.textContent = virusCount;
+      }
+
+      function hideOverlays() {
+        [startScreen, levelScreen, overScreen].forEach((o) => o.classList.remove('show'));
+      }
+      function showOverlay(el) {
+        el.classList.add('show');
+      }
+
+      // ---------------------------------------------------------------- //
+      // Particles & floating text
+      // ---------------------------------------------------------------- //
+      function spawnBurst(r, c, color, big) {
+        const x = ox + (c + 0.5) * cell;
+        const y = oy + (r + 0.5) * cell;
+        const n = big ? 14 : 8;
+        for (let i = 0; i < n; i++) {
+          const ang = Math.random() * Math.PI * 2;
+          const sp = (big ? 2.4 : 1.6) * (0.4 + Math.random());
+          particles.push({
+            x,
+            y,
+            vx: Math.cos(ang) * sp,
+            vy: Math.sin(ang) * sp - 1,
+            life: 1,
+            color: COLORS[color].base,
+            size: 2 + Math.random() * 3,
+          });
+        }
+      }
+
+      function updateParticles(dt) {
+        for (const p of particles) {
+          p.x += p.vx * dt * 0.06;
+          p.y += p.vy * dt * 0.06;
+          p.vy += dt * 0.012;
+          p.life -= dt * 0.0022;
+        }
+        particles = particles.filter((p) => p.life > 0);
+
+        for (const a of popAnims) a.t += dt * 0.006;
+        popAnims = popAnims.filter((a) => a.t < 1);
+
+        for (const p of popups) {
+          p.t += dt * 0.0016;
+          p.y -= dt * 0.02;
+        }
+        popups = popups.filter((p) => p.t < 1);
+
+        if (shake > 0) shake = Math.max(0, shake - dt * 0.04);
+      }
+
+      // ---------------------------------------------------------------- //
+      // Rendering
+      // ---------------------------------------------------------------- //
+      let ox = 0,
+        oy = 0; // board pixel offset inside canvas
+
+      function resize() {
+        const area = document.getElementById('boardArea');
+        const aw = area.clientWidth;
+        const ah = area.clientHeight;
+        // Maintain the COLS:ROWS aspect ratio inside the available area.
+        const cellW = Math.floor(aw / COLS);
+        const cellH = Math.floor(ah / ROWS);
+        cell = Math.max(12, Math.min(cellW, cellH));
+        const w = cell * COLS;
+        const h = cell * ROWS;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        boardCanvas.width = w * dpr;
+        boardCanvas.height = h * dpr;
+        boardCanvas.style.width = w + 'px';
+        boardCanvas.style.height = h + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ox = 0;
+        oy = 0;
+        // Size the next-preview canvas crisply too.
+        const ndpr = dpr;
+        nextCanvas.width = 56 * ndpr;
+        nextCanvas.height = 32 * ndpr;
+        nextCanvas.style.width = '56px';
+        nextCanvas.style.height = '32px';
+        nctx.setTransform(ndpr, 0, 0, ndpr, 0, 0);
+        drawNext();
+      }
+
+      function drawGridBg() {
+        const w = cell * COLS;
+        const h = cell * ROWS;
+        const g = ctx.createLinearGradient(0, 0, 0, h);
+        g.addColorStop(0, 'rgba(10,16,34,0.95)');
+        g.addColorStop(1, 'rgba(4,8,20,0.98)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+        ctx.strokeStyle = 'rgba(124,92,255,0.10)';
+        ctx.lineWidth = 1;
+        for (let c = 1; c < COLS; c++) {
+          ctx.beginPath();
+          ctx.moveTo(c * cell, 0);
+          ctx.lineTo(c * cell, h);
+          ctx.stroke();
+        }
+        for (let r = 1; r < ROWS; r++) {
+          ctx.beginPath();
+          ctx.moveTo(0, r * cell);
+          ctx.lineTo(w, r * cell);
+          ctx.stroke();
+        }
+      }
+
+      // Draw a glossy capsule half. `link` controls which corners are rounded
+      // so connected halves read as one seamless pill.
+      function drawHalf(px, py, size, color, link, scale) {
+        const pad = size * 0.08;
+        const x = px + pad;
+        const y = py + pad;
+        const s = size - pad * 2;
+        const cx = x + s / 2;
+        const cy = y + s / 2;
+        const sc = scale == null ? 1 : scale;
+        const half = (s / 2) * sc;
+        const rOuter = s * 0.42;
+        const rInner = s * 0.12;
+        // Determine per-corner radius based on the join direction.
+        let tl = rOuter,
+          tr = rOuter,
+          br = rOuter,
+          bl = rOuter;
+        if (link === 'R') {
+          tr = br = rInner;
+        } else if (link === 'L') {
+          tl = bl = rInner;
+        } else if (link === 'U') {
+          bl = br = rInner;
+        } else if (link === 'D') {
+          tl = tr = rInner;
+        }
+        const left = cx - half,
+          top = cy - half,
+          w = half * 2,
+          h = half * 2;
+        roundRectPath(left, top, w, h, { tl, tr, br, bl });
+        const col = COLORS[color];
+        const grad = ctx.createLinearGradient(left, top, left, top + h);
+        grad.addColorStop(0, col.light);
+        grad.addColorStop(0.5, col.base);
+        grad.addColorStop(1, col.dark);
+        ctx.fillStyle = grad;
+        ctx.shadowColor = col.glow;
+        ctx.shadowBlur = size * 0.25;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        // Specular highlight (the glossy pill shine).
+        ctx.save();
+        ctx.clip();
+        ctx.fillStyle = 'rgba(255,255,255,0.45)';
+        ctx.beginPath();
+        ctx.ellipse(
+          cx - w * 0.16,
+          top + h * 0.26,
+          w * 0.22,
+          h * 0.13,
+          -0.5,
+          0,
+          Math.PI * 2
+        );
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Draw an animated virus with a bobbing expressive face.
+      function drawVirus(px, py, size, color, t) {
+        const cx = px + size / 2;
+        const bob = Math.sin(t / 380 + (px + py)) * size * 0.05;
+        const cy = py + size / 2 + bob;
+        const r = size * 0.34;
+        const col = COLORS[color];
+        // Spiky body
+        ctx.save();
+        ctx.shadowColor = col.glow;
+        ctx.shadowBlur = size * 0.3;
+        const grad = ctx.createRadialGradient(cx - r * 0.3, cy - r * 0.3, r * 0.2, cx, cy, r);
+        grad.addColorStop(0, col.light);
+        grad.addColorStop(1, col.dark);
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        const spikes = 8;
+        for (let i = 0; i < spikes * 2; i++) {
+          const ang = (Math.PI * i) / spikes;
+          const rad = i % 2 === 0 ? r : r * 0.78;
+          const x = cx + Math.cos(ang) * rad;
+          const y = cy + Math.sin(ang) * rad;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        // Eyes
+        ctx.fillStyle = '#04121a';
+        const ex = r * 0.4;
+        ctx.beginPath();
+        ctx.arc(cx - ex, cy - r * 0.1, r * 0.18, 0, Math.PI * 2);
+        ctx.arc(cx + ex, cy - r * 0.1, r * 0.18, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(cx - ex + r * 0.05, cy - r * 0.16, r * 0.06, 0, Math.PI * 2);
+        ctx.arc(cx + ex + r * 0.05, cy - r * 0.16, r * 0.06, 0, Math.PI * 2);
+        ctx.fill();
+        // Grumpy mouth
+        ctx.strokeStyle = '#04121a';
+        ctx.lineWidth = Math.max(1.4, r * 0.12);
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.arc(cx, cy + r * 0.45, r * 0.32, Math.PI * 1.15, Math.PI * 1.85);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function roundRectPath(x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r.tl, y);
+        ctx.lineTo(x + w - r.tr, y);
+        ctx.arcTo(x + w, y, x + w, y + r.tr, r.tr);
+        ctx.lineTo(x + w, y + h - r.br);
+        ctx.arcTo(x + w, y + h, x + w - r.br, y + h, r.br);
+        ctx.lineTo(x + r.bl, y + h);
+        ctx.arcTo(x, y + h, x, y + h - r.bl, r.bl);
+        ctx.lineTo(x, y + r.tl);
+        ctx.arcTo(x, y, x + r.tl, y, r.tl);
+        ctx.closePath();
+      }
+
+      function render(t) {
+        const w = cell * COLS;
+        const h = cell * ROWS;
+        ctx.clearRect(0, 0, w, h);
+        ctx.save();
+        if (shake > 0) {
+          ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
+        }
+        drawGridBg();
+
+        // Settled cells
+        for (let r = 0; r < ROWS; r++) {
+          for (let c = 0; c < COLS; c++) {
+            const obj = grid[r][c];
+            if (!obj) continue;
+            const px = c * cell;
+            const py = r * cell;
+            if (obj.type === 'virus') drawVirus(px, py, cell, obj.color, t);
+            else drawHalf(px, py, cell, obj.color, obj.link);
+          }
+        }
+
+        // Active capsule
+        if (active && (state === 'playing' || state === 'resolving')) {
+          const cells = capsuleCells(active.r, active.c, active.orient);
+          const links = active.orient === 'h' ? ['R', 'L'] : ['D', 'U'];
+          cells.forEach(([cr, cc], i) => {
+            if (cr < 0) return;
+            drawHalf(cc * cell, cr * cell, cell, active.color[i], links[i]);
+          });
+        }
+
+        // Pop animations (shrinking cleared cells)
+        for (const a of popAnims) {
+          const scale = 1 - a.t;
+          if (a.virus) drawVirus(a.c * cell, a.r * cell, cell, a.color, t);
+          else drawHalf(a.c * cell, a.r * cell, cell, a.color, null, scale);
+        }
+
+        // Particles
+        for (const p of particles) {
+          ctx.globalAlpha = Math.max(0, p.life);
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+
+        // Floating popups
+        for (const p of popups) {
+          ctx.globalAlpha = Math.max(0, 1 - p.t);
+          ctx.fillStyle = p.color;
+          ctx.font = '800 ' + p.size + 'px system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(p.text, p.x, p.y);
+        }
+        ctx.globalAlpha = 1;
+        ctx.restore();
+      }
+
+      function drawNext() {
+        nctx.clearRect(0, 0, 56, 32);
+        if (!nextColors) return;
+        const s = 26;
+        const x = (56 - s * 2) / 2;
+        const y = (32 - s) / 2;
+        drawHalfOn(nctx, x, y, s, nextColors[0], 'R');
+        drawHalfOn(nctx, x + s, y, s, nextColors[1], 'L');
+      }
+
+      // A standalone half renderer for the preview canvas (own context).
+      function drawHalfOn(c2, px, py, size, color, link) {
+        const pad = size * 0.1;
+        const x = px + pad,
+          y = py + pad,
+          s = size - pad * 2;
+        const rO = s * 0.42,
+          rI = s * 0.12;
+        let tl = rO,
+          tr = rO,
+          br = rO,
+          bl = rO;
+        if (link === 'R') {
+          tr = br = rI;
+        } else if (link === 'L') {
+          tl = bl = rI;
+        }
+        c2.beginPath();
+        c2.moveTo(x + tl, y);
+        c2.lineTo(x + s - tr, y);
+        c2.arcTo(x + s, y, x + s, y + tr, tr);
+        c2.lineTo(x + s, y + s - br);
+        c2.arcTo(x + s, y + s, x + s - br, y + s, br);
+        c2.lineTo(x + bl, y + s);
+        c2.arcTo(x, y + s, x, y + s - bl, bl);
+        c2.lineTo(x, y + tl);
+        c2.arcTo(x, y, x + tl, y, tl);
+        c2.closePath();
+        const col = COLORS[color];
+        const g = c2.createLinearGradient(x, y, x, y + s);
+        g.addColorStop(0, col.light);
+        g.addColorStop(0.5, col.base);
+        g.addColorStop(1, col.dark);
+        c2.fillStyle = g;
+        c2.fill();
+      }
+
+      // ---------------------------------------------------------------- //
+      // Main loop
+      // ---------------------------------------------------------------- //
+      function loop(t) {
+        const dt = Math.min(50, t - lastTime || 16);
+        lastTime = t;
+
+        if (state === 'playing' && active) {
+          dropTimer += dt;
+          if (dropTimer >= dropInterval) {
+            dropTimer = 0;
+            if (!moveActive(1, 0)) {
+              lockCapsule();
+              resolveBoard();
+            }
+          }
+        }
+
+        updateParticles(dt);
+        render(t);
+        requestAnimationFrame(loop);
+      }
+
+      // ---------------------------------------------------------------- //
+      // Input — keyboard, on-screen pad, and touch gestures
+      // ---------------------------------------------------------------- //
+      function softDrop() {
+        if (state !== 'playing' || !active) return;
+        if (!moveActive(1, 0)) {
+          lockCapsule();
+          resolveBoard();
+        } else {
+          score += 1;
+          updateHud();
+        }
+        dropTimer = 0;
+      }
+
+      document.addEventListener('keydown', (e) => {
+        // Never act on keys while typing in an input or while a shell overlay is open.
+        const tag = document.activeElement && document.activeElement.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
+        if (state !== 'playing') {
+          if (e.key === 'Enter' && startScreen.classList.contains('show')) {
+            e.preventDefault();
+            startGame();
+          }
+          return;
+        }
+        switch (e.key) {
+          case 'ArrowLeft':
+            e.preventDefault();
+            moveActive(0, -1);
+            break;
+          case 'ArrowRight':
+            e.preventDefault();
+            moveActive(0, 1);
+            break;
+          case 'ArrowDown':
+            e.preventDefault();
+            softDrop();
+            break;
+          case 'z':
+          case 'Z':
+          case 'ArrowUp':
+            e.preventDefault();
+            rotateActive();
+            break;
+          case 'x':
+          case 'X':
+            e.preventDefault();
+            rotateActive();
+            break;
+          default:
+            break;
+        }
+      });
+
+      // On-screen pad
+      function bindHold(id, fn, repeat) {
+        const el = document.getElementById(id);
+        let timer = null;
+        const start = (e) => {
+          e.preventDefault();
+          fn();
+          if (repeat) {
+            timer = setInterval(fn, 110);
+          }
+        };
+        const stop = () => {
+          if (timer) {
+            clearInterval(timer);
+            timer = null;
+          }
+        };
+        el.addEventListener('touchstart', start, { passive: false });
+        el.addEventListener('mousedown', start);
+        el.addEventListener('touchend', stop);
+        el.addEventListener('touchcancel', stop);
+        el.addEventListener('mouseup', stop);
+        el.addEventListener('mouseleave', stop);
+      }
+      bindHold('cLeft', () => state === 'playing' && moveActive(0, -1), true);
+      bindHold('cRight', () => state === 'playing' && moveActive(0, 1), true);
+      bindHold('cDown', softDrop, true);
+      bindHold('cRotate', () => state === 'playing' && rotateActive(), false);
+
+      // Touch gestures on the board: tap = rotate, swipe = move, swipe down = drop.
+      let touchStart = null;
+      boardCanvas.addEventListener(
+        'touchstart',
+        (e) => {
+          if (e.touches.length !== 1) return;
+          const t0 = e.touches[0];
+          touchStart = { x: t0.clientX, y: t0.clientY, time: Date.now(), col: 0, row: 0 };
+        },
+        { passive: true }
+      );
+      boardCanvas.addEventListener(
+        'touchmove',
+        (e) => {
+          if (!touchStart || state !== 'playing') return;
+          const t0 = e.touches[0];
+          const dx = t0.clientX - touchStart.x;
+          const dy = t0.clientY - touchStart.y;
+          const threshold = cell * 0.8;
+          if (Math.abs(dx) > Math.abs(dy)) {
+            if (dx > threshold) {
+              moveActive(0, 1);
+              touchStart.x = t0.clientX;
+              touchStart.moved = true;
+            } else if (dx < -threshold) {
+              moveActive(0, -1);
+              touchStart.x = t0.clientX;
+              touchStart.moved = true;
+            }
+          } else if (dy > threshold) {
+            softDrop();
+            touchStart.y = t0.clientY;
+            touchStart.moved = true;
+          }
+        },
+        { passive: true }
+      );
+      boardCanvas.addEventListener(
+        'touchend',
+        () => {
+          if (!touchStart) return;
+          const quick = Date.now() - touchStart.time < 250;
+          if (quick && !touchStart.moved && state === 'playing') rotateActive();
+          touchStart = null;
+        },
+        { passive: true }
+      );
+
+      // Buttons
+      document.getElementById('startBtn').addEventListener('click', startGame);
+      document.getElementById('restartBtn').addEventListener('click', startGame);
+      document.getElementById('nextLevelBtn').addEventListener('click', nextLevel);
+      document.getElementById('shareBtn').addEventListener('click', () => {
+        if (window.voaShare) {
+          window.voaShare({
+            text: `I scored ${score.toLocaleString()} in ${APP_NAME}! Can you beat it?`,
+          });
+        }
+      });
+
+      // ---------------------------------------------------------------- //
+      // Boot
+      // ---------------------------------------------------------------- //
+      window.addEventListener('resize', resize);
+      newGrid(); // empty board so render() is safe before the first game starts
+      resize();
+      drawNext();
+      requestAnimationFrame((t) => {
+        lastTime = t;
+        loop(t);
+      });
+    </script>
+  </body>
+</html>
