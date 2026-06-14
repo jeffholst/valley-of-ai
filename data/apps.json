@@ -40,6 +40,16 @@
         "implementedAt": "2026-06-13T16:04:59Z",
         "agentName": "Claude Code",
         "llmModel": "claude-opus-4-8"
+      },
+      {
+        "issueNumber": 567,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/567",
+        "runId": "run-20260614T212057Z-30ca93",
+        "description": "Added a Controls settings overlay with adjustable swipe (slide) and tap (rotate) sensitivity, persisted to localStorage; touch gesture thresholds now read these values instead of fixed constants.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-06-14T21:20:57Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-opus-4-8"
       }
     ],
     "allowImprovements": true,
@@ -50,6 +60,11 @@
         "runId": "run-20260613T160459Z-b873bf",
         "path": "backups/run-20260613T160459Z-b873bf/index.html",
         "url": "/apps/2026/06/13/virus-vials/backups/run-20260613T160459Z-b873bf/index.html"
+      },
+      {
+        "runId": "run-20260614T212057Z-30ca93",
+        "path": "backups/run-20260614T212057Z-30ca93/index.html",
+        "url": "/apps/2026/06/13/virus-vials/backups/run-20260614T212057Z-30ca93/index.html"
       }
     ]
   },
