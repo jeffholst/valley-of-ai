@@ -257,24 +257,29 @@
         const GHOST_SPEED = 1.5;
         const POWER_UP_DURATION = 8000;
 
-        const MAP = [
+        // Maze layout: 'W' wall, '.' pellet, ' ' open floor (ghost home / spawn).
+        // Exactly MAP_WIDTH x MAP_HEIGHT; single-cell pillars keep every corridor
+        // connected. RAW_MAP is the pristine source; MAP is a mutable working copy
+        // (char arrays) rebuilt by resetMap() so replays restore eaten pellets.
+        const RAW_MAP = [
           'WWWWWWWWWWWWWWWW',
-          'W. . . . . . . . . . . . . .W',
-          'W.WW.WW.WW.WW.WW',
-          'W. . . . . . . . . . . . . .W',
-          'WWWW.WW.WW.WW.WW',
-          'W. . . . . . . . . . . . . .W',
-          'W.WW.WW.WW.WW.WW',
-          'W. . . . . . . . . . . . . .W',
-          'WWWWWWWWWWWWWWWW',
-          'W. . . . . . . . . . . . . .W',
-          'W.WW.WW.WW.WW.WW',
-          'W. . . . . . . . . . . . . .W',
-          'WWWW.WW.WW.WW.WW',
-          'W. . . . . . . . . . . . . .W',
-          'W.WW.WW.WW.WW.WW',
+          'W .............W',
+          'W.W.W.W.W.W.W.WW',
+          'W..............W',
+          'W.W.W.W.W.W.W.WW',
+          'W..............W',
+          'W.W.W.    W.W.WW',
+          'W.....    .....W',
+          'W.W.W.    W.W.WW',
+          'W.....    .....W',
+          'W.W.W.W.W.W.W.WW',
+          'W..............W',
+          'W.W.W.W.W.W.W.WW',
+          'W..............W',
+          'W.W.W.W.W.W.W.WW',
           'WWWWWWWWWWWWWWWW',
         ];
+        let MAP = RAW_MAP.map((row) => row.split(''));
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -302,8 +307,10 @@
           { x: 8, y: 8, color: '#ff0055', dir: 'right', type: 'chase', name: 'Blinky' },
           { x: 8, y: 7, color: '#ffb8ff', dir: 'left', type: 'ambush', name: 'Pinky' },
           { x: 7, y: 8, color: '#00ffff', dir: 'up', type: 'vector', name: 'Inky' },
-          { { x: 6, y: 8, color: '#ffb855', dir: 'down', type: 'shy', name: 'Clyde' },
+          { x: 6, y: 8, color: '#ffb855', dir: 'down', type: 'shy', name: 'Clyde' },
         ];
+        // Pristine spawn positions so ghosts can be sent home on replay / capture.
+        const GHOST_SPAWNS = ghosts.map((g) => ({ x: g.x, y: g.y }));
 
         function drawMap() {
           for (let y = 0; y < MAP_HEIGHT; y++) {
@@ -378,7 +385,7 @@
           } else {
             if (player.dir === 'up') ny = player.y - 1;
             else if (player.dir === 'down') ny = player.y + 1;
-            else if (dir = 'left') nx = player.x - 1;
+            else if (player.dir === 'left') nx = player.x - 1;
             else if (player.dir === 'right') nx = player.x + 1;
 
             if (MAP[ny] && MAP[ny][nx] !== 'W') {
@@ -438,20 +445,26 @@
         }
 
         function checkCollisions() {
-          if (player.x === ghosts[0].x && player.y === ghosts[0].y) {
-            if (powerMode) {
-              ghosts[0].x = 8;
-              ghosts[0].y = 8;
-              score += 200;
-            } else {
-              lives--;
-              player.x = 1;
-              player.y = 1;
+          ghosts.forEach((ghost, i) => {
+            if (player.x === ghost.x && player.y === ghost.y) {
+              if (powerMode) {
+                ghost.x = GHOST_SPAWNS[i].x;
+                ghost.y = GHOST_SPAWNS[i].y;
+                score += 200;
+                scoreEl.textContent = score;
+              } else {
+                lives--;
+                livesEl.textContent = lives;
+                player.x = 1;
+                player.y = 1;
+                player.dir = 'still';
+                player.nextDir = 'still';
+              }
             }
-          }
+          });
           if (lives <= 0) {
             gameRunning = false;
-            alert('Game Over!');
+            alert('Game Over! Score: ' + score);
           }
         }
 
@@ -467,11 +480,15 @@
             pelletsCollected++;
             scoreEl.textContent = score;
             MAP[player.y][player.x] = ' ';
+            if (pelletsCollected >= totalPellets) {
+              gameRunning = false;
+              alert('You cleared the maze! Score: ' + score);
+            }
           }
         }
 
         function render() {
-          ctx.clearRect(0, 0, 0, 0);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
           drawMap();
           drawPlayer();
           ghosts.forEach(drawGhost);
@@ -480,30 +497,39 @@
         function gameLoop() {
           update();
           render();
-          setTimeout(setTimeout, 150);
+          if (gameRunning) setTimeout(gameLoop, 150);
         }
 
         function start() {
+          if (gameRunning) return; // ignore extra clicks while a game is in progress
           gameRunning = true;
           score = 0;
           lives = 3;
+          pelletsCollected = 0;
           player.x = 1;
           player.y = 1;
+          player.dir = 'still';
+          player.nextDir = 'still';
           scoreEl.textContent = score;
           livesEl.textContent = lives;
-          
-          // Reset map
-          const mapCopy = JSON.parse(JSON.stringify(MAP));
-          MAP.forEach((row, i) => {
-            MAP[i] = row.split('');
-          });
-          
+
+          resetMap();
+          totalPellets = MAP.flat().filter((c) => c === '.').length;
+          resetGhosts();
+
           gameLoop();
         }
 
+        // Rebuild the working map from the pristine source so eaten pellets return.
         function resetMap() {
-          MAP.forEach((row, i) => {
-            MAP[i] = row.split('');
+          MAP = RAW_MAP.map((row) => row.split(''));
+        }
+
+        // Send every ghost back to its spawn tile.
+        function resetGhosts() {
+          ghosts.forEach((g, i) => {
+            g.x = GHOST_SPAWNS[i].x;
+            g.y = GHOST_SPAWNS[i].y;
           });
         }
 
@@ -513,7 +539,7 @@
             if (key === 'ArrowUp' || key === 'w') player.nextDir = 'up';
             if (key === 'ArrowDown' || key === 's') player.nextDir = 'down';
             if (key === 'ArrowLeft' || key === 'a') player.nextDir = 'left';
-            if (key === 'ArrowRight' || key === 'r') player.nextDir = 'right';
+            if (key === 'ArrowRight' || key === 'd') player.nextDir = 'right';
           });
 
           document.getElementById('up').addEventListener('click', () => player.nextDir = 'up');
@@ -528,7 +554,6 @@
         drawPlayer();
         drawGhost(ghosts[0]);
         drawGhost(ghosts[1]);
-        drawGhost(ghostC);
         drawGhost(ghosts[2]);
         drawGhost(ghosts[3]);
         
