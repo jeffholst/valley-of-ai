@@ -47,16 +47,6 @@
       "implementedAt": "2026-06-14T21:20:57Z",
       "agentName": "Claude Code",
       "llmModel": "claude-opus-4-8"
-    },
-    {
-      "issueNumber": 574,
-      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/574",
-      "runId": "run-20260615T104553Z-6fb152",
-      "description": "Added a 1 (easy) to 10 (very hard) starting-difficulty slider to the start screen; the chosen value sets the level the game begins at and is persisted to localStorage. Note: persistence was added (not explicitly requested) for consistency with the app's existing localStorage settings and so 'Play Again' keeps the choice.",
-      "requestor": "jeffholst",
-      "implementedAt": "2026-06-15T10:45:53Z",
-      "agentName": "Claude Code",
-      "llmModel": "claude-opus-4-8"
     }
   ]
 }

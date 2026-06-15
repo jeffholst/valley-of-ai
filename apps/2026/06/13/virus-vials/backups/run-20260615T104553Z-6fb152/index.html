@@ -334,37 +334,6 @@
         height: 28px;
         cursor: pointer;
       }
-
-      /* Start-screen difficulty selector */
-      .difficulty {
-        width: 100%;
-        max-width: 300px;
-        margin: 10px 0 2px;
-      }
-      .diff-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 4px;
-      }
-      .diff-head label {
-        font-size: 13px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-      }
-      .difficulty input[type='range'] {
-        width: 100%;
-        accent-color: var(--accent);
-        height: 28px;
-        cursor: pointer;
-      }
-      .diff-scale {
-        display: flex;
-        justify-content: space-between;
-        font-size: 10px;
-        opacity: 0.6;
-        margin-top: 2px;
-      }
       @media (min-width: 720px) {
         #controls {
           display: none;
@@ -401,14 +370,6 @@
         <div class="overlay show" id="startScreen">
           <h1>Virus Vials</h1>
           <p>Drop two-tone capsules and line up <b>4+</b> matching colors to wipe out the viruses.</p>
-          <div class="difficulty">
-            <div class="diff-head">
-              <label for="difficultyRange">Starting difficulty</label>
-              <span class="setVal" id="difficultyVal">5</span>
-            </div>
-            <input type="range" id="difficultyRange" min="1" max="10" step="1" value="5" />
-            <div class="diff-scale"><span>1 · Easy</span><span>10 · Very Hard</span></div>
-          </div>
           <p class="hint">Keys: ← → move · ↓ drop · Z / X rotate · or use the pad below</p>
           <button class="btn" id="startBtn">Start</button>
         </div>
@@ -565,38 +526,6 @@
       }
       function tapWindowMs() {
         return 150 + 20 * controls.tap;
-      }
-
-      // ---------------------------------------------------------------- //
-      // Starting difficulty (1 easy .. 10 very hard) chosen on the start
-      // screen. It sets the level the game begins at, so setupLevel()'s
-      // existing per-level scaling controls virus count and drop speed.
-      // Persisted so the choice is remembered across reloads and replays.
-      // ---------------------------------------------------------------- //
-      const DIFFICULTY_KEY = 'voa:virus-vials:difficulty';
-      const DEFAULT_DIFFICULTY = 5;
-      let startDifficulty = loadDifficulty();
-
-      function clampDifficulty(v) {
-        return Math.max(1, Math.min(10, Math.round(v)));
-      }
-
-      function loadDifficulty() {
-        try {
-          const saved = Number(localStorage.getItem(DIFFICULTY_KEY));
-          if (Number.isFinite(saved) && saved >= 1) return clampDifficulty(saved);
-        } catch (e) {
-          /* storage unavailable — use default */
-        }
-        return DEFAULT_DIFFICULTY;
-      }
-
-      function saveDifficulty() {
-        try {
-          localStorage.setItem(DIFFICULTY_KEY, String(startDifficulty));
-        } catch (e) {
-          /* storage unavailable — keep selection in memory */
-        }
       }
 
       // ---------------------------------------------------------------- //
@@ -962,7 +891,7 @@
       // ---------------------------------------------------------------- //
       function startGame() {
         score = 0;
-        level = startDifficulty; // begin at the difficulty chosen on the start screen
+        level = 1;
         state = 'playing';
         particles = [];
         popAnims = [];
@@ -1521,18 +1450,6 @@
       document.getElementById('startBtn').addEventListener('click', startGame);
       document.getElementById('restartBtn').addEventListener('click', startGame);
       document.getElementById('nextLevelBtn').addEventListener('click', nextLevel);
-
-      // Start-screen difficulty selector — reflects the persisted choice and
-      // updates startDifficulty live as the player drags the slider.
-      const difficultyRange = document.getElementById('difficultyRange');
-      const difficultyVal = document.getElementById('difficultyVal');
-      difficultyRange.value = startDifficulty;
-      difficultyVal.textContent = startDifficulty;
-      difficultyRange.addEventListener('input', () => {
-        startDifficulty = clampDifficulty(Number(difficultyRange.value));
-        difficultyVal.textContent = startDifficulty;
-        saveDifficulty();
-      });
       document.getElementById('shareBtn').addEventListener('click', () => {
         if (window.voaShare) {
           window.voaShare({
