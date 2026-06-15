@@ -44,7 +44,7 @@
     "agent": "node scripts/agent.mjs",
     "lint": "eslint app components hooks lib scripts __tests__ --max-warnings 0",
     "lint:fix": "eslint app components hooks lib scripts __tests__ --fix",
-    "format": "prettier --write \"app/**/*.{js,jsx,ts,tsx}\" \"components/**/*.{js,jsx,ts,tsx}\" \"hooks/**/*.{js,jsx,ts,tsx}\" \"lib/**/*.{js,jsx,ts,tsx}\" \"scripts/**/*.{js,jsx,ts,tsx,mjs}\" \"__tests__/**/*.{js,jsx,ts,tsx}\"",
+    "format": "prettier --write \"app/**/*.{js,jsx,ts,tsx}\" \"components/**/*.{js,jsx,ts,tsx}\" \"hooks/**/*.{js,jsx,ts,tsx}\" \"lib/**/*.{js,jsx,ts,tsx}\" \"scripts/**/*.{js,jsx,ts,tsx,mjs}\" \"__tests__/**/*.{js,jsx,ts,tsx}\" \"data/**/*.json\"",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
