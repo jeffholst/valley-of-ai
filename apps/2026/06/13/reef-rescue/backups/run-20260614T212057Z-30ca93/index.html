@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Virus Vials - __MAIN_SITE_NAME__</title>
+    <title>Reef Rescue - __MAIN_SITE_NAME__</title>
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
@@ -22,8 +22,8 @@
     <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
     <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
     <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
-    <meta name="application-name" content="Virus Vials" />
-    <meta name="voa-app-id" content="2026/06/13/virus-vials" />
+    <meta name="application-name" content="Reef Rescue" />
+    <meta name="voa-app-id" content="2026/06/13/reef-rescue" />
     <script src="/apps/shared/app-shell.js" defer></script>
 
     <style>
@@ -275,96 +275,6 @@
         opacity: 0.55;
         text-align: center;
       }
-
-      /* Bottom row: gesture hint + controls-settings entry point */
-      #bottomRow {
-        width: 100%;
-        max-width: 460px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-      }
-      .settings-btn {
-        flex-shrink: 0;
-        min-height: 36px;
-        padding: 6px 12px;
-        border-radius: 999px;
-        border: 1px solid rgba(124, 92, 255, 0.4);
-        background: linear-gradient(180deg, rgba(124, 92, 255, 0.2), rgba(0, 0, 0, 0.25));
-        color: var(--text);
-        font-size: 12px;
-        font-weight: 700;
-        cursor: pointer;
-        user-select: none;
-        touch-action: manipulation;
-        transition: transform 0.08s ease;
-      }
-      .settings-btn:active {
-        transform: scale(0.96);
-      }
-
-      /* Settings overlay rows */
-      .setting {
-        width: 100%;
-        max-width: 300px;
-        display: grid;
-        grid-template-columns: 1fr auto;
-        align-items: center;
-        gap: 6px 10px;
-        margin: 8px 0;
-        text-align: left;
-      }
-      .setting label {
-        font-size: 13px;
-        font-weight: 600;
-      }
-      .setting .setVal {
-        font-size: 14px;
-        font-weight: 800;
-        color: var(--accent);
-        font-variant-numeric: tabular-nums;
-        min-width: 18px;
-        text-align: right;
-      }
-      .setting input[type='range'] {
-        grid-column: 1 / -1;
-        width: 100%;
-        accent-color: var(--accent);
-        height: 28px;
-        cursor: pointer;
-      }
-
-      /* Start-screen difficulty selector */
-      .difficulty {
-        width: 100%;
-        max-width: 300px;
-        margin: 10px 0 2px;
-      }
-      .diff-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 4px;
-      }
-      .diff-head label {
-        font-size: 13px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-      }
-      .difficulty input[type='range'] {
-        width: 100%;
-        accent-color: var(--accent);
-        height: 28px;
-        cursor: pointer;
-      }
-      .diff-scale {
-        display: flex;
-        justify-content: space-between;
-        font-size: 10px;
-        opacity: 0.6;
-        margin-top: 2px;
-      }
       @media (min-width: 720px) {
         #controls {
           display: none;
@@ -399,16 +309,8 @@
         <canvas id="board"></canvas>
 
         <div class="overlay show" id="startScreen">
-          <h1>Virus Vials</h1>
+          <h1>Reef Rescue</h1>
           <p>Drop two-tone capsules and line up <b>4+</b> matching colors to wipe out the viruses.</p>
-          <div class="difficulty">
-            <div class="diff-head">
-              <label for="difficultyRange">Starting difficulty</label>
-              <span class="setVal" id="difficultyVal">5</span>
-            </div>
-            <input type="range" id="difficultyRange" min="1" max="10" step="1" value="5" />
-            <div class="diff-scale"><span>1 · Easy</span><span>10 · Very Hard</span></div>
-          </div>
           <p class="hint">Keys: ← → move · ↓ drop · Z / X rotate · or use the pad below</p>
           <button class="btn" id="startBtn">Start</button>
         </div>
@@ -424,36 +326,9 @@
           <h1>Contaminated</h1>
           <div class="big" id="finalMsg">Score: 0</div>
           <p id="overSub">The vial overflowed. Try again, doctor.</p>
-          <div class="difficulty">
-            <div class="diff-head">
-              <label for="difficultyRange2">Starting difficulty</label>
-              <span class="setVal" id="difficultyVal2">5</span>
-            </div>
-            <input type="range" id="difficultyRange2" min="1" max="10" step="1" value="5" />
-            <div class="diff-scale"><span>1 · Easy</span><span>10 · Very Hard</span></div>
-          </div>
           <div class="btn-row">
             <button class="btn" id="restartBtn">Play Again</button>
             <button class="btn secondary" id="shareBtn">Share</button>
-          </div>
-        </div>
-
-        <div class="overlay" id="settingsScreen">
-          <h1>Controls</h1>
-          <div class="setting">
-            <label for="slideRange">Swipe sensitivity</label>
-            <span class="setVal" id="slideVal">5</span>
-            <input type="range" id="slideRange" min="0" max="10" step="1" value="5" />
-          </div>
-          <div class="setting">
-            <label for="tapRange">Tap sensitivity</label>
-            <span class="setVal" id="tapVal">5</span>
-            <input type="range" id="tapRange" min="0" max="10" step="1" value="5" />
-          </div>
-          <p>Higher swipe = reacts to smaller slides. Higher tap = more forgiving taps for rotation.</p>
-          <div class="btn-row">
-            <button class="btn" id="settingsCloseBtn">Done</button>
-            <button class="btn secondary" id="settingsResetBtn">Reset</button>
           </div>
         </div>
       </div>
@@ -464,17 +339,14 @@
         <button class="ctrl" id="cRight" aria-label="Move right">▶</button>
         <button class="ctrl" id="cDown" aria-label="Soft drop">▼</button>
       </div>
-      <div id="bottomRow">
-        <span class="hint" id="touchHint">Tap board to rotate · swipe to move · swipe down to drop</span>
-        <button class="settings-btn" id="settingsBtn" aria-label="Control settings">⚙ Controls</button>
-      </div>
+      <div class="hint" id="touchHint">Tap board to rotate · swipe to move · swipe down to drop</div>
     </div>
 
     <script>
       'use strict';
 
       /* ------------------------------------------------------------------ *
-       * Virus Vials — a Dr. Mario–style falling-capsule match puzzle.
+       * Reef Rescue — a Dr. Mario–style falling-capsule match puzzle.
        *
        * Grid is COLS x ROWS. Each cell is null (empty) or an object:
        *   { color: 0..3, type: 'virus' | 'half', link: null | 'L'|'R'|'U'|'D' }
@@ -527,85 +399,8 @@
       let lastTime = 0;
       let popups = []; // floating score / fanfare text
 
-      const APP_NAME = 'Virus Vials';
+      const APP_NAME = 'Reef Rescue';
       const MAX_SCORE = 999999;
-
-      // ---------------------------------------------------------------- //
-      // Touch control sensitivity — user-adjustable, persisted locally.
-      // Levels are 0–10; higher = more sensitive (smaller swipe needed) /
-      // more forgiving (longer tap window). Defaults reproduce the
-      // original hardcoded behavior (0.8-cell swipe, 250ms tap).
-      // ---------------------------------------------------------------- //
-      const CONTROLS_KEY = 'voa:virus-vials:controls';
-      const CONTROL_DEFAULTS = { slide: 5, tap: 5 };
-      let controls = loadControls();
-      let settingsOpen = false;
-
-      function clampLevel(v) {
-        return Math.max(0, Math.min(10, Math.round(v)));
-      }
-
-      function loadControls() {
-        try {
-          const saved = JSON.parse(localStorage.getItem(CONTROLS_KEY));
-          if (saved && Number.isFinite(saved.slide) && Number.isFinite(saved.tap)) {
-            return { slide: clampLevel(saved.slide), tap: clampLevel(saved.tap) };
-          }
-        } catch (e) {
-          /* malformed or unavailable storage — fall back to defaults */
-        }
-        return { ...CONTROL_DEFAULTS };
-      }
-
-      function saveControls() {
-        try {
-          localStorage.setItem(CONTROLS_KEY, JSON.stringify(controls));
-        } catch (e) {
-          /* storage unavailable (e.g. private mode) — keep settings in memory */
-        }
-      }
-
-      // Map the 0–10 levels to concrete gesture thresholds.
-      // slide: higher level => smaller swipe distance needed (level 5 => 0.8 cell).
-      // tap:   higher level => longer tap window allowed     (level 5 => 250 ms).
-      function swipeThreshold() {
-        return cell * (1.25 - 0.09 * controls.slide);
-      }
-      function tapWindowMs() {
-        return 150 + 20 * controls.tap;
-      }
-
-      // ---------------------------------------------------------------- //
-      // Starting difficulty (1 easy .. 10 very hard) chosen on the start
-      // screen. It sets the level the game begins at, so setupLevel()'s
-      // existing per-level scaling controls virus count and drop speed.
-      // Persisted so the choice is remembered across reloads and replays.
-      // ---------------------------------------------------------------- //
-      const DIFFICULTY_KEY = 'voa:virus-vials:difficulty';
-      const DEFAULT_DIFFICULTY = 5;
-      let startDifficulty = loadDifficulty();
-
-      function clampDifficulty(v) {
-        return Math.max(1, Math.min(10, Math.round(v)));
-      }
-
-      function loadDifficulty() {
-        try {
-          const saved = Number(localStorage.getItem(DIFFICULTY_KEY));
-          if (Number.isFinite(saved) && saved >= 1) return clampDifficulty(saved);
-        } catch (e) {
-          /* storage unavailable — use default */
-        }
-        return DEFAULT_DIFFICULTY;
-      }
-
-      function saveDifficulty() {
-        try {
-          localStorage.setItem(DIFFICULTY_KEY, String(startDifficulty));
-        } catch (e) {
-          /* storage unavailable — keep selection in memory */
-        }
-      }
 
       // ---------------------------------------------------------------- //
       // Grid helpers
@@ -970,7 +765,7 @@
       // ---------------------------------------------------------------- //
       function startGame() {
         score = 0;
-        level = startDifficulty; // begin at the difficulty chosen on the start screen
+        level = 1;
         state = 'playing';
         particles = [];
         popAnims = [];
@@ -1375,7 +1170,7 @@
         const dt = Math.min(50, t - lastTime || 16);
         lastTime = t;
 
-        if (state === 'playing' && active && !settingsOpen) {
+        if (state === 'playing' && active) {
           dropTimer += dt;
           if (dropTimer >= dropInterval) {
             dropTimer = 0;
@@ -1411,7 +1206,6 @@
         const tag = document.activeElement && document.activeElement.tagName;
         if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
         if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
-        if (settingsOpen) return;
         if (state !== 'playing') {
           if (e.key === 'Enter' && startScreen.classList.contains('show')) {
             e.preventDefault();
@@ -1495,7 +1289,7 @@
           const t0 = e.touches[0];
           const dx = t0.clientX - touchStart.x;
           const dy = t0.clientY - touchStart.y;
-          const threshold = swipeThreshold();
+          const threshold = cell * 0.8;
           if (Math.abs(dx) > Math.abs(dy)) {
             if (dx > threshold) {
               moveActive(0, 1);
@@ -1518,7 +1312,7 @@
         'touchend',
         () => {
           if (!touchStart) return;
-          const quick = Date.now() - touchStart.time < tapWindowMs();
+          const quick = Date.now() - touchStart.time < 250;
           if (quick && !touchStart.moved && state === 'playing') rotateActive('cw');
           touchStart = null;
         },
@@ -1529,86 +1323,12 @@
       document.getElementById('startBtn').addEventListener('click', startGame);
       document.getElementById('restartBtn').addEventListener('click', startGame);
       document.getElementById('nextLevelBtn').addEventListener('click', nextLevel);
-
-      // Difficulty selectors appear on both the start screen and the game-over
-      // ("Play Again") screen. They share one persisted value, so dragging
-      // either slider updates the other and the choice carries into the replay.
-      const difficultyPairs = [
-        ['difficultyRange', 'difficultyVal'],
-        ['difficultyRange2', 'difficultyVal2'],
-      ].map(([rangeId, valId]) => ({
-        range: document.getElementById(rangeId),
-        val: document.getElementById(valId),
-      }));
-
-      function syncDifficultyUI() {
-        for (const { range, val } of difficultyPairs) {
-          range.value = startDifficulty;
-          val.textContent = startDifficulty;
-        }
-      }
-
-      function setDifficulty(v) {
-        startDifficulty = clampDifficulty(v);
-        saveDifficulty();
-        syncDifficultyUI();
-      }
-
-      for (const { range } of difficultyPairs) {
-        range.addEventListener('input', () => setDifficulty(Number(range.value)));
-      }
-      syncDifficultyUI();
       document.getElementById('shareBtn').addEventListener('click', () => {
         if (window.voaShare) {
           window.voaShare({
             text: `I scored ${score.toLocaleString()} in ${APP_NAME}! Can you beat it?`,
           });
         }
-      });
-
-      // ---------------------------------------------------------------- //
-      // Controls-settings overlay — adjust + persist touch sensitivity.
-      // ---------------------------------------------------------------- //
-      const settingsScreen = document.getElementById('settingsScreen');
-      const slideRange = document.getElementById('slideRange');
-      const tapRange = document.getElementById('tapRange');
-      const slideVal = document.getElementById('slideVal');
-      const tapVal = document.getElementById('tapVal');
-
-      function syncSettingsUI() {
-        slideRange.value = controls.slide;
-        tapRange.value = controls.tap;
-        slideVal.textContent = controls.slide;
-        tapVal.textContent = controls.tap;
-      }
-
-      function openSettings() {
-        syncSettingsUI();
-        settingsOpen = true;
-        showOverlay(settingsScreen);
-      }
-
-      function closeSettings() {
-        settingsOpen = false;
-        settingsScreen.classList.remove('show');
-      }
-
-      slideRange.addEventListener('input', () => {
-        controls.slide = clampLevel(Number(slideRange.value));
-        slideVal.textContent = controls.slide;
-        saveControls();
-      });
-      tapRange.addEventListener('input', () => {
-        controls.tap = clampLevel(Number(tapRange.value));
-        tapVal.textContent = controls.tap;
-        saveControls();
-      });
-      document.getElementById('settingsBtn').addEventListener('click', openSettings);
-      document.getElementById('settingsCloseBtn').addEventListener('click', closeSettings);
-      document.getElementById('settingsResetBtn').addEventListener('click', () => {
-        controls = { ...CONTROL_DEFAULTS };
-        saveControls();
-        syncSettingsUI();
       });
 
       // ---------------------------------------------------------------- //
