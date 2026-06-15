@@ -1256,76 +1256,109 @@
         ctx.restore();
       }
 
-      // Draw a glossy capsule half. `link` controls which corners are rounded
-      // so connected halves read as one seamless pill.
+      // Draw a coral-fragment half. `link` keeps the joined edge flush so two
+      // connected halves read as one coral chunk; the free edges get lumpy
+      // scallops and the surface gets polyp texture, so it reads as living
+      // coral rather than a smooth pill.
       function drawHalf(px, py, size, color, link, scale) {
         const pad = size * 0.08;
-        const x = px + pad;
-        const y = py + pad;
         const s = size - pad * 2;
-        const cx = x + s / 2;
-        const cy = y + s / 2;
+        const cx = px + size / 2;
+        const cy = py + size / 2;
         const sc = scale == null ? 1 : scale;
         const half = (s / 2) * sc;
-        const rOuter = s * 0.42;
-        const rInner = s * 0.12;
-        // Determine per-corner radius based on the join direction.
-        let tl = rOuter,
-          tr = rOuter,
-          br = rOuter,
-          bl = rOuter;
-        if (link === 'R') {
-          tr = br = rInner;
-        } else if (link === 'L') {
-          tl = bl = rInner;
-        } else if (link === 'U') {
-          bl = br = rInner;
-        } else if (link === 'D') {
-          tl = tr = rInner;
-        }
         const left = cx - half,
           top = cy - half,
           w = half * 2,
           h = half * 2;
-        roundRectPath(left, top, w, h, { tl, tr, br, bl });
         const col = COLORS[color];
+
+        // Edges not joined to a partner are "free" and get scalloped bumps.
+        const freeTop = link !== 'D';
+        const freeBottom = link !== 'U';
+        const freeLeft = link !== 'R';
+        const freeRight = link !== 'L';
+
         const grad = ctx.createLinearGradient(left, top, left, top + h);
         grad.addColorStop(0, col.light);
         grad.addColorStop(0.5, col.base);
         grad.addColorStop(1, col.dark);
+
+        // Chunky body (smaller corner radius than a pill); joined corners stay
+        // near-square so the seam between linked halves is flush.
+        const rOuter = s * 0.26;
+        const rInner = s * 0.05;
+        const tl = freeTop && freeLeft ? rOuter : rInner;
+        const tr = freeTop && freeRight ? rOuter : rInner;
+        const br = freeBottom && freeRight ? rOuter : rInner;
+        const bl = freeBottom && freeLeft ? rOuter : rInner;
+
+        ctx.save();
         ctx.fillStyle = grad;
         ctx.shadowColor = col.glow;
-        ctx.shadowBlur = size * 0.25;
+        ctx.shadowBlur = size * 0.22;
+
+        // One path: body + scallop bumps on the free edges -> a single lumpy fill.
+        roundRectPath(left, top, w, h, { tl, tr, br, bl });
+        const rb = s * 0.12 * sc;
+        const addBump = (bx, by) => {
+          ctx.moveTo(bx + rb, by);
+          ctx.arc(bx, by, rb, 0, Math.PI * 2);
+        };
+        if (freeTop) {
+          addBump(left + w * 0.34, top + rb * 0.25);
+          addBump(left + w * 0.7, top + rb * 0.25);
+        }
+        if (freeBottom) {
+          addBump(left + w * 0.3, top + h - rb * 0.25);
+          addBump(left + w * 0.66, top + h - rb * 0.25);
+        }
+        if (freeLeft) {
+          addBump(left + rb * 0.25, top + h * 0.34);
+          addBump(left + rb * 0.25, top + h * 0.7);
+        }
+        if (freeRight) {
+          addBump(left + w - rb * 0.25, top + h * 0.3);
+          addBump(left + w - rb * 0.25, top + h * 0.66);
+        }
         ctx.fill();
         ctx.shadowBlur = 0;
-        // Soft inner glow + bumpy coral nodules (the "living coral" texture).
-        ctx.save();
+
+        // Texture, clipped to the coral silhouette.
         ctx.clip();
         const glow = ctx.createRadialGradient(
-          cx - w * 0.12,
-          top + h * 0.28,
+          cx - w * 0.14,
+          top + h * 0.26,
           s * 0.04,
           cx,
           cy,
-          half * 1.1
+          half * 1.2
         );
-        glow.addColorStop(0, 'rgba(255,255,255,0.5)');
-        glow.addColorStop(0.5, 'rgba(255,255,255,0.12)');
+        glow.addColorStop(0, 'rgba(255,255,255,0.38)');
+        glow.addColorStop(0.5, 'rgba(255,255,255,0.1)');
         glow.addColorStop(1, 'rgba(255,255,255,0)');
         ctx.fillStyle = glow;
         ctx.fillRect(left, top, w, h);
-        ctx.fillStyle = col.light;
-        ctx.globalAlpha = 0.5;
-        const bump = s * 0.1;
-        ctx.beginPath();
-        ctx.arc(cx + w * 0.12, cy - h * 0.1, bump, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(cx - w * 0.05, cy + h * 0.14, bump * 0.8, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(cx + w * 0.02, cy + h * 0.02, bump * 0.6, 0, Math.PI * 2);
-        ctx.fill();
+
+        // Coral polyps: light rings with a darker pinhole center.
+        const polyps = [
+          [cx + w * 0.15, cy - h * 0.15, s * 0.1],
+          [cx - w * 0.17, cy + h * 0.08, s * 0.085],
+          [cx + w * 0.03, cy + h * 0.23, s * 0.07],
+          [cx - w * 0.04, cy - h * 0.06, s * 0.055],
+        ];
+        for (const [bx, by, pr] of polyps) {
+          ctx.globalAlpha = 0.5;
+          ctx.fillStyle = col.light;
+          ctx.beginPath();
+          ctx.arc(bx, by, pr * sc, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 0.45;
+          ctx.fillStyle = col.dark;
+          ctx.beginPath();
+          ctx.arc(bx, by, pr * 0.4 * sc, 0, Math.PI * 2);
+          ctx.fill();
+        }
         ctx.globalAlpha = 1;
         ctx.restore();
       }
@@ -1475,23 +1508,27 @@
         drawHalfOn(nctx, x + s, y, s, nextColors[1], 'L');
       }
 
-      // A standalone half renderer for the preview canvas (own context).
+      // A standalone coral-fragment renderer for the preview canvas (own context).
       function drawHalfOn(c2, px, py, size, color, link) {
         const pad = size * 0.1;
         const x = px + pad,
           y = py + pad,
           s = size - pad * 2;
-        const rO = s * 0.42,
-          rI = s * 0.12;
-        let tl = rO,
-          tr = rO,
-          br = rO,
-          bl = rO;
-        if (link === 'R') {
-          tr = br = rI;
-        } else if (link === 'L') {
-          tl = bl = rI;
-        }
+        const rO = s * 0.26,
+          rI = s * 0.06;
+        const freeLeft = link !== 'R';
+        const freeRight = link !== 'L';
+        const tl = freeLeft ? rO : rI;
+        const bl = freeLeft ? rO : rI;
+        const tr = freeRight ? rO : rI;
+        const br = freeRight ? rO : rI;
+        const col = COLORS[color];
+        const g = c2.createLinearGradient(x, y, x, y + s);
+        g.addColorStop(0, col.light);
+        g.addColorStop(0.5, col.base);
+        g.addColorStop(1, col.dark);
+        c2.fillStyle = g;
+        // Chunky body + scallop bumps on the free edges -> coral silhouette.
         c2.beginPath();
         c2.moveTo(x + tl, y);
         c2.lineTo(x + s - tr, y);
@@ -1503,13 +1540,28 @@
         c2.lineTo(x, y + tl);
         c2.arcTo(x, y, x + tl, y, tl);
         c2.closePath();
-        const col = COLORS[color];
-        const g = c2.createLinearGradient(x, y, x, y + s);
-        g.addColorStop(0, col.light);
-        g.addColorStop(0.5, col.base);
-        g.addColorStop(1, col.dark);
-        c2.fillStyle = g;
+        const rb = s * 0.13;
+        const addB = (bx, by) => {
+          c2.moveTo(bx + rb, by);
+          c2.arc(bx, by, rb, 0, Math.PI * 2);
+        };
+        addB(x + s * 0.35, y + rb * 0.25);
+        addB(x + s * 0.7, y + rb * 0.25);
+        addB(x + s * 0.35, y + s - rb * 0.25);
+        addB(x + s * 0.7, y + s - rb * 0.25);
+        if (freeLeft) addB(x + rb * 0.25, y + s * 0.5);
+        if (freeRight) addB(x + s - rb * 0.25, y + s * 0.5);
         c2.fill();
+        // A couple of coral polyps.
+        c2.fillStyle = col.light;
+        c2.globalAlpha = 0.5;
+        c2.beginPath();
+        c2.arc(x + s * 0.55, y + s * 0.4, s * 0.12, 0, Math.PI * 2);
+        c2.fill();
+        c2.beginPath();
+        c2.arc(x + s * 0.35, y + s * 0.62, s * 0.09, 0, Math.PI * 2);
+        c2.fill();
+        c2.globalAlpha = 1;
       }
 
       // ---------------------------------------------------------------- //
