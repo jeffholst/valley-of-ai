@@ -1,8 +1,8 @@
 [
   {
     "id": "2026/06/13/virus-vials",
-    "name": "Virus Vials",
-    "shortDescription": "A neon-lab capsule puzzle: drop two-tone pills and line up 4+ matching colors to wipe out the viruses across ever-faster levels.",
+    "name": "Reef Rescue",
+    "shortDescription": "An underwater tide-pool puzzle: drop two-tone coral fragments and line up 4+ matching colors to clear pollution blobs across ever-deeper levels.",
     "thumbnailUrl": "/apps/2026/06/13/virus-vials/thumbnail.svg",
     "createdAt": "2026-06-13T15:36:14Z",
     "year": 2026,
@@ -11,7 +11,7 @@
     "category": "Games",
     "inputMode": "responsive",
     "status": "active",
-    "tags": ["puzzle", "match", "falling-blocks", "capsules", "cascade", "touch-controls"],
+    "tags": ["puzzle", "match", "falling-blocks", "coral", "reef", "ocean", "cascade"],
     "route": "/apps/2026/06/13/virus-vials",
     "appPath": "/apps/2026/06/13/virus-vials/index.html",
     "generation": {
@@ -70,6 +70,16 @@
         "implementedAt": "2026-06-15T11:52:56Z",
         "agentName": "Claude Code",
         "llmModel": "claude-opus-4-8"
+      },
+      {
+        "issueNumber": 578,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/578",
+        "runId": "run-20260615T125308Z-18bb19",
+        "description": "Re-themed Virus Vials as 'Reef Rescue': ocean/tide-pool palette, 3 coral-fragment colors, pollution-blob enemies, animated water background (caustic rays, rising bubbles, drifting fish), themed ink-droplet/coral-sparkle clear effects, bloom combos, and re-labeled HUD (Depth/Pollution) + overlays. Gameplay mechanics unchanged. Notes: per the brief the piece colors went from 4 to 3 (slightly easier matching); the most expensive one-off flourishes (literal sea-turtle glide, fish-school combo, rising-oil game-over animation) were simplified to themed equivalents to protect 60fps and avoid regressions; app id/folder stay 'virus-vials' (only the display name changed).",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-06-15T12:53:08Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-opus-4-8"
       }
     ],
     "allowImprovements": true,
@@ -95,6 +105,11 @@
         "runId": "run-20260615T115256Z-2e4a0a",
         "path": "backups/run-20260615T115256Z-2e4a0a/index.html",
         "url": "/apps/2026/06/13/virus-vials/backups/run-20260615T115256Z-2e4a0a/index.html"
+      },
+      {
+        "runId": "run-20260615T125308Z-18bb19",
+        "path": "backups/run-20260615T125308Z-18bb19/index.html",
+        "url": "/apps/2026/06/13/virus-vials/backups/run-20260615T125308Z-18bb19/index.html"
       }
     ]
   },

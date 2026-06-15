@@ -1,142 +1,173 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Reef Rescue tide-pool puzzle">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#0c1430" />
-      <stop offset="1" stop-color="#040814" />
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#08233f" />
+      <stop offset="0.6" stop-color="#0d3a55" />
+      <stop offset="1" stop-color="#155f7a" />
     </linearGradient>
-    <radialGradient id="halo" cx="0.5" cy="0.1" r="0.9">
-      <stop offset="0" stop-color="#7c5cff" stop-opacity="0.35" />
-      <stop offset="1" stop-color="#7c5cff" stop-opacity="0" />
+    <linearGradient id="sand" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#155f7a" stop-opacity="0" />
+      <stop offset="1" stop-color="#c2a06e" />
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0a2a4a" stop-opacity="0.2" />
+      <stop offset="1" stop-color="#08233f" stop-opacity="0.5" />
+    </linearGradient>
+    <linearGradient id="titleFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e0f7fa" />
+      <stop offset="1" stop-color="#4ecdc4" />
+    </linearGradient>
+    <radialGradient id="coralRed" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#ffb3b3" />
+      <stop offset="0.55" stop-color="#ff6b6b" />
+      <stop offset="1" stop-color="#c24545" />
     </radialGradient>
-    <linearGradient id="board" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#0a1022" />
-      <stop offset="1" stop-color="#040814" />
-    </linearGradient>
-    <!-- capsule color gradients: red, blue, yellow, green -->
-    <linearGradient id="red" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ff90ad" /><stop offset="0.5" stop-color="#ff3b6b" /><stop offset="1" stop-color="#b21340" />
-    </linearGradient>
-    <linearGradient id="blue" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#9cc9ff" /><stop offset="0.5" stop-color="#3b9bff" /><stop offset="1" stop-color="#1559b8" />
-    </linearGradient>
-    <linearGradient id="yellow" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffe89a" /><stop offset="0.5" stop-color="#ffd23b" /><stop offset="1" stop-color="#b8902a" />
-    </linearGradient>
-    <linearGradient id="green" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#9affc9" /><stop offset="0.5" stop-color="#3bff9b" /><stop offset="1" stop-color="#13a861" />
-    </linearGradient>
-    <radialGradient id="vred" cx="0.4" cy="0.35" r="0.7">
-      <stop offset="0" stop-color="#ff90ad" /><stop offset="1" stop-color="#b21340" />
+    <radialGradient id="coralTeal" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#a6ebe6" />
+      <stop offset="0.55" stop-color="#4ecdc4" />
+      <stop offset="1" stop-color="#2e8c85" />
     </radialGradient>
-    <radialGradient id="vblue" cx="0.4" cy="0.35" r="0.7">
-      <stop offset="0" stop-color="#9cc9ff" /><stop offset="1" stop-color="#1559b8" />
+    <radialGradient id="coralYellow" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#fff4b0" />
+      <stop offset="0.55" stop-color="#ffe66d" />
+      <stop offset="1" stop-color="#c2a82e" />
     </radialGradient>
-    <radialGradient id="vgreen" cx="0.4" cy="0.35" r="0.7">
-      <stop offset="0" stop-color="#9affc9" /><stop offset="1" stop-color="#13a861" />
+    <radialGradient id="blobRed" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#b07a7a" />
+      <stop offset="1" stop-color="#3a2424" />
     </radialGradient>
-    <linearGradient id="title" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#36e0c8" /><stop offset="1" stop-color="#7c5cff" />
-    </linearGradient>
-    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
-      <feGaussianBlur stdDeviation="6" result="b" />
-      <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+    <radialGradient id="blobTeal" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#6b9c98" />
+      <stop offset="1" stop-color="#1e3a38" />
+    </radialGradient>
+    <radialGradient id="blobYellow" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#b0a76d" />
+      <stop offset="1" stop-color="#3a3520" />
+    </radialGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="5" result="b" />
+      <feMerge>
+        <feMergeNode in="b" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
     </filter>
-    <filter id="softglow" x="-80%" y="-80%" width="260%" height="260%">
-      <feGaussianBlur stdDeviation="10" result="b" />
-      <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+    <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="9" result="b" />
+      <feMerge>
+        <feMergeNode in="b" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
     </filter>
   </defs>
 
-  <!-- background -->
-  <rect x="0" y="0" width="800" height="450" fill="url(#bg)" />
-  <rect x="0" y="0" width="800" height="450" fill="url(#halo)" />
+  <!-- Water column -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#water)" />
 
-  <!-- HUD strip -->
-  <g font-family="'Segoe UI', system-ui, sans-serif">
-    <rect x="40" y="30" width="150" height="56" rx="10" fill="#10182e" stroke="#36e0c8" stroke-opacity="0.4" />
-    <text x="115" y="52" text-anchor="middle" fill="#9fb3c8" font-size="13" letter-spacing="2">SCORE</text>
-    <text x="115" y="76" text-anchor="middle" fill="#36e0c8" font-size="24" font-weight="800" filter="url(#glow)">12,480</text>
-
-    <rect x="200" y="30" width="120" height="56" rx="10" fill="#10182e" stroke="#36e0c8" stroke-opacity="0.4" />
-    <text x="260" y="52" text-anchor="middle" fill="#9fb3c8" font-size="13" letter-spacing="2">LEVEL</text>
-    <text x="260" y="76" text-anchor="middle" fill="#36e0c8" font-size="24" font-weight="800">3</text>
-
-    <rect x="330" y="30" width="120" height="56" rx="10" fill="#10182e" stroke="#36e0c8" stroke-opacity="0.4" />
-    <text x="390" y="52" text-anchor="middle" fill="#9fb3c8" font-size="13" letter-spacing="2">VIRUS</text>
-    <text x="390" y="76" text-anchor="middle" fill="#36e0c8" font-size="24" font-weight="800">5</text>
+  <!-- Caustic light rays slanting down from the surface -->
+  <g fill="#a6ebe6" opacity="0.09">
+    <polygon points="90,0 150,0 250,450 150,450" />
+    <polygon points="300,0 350,0 430,450 350,450" />
+    <polygon points="520,0 580,0 640,450 540,450" />
+    <polygon points="680,0 720,0 760,450 700,450" />
   </g>
 
-  <!-- playfield -->
+  <!-- Rising bubbles -->
+  <g fill="#c8f0ff" opacity="0.35">
+    <circle cx="120" cy="300" r="4" />
+    <circle cx="140" cy="250" r="3" />
+    <circle cx="128" cy="210" r="2.5" />
+    <circle cx="650" cy="330" r="4" />
+    <circle cx="668" cy="285" r="3" />
+    <circle cx="690" cy="160" r="3" />
+    <circle cx="705" cy="120" r="2" />
+  </g>
+
+  <!-- Drifting fish silhouette -->
+  <g fill="#06182a" opacity="0.5">
+    <ellipse cx="110" cy="150" rx="34" ry="16" />
+    <polygon points="80,150 56,135 56,165" />
+  </g>
+
+  <!-- Sandy bottom with coral nubs -->
+  <rect x="0" y="392" width="800" height="58" fill="url(#sand)" />
+  <g fill="#ff6b6b" opacity="0.7" filter="url(#glow)">
+    <path d="M150 410 q8 -34 18 0 q10 -26 16 0 Z" />
+    <path d="M610 412 q9 -30 18 0 q9 -22 15 0 Z" />
+  </g>
+  <g fill="#4ecdc4" opacity="0.6">
+    <path d="M560 418 q6 -22 13 0 q7 -16 11 0 Z" />
+  </g>
+
+  <!-- Tide-pool glass column (the playfield) -->
+  <rect x="285" y="120" width="230" height="300" rx="16" fill="url(#glass)"
+    stroke="#4ecdc4" stroke-opacity="0.55" stroke-width="2.5" filter="url(#glow)" />
+
+  <!-- Falling coral capsule (two-tone fragment) -->
+  <g filter="url(#glow)">
+    <rect x="372" y="150" width="30" height="30" rx="11" fill="url(#coralRed)" />
+    <rect x="402" y="150" width="30" height="30" rx="11" fill="url(#coralTeal)" />
+  </g>
+
+  <!-- Settled coral pieces -->
+  <g filter="url(#glow)">
+    <rect x="312" y="356" width="28" height="28" rx="10" fill="url(#coralYellow)" />
+    <rect x="460" y="356" width="28" height="28" rx="10" fill="url(#coralTeal)" />
+  </g>
+
+  <!-- Pollution blobs with tiny angry eyes -->
   <g>
-    <rect x="290" y="100" width="220" height="320" rx="14" fill="url(#board)" stroke="#36e0c8" stroke-opacity="0.5" stroke-width="2" filter="url(#softglow)" />
-
-    <!-- grid lines -->
-    <g stroke="#7c5cff" stroke-opacity="0.10">
-      <line x1="345" y1="100" x2="345" y2="420" /><line x1="400" y1="100" x2="400" y2="420" /><line x1="455" y1="100" x2="455" y2="420" />
-      <line x1="290" y1="160" x2="510" y2="160" /><line x1="290" y1="220" x2="510" y2="220" /><line x1="290" y1="280" x2="510" y2="280" /><line x1="290" y1="340" x2="510" y2="340" />
+    <g transform="translate(326,300)">
+      <circle r="17" fill="url(#blobRed)" />
+      <ellipse cx="-6" cy="-1" rx="2.4" ry="3.4" fill="#0a0c06" />
+      <ellipse cx="6" cy="-1" rx="2.4" ry="3.4" fill="#0a0c06" />
+      <path d="M-12 -9 L-2 -4 M12 -9 L2 -4" stroke="#0a0c06" stroke-width="2.4" stroke-linecap="round" />
     </g>
-
-    <!-- falling vertical capsule near top (red over blue) -->
-    <rect x="403" y="118" width="48" height="44" rx="18" fill="url(#red)" filter="url(#glow)" />
-    <rect x="403" y="160" width="48" height="48" rx="18" fill="url(#blue)" filter="url(#glow)" />
-    <ellipse cx="418" cy="132" rx="9" ry="5" fill="#ffffff" opacity="0.5" />
-
-    <!-- stacked capsule halves mid-board -->
-    <rect x="294" y="300" width="48" height="44" rx="16" fill="url(#yellow)" />
-    <rect x="349" y="300" width="48" height="44" rx="16" fill="url(#green)" />
-    <rect x="294" y="346" width="48" height="44" rx="16" fill="url(#blue)" />
-    <rect x="404" y="346" width="48" height="44" rx="16" fill="url(#red)" />
-    <rect x="459" y="346" width="48" height="44" rx="16" fill="url(#red)" />
-
-    <!-- a near-complete vertical column of greens about to clear -->
-    <rect x="349" y="240" width="48" height="44" rx="16" fill="url(#green)" />
-    <rect x="349" y="190" width="48" height="44" rx="16" fill="url(#green)" />
-
-    <!-- viruses with faces -->
-    <!-- red virus -->
-    <g transform="translate(318,378)" filter="url(#glow)">
-      <circle r="20" fill="url(#vred)" />
-      <circle cx="-7" cy="-3" r="4" fill="#04121a" /><circle cx="7" cy="-3" r="4" fill="#04121a" />
-      <circle cx="-6" cy="-4" r="1.4" fill="#fff" /><circle cx="8" cy="-4" r="1.4" fill="#fff" />
-      <path d="M -8 9 Q 0 3 8 9" stroke="#04121a" stroke-width="2.4" fill="none" stroke-linecap="round" />
+    <g transform="translate(400,330)">
+      <circle r="17" fill="url(#blobTeal)" />
+      <ellipse cx="-6" cy="-1" rx="2.4" ry="3.4" fill="#0a0c06" />
+      <ellipse cx="6" cy="-1" rx="2.4" ry="3.4" fill="#0a0c06" />
+      <path d="M-12 -9 L-2 -4 M12 -9 L2 -4" stroke="#0a0c06" stroke-width="2.4" stroke-linecap="round" />
     </g>
-    <!-- blue virus -->
-    <g transform="translate(483,378)" filter="url(#glow)">
-      <circle r="20" fill="url(#vblue)" />
-      <circle cx="-7" cy="-3" r="4" fill="#04121a" /><circle cx="7" cy="-3" r="4" fill="#04121a" />
-      <circle cx="-6" cy="-4" r="1.4" fill="#fff" /><circle cx="8" cy="-4" r="1.4" fill="#fff" />
-      <path d="M -8 9 Q 0 3 8 9" stroke="#04121a" stroke-width="2.4" fill="none" stroke-linecap="round" />
+    <g transform="translate(470,308)">
+      <circle r="17" fill="url(#blobYellow)" />
+      <ellipse cx="-6" cy="-1" rx="2.4" ry="3.4" fill="#0a0c06" />
+      <ellipse cx="6" cy="-1" rx="2.4" ry="3.4" fill="#0a0c06" />
+      <path d="M-12 -9 L-2 -4 M12 -9 L2 -4" stroke="#0a0c06" stroke-width="2.4" stroke-linecap="round" />
     </g>
-    <!-- green virus -->
-    <g transform="translate(373,318)" filter="url(#glow)">
-      <circle r="20" fill="url(#vgreen)" />
-      <circle cx="-7" cy="-3" r="4" fill="#04121a" /><circle cx="7" cy="-3" r="4" fill="#04121a" />
-      <circle cx="-6" cy="-4" r="1.4" fill="#fff" /><circle cx="8" cy="-4" r="1.4" fill="#fff" />
-      <path d="M -8 9 Q 0 3 8 9" stroke="#04121a" stroke-width="2.4" fill="none" stroke-linecap="round" />
+    <g transform="translate(360,360)">
+      <circle r="16" fill="url(#blobRed)" />
+      <ellipse cx="-5.5" cy="-1" rx="2.2" ry="3.2" fill="#0a0c06" />
+      <ellipse cx="5.5" cy="-1" rx="2.2" ry="3.2" fill="#0a0c06" />
+      <path d="M-11 -8 L-2 -4 M11 -8 L2 -4" stroke="#0a0c06" stroke-width="2.2" stroke-linecap="round" />
     </g>
-
-    <!-- clear burst particles -->
-    <g fill="#3bff9b">
-      <circle cx="373" cy="220" r="4" opacity="0.9" /><circle cx="350" cy="205" r="3" opacity="0.7" />
-      <circle cx="398" cy="212" r="3" opacity="0.8" /><circle cx="360" cy="245" r="2.5" opacity="0.6" />
-      <circle cx="388" cy="250" r="3.5" opacity="0.7" />
+    <g transform="translate(432,362)">
+      <circle r="16" fill="url(#blobTeal)" />
+      <ellipse cx="-5.5" cy="-1" rx="2.2" ry="3.2" fill="#0a0c06" />
+      <ellipse cx="5.5" cy="-1" rx="2.2" ry="3.2" fill="#0a0c06" />
+      <path d="M-11 -8 L-2 -4 M11 -8 L2 -4" stroke="#0a0c06" stroke-width="2.2" stroke-linecap="round" />
     </g>
   </g>
 
-  <!-- next preview -->
-  <g font-family="'Segoe UI', system-ui, sans-serif">
-    <rect x="560" y="100" width="120" height="92" rx="12" fill="#10182e" stroke="#7c5cff" stroke-opacity="0.5" />
-    <text x="620" y="124" text-anchor="middle" fill="#9fb3c8" font-size="13" letter-spacing="2">NEXT</text>
-    <rect x="585" y="140" width="36" height="34" rx="13" fill="url(#yellow)" />
-    <rect x="619" y="140" width="36" height="34" rx="13" fill="url(#red)" />
+  <!-- Title -->
+  <text x="400" y="66" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+    font-size="52" font-weight="800" letter-spacing="1" fill="url(#titleFill)" filter="url(#softGlow)">Reef Rescue</text>
+
+  <!-- HUD chips -->
+  <g font-family="'Segoe UI', system-ui, sans-serif" text-anchor="middle">
+    <g transform="translate(560,150)">
+      <rect x="-58" y="-22" width="116" height="44" rx="10" fill="#0a2a4a" stroke="#4ecdc4" stroke-opacity="0.45" stroke-width="1.5" />
+      <text x="0" y="-4" font-size="11" letter-spacing="1.5" fill="#9fd6da">SCORE</text>
+      <text x="0" y="14" font-size="18" font-weight="800" fill="#4ecdc4">4,820</text>
+    </g>
+    <g transform="translate(560,206)">
+      <rect x="-58" y="-22" width="116" height="44" rx="10" fill="#0a2a4a" stroke="#4ecdc4" stroke-opacity="0.45" stroke-width="1.5" />
+      <text x="0" y="-4" font-size="11" letter-spacing="1.5" fill="#9fd6da">DEPTH</text>
+      <text x="0" y="14" font-size="18" font-weight="800" fill="#ffe66d">6</text>
+    </g>
+    <g transform="translate(560,262)">
+      <rect x="-58" y="-22" width="116" height="44" rx="10" fill="#0a2a4a" stroke="#4ecdc4" stroke-opacity="0.45" stroke-width="1.5" />
+      <text x="0" y="-4" font-size="11" letter-spacing="1.5" fill="#9fd6da">POLLUTION</text>
+      <text x="0" y="14" font-size="18" font-weight="800" fill="#ff6b6b">12</text>
+    </g>
   </g>
-
-  <!-- title -->
-  <text x="620" y="250" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="40" font-weight="800" fill="url(#title)" filter="url(#softglow)">Virus</text>
-  <text x="620" y="296" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="40" font-weight="800" fill="url(#title)" filter="url(#softglow)">Vials</text>
-  <text x="620" y="330" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="14" fill="#9fb3c8" letter-spacing="3">MATCH · CLEAR · CURE</text>
-
-  <!-- corner accents -->
-  <path d="M 20 20 L 70 20 M 20 20 L 20 70" stroke="#36e0c8" stroke-width="3" fill="none" opacity="0.7" />
-  <path d="M 780 430 L 730 430 M 780 430 L 780 380" stroke="#7c5cff" stroke-width="3" fill="none" opacity="0.7" />
 </svg>
