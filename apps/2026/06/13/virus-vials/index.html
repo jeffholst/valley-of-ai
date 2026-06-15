@@ -496,31 +496,33 @@
       const NUM_COLORS = 3;
 
       // Reef palette. Coral fragments use base / light / dark / glow; pollution
-      // blobs reuse the same hues in desaturated, oily blob stops (blobLight/blobDark).
+      // blobs reuse the SAME hues (blobLight/blobDark) so they read as clearly the
+      // same color as the pieces — kept a touch deeper/oilier than the glossy coral,
+      // with the dark shimmer streak + angry eyes carrying the "pollution" look.
       const COLORS = [
         {
           base: '#ff6b6b',
           light: '#ffb3b3',
           dark: '#c24545',
           glow: 'rgba(255,107,107,0.6)',
-          blobLight: '#b07a7a',
-          blobDark: '#3a2424',
+          blobLight: '#ff8f8f',
+          blobDark: '#7a2b2b',
         }, // coral red
         {
           base: '#ffe66d',
           light: '#fff4b0',
           dark: '#c2a82e',
           glow: 'rgba(255,230,109,0.6)',
-          blobLight: '#b0a76d',
-          blobDark: '#3a3520',
+          blobLight: '#ffe27a',
+          blobDark: '#7a6a18',
         }, // sun yellow
         {
           base: '#4ecdc4',
           light: '#a6ebe6',
           dark: '#2e8c85',
           glow: 'rgba(78,205,196,0.6)',
-          blobLight: '#6b9c98',
-          blobDark: '#1e3a38',
+          blobLight: '#6fd6cd',
+          blobDark: '#1d5d57',
         }, // seafoam teal
       ];
 
