@@ -424,14 +424,6 @@
           <h1>Contaminated</h1>
           <div class="big" id="finalMsg">Score: 0</div>
           <p id="overSub">The vial overflowed. Try again, doctor.</p>
-          <div class="difficulty">
-            <div class="diff-head">
-              <label for="difficultyRange2">Starting difficulty</label>
-              <span class="setVal" id="difficultyVal2">5</span>
-            </div>
-            <input type="range" id="difficultyRange2" min="1" max="10" step="1" value="5" />
-            <div class="diff-scale"><span>1 · Easy</span><span>10 · Very Hard</span></div>
-          </div>
           <div class="btn-row">
             <button class="btn" id="restartBtn">Play Again</button>
             <button class="btn secondary" id="shareBtn">Share</button>
@@ -1530,34 +1522,17 @@
       document.getElementById('restartBtn').addEventListener('click', startGame);
       document.getElementById('nextLevelBtn').addEventListener('click', nextLevel);
 
-      // Difficulty selectors appear on both the start screen and the game-over
-      // ("Play Again") screen. They share one persisted value, so dragging
-      // either slider updates the other and the choice carries into the replay.
-      const difficultyPairs = [
-        ['difficultyRange', 'difficultyVal'],
-        ['difficultyRange2', 'difficultyVal2'],
-      ].map(([rangeId, valId]) => ({
-        range: document.getElementById(rangeId),
-        val: document.getElementById(valId),
-      }));
-
-      function syncDifficultyUI() {
-        for (const { range, val } of difficultyPairs) {
-          range.value = startDifficulty;
-          val.textContent = startDifficulty;
-        }
-      }
-
-      function setDifficulty(v) {
-        startDifficulty = clampDifficulty(v);
+      // Start-screen difficulty selector — reflects the persisted choice and
+      // updates startDifficulty live as the player drags the slider.
+      const difficultyRange = document.getElementById('difficultyRange');
+      const difficultyVal = document.getElementById('difficultyVal');
+      difficultyRange.value = startDifficulty;
+      difficultyVal.textContent = startDifficulty;
+      difficultyRange.addEventListener('input', () => {
+        startDifficulty = clampDifficulty(Number(difficultyRange.value));
+        difficultyVal.textContent = startDifficulty;
         saveDifficulty();
-        syncDifficultyUI();
-      }
-
-      for (const { range } of difficultyPairs) {
-        range.addEventListener('input', () => setDifficulty(Number(range.value)));
-      }
-      syncDifficultyUI();
+      });
       document.getElementById('shareBtn').addEventListener('click', () => {
         if (window.voaShare) {
           window.voaShare({
