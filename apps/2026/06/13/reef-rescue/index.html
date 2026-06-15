@@ -495,34 +495,34 @@
       const ROWS = 16;
       const NUM_COLORS = 3;
 
-      // Reef palette. Coral fragments use base / light / dark / glow; pollution
-      // blobs reuse the SAME hues (blobLight/blobDark) so they read as clearly the
-      // same color as the pieces — kept a touch deeper/oilier than the glossy coral,
-      // with the dark shimmer streak + angry eyes carrying the "pollution" look.
+      // Reef palette. Coral fragments use base / light / dark / glow. Pollution
+      // blobs use the SAME vivid hue as their piece (blobLight = piece base,
+      // blobDark = piece dark) so color matching is unambiguous — the amorphous
+      // shape, soft oily shimmer, and angry eyes are what mark them as enemies.
       const COLORS = [
         {
           base: '#ff6b6b',
           light: '#ffb3b3',
           dark: '#c24545',
           glow: 'rgba(255,107,107,0.6)',
-          blobLight: '#ff8f8f',
-          blobDark: '#7a2b2b',
+          blobLight: '#ff6b6b',
+          blobDark: '#c24545',
         }, // coral red
         {
           base: '#ffe66d',
           light: '#fff4b0',
           dark: '#c2a82e',
           glow: 'rgba(255,230,109,0.6)',
-          blobLight: '#ffe27a',
-          blobDark: '#7a6a18',
+          blobLight: '#ffe66d',
+          blobDark: '#c2a82e',
         }, // sun yellow
         {
           base: '#4ecdc4',
           light: '#a6ebe6',
           dark: '#2e8c85',
           glow: 'rgba(78,205,196,0.6)',
-          blobLight: '#6fd6cd',
-          blobDark: '#1d5d57',
+          blobLight: '#4ecdc4',
+          blobDark: '#2e8c85',
         }, // seafoam teal
       ];
 
@@ -1338,9 +1338,9 @@
         const r = size * 0.34;
         const col = COLORS[color];
         ctx.save();
-        ctx.shadowColor = 'rgba(8,10,6,0.7)';
-        ctx.shadowBlur = size * 0.25;
-        // Oily desaturated body, wobbling and pulsing over time.
+        ctx.shadowColor = 'rgba(8,10,6,0.45)';
+        ctx.shadowBlur = size * 0.2;
+        // Vivid hue-matched body, wobbling and pulsing over time.
         const grad = ctx.createRadialGradient(cx - r * 0.3, cy - r * 0.3, r * 0.2, cx, cy, r);
         grad.addColorStop(0, col.blobLight);
         grad.addColorStop(1, col.blobDark);
@@ -1358,11 +1358,11 @@
         ctx.closePath();
         ctx.fill();
         ctx.shadowBlur = 0;
-        // Dark oily shimmer streak.
-        ctx.globalAlpha = 0.35;
+        // Light oily shimmer streak (kept subtle so it doesn't mute the hue).
+        ctx.globalAlpha = 0.18;
         ctx.fillStyle = '#0b0d08';
         ctx.beginPath();
-        ctx.ellipse(cx + r * 0.2, cy + r * 0.25, r * 0.5, r * 0.22, -0.6, 0, Math.PI * 2);
+        ctx.ellipse(cx + r * 0.2, cy + r * 0.25, r * 0.45, r * 0.18, -0.6, 0, Math.PI * 2);
         ctx.fill();
         ctx.globalAlpha = 1;
         // Tiny angry eyes.
