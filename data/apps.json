@@ -1,9 +1,9 @@
 [
   {
-    "id": "2026/06/13/virus-vials",
+    "id": "2026/06/13/reef-rescue",
     "name": "Reef Rescue",
     "shortDescription": "An underwater tide-pool puzzle: drop two-tone coral fragments and line up 4+ matching colors to clear pollution blobs across ever-deeper levels.",
-    "thumbnailUrl": "/apps/2026/06/13/virus-vials/thumbnail.svg",
+    "thumbnailUrl": "/apps/2026/06/13/reef-rescue/thumbnail.svg",
     "createdAt": "2026-06-13T15:36:14Z",
     "year": 2026,
     "month": 6,
@@ -12,8 +12,8 @@
     "inputMode": "responsive",
     "status": "active",
     "tags": ["puzzle", "match", "falling-blocks", "coral", "reef", "ocean", "cascade"],
-    "route": "/apps/2026/06/13/virus-vials",
-    "appPath": "/apps/2026/06/13/virus-vials/index.html",
+    "route": "/apps/2026/06/13/reef-rescue",
+    "appPath": "/apps/2026/06/13/reef-rescue/index.html",
     "generation": {
       "agentName": "Claude Code",
       "llmModel": "claude-opus-4-8",
@@ -22,7 +22,7 @@
       "totalTokensIn": 36000,
       "totalTokensOut": 38000,
       "runId": "run-20260613T153614Z-4e4e44",
-      "notes": "Dr. Mario-style falling-capsule match puzzle, renamed 'Virus Vials' to avoid the Dr. Mario trademark while implementing the requested mechanic. 8x16 vial, 4 capsule colors per the request (classic Dr. Mario uses 3). Capsule halves stored with link metadata so connected pairs render seamlessly and fall together under gravity; orphaned halves fall solo, enabling cascade chain reactions with escalating score multipliers and screen shake. Viruses drawn as vector spiky bodies with bobbing animated faces (NOT canvas emoji fillText, which renders blank on Safari). Clears spawn particle bursts. Win = all viruses removed -> level-clear fanfare -> next level with more viruses and faster drop. Controls: arrows + Z/X + ArrowUp rotate on desktop; on-screen pad plus board gestures (tap=rotate, swipe=move, swipe-down=soft-drop) on mobile. Leaderboard + share hooks wired with guards; keydown guards skip inputs and open shell overlays."
+      "notes": "Dr. Mario-style falling-capsule match puzzle, renamed 'Reef Rescue' to avoid the Dr. Mario trademark while implementing the requested mechanic. 8x16 vial, 4 capsule colors per the request (classic Dr. Mario uses 3). Capsule halves stored with link metadata so connected pairs render seamlessly and fall together under gravity; orphaned halves fall solo, enabling cascade chain reactions with escalating score multipliers and screen shake. Viruses drawn as vector spiky bodies with bobbing animated faces (NOT canvas emoji fillText, which renders blank on Safari). Clears spawn particle bursts. Win = all viruses removed -> level-clear fanfare -> next level with more viruses and faster drop. Controls: arrows + Z/X + ArrowUp rotate on desktop; on-screen pad plus board gestures (tap=rotate, swipe=move, swipe-down=soft-drop) on mobile. Leaderboard + share hooks wired with guards; keydown guards skip inputs and open shell overlays."
     },
     "suggestion": {
       "issueNumber": 563,
@@ -75,7 +75,7 @@
         "issueNumber": 578,
         "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/578",
         "runId": "run-20260615T125308Z-18bb19",
-        "description": "Re-themed Virus Vials as 'Reef Rescue': ocean/tide-pool palette, 3 coral-fragment colors, pollution-blob enemies, animated water background (caustic rays, rising bubbles, drifting fish), themed ink-droplet/coral-sparkle clear effects, bloom combos, and re-labeled HUD (Depth/Pollution) + overlays. Gameplay mechanics unchanged. Notes: per the brief the piece colors went from 4 to 3 (slightly easier matching); the most expensive one-off flourishes (literal sea-turtle glide, fish-school combo, rising-oil game-over animation) were simplified to themed equivalents to protect 60fps and avoid regressions; app id/folder stay 'virus-vials' (only the display name changed).",
+        "description": "Re-themed the game to the current ocean/tide-pool look: ocean/tide-pool palette, 3 coral-fragment colors, pollution-blob enemies, animated water background (caustic rays, rising bubbles, drifting fish), themed ink-droplet/coral-sparkle clear effects, bloom combos, and re-labeled HUD (Depth/Pollution) + overlays. Gameplay mechanics unchanged. Notes: per the brief the piece colors went from 4 to 3 (slightly easier matching); the most expensive one-off flourishes (literal sea-turtle glide, fish-school combo, rising-oil game-over animation) were simplified to themed equivalents to protect 60fps and avoid regressions; the app id/folder were later renamed to reef-rescue.",
         "requestor": "jeffholst",
         "implementedAt": "2026-06-15T12:53:08Z",
         "agentName": "Claude Code",
@@ -89,27 +89,27 @@
       {
         "runId": "run-20260613T160459Z-b873bf",
         "path": "backups/run-20260613T160459Z-b873bf/index.html",
-        "url": "/apps/2026/06/13/virus-vials/backups/run-20260613T160459Z-b873bf/index.html"
+        "url": "/apps/2026/06/13/reef-rescue/backups/run-20260613T160459Z-b873bf/index.html"
       },
       {
         "runId": "run-20260614T212057Z-30ca93",
         "path": "backups/run-20260614T212057Z-30ca93/index.html",
-        "url": "/apps/2026/06/13/virus-vials/backups/run-20260614T212057Z-30ca93/index.html"
+        "url": "/apps/2026/06/13/reef-rescue/backups/run-20260614T212057Z-30ca93/index.html"
       },
       {
         "runId": "run-20260615T104553Z-6fb152",
         "path": "backups/run-20260615T104553Z-6fb152/index.html",
-        "url": "/apps/2026/06/13/virus-vials/backups/run-20260615T104553Z-6fb152/index.html"
+        "url": "/apps/2026/06/13/reef-rescue/backups/run-20260615T104553Z-6fb152/index.html"
       },
       {
         "runId": "run-20260615T115256Z-2e4a0a",
         "path": "backups/run-20260615T115256Z-2e4a0a/index.html",
-        "url": "/apps/2026/06/13/virus-vials/backups/run-20260615T115256Z-2e4a0a/index.html"
+        "url": "/apps/2026/06/13/reef-rescue/backups/run-20260615T115256Z-2e4a0a/index.html"
       },
       {
         "runId": "run-20260615T125308Z-18bb19",
         "path": "backups/run-20260615T125308Z-18bb19/index.html",
-        "url": "/apps/2026/06/13/virus-vials/backups/run-20260615T125308Z-18bb19/index.html"
+        "url": "/apps/2026/06/13/reef-rescue/backups/run-20260615T125308Z-18bb19/index.html"
       }
     ]
   },

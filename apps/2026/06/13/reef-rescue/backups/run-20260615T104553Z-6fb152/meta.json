@@ -1,6 +1,6 @@
 {
-  "id": "virus-vials",
-  "name": "Virus Vials",
+  "id": "reef-rescue",
+  "name": "Reef Rescue",
   "shortDescription": "A neon-lab capsule puzzle: drop two-tone pills and line up 4+ matching colors to wipe out the viruses across ever-faster levels.",
   "thumbnail": "thumbnail.svg",
   "createdAt": "2026-06-13T15:36:14Z",
@@ -25,7 +25,7 @@
     "totalTokensIn": 36000,
     "totalTokensOut": 38000,
     "runId": "run-20260613T153614Z-4e4e44",
-    "notes": "Dr. Mario-style falling-capsule match puzzle, renamed 'Virus Vials' to avoid the Dr. Mario trademark while implementing the requested mechanic. 8x16 vial, 4 capsule colors per the request (classic Dr. Mario uses 3). Capsule halves stored with link metadata so connected pairs render seamlessly and fall together under gravity; orphaned halves fall solo, enabling cascade chain reactions with escalating score multipliers and screen shake. Viruses drawn as vector spiky bodies with bobbing animated faces (NOT canvas emoji fillText, which renders blank on Safari). Clears spawn particle bursts. Win = all viruses removed -> level-clear fanfare -> next level with more viruses and faster drop. Controls: arrows + Z/X + ArrowUp rotate on desktop; on-screen pad plus board gestures (tap=rotate, swipe=move, swipe-down=soft-drop) on mobile. Leaderboard + share hooks wired with guards; keydown guards skip inputs and open shell overlays."
+    "notes": "Dr. Mario-style falling-capsule match puzzle, renamed 'Reef Rescue' to avoid the Dr. Mario trademark while implementing the requested mechanic. 8x16 vial, 4 capsule colors per the request (classic Dr. Mario uses 3). Capsule halves stored with link metadata so connected pairs render seamlessly and fall together under gravity; orphaned halves fall solo, enabling cascade chain reactions with escalating score multipliers and screen shake. Viruses drawn as vector spiky bodies with bobbing animated faces (NOT canvas emoji fillText, which renders blank on Safari). Clears spawn particle bursts. Win = all viruses removed -> level-clear fanfare -> next level with more viruses and faster drop. Controls: arrows + Z/X + ArrowUp rotate on desktop; on-screen pad plus board gestures (tap=rotate, swipe=move, swipe-down=soft-drop) on mobile. Leaderboard + share hooks wired with guards; keydown guards skip inputs and open shell overlays."
   },
   "improvements": [
     {
@@ -35,6 +35,16 @@
       "description": "Fixed rotation: capsules now cycle through all four states with proper color swap (Z=clockwise, X=counter-clockwise), and rotating at the top row wall-kicks down instead of dropping a half off-screen.",
       "requestor": "jeffholst",
       "implementedAt": "2026-06-13T16:04:59Z",
+      "agentName": "Claude Code",
+      "llmModel": "claude-opus-4-8"
+    },
+    {
+      "issueNumber": 567,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/567",
+      "runId": "run-20260614T212057Z-30ca93",
+      "description": "Added a Controls settings overlay with adjustable swipe (slide) and tap (rotate) sensitivity, persisted to localStorage; touch gesture thresholds now read these values instead of fixed constants.",
+      "requestor": "jeffholst",
+      "implementedAt": "2026-06-14T21:20:57Z",
       "agentName": "Claude Code",
       "llmModel": "claude-opus-4-8"
     }

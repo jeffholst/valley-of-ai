@@ -23,23 +23,23 @@
     <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
     <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
     <meta name="application-name" content="Reef Rescue" />
-    <meta name="voa-app-id" content="2026/06/13/virus-vials" />
+    <meta name="voa-app-id" content="2026/06/13/reef-rescue" />
     <script src="/apps/shared/app-shell.js" defer></script>
 
     <style>
       :root {
-        --bg: #0a2a4a;
-        --text: #e0f7fa;
-        --surface: #103a55;
-        --accent: #4ecdc4;
-        --accent-2: #ffe66d;
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --accent: #36e0c8;
+        --accent-2: #7c5cff;
       }
       [data-theme='light'] {
-        --bg: #d6f2f5;
-        --text: #0a2a4a;
-        --surface: #eaf9fb;
-        --accent: #1a6b8a;
-        --accent-2: #e0a93a;
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+        --accent: #0c8f7e;
+        --accent-2: #5b3ff0;
       }
 
       * {
@@ -70,9 +70,8 @@
         gap: 8px;
         padding: 8px 10px;
         background:
-          radial-gradient(900px 520px at 50% -10%, rgba(78, 205, 196, 0.22), transparent 70%),
-          radial-gradient(700px 520px at 50% 115%, rgba(194, 160, 110, 0.16), transparent 70%),
-          linear-gradient(180deg, #0a2a4a 0%, #134d68 70%, #1a6b8a 100%);
+          radial-gradient(900px 500px at 50% -10%, rgba(124, 92, 255, 0.18), transparent 70%),
+          radial-gradient(700px 500px at 50% 110%, rgba(54, 224, 200, 0.14), transparent 70%);
       }
 
       /* HUD */
@@ -148,12 +147,12 @@
       }
       #board {
         display: block;
-        border-radius: 14px;
-        background: rgba(8, 30, 52, 0.6);
+        border-radius: 12px;
+        background: rgba(3, 8, 20, 0.6);
         box-shadow:
-          0 0 0 2px rgba(78, 205, 196, 0.35),
-          0 0 30px rgba(78, 205, 196, 0.22),
-          inset 0 0 44px rgba(0, 20, 40, 0.55);
+          0 0 0 2px rgba(54, 224, 200, 0.25),
+          0 0 28px rgba(54, 224, 200, 0.18),
+          inset 0 0 40px rgba(0, 0, 0, 0.55);
         touch-action: none;
       }
 
@@ -225,17 +224,10 @@
         transform: translateY(2px) scale(0.98);
       }
       .btn.secondary {
-        background: linear-gradient(90deg, #ffe66d, #ffd23b);
-        color: #0a2a4a;
-        box-shadow: 0 6px 18px rgba(255, 230, 109, 0.35);
+        background: linear-gradient(90deg, var(--accent-2), #a98bff);
+        color: #fff;
+        box-shadow: 0 6px 18px rgba(124, 92, 255, 0.4);
         margin-left: 8px;
-      }
-
-      /* Game over: oily grey-brown water */
-      #overScreen {
-        background:
-          linear-gradient(180deg, rgba(40, 34, 22, 0.4) 0%, rgba(28, 24, 18, 0.92) 100%),
-          rgba(20, 24, 22, 0.82);
       }
       .btn-row {
         display: flex;
@@ -255,8 +247,8 @@
       .ctrl {
         min-height: 50px;
         border-radius: 12px;
-        border: 1px solid rgba(78, 205, 196, 0.45);
-        background: linear-gradient(180deg, rgba(78, 205, 196, 0.22), rgba(8, 30, 52, 0.3));
+        border: 1px solid rgba(124, 92, 255, 0.4);
+        background: linear-gradient(180deg, rgba(124, 92, 255, 0.2), rgba(0, 0, 0, 0.25));
         color: var(--text);
         font-size: 22px;
         font-weight: 800;
@@ -298,8 +290,8 @@
         min-height: 36px;
         padding: 6px 12px;
         border-radius: 999px;
-        border: 1px solid rgba(78, 205, 196, 0.4);
-        background: linear-gradient(180deg, rgba(78, 205, 196, 0.2), rgba(8, 30, 52, 0.3));
+        border: 1px solid rgba(124, 92, 255, 0.4);
+        background: linear-gradient(180deg, rgba(124, 92, 255, 0.2), rgba(0, 0, 0, 0.25));
         color: var(--text);
         font-size: 12px;
         font-weight: 700;
@@ -389,11 +381,11 @@
             <div class="value" id="scoreEl">0</div>
           </div>
           <div class="stat">
-            <div class="label">Depth</div>
+            <div class="label">Level</div>
             <div class="value" id="levelEl">1</div>
           </div>
           <div class="stat">
-            <div class="label">Pollution</div>
+            <div class="label">Virus</div>
             <div class="value" id="virusEl">0</div>
           </div>
         </div>
@@ -408,7 +400,7 @@
 
         <div class="overlay show" id="startScreen">
           <h1>Reef Rescue</h1>
-          <p>Drop two-tone coral fragments and line up <b>4+</b> matching colors to clear the pollution blobs and save the reef.</p>
+          <p>Drop two-tone capsules and line up <b>4+</b> matching colors to wipe out the viruses.</p>
           <div class="difficulty">
             <div class="diff-head">
               <label for="difficultyRange">Starting difficulty</label>
@@ -422,16 +414,16 @@
         </div>
 
         <div class="overlay" id="levelScreen">
-          <h1>Reef Restored!</h1>
-          <div class="big" id="levelMsg">Depth 1 cleared</div>
-          <p>The water runs clear and the coral blooms. Dive deeper for a tougher tide.</p>
-          <button class="btn" id="nextLevelBtn">Dive Deeper</button>
+          <h1>Vial Cleared!</h1>
+          <div class="big" id="levelMsg">Level 1 complete</div>
+          <p>The lab is virus-free. Time for a tougher batch.</p>
+          <button class="btn" id="nextLevelBtn">Next Level</button>
         </div>
 
         <div class="overlay" id="overScreen">
-          <h1>Reef Lost</h1>
+          <h1>Contaminated</h1>
           <div class="big" id="finalMsg">Score: 0</div>
-          <p id="overSub">An oil slick swallowed the tide pool. Dive back in.</p>
+          <p id="overSub">The vial overflowed. Try again, doctor.</p>
           <div class="difficulty">
             <div class="diff-head">
               <label for="difficultyRange2">Starting difficulty</label>
@@ -482,7 +474,7 @@
       'use strict';
 
       /* ------------------------------------------------------------------ *
-       * Virus Vials — a Dr. Mario–style falling-capsule match puzzle.
+       * Reef Rescue — a Dr. Mario–style falling-capsule match puzzle.
        *
        * Grid is COLS x ROWS. Each cell is null (empty) or an object:
        *   { color: 0..3, type: 'virus' | 'half', link: null | 'L'|'R'|'U'|'D' }
@@ -493,37 +485,15 @@
 
       const COLS = 8;
       const ROWS = 16;
-      const NUM_COLORS = 3;
+      const NUM_COLORS = 4;
 
-      // Reef palette. Coral fragments use base / light / dark / glow; pollution
-      // blobs reuse the SAME hues (blobLight/blobDark) so they read as clearly the
-      // same color as the pieces — kept a touch deeper/oilier than the glossy coral,
-      // with the dark shimmer streak + angry eyes carrying the "pollution" look.
+      // Neon "medical lab" palette. Each color has base / light / dark stops
+      // used to render glossy capsules and viruses with depth.
       const COLORS = [
-        {
-          base: '#ff6b6b',
-          light: '#ffb3b3',
-          dark: '#c24545',
-          glow: 'rgba(255,107,107,0.6)',
-          blobLight: '#ff8f8f',
-          blobDark: '#7a2b2b',
-        }, // coral red
-        {
-          base: '#ffe66d',
-          light: '#fff4b0',
-          dark: '#c2a82e',
-          glow: 'rgba(255,230,109,0.6)',
-          blobLight: '#ffe27a',
-          blobDark: '#7a6a18',
-        }, // sun yellow
-        {
-          base: '#4ecdc4',
-          light: '#a6ebe6',
-          dark: '#2e8c85',
-          glow: 'rgba(78,205,196,0.6)',
-          blobLight: '#6fd6cd',
-          blobDark: '#1d5d57',
-        }, // seafoam teal
+        { base: '#ff3b6b', light: '#ff90ad', dark: '#b21340', glow: 'rgba(255,59,107,0.6)' }, // red
+        { base: '#3b9bff', light: '#9cc9ff', dark: '#1559b8', glow: 'rgba(59,155,255,0.6)' }, // blue
+        { base: '#ffd23b', light: '#ffe89a', dark: '#b8902a', glow: 'rgba(255,210,59,0.6)' }, // yellow
+        { base: '#3bff9b', light: '#9affc9', dark: '#13a861', glow: 'rgba(59,255,155,0.6)' }, // green
       ];
 
       // --- DOM refs ---
@@ -552,7 +522,6 @@
       let particles = [];
       let popAnims = []; // shrinking cells being cleared
       let shake = 0;
-      let causticBoost = 0; // brief caustic-ray brighten on combos; decays each frame
       let dropTimer = 0;
       let dropInterval = 800;
       let lastTime = 0;
@@ -567,7 +536,7 @@
       // more forgiving (longer tap window). Defaults reproduce the
       // original hardcoded behavior (0.8-cell swipe, 250ms tap).
       // ---------------------------------------------------------------- //
-      const CONTROLS_KEY = 'voa:virus-vials:controls';
+      const CONTROLS_KEY = 'voa:reef-rescue:controls';
       const CONTROL_DEFAULTS = { slide: 5, tap: 5 };
       let controls = loadControls();
       let settingsOpen = false;
@@ -612,7 +581,7 @@
       // existing per-level scaling controls virus count and drop speed.
       // Persisted so the choice is remembered across reloads and replays.
       // ---------------------------------------------------------------- //
-      const DIFFICULTY_KEY = 'voa:virus-vials:difficulty';
+      const DIFFICULTY_KEY = 'voa:reef-rescue:difficulty';
       const DEFAULT_DIFFICULTY = 5;
       let startDifficulty = loadDifficulty();
 
@@ -877,8 +846,7 @@
           score += gained;
           if (chain >= 2) {
             const { x, y } = cellCenterFromSet(clearSet);
-            popups.push({ text: 'BLOOM x' + chain, x, y, t: 0, color: '#ffe66d', size: 22 });
-            causticBoost = 1; // a school-of-light flash brightens the caustic rays
+            popups.push({ text: 'CHAIN x' + chain, x, y, t: 0, color: '#ffd23b', size: 22 });
           }
         }
         if (viralCleared > 0) shake = Math.min(16, shake + 4 + viralCleared * 2);
@@ -1020,16 +988,15 @@
         active = null;
         score += 500 + level * 100; // level clear bonus
         updateHud();
-        levelMsg.textContent = 'Depth ' + level + ' cleared · +' + (500 + level * 100);
+        levelMsg.textContent = 'Level ' + level + ' complete · +' + (500 + level * 100);
         showOverlay(levelScreen);
-        causticBoost = 1;
-        // Celebratory coral bloom (bright sparkle burst).
+        // Celebratory confetti.
         for (let i = 0; i < 60; i++) {
           spawnBurst(
             Math.floor(Math.random() * ROWS),
             Math.floor(Math.random() * COLS),
             Math.floor(Math.random() * NUM_COLORS),
-            false
+            true
           );
         }
       }
@@ -1071,37 +1038,22 @@
       // ---------------------------------------------------------------- //
       // Particles & floating text
       // ---------------------------------------------------------------- //
-      // big === true marks a pollution-blob clear (dark ink droplets dissolving
-      // upward); otherwise it is a coral match (bright sparkle ring bursting out).
       function spawnBurst(r, c, color, big) {
         const x = ox + (c + 0.5) * cell;
         const y = oy + (r + 0.5) * cell;
-        const n = big ? 12 : 8;
+        const n = big ? 14 : 8;
         for (let i = 0; i < n; i++) {
           const ang = Math.random() * Math.PI * 2;
-          if (big) {
-            particles.push({
-              x: x + (Math.random() - 0.5) * cell * 0.4,
-              y,
-              vx: Math.cos(ang) * 0.6,
-              vy: -(1.2 + Math.random() * 1.6),
-              life: 1,
-              color: 'rgba(18,22,14,0.85)',
-              size: 2 + Math.random() * 3,
-              rise: true,
-            });
-          } else {
-            const sp = 1.6 * (0.4 + Math.random());
-            particles.push({
-              x,
-              y,
-              vx: Math.cos(ang) * sp,
-              vy: Math.sin(ang) * sp - 1,
-              life: 1,
-              color: COLORS[color].light,
-              size: 2 + Math.random() * 3,
-            });
-          }
+          const sp = (big ? 2.4 : 1.6) * (0.4 + Math.random());
+          particles.push({
+            x,
+            y,
+            vx: Math.cos(ang) * sp,
+            vy: Math.sin(ang) * sp - 1,
+            life: 1,
+            color: COLORS[color].base,
+            size: 2 + Math.random() * 3,
+          });
         }
       }
 
@@ -1109,9 +1061,7 @@
         for (const p of particles) {
           p.x += p.vx * dt * 0.06;
           p.y += p.vy * dt * 0.06;
-          // Coral sparkles fall under gravity; ink droplets keep drifting upward.
-          if (p.rise) p.vy *= 0.98;
-          else p.vy += dt * 0.012;
+          p.vy += dt * 0.012;
           p.life -= dt * 0.0022;
         }
         particles = particles.filter((p) => p.life > 0);
@@ -1126,7 +1076,6 @@
         popups = popups.filter((p) => p.t < 1);
 
         if (shake > 0) shake = Math.max(0, shake - dt * 0.04);
-        if (causticBoost > 0) causticBoost = Math.max(0, causticBoost - dt * 0.002);
       }
 
       // ---------------------------------------------------------------- //
@@ -1163,46 +1112,15 @@
         drawNext();
       }
 
-      // Tide-pool water column: navy->teal gradient, sandy bottom, animated
-      // caustic light rays, drifting fish silhouettes, and rising bubbles.
-      function drawWater(t) {
+      function drawGridBg() {
         const w = cell * COLS;
         const h = cell * ROWS;
         const g = ctx.createLinearGradient(0, 0, 0, h);
-        g.addColorStop(0, '#08233f');
-        g.addColorStop(0.6, '#0d3a55');
-        g.addColorStop(1, '#155f7a');
+        g.addColorStop(0, 'rgba(10,16,34,0.95)');
+        g.addColorStop(1, 'rgba(4,8,20,0.98)');
         ctx.fillStyle = g;
         ctx.fillRect(0, 0, w, h);
-
-        // Sandy bottom.
-        const sandH = cell * 1.2;
-        const sg = ctx.createLinearGradient(0, h - sandH, 0, h);
-        sg.addColorStop(0, 'rgba(194,160,110,0)');
-        sg.addColorStop(1, 'rgba(194,160,110,0.85)');
-        ctx.fillStyle = sg;
-        ctx.fillRect(0, h - sandH, w, sandH);
-
-        // Caustic light rays slanting down from the surface; brighten on combos.
-        ctx.save();
-        ctx.globalCompositeOperation = 'lighter';
-        const rayAlpha = Math.max(0, 0.05 + 0.04 * Math.sin(t / 700) + causticBoost * 0.14);
-        ctx.fillStyle = 'rgba(160,230,220,' + rayAlpha + ')';
-        for (let i = 0; i < 4; i++) {
-          const sway = Math.sin(t / 900 + i) * cell * 0.6;
-          const x = (i + 0.5) * (w / 4) + sway;
-          ctx.beginPath();
-          ctx.moveTo(x - cell * 0.5, 0);
-          ctx.lineTo(x + cell * 0.5, 0);
-          ctx.lineTo(x + cell * 1.6, h);
-          ctx.lineTo(x + cell * 0.4, h);
-          ctx.closePath();
-          ctx.fill();
-        }
-        ctx.restore();
-
-        // Faint grid so cells stay readable.
-        ctx.strokeStyle = 'rgba(160,230,220,0.06)';
+        ctx.strokeStyle = 'rgba(124,92,255,0.10)';
         ctx.lineWidth = 1;
         for (let c = 1; c < COLS; c++) {
           ctx.beginPath();
@@ -1216,44 +1134,6 @@
           ctx.lineTo(w, r * cell);
           ctx.stroke();
         }
-
-        // Drifting fish silhouettes.
-        for (let i = 0; i < 2; i++) {
-          const speed = 0.018 + i * 0.006;
-          const fx = (((t * speed + i * w * 0.6) % (w + 80)) + w + 80) % (w + 80) - 40;
-          const fy = h * (0.22 + i * 0.4) + Math.sin(t / 600 + i) * cell * 0.4;
-          drawFish(fx, fy, cell * (0.7 + i * 0.2), i === 0);
-        }
-
-        // Rising bubble clusters (deterministic from t — no state needed).
-        ctx.fillStyle = 'rgba(200,240,255,0.18)';
-        for (let i = 0; i < 10; i++) {
-          const bx = ((i * 53) % w) + Math.sin(t / 500 + i) * cell * 0.3;
-          const period = 4000 + (i % 5) * 700;
-          const by = h - (((t + i * 900) % period) / period) * h;
-          const br = 1.5 + (i % 3);
-          ctx.beginPath();
-          ctx.arc(bx, by, br, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-
-      // Small fish silhouette: body ellipse + tail fin. faceRight flips direction.
-      function drawFish(x, y, len, faceRight) {
-        ctx.save();
-        ctx.translate(x, y);
-        if (!faceRight) ctx.scale(-1, 1);
-        ctx.fillStyle = 'rgba(6,24,42,0.45)';
-        ctx.beginPath();
-        ctx.ellipse(0, 0, len * 0.5, len * 0.26, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(-len * 0.45, 0);
-        ctx.lineTo(-len * 0.75, -len * 0.22);
-        ctx.lineTo(-len * 0.75, len * 0.22);
-        ctx.closePath();
-        ctx.fill();
-        ctx.restore();
       }
 
       // Draw a glossy capsule half. `link` controls which corners are rounded
@@ -1298,94 +1178,70 @@
         ctx.shadowBlur = size * 0.25;
         ctx.fill();
         ctx.shadowBlur = 0;
-        // Soft inner glow + bumpy coral nodules (the "living coral" texture).
+        // Specular highlight (the glossy pill shine).
         ctx.save();
         ctx.clip();
-        const glow = ctx.createRadialGradient(
-          cx - w * 0.12,
-          top + h * 0.28,
-          s * 0.04,
-          cx,
-          cy,
-          half * 1.1
+        ctx.fillStyle = 'rgba(255,255,255,0.45)';
+        ctx.beginPath();
+        ctx.ellipse(
+          cx - w * 0.16,
+          top + h * 0.26,
+          w * 0.22,
+          h * 0.13,
+          -0.5,
+          0,
+          Math.PI * 2
         );
-        glow.addColorStop(0, 'rgba(255,255,255,0.5)');
-        glow.addColorStop(0.5, 'rgba(255,255,255,0.12)');
-        glow.addColorStop(1, 'rgba(255,255,255,0)');
-        ctx.fillStyle = glow;
-        ctx.fillRect(left, top, w, h);
-        ctx.fillStyle = col.light;
-        ctx.globalAlpha = 0.5;
-        const bump = s * 0.1;
-        ctx.beginPath();
-        ctx.arc(cx + w * 0.12, cy - h * 0.1, bump, 0, Math.PI * 2);
         ctx.fill();
-        ctx.beginPath();
-        ctx.arc(cx - w * 0.05, cy + h * 0.14, bump * 0.8, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(cx + w * 0.02, cy + h * 0.02, bump * 0.6, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1;
         ctx.restore();
       }
 
-      // Draw an amorphous, pulsing pollution blob with tiny angry eyes.
+      // Draw an animated virus with a bobbing expressive face.
       function drawVirus(px, py, size, color, t) {
         const cx = px + size / 2;
         const bob = Math.sin(t / 380 + (px + py)) * size * 0.05;
         const cy = py + size / 2 + bob;
         const r = size * 0.34;
         const col = COLORS[color];
+        // Spiky body
         ctx.save();
-        ctx.shadowColor = 'rgba(8,10,6,0.7)';
-        ctx.shadowBlur = size * 0.25;
-        // Oily desaturated body, wobbling and pulsing over time.
+        ctx.shadowColor = col.glow;
+        ctx.shadowBlur = size * 0.3;
         const grad = ctx.createRadialGradient(cx - r * 0.3, cy - r * 0.3, r * 0.2, cx, cy, r);
-        grad.addColorStop(0, col.blobLight);
-        grad.addColorStop(1, col.blobDark);
+        grad.addColorStop(0, col.light);
+        grad.addColorStop(1, col.dark);
         ctx.fillStyle = grad;
         ctx.beginPath();
-        const pts = 14;
-        for (let i = 0; i <= pts; i++) {
-          const ang = (Math.PI * 2 * i) / pts;
-          const wob = 1 + 0.14 * Math.sin(ang * 3 + t / 260 + (px + py));
-          const x = cx + Math.cos(ang) * r * wob;
-          const y = cy + Math.sin(ang) * r * wob;
+        const spikes = 8;
+        for (let i = 0; i < spikes * 2; i++) {
+          const ang = (Math.PI * i) / spikes;
+          const rad = i % 2 === 0 ? r : r * 0.78;
+          const x = cx + Math.cos(ang) * rad;
+          const y = cy + Math.sin(ang) * rad;
           if (i === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
         ctx.closePath();
         ctx.fill();
         ctx.shadowBlur = 0;
-        // Dark oily shimmer streak.
-        ctx.globalAlpha = 0.35;
-        ctx.fillStyle = '#0b0d08';
+        // Eyes
+        ctx.fillStyle = '#04121a';
+        const ex = r * 0.4;
         ctx.beginPath();
-        ctx.ellipse(cx + r * 0.2, cy + r * 0.25, r * 0.5, r * 0.22, -0.6, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1;
-        // Tiny angry eyes.
-        ctx.fillStyle = '#0a0c06';
-        const ex = r * 0.36;
-        ctx.beginPath();
-        ctx.ellipse(cx - ex, cy - r * 0.05, r * 0.14, r * 0.2, 0, 0, Math.PI * 2);
-        ctx.ellipse(cx + ex, cy - r * 0.05, r * 0.14, r * 0.2, 0, 0, Math.PI * 2);
+        ctx.arc(cx - ex, cy - r * 0.1, r * 0.18, 0, Math.PI * 2);
+        ctx.arc(cx + ex, cy - r * 0.1, r * 0.18, 0, Math.PI * 2);
         ctx.fill();
         ctx.fillStyle = '#fff';
         ctx.beginPath();
-        ctx.arc(cx - ex + r * 0.04, cy - r * 0.12, r * 0.05, 0, Math.PI * 2);
-        ctx.arc(cx + ex + r * 0.04, cy - r * 0.12, r * 0.05, 0, Math.PI * 2);
+        ctx.arc(cx - ex + r * 0.05, cy - r * 0.16, r * 0.06, 0, Math.PI * 2);
+        ctx.arc(cx + ex + r * 0.05, cy - r * 0.16, r * 0.06, 0, Math.PI * 2);
         ctx.fill();
-        // Angry slanted brows.
-        ctx.strokeStyle = '#0a0c06';
-        ctx.lineWidth = Math.max(1.4, r * 0.14);
+        // Grumpy mouth
+        ctx.strokeStyle = '#04121a';
+        ctx.lineWidth = Math.max(1.4, r * 0.12);
         ctx.lineCap = 'round';
         ctx.beginPath();
-        ctx.moveTo(cx - ex - r * 0.22, cy - r * 0.4);
-        ctx.lineTo(cx - ex + r * 0.18, cy - r * 0.22);
-        ctx.moveTo(cx + ex + r * 0.22, cy - r * 0.4);
-        ctx.lineTo(cx + ex - r * 0.18, cy - r * 0.22);
+        ctx.arc(cx, cy + r * 0.45, r * 0.32, Math.PI * 1.15, Math.PI * 1.85);
         ctx.stroke();
         ctx.restore();
       }
@@ -1412,7 +1268,7 @@
         if (shake > 0) {
           ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
         }
-        drawWater(t);
+        drawGridBg();
 
         // Settled cells
         for (let r = 0; r < ROWS; r++) {
