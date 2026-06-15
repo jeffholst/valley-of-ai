@@ -1274,10 +1274,13 @@
         const col = COLORS[color];
 
         // Edges not joined to a partner are "free" and get scalloped bumps.
+        // link points toward the partner, so that edge is the flush join: the
+        // left half of a horizontal pair has link 'R' (its right edge joins);
+        // the right half has link 'L' (its left edge joins).
         const freeTop = link !== 'D';
         const freeBottom = link !== 'U';
-        const freeLeft = link !== 'R';
-        const freeRight = link !== 'L';
+        const freeLeft = link !== 'L';
+        const freeRight = link !== 'R';
 
         const grad = ctx.createLinearGradient(left, top, left, top + h);
         grad.addColorStop(0, col.light);
@@ -1516,8 +1519,8 @@
           s = size - pad * 2;
         const rO = s * 0.26,
           rI = s * 0.06;
-        const freeLeft = link !== 'R';
-        const freeRight = link !== 'L';
+        const freeLeft = link !== 'L';
+        const freeRight = link !== 'R';
         const tl = freeLeft ? rO : rI;
         const bl = freeLeft ? rO : rI;
         const tr = freeRight ? rO : rI;
