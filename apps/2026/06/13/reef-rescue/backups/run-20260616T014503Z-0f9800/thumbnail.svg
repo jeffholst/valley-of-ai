@@ -98,35 +98,6 @@
     <path d="M560 418 q6 -22 13 0 q7 -16 11 0 Z" />
   </g>
 
-  <!-- Swaying seaweed rooted in the sand -->
-  <g fill="#2e8c85" opacity="0.5">
-    <path d="M115 410 Q117 362.5 102 315 Q123 362.5 125 410 Z" />
-    <path d="M140 410 Q142 375 159 340 Q148 375 150 410 Z" />
-    <path d="M165 410 Q167 367.5 160 325 Q173 367.5 175 410 Z" />
-    <path d="M631 410 Q633 366 652 322 Q639 366 641 410 Z" />
-    <path d="M657 410 Q659 376 650 342 Q665 376 667 410 Z" />
-    <path d="M685 410 Q687 360 702 310 Q693 360 695 410 Z" />
-  </g>
-
-  <!-- Squid drifter, watching the player (pupils shifted toward center) -->
-  <g transform="translate(150,250)" opacity="0.55">
-    <g fill="#06182a">
-      <path d="M30 0 Q14 -26 -22 -11 Q-52 0 -22 11 Q14 26 30 0 Z" />
-      <path d="M-20 -8 L-44 -22 L-30 -2 Z" />
-      <path d="M-20 8 L-44 22 L-30 2 Z" />
-      <path d="M28 -6 Q46 -10 58 -6" stroke="#06182a" stroke-width="3.5" fill="none" stroke-linecap="round" />
-      <path d="M30 -2 Q50 -2 62 2" stroke="#06182a" stroke-width="3.5" fill="none" stroke-linecap="round" />
-      <path d="M30 2 Q50 4 62 10" stroke="#06182a" stroke-width="3.5" fill="none" stroke-linecap="round" />
-      <path d="M28 6 Q46 10 58 16" stroke="#06182a" stroke-width="3.5" fill="none" stroke-linecap="round" />
-    </g>
-    <circle cx="10" cy="-10" r="8.5" fill="#e1f7fa" opacity="0.92" />
-    <circle cx="22" cy="-7" r="8.5" fill="#e1f7fa" opacity="0.92" />
-    <circle cx="14" cy="-10" r="4.5" fill="#04121a" />
-    <circle cx="26" cy="-7" r="4.5" fill="#04121a" />
-    <circle cx="12.3" cy="-11.3" r="1.4" fill="#ffffff" opacity="0.85" />
-    <circle cx="24.3" cy="-8.3" r="1.4" fill="#ffffff" opacity="0.85" />
-  </g>
-
   <!-- Tide-pool glass column (the playfield) -->
   <rect x="285" y="120" width="230" height="300" rx="16" fill="url(#glass)"
     stroke="#4ecdc4" stroke-opacity="0.55" stroke-width="2.5" filter="url(#glow)" />
