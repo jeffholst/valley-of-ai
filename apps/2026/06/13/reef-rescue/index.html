@@ -1391,20 +1391,22 @@
         }
       }
 
-      // --- Squid drifter: spawns at random intervals, crosses the tide pool while
-      // changing depth (its size is the depth cue), and watches the player with
-      // pupils that track the screen center. ---
+      // --- Squid drifter: spawns at random intervals, hovers while rising out of
+      // the distance toward the viewer, follows the active coral piece with its
+      // eyes, then swims off the screen. ---
       let squid = null;
       let nextSquidAt = 4000;
 
       function updateSquid(t, w, h) {
         if (!squid && t >= nextSquidAt) {
+          const baseX = w * (0.28 + Math.random() * 0.44);
           squid = {
             start: t,
-            dur: 9000 + Math.random() * 5000,
-            dir: Math.random() < 0.5 ? 1 : -1,
-            y: h * (0.28 + Math.random() * 0.4),
-            approaching: Math.random() < 0.5, // near->far or far->near this pass
+            dur: 10000 + Math.random() * 4000,
+            baseX, // squid hovers around this x rather than crossing the pool
+            dir: baseX < w / 2 ? 1 : -1, // face toward the middle of the pool
+            // Hover in the open upper area so it stays visible above stacked pieces.
+            y: h * (0.16 + Math.random() * 0.18),
           };
         }
         if (squid && t - squid.start > squid.dur) {
@@ -1417,14 +1419,27 @@
         const p = (t - squid.start) / squid.dur;
         if (p < 0 || p > 1) return;
         const dir = squid.dir;
-        const margin = cell * 2;
-        const xFrom = dir === 1 ? -margin : w + margin;
-        const xTo = dir === 1 ? w + margin : -margin;
-        const x = xFrom + (xTo - xFrom) * p;
-        const near = squid.approaching ? p : 1 - p; // 1 = close (big), 0 = far (small)
-        const s = cell * (0.7 + near * 1.25);
-        const alpha = 0.3 + near * 0.18;
-        const y = squid.y + Math.sin(t / 650 + squid.start) * cell * 0.3;
+        // Depth eases in during the hover phase; after exitStart the squid stops
+        // approaching and swims off the screen instead of vanishing in place.
+        const exitStart = 0.72;
+        const hoverP = Math.min(p, exitStart) / exitStart;
+        const near = hoverP * hoverP * (3 - 2 * hoverP); // 0 = far, 1 = close
+        const s = cell * (0.4 + near * 1.85);
+        const alpha = 0.16 + near * 0.36;
+        // Hovering motion: a gentle lateral sway and vertical bob around a fixed
+        // point rather than swimming across the pool — it mostly grows closer.
+        const hoverX = squid.baseX + Math.sin(t / 1700 + squid.start) * cell * 0.7;
+        const hoverY =
+          squid.y + Math.sin(t / 1000 + squid.start) * cell * 0.7 - near * cell * 0.6;
+        let x = hoverX;
+        let y = hoverY;
+        if (p > exitStart) {
+          // Exit: accelerate off the screen in the facing direction, drifting up.
+          const e = Math.min(1, ((p - exitStart) / (1 - exitStart)) * 1.3);
+          const offX = dir === 1 ? w + s * 2 : -s * 2;
+          x = hoverX + (offX - hoverX) * (e * e);
+          y = hoverY - e * cell * 1.2;
+        }
 
         // Silhouette: mantle + tail fins + wiggling tentacles, facing travel dir.
         ctx.save();
@@ -1461,33 +1476,54 @@
         }
         ctx.restore();
 
-        // Two big eyes near the head, drawn in world space so the pupils can aim
-        // at the screen center — the squid keeps its gaze on the player.
-        const cxs = w / 2;
-        const cys = h / 2;
-        const eyeR = s * 0.17;
+        // Two big eyes near the head, spread wider apart and drawn in world space
+        // so the pupils can follow the active coral piece as it moves (falling
+        // back to the pool center when no piece is in play).
+        let targetX = ox + w / 2;
+        let targetY = oy + h / 2;
+        if (active) {
+          const cells = capsuleCells(active.r, active.c, active.orient);
+          let sx = 0;
+          let sy = 0;
+          for (const [cr, cc] of cells) {
+            sx += ox + (cc + 0.5) * cell;
+            sy += oy + (cr + 0.5) * cell;
+          }
+          targetX = sx / cells.length;
+          targetY = sy / cells.length;
+        }
+        const eyeR = s * 0.18;
+        const eyeCx = x + dir * s * 0.12;
+        const eyeCy = y - s * 0.05;
+        const eyeGap = s * 0.46; // wider separation than before
         const eyes = [
-          { ex: x + dir * s * 0.1, ey: y - s * 0.12 },
-          { ex: x + dir * s * 0.27, ey: y - s * 0.08 },
+          { ex: eyeCx - eyeGap * 0.5, ey: eyeCy },
+          { ex: eyeCx + eyeGap * 0.5, ey: eyeCy },
         ];
         for (const { ex, ey } of eyes) {
-          ctx.fillStyle = 'rgba(225,247,250,0.92)';
+          // Sclera: a muted pale teal (not stark white) with a thin dark border.
           ctx.beginPath();
           ctx.arc(ex, ey, eyeR, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(150,190,193,' + (0.55 + near * 0.3) + ')';
           ctx.fill();
-          const dx = cxs - ex;
-          const dy = cys - ey;
+          ctx.lineWidth = Math.max(1, s * 0.04);
+          ctx.strokeStyle = 'rgba(4,18,26,0.7)';
+          ctx.stroke();
+          // Pupil tracks the screen center.
+          const dx = targetX - ex;
+          const dy = targetY - ey;
           const d = Math.hypot(dx, dy) || 1;
-          const shift = eyeR * 0.45;
+          const shift = eyeR * 0.4;
           const px = ex + (dx / d) * shift;
           const py = ey + (dy / d) * shift;
           ctx.fillStyle = '#04121a';
           ctx.beginPath();
-          ctx.arc(px, py, eyeR * 0.52, 0, Math.PI * 2);
+          ctx.arc(px, py, eyeR * 0.5, 0, Math.PI * 2);
           ctx.fill();
-          ctx.fillStyle = 'rgba(255,255,255,0.85)';
+          // Subtle catchlight (dimmer than before).
+          ctx.fillStyle = 'rgba(255,255,255,0.5)';
           ctx.beginPath();
-          ctx.arc(px - eyeR * 0.14, py - eyeR * 0.14, eyeR * 0.13, 0, Math.PI * 2);
+          ctx.arc(px - eyeR * 0.16, py - eyeR * 0.16, eyeR * 0.12, 0, Math.PI * 2);
           ctx.fill();
         }
       }
