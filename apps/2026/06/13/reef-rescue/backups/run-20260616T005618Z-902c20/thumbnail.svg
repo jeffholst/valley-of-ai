@@ -1,0 +1,210 @@
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Reef Rescue tide-pool puzzle">
+  <defs>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#08233f" />
+      <stop offset="0.6" stop-color="#0d3a55" />
+      <stop offset="1" stop-color="#155f7a" />
+    </linearGradient>
+    <linearGradient id="sand" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#155f7a" stop-opacity="0" />
+      <stop offset="1" stop-color="#c2a06e" />
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0a2a4a" stop-opacity="0.2" />
+      <stop offset="1" stop-color="#08233f" stop-opacity="0.5" />
+    </linearGradient>
+    <linearGradient id="titleFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e0f7fa" />
+      <stop offset="1" stop-color="#4ecdc4" />
+    </linearGradient>
+    <radialGradient id="coralRed" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#ffb3b3" />
+      <stop offset="0.55" stop-color="#ff6b6b" />
+      <stop offset="1" stop-color="#c24545" />
+    </radialGradient>
+    <radialGradient id="coralTeal" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#a6ebe6" />
+      <stop offset="0.55" stop-color="#4ecdc4" />
+      <stop offset="1" stop-color="#2e8c85" />
+    </radialGradient>
+    <radialGradient id="coralYellow" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#fff4b0" />
+      <stop offset="0.55" stop-color="#ffe66d" />
+      <stop offset="1" stop-color="#c2a82e" />
+    </radialGradient>
+    <radialGradient id="blobRed" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#ff6b6b" />
+      <stop offset="1" stop-color="#c24545" />
+    </radialGradient>
+    <radialGradient id="blobTeal" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#4ecdc4" />
+      <stop offset="1" stop-color="#2e8c85" />
+    </radialGradient>
+    <radialGradient id="blobYellow" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#ffe66d" />
+      <stop offset="1" stop-color="#c2a82e" />
+    </radialGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="5" result="b" />
+      <feMerge>
+        <feMergeNode in="b" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="9" result="b" />
+      <feMerge>
+        <feMergeNode in="b" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Water column -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#water)" />
+
+  <!-- Caustic light rays slanting down from the surface -->
+  <g fill="#a6ebe6" opacity="0.09">
+    <polygon points="90,0 150,0 250,450 150,450" />
+    <polygon points="300,0 350,0 430,450 350,450" />
+    <polygon points="520,0 580,0 640,450 540,450" />
+    <polygon points="680,0 720,0 760,450 700,450" />
+  </g>
+
+  <!-- Rising bubbles -->
+  <g fill="#c8f0ff" opacity="0.35">
+    <circle cx="120" cy="300" r="4" />
+    <circle cx="140" cy="250" r="3" />
+    <circle cx="128" cy="210" r="2.5" />
+    <circle cx="650" cy="330" r="4" />
+    <circle cx="668" cy="285" r="3" />
+    <circle cx="690" cy="160" r="3" />
+    <circle cx="705" cy="120" r="2" />
+  </g>
+
+  <!-- Drifting fish silhouette -->
+  <g fill="#06182a" opacity="0.5">
+    <ellipse cx="110" cy="150" rx="34" ry="16" />
+    <polygon points="80,150 56,135 56,165" />
+  </g>
+
+  <!-- Sandy bottom with coral nubs -->
+  <rect x="0" y="392" width="800" height="58" fill="url(#sand)" />
+  <g fill="#ff6b6b" opacity="0.7" filter="url(#glow)">
+    <path d="M150 410 q8 -34 18 0 q10 -26 16 0 Z" />
+    <path d="M610 412 q9 -30 18 0 q9 -22 15 0 Z" />
+  </g>
+  <g fill="#4ecdc4" opacity="0.6">
+    <path d="M560 418 q6 -22 13 0 q7 -16 11 0 Z" />
+  </g>
+
+  <!-- Tide-pool glass column (the playfield) -->
+  <rect x="285" y="120" width="230" height="300" rx="16" fill="url(#glass)"
+    stroke="#4ecdc4" stroke-opacity="0.55" stroke-width="2.5" filter="url(#glow)" />
+
+  <!-- Falling coral capsule (two-tone fragment, halves joined flat in the center) -->
+  <g>
+    <!-- Left half: coral red, flat on its right edge -->
+    <g filter="url(#glow)" fill="url(#coralRed)">
+      <path d="M378 149 H401 V181 H378 Q369 181 369 172 V158 Q369 149 378 149 Z" />
+      <circle cx="380" cy="149" r="5" /><circle cx="392" cy="150" r="5" />
+      <circle cx="380" cy="181" r="5" /><circle cx="392" cy="180" r="5" />
+      <circle cx="369" cy="160" r="5" /><circle cx="369" cy="172" r="5" />
+    </g>
+    <circle cx="389" cy="161" r="3.6" fill="#ffb3b3" opacity="0.6" />
+    <circle cx="389" cy="161" r="1.4" fill="#c24545" opacity="0.55" />
+    <circle cx="380" cy="172" r="2.6" fill="#ffb3b3" opacity="0.6" />
+    <!-- Right half: seafoam teal, flat on its left edge -->
+    <g filter="url(#glow)" fill="url(#coralTeal)">
+      <path d="M401 149 H424 Q433 149 433 158 V172 Q433 181 424 181 H401 V149 Z" />
+      <circle cx="412" cy="149" r="5" /><circle cx="424" cy="150" r="5" />
+      <circle cx="412" cy="181" r="5" /><circle cx="424" cy="180" r="5" />
+      <circle cx="433" cy="160" r="5" /><circle cx="433" cy="172" r="5" />
+    </g>
+    <circle cx="414" cy="161" r="3.6" fill="#a6ebe6" opacity="0.6" />
+    <circle cx="414" cy="161" r="1.4" fill="#2e8c85" opacity="0.55" />
+    <circle cx="423" cy="172" r="2.6" fill="#a6ebe6" opacity="0.6" />
+  </g>
+
+  <!-- Settled coral pieces (solo chunks, lumpy on every edge) -->
+  <g>
+    <g filter="url(#glow)" fill="url(#coralYellow)">
+      <rect x="311" y="355" width="30" height="30" rx="8" />
+      <circle cx="320" cy="355" r="5" /><circle cx="332" cy="356" r="5" />
+      <circle cx="320" cy="385" r="5" /><circle cx="332" cy="384" r="5" />
+      <circle cx="311" cy="364" r="5" /><circle cx="311" cy="376" r="5" />
+      <circle cx="341" cy="364" r="5" /><circle cx="341" cy="376" r="5" />
+    </g>
+    <circle cx="330" cy="366" r="3.4" fill="#fff4b0" opacity="0.6" />
+    <circle cx="330" cy="366" r="1.3" fill="#c2a82e" opacity="0.55" />
+    <circle cx="322" cy="376" r="2.6" fill="#fff4b0" opacity="0.55" />
+
+    <g filter="url(#glow)" fill="url(#coralTeal)">
+      <rect x="459" y="355" width="30" height="30" rx="8" />
+      <circle cx="468" cy="355" r="5" /><circle cx="480" cy="356" r="5" />
+      <circle cx="468" cy="385" r="5" /><circle cx="480" cy="384" r="5" />
+      <circle cx="459" cy="364" r="5" /><circle cx="459" cy="376" r="5" />
+      <circle cx="489" cy="364" r="5" /><circle cx="489" cy="376" r="5" />
+    </g>
+    <circle cx="478" cy="366" r="3.4" fill="#a6ebe6" opacity="0.6" />
+    <circle cx="478" cy="366" r="1.3" fill="#2e8c85" opacity="0.55" />
+    <circle cx="470" cy="376" r="2.6" fill="#a6ebe6" opacity="0.55" />
+  </g>
+
+  <!-- Pollution blobs with tiny angry eyes -->
+  <g>
+    <g transform="translate(326,300)">
+      <circle r="17" fill="url(#blobRed)" />
+      <ellipse cx="-6" cy="-1" rx="2.4" ry="3.4" fill="#0a0c06" />
+      <ellipse cx="6" cy="-1" rx="2.4" ry="3.4" fill="#0a0c06" />
+      <path d="M-12 -9 L-2 -4 M12 -9 L2 -4" stroke="#0a0c06" stroke-width="2.4" stroke-linecap="round" />
+    </g>
+    <g transform="translate(400,330)">
+      <circle r="17" fill="url(#blobTeal)" />
+      <ellipse cx="-6" cy="-1" rx="2.4" ry="3.4" fill="#0a0c06" />
+      <ellipse cx="6" cy="-1" rx="2.4" ry="3.4" fill="#0a0c06" />
+      <path d="M-12 -9 L-2 -4 M12 -9 L2 -4" stroke="#0a0c06" stroke-width="2.4" stroke-linecap="round" />
+    </g>
+    <g transform="translate(470,308)">
+      <circle r="17" fill="url(#blobYellow)" />
+      <ellipse cx="-6" cy="-1" rx="2.4" ry="3.4" fill="#0a0c06" />
+      <ellipse cx="6" cy="-1" rx="2.4" ry="3.4" fill="#0a0c06" />
+      <path d="M-12 -9 L-2 -4 M12 -9 L2 -4" stroke="#0a0c06" stroke-width="2.4" stroke-linecap="round" />
+    </g>
+    <g transform="translate(360,360)">
+      <circle r="16" fill="url(#blobRed)" />
+      <ellipse cx="-5.5" cy="-1" rx="2.2" ry="3.2" fill="#0a0c06" />
+      <ellipse cx="5.5" cy="-1" rx="2.2" ry="3.2" fill="#0a0c06" />
+      <path d="M-11 -8 L-2 -4 M11 -8 L2 -4" stroke="#0a0c06" stroke-width="2.2" stroke-linecap="round" />
+    </g>
+    <g transform="translate(432,362)">
+      <circle r="16" fill="url(#blobTeal)" />
+      <ellipse cx="-5.5" cy="-1" rx="2.2" ry="3.2" fill="#0a0c06" />
+      <ellipse cx="5.5" cy="-1" rx="2.2" ry="3.2" fill="#0a0c06" />
+      <path d="M-11 -8 L-2 -4 M11 -8 L2 -4" stroke="#0a0c06" stroke-width="2.2" stroke-linecap="round" />
+    </g>
+  </g>
+
+  <!-- Title -->
+  <text x="400" y="66" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+    font-size="52" font-weight="800" letter-spacing="1" fill="url(#titleFill)" filter="url(#softGlow)">Reef Rescue</text>
+
+  <!-- HUD chips -->
+  <g font-family="'Segoe UI', system-ui, sans-serif" text-anchor="middle">
+    <g transform="translate(560,150)">
+      <rect x="-58" y="-22" width="116" height="44" rx="10" fill="#0a2a4a" stroke="#4ecdc4" stroke-opacity="0.45" stroke-width="1.5" />
+      <text x="0" y="-4" font-size="11" letter-spacing="1.5" fill="#9fd6da">SCORE</text>
+      <text x="0" y="14" font-size="18" font-weight="800" fill="#4ecdc4">4,820</text>
+    </g>
+    <g transform="translate(560,206)">
+      <rect x="-58" y="-22" width="116" height="44" rx="10" fill="#0a2a4a" stroke="#4ecdc4" stroke-opacity="0.45" stroke-width="1.5" />
+      <text x="0" y="-4" font-size="11" letter-spacing="1.5" fill="#9fd6da">DEPTH</text>
+      <text x="0" y="14" font-size="18" font-weight="800" fill="#ffe66d">6</text>
+    </g>
+    <g transform="translate(560,262)">
+      <rect x="-58" y="-22" width="116" height="44" rx="10" fill="#0a2a4a" stroke="#4ecdc4" stroke-opacity="0.45" stroke-width="1.5" />
+      <text x="0" y="-4" font-size="11" letter-spacing="1.5" fill="#9fd6da">POLLUTION</text>
+      <text x="0" y="14" font-size="18" font-weight="800" fill="#ff6b6b">12</text>
+    </g>
+  </g>
+</svg>
