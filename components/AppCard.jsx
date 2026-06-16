@@ -17,7 +17,7 @@ export default function AppCard({ app, initialCounts }) {
   });
 
   return (
-    <div className="card overflow-hidden group">
+    <div className="card app-tile overflow-hidden group">
       <a
         href={app.appPath}
         target="_blank"

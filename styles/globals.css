@@ -87,6 +87,117 @@
     @apply bg-white/70 dark:bg-gray-800/70 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 backdrop-blur-sm border border-white/40 dark:border-white/10;
   }
 
+  /* Gallery app tile — frosted glass with a glowing gradient border.
+     Scoped to AppCard (layered on top of .card) so other .card usages are
+     unaffected. Defined after .card so its overrides win on equal specificity. */
+  .app-tile {
+    position: relative;
+    border-color: transparent;
+    background-color: rgb(255 255 255 / 0.55);
+    backdrop-filter: blur(12px) saturate(1.15);
+    -webkit-backdrop-filter: blur(12px) saturate(1.15);
+    box-shadow:
+      0 6px 22px -10px rgba(15, 23, 42, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    transition:
+      transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.28s ease;
+  }
+
+  .dark .app-tile {
+    background-color: rgb(15 23 42 / 0.42);
+    box-shadow:
+      0 6px 22px -10px rgba(0, 0, 0, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  /* Gradient border ring drawn via a masked pseudo-element. */
+  .app-tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: linear-gradient(
+      140deg,
+      rgba(167, 139, 250, 0.85) 0%,
+      rgba(96, 165, 250, 0.45) 45%,
+      rgba(244, 114, 182, 0.7) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.8;
+    pointer-events: none;
+    transition:
+      opacity 0.28s ease,
+      background 0.28s ease;
+  }
+
+  .app-tile:hover {
+    transform: translateY(-8px) scale(1.025);
+    animation: app-tile-pulse 1.4s ease-in-out infinite;
+  }
+
+  /* Pulsing electric glow — cyan + indigo + fuchsia neon halo. */
+  @keyframes app-tile-pulse {
+    0%,
+    100% {
+      box-shadow:
+        0 24px 46px -16px rgba(56, 189, 248, 0.5),
+        0 0 24px -6px rgba(129, 140, 248, 0.55),
+        0 0 16px -4px rgba(217, 70, 239, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+    50% {
+      box-shadow:
+        0 30px 58px -12px rgba(56, 189, 248, 0.75),
+        0 0 44px -4px rgba(129, 140, 248, 0.85),
+        0 0 30px -2px rgba(217, 70, 239, 0.65),
+        inset 0 1px 0 rgba(255, 255, 255, 0.65);
+    }
+  }
+
+  /* Thicker, animated shimmering border on hover. */
+  .app-tile:hover::before {
+    opacity: 1;
+    padding: 2.5px;
+    background: linear-gradient(
+      110deg,
+      rgba(34, 211, 238, 1) 0%,
+      rgba(129, 140, 248, 0.95) 28%,
+      rgba(217, 70, 239, 1) 52%,
+      rgba(96, 165, 250, 0.95) 76%,
+      rgba(34, 211, 238, 1) 100%
+    );
+    background-size: 220% 100%;
+    animation: app-tile-border 2.2s linear infinite;
+  }
+
+  @keyframes app-tile-border {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 220% 50%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .app-tile {
+      transition: none;
+    }
+    .app-tile:hover {
+      transform: none;
+      animation: none;
+    }
+    .app-tile:hover::before {
+      animation: none;
+    }
+  }
+
   .input {
     @apply w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200;
   }
