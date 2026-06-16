@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import DonateModal from '@/components/DonateModal';
 import WelcomeModal from '@/components/WelcomeModal';
@@ -16,6 +17,9 @@ import appsData from '@/data/apps.json';
 import appVoteStats from '@/data/app-vote-stats.json';
 import postsData from '@/data/posts.json';
 import BlogPostCard from '@/components/BlogPostCard';
+
+// Lazy-loaded so the `three` bundle is only fetched when the 3D Galaxy toggle is on.
+const ThreeBackground = dynamic(() => import('@/components/ThreeBackground'), { ssr: false });
 
 const OPTIONS_STORAGE_KEY = 'voa-page-options';
 const FILTERS_STORAGE_KEY = 'voa-gallery-filters';
@@ -40,6 +44,7 @@ const DEFAULT_OPTIONS = {
   clouds: false,
   lightning: false,
   earthquake: false,
+  galaxy3d: false,
 };
 
 const staticVoteCounts = appVoteStats.apps ?? {};
@@ -310,6 +315,8 @@ export default function HomePage() {
   return (
     <>
       <div className="valley-cinematic-bg" aria-hidden="true">
+        {/* Rendered inside the cinematic bg so it sits in the sky, behind the mountains */}
+        {mounted && options.galaxy3d && <ThreeBackground />}
         <div className="valley-mountain-row-back" />
         <div className="valley-mountain-row-mid" />
         {options.shootingStars >= 1 && <div className="valley-shooting-stars" />}
