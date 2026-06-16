@@ -311,32 +311,6 @@
       .settings-btn:active {
         transform: scale(0.96);
       }
-      .bottom-btns {
-        display: flex;
-        gap: 6px;
-        flex-shrink: 0;
-      }
-
-      /* Scoring-help overlay: left-aligned, scrollable list of rules */
-      #helpScreen {
-        justify-content: flex-start;
-        overflow-y: auto;
-      }
-      .scoring-help {
-        width: 100%;
-        max-width: 320px;
-        text-align: left;
-        margin: 6px 0 2px;
-      }
-      .scoring-help p {
-        margin: 8px 0;
-        font-size: 13px;
-        opacity: 0.9;
-        max-width: none;
-      }
-      .scoring-help b {
-        color: var(--accent);
-      }
 
       /* Settings overlay rows */
       .setting {
@@ -490,34 +464,6 @@
             <button class="btn secondary" id="settingsResetBtn">Reset</button>
           </div>
         </div>
-
-        <div class="overlay" id="helpScreen">
-          <h1>Scoring</h1>
-          <div class="scoring-help">
-            <p>
-              <b>Clear coral &amp; blobs</b> — line up <b>4+</b> of one color. Every piece cleared
-              scores points; pollution blobs are worth the most.
-            </p>
-            <p>
-              <b>Chain blooms</b> — cascading clears stack a multiplier (BLOOM &times;2, &times;3 …),
-              so one well-placed drop can pay off big.
-            </p>
-            <p><b>Soft drop</b> — nudging a fragment down with ↓ adds a small bonus per cell.</p>
-            <p>
-              <b>Clear the depth</b> — remove every pollution blob to restore the reef and bank a
-              level-clear bonus.
-            </p>
-            <p>
-              <b>Clean reef bonus</b> — the fewer coral fragments left on the board when you clear
-              it, the bigger the level-clear bonus.
-            </p>
-            <p>
-              <b>Difficulty multiplier</b> — starting at a harder depth multiplies <i>all</i> the
-              points you earn (&times;1 at 1, up to &times;2.35 at 10).
-            </p>
-          </div>
-          <button class="btn" id="helpCloseBtn">Got it</button>
-        </div>
       </div>
 
       <div id="controls">
@@ -528,10 +474,7 @@
       </div>
       <div id="bottomRow">
         <span class="hint" id="touchHint">Tap board to rotate · swipe to move · swipe down to drop</span>
-        <div class="bottom-btns">
-          <button class="settings-btn" id="helpBtn" aria-label="How scoring works">❓ Scoring</button>
-          <button class="settings-btn" id="settingsBtn" aria-label="Control settings">⚙ Controls</button>
-        </div>
+        <button class="settings-btn" id="settingsBtn" aria-label="Control settings">⚙ Controls</button>
       </div>
     </div>
 
@@ -628,7 +571,6 @@
       const CONTROL_DEFAULTS = { slide: 5, tap: 5 };
       let controls = loadControls();
       let settingsOpen = false;
-      let helpOpen = false;
 
       function clampLevel(v) {
         return Math.max(0, Math.min(10, Math.round(v)));
@@ -696,13 +638,6 @@
         }
       }
 
-      // Scoring multiplier that rewards a harder starting board: difficulty 1 =>
-      // 1.0x, difficulty 10 => 2.35x. Applied to every match clear and clear
-      // bonus so starting at a tougher reef yields higher scores for equal play.
-      function difficultyMultiplier() {
-        return 1 + (startDifficulty - 1) * 0.15;
-      }
-
       // ---------------------------------------------------------------- //
       // Grid helpers
       // ---------------------------------------------------------------- //
@@ -716,14 +651,6 @@
 
       function cellAt(r, c) {
         return inBounds(r, c) ? grid[r][c] : undefined;
-      }
-
-      // Count occupied cells — used at level clear to reward a "clean" board
-      // (fewer leftover coral fragments => bigger bonus).
-      function countFilledCells() {
-        let n = 0;
-        for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) if (grid[r][c]) n++;
-        return n;
       }
 
       // ---------------------------------------------------------------- //
@@ -945,9 +872,7 @@
 
         // Scoring: viruses are worth more; chains multiply.
         const mult = Math.pow(2, Math.max(0, chain - 1));
-        const gained = Math.round(
-          (totalCleared * 20 + viralCleared * 80) * mult * difficultyMultiplier()
-        );
+        const gained = (totalCleared * 20 + viralCleared * 80) * mult;
         if (gained > 0) {
           score += gained;
           if (chain >= 2) {
@@ -1093,15 +1018,9 @@
       function levelClear() {
         state = 'levelclear';
         active = null;
-        // Level-clear bonus: a base reward plus a "clean reef" bonus that grows
-        // the fewer coral fragments are left cluttering the board, all scaled by
-        // the starting-difficulty multiplier (harder starts score more).
-        const leftover = countFilledCells();
-        const cleanBonus = Math.max(0, 48 - leftover) * 20;
-        const bonus = Math.round((500 + level * 100 + cleanBonus) * difficultyMultiplier());
-        score += bonus;
+        score += 500 + level * 100; // level clear bonus
         updateHud();
-        levelMsg.textContent = 'Depth ' + level + ' cleared · +' + bonus.toLocaleString();
+        levelMsg.textContent = 'Depth ' + level + ' cleared · +' + (500 + level * 100);
         showOverlay(levelScreen);
         causticBoost = 1;
         // Celebratory coral bloom (bright sparkle burst).
@@ -1655,7 +1574,7 @@
         const dt = Math.min(50, t - lastTime || 16);
         lastTime = t;
 
-        if (state === 'playing' && active && !settingsOpen && !helpOpen) {
+        if (state === 'playing' && active && !settingsOpen) {
           dropTimer += dt;
           if (dropTimer >= dropInterval) {
             dropTimer = 0;
@@ -1691,7 +1610,7 @@
         const tag = document.activeElement && document.activeElement.tagName;
         if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
         if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
-        if (settingsOpen || helpOpen) return;
+        if (settingsOpen) return;
         if (state !== 'playing') {
           if (e.key === 'Enter' && startScreen.classList.contains('show')) {
             e.preventDefault();
@@ -1890,22 +1809,6 @@
         saveControls();
         syncSettingsUI();
       });
-
-      // ---------------------------------------------------------------- //
-      // Scoring-help overlay — explains how points are earned. Pauses the
-      // drop while open, like the settings overlay.
-      // ---------------------------------------------------------------- //
-      const helpScreen = document.getElementById('helpScreen');
-      function openHelp() {
-        helpOpen = true;
-        showOverlay(helpScreen);
-      }
-      function closeHelp() {
-        helpOpen = false;
-        helpScreen.classList.remove('show');
-      }
-      document.getElementById('helpBtn').addEventListener('click', openHelp);
-      document.getElementById('helpCloseBtn').addEventListener('click', closeHelp);
 
       // ---------------------------------------------------------------- //
       // Boot

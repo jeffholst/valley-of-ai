@@ -80,6 +80,16 @@
         "implementedAt": "2026-06-15T12:53:08Z",
         "agentName": "Claude Code",
         "llmModel": "claude-opus-4-8"
+      },
+      {
+        "issueNumber": 587,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/587",
+        "runId": "run-20260616T005618Z-902c20",
+        "description": "Reworked scoring: a starting-difficulty multiplier (x1 at difficulty 1 up to x2.35 at 10) now scales every match clear and clear bonus, the level-clear bonus gains a 'clean reef' component that grows the fewer coral fragments are left on the board, and a new '? Scoring' popup explains how points are earned.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-06-16T00:56:18Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-opus-4-8"
       }
     ],
     "allowImprovements": true,
@@ -110,6 +120,11 @@
         "runId": "run-20260615T125308Z-18bb19",
         "path": "backups/run-20260615T125308Z-18bb19/index.html",
         "url": "/apps/2026/06/13/reef-rescue/backups/run-20260615T125308Z-18bb19/index.html"
+      },
+      {
+        "runId": "run-20260616T005618Z-902c20",
+        "path": "backups/run-20260616T005618Z-902c20/index.html",
+        "url": "/apps/2026/06/13/reef-rescue/backups/run-20260616T005618Z-902c20/index.html"
       }
     ]
   },
