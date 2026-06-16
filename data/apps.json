@@ -90,6 +90,16 @@
         "implementedAt": "2026-06-16T00:56:18Z",
         "agentName": "Claude Code",
         "llmModel": "claude-opus-4-8"
+      },
+      {
+        "issueNumber": 589,
+        "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/589",
+        "runId": "run-20260616T014503Z-0f9800",
+        "description": "Background-layer polish: fixed the bug where one drifting fish swam backwards (each fish now faces its travel direction), added seaweed rooted in the sand that sways seamlessly with the current, and added a squid that appears at random intervals, changes depth (scale) as it crosses, and watches the player with pupils that track the screen center. Thumbnail updated to show the seaweed and squid.",
+        "requestor": "jeffholst",
+        "implementedAt": "2026-06-16T01:45:03Z",
+        "agentName": "Claude Code",
+        "llmModel": "claude-opus-4-8"
       }
     ],
     "allowImprovements": true,

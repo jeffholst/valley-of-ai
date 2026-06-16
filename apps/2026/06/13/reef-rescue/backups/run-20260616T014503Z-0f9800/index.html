@@ -1264,9 +1264,6 @@
         ctx.fillStyle = sg;
         ctx.fillRect(0, h - sandH, w, sandH);
 
-        // Seaweed rooted in the sand, swaying gently and seamlessly in the current.
-        drawSeaweed(t);
-
         // Caustic light rays slanting down from the surface; brighten on combos.
         ctx.save();
         ctx.globalCompositeOperation = 'lighter';
@@ -1301,22 +1298,13 @@
           ctx.stroke();
         }
 
-        // Drifting fish silhouettes — each faces the direction it swims so none
-        // appear to swim backwards. Fish 0 swims right, fish 1 swims left.
+        // Drifting fish silhouettes.
         for (let i = 0; i < 2; i++) {
-          const dir = i === 0 ? 1 : -1;
           const speed = 0.018 + i * 0.006;
-          const span = w + 80;
-          const prog = (((t * speed + i * w * 0.6) % span) + span) % span;
-          const fx = dir === 1 ? prog - 40 : w + 40 - prog;
+          const fx = (((t * speed + i * w * 0.6) % (w + 80)) + w + 80) % (w + 80) - 40;
           const fy = h * (0.22 + i * 0.4) + Math.sin(t / 600 + i) * cell * 0.4;
-          drawFish(fx, fy, cell * (0.7 + i * 0.2), dir === 1);
+          drawFish(fx, fy, cell * (0.7 + i * 0.2), i === 0);
         }
-
-        // A squid drifts through at random intervals, changing depth as it
-        // crosses and keeping its eyes on the player.
-        updateSquid(t, w, h);
-        if (squid) drawSquid(t, w, h);
 
         // Rising bubble clusters (deterministic from t — no state needed).
         ctx.fillStyle = 'rgba(200,240,255,0.18)';
@@ -1347,149 +1335,6 @@
         ctx.closePath();
         ctx.fill();
         ctx.restore();
-      }
-
-      // Swaying seaweed rooted in the sand. Each blade is a tapering ribbon that
-      // bends more toward its tip; the bend is a continuous sine of time, so the
-      // sway loops seamlessly with no visible jump.
-      function drawSeaweed(t) {
-        const w = cell * COLS;
-        const h = cell * ROWS;
-        const baseY = h - cell * 0.35;
-        const blades = 7;
-        const segs = 8;
-        for (let i = 0; i < blades; i++) {
-          const rootX = (i + 0.5) * (w / blades) + Math.sin(i * 2.3) * cell * 0.35;
-          const height = cell * (2.4 + (i % 3) * 1.0);
-          const width = cell * 0.24;
-          const phase = i * 1.7;
-          ctx.beginPath();
-          // Up the left edge of the blade.
-          for (let s = 0; s <= segs; s++) {
-            const f = s / segs;
-            const y = baseY - f * height;
-            const sway = Math.sin(t / 1150 + phase + f * 2.2) * cell * 0.55 * f;
-            const halfW = (width * (1 - f * 0.85)) / 2;
-            const x = rootX + sway - halfW;
-            if (s === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-          }
-          // Back down the right edge.
-          for (let s = segs; s >= 0; s--) {
-            const f = s / segs;
-            const y = baseY - f * height;
-            const sway = Math.sin(t / 1150 + phase + f * 2.2) * cell * 0.55 * f;
-            const halfW = (width * (1 - f * 0.85)) / 2;
-            ctx.lineTo(rootX + sway + halfW, y);
-          }
-          ctx.closePath();
-          const g = ctx.createLinearGradient(rootX, baseY - height, rootX, baseY);
-          g.addColorStop(0, 'rgba(64,170,150,0.1)');
-          g.addColorStop(1, 'rgba(26,92,80,0.4)');
-          ctx.fillStyle = g;
-          ctx.fill();
-        }
-      }
-
-      // --- Squid drifter: spawns at random intervals, crosses the tide pool while
-      // changing depth (its size is the depth cue), and watches the player with
-      // pupils that track the screen center. ---
-      let squid = null;
-      let nextSquidAt = 4000;
-
-      function updateSquid(t, w, h) {
-        if (!squid && t >= nextSquidAt) {
-          squid = {
-            start: t,
-            dur: 9000 + Math.random() * 5000,
-            dir: Math.random() < 0.5 ? 1 : -1,
-            y: h * (0.28 + Math.random() * 0.4),
-            approaching: Math.random() < 0.5, // near->far or far->near this pass
-          };
-        }
-        if (squid && t - squid.start > squid.dur) {
-          squid = null;
-          nextSquidAt = t + 6000 + Math.random() * 9000;
-        }
-      }
-
-      function drawSquid(t, w, h) {
-        const p = (t - squid.start) / squid.dur;
-        if (p < 0 || p > 1) return;
-        const dir = squid.dir;
-        const margin = cell * 2;
-        const xFrom = dir === 1 ? -margin : w + margin;
-        const xTo = dir === 1 ? w + margin : -margin;
-        const x = xFrom + (xTo - xFrom) * p;
-        const near = squid.approaching ? p : 1 - p; // 1 = close (big), 0 = far (small)
-        const s = cell * (0.7 + near * 1.25);
-        const alpha = 0.3 + near * 0.18;
-        const y = squid.y + Math.sin(t / 650 + squid.start) * cell * 0.3;
-
-        // Silhouette: mantle + tail fins + wiggling tentacles, facing travel dir.
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.scale(dir, 1);
-        ctx.fillStyle = 'rgba(6,24,42,' + alpha + ')';
-        ctx.beginPath();
-        ctx.moveTo(s * 0.5, 0);
-        ctx.quadraticCurveTo(s * 0.2, -s * 0.42, -s * 0.4, -s * 0.18);
-        ctx.quadraticCurveTo(-s * 0.98, 0, -s * 0.4, s * 0.18);
-        ctx.quadraticCurveTo(s * 0.2, s * 0.42, s * 0.5, 0);
-        ctx.closePath();
-        ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(-s * 0.35, -s * 0.14);
-        ctx.lineTo(-s * 0.74, -s * 0.36);
-        ctx.lineTo(-s * 0.5, -s * 0.02);
-        ctx.closePath();
-        ctx.moveTo(-s * 0.35, s * 0.14);
-        ctx.lineTo(-s * 0.74, s * 0.36);
-        ctx.lineTo(-s * 0.5, s * 0.02);
-        ctx.closePath();
-        ctx.fill();
-        ctx.lineCap = 'round';
-        ctx.strokeStyle = 'rgba(6,24,42,' + alpha + ')';
-        ctx.lineWidth = s * 0.06;
-        for (let k = 0; k < 6; k++) {
-          const off = (k - 2.5) * s * 0.07;
-          const wig = Math.sin(t / 300 + k) * s * 0.12;
-          ctx.beginPath();
-          ctx.moveTo(s * 0.46, off);
-          ctx.quadraticCurveTo(s * 0.78, off + wig, s * 1.02, off + wig * 1.5);
-          ctx.stroke();
-        }
-        ctx.restore();
-
-        // Two big eyes near the head, drawn in world space so the pupils can aim
-        // at the screen center — the squid keeps its gaze on the player.
-        const cxs = w / 2;
-        const cys = h / 2;
-        const eyeR = s * 0.17;
-        const eyes = [
-          { ex: x + dir * s * 0.1, ey: y - s * 0.12 },
-          { ex: x + dir * s * 0.27, ey: y - s * 0.08 },
-        ];
-        for (const { ex, ey } of eyes) {
-          ctx.fillStyle = 'rgba(225,247,250,0.92)';
-          ctx.beginPath();
-          ctx.arc(ex, ey, eyeR, 0, Math.PI * 2);
-          ctx.fill();
-          const dx = cxs - ex;
-          const dy = cys - ey;
-          const d = Math.hypot(dx, dy) || 1;
-          const shift = eyeR * 0.45;
-          const px = ex + (dx / d) * shift;
-          const py = ey + (dy / d) * shift;
-          ctx.fillStyle = '#04121a';
-          ctx.beginPath();
-          ctx.arc(px, py, eyeR * 0.52, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.fillStyle = 'rgba(255,255,255,0.85)';
-          ctx.beginPath();
-          ctx.arc(px - eyeR * 0.14, py - eyeR * 0.14, eyeR * 0.13, 0, Math.PI * 2);
-          ctx.fill();
-        }
       }
 
       // Draw a coral-fragment half. `link` keeps the joined edge flush so two
