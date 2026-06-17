@@ -1,0 +1,30 @@
+{
+  "id": "night-swim",
+  "name": "Night Swim",
+  "shortDescription": "Glide a lone swimmer through a moonlit lake. Stroke to stay afloat with weighty, floaty momentum, weave past drifting debris, and collect glowing buoys — every 10 triggers a screen-tilting current.",
+  "thumbnail": "thumbnail.svg",
+  "createdAt": "2026-06-16T22:34:37Z",
+  "category": "Games",
+  "status": "active",
+  "tags": ["swimming", "night", "bioluminescent", "momentum", "canvas", "endless", "atmospheric"],
+  "homepagePath": "index.html",
+  "inputMode": "responsive",
+  "leaderboard": true,
+  "maxScore": 99999,
+  "suggestion": {
+    "issueNumber": 594,
+    "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/594",
+    "prompt": "Build a game called \"Night Swim.\" A lone swimmer moves through a dark lake at night. Tap/click to stroke — each tap propels forward and slightly rotates the swimmer. Avoid floating debris, boat wakes, and lily pad clusters that drift across the screen. Collect glowing buoys to bank points. Every 10 buoys triggers a \"current\" — the whole screen tilts, shifting debris patterns. Physics feel: weighty, floaty momentum (not instant response). The swimmer slowly sinks without taps. Visual style: deep navy background, bioluminescent particle trails behind the swimmer, moonlight ripple effects on obstacles. Show distance swum as score. Mobile: tap anywhere to stroke. Desktop: spacebar or click. Game over screen shows personal best with a focus on nice graphics, entertaining animations, and smooth game play",
+    "requestor": "Jeff Holst"
+  },
+  "generation": {
+    "agentName": "claude-code",
+    "llmModel": "claude-opus-4-8",
+    "startTime": "2026-06-16T22:34:37Z",
+    "endTime": "2026-06-16T22:58:00Z",
+    "totalTokensIn": 26000,
+    "totalTokensOut": 13000,
+    "runId": "run-20260616T223437Z-81fbd0",
+    "notes": "Inspired by Flappy Bird's tap-to-stay-aloft loop, Whale Trail's free vertical weaving with a glow trail, and Alto's Odyssey's atmospheric night palette. Assumption: 'each tap propels forward and slightly rotates the swimmer' is implemented as a short upward+forward thrust (not an instant velocity set) for the requested weighty, floaty feel, with the swimmer's heading tilting toward its vertical velocity; rejected a top-down free-swim because it doesn't map to 'sinks without taps,' and fixed-gap pipes because they read too close to the existing Flappy Bird. The 'current' tilts the whole rendered lake and adds a sideways push. No third-party libraries — all vanilla JS/canvas."
+  }
+}
