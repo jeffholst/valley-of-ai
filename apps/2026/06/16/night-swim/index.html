@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta
+      name="description"
+      content="Night Swim — glide through a moonlit lake with weighty, floaty momentum. Stroke to stay afloat, weave past drifting debris, and collect glowing buoys."
+    />
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Night Swim" />
+    <meta name="voa-app-id" content="2026/06/16/night-swim" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <title>Night Swim - __MAIN_SITE_NAME__</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌙%3C/text%3E%3C/svg%3E"
+    />
+
+    <style>
+      /* Required theme variables — drive the UI chrome / overlays.
+         The lake itself is always rendered as night (it is a night swim). */
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --accent: #22d3ee; /* bioluminescent cyan */
+        --accent-2: #38bdf8; /* moonlit blue */
+        --buoy: #fde047; /* glowing buoy yellow */
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        overflow: hidden;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* Full-viewport wrapper anchored exactly between the shell header (64px)
+         and footer (56px). */
+      #appWrapper {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        overflow: hidden;
+        background: radial-gradient(circle at 70% 12%, #16335c 0%, #0b1f3d 38%, #050b1c 100%);
+      }
+
+      #game {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+
+      /* In-game HUD — sits at the top of the wrapper, already clear of the
+         64px shell header zone. */
+      #hud {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 12px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        pointer-events: none;
+        font-variant-numeric: tabular-nums;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+        z-index: 5;
+      }
+
+      .hud-block {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .hud-block.right {
+        align-items: flex-end;
+      }
+      .hud-label {
+        font-size: 0.62rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #9fc7ff;
+        opacity: 0.85;
+      }
+      .hud-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1;
+        color: #eaf4ff;
+      }
+      .hud-value.buoys {
+        color: var(--buoy);
+      }
+
+      /* Buoy progress ring toward the next "current" event */
+      #currentBadge {
+        position: absolute;
+        top: 56px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 5px 14px;
+        border-radius: 999px;
+        background: rgba(34, 211, 238, 0.16);
+        border: 1px solid rgba(34, 211, 238, 0.5);
+        color: #aef2ff;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        pointer-events: none;
+        z-index: 5;
+        backdrop-filter: blur(2px);
+      }
+      #currentBadge.show {
+        opacity: 1;
+      }
+
+      /* Overlays (start + game over). Use theme variables for chrome. */
+      .overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        text-align: center;
+        padding: 24px;
+        z-index: 10;
+        background: radial-gradient(circle at 50% 35%, rgba(7, 22, 46, 0.55), rgba(3, 8, 20, 0.86));
+        backdrop-filter: blur(3px);
+      }
+      .overlay.hidden {
+        display: none;
+      }
+
+      .title {
+        font-size: clamp(2.2rem, 9vw, 3.4rem);
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        background: linear-gradient(180deg, #d8f3ff 0%, var(--accent) 60%, var(--accent-2) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 30px rgba(34, 211, 238, 0.35);
+        line-height: 1.05;
+      }
+      .subtitle {
+        max-width: 30ch;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: #cfe3ff;
+        opacity: 0.92;
+      }
+      .moon-emoji {
+        font-size: 2.6rem;
+        filter: drop-shadow(0 0 16px rgba(173, 216, 255, 0.7));
+      }
+
+      .stats {
+        display: flex;
+        gap: 22px;
+        margin: 4px 0 6px;
+      }
+      .stat {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .stat .n {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #eaf4ff;
+      }
+      .stat .n.gold {
+        color: var(--buoy);
+      }
+      .stat .l {
+        font-size: 0.66rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #9fc7ff;
+      }
+      .best-line {
+        font-size: 0.85rem;
+        color: #9fc7ff;
+      }
+      .best-line.new {
+        color: var(--buoy);
+        font-weight: 700;
+      }
+
+      .btn-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      button.action {
+        font: inherit;
+        font-weight: 700;
+        font-size: 1rem;
+        min-height: 48px;
+        min-width: 132px;
+        padding: 12px 26px;
+        border: none;
+        border-radius: 999px;
+        cursor: pointer;
+        color: #04212e;
+        background: linear-gradient(180deg, #7ff0ff, var(--accent));
+        box-shadow:
+          0 6px 22px rgba(34, 211, 238, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        transition:
+          transform 0.12s ease,
+          box-shadow 0.2s ease;
+      }
+      button.action:hover {
+        transform: translateY(-2px);
+      }
+      button.action:active {
+        transform: translateY(1px);
+      }
+      button.action.secondary {
+        color: #d8f3ff;
+        background: rgba(56, 189, 248, 0.14);
+        border: 1px solid rgba(120, 200, 255, 0.5);
+        box-shadow: none;
+      }
+
+      .hint {
+        font-size: 0.78rem;
+        color: #8fb4dd;
+        opacity: 0.85;
+      }
+      .hint kbd {
+        font-family: inherit;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 5px;
+        padding: 1px 7px;
+        font-size: 0.74rem;
+      }
+
+      /* Brief on-screen "tap to stroke" pulse the first time you play */
+      #tapHint {
+        position: absolute;
+        left: 50%;
+        bottom: 16%;
+        transform: translateX(-50%);
+        color: #bfe6ff;
+        font-size: 0.9rem;
+        letter-spacing: 0.04em;
+        pointer-events: none;
+        opacity: 0;
+        z-index: 6;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+      }
+      #tapHint.show {
+        animation: tapPulse 1.4s ease-in-out infinite;
+      }
+      @keyframes tapPulse {
+        0%,
+        100% {
+          opacity: 0.35;
+          transform: translateX(-50%) translateY(4px);
+        }
+        50% {
+          opacity: 1;
+          transform: translateX(-50%) translateY(-4px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="appWrapper">
+      <canvas id="game"></canvas>
+
+      <!-- In-game HUD -->
+      <div id="hud" aria-hidden="true">
+        <div class="hud-block">
+          <span class="hud-label">Distance</span>
+          <span class="hud-value" id="hudScore">0</span>
+        </div>
+        <div class="hud-block right">
+          <span class="hud-label">Buoys</span>
+          <span class="hud-value buoys" id="hudBuoys">0</span>
+        </div>
+      </div>
+      <div id="currentBadge">🌀 CURRENT — hold steady</div>
+      <div id="tapHint">tap to stroke</div>
+
+      <!-- Start overlay -->
+      <div class="overlay" id="startOverlay">
+        <div class="moon-emoji">🌙</div>
+        <h1 class="title">Night Swim</h1>
+        <p class="subtitle">
+          Glide through a moonlit lake. Stroke to stay afloat — momentum is weighty and floaty, so
+          plan your glide. Weave past debris and collect glowing buoys.
+        </p>
+        <div class="btn-row">
+          <button class="action" id="startBtn">Dive In</button>
+        </div>
+        <p class="hint">
+          <span id="ctrlHint">Tap anywhere to stroke</span> · <kbd>Space</kbd> on desktop
+        </p>
+      </div>
+
+      <!-- Game over overlay -->
+      <div class="overlay hidden" id="overOverlay">
+        <div class="moon-emoji">🌊</div>
+        <h1 class="title" style="font-size: clamp(1.8rem, 7vw, 2.6rem)">You drifted under</h1>
+        <div class="stats">
+          <div class="stat">
+            <span class="n" id="finalScore">0</span>
+            <span class="l">Distance</span>
+          </div>
+          <div class="stat">
+            <span class="n gold" id="finalBuoys">0</span>
+            <span class="l">Buoys</span>
+          </div>
+        </div>
+        <p class="best-line" id="bestLine">Personal best: 0</p>
+        <div class="btn-row">
+          <button class="action" id="againBtn">Swim Again</button>
+          <button class="action secondary" id="shareBtn">Share</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      'use strict';
+
+      // ─────────────────────────────────────────────────────────────────────
+      // Night Swim — a floaty-momentum lake swimmer.
+      //
+      // The swimmer holds a fixed screen x; the world scrolls left as forward
+      // momentum carries it onward. Each stroke is a short thrust (not an
+      // instant velocity set) so the feel stays weighty and floaty. Gravity is
+      // gentle but constant — without strokes the swimmer slowly sinks. Collect
+      // glowing buoys; every 10 triggers a "current" that visually tilts the
+      // whole lake and nudges the swimmer sideways.
+      // ─────────────────────────────────────────────────────────────────────
+
+      const APP_NAME = 'Night Swim';
+      const BEST_KEY = 'voa:night-swim:best';
+
+      const canvas = document.getElementById('game');
+      const ctx = canvas.getContext('2d');
+
+      const hudScoreEl = document.getElementById('hudScore');
+      const hudBuoysEl = document.getElementById('hudBuoys');
+      const currentBadge = document.getElementById('currentBadge');
+      const tapHint = document.getElementById('tapHint');
+      const startOverlay = document.getElementById('startOverlay');
+      const overOverlay = document.getElementById('overOverlay');
+      const finalScoreEl = document.getElementById('finalScore');
+      const finalBuoysEl = document.getElementById('finalBuoys');
+      const bestLineEl = document.getElementById('bestLine');
+
+      // Logical canvas size in CSS pixels (gameplay coordinates).
+      let W = 0;
+      let H = 0;
+      let dpr = 1;
+
+      // Size the backing store for crisp rendering at any DPR.
+      function resize() {
+        const r = canvas.getBoundingClientRect();
+        W = Math.max(1, r.width);
+        H = Math.max(1, r.height);
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        moon.x = W * 0.78;
+        moon.y = H * 0.16;
+      }
+
+      // ── Game state ──────────────────────────────────────────────────────
+      const STATE = { START: 0, PLAYING: 1, OVER: 2 };
+      let state = STATE.START;
+
+      const swimmer = {
+        x: 0,
+        y: 0,
+        vx: 0,
+        vy: 0,
+        r: 13,
+        angle: 0,
+        strokeTimer: 0,
+        armPhase: 0,
+      };
+
+      let distance = 0; // meters swum (primary score)
+      let buoys = 0; // total buoys collected
+      let score = 0; // distance + buoy bonus (leaderboard value)
+      let best = parseInt(localStorage.getItem(BEST_KEY) || '0', 10) || 0;
+
+      let obstacles = [];
+      let buoyItems = [];
+      let trail = []; // bioluminescent trail particles
+      let motes = []; // ambient floating particles
+      let ripples = []; // expanding ripple rings (pickups / strokes)
+
+      let obstacleTimer = 0;
+      let buoyTimer = 0;
+      let elapsed = 0;
+
+      // Current ("the screen tilts") event state.
+      let tilt = 0; // current visual tilt (radians)
+      let tiltTarget = 0; // eased toward
+      let currentTimer = 0; // ms remaining on the active current
+
+      const moon = { x: 0, y: 0, r: 34 };
+
+      // ── Tunables (per-frame at 60fps; scaled by dt) ─────────────────────
+      const GRAVITY = 0.17;
+      const STROKE_THRUST_Y = 0.92;
+      const STROKE_THRUST_X = 0.5;
+      const STROKE_FRAMES = 10;
+      const BASE_VX = 1.7;
+      const MAX_VX = 5.4;
+      const VY_CLAMP = 7.2;
+
+      // ── Helpers ─────────────────────────────────────────────────────────
+      const rand = (a, b) => a + Math.random() * (b - a);
+      const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+
+      function reset() {
+        swimmer.x = W * 0.3;
+        swimmer.y = H * 0.42;
+        swimmer.vx = BASE_VX;
+        swimmer.vy = 0;
+        swimmer.angle = 0;
+        swimmer.strokeTimer = 0;
+        swimmer.r = clamp(H * 0.024, 11, 18);
+        distance = 0;
+        buoys = 0;
+        score = 0;
+        obstacles = [];
+        buoyItems = [];
+        trail = [];
+        ripples = [];
+        obstacleTimer = 900;
+        buoyTimer = 1400;
+        elapsed = 0;
+        tilt = 0;
+        tiltTarget = 0;
+        currentTimer = 0;
+        seedMotes();
+        updateHud();
+      }
+
+      function seedMotes() {
+        motes = [];
+        const n = Math.round((W * H) / 26000);
+        for (let i = 0; i < n; i++) {
+          motes.push({
+            x: rand(0, W),
+            y: rand(0, H),
+            r: rand(0.5, 1.8),
+            a: rand(0.05, 0.4),
+            drift: rand(0.1, 0.5),
+          });
+        }
+      }
+
+      function surfaceY() {
+        return H * 0.08;
+      }
+      function bedY() {
+        return H * 0.985;
+      }
+
+      // ── Input ───────────────────────────────────────────────────────────
+      function stroke() {
+        if (state !== STATE.PLAYING) return;
+        swimmer.strokeTimer = STROKE_FRAMES;
+        swimmer.armPhase = 0;
+        // Burst of bioluminescent particles off the trailing edge.
+        for (let i = 0; i < 7; i++) {
+          trail.push({
+            x: swimmer.x - Math.cos(swimmer.angle) * swimmer.r,
+            y: swimmer.y - Math.sin(swimmer.angle) * swimmer.r + rand(-4, 4),
+            vx: rand(-1.6, -0.4) - swimmer.vx * 0.3,
+            vy: rand(-0.8, 0.8),
+            life: 1,
+            r: rand(2, 4.5),
+          });
+        }
+        ripples.push({ x: swimmer.x, y: swimmer.y, r: swimmer.r, max: swimmer.r * 4, life: 1 });
+        if (tapHint.classList.contains('show')) tapHint.classList.remove('show');
+      }
+
+      // ── Spawning ────────────────────────────────────────────────────────
+      function spawnObstacle() {
+        const types = ['debris', 'lily', 'wake'];
+        const type = types[Math.floor(Math.random() * types.length)];
+        const margin = H * 0.1;
+        const y = rand(surfaceY() + margin, bedY() - margin);
+        // Drift faster when a current is active to "shift debris patterns".
+        const driftBonus = type === 'wake' ? rand(0.8, 1.6) : rand(0, 0.4);
+        const o = {
+          type,
+          x: W + 60,
+          y,
+          drift: driftBonus,
+          wob: rand(0, Math.PI * 2),
+          wobAmp: type === 'lily' ? rand(4, 12) : rand(0, 5),
+        };
+        if (type === 'debris') {
+          o.w = rand(W * 0.07, W * 0.14);
+          o.h = rand(H * 0.03, H * 0.05);
+          o.rot = rand(-0.5, 0.5);
+          o.rw = o.w / 2;
+          o.rh = o.h / 2;
+        } else if (type === 'lily') {
+          o.pads = [];
+          const cnt = Math.floor(rand(2, 4));
+          let span = 0;
+          for (let i = 0; i < cnt; i++) {
+            const pr = rand(H * 0.035, H * 0.06);
+            o.pads.push({ ox: span, oy: rand(-pr * 0.4, pr * 0.4), r: pr });
+            span += pr * 1.5;
+          }
+          o.rw = span * 0.55 + H * 0.04;
+          o.rh = H * 0.06;
+        } else {
+          // boat wake — a tilted hazard band of ripple chevrons
+          o.w = rand(W * 0.04, W * 0.06);
+          o.h = rand(H * 0.14, H * 0.22);
+          o.rot = rand(-0.4, 0.4);
+          o.rw = o.w / 2 + 4;
+          o.rh = o.h / 2;
+        }
+        obstacles.push(o);
+      }
+
+      function spawnBuoy() {
+        const margin = H * 0.12;
+        buoyItems.push({
+          x: W + 40,
+          y: rand(surfaceY() + margin, bedY() - margin),
+          r: clamp(H * 0.02, 9, 15),
+          wob: rand(0, Math.PI * 2),
+          pulse: rand(0, Math.PI * 2),
+          got: false,
+        });
+      }
+
+      function triggerCurrent() {
+        // The whole lake tilts; the swimmer gets nudged toward the tilt.
+        tiltTarget = (Math.random() < 0.5 ? -1 : 1) * rand(0.08, 0.14);
+        currentTimer = 4200;
+        currentBadge.classList.add('show');
+      }
+
+      // ── Update ──────────────────────────────────────────────────────────
+      function update(dtf, dtms) {
+        elapsed += dtms;
+
+        // ── Swimmer physics ──
+        if (swimmer.strokeTimer > 0) {
+          swimmer.vy -= STROKE_THRUST_Y * dtf;
+          swimmer.vx += STROKE_THRUST_X * dtf;
+          swimmer.strokeTimer -= dtf;
+        }
+        swimmer.vy += GRAVITY * dtf;
+        swimmer.vy *= 0.99; // water drag → floaty
+        swimmer.vy = clamp(swimmer.vy, -VY_CLAMP, VY_CLAMP);
+
+        // Forward momentum decays back toward a slow baseline drift.
+        swimmer.vx = Math.max(BASE_VX, swimmer.vx * 0.992);
+        swimmer.vx = Math.min(swimmer.vx, MAX_VX);
+
+        // Sideways push from an active current (screen-relative tilt).
+        if (currentTimer > 0) {
+          swimmer.vy += Math.sin(tilt) * 0.6 * dtf;
+        }
+
+        swimmer.y += swimmer.vy * dtf;
+
+        // Heading tilts with vertical velocity (nose up on a strong stroke).
+        const targetAngle = clamp(swimmer.vy * 0.05, -0.5, 0.7);
+        swimmer.angle += (targetAngle - swimmer.angle) * 0.18 * dtf;
+        swimmer.armPhase += dtf * 0.4;
+
+        // Surface ceiling: gentle bounce so you cannot fly out of the lake.
+        const top = surfaceY() + swimmer.r;
+        if (swimmer.y < top) {
+          swimmer.y = top;
+          if (swimmer.vy < 0) swimmer.vy *= -0.35;
+        }
+        // Sinking into the lake bed ends the run.
+        if (swimmer.y + swimmer.r >= bedY()) {
+          return gameOver();
+        }
+
+        // Scroll speed follows forward momentum.
+        const scroll = swimmer.vx;
+        distance += scroll * dtf * 0.12;
+
+        // Difficulty ramps gently with distance.
+        const diff = 1 + Math.min(distance / 600, 1.1);
+
+        // ── Ease the tilt ──
+        if (currentTimer > 0) {
+          currentTimer -= dtms;
+          if (currentTimer <= 0) {
+            tiltTarget = 0;
+            currentBadge.classList.remove('show');
+          }
+        }
+        tilt += (tiltTarget - tilt) * 0.05 * dtf;
+
+        // ── Obstacles ──
+        obstacleTimer -= dtms * diff;
+        if (obstacleTimer <= 0) {
+          spawnObstacle();
+          obstacleTimer = rand(820, 1250) / diff;
+          if (currentTimer > 0) obstacleTimer *= 0.7; // denser during a current
+        }
+        for (let i = obstacles.length - 1; i >= 0; i--) {
+          const o = obstacles[i];
+          o.x -= (scroll + o.drift) * dtf;
+          o.wob += dtf * 0.04;
+          if (o.x < -W * 0.3) {
+            obstacles.splice(i, 1);
+            continue;
+          }
+          if (collideObstacle(o)) return gameOver();
+        }
+
+        // ── Buoys ──
+        buoyTimer -= dtms;
+        if (buoyTimer <= 0) {
+          spawnBuoy();
+          buoyTimer = rand(1100, 1900);
+        }
+        for (let i = buoyItems.length - 1; i >= 0; i--) {
+          const b = buoyItems[i];
+          b.x -= scroll * dtf;
+          b.wob += dtf * 0.05;
+          b.pulse += dtf * 0.12;
+          if (b.x < -40) {
+            buoyItems.splice(i, 1);
+            continue;
+          }
+          const by = b.y + Math.sin(b.wob) * 5;
+          const dx = swimmer.x - b.x;
+          const dy = swimmer.y - by;
+          if (dx * dx + dy * dy < (swimmer.r + b.r) * (swimmer.r + b.r)) {
+            buoyItems.splice(i, 1);
+            collectBuoy(b.x, by);
+          }
+        }
+
+        // ── Particles ──
+        for (let i = trail.length - 1; i >= 0; i--) {
+          const p = trail[i];
+          p.x += (p.vx - scroll * 0.4) * dtf;
+          p.y += p.vy * dtf;
+          p.life -= 0.018 * dtf;
+          if (p.life <= 0) trail.splice(i, 1);
+        }
+        // Continuous faint trail while gliding.
+        if (state === STATE.PLAYING && Math.random() < 0.6) {
+          trail.push({
+            x: swimmer.x - Math.cos(swimmer.angle) * swimmer.r,
+            y: swimmer.y - Math.sin(swimmer.angle) * swimmer.r,
+            vx: rand(-0.6, 0) - scroll * 0.2,
+            vy: rand(-0.4, 0.4),
+            life: 0.7,
+            r: rand(1.5, 3),
+          });
+        }
+        if (trail.length > 140) trail.splice(0, trail.length - 140);
+
+        for (let i = ripples.length - 1; i >= 0; i--) {
+          const rp = ripples[i];
+          rp.r += (rp.max - rp.r) * 0.08 * dtf;
+          rp.life -= 0.03 * dtf;
+          if (rp.life <= 0) ripples.splice(i, 1);
+        }
+
+        for (const m of motes) {
+          m.x -= (m.drift + scroll * 0.15) * dtf;
+          if (m.x < -2) {
+            m.x = W + 2;
+            m.y = rand(0, H);
+          }
+        }
+
+        updateHud();
+      }
+
+      function collectBuoy(x, y) {
+        buoys++;
+        ripples.push({ x, y, r: 6, max: 46, life: 1, gold: true });
+        for (let i = 0; i < 10; i++) {
+          trail.push({
+            x,
+            y,
+            vx: rand(-2, 2),
+            vy: rand(-2, 2),
+            life: 1,
+            r: rand(1.5, 3.5),
+            gold: true,
+          });
+        }
+        if (buoys % 10 === 0) triggerCurrent();
+      }
+
+      // Approximate rotated-rect collision using an expanded bounding circle.
+      function collideObstacle(o) {
+        const oy = o.y + Math.sin(o.wob) * o.wobAmp;
+        const dx = Math.abs(swimmer.x - o.x);
+        const dy = Math.abs(swimmer.y - oy);
+        const rx = o.rw + swimmer.r * 0.7;
+        const ry = o.rh + swimmer.r * 0.7;
+        // Elliptical overlap test (forgiving — rewards near-misses).
+        return (dx * dx) / (rx * rx) + (dy * dy) / (ry * ry) < 1;
+      }
+
+      function updateHud() {
+        score = Math.floor(distance) + buoys * 25;
+        hudScoreEl.textContent = Math.floor(distance);
+        hudBuoysEl.textContent = buoys;
+      }
+
+      // ── Rendering ───────────────────────────────────────────────────────
+      function render() {
+        ctx.clearRect(0, 0, W, H);
+
+        // Background gradient (deep night lake).
+        const bg = ctx.createLinearGradient(0, 0, 0, H);
+        bg.addColorStop(0, '#0c2748');
+        bg.addColorStop(0.45, '#0a1d3a');
+        bg.addColorStop(1, '#03070f');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
+
+        // The lake (everything below the HUD) tilts during a current.
+        ctx.save();
+        ctx.translate(W / 2, H / 2);
+        ctx.rotate(tilt);
+        ctx.translate(-W / 2, -H / 2);
+        // Draw a touch wider than the viewport so tilt does not reveal edges.
+        drawScene();
+        ctx.restore();
+      }
+
+      function drawScene() {
+        drawMoon();
+        drawSurface();
+
+        // Ambient motes
+        for (const m of motes) {
+          ctx.globalAlpha = m.a;
+          ctx.fillStyle = '#bfe0ff';
+          ctx.beginPath();
+          ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+
+        for (const o of obstacles) drawObstacle(o);
+        for (const b of buoyItems) drawBuoy(b);
+        drawRipples();
+        drawTrail();
+        if (state !== STATE.OVER) drawSwimmer();
+      }
+
+      function drawMoon() {
+        const g = ctx.createRadialGradient(moon.x, moon.y, 2, moon.x, moon.y, moon.r * 3.4);
+        g.addColorStop(0, 'rgba(220,235,255,0.55)');
+        g.addColorStop(0.3, 'rgba(150,190,255,0.18)');
+        g.addColorStop(1, 'rgba(150,190,255,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(moon.x, moon.y, moon.r * 3.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#eef4ff';
+        ctx.beginPath();
+        ctx.arc(moon.x, moon.y, moon.r, 0, Math.PI * 2);
+        ctx.fill();
+        // crater shading
+        ctx.fillStyle = 'rgba(150,170,210,0.35)';
+        ctx.beginPath();
+        ctx.arc(moon.x + moon.r * 0.35, moon.y - moon.r * 0.2, moon.r * 0.22, 0, Math.PI * 2);
+        ctx.arc(moon.x - moon.r * 0.3, moon.y + moon.r * 0.25, moon.r * 0.16, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      function drawSurface() {
+        const sy = surfaceY();
+        // Moonlit water surface band.
+        const g = ctx.createLinearGradient(0, sy - 14, 0, sy + 26);
+        g.addColorStop(0, 'rgba(120,170,255,0.0)');
+        g.addColorStop(0.5, 'rgba(150,200,255,0.22)');
+        g.addColorStop(1, 'rgba(120,170,255,0.0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(-20, sy - 14, W + 40, 40);
+
+        // Moonlight reflection column shimmering down from the moon.
+        const refl = ctx.createLinearGradient(0, sy, 0, H);
+        refl.addColorStop(0, 'rgba(190,215,255,0.16)');
+        refl.addColorStop(1, 'rgba(190,215,255,0)');
+        ctx.fillStyle = refl;
+        ctx.beginPath();
+        ctx.moveTo(moon.x - 26, sy);
+        ctx.lineTo(moon.x + 26, sy);
+        ctx.lineTo(moon.x + 70, H);
+        ctx.lineTo(moon.x - 70, H);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      function drawObstacle(o) {
+        const oy = o.y + Math.sin(o.wob) * o.wobAmp;
+        ctx.save();
+        ctx.translate(o.x, oy);
+        if (o.type === 'debris') {
+          ctx.rotate(o.rot);
+          // driftwood log
+          const g = ctx.createLinearGradient(0, -o.h / 2, 0, o.h / 2);
+          g.addColorStop(0, '#4a3a2a');
+          g.addColorStop(1, '#241a12');
+          ctx.fillStyle = g;
+          roundRect(-o.w / 2, -o.h / 2, o.w, o.h, o.h / 2);
+          ctx.fill();
+          // moonlight ripple highlight along the top edge
+          ctx.strokeStyle = 'rgba(160,200,255,0.4)';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(-o.w / 2 + 4, -o.h / 2 + 2);
+          ctx.lineTo(o.w / 2 - 4, -o.h / 2 + 2);
+          ctx.stroke();
+        } else if (o.type === 'lily') {
+          for (const p of o.pads) {
+            const g = ctx.createRadialGradient(p.ox, p.oy, 1, p.ox, p.oy, p.r);
+            g.addColorStop(0, '#2f6b46');
+            g.addColorStop(1, '#13351f');
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.ellipse(p.ox, p.oy, p.r, p.r * 0.78, 0, 0, Math.PI * 2);
+            ctx.fill();
+            // notch + rim light
+            ctx.strokeStyle = 'rgba(140,200,255,0.3)';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.arc(p.ox, p.oy, p.r * 0.92, -0.5, 1.4);
+            ctx.stroke();
+          }
+        } else {
+          // boat wake — stacked chevrons of churned, moonlit water
+          ctx.rotate(o.rot);
+          ctx.strokeStyle = 'rgba(150,195,255,0.55)';
+          ctx.lineWidth = 3;
+          ctx.lineCap = 'round';
+          const rows = 5;
+          for (let i = 0; i < rows; i++) {
+            const yy = -o.h / 2 + (i / (rows - 1)) * o.h;
+            ctx.globalAlpha = 0.35 + 0.4 * Math.abs(Math.sin(o.wob + i));
+            ctx.beginPath();
+            ctx.moveTo(-o.w / 2, yy - 5);
+            ctx.lineTo(0, yy);
+            ctx.lineTo(o.w / 2, yy - 5);
+            ctx.stroke();
+          }
+          ctx.globalAlpha = 1;
+        }
+        ctx.restore();
+      }
+
+      function drawBuoy(b) {
+        const by = b.y + Math.sin(b.wob) * 5;
+        const pulse = 0.6 + 0.4 * Math.sin(b.pulse);
+        // glow halo
+        const g = ctx.createRadialGradient(b.x, by, 1, b.x, by, b.r * 3.2);
+        g.addColorStop(0, `rgba(253,224,71,${0.5 * pulse})`);
+        g.addColorStop(1, 'rgba(253,224,71,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(b.x, by, b.r * 3.2, 0, Math.PI * 2);
+        ctx.fill();
+        // body
+        const bg = ctx.createRadialGradient(b.x - b.r * 0.3, by - b.r * 0.3, 1, b.x, by, b.r);
+        bg.addColorStop(0, '#fffbe0');
+        bg.addColorStop(0.6, '#fde047');
+        bg.addColorStop(1, '#f59e0b');
+        ctx.fillStyle = bg;
+        ctx.beginPath();
+        ctx.arc(b.x, by, b.r, 0, Math.PI * 2);
+        ctx.fill();
+        // little antenna light
+        ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(b.x, by - b.r);
+        ctx.lineTo(b.x, by - b.r - 6);
+        ctx.stroke();
+      }
+
+      function drawTrail() {
+        for (const p of trail) {
+          const a = clamp(p.life, 0, 1);
+          ctx.globalAlpha = a * 0.8;
+          const col = p.gold ? '253,224,71' : '34,211,238';
+          const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 2.4);
+          g.addColorStop(0, `rgba(${col},0.9)`);
+          g.addColorStop(1, `rgba(${col},0)`);
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * 2.4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      function drawRipples() {
+        for (const rp of ripples) {
+          ctx.globalAlpha = clamp(rp.life, 0, 1) * 0.6;
+          ctx.strokeStyle = rp.gold ? 'rgba(253,224,71,0.9)' : 'rgba(150,210,255,0.8)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      function drawSwimmer() {
+        ctx.save();
+        ctx.translate(swimmer.x, swimmer.y);
+        ctx.rotate(swimmer.angle);
+
+        // bioluminescent aura
+        const aura = ctx.createRadialGradient(0, 0, 1, 0, 0, swimmer.r * 3);
+        aura.addColorStop(0, 'rgba(34,211,238,0.55)');
+        aura.addColorStop(1, 'rgba(34,211,238,0)');
+        ctx.fillStyle = aura;
+        ctx.beginPath();
+        ctx.arc(0, 0, swimmer.r * 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // body — sleek glowing ellipse
+        const body = ctx.createLinearGradient(-swimmer.r, 0, swimmer.r, 0);
+        body.addColorStop(0, '#0e7490');
+        body.addColorStop(0.5, '#22d3ee');
+        body.addColorStop(1, '#a5f3fc');
+        ctx.fillStyle = body;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, swimmer.r * 1.25, swimmer.r * 0.72, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // stroking arm (animates briefly after a stroke)
+        const reach = swimmer.strokeTimer > 0 ? Math.sin(swimmer.armPhase * 3) : 0;
+        ctx.strokeStyle = '#d8f7ff';
+        ctx.lineWidth = swimmer.r * 0.34;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(swimmer.r * 0.2, -swimmer.r * 0.1);
+        ctx.lineTo(swimmer.r * (0.9 + reach * 0.5), -swimmer.r * (0.4 + reach * 0.5));
+        ctx.stroke();
+
+        // head
+        ctx.fillStyle = '#ecfeff';
+        ctx.beginPath();
+        ctx.arc(swimmer.r * 0.95, 0, swimmer.r * 0.42, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+
+      function roundRect(x, y, w, h, r) {
+        r = Math.min(r, w / 2, h / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+      }
+
+      // ── Game loop ───────────────────────────────────────────────────────
+      let lastTime = 0;
+      function loop(now) {
+        if (!lastTime) lastTime = now;
+        let dtms = now - lastTime;
+        lastTime = now;
+        // Guard against huge jumps after a tab is backgrounded.
+        if (dtms > 60) dtms = 60;
+        const dtf = dtms / 16.667;
+
+        if (state === STATE.PLAYING) update(dtf, dtms);
+        render();
+        requestAnimationFrame(loop);
+      }
+
+      // ── State transitions ───────────────────────────────────────────────
+      function startGame() {
+        reset();
+        state = STATE.PLAYING;
+        startOverlay.classList.add('hidden');
+        overOverlay.classList.add('hidden');
+        tapHint.classList.add('show');
+      }
+
+      function gameOver() {
+        if (state !== STATE.PLAYING) return;
+        state = STATE.OVER;
+        tapHint.classList.remove('show');
+        currentBadge.classList.remove('show');
+
+        const finalDist = Math.floor(distance);
+        finalScoreEl.textContent = finalDist;
+        finalBuoysEl.textContent = buoys;
+
+        const isBest = score > best;
+        if (isBest) {
+          best = score;
+          localStorage.setItem(BEST_KEY, String(best));
+          bestLineEl.textContent = '🌟 New personal best!';
+          bestLineEl.classList.add('new');
+        } else {
+          bestLineEl.textContent = 'Personal best: ' + best;
+          bestLineEl.classList.remove('new');
+        }
+
+        // Leaderboard submit happens on every game over, independent of share.
+        if (window.voaLeaderboard) {
+          window.voaLeaderboard.submit(score, { label: 'pts' });
+        }
+
+        overOverlay.classList.remove('hidden');
+      }
+
+      // ── Wire up input ───────────────────────────────────────────────────
+      document.getElementById('startBtn').addEventListener('click', startGame);
+      document.getElementById('againBtn').addEventListener('click', startGame);
+      document.getElementById('shareBtn').addEventListener('click', () => {
+        if (window.voaShare) {
+          window.voaShare({
+            text: `I swam ${Math.floor(distance)}m and banked ${buoys} buoys in ${APP_NAME}! Can you go deeper?`,
+          });
+        }
+      });
+
+      // Pointer = stroke (anywhere on the canvas).
+      canvas.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        stroke();
+      });
+
+      // Keyboard — Space / ArrowUp / W to stroke. Guards required by the shell.
+      let keyHeld = false;
+      document.addEventListener('keydown', (e) => {
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
+
+        if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+          e.preventDefault();
+          if (state === STATE.START || state === STATE.OVER) {
+            startGame();
+          } else if (!keyHeld) {
+            stroke();
+          }
+          keyHeld = true;
+        }
+      });
+      document.addEventListener('keyup', (e) => {
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
+        if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+          keyHeld = false;
+        }
+      });
+
+      window.addEventListener('resize', resize);
+      // Reset the clock when returning to the tab to avoid a physics spike.
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) lastTime = 0;
+      });
+
+      // ── Boot ────────────────────────────────────────────────────────────
+      resize();
+      reset();
+      state = STATE.START;
+      // Pointer-coarse devices show the touch hint; others mention Space.
+      if (!window.matchMedia || !window.matchMedia('(pointer: coarse)').matches) {
+        document.getElementById('ctrlHint').textContent = 'Click or press Space to stroke';
+      }
+      requestAnimationFrame(loop);
+    </script>
+  </body>
+</html>

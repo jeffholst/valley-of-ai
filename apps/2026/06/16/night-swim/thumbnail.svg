@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450" role="img" aria-label="Night Swim - a glowing swimmer crossing a moonlit lake">
+  <defs>
+    <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0c2748"/>
+      <stop offset="0.45" stop-color="#0a1d3a"/>
+      <stop offset="1" stop-color="#03070f"/>
+    </linearGradient>
+    <radialGradient id="moonGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#dcebff" stop-opacity="0.55"/>
+      <stop offset="0.35" stop-color="#96beff" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#96beff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="moonBody" cx="0.4" cy="0.4" r="0.7">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#dfe8f6"/>
+    </radialGradient>
+    <linearGradient id="reflect" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#bed7ff" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#bed7ff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="buoyGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#fde047" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#fde047" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="buoyBody" cx="0.4" cy="0.35" r="0.8">
+      <stop offset="0" stop-color="#fffbe0"/>
+      <stop offset="0.6" stop-color="#fde047"/>
+      <stop offset="1" stop-color="#f59e0b"/>
+    </radialGradient>
+    <radialGradient id="swimAura" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="swimBody" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0e7490"/>
+      <stop offset="0.5" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#a5f3fc"/>
+    </linearGradient>
+    <linearGradient id="log" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4a3a2a"/>
+      <stop offset="1" stop-color="#241a12"/>
+    </linearGradient>
+    <radialGradient id="lily" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#2f6b46"/>
+      <stop offset="1" stop-color="#13351f"/>
+    </radialGradient>
+    <linearGradient id="title" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d8f3ff"/>
+      <stop offset="0.6" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#38bdf8"/>
+    </linearGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Deep night lake -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#lake)"/>
+
+  <!-- Moon and its glow, upper right (matches app layout) -->
+  <circle cx="624" cy="78" r="150" fill="url(#moonGlow)"/>
+  <circle cx="624" cy="78" r="42" fill="url(#moonBody)" filter="url(#glow)"/>
+  <circle cx="640" cy="70" r="9" fill="#96aad2" opacity="0.35"/>
+  <circle cx="610" cy="90" r="6" fill="#96aad2" opacity="0.35"/>
+
+  <!-- Moonlit water surface band -->
+  <rect x="0" y="44" width="800" height="14" fill="#96c8ff" opacity="0.18"/>
+  <polygon points="598,52 650,52 694,450 554,450" fill="url(#reflect)"/>
+
+  <!-- Ambient motes -->
+  <g fill="#bfe0ff">
+    <circle cx="120" cy="120" r="1.6" opacity="0.5"/>
+    <circle cx="300" cy="80" r="1.2" opacity="0.4"/>
+    <circle cx="470" cy="150" r="1.8" opacity="0.45"/>
+    <circle cx="210" cy="300" r="1.3" opacity="0.35"/>
+    <circle cx="700" cy="240" r="1.5" opacity="0.4"/>
+    <circle cx="90" cy="360" r="1.4" opacity="0.4"/>
+    <circle cx="520" cy="330" r="1.2" opacity="0.3"/>
+  </g>
+
+  <!-- Drifting debris: driftwood log -->
+  <g transform="translate(560,300) rotate(-14)">
+    <rect x="-58" y="-13" width="116" height="26" rx="13" fill="url(#log)"/>
+    <line x1="-50" y1="-9" x2="50" y2="-9" stroke="#a0c8ff" stroke-opacity="0.4" stroke-width="2"/>
+  </g>
+
+  <!-- Lily pad cluster -->
+  <g transform="translate(210,360)">
+    <ellipse cx="0" cy="0" rx="34" ry="26" fill="url(#lily)"/>
+    <ellipse cx="46" cy="8" rx="26" ry="20" fill="url(#lily)"/>
+    <path d="M -20 -8 A 30 30 0 0 1 18 14" fill="none" stroke="#8cc8ff" stroke-opacity="0.3" stroke-width="1.6"/>
+  </g>
+
+  <!-- Boat wake: stacked moonlit chevrons -->
+  <g transform="translate(330,150)" stroke="#96c3ff" stroke-width="3" fill="none" stroke-linecap="round">
+    <polyline points="-22,0 0,8 22,0" opacity="0.7"/>
+    <polyline points="-22,20 0,28 22,20" opacity="0.55"/>
+    <polyline points="-22,40 0,48 22,40" opacity="0.4"/>
+  </g>
+
+  <!-- Glowing buoys -->
+  <g>
+    <circle cx="470" cy="208" r="38" fill="url(#buoyGlow)"/>
+    <circle cx="470" cy="208" r="13" fill="url(#buoyBody)"/>
+    <line x1="470" y1="195" x2="470" y2="186" stroke="#ffffff" stroke-opacity="0.7" stroke-width="2"/>
+    <circle cx="690" cy="320" r="30" fill="url(#buoyGlow)"/>
+    <circle cx="690" cy="320" r="10" fill="url(#buoyBody)"/>
+  </g>
+
+  <!-- Bioluminescent trail behind the swimmer -->
+  <g fill="#22d3ee">
+    <circle cx="150" cy="232" r="3" opacity="0.2"/>
+    <circle cx="172" cy="227" r="4" opacity="0.32"/>
+    <circle cx="196" cy="224" r="5" opacity="0.45"/>
+    <circle cx="222" cy="222" r="6" opacity="0.6"/>
+    <circle cx="248" cy="222" r="7" opacity="0.75"/>
+  </g>
+
+  <!-- The swimmer, mid-stroke -->
+  <g transform="translate(292,222) rotate(-12)">
+    <circle cx="0" cy="0" r="42" fill="url(#swimAura)"/>
+    <ellipse cx="0" cy="0" rx="26" ry="15" fill="url(#swimBody)" filter="url(#glow)"/>
+    <line x1="5" y1="-2" x2="26" y2="-13" stroke="#d8f7ff" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="20" cy="0" r="9" fill="#ecfeff"/>
+  </g>
+
+  <!-- HUD: distance + buoys (mid-use, score is non-zero) -->
+  <g font-family="'Segoe UI', Verdana, sans-serif">
+    <text x="32" y="44" fill="#9fc7ff" font-size="14" letter-spacing="2">DISTANCE</text>
+    <text x="32" y="78" fill="#eaf4ff" font-size="34" font-weight="700">428</text>
+    <text x="768" y="44" fill="#9fc7ff" font-size="14" letter-spacing="2" text-anchor="end">BUOYS</text>
+    <text x="768" y="78" fill="#fde047" font-size="34" font-weight="700" text-anchor="end">14</text>
+  </g>
+
+  <!-- Current event badge -->
+  <g transform="translate(400,118)">
+    <rect x="-92" y="-17" width="184" height="34" rx="17" fill="#22d3ee" fill-opacity="0.16" stroke="#22d3ee" stroke-opacity="0.5"/>
+    <text x="0" y="5" fill="#aef2ff" font-size="15" font-weight="600" text-anchor="middle" font-family="'Segoe UI', Verdana, sans-serif">CURRENT - hold steady</text>
+  </g>
+
+  <!-- App title -->
+  <text x="400" y="418" fill="url(#title)" font-size="46" font-weight="800" text-anchor="middle" font-family="'Segoe UI', Verdana, sans-serif" filter="url(#glow)" letter-spacing="1">Night Swim</text>
+</svg>
