@@ -95,13 +95,6 @@
     <path d="M -20 -8 A 30 30 0 0 1 18 14" fill="none" stroke="#8cc8ff" stroke-opacity="0.3" stroke-width="1.6"/>
   </g>
 
-  <!-- Boat wake: stacked moonlit chevrons -->
-  <g transform="translate(330,150)" stroke="#96c3ff" stroke-width="3" fill="none" stroke-linecap="round">
-    <polyline points="-22,0 0,8 22,0" opacity="0.7"/>
-    <polyline points="-22,20 0,28 22,20" opacity="0.55"/>
-    <polyline points="-22,40 0,48 22,40" opacity="0.4"/>
-  </g>
-
   <!-- Glowing buoys -->
   <g>
     <circle cx="470" cy="208" r="38" fill="url(#buoyGlow)"/>

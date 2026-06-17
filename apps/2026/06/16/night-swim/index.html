@@ -456,13 +456,16 @@
       const moon = { x: 0, y: 0, r: 34 };
 
       // ── Tunables (per-frame at 60fps; scaled by dt) ─────────────────────
-      const GRAVITY = 0.17;
-      const STROKE_THRUST_Y = 0.92;
-      const STROKE_THRUST_X = 0.5;
+      const GRAVITY = 0.12;
+      const STROKE_THRUST_Y = 0.82;
       const STROKE_FRAMES = 10;
-      const BASE_VX = 1.7;
-      const MAX_VX = 5.4;
-      const VY_CLAMP = 7.2;
+      const VY_CLAMP = 6.2;
+      // Horizontal scroll is INDEPENDENT of strokes — tapping only lifts the
+      // swimmer, it never speeds the obstacles up. Scroll ramps gently with
+      // distance alone so the game stays readable on small handheld screens.
+      const BASE_SCROLL = 1.45;
+      const MAX_SCROLL = 2.6;
+      const SCROLL_RAMP = 1500; // meters of distance before reaching MAX_SCROLL
 
       // ── Helpers ─────────────────────────────────────────────────────────
       const rand = (a, b) => a + Math.random() * (b - a);
@@ -471,7 +474,7 @@
       function reset() {
         swimmer.x = W * 0.3;
         swimmer.y = H * 0.42;
-        swimmer.vx = BASE_VX;
+        swimmer.vx = BASE_SCROLL; // tracks world speed (for trail), not thrust
         swimmer.vy = 0;
         swimmer.angle = 0;
         swimmer.strokeTimer = 0;
@@ -483,8 +486,8 @@
         buoyItems = [];
         trail = [];
         ripples = [];
-        obstacleTimer = 900;
-        buoyTimer = 1400;
+        obstacleTimer = 1800;
+        buoyTimer = 1300;
         elapsed = 0;
         tilt = 0;
         tiltTarget = 0;
@@ -514,6 +517,11 @@
         return H * 0.985;
       }
 
+      // Steady forward scroll, derived from distance only (never from strokes).
+      function currentScroll() {
+        return BASE_SCROLL + Math.min(distance / SCROLL_RAMP, 1) * (MAX_SCROLL - BASE_SCROLL);
+      }
+
       // ── Input ───────────────────────────────────────────────────────────
       function stroke() {
         if (state !== STATE.PLAYING) return;
@@ -536,44 +544,38 @@
 
       // ── Spawning ────────────────────────────────────────────────────────
       function spawnObstacle() {
-        const types = ['debris', 'lily', 'wake'];
-        const type = types[Math.floor(Math.random() * types.length)];
+        // Two gentle, clearly-solid hazards: driftwood and lily-pad clusters.
+        // (Boat wakes were removed — a faint ripple that one-shot you read as
+        // harmless water and felt unfair, especially on small screens.)
+        const type = Math.random() < 0.5 ? 'debris' : 'lily';
         const margin = H * 0.1;
         const y = rand(surfaceY() + margin, bedY() - margin);
-        // Drift faster when a current is active to "shift debris patterns".
-        const driftBonus = type === 'wake' ? rand(0.8, 1.6) : rand(0, 0.4);
         const o = {
           type,
-          x: W + 60,
+          x: W + 90, // spawn well off-screen so there is time to react
           y,
-          drift: driftBonus,
+          drift: rand(0, 0.3),
           wob: rand(0, Math.PI * 2),
-          wobAmp: type === 'lily' ? rand(4, 12) : rand(0, 5),
+          wobAmp: type === 'lily' ? rand(3, 9) : rand(0, 4),
         };
         if (type === 'debris') {
-          o.w = rand(W * 0.07, W * 0.14);
-          o.h = rand(H * 0.03, H * 0.05);
+          // Sizes capped in px so a log never dominates a narrow phone screen.
+          o.w = clamp(rand(W * 0.07, W * 0.13), 28, 88);
+          o.h = clamp(rand(H * 0.028, H * 0.045), 14, 26);
           o.rot = rand(-0.5, 0.5);
           o.rw = o.w / 2;
           o.rh = o.h / 2;
-        } else if (type === 'lily') {
+        } else {
           o.pads = [];
-          const cnt = Math.floor(rand(2, 4));
+          const cnt = Math.random() < 0.6 ? 2 : 3;
           let span = 0;
           for (let i = 0; i < cnt; i++) {
-            const pr = rand(H * 0.035, H * 0.06);
+            const pr = clamp(rand(H * 0.03, H * 0.05), 14, 32);
             o.pads.push({ ox: span, oy: rand(-pr * 0.4, pr * 0.4), r: pr });
             span += pr * 1.5;
           }
-          o.rw = span * 0.55 + H * 0.04;
-          o.rh = H * 0.06;
-        } else {
-          // boat wake — a tilted hazard band of ripple chevrons
-          o.w = rand(W * 0.04, W * 0.06);
-          o.h = rand(H * 0.14, H * 0.22);
-          o.rot = rand(-0.4, 0.4);
-          o.rw = o.w / 2 + 4;
-          o.rh = o.h / 2;
+          o.rw = span * 0.5 + H * 0.03;
+          o.rh = clamp(H * 0.05, 16, 32);
         }
         obstacles.push(o);
       }
@@ -604,16 +606,11 @@
         // ── Swimmer physics ──
         if (swimmer.strokeTimer > 0) {
           swimmer.vy -= STROKE_THRUST_Y * dtf;
-          swimmer.vx += STROKE_THRUST_X * dtf;
           swimmer.strokeTimer -= dtf;
         }
         swimmer.vy += GRAVITY * dtf;
         swimmer.vy *= 0.99; // water drag → floaty
         swimmer.vy = clamp(swimmer.vy, -VY_CLAMP, VY_CLAMP);
-
-        // Forward momentum decays back toward a slow baseline drift.
-        swimmer.vx = Math.max(BASE_VX, swimmer.vx * 0.992);
-        swimmer.vx = Math.min(swimmer.vx, MAX_VX);
 
         // Sideways push from an active current (screen-relative tilt).
         if (currentTimer > 0) {
@@ -638,12 +635,13 @@
           return gameOver();
         }
 
-        // Scroll speed follows forward momentum.
-        const scroll = swimmer.vx;
-        distance += scroll * dtf * 0.12;
+        // Steady scroll, independent of strokes (tapping never speeds it up).
+        const scroll = currentScroll();
+        swimmer.vx = scroll; // keep the trail flowing backward with the world
+        distance += scroll * dtf * 0.16;
 
-        // Difficulty ramps gently with distance.
-        const diff = 1 + Math.min(distance / 600, 1.1);
+        // Difficulty ramps gently with distance (much flatter than before).
+        const diff = 1 + Math.min(distance / 1400, 0.5);
 
         // ── Ease the tilt ──
         if (currentTimer > 0) {
@@ -659,8 +657,8 @@
         obstacleTimer -= dtms * diff;
         if (obstacleTimer <= 0) {
           spawnObstacle();
-          obstacleTimer = rand(820, 1250) / diff;
-          if (currentTimer > 0) obstacleTimer *= 0.7; // denser during a current
+          obstacleTimer = rand(1500, 2200) / diff;
+          if (currentTimer > 0) obstacleTimer *= 0.82; // a touch denser during a current
         }
         for (let i = obstacles.length - 1; i >= 0; i--) {
           const o = obstacles[i];
@@ -758,8 +756,8 @@
         const oy = o.y + Math.sin(o.wob) * o.wobAmp;
         const dx = Math.abs(swimmer.x - o.x);
         const dy = Math.abs(swimmer.y - oy);
-        const rx = o.rw + swimmer.r * 0.7;
-        const ry = o.rh + swimmer.r * 0.7;
+        const rx = o.rw + swimmer.r * 0.55;
+        const ry = o.rh + swimmer.r * 0.55;
         // Elliptical overlap test (forgiving — rewards near-misses).
         return (dx * dx) / (rx * rx) + (dy * dy) / (ry * ry) < 1;
       }
@@ -879,7 +877,7 @@
           ctx.moveTo(-o.w / 2 + 4, -o.h / 2 + 2);
           ctx.lineTo(o.w / 2 - 4, -o.h / 2 + 2);
           ctx.stroke();
-        } else if (o.type === 'lily') {
+        } else {
           for (const p of o.pads) {
             const g = ctx.createRadialGradient(p.ox, p.oy, 1, p.ox, p.oy, p.r);
             g.addColorStop(0, '#2f6b46');
@@ -895,23 +893,6 @@
             ctx.arc(p.ox, p.oy, p.r * 0.92, -0.5, 1.4);
             ctx.stroke();
           }
-        } else {
-          // boat wake — stacked chevrons of churned, moonlit water
-          ctx.rotate(o.rot);
-          ctx.strokeStyle = 'rgba(150,195,255,0.55)';
-          ctx.lineWidth = 3;
-          ctx.lineCap = 'round';
-          const rows = 5;
-          for (let i = 0; i < rows; i++) {
-            const yy = -o.h / 2 + (i / (rows - 1)) * o.h;
-            ctx.globalAlpha = 0.35 + 0.4 * Math.abs(Math.sin(o.wob + i));
-            ctx.beginPath();
-            ctx.moveTo(-o.w / 2, yy - 5);
-            ctx.lineTo(0, yy);
-            ctx.lineTo(o.w / 2, yy - 5);
-            ctx.stroke();
-          }
-          ctx.globalAlpha = 1;
         }
         ctx.restore();
       }
