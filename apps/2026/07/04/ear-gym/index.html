@@ -1,0 +1,906 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Ear Gym" />
+    <meta name="voa-app-id" content="2026/07/04/ear-gym" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <title>Ear Gym - __MAIN_SITE_NAME__</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%A7%3C/text%3E%3C/svg%3E"
+    />
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --surface2: #273449;
+        --muted: #94a3b8;
+        --accent: #a78bfa;
+        --accent2: #22d3ee;
+        --good: #34d399;
+        --bad: #f87171;
+        --key-white: #f1f5f9;
+        --key-black: #0b1120;
+        --key-border: #334155;
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+        --surface2: #e5e7eb;
+        --muted: #6b7280;
+        --accent: #7c3aed;
+        --accent2: #0891b2;
+        --good: #059669;
+        --bad: #dc2626;
+        --key-white: #ffffff;
+        --key-black: #1f2937;
+        --key-border: #9ca3af;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          'Segoe UI',
+          system-ui,
+          -apple-system,
+          sans-serif;
+        min-height: 100dvh;
+      }
+
+      .wrap {
+        max-width: 560px;
+        margin: 0 auto;
+        padding: 12px 16px 24px;
+      }
+
+      .app-title {
+        text-align: center;
+        margin-bottom: 2px;
+        font-size: 1.5rem;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: var(--accent);
+      }
+      .tagline {
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.82rem;
+        margin-bottom: 12px;
+      }
+
+      /* ---- segmented controls ---- */
+      .seg {
+        display: flex;
+        background: var(--surface);
+        border-radius: 12px;
+        padding: 4px;
+        gap: 4px;
+        margin-bottom: 10px;
+      }
+      .seg button {
+        flex: 1;
+        min-height: 44px;
+        border: none;
+        border-radius: 9px;
+        background: transparent;
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+      .seg button.active {
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #fff;
+      }
+      .seg.small button {
+        min-height: 44px;
+        font-size: 0.8rem;
+      }
+
+      /* ---- stats bar ---- */
+      .stats {
+        display: flex;
+        justify-content: space-around;
+        background: var(--surface);
+        border-radius: 12px;
+        padding: 10px 6px;
+        margin-bottom: 12px;
+      }
+      .stat {
+        text-align: center;
+      }
+      .stat .val {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--accent2);
+      }
+      .stat .lbl {
+        font-size: 0.68rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      /* challenge progress dots */
+      .dots {
+        display: none;
+        justify-content: center;
+        gap: 6px;
+        margin-bottom: 12px;
+      }
+      .dots.show {
+        display: flex;
+      }
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--surface2);
+        transition: background 0.25s;
+      }
+      .dot.hit {
+        background: var(--good);
+      }
+      .dot.miss {
+        background: var(--bad);
+      }
+      .dot.now {
+        outline: 2px solid var(--accent2);
+        outline-offset: 2px;
+      }
+
+      /* ---- play button ---- */
+      .play-row {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 14px;
+      }
+      #playBtn {
+        min-width: 200px;
+        min-height: 56px;
+        border: none;
+        border-radius: 16px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #fff;
+        cursor: pointer;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        box-shadow: 0 4px 18px rgba(124, 58, 237, 0.35);
+        transition:
+          transform 0.15s,
+          box-shadow 0.15s;
+      }
+      #playBtn:active {
+        transform: scale(0.96);
+      }
+      #playBtn.pulsing {
+        animation: pulse 1.4s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          box-shadow: 0 4px 18px rgba(124, 58, 237, 0.35);
+        }
+        50% {
+          box-shadow: 0 4px 30px rgba(34, 211, 238, 0.55);
+        }
+      }
+
+      /* ---- answers ---- */
+      .answers {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+      @media (max-width: 339px) {
+        .answers {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      .answers button {
+        min-height: 56px;
+        border: 1px solid var(--surface2);
+        border-radius: 12px;
+        background: var(--surface);
+        color: var(--text);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        transition:
+          transform 0.12s,
+          border-color 0.2s,
+          background 0.2s;
+      }
+      .answers button:not(:disabled):active {
+        transform: scale(0.95);
+      }
+      .answers button:disabled {
+        opacity: 0.55;
+        cursor: default;
+      }
+      .answers .short {
+        font-weight: 800;
+        font-size: 1.02rem;
+      }
+      .answers .full {
+        font-size: 0.62rem;
+        color: var(--muted);
+      }
+      .answers button.correct {
+        border-color: var(--good);
+        background: color-mix(in srgb, var(--good) 22%, var(--surface));
+        opacity: 1;
+      }
+      .answers button.wrong {
+        border-color: var(--bad);
+        background: color-mix(in srgb, var(--bad) 22%, var(--surface));
+        opacity: 1;
+      }
+
+      /* ---- feedback ---- */
+      .feedback {
+        background: var(--surface);
+        border-radius: 14px;
+        padding: 14px;
+        text-align: center;
+        display: none;
+        animation: rise 0.25s ease;
+      }
+      .feedback.show {
+        display: block;
+      }
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .feedback .verdict {
+        font-size: 1.1rem;
+        font-weight: 800;
+        margin-bottom: 4px;
+      }
+      .feedback .verdict.good {
+        color: var(--good);
+      }
+      .feedback .verdict.bad {
+        color: var(--bad);
+      }
+      .feedback .notes-line {
+        color: var(--muted);
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+      }
+      .feedback .mnemonic {
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+      }
+      .feedback .mnemonic b {
+        color: var(--accent2);
+      }
+      .piano-box {
+        overflow-x: auto;
+        margin-bottom: 12px;
+      }
+      .piano-box svg {
+        width: 100%;
+        max-width: 460px;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+      }
+      .next-btn {
+        min-height: 48px;
+        min-width: 180px;
+        border: none;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #fff;
+        cursor: pointer;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+      }
+
+      /* ---- challenge end overlay card ---- */
+      .endcard {
+        display: none;
+        background: var(--surface);
+        border-radius: 16px;
+        padding: 22px 16px;
+        text-align: center;
+        animation: rise 0.3s ease;
+      }
+      .endcard.show {
+        display: block;
+      }
+      .endcard h2 {
+        font-size: 1.25rem;
+        margin-bottom: 8px;
+      }
+      .endcard .big-score {
+        font-size: 2.4rem;
+        font-weight: 800;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: var(--accent);
+        margin-bottom: 6px;
+      }
+      .endcard .sub {
+        color: var(--muted);
+        font-size: 0.88rem;
+        margin-bottom: 16px;
+      }
+      .endcard .btns {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+      }
+      .endcard .btns button {
+        min-height: 48px;
+        width: 100%;
+        max-width: 260px;
+        border: none;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .endcard .share-btn {
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #fff;
+      }
+      .endcard .again-btn {
+        background: var(--surface2);
+        color: var(--text);
+      }
+
+      .hint {
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.72rem;
+        margin-top: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <h1 class="app-title">Ear Gym 🎧</h1>
+      <p class="tagline">Train your ear — name the interval between two notes</p>
+
+      <!-- mode -->
+      <div class="seg" id="modeSeg" role="tablist" aria-label="Mode">
+        <button id="modePractice" class="active" role="tab" aria-selected="true">Practice</button>
+        <button id="modeChallenge" role="tab" aria-selected="false">Challenge (10)</button>
+      </div>
+
+      <!-- difficulty -->
+      <div class="seg small" id="diffSeg" role="tablist" aria-label="Difficulty">
+        <button data-diff="beginner" class="active" role="tab" aria-selected="true">
+          Beginner
+        </button>
+        <button data-diff="intermediate" role="tab" aria-selected="false">Intermediate</button>
+        <button data-diff="advanced" role="tab" aria-selected="false">Advanced</button>
+      </div>
+
+      <!-- playback style -->
+      <div class="seg small" id="styleSeg" role="tablist" aria-label="Playback style">
+        <button data-style="melodic" class="active" role="tab" aria-selected="true">
+          Melodic ↗
+        </button>
+        <button data-style="harmonic" role="tab" aria-selected="false">Harmonic ♩♩</button>
+      </div>
+
+      <!-- stats -->
+      <div class="stats" id="statsBar">
+        <div class="stat"><div class="val" id="statA">0</div><div class="lbl" id="lblA">Correct</div></div>
+        <div class="stat"><div class="val" id="statB">0</div><div class="lbl" id="lblB">Total</div></div>
+        <div class="stat"><div class="val" id="statC">0</div><div class="lbl" id="lblC">Streak 🔥</div></div>
+      </div>
+
+      <!-- challenge progress -->
+      <div class="dots" id="dots" aria-label="Challenge progress"></div>
+
+      <div class="play-row">
+        <button id="playBtn" class="pulsing" aria-label="Play interval">▶ Play interval</button>
+      </div>
+
+      <div class="answers" id="answers" aria-label="Interval choices"></div>
+
+      <div class="feedback" id="feedback" aria-live="polite">
+        <div class="verdict" id="verdict"></div>
+        <div class="notes-line" id="notesLine"></div>
+        <div class="mnemonic" id="mnemonic"></div>
+        <div class="piano-box" id="pianoBox"></div>
+        <button class="next-btn" id="nextBtn">Next interval →</button>
+      </div>
+
+      <div class="endcard" id="endcard">
+        <h2>Challenge complete! 🏁</h2>
+        <div class="big-score" id="finalScore">0</div>
+        <div class="sub" id="finalSub"></div>
+        <div class="btns">
+          <button class="share-btn" id="shareBtn">Share my score</button>
+          <button class="again-btn" id="againBtn">Play again</button>
+        </div>
+      </div>
+
+      <p class="hint">Keys: <b>Space</b>/<b>R</b> replay · <b>1–9</b> answer</p>
+    </main>
+
+    <script>
+      (() => {
+        'use strict';
+
+        const APP_NAME = 'Ear Gym';
+        const ROUNDS = 10;
+
+        // ---------------------------------------------------------------
+        // Interval definitions: semitone distance, labels, and the famous
+        // ascending-song mnemonic musicians use to memorize each one.
+        // ---------------------------------------------------------------
+        const INTERVALS = [
+          { st: 1, short: 'm2', name: 'Minor 2nd', song: 'Jaws theme' },
+          { st: 2, short: 'M2', name: 'Major 2nd', song: 'Happy Birthday' },
+          { st: 3, short: 'm3', name: 'Minor 3rd', song: 'Greensleeves' },
+          { st: 4, short: 'M3', name: 'Major 3rd', song: 'Oh When the Saints' },
+          { st: 5, short: 'P4', name: 'Perfect 4th', song: 'Here Comes the Bride' },
+          { st: 6, short: 'TT', name: 'Tritone', song: 'The Simpsons theme' },
+          { st: 7, short: 'P5', name: 'Perfect 5th', song: 'Star Wars theme' },
+          { st: 8, short: 'm6', name: 'Minor 6th', song: 'Love Story theme' },
+          { st: 9, short: 'M6', name: 'Major 6th', song: 'My Bonnie Lies Over the Ocean' },
+          { st: 10, short: 'm7', name: 'Minor 7th', song: 'Star Trek (original) theme' },
+          { st: 11, short: 'M7', name: 'Major 7th', song: 'Take On Me (chorus leap)' },
+          { st: 12, short: 'P8', name: 'Octave', song: 'Somewhere Over the Rainbow' },
+        ];
+
+        // Difficulty tiers: which semitone distances are quizzed.
+        const TIERS = {
+          beginner: [2, 4, 5, 7, 12],
+          intermediate: [1, 2, 3, 4, 5, 7, 9, 10, 12],
+          advanced: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        };
+
+        const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        const WHITE_OFFSETS = [0, 2, 4, 5, 7, 9, 11]; // semitone offsets of white keys in an octave
+
+        // ---------------------------------------------------------------
+        // State
+        // ---------------------------------------------------------------
+        let mode = 'practice'; // 'practice' | 'challenge'
+        let difficulty = 'beginner';
+        let playStyle = 'melodic'; // 'melodic' | 'harmonic'
+        let current = null; // { rootMidi, interval } for the active question
+        let answered = false; // has the active question been answered?
+        let hasPlayed = false; // has the active question been heard at least once?
+        // Practice session stats
+        let pCorrect = 0;
+        let pTotal = 0;
+        let pStreak = 0;
+        // Challenge state
+        let cRound = 0; // 0-based index of active round
+        let cScore = 0;
+        let cStreak = 0;
+        let cBestStreak = 0;
+        let cHits = 0;
+        let cResults = []; // true/false per completed round
+        let challengeOver = false;
+
+        let audioCtx = null; // created lazily on first user gesture (iOS requirement)
+
+        // ---------------------------------------------------------------
+        // DOM handles
+        // ---------------------------------------------------------------
+        const $ = (id) => document.getElementById(id);
+        const answersEl = $('answers');
+        const feedbackEl = $('feedback');
+        const endcardEl = $('endcard');
+        const dotsEl = $('dots');
+        const playBtn = $('playBtn');
+
+        // ---------------------------------------------------------------
+        // Audio synthesis: one soft triangle-wave voice per note with a
+        // short attack and exponential release, played via Web Audio.
+        // ---------------------------------------------------------------
+        function ensureAudio() {
+          if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          }
+          if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function midiToFreq(m) {
+          return 440 * Math.pow(2, (m - 69) / 12);
+        }
+
+        function playNote(midi, startAt, duration) {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = midiToFreq(midi);
+          gain.gain.setValueAtTime(0.0001, startAt);
+          gain.gain.exponentialRampToValueAtTime(0.4, startAt + 0.02);
+          gain.gain.setValueAtTime(0.4, startAt + duration * 0.6);
+          gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+          osc.connect(gain).connect(audioCtx.destination);
+          osc.start(startAt);
+          osc.stop(startAt + duration + 0.05);
+        }
+
+        function playCurrent() {
+          if (!current) return;
+          ensureAudio();
+          const t = audioCtx.currentTime + 0.05;
+          const low = current.rootMidi;
+          const high = current.rootMidi + current.interval.st;
+          if (playStyle === 'harmonic') {
+            playNote(low, t, 1.2);
+            playNote(high, t, 1.2);
+          } else {
+            playNote(low, t, 0.6);
+            playNote(high, t + 0.65, 0.7);
+          }
+          hasPlayed = true;
+          setAnswersEnabled(!answered);
+          playBtn.classList.remove('pulsing');
+        }
+
+        // ---------------------------------------------------------------
+        // Question lifecycle
+        // ---------------------------------------------------------------
+        function pickQuestion() {
+          const pool = TIERS[difficulty];
+          const st = pool[Math.floor(Math.random() * pool.length)];
+          const interval = INTERVALS.find((i) => i.st === st);
+          // Random root C3 (48) … C5 (72) keeps both notes in a comfortable range.
+          const rootMidi = 48 + Math.floor(Math.random() * 25);
+          return { rootMidi, interval };
+        }
+
+        function newQuestion(autoplay) {
+          current = pickQuestion();
+          answered = false;
+          hasPlayed = false;
+          feedbackEl.classList.remove('show');
+          renderAnswers();
+          setAnswersEnabled(false); // must listen before answering
+          playBtn.classList.add('pulsing');
+          if (autoplay) playCurrent();
+        }
+
+        function setAnswersEnabled(on) {
+          answersEl.querySelectorAll('button').forEach((b) => {
+            b.disabled = !on;
+          });
+        }
+
+        function renderAnswers() {
+          answersEl.innerHTML = '';
+          TIERS[difficulty].forEach((st, idx) => {
+            const iv = INTERVALS.find((i) => i.st === st);
+            const btn = document.createElement('button');
+            btn.dataset.st = st;
+            btn.setAttribute(
+              'aria-label',
+              iv.name + (idx < 9 ? ', shortcut key ' + (idx + 1) : '')
+            );
+            btn.innerHTML =
+              '<span class="short">' + iv.short + '</span><span class="full">' + iv.name + '</span>';
+            btn.addEventListener('click', () => answer(st, btn));
+            answersEl.appendChild(btn);
+          });
+        }
+
+        function noteName(midi) {
+          return NOTE_NAMES[midi % 12] + (Math.floor(midi / 12) - 1);
+        }
+
+        function answer(st, btn) {
+          if (answered || !current || !hasPlayed) return;
+          answered = true;
+          const iv = current.interval;
+          const correct = st === iv.st;
+
+          // Color the chosen button; always reveal the correct one.
+          setAnswersEnabled(false);
+          btn.classList.add(correct ? 'correct' : 'wrong');
+          if (!correct) {
+            const rightBtn = answersEl.querySelector('button[data-st="' + iv.st + '"]');
+            if (rightBtn) rightBtn.classList.add('correct');
+          }
+
+          if (mode === 'practice') {
+            pTotal += 1;
+            if (correct) {
+              pCorrect += 1;
+              pStreak += 1;
+            } else {
+              pStreak = 0;
+            }
+          } else {
+            cResults.push(correct);
+            if (correct) {
+              cStreak += 1;
+              cHits += 1;
+              cBestStreak = Math.max(cBestStreak, cStreak);
+              cScore += 100 + 20 * (cStreak - 1); // streak bonus rewards runs
+            } else {
+              cStreak = 0;
+            }
+          }
+          updateStats();
+          renderDots();
+          showFeedback(correct);
+        }
+
+        function showFeedback(correct) {
+          const iv = current.interval;
+          const low = current.rootMidi;
+          const high = low + iv.st;
+          $('verdict').textContent = correct ? '✓ Correct!' : '✗ Not quite — it was ' + iv.name;
+          $('verdict').className = 'verdict ' + (correct ? 'good' : 'bad');
+          $('notesLine').textContent =
+            noteName(low) + ' → ' + noteName(high) + ' · ' + iv.st + ' semitone' + (iv.st > 1 ? 's' : '');
+          $('mnemonic').innerHTML =
+            '💡 <b>' + iv.name + '</b> sounds like the start of <b>' + iv.song + '</b>';
+          $('pianoBox').innerHTML = buildPianoSVG(low, high);
+          const isLastRound = mode === 'challenge' && cResults.length >= ROUNDS;
+          $('nextBtn').textContent = isLastRound ? 'See results →' : 'Next interval →';
+          feedbackEl.classList.add('show');
+          $('nextBtn').focus();
+        }
+
+        function next() {
+          if (mode === 'challenge' && cResults.length >= ROUNDS) {
+            endChallenge();
+            return;
+          }
+          if (mode === 'challenge') cRound = cResults.length;
+          renderDots();
+          newQuestion(true);
+        }
+
+        // ---------------------------------------------------------------
+        // Challenge flow
+        // ---------------------------------------------------------------
+        function startChallenge() {
+          cRound = 0;
+          cScore = 0;
+          cStreak = 0;
+          cBestStreak = 0;
+          cHits = 0;
+          cResults = [];
+          challengeOver = false;
+          endcardEl.classList.remove('show');
+          updateStats();
+          renderDots();
+          newQuestion(false);
+        }
+
+        function endChallenge() {
+          challengeOver = true;
+          feedbackEl.classList.remove('show');
+          $('finalScore').textContent = cScore.toLocaleString();
+          $('finalSub').textContent =
+            cHits + '/' + ROUNDS + ' correct · best streak ' + cBestStreak + ' 🔥';
+          endcardEl.classList.add('show');
+          // Submit the final score to the shared leaderboard (guard: shell may not be loaded).
+          if (window.voaLeaderboard) {
+            window.voaLeaderboard.submit(cScore);
+          }
+        }
+
+        // ---------------------------------------------------------------
+        // Mini piano SVG: two octaves starting at the C below the root,
+        // with the played notes highlighted (root = violet, top = cyan).
+        // ---------------------------------------------------------------
+        function buildPianoSVG(low, high) {
+          const baseC = low - (low % 12);
+          const whiteW = 40;
+          const whiteH = 120;
+          const blackW = 24;
+          const blackH = 74;
+          let whites = '';
+          let blacks = '';
+          for (let oct = 0; oct < 2; oct++) {
+            for (let w = 0; w < 7; w++) {
+              const midi = baseC + oct * 12 + WHITE_OFFSETS[w];
+              const x = (oct * 7 + w) * whiteW;
+              const hl = midi === low ? 'var(--accent)' : midi === high ? 'var(--accent2)' : 'var(--key-white)';
+              whites +=
+                '<rect x="' + x + '" y="0" width="' + whiteW + '" height="' + whiteH +
+                '" fill="' + hl + '" stroke="var(--key-border)" stroke-width="1.5" rx="3"/>';
+            }
+          }
+          // final C to close the 2-octave span
+          const lastMidi = baseC + 24;
+          const lastX = 14 * whiteW;
+          const lastHl =
+            lastMidi === low ? 'var(--accent)' : lastMidi === high ? 'var(--accent2)' : 'var(--key-white)';
+          whites +=
+            '<rect x="' + lastX + '" y="0" width="' + whiteW + '" height="' + whiteH +
+            '" fill="' + lastHl + '" stroke="var(--key-border)" stroke-width="1.5" rx="3"/>';
+          // black keys sit between whites C-D, D-E, F-G, G-A, A-B
+          const blackAfterWhite = { 1: 0, 3: 1, 6: 3, 8: 4, 10: 5 };
+          for (let oct = 0; oct < 2; oct++) {
+            for (const [off, wIdx] of Object.entries(blackAfterWhite)) {
+              const midi = baseC + oct * 12 + Number(off);
+              const x = (oct * 7 + wIdx + 1) * whiteW - blackW / 2;
+              const hl = midi === low ? 'var(--accent)' : midi === high ? 'var(--accent2)' : 'var(--key-black)';
+              blacks +=
+                '<rect x="' + x + '" y="0" width="' + blackW + '" height="' + blackH +
+                '" fill="' + hl + '" stroke="var(--key-border)" stroke-width="1" rx="2"/>';
+            }
+          }
+          return (
+            '<svg viewBox="0 0 600 124" role="img" aria-label="Piano keys showing ' +
+            noteName(low) + ' and ' + noteName(high) + '">' + whites + blacks + '</svg>'
+          );
+        }
+
+        // ---------------------------------------------------------------
+        // UI updates
+        // ---------------------------------------------------------------
+        function updateStats() {
+          if (mode === 'practice') {
+            $('lblA').textContent = 'Correct';
+            $('lblB').textContent = 'Total';
+            $('lblC').textContent = 'Streak 🔥';
+            $('statA').textContent = pCorrect;
+            $('statB').textContent = pTotal;
+            $('statC').textContent = pStreak;
+          } else {
+            $('lblA').textContent = 'Round';
+            $('lblB').textContent = 'Score';
+            $('lblC').textContent = 'Streak 🔥';
+            $('statA').textContent = Math.min(cResults.length + 1, ROUNDS) + '/' + ROUNDS;
+            $('statB').textContent = cScore.toLocaleString();
+            $('statC').textContent = cStreak;
+          }
+        }
+
+        function renderDots() {
+          if (mode !== 'challenge') {
+            dotsEl.classList.remove('show');
+            return;
+          }
+          dotsEl.classList.add('show');
+          dotsEl.innerHTML = '';
+          for (let i = 0; i < ROUNDS; i++) {
+            const d = document.createElement('div');
+            d.className = 'dot';
+            if (i < cResults.length) d.classList.add(cResults[i] ? 'hit' : 'miss');
+            else if (i === cResults.length && !challengeOver) d.classList.add('now');
+            dotsEl.appendChild(d);
+          }
+        }
+
+        function setSeg(segEl, activeBtn) {
+          segEl.querySelectorAll('button').forEach((b) => {
+            b.classList.toggle('active', b === activeBtn);
+            b.setAttribute('aria-selected', b === activeBtn ? 'true' : 'false');
+          });
+        }
+
+        // ---------------------------------------------------------------
+        // Event wiring
+        // ---------------------------------------------------------------
+        playBtn.addEventListener('click', playCurrent);
+        $('nextBtn').addEventListener('click', next);
+        $('againBtn').addEventListener('click', startChallenge);
+
+        $('shareBtn').addEventListener('click', () => {
+          if (window.voaShare) {
+            window.voaShare({
+              text: 'I scored ' + cScore.toLocaleString() + ' in ' + APP_NAME + '! Can you beat it?',
+            });
+          }
+        });
+
+        $('modePractice').addEventListener('click', () => {
+          mode = 'practice';
+          setSeg($('modeSeg'), $('modePractice'));
+          endcardEl.classList.remove('show');
+          updateStats();
+          renderDots();
+          newQuestion(false);
+        });
+        $('modeChallenge').addEventListener('click', () => {
+          mode = 'challenge';
+          setSeg($('modeSeg'), $('modeChallenge'));
+          startChallenge();
+        });
+
+        $('diffSeg').addEventListener('click', (e) => {
+          const btn = e.target.closest('button[data-diff]');
+          if (!btn || btn.dataset.diff === difficulty) return;
+          difficulty = btn.dataset.diff;
+          setSeg($('diffSeg'), btn);
+          // Changing difficulty restarts the active flow with the new pool.
+          if (mode === 'challenge') startChallenge();
+          else newQuestion(false);
+        });
+
+        $('styleSeg').addEventListener('click', (e) => {
+          const btn = e.target.closest('button[data-style]');
+          if (!btn) return;
+          playStyle = btn.dataset.style;
+          setSeg($('styleSeg'), btn);
+        });
+
+        // Keyboard shortcuts. Guards (required): never intercept keys while the
+        // user is typing in an input or while a shell overlay (leaderboard /
+        // share drawer) is open on top of the app.
+        document.addEventListener('keydown', (e) => {
+          const tag = document.activeElement?.tagName;
+          if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+          if (document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open')) return;
+
+          if (e.key === ' ' || e.key.toLowerCase() === 'r') {
+            e.preventDefault();
+            if (!endcardEl.classList.contains('show')) playCurrent();
+          } else if (e.key >= '1' && e.key <= '9') {
+            const btn = answersEl.querySelectorAll('button')[Number(e.key) - 1];
+            if (btn && !btn.disabled) btn.click();
+          } else if (e.key === 'Enter' && feedbackEl.classList.contains('show')) {
+            next();
+          }
+        });
+
+        // ---------------------------------------------------------------
+        // Boot: ready to use immediately — first question is armed, the
+        // pulsing Play button invites the first tap (which unlocks audio).
+        // ---------------------------------------------------------------
+        updateStats();
+        newQuestion(false);
+      })();
+    </script>
+  </body>
+</html>

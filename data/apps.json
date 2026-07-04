@@ -1,5 +1,37 @@
 [
   {
+    "id": "2026/07/04/ear-gym",
+    "name": "Ear Gym",
+    "shortDescription": "Train your musical ear by naming the interval between two notes. Practice freely across three difficulty tiers or run a 10-round streak-scored challenge — every answer reveals a famous song mnemonic and a piano showing the notes you heard.",
+    "thumbnailUrl": "/apps/2026/07/04/ear-gym/thumbnail.svg",
+    "createdAt": "2026-07-04T14:35:58Z",
+    "year": 2026,
+    "month": 7,
+    "day": 4,
+    "category": "Education",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": ["music", "ear-training", "intervals", "web-audio", "quiz", "education"],
+    "route": "/apps/2026/07/04/ear-gym",
+    "appPath": "/apps/2026/07/04/ear-gym/index.html",
+    "generation": {
+      "agentName": "claude-code",
+      "llmModel": "claude-fable-5",
+      "startTime": "2026-07-04T14:35:58Z",
+      "endTime": "2026-07-04T15:05:00Z",
+      "totalTokensIn": 38000,
+      "totalTokensOut": 14000,
+      "runId": "run-20260704T143558Z-25096c",
+      "notes": "Freely chosen concept: no approved GitHub issues; the script's Supabase vote pass failed on Node 20 (no native WebSocket), so manual fallback selection was used per the pipeline prompt. Education chosen as the largest category gap (2/88 apps); no existing music or ear-training app, avoiding the saturated 'arcade' tag. Inspired by Tonedear/Teoria interval quizzes, Functional Ear Trainer's progressive difficulty, and Duolingo streaks. Unique angle: each answer reveals the standard song mnemonic (e.g. Perfect 5th = Star Wars theme) plus a two-octave piano highlighting the played notes. Assumption: intervals always play ascending (melodic or harmonic) so the mnemonics stay accurate; descending mode rejected because mnemonics differ per direction. Challenge scoring: 100 per correct + 20 x (streak - 1) bonus, 10 rounds, max 1900 (maxScore). Audio synthesized with Web Audio triangle-wave oscillators — no assets, no libraries, AudioContext unlocked on first tap for iOS."
+    },
+    "suggestion": null,
+    "improvements": null,
+    "allowImprovements": true,
+    "leaderboard": true,
+    "maxScore": 1900,
+    "backups": null
+  },
+  {
     "id": "2026/06/16/night-swim",
     "name": "Night Swim",
     "shortDescription": "Glide a lone swimmer through a moonlit lake. Stroke to stay afloat with weighty, floaty momentum, weave past drifting debris, and collect glowing buoys — every 10 triggers a screen-tilting current.",
