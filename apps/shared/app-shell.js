@@ -1470,7 +1470,16 @@
           return '';
         }
       })();
-      const siteKey = resolveTurnstileSiteKey();
+      // The shell config carries the Turnstile sitekey and is fetched once at boot
+      // with failures swallowed — a network blip at page load would otherwise leave
+      // the sitekey empty for the whole session and doom the submit. Retry it here.
+      if (!shellConfig) {
+        await loadShellConfig();
+        if (!_leaderboardModalOpen) {
+          return;
+        }
+      }
+      let siteKey = resolveTurnstileSiteKey();
       const isLocal =
         window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
@@ -1513,12 +1522,25 @@
 
       // Modal is already open from the loading state above \u2014 no need to call openLbModal() again
 
+      // Turnstile state lives at function scope so the submit handler can read it.
+      // (It was previously block-scoped inside the render branch, which made the
+      // submit handler throw a ReferenceError whenever the token was missing.)
       let turnstileToken = null;
-      if (siteKey && !isLocal) {
-        const tsDiv = document.createElement('div');
-        tsDiv.className = 'voa-lb-turnstile';
-        tsDiv.id = 'voa-lb-turnstile-widget';
-        lbContentArea.appendChild(tsDiv);
+      let turnstileLoadFailed = false;
+
+      // Builds (or rebuilds) the Turnstile widget. Re-invokable so the "Retry bot
+      // check" action can recover after a failed script load or late config fetch.
+      function setupTurnstile() {
+        turnstileLoadFailed = false;
+        turnstileToken = null;
+
+        let tsDiv = document.getElementById('voa-lb-turnstile-widget');
+        if (!tsDiv || !tsDiv.isConnected) {
+          tsDiv = document.createElement('div');
+          tsDiv.className = 'voa-lb-turnstile';
+          tsDiv.id = 'voa-lb-turnstile-widget';
+          lbContentArea.insertBefore(tsDiv, btnRow);
+        }
 
         if (!document.getElementById('voa-turnstile-script')) {
           const tsScript = document.createElement('script');
@@ -1532,7 +1554,6 @@
         const TURNSTILE_RENDER_RETRY_DELAY_MS = 200;
         const TURNSTILE_RENDER_MAX_RETRIES = 25;
         let turnstileRenderRetries = 0;
-        let turnstileLoadFailed = false;
 
         function tryRenderTurnstile() {
           const turnstileWidget = document.getElementById('voa-lb-turnstile-widget');
@@ -1541,6 +1562,10 @@
           }
 
           if (window.turnstile) {
+            if (_turnstileWidgetId !== null) {
+              window.turnstile.remove(_turnstileWidgetId);
+              _turnstileWidgetId = null;
+            }
             _turnstileWidgetId = window.turnstile.render(turnstileWidget, {
               sitekey: siteKey,
               callback: (token) => {
@@ -1586,7 +1611,51 @@
       btnRow.appendChild(cancelBtn);
       lbContentArea.appendChild(btnRow);
 
+      if (siteKey && !isLocal) {
+        setupTurnstile();
+      }
+
       nameInput.focus();
+
+      // Turnstile tokens are single-use and expire (~5 min). After any failed
+      // submit, invalidate the held token so the next attempt gets a fresh one
+      // instead of re-sending a consumed/expired token.
+      function resetTurnstileToken() {
+        if (_turnstileWidgetId !== null && window.turnstile) {
+          window.turnstile.reset(_turnstileWidgetId);
+          turnstileToken = null;
+        }
+      }
+
+      // Shown when the bot check can't run at all (config fetch failed at boot and
+      // on the late retry, or the Cloudflare script never loaded). Re-attempts both.
+      function showTurnstileRetry() {
+        if (document.getElementById('voa-lb-turnstile-retry')) {
+          return;
+        }
+        const retryBtn = document.createElement('button');
+        retryBtn.className = 'voa-lb-cancel-btn';
+        retryBtn.id = 'voa-lb-turnstile-retry';
+        retryBtn.type = 'button';
+        retryBtn.textContent = 'Retry bot check';
+        retryBtn.addEventListener('click', async () => {
+          retryBtn.disabled = true;
+          errorMsg.textContent = '';
+          if (!resolveTurnstileSiteKey()) {
+            await loadShellConfig();
+          }
+          siteKey = resolveTurnstileSiteKey();
+          if (!siteKey) {
+            errorMsg.textContent =
+              'Bot check couldn\u2019t load \u2014 check your connection and try again.';
+            retryBtn.disabled = false;
+            return;
+          }
+          setupTurnstile();
+          retryBtn.remove();
+        });
+        btnRow.appendChild(retryBtn);
+      }
 
       submitBtn.addEventListener('click', async () => {
         const name = nameInput.value.trim();
@@ -1598,7 +1667,15 @@
           errorMsg.textContent = 'Only letters, numbers, spaces, - and _ are allowed.';
           return;
         }
-        if (siteKey && !isLocal && !turnstileToken && !turnstileLoadFailed) {
+        // Never send an empty token in non-local environments \u2014 the server always
+        // rejects it ('Missing required fields'). Surface an actionable path instead.
+        if (!isLocal && (!siteKey || turnstileLoadFailed)) {
+          errorMsg.textContent =
+            'Bot check couldn\u2019t load \u2014 check your connection and try again.';
+          showTurnstileRetry();
+          return;
+        }
+        if (!isLocal && !turnstileToken) {
           errorMsg.textContent = 'Please complete the bot check first.';
           return;
         }
@@ -1619,11 +1696,13 @@
             appendLbCloseBtn();
           } else {
             errorMsg.textContent = result.error || 'Failed to submit score. Please try again.';
+            resetTurnstileToken();
             submitBtn.disabled = false;
             submitBtn.textContent = 'Submit Score';
           }
         } catch {
           errorMsg.textContent = 'Network error. Please try again.';
+          resetTurnstileToken();
           submitBtn.disabled = false;
           submitBtn.textContent = 'Submit Score';
         }
