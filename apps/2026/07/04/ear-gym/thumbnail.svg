@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#1a1035"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#a78bfa"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#273449"/>
+      <stop offset="1" stop-color="#1e293b"/>
+    </linearGradient>
+    <radialGradient id="glowGrad" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="b"/>
+      <feOffset in="b" dx="0" dy="4" result="o"/>
+      <feMerge>
+        <feMergeNode in="o"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#bgGrad)"/>
+  <circle cx="660" cy="90" r="180" fill="url(#glowGrad)"/>
+  <circle cx="110" cy="380" r="160" fill="url(#glowGrad)"/>
+
+  <!-- decorative sound waves radiating from the play button -->
+  <g stroke="#22d3ee" fill="none" opacity="0.35">
+    <path d="M 218 118 q 18 22 0 44" stroke-width="4" stroke-linecap="round"/>
+    <path d="M 232 108 q 30 32 0 64" stroke-width="4" stroke-linecap="round"/>
+    <path d="M 246 98 q 42 42 0 84" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- title -->
+  <text x="400" y="58" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="44" font-weight="800" fill="url(#accentGrad)" filter="url(#softGlow)">Ear Gym</text>
+  <text x="400" y="86" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#94a3b8">Name the interval between two notes</text>
+
+  <!-- play button, mid-question -->
+  <g filter="url(#cardShadow)">
+    <rect x="120" y="105" width="90" height="70" rx="16" fill="url(#accentGrad)"/>
+    <path d="M 152 122 L 152 158 L 184 140 Z" fill="#ffffff"/>
+  </g>
+
+  <!-- stats HUD -->
+  <g font-family="'Segoe UI', system-ui, sans-serif">
+    <rect x="300" y="105" width="380" height="70" rx="14" fill="url(#cardGrad)" filter="url(#cardShadow)"/>
+    <text x="365" y="140" text-anchor="middle" font-size="24" font-weight="700" fill="#22d3ee">6/10</text>
+    <text x="365" y="162" text-anchor="middle" font-size="11" fill="#94a3b8">ROUND</text>
+    <text x="490" y="140" text-anchor="middle" font-size="24" font-weight="700" fill="#22d3ee">740</text>
+    <text x="490" y="162" text-anchor="middle" font-size="11" fill="#94a3b8">SCORE</text>
+    <text x="615" y="140" text-anchor="middle" font-size="24" font-weight="700" fill="#22d3ee">4 🔥</text>
+    <text x="615" y="162" text-anchor="middle" font-size="11" fill="#94a3b8">STREAK</text>
+  </g>
+
+  <!-- answer buttons: P5 marked correct -->
+  <g font-family="'Segoe UI', system-ui, sans-serif" text-anchor="middle">
+    <rect x="120" y="200" width="120" height="62" rx="12" fill="url(#cardGrad)" stroke="#334155"/>
+    <text x="180" y="228" font-size="20" font-weight="800" fill="#f9fafb">M3</text>
+    <text x="180" y="248" font-size="10" fill="#94a3b8">Major 3rd</text>
+
+    <rect x="252" y="200" width="120" height="62" rx="12" fill="url(#cardGrad)" stroke="#334155"/>
+    <text x="312" y="228" font-size="20" font-weight="800" fill="#f9fafb">P4</text>
+    <text x="312" y="248" font-size="10" fill="#94a3b8">Perfect 4th</text>
+
+    <rect x="384" y="200" width="120" height="62" rx="12" fill="#1d3a34" stroke="#34d399" stroke-width="2.5" filter="url(#softGlow)"/>
+    <text x="444" y="228" font-size="20" font-weight="800" fill="#34d399">P5 ✓</text>
+    <text x="444" y="248" font-size="10" fill="#94a3b8">Perfect 5th</text>
+
+    <rect x="516" y="200" width="120" height="62" rx="12" fill="url(#cardGrad)" stroke="#334155"/>
+    <text x="576" y="228" font-size="20" font-weight="800" fill="#f9fafb">M6</text>
+    <text x="576" y="248" font-size="10" fill="#94a3b8">Major 6th</text>
+  </g>
+
+  <!-- mnemonic feedback line -->
+  <text x="400" y="292" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="15" fill="#f9fafb">💡 Perfect 5th sounds like the start of <tspan fill="#22d3ee" font-weight="700">Star Wars</tspan></text>
+
+  <!-- piano with highlighted C4 and G4 -->
+  <g filter="url(#cardShadow)">
+    <!-- white keys: C4 root violet, G4 target cyan, others white -->
+    <rect x="150" y="312" width="50" height="110" rx="4" fill="#a78bfa" stroke="#334155" stroke-width="2"/>
+    <rect x="200" y="312" width="50" height="110" rx="4" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+    <rect x="250" y="312" width="50" height="110" rx="4" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+    <rect x="300" y="312" width="50" height="110" rx="4" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+    <rect x="350" y="312" width="50" height="110" rx="4" fill="#22d3ee" stroke="#334155" stroke-width="2"/>
+    <rect x="400" y="312" width="50" height="110" rx="4" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+    <rect x="450" y="312" width="50" height="110" rx="4" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+    <rect x="500" y="312" width="50" height="110" rx="4" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+    <rect x="550" y="312" width="50" height="110" rx="4" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+    <rect x="600" y="312" width="50" height="110" rx="4" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+    <!-- black keys -->
+    <rect x="185" y="312" width="30" height="68" rx="3" fill="#0b1120"/>
+    <rect x="235" y="312" width="30" height="68" rx="3" fill="#0b1120"/>
+    <rect x="335" y="312" width="30" height="68" rx="3" fill="#0b1120"/>
+    <rect x="385" y="312" width="30" height="68" rx="3" fill="#0b1120"/>
+    <rect x="435" y="312" width="30" height="68" rx="3" fill="#0b1120"/>
+    <rect x="535" y="312" width="30" height="68" rx="3" fill="#0b1120"/>
+    <rect x="585" y="312" width="30" height="68" rx="3" fill="#0b1120"/>
+  </g>
+  <text x="175" y="440" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="13" font-weight="700" fill="#a78bfa">C4</text>
+  <text x="375" y="440" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif" font-size="13" font-weight="700" fill="#22d3ee">G4</text>
+
+  <!-- corner accents -->
+  <path d="M 0 0 L 60 0 L 0 60 Z" fill="#a78bfa" opacity="0.25"/>
+  <path d="M 800 450 L 740 450 L 800 390 Z" fill="#22d3ee" opacity="0.25"/>
+</svg>
