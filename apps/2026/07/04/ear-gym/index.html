@@ -889,9 +889,10 @@
           } else if (e.key >= '1' && e.key <= '9') {
             const btn = answersEl.querySelectorAll('button')[Number(e.key) - 1];
             if (btn && !btn.disabled) btn.click();
-          } else if (e.key === 'Enter' && feedbackEl.classList.contains('show')) {
-            next();
           }
+          // No document-level Enter handler: the Next button receives focus when
+          // feedback opens, so native Enter activation already advances — a second
+          // handler here would double-fire next() and end the challenge twice.
         });
 
         // ---------------------------------------------------------------
