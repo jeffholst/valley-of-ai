@@ -1,5 +1,42 @@
 [
   {
+    "id": "2026/07/04/sling-pop",
+    "name": "Sling Pop",
+    "shortDescription": "Slingshot a jelly onto a scrolling wall of colored blocks. Land where colors touch to pop the group, rocket higher, and chain combos — before the ever-faster scroll drags you under.",
+    "thumbnailUrl": "/apps/2026/07/04/sling-pop/thumbnail.svg",
+    "createdAt": "2026-07-04T23:53:01Z",
+    "year": 2026,
+    "month": 7,
+    "day": 4,
+    "category": "Games",
+    "inputMode": "responsive",
+    "status": "active",
+    "tags": ["slingshot", "color-match", "canvas", "physics", "combo", "one-handed", "endless"],
+    "route": "/apps/2026/07/04/sling-pop",
+    "appPath": "/apps/2026/07/04/sling-pop/index.html",
+    "generation": {
+      "agentName": "claude-code",
+      "llmModel": "claude-fable-5",
+      "startTime": "2026-07-04T23:53:01Z",
+      "endTime": "2026-07-05T00:25:00Z",
+      "totalTokensIn": 42000,
+      "totalTokensOut": 17000,
+      "runId": "run-20260704T235301Z-26352a",
+      "notes": "Built from approved issue #604. Selection script flagged duplicationRisk high (43) but all matches were generic keywords (game/canvas/touch); no existing app uses slingshot aiming or match-on-landing, so the concept was judged meaningfully distinct. Design: the aim IS the color-match decision — landing on a block touching same-color neighbors flood-fill pops the group, scores 10 x size x combo, and auto-boosts the player upward for chains; non-matching landings perch and reset the combo. Assumptions: platforms are one-way (land from above, pass through from below) for fair aiming; side walls bounce the player (bank shots) to keep one-handed play forgiving; 8% of blocks are neutral stone that never pops, creating safe perches and aim constraints. Squash/stretch, particles, screen shake, and synthesized Web Audio SFX per the juicy-feedback requirement. localStorage high score plus shared leaderboard. All vanilla JS/canvas, no assets."
+    },
+    "suggestion": {
+      "issueNumber": 604,
+      "issueUrl": "https://github.com/jeffholst/valley-of-ai/issues/604",
+      "prompt": "## App Suggestion\n\n**Category:** Games\n**Requestor:** Jeff H.\n\n### Description\n\nCreate a game lending Tetris, Dr. Mario, Angry Birds, and endless jump-scrollers into 1 addictive loop. Player drags-and-releases to slingshot-launch a character upward (Angry Birds aiming) onto a grid of colored platform blocks. Landing on a block that matches an adjacent color clears them (Dr. Mario style), granting points + a height boost. Platforms scroll downward continuously, increasing pressure (jump-scroller tension) and difficulty over time. Combos multiply score. Falling off-screen or getting pinned at the bottom ends the run. One-handed drag controls only, 5-second learning curve, instant restart, juicy feedback (squash/stretch, particles, screen shake, Web Audio SFX). Single self-contained HTML file, canvas rendering, responsive to any mobile screen, touch+mouse support, 60fps, localStorage high score, simple start/game-over screens. Prioritize replayability and game feel over features. Build...",
+      "requestor": "Jeff H."
+    },
+    "improvements": null,
+    "allowImprovements": true,
+    "leaderboard": true,
+    "maxScore": 99999,
+    "backups": null
+  },
+  {
     "id": "2026/07/04/ear-gym",
     "name": "Ear Gym",
     "shortDescription": "Train your musical ear by naming the interval between two notes. Practice freely across three difficulty tiers or run a 10-round streak-scored challenge — every answer reveals a famous song mnemonic and a piano showing the notes you heard.",
