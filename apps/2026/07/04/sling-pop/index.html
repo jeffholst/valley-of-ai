@@ -1,0 +1,1008 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_MEASUREMENT_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', '__GA_MEASUREMENT_ID__');
+    </script>
+
+    <meta name="voa-main-site-url" content="__MAIN_SITE_URL__" />
+    <meta name="voa-main-site-name" content="__MAIN_SITE_NAME__" />
+    <meta name="voa-github-url" content="__GITHUB_URL__" />
+    <meta name="voa-social-x-url" content="__SOCIAL_X_URL__" />
+    <meta name="voa-social-facebook-url" content="__SOCIAL_FACEBOOK_URL__" />
+    <meta name="voa-social-instagram-url" content="__SOCIAL_INSTAGRAM_URL__" />
+    <meta name="application-name" content="Sling Pop" />
+    <meta name="voa-app-id" content="2026/07/04/sling-pop" />
+    <script src="/apps/shared/app-shell.js" defer></script>
+
+    <title>Sling Pop - __MAIN_SITE_NAME__</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='42' fill='%23f43f5e'/%3E%3Ccircle cx='38' cy='42' r='7' fill='%23fff'/%3E%3Ccircle cx='62' cy='42' r='7' fill='%23fff'/%3E%3C/svg%3E"
+    />
+
+    <style>
+      :root {
+        --bg: #0f172a;
+        --text: #f9fafb;
+        --surface: #1e293b;
+        --surface2: #273449;
+        --muted: #94a3b8;
+        --accent: #f43f5e;
+        --accent2: #22d3ee;
+      }
+      [data-theme='light'] {
+        --bg: #ffffff;
+        --text: #1f2937;
+        --surface: #f3f4f6;
+        --surface2: #e5e7eb;
+        --muted: #6b7280;
+        --accent: #e11d48;
+        --accent2: #0891b2;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          'Segoe UI',
+          system-ui,
+          -apple-system,
+          sans-serif;
+        overflow: hidden;
+      }
+
+      /* Full-viewport game anchored between the 64px shell header and 56px footer */
+      #gameWrap {
+        position: fixed;
+        top: 64px;
+        bottom: 56px;
+        left: 0;
+        right: 0;
+        overflow: hidden;
+      }
+      #gameCanvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+        touch-action: none;
+        cursor: crosshair;
+      }
+
+      /* ---- overlays (start / game over) ---- */
+      .overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        padding: 20px;
+        text-align: center;
+        background: color-mix(in srgb, var(--bg) 72%, transparent);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+      }
+      .overlay.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .overlay h1 {
+        font-size: clamp(2rem, 9vw, 3rem);
+        font-weight: 800;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: var(--accent);
+      }
+      .overlay .sub {
+        color: var(--muted);
+        font-size: 0.95rem;
+        max-width: 320px;
+        line-height: 1.45;
+      }
+      .overlay .big-score {
+        font-size: clamp(2.2rem, 10vw, 3.2rem);
+        font-weight: 800;
+        color: var(--accent2);
+      }
+      .overlay .stat-line {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .overlay button {
+        min-height: 50px;
+        min-width: 210px;
+        border: none;
+        border-radius: 14px;
+        font-size: 1.02rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.12s;
+      }
+      .overlay button:active {
+        transform: scale(0.95);
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #fff;
+        box-shadow: 0 6px 22px rgba(244, 63, 94, 0.35);
+      }
+      .btn-secondary {
+        background: var(--surface2);
+        color: var(--text);
+      }
+      .kbd-hint {
+        font-size: 0.72rem;
+        color: var(--muted);
+      }
+      .kbd-hint b {
+        color: var(--text);
+      }
+
+      /* first-launch hint that fades out */
+      #hint {
+        position: absolute;
+        left: 50%;
+        bottom: 18%;
+        transform: translateX(-50%);
+        background: color-mix(in srgb, var(--surface) 85%, transparent);
+        border-radius: 999px;
+        padding: 10px 18px;
+        font-size: 0.88rem;
+        color: var(--text);
+        pointer-events: none;
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+      #hint.show {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="gameWrap">
+      <canvas id="gameCanvas"></canvas>
+      <div id="hint">Pull back &amp; release to launch</div>
+
+      <div class="overlay show" id="startOverlay">
+        <h1>Sling Pop</h1>
+        <p class="sub">
+          Slingshot onto the falling blocks. Land on a color that touches its twins to
+          <b>pop</b> the group and rocket higher. Don't get dragged off the bottom!
+        </p>
+        <button class="btn-primary" id="startBtn">Play</button>
+        <p class="kbd-hint">
+          Drag anywhere to aim · or <b>←→↑↓</b> aim &amp; power, <b>Space</b> launch, <b>R</b>
+          restart
+        </p>
+      </div>
+
+      <div class="overlay" id="overOverlay">
+        <h1 id="overTitle">Popped out!</h1>
+        <div class="big-score" id="overScore">0</div>
+        <p class="stat-line" id="overStats"></p>
+        <button class="btn-primary" id="againBtn">Play again</button>
+        <button class="btn-secondary" id="shareBtn">Share score</button>
+      </div>
+    </div>
+
+    <script>
+      (() => {
+        'use strict';
+
+        const APP_NAME = 'Sling Pop';
+        const BEST_KEY = 'slingpop_best';
+        const COLS = 6;
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const hintEl = document.getElementById('hint');
+        const startOverlay = document.getElementById('startOverlay');
+        const overOverlay = document.getElementById('overOverlay');
+
+        // ------------------------------------------------------------------
+        // Sizing. All physics constants derive from the canvas height so the
+        // game feels identical on a 320px phone and a desktop window.
+        // ------------------------------------------------------------------
+        let W = 0;
+        let H = 0;
+        let dpr = 1;
+        let cellW = 0;
+        let cellH = 0;
+        let GRAVITY = 0;
+        let MAX_SPEED = 0;
+        let MIN_SPEED = 0;
+
+        function resize() {
+          const rect = canvas.parentElement.getBoundingClientRect();
+          const oldCellH = cellH;
+          const oldW = W;
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+          W = Math.max(rect.width, 1);
+          H = Math.max(rect.height, 1);
+          canvas.width = Math.round(W * dpr);
+          canvas.height = Math.round(H * dpr);
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          cellW = W / COLS;
+          cellH = cellW * 0.62;
+          GRAVITY = H * 2.8;
+          MAX_SPEED = H * 2.1;
+          MIN_SPEED = H * 0.55;
+          // Keep world positions proportional when the viewport changes mid-run
+          if (oldCellH > 0 && cellH !== oldCellH) {
+            player.x *= W / oldW;
+            player.y *= cellH / oldCellH;
+            cameraTop *= cellH / oldCellH;
+          }
+        }
+
+        // ------------------------------------------------------------------
+        // Theme-aware palette (canvas cannot use CSS vars directly)
+        // ------------------------------------------------------------------
+        const BLOCK_COLORS = ['#f43f5e', '#22d3ee', '#a3e635', '#fbbf24'];
+        const STONE = 4; // never matches, never pops
+        let theme = {};
+        function readTheme() {
+          const light = document.documentElement.getAttribute('data-theme') === 'light';
+          theme = light
+            ? {
+                bgTop: '#dbeafe',
+                bgBottom: '#f8fafc',
+                stone: '#94a3b8',
+                text: '#1f2937',
+                hud: 'rgba(31,41,55,0.75)',
+                dot: 'rgba(31,41,55,0.35)',
+                star: 'rgba(100,116,139,0.25)',
+              }
+            : {
+                bgTop: '#0b1120',
+                bgBottom: '#1e1b4b',
+                stone: '#475569',
+                text: '#f9fafb',
+                hud: 'rgba(249,250,251,0.8)',
+                dot: 'rgba(249,250,251,0.4)',
+                star: 'rgba(148,163,184,0.3)',
+              };
+        }
+        readTheme();
+        new MutationObserver(readTheme).observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ['data-theme'],
+        });
+
+        // ------------------------------------------------------------------
+        // Audio: tiny synthesized SFX, created lazily on first user gesture
+        // ------------------------------------------------------------------
+        let audio = null;
+        function ensureAudio() {
+          if (!audio) {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            if (!AC) return;
+            audio = new AC();
+          }
+          if (audio.state === 'suspended') audio.resume();
+        }
+        function tone(freq, start, dur, type, vol) {
+          if (!audio) return;
+          const t = audio.currentTime + start;
+          const osc = audio.createOscillator();
+          const g = audio.createGain();
+          osc.type = type;
+          osc.frequency.value = freq;
+          g.gain.setValueAtTime(0.0001, t);
+          g.gain.exponentialRampToValueAtTime(vol, t + 0.015);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+          osc.connect(g).connect(audio.destination);
+          osc.start(t);
+          osc.stop(t + dur + 0.05);
+        }
+        function sfxLaunch(power) {
+          tone(180 + 240 * power, 0, 0.18, 'sawtooth', 0.12);
+          tone(320 + 300 * power, 0.02, 0.12, 'triangle', 0.1);
+        }
+        function sfxLand() {
+          tone(110, 0, 0.12, 'sine', 0.22);
+        }
+        function sfxPop(size, combo) {
+          const n = Math.min(size, 5);
+          for (let i = 0; i < n; i++) {
+            tone(280 * Math.pow(1.14, i + combo), i * 0.05, 0.16, 'triangle', 0.16);
+          }
+        }
+        function sfxGameOver() {
+          tone(300, 0, 0.25, 'sawtooth', 0.14);
+          tone(210, 0.18, 0.3, 'sawtooth', 0.14);
+          tone(130, 0.38, 0.5, 'sawtooth', 0.14);
+        }
+
+        // ------------------------------------------------------------------
+        // World state. World y grows downward; row r occupies y [r*cellH,
+        // (r+1)*cellH). cameraTop is the world y of the top screen edge — it
+        // decreases forever, which makes blocks appear to scroll DOWN.
+        // ------------------------------------------------------------------
+        let rows = new Map(); // rowIndex -> array[COLS] of color idx | -1
+        let minRow = 0; // highest (smallest index) generated row
+        let cameraTop = 0;
+        let scrollSpeed = 0;
+        let elapsed = 0;
+
+        const player = {
+          x: 0,
+          y: 0,
+          vx: 0,
+          vy: 0,
+          state: 'perched', // 'perched' | 'flying' | 'dead'
+          perchRow: 0,
+          perchCol: 0,
+          sx: 1, // squash/stretch scales
+          sy: 1,
+        };
+
+        let score = 0;
+        let combo = 1;
+        let bestCombo = 1;
+        let pops = 0;
+        let startRowY = 0; // for the height stat
+        let highestY = 0;
+        let best = Number(localStorage.getItem(BEST_KEY) || 0);
+        let running = false;
+
+        // FX
+        let particles = [];
+        let floaters = [];
+        let shake = 0;
+
+        // Input
+        let dragging = false;
+        let dragStart = null;
+        let dragNow = null;
+        let kbAngle = Math.PI / 2; // straight up
+        let kbPower = 0.7;
+        let kbAiming = false;
+        let launchedOnce = false;
+
+        function rand(a, b) {
+          return a + Math.random() * (b - a);
+        }
+
+        // ------------------------------------------------------------------
+        // Row generation: biased so same colors clump into poppable groups
+        // ------------------------------------------------------------------
+        function genRow(r) {
+          const arr = new Array(COLS).fill(-1);
+          const below = rows.get(r + 1);
+          for (let c = 0; c < COLS; c++) {
+            if (Math.random() > 0.44) continue;
+            // Bias toward copying a neighbor's color so poppable groups form
+            let color = -1;
+            if (c > 0 && arr[c - 1] >= 0 && arr[c - 1] !== STONE && Math.random() < 0.5) {
+              color = arr[c - 1];
+            } else if (below && below[c] >= 0 && below[c] !== STONE && Math.random() < 0.4) {
+              color = below[c];
+            }
+            if (color < 0) {
+              color =
+                Math.random() < 0.08 ? STONE : Math.floor(Math.random() * BLOCK_COLORS.length);
+            }
+            arr[c] = color;
+          }
+          // Guarantee at least two blocks so every row is playable
+          if (arr.every((v) => v === -1)) {
+            const c = Math.floor(rand(0, COLS - 1));
+            const color = Math.floor(Math.random() * BLOCK_COLORS.length);
+            arr[c] = color;
+            arr[c + 1] = color;
+          }
+          rows.set(r, arr);
+        }
+
+        function ensureRows() {
+          // Generate upward well past the visible top
+          const targetTop = Math.floor(cameraTop / cellH) - 6;
+          while (minRow > targetTop) {
+            minRow -= 1;
+            genRow(minRow);
+          }
+          // Prune rows far below the visible bottom
+          const bottomRow = Math.ceil((cameraTop + H) / cellH) + 4;
+          for (const r of rows.keys()) {
+            if (r > bottomRow) rows.delete(r);
+          }
+        }
+
+        // Flood fill of same-colored orthogonally connected blocks
+        function collectGroup(r, c) {
+          const color = rows.get(r)?.[c];
+          if (color == null || color < 0 || color === STONE) return [];
+          const seen = new Set();
+          const out = [];
+          const stack = [[r, c]];
+          while (stack.length) {
+            const [rr, cc] = stack.pop();
+            const key = rr + ':' + cc;
+            if (seen.has(key)) continue;
+            seen.add(key);
+            if (rows.get(rr)?.[cc] !== color) continue;
+            out.push([rr, cc]);
+            stack.push([rr - 1, cc], [rr + 1, cc], [rr, cc - 1], [rr, cc + 1]);
+          }
+          return out;
+        }
+
+        // ------------------------------------------------------------------
+        // Run lifecycle
+        // ------------------------------------------------------------------
+        function reset() {
+          rows = new Map();
+          minRow = 1;
+          cameraTop = -cellH * 2;
+          // Neutral stone launch pad so the first jump teaches matching
+          const pad = new Array(COLS).fill(-1);
+          pad[2] = STONE;
+          pad[3] = STONE;
+          pad[4] = STONE;
+          rows.set(8, pad);
+          minRow = 8;
+          cameraTop = 8 * cellH + cellH - H; // pad sits near the bottom
+          ensureRows();
+
+          player.x = 3.5 * cellW;
+          player.y = 8 * cellH;
+          player.vx = 0;
+          player.vy = 0;
+          player.state = 'perched';
+          player.perchRow = 8;
+          player.perchCol = 3;
+          player.sx = 1;
+          player.sy = 1;
+
+          score = 0;
+          combo = 1;
+          bestCombo = 1;
+          pops = 0;
+          elapsed = 0;
+          scrollSpeed = H * 0.022;
+          startRowY = player.y;
+          highestY = player.y;
+          particles = [];
+          floaters = [];
+          shake = 0;
+          dragging = false;
+          kbAiming = false;
+          running = true;
+          overOverlay.classList.remove('show');
+          if (!launchedOnce) hintEl.classList.add('show');
+        }
+
+        function die(reason) {
+          if (player.state === 'dead') return;
+          player.state = 'dead';
+          running = false;
+          sfxGameOver();
+          shake = 14;
+          if (score > best) {
+            best = score;
+            try {
+              localStorage.setItem(BEST_KEY, String(best));
+            } catch {
+              /* storage unavailable */
+            }
+          }
+          // Shared leaderboard — guard: shell may not have loaded
+          if (window.voaLeaderboard) {
+            window.voaLeaderboard.submit(score);
+          }
+          setTimeout(() => {
+            document.getElementById('overTitle').textContent =
+              reason === 'pinned' ? 'Dragged under!' : 'Popped out!';
+            document.getElementById('overScore').textContent = score.toLocaleString();
+            const height = Math.max(0, Math.round((startRowY - highestY) / cellH));
+            document.getElementById('overStats').textContent =
+              `${pops} pops · best combo x${bestCombo} · climbed ${height} rows · best ${best.toLocaleString()}`;
+            overOverlay.classList.add('show');
+          }, 650);
+        }
+
+        // ------------------------------------------------------------------
+        // Launch + landing
+        // ------------------------------------------------------------------
+        function launch(vx, vy) {
+          const speed = Math.hypot(vx, vy);
+          if (speed < MIN_SPEED * 0.35) return; // too weak — ignore
+          const clamped = Math.min(Math.max(speed, MIN_SPEED), MAX_SPEED);
+          const k = clamped / speed;
+          player.vx = vx * k;
+          player.vy = vy * k;
+          player.state = 'flying';
+          player.sx = 0.7;
+          player.sy = 1.35;
+          launchedOnce = true;
+          hintEl.classList.remove('show');
+          sfxLaunch(clamped / MAX_SPEED);
+        }
+
+        function boostFromPop(size) {
+          // Bigger groups fling the player higher (in rows)
+          const rowsUp = 1.6 + 0.55 * Math.min(size, 8);
+          player.vy = -Math.sqrt(2 * GRAVITY * rowsUp * cellH);
+          player.vx *= 0.2;
+          player.state = 'flying';
+          player.sx = 0.7;
+          player.sy = 1.35;
+        }
+
+        function landOn(r, c) {
+          player.state = 'perched';
+          player.perchRow = r;
+          player.perchCol = c;
+          player.y = r * cellH;
+          player.vx = 0;
+          player.vy = 0;
+          player.sx = 1.45;
+          player.sy = 0.55;
+          sfxLand();
+
+          const group = collectGroup(r, c);
+          if (group.length >= 2) {
+            // POP: clear the group, score it, boost the player
+            pops += 1;
+            const gained = group.length * 10 * combo;
+            score += gained;
+            for (const [rr, cc] of group) {
+              rows.get(rr)[cc] = -1;
+              spawnBurst(cc * cellW + cellW / 2, rr * cellH + cellH / 2);
+            }
+            floaters.push({
+              x: player.x,
+              y: player.y - cellH,
+              text: `+${gained}`,
+              sub: combo > 1 ? `combo x${combo}` : '',
+              t: 1,
+            });
+            sfxPop(group.length, combo);
+            shake = Math.min(4 + group.length * 1.5, 16);
+            bestCombo = Math.max(bestCombo, combo);
+            combo += 1;
+            boostFromPop(group.length);
+          } else {
+            combo = 1;
+          }
+        }
+
+        function spawnBurst(x, y) {
+          for (let i = 0; i < 10; i++) {
+            const a = rand(0, Math.PI * 2);
+            const sp = rand(H * 0.15, H * 0.55);
+            particles.push({
+              x,
+              y,
+              vx: Math.cos(a) * sp,
+              vy: Math.sin(a) * sp - H * 0.2,
+              size: rand(3, 7),
+              color: BLOCK_COLORS[Math.floor(Math.random() * BLOCK_COLORS.length)],
+              t: 1,
+            });
+          }
+        }
+
+        // ------------------------------------------------------------------
+        // Update
+        // ------------------------------------------------------------------
+        function update(dt) {
+          if (!running) return;
+          elapsed += dt;
+          // Pressure ramps up over time
+          scrollSpeed = Math.min(H * 0.022 + elapsed * H * 0.00022, H * 0.085);
+          cameraTop -= scrollSpeed * dt;
+
+          if (player.state === 'flying') {
+            player.vy += GRAVITY * dt;
+            const prevY = player.y;
+            player.x += player.vx * dt;
+            player.y += player.vy * dt;
+            highestY = Math.min(highestY, player.y);
+
+            // Bounce off side walls — enables bank shots
+            const r = cellW * 0.3;
+            if (player.x < r) {
+              player.x = r;
+              player.vx = Math.abs(player.vx) * 0.82;
+            } else if (player.x > W - r) {
+              player.x = W - r;
+              player.vx = -Math.abs(player.vx) * 0.82;
+            }
+
+            // One-way landing: falling and crossing a block's top edge
+            if (player.vy > 0) {
+              const c = Math.min(COLS - 1, Math.max(0, Math.floor(player.x / cellW)));
+              const rowA = Math.floor(prevY / cellH);
+              const rowB = Math.floor(player.y / cellH);
+              for (let rr = rowA; rr <= rowB; rr++) {
+                const rowArr = rows.get(rr + 1); // block whose top is at (rr+1)*cellH
+                const top = (rr + 1) * cellH;
+                if (rowArr && rowArr[c] >= 0 && prevY <= top && player.y >= top) {
+                  landOn(rr + 1, c);
+                  break;
+                }
+              }
+            }
+
+            // Camera follows the player upward
+            const screenY = player.y - cameraTop;
+            if (screenY < H * 0.35) {
+              cameraTop = player.y - H * 0.35;
+            }
+            // Fell below the screen
+            if (player.y - cameraTop > H + cellW) {
+              die('fell');
+            }
+          } else if (player.state === 'perched') {
+            // Perch block may have been scrolled off the bottom or popped away
+            const rowArr = rows.get(player.perchRow);
+            if (!rowArr || rowArr[player.perchCol] < 0) {
+              player.state = 'flying'; // ground vanished — start falling
+            } else if (player.perchRow * cellH - cameraTop > H - 2) {
+              die('pinned');
+            }
+          }
+
+          ensureRows();
+
+          // Squash/stretch decay
+          player.sx += (1 - player.sx) * Math.min(1, dt * 10);
+          player.sy += (1 - player.sy) * Math.min(1, dt * 10);
+          shake = Math.max(0, shake - dt * 40);
+
+          // FX
+          for (const p of particles) {
+            p.vy += GRAVITY * 0.6 * dt;
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.t -= dt * 1.6;
+          }
+          particles = particles.filter((p) => p.t > 0);
+          for (const f of floaters) f.t -= dt * 0.8;
+          floaters = floaters.filter((f) => f.t > 0);
+        }
+
+        // ------------------------------------------------------------------
+        // Trajectory preview: mirrors the flight physics incl. wall bounces
+        // ------------------------------------------------------------------
+        function drawTrajectory(vx, vy) {
+          const speed = Math.hypot(vx, vy);
+          if (speed < MIN_SPEED * 0.35) return;
+          const clamped = Math.min(Math.max(speed, MIN_SPEED), MAX_SPEED);
+          const k = clamped / speed;
+          let x = player.x;
+          let y = player.y;
+          let dx = vx * k;
+          let dy = vy * k;
+          const step = 1 / 60;
+          const r = cellW * 0.3;
+          ctx.fillStyle = theme.dot;
+          for (let i = 0; i < 55; i++) {
+            dy += GRAVITY * step;
+            x += dx * step;
+            y += dy * step;
+            if (x < r) {
+              x = r;
+              dx = Math.abs(dx) * 0.82;
+            } else if (x > W - r) {
+              x = W - r;
+              dx = -Math.abs(dx) * 0.82;
+            }
+            if (y - cameraTop > H) break;
+            if (i % 3 === 0) {
+              ctx.beginPath();
+              ctx.arc(x, y - cameraTop, 3, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+        }
+
+        // ------------------------------------------------------------------
+        // Render
+        // ------------------------------------------------------------------
+        function roundRect(x, y, w, h, r) {
+          ctx.beginPath();
+          ctx.moveTo(x + r, y);
+          ctx.arcTo(x + w, y, x + w, y + h, r);
+          ctx.arcTo(x + w, y + h, x, y + h, r);
+          ctx.arcTo(x, y + h, x, y, r);
+          ctx.arcTo(x, y, x + w, y, r);
+          ctx.closePath();
+        }
+
+        function render() {
+          // Background
+          const grad = ctx.createLinearGradient(0, 0, 0, H);
+          grad.addColorStop(0, theme.bgTop);
+          grad.addColorStop(1, theme.bgBottom);
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, W, H);
+
+          ctx.save();
+          if (shake > 0) {
+            ctx.translate(rand(-shake, shake), rand(-shake, shake));
+          }
+
+          // Parallax speckles for a sense of motion
+          ctx.fillStyle = theme.star;
+          const starOff = ((-cameraTop * 0.3) % 80) - 80;
+          for (let i = 0; i < 30; i++) {
+            const sx = ((i * 137) % W) + (i % 3);
+            const sy = (((i * 89) % (H + 80)) + starOff + H + 80) % (H + 80);
+            ctx.fillRect(sx, sy, 2, 2);
+          }
+
+          // Blocks
+          const firstRow = Math.floor(cameraTop / cellH) - 1;
+          const lastRow = Math.ceil((cameraTop + H) / cellH) + 1;
+          for (let r = firstRow; r <= lastRow; r++) {
+            const rowArr = rows.get(r);
+            if (!rowArr) continue;
+            const y = r * cellH - cameraTop;
+            for (let c = 0; c < COLS; c++) {
+              const col = rowArr[c];
+              if (col < 0) continue;
+              const x = c * cellW;
+              const fill = col === STONE ? theme.stone : BLOCK_COLORS[col];
+              ctx.fillStyle = fill;
+              roundRect(x + 2, y + 2, cellW - 4, cellH - 4, 7);
+              ctx.fill();
+              // Top bevel highlight
+              ctx.fillStyle = 'rgba(255,255,255,0.22)';
+              roundRect(x + 2, y + 2, cellW - 4, (cellH - 4) * 0.32, 7);
+              ctx.fill();
+              if (col === STONE) {
+                ctx.fillStyle = 'rgba(0,0,0,0.18)';
+                ctx.fillRect(x + cellW * 0.25, y + cellH * 0.55, cellW * 0.5, 3);
+              }
+            }
+          }
+
+          // Particles
+          for (const p of particles) {
+            ctx.globalAlpha = Math.max(0, p.t);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x - p.size / 2, p.y - cameraTop - p.size / 2, p.size, p.size);
+          }
+          ctx.globalAlpha = 1;
+
+          // Aim preview
+          if (running && player.state === 'perched') {
+            if (dragging && dragStart && dragNow) {
+              const vx = (dragStart.x - dragNow.x) * 5.2;
+              const vy = (dragStart.y - dragNow.y) * 5.2;
+              drawTrajectory(vx, vy);
+              // Rubber-band line behind the player
+              ctx.strokeStyle = theme.dot;
+              ctx.lineWidth = 3;
+              ctx.beginPath();
+              ctx.moveTo(player.x, player.y - cameraTop - cellW * 0.3);
+              ctx.lineTo(
+                player.x - (dragStart.x - dragNow.x) * 0.45,
+                player.y - cameraTop - cellW * 0.3 - (dragStart.y - dragNow.y) * 0.45
+              );
+              ctx.stroke();
+            } else if (kbAiming) {
+              const sp = MIN_SPEED + (MAX_SPEED - MIN_SPEED) * kbPower;
+              drawTrajectory(Math.cos(kbAngle) * sp, -Math.sin(kbAngle) * sp);
+            }
+          }
+
+          // Player: a round jelly with eyes (drawn — never emoji, per canvas rules)
+          const px = player.x;
+          const py = player.y - cameraTop - cellW * 0.3;
+          const pr = cellW * 0.3;
+          ctx.save();
+          ctx.translate(px, py);
+          ctx.scale(player.sx, player.sy);
+          const pg = ctx.createRadialGradient(-pr * 0.3, -pr * 0.4, pr * 0.2, 0, 0, pr);
+          pg.addColorStop(0, '#fda4af');
+          pg.addColorStop(1, '#e11d48');
+          ctx.fillStyle = pg;
+          ctx.beginPath();
+          ctx.arc(0, 0, pr, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(-pr * 0.32, -pr * 0.15, pr * 0.22, 0, Math.PI * 2);
+          ctx.arc(pr * 0.32, -pr * 0.15, pr * 0.22, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#0f172a';
+          const lookX = player.state === 'flying' ? Math.sign(player.vx) * pr * 0.08 : 0;
+          ctx.beginPath();
+          ctx.arc(-pr * 0.32 + lookX, -pr * 0.15, pr * 0.1, 0, Math.PI * 2);
+          ctx.arc(pr * 0.32 + lookX, -pr * 0.15, pr * 0.1, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+
+          // Floating score texts
+          ctx.textAlign = 'center';
+          for (const f of floaters) {
+            ctx.globalAlpha = Math.max(0, Math.min(1, f.t));
+            ctx.fillStyle = theme.text;
+            ctx.font = `800 ${Math.round(cellW * 0.42)}px system-ui, sans-serif`;
+            ctx.fillText(f.text, f.x, f.y - cameraTop - (1 - f.t) * 40);
+            if (f.sub) {
+              ctx.font = `700 ${Math.round(cellW * 0.26)}px system-ui, sans-serif`;
+              ctx.fillText(f.sub, f.x, f.y - cameraTop - (1 - f.t) * 40 + cellW * 0.34);
+            }
+          }
+          ctx.globalAlpha = 1;
+
+          // HUD (kept inside the canvas, which already clears the shell header)
+          ctx.fillStyle = theme.hud;
+          ctx.textAlign = 'left';
+          ctx.font = `800 ${Math.round(Math.min(26, W * 0.06))}px system-ui, sans-serif`;
+          ctx.fillText(score.toLocaleString(), 14, 34);
+          ctx.font = `600 ${Math.round(Math.min(13, W * 0.034))}px system-ui, sans-serif`;
+          ctx.fillText(`best ${best.toLocaleString()}`, 14, 52);
+          if (combo > 1 && running) {
+            ctx.textAlign = 'right';
+            ctx.font = `800 ${Math.round(Math.min(22, W * 0.05))}px system-ui, sans-serif`;
+            ctx.fillText(`x${combo}`, W - 14, 34);
+          }
+
+          ctx.restore();
+        }
+
+        // ------------------------------------------------------------------
+        // Main loop
+        // ------------------------------------------------------------------
+        let lastT = performance.now();
+        function frame(now) {
+          const dt = Math.min((now - lastT) / 1000, 1 / 20);
+          lastT = now;
+          update(dt);
+          render();
+          requestAnimationFrame(frame);
+        }
+
+        // ------------------------------------------------------------------
+        // Pointer input (mouse + touch unified)
+        // ------------------------------------------------------------------
+        function canvasPos(e) {
+          const rect = canvas.getBoundingClientRect();
+          return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        }
+        canvas.addEventListener('pointerdown', (e) => {
+          ensureAudio();
+          if (!running || player.state !== 'perched') return;
+          dragging = true;
+          dragStart = canvasPos(e);
+          dragNow = dragStart;
+          canvas.setPointerCapture(e.pointerId);
+        });
+        canvas.addEventListener('pointermove', (e) => {
+          if (dragging) dragNow = canvasPos(e);
+        });
+        canvas.addEventListener('pointerup', (e) => {
+          if (!dragging) return;
+          dragging = false;
+          const end = canvasPos(e);
+          launch((dragStart.x - end.x) * 5.2, (dragStart.y - end.y) * 5.2);
+          dragStart = dragNow = null;
+        });
+        canvas.addEventListener('pointercancel', () => {
+          dragging = false;
+          dragStart = dragNow = null;
+        });
+
+        // ------------------------------------------------------------------
+        // Keyboard input. Required guards: ignore keys while typing in an
+        // input or while a shell overlay (leaderboard/share) is open.
+        // ------------------------------------------------------------------
+        function shellOverlayOpen() {
+          return !!document.querySelector('.voa-lb-backdrop.open, .voa-share-backdrop.open');
+        }
+        document.addEventListener('keydown', (e) => {
+          const tag = document.activeElement?.tagName;
+          if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+          if (shellOverlayOpen()) return;
+
+          if (e.key.toLowerCase() === 'r') {
+            e.preventDefault();
+            ensureAudio();
+            if (!startOverlay.classList.contains('show')) reset();
+            return;
+          }
+          if (!running || player.state !== 'perched') return;
+          const step = e.key.startsWith('Arrow') ? true : false;
+          if (!step && e.key !== ' ') return;
+          switch (e.key) {
+            case 'ArrowLeft':
+              kbAngle = Math.min(Math.PI * 0.92, kbAngle + 0.07);
+              kbAiming = true;
+              e.preventDefault();
+              break;
+            case 'ArrowRight':
+              kbAngle = Math.max(Math.PI * 0.08, kbAngle - 0.07);
+              kbAiming = true;
+              e.preventDefault();
+              break;
+            case 'ArrowUp':
+              kbPower = Math.min(1, kbPower + 0.06);
+              kbAiming = true;
+              e.preventDefault();
+              break;
+            case 'ArrowDown':
+              kbPower = Math.max(0.15, kbPower - 0.06);
+              kbAiming = true;
+              e.preventDefault();
+              break;
+            case ' ': {
+              e.preventDefault();
+              ensureAudio();
+              const sp = MIN_SPEED + (MAX_SPEED - MIN_SPEED) * kbPower;
+              launch(Math.cos(kbAngle) * sp, -Math.sin(kbAngle) * sp);
+              kbAiming = false;
+              break;
+            }
+          }
+        });
+        document.addEventListener('keyup', (e) => {
+          const tag = document.activeElement?.tagName;
+          if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+          if (shellOverlayOpen()) return;
+          if ([' ', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+            e.preventDefault();
+          }
+        });
+
+        // ------------------------------------------------------------------
+        // Buttons
+        // ------------------------------------------------------------------
+        document.getElementById('startBtn').addEventListener('click', () => {
+          ensureAudio();
+          startOverlay.classList.remove('show');
+          reset();
+        });
+        document.getElementById('againBtn').addEventListener('click', () => {
+          ensureAudio();
+          reset();
+        });
+        document.getElementById('shareBtn').addEventListener('click', () => {
+          if (window.voaShare) {
+            window.voaShare({
+              text: `I scored ${score.toLocaleString()} in ${APP_NAME}! Can you beat it?`,
+            });
+          }
+        });
+
+        // ------------------------------------------------------------------
+        // Boot
+        // ------------------------------------------------------------------
+        window.addEventListener('resize', resize);
+        resize();
+        reset();
+        running = false; // wait behind the start overlay
+        requestAnimationFrame(frame);
+      })();
+    </script>
+  </body>
+</html>
